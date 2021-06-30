@@ -25,34 +25,32 @@ tumor_plot <- function(expr_mat_gene, hist_file,
       group_by(cohort, cancer_group) %>%
       mutate(n_samples = n()) %>%
       filter(n_samples >= 5) %>%
-      mutate(x_labels = paste(cohort, cancer_group, n_samples, sep = "_"))
+      mutate(x_labels = paste0(cohort, "_", cancer_group, " (n=", n_samples, ")"))
   } else if(analysis_type == "cancer_group_level") {
     expr_mat_gene <- expr_mat_gene %>%
       group_by(cancer_group) %>%
       mutate(n_samples = n()) %>%
       filter(n_samples >= 5) %>%
-      mutate(x_labels = paste(cancer_group, n_samples, sep = "_"))
+      mutate(x_labels = paste0(cancer_group, " (n=", n_samples, ")"))
   }
   
   # reorder by median tpm
-  fcts <- expr_mat_gene %>%
-    group_by(x_labels) %>%
-    summarise(median = median(tpm)) %>%
-    arrange(median) %>%
-    .$x_labels
+  fcts <- sort(unique(expr_mat_gene$x_labels))
   expr_mat_gene$x_labels <- factor(expr_mat_gene$x_labels, levels = fcts)
   
   # create unique title and filenames
   gene_name <- unique(expr_mat_gene$gene)
-  cohort_name <- paste0(unique(expr_mat_gene$cohort), collapse = "_")
-  title <- paste(gene_name, cohort_name, analysis_type, sep = "_")
-  plot_fname <- paste0(title, '.png')
-  table_fname <- paste0(title, '.tsv')
+  tumor_cohort <- paste0(unique(expr_mat_gene$cohort), collapse = ", ")
+  tumor_cohort_fname <- paste0(unique(expr_mat_gene$cohort), collapse = "_")
+  title <- paste(gene_name, paste(tumor_cohort, "pan-cancer plot", sep = " "), sep = "\n")
+  fname <- paste(gene_name, tumor_cohort_fname, "pan_cancer", analysis_type, sep = "_")
+  plot_fname <- paste0(fname, '.png')
+  table_fname <- paste0(fname, '.tsv')
   
   # data-frame for mapping output filenames with info
   mapping_df <- data.frame(gene = gene_name, 
                            plot_type = "tumors_only", 
-                           cohort = cohort_name,
+                           cohort = tumor_cohort,
                            cancer_group = NA,
                            analysis_type = analysis_type, 
                            plot_fname = plot_fname,
@@ -66,14 +64,14 @@ tumor_plot <- function(expr_mat_gene, hist_file,
 
   # boxplot
   cols <- c("Tumor" = "grey80")
-  output_plot <- ggplot(expr_mat_gene, aes(x = x_labels, y = log2(tpm + 1), fill = sample_type)) +
+  output_plot <- ggplot(expr_mat_gene, aes(x = x_labels, y = tpm, fill = sample_type)) +
     stat_boxplot(geom ='errorbar', width = 0.2) +
     geom_boxplot(lwd = 0.5, fatten = 0.7, outlier.shape = 1, width = 0.5, outlier.size = 1) +
-    ylab("log2 TPM") + xlab("") +
+    ylab("TPM") + xlab("") +
     theme_Publication2(base_size = 12) + 
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
     ggtitle(title) +
-    scale_fill_manual(values = cols) + guides(fill = FALSE)
+    scale_fill_manual(values = cols) + guides(fill = "none")
   ggsave(plot = output_plot, filename = file.path(plots_dir, plot_fname), device = "png", width = plot_width, height = plot_height)
   
   # output table of gene, median and sd

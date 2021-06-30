@@ -27,13 +27,13 @@ tumor_vs_normal_plot <- function(expr_mat_gene, hist_file,
       group_by(cohort, group) %>%
       mutate(n_samples = n()) %>%
       filter(n_samples >= 5) %>%
-      mutate(x_labels = paste(cohort, group, n_samples, sep = "_"))
-  } else if(analysis_type == "cancer_group_level") {
+      mutate(x_labels = paste0(group, " (n=", n_samples, ")"))
+  } else {
     expr_mat_gene <- expr_mat_gene %>%
       group_by(group) %>%
       mutate(n_samples = n()) %>%
       filter(n_samples >= 5) %>%
-      mutate(x_labels = paste(group, n_samples, sep = "_"))
+      mutate(x_labels = paste0(group, " (n=", n_samples, ")"))
   }
   
   # get a vector of all tumor groups
@@ -49,29 +49,46 @@ tumor_vs_normal_plot <- function(expr_mat_gene, hist_file,
     expr_mat_gene_subset <- expr_mat_gene %>%
       filter(x_labels %in% cohort_cancer_groups[i] | cohort == "GTEx")
     
-    # reorder by median tpm
-    fcts <- expr_mat_gene_subset %>%
-      group_by(x_labels) %>%
-      summarise(median = median(tpm)) %>%
-      arrange(median) %>%
-      .$x_labels
+    # reorder by alphabet 
+    fcts <- expr_mat_gene_subset %>% 
+      dplyr::select(sample_type, group, x_labels) %>%
+      unique() %>%
+      arrange(desc(sample_type), group) %>%
+      .$x_labels 
     expr_mat_gene_subset$x_labels <- factor(expr_mat_gene_subset$x_labels, levels = fcts)
     
     # create unique title and filenames
     gene_name <- unique(expr_mat_gene_subset$gene)
-    cohort_name <- paste0(unique(expr_mat_gene_subset$cohort), collapse = "_")
-    cancer_group_name <- cohort_cancer_groups[i]
-    title <- paste(gene_name, cohort_name, cancer_group_name, analysis_type, sep = "_")
+    cohorts <- paste0(unique(expr_mat_gene_subset$cohort), collapse = ", ")
+    tumor_cohort <- expr_mat_gene_subset %>%
+      filter(sample_type == "Tumor") %>%
+      .$cohort %>% 
+      unique() %>%
+      paste0(collapse = ", ")
+    cancer_group_name <- expr_mat_gene_subset %>%
+      filter(sample_type == "Tumor") %>%
+      .$cancer_group %>%
+      unique()
     # replace semi-colon, forward slash and spaces with hyphen in filenames
     cancer_group_name_fname <- gsub('/| |;', '-', cancer_group_name) 
-    fname <- paste(gene_name, cohort_name, cancer_group_name_fname, analysis_type, sep = "_")
+    
+    # create title and filename prefix
+    if(analysis_type == "cohort_cancer_group_level"){
+      title <- paste(gene_name, 
+                     paste(tumor_cohort, cancer_group_name, "vs. GTEx", sep = " "), sep = "\n")
+      fname <- paste(gene_name, tumor_cohort, cancer_group_name_fname, "vs_GTEx", analysis_type, sep = "_")
+    } else {
+      title <- paste(gene_name,
+                     paste(cancer_group_name, "vs. GTEx", sep = " "), sep = "\n")
+      fname <- paste(gene_name, cancer_group_name_fname, "vs_GTEx", analysis_type, sep = "_")
+    }
     plot_fname <- paste0(fname, '.png')
     table_fname <- paste0(fname, '.tsv')
     
     # data-frame for mapping output filenames with info
     mapping_df <- data.frame(gene = gene_name, 
                              plot_type = "tumor_vs_normal", 
-                             cohort = cohort_name,
+                             cohort = cohorts,
                              cancer_group = cohort_cancer_groups[i],
                              analysis_type = analysis_type, 
                              plot_fname = plot_fname,
@@ -85,14 +102,14 @@ tumor_vs_normal_plot <- function(expr_mat_gene, hist_file,
     
     # boxplot
     cols <- c("Normal" = "grey80", "Tumor" = "red3")
-    output_plot <- ggplot(expr_mat_gene_subset, aes(x = x_labels, y = log2(tpm + 1), fill = sample_type)) +
+    output_plot <- ggplot(expr_mat_gene_subset, aes(x = x_labels, y = tpm, fill = sample_type)) +
       stat_boxplot(geom ='errorbar', width = 0.2) +
       geom_boxplot(lwd = 0.5, fatten = 0.7, outlier.shape = 1, width = 0.5, outlier.size = 1) +
-      ylab("log2 TPM") + xlab("") +
+      ylab("TPM") + xlab("") +
       theme_Publication2(base_size = 12) + 
       theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
       ggtitle(title) +
-      scale_fill_manual(values = cols) + guides(fill = FALSE)
+      scale_fill_manual(values = cols) + guides(fill = "none")
     ggsave(plot = output_plot, filename = file.path(plots_dir, plot_fname), device = "png", width = plot_width, height = plot_height)
     
     # output table of gene, median and sd
