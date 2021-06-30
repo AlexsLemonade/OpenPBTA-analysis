@@ -27,13 +27,13 @@ tumor_vs_normal_plot <- function(expr_mat_gene, hist_file,
       group_by(cohort, group) %>%
       mutate(n_samples = n()) %>%
       filter(n_samples >= 5) %>%
-      mutate(x_labels = paste0(group, " (n=", n_samples, ")"))
+      mutate(x_labels = paste0(group, " (N = ", n_samples, ")"))
   } else {
     expr_mat_gene <- expr_mat_gene %>%
       group_by(group) %>%
       mutate(n_samples = n()) %>%
       filter(n_samples >= 5) %>%
-      mutate(x_labels = paste0(group, " (n=", n_samples, ")"))
+      mutate(x_labels = paste0(group, " (N = ", n_samples, ")"))
   }
   
   # get a vector of all tumor groups

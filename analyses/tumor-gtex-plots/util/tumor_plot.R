@@ -25,13 +25,13 @@ tumor_plot <- function(expr_mat_gene, hist_file,
       group_by(cohort, cancer_group) %>%
       mutate(n_samples = n()) %>%
       filter(n_samples >= 5) %>%
-      mutate(x_labels = paste0(cohort, "_", cancer_group, " (n=", n_samples, ")"))
+      mutate(x_labels = paste0(cancer_group, ", ", cohort,  " (N = ", n_samples, ")"))
   } else if(analysis_type == "cancer_group_level") {
     expr_mat_gene <- expr_mat_gene %>%
       group_by(cancer_group) %>%
       mutate(n_samples = n()) %>%
       filter(n_samples >= 5) %>%
-      mutate(x_labels = paste0(cancer_group, " (n=", n_samples, ")"))
+      mutate(x_labels = paste0(cancer_group, " (N = ", n_samples, ")"))
   }
   
   # reorder by median tpm
@@ -42,7 +42,11 @@ tumor_plot <- function(expr_mat_gene, hist_file,
   gene_name <- unique(expr_mat_gene$gene)
   tumor_cohort <- paste0(unique(expr_mat_gene$cohort), collapse = ", ")
   tumor_cohort_fname <- paste0(unique(expr_mat_gene$cohort), collapse = "_")
-  title <- paste(gene_name, paste(tumor_cohort, "pan-cancer plot", sep = " "), sep = "\n")
+  if(analysis_type == "cohort_cancer_group_level"){
+    title <- paste(gene_name, "Gene Expression across cohorts", sep = "\n")
+  } else {
+    title <- paste(gene_name, "Gene Expression across cancers", sep = "\n")
+  }
   fname <- paste(gene_name, tumor_cohort_fname, "pan_cancer", analysis_type, sep = "_")
   plot_fname <- paste0(fname, '.png')
   table_fname <- paste0(fname, '.tsv')
