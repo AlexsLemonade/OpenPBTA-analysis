@@ -1,0 +1,106 @@
+## Annotate SNV table with mutation frequencies
+
+**Module author:** Yuanchao Zhang ([@logstar](https://github.com/logstar))
+
+### Purpose
+
+Annotate each non-synonymous variant in `snv-consensus-plus-hotspots.maf.tsv.gz` with mutation frequencies per `(cohort, cancer_group, primary/relapse)`.
+
+Issues addressed:
+
+- <https://github.com/PediatricOpenTargets/ticket-tracker/issues/64>
+- <https://github.com/PediatricOpenTargets/ticket-tracker/issues/8>. This issue is no longer compatible with the purpose of this module. This module intends to compute mutation frequencies for each variant, but this issue intents to compute the mutation frequencies for each gene. This issue is listed here for future reference.
+
+### Methods
+
+Subset `snv-consensus-plus-hotspots.maf.tsv.gz` to keep only samples with `sample_type == 'Tumor'`.
+
+Subset `snv-consensus-plus-hotspots.maf.tsv.gz` to keep only non-synonymous variants with the following code.
+
+```R
+Variant_Classification %in% c('Frame_Shift_Del',
+                              'Frame_Shift_Ins',
+                              'Splice_Site',
+                              'Nonsense_Mutation',
+                              'Nonstop_Mutation',
+                              'In_Frame_Del',
+                              'In_Frame_Ins',
+                              'Missense_Mutation',
+                              'Fusion',
+                              'Multi_Hit',
+                              'Multi_Hit_Fusion',
+                              'Hom_Deletion',
+                              'Hem_Deletion',
+                              'Amp',
+                              'Del',
+                              'Translation_Start_Site')
+```
+
+Create a `Variant_ID` for each variant by concatenating `Chromosome`, `Start_Position`, `Reference_Allele`, and `Tumor_Seq_Allele2` with `'_'`.
+
+Add `Gene_full_name` and `Protein_RefSeq_ID` columns to each variant with annotations obtained from [mygene.info](http://mygene.info/about).
+
+For each `cancer_group`, get each cohort and all cohorts. Call each `cancer_group` and `cohort`(s) combination as `cancer_group_cohort`. For example,
+
+| cancer_group  | cohort           | n_samples |
+|---------------|------------------|-----------|
+| Neuroblastoma | CBTN             | 2         |
+| Neuroblastoma | GMKF             | 541       |
+| Neuroblastoma | TARGET           | 889       |
+| Neuroblastoma | CBTN&GMKF&TARGET | 1432      |
+
+For each `cancer_group_cohort` with `n_samples` >= 5, compute `Frequency_in_overall_dataset`, `Frequency_in_primary_tumors`, and `Frequency_in_relapse_tumors` as following:
+
+- `Frequency_in_overall_dataset`:
+  - For each unique variant, count the number of patients (identified by `Kids_First_Participant_ID`) that have the variant, and call this number `Total_mutations`.
+  - Count the total number of patients in the `cancer_group_cohort`, and call this number `Patients_in_dataset`.
+  - `Frequency_in_overall_dataset = Total_mutations / Patients_in_dataset`.
+
+- `Frequency_in_primary_tumors`:
+  - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `../independent-samples/results/independent-specimens.wgs.primary.tsv`, and call this number `Total_primary_tumors_mutated`.
+  - Count the total number of samples in the `cancer_group_cohort` that are also in the `../independent-samples/results/independent-specimens.wgs.primary.tsv`, and call this number `Primary_tumors_in_dataset`.
+  - `Frequency_in_primary_tumors = Total_primary_tumors_mutated / Primary_tumors_in_dataset`.
+
+- `Frequency_in_relapse_tumors`:
+  - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `../independent-samples/results/independent-specimens.wgs.relapse.tsv`, and call this number `Total_relapse_tumors_mutated`.
+  - Count the total number of samples in the `cancer_group_cohort` that are also in the `../independent-samples/results/independent-specimens.wgs.relapse.tsv`, and call this number `Relapse_tumors_in_dataset`.
+  - `Frequency_in_relapse_tumors = Total_relapse_tumors_mutated / Relapse_tumors_in_dataset`.
+
+Format the SNV mutation frequency table according to the latest spreadsheet that is attached in <https://github.com/PediatricOpenTargets/ticket-tracker/issues/64>.
+
+Merge the SNV mutation frequency tables of all `cancer_group_cohort`s.
+
+### Results
+
+Results are generated using PediatricOpenTargets/OpenPedCan-analysis data release v5.
+
+`results/snv-consensus-annotated-mut-freq.tsv` is the merged SNV mutation frequency tables of all `cancer_group_cohort`s.
+
+### Usage
+
+1. Change working directory to local `OpenPBTA-analysis`.
+2. Download data using `bash download-data.sh`. Make sure `data/gene-counts-rsem-expected_count-collapsed.rds` is downloaded.
+3. Run this analysis module in the continuous integration (CI) docker image using `./scripts/run_in_ci.sh bash analyses/snv-frequencies/run-snv-frequencies.sh`.
+
+### Analysis scripts
+
+#### `01-snv-frequencies.R`
+
+This script annotates each non-synonymous variant in `snv-consensus-plus-hotspots.maf.tsv.gz` with mutation frequencies per `(cohort, cancer_group, primary/relapse)`.
+
+Usage:
+
+```bash
+Rscript --vanilla '01-snv-frequencies.R'
+```
+
+Input:
+
+- `../../data/histologies.tsv`
+- `../../data/snv-consensus-plus-hotspots.maf.tsv.gz`
+- `../independent-samples/results/independent-specimens.wgs.primary.tsv`
+- `../independent-samples/results/independent-specimens.wgs.relapse.tsv`
+
+Output:
+
+- `results/snv-consensus-annotated-mut-freq.tsv`
