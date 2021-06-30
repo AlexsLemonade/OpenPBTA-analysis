@@ -67,10 +67,8 @@ hist_file <- hist_file %>%
 expr_mat <- expr_mat %>%
   select(hist_file$Kids_First_Biospecimen_ID)
 
-# just do 1 gene as a test, we can remove this later
-n_genes <- 1
-expr_mat <- expr_mat %>%
-  head(n = n_genes)
+# just do GPC2 as a test, we can remove this later
+expr_mat <- expr_mat[grep('GPC2', rownames(expr_mat)),]
 
 # add gene as a column
 expr_mat <- expr_mat %>% 

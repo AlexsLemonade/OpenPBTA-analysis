@@ -26,18 +26,18 @@
 ├── 01-tumor-gtex-plots.R # script to call all functions and run analysis
 ├── README.md 
 ├── plots # png files of expression boxplots (possible examples)
-│   ├── MT-CO3_GMKF_Neuroblastoma_vs_GTEx_cohort_cancer_group_level.png
-│   ├── MT-CO3_PBTA_Medulloblastoma_vs_GTEx_cohort_cancer_group_level.png
-│   ├── MT-CO3_Ependymoma_vs_GTEx_cancer_group_level.png
-│   ├── MT-CO3_PBTA_GMKF_pan_cancer_cancer_group_level.png
-│   ├── MT-CO3_PBTA_GMKF_pan_cancer_cohort_cancer_group_level.png
+│   ├── GPC2_GMKF_Neuroblastoma_vs_GTEx_cohort_cancer_group_level.png
+│   ├── GPC2_PBTA_Medulloblastoma_vs_GTEx_cohort_cancer_group_level.png
+│   ├── GPC2_Ependymoma_vs_GTEx_cancer_group_level.png
+│   ├── GPC2_PBTA_GMKF_pan_cancer_cancer_group_level.png
+│   ├── GPC2_PBTA_GMKF_pan_cancer_cohort_cancer_group_level.png
 │   └── ...
 ├── results # tsv files of data for corresponding expression boxplots
-│   ├── MT-CO3_GMKF_Neuroblastoma_vs_GTEx_cohort_cancer_group_level.tsv
-│   ├── MT-CO3_PBTA_Medulloblastoma_vs_GTEx_cohort_cancer_group_level.tsv
-│   ├── MT-CO3_Ependymoma_vs_GTEx_cancer_group_level.tsv
-│   ├── MT-CO3_PBTA_GMKF_pan_cancer_cancer_group_level.tsv
-│   ├── MT-CO3_PBTA_GMKF_pan_cancer_cohort_cancer_group_level.tsv
+│   ├── GPC2_GMKF_Neuroblastoma_vs_GTEx_cohort_cancer_group_level.tsv
+│   ├── GPC2_PBTA_Medulloblastoma_vs_GTEx_cohort_cancer_group_level.tsv
+│   ├── GPC2_Ependymoma_vs_GTEx_cancer_group_level.tsv
+│   ├── GPC2_PBTA_GMKF_pan_cancer_cancer_group_level.tsv
+│   ├── GPC2_PBTA_GMKF_pan_cancer_cohort_cancer_group_level.tsv
 │   ├── ...
 │   └── metadata.tsv # mapping of filename and metadata for all comparisons 
 ├── run-tumor-gtex-plots.sh # full analysis script
