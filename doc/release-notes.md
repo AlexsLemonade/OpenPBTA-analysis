@@ -5,18 +5,18 @@
 - changes:
    - Within `histologies.tsv`:
      - Updated `cancer_group` logic to fix `Anaplastic` typo, remove benign tumors, and condense meningiomas [ticket48](https://github.com/PediatricOpenTargets/ticket-tracker/issues/48)
-     - combine CBTN+PNOC into `cohort == PBTA` [ticket 79](https://github.com/PediatricOpenTargets/ticket-tracker/issues/79)
-     - GMKF tumor ploidy was added [ticket 46](https://github.com/PediatricOpenTargets/ticket-tracker/issues/46)
-     - harmonized tumor_descriptor per [ticket 61](https://github.com/PediatricOpenTargets/ticket-tracker/issues/61) 
+     - combine CBTN+PNOC into `cohort == PBTA` [ticket79](https://github.com/PediatricOpenTargets/ticket-tracker/issues/79)
+     - GMKF tumor ploidy was added [ticket46](https://github.com/PediatricOpenTargets/ticket-tracker/issues/46)
+     - harmonized tumor_descriptor per [ticket61](https://github.com/PediatricOpenTargets/ticket-tracker/issues/61) 
      - updated clinical info for NBL samples which were missing in source files per [ticket43](https://github.com/PediatricOpenTargets/ticket-tracker/issues/43)
      - updated `experimental_strategy` for targeted capture samples per [ticket62](https://github.com/PediatricOpenTargets/ticket-tracker/issues/62)
-   - Add cnv files with PBTA+GMKF samples per [ticket 44](https://github.com/PediatricOpenTargets/ticket-tracker/issues/44):
+   - Add cnv files with PBTA+GMKF samples per [ticket44](https://github.com/PediatricOpenTargets/ticket-tracker/issues/44):
       - cnv-cnvkit.seg.gz
       - cnv-controlfreec.tsv.gz
       - cnv-consensus.seg.gz 
       - consensus_seg_annotated_cn_autosomes.tsv.gz
       - consensus_seg_annotated_cn_autosomes_xy.tsv.gz
-    - Add EFO and MONDO cancer mapping file [ticket 78](https://github.com/PediatricOpenTargets/ticket-tracker/issues/78):
+    - Add EFO and MONDO cancer mapping file [ticket78](https://github.com/PediatricOpenTargets/ticket-tracker/issues/78):
     - Add ENSG to HUGO mapping file with RMTL designation [ticket84](https://github.com/PediatricOpenTargets/ticket-tracker/issues/84) and [ticket56](https://github.com/PediatricOpenTargets/ticket-tracker/issues/56)
 
 
