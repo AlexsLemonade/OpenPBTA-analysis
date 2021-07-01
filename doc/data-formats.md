@@ -89,9 +89,3 @@ Note: these files contain biospecimens and genes with copy number changes.
 
   - `consensus_seg_annotated_cn_autosomes.tsv.gz` contains focal gene copy number alterations for all autosomes.
   - `consensus_seg_annotated_cn_x_and_y.tsv.gz` contains focal gene copy number alterations for the sex chromosomes.
-
-For WXS we will be using cnvkit are main source of copy number calls and add gene annotation in [`analysis/focal-cn-file-preparation`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/focal-cn-file-preparation).
-
-  - `cnvkit_annotated_cn_autosomes.tsv.gz` contains focal gene copy number from cnvkit for all autosomes.
-  - `cnvkit_annotated_cn_x_and_y.tsv.gz` contains focal gene copy number from cnvkit for all sex chromosomes. 
-
