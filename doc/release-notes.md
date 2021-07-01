@@ -5,7 +5,8 @@
 - changes:
    - Within `histologies.tsv`:
      - Updated `cancer_group` logic to fix `Anaplastic` typo, remove benign tumors, and condense meningiomas [ticket48](https://github.com/PediatricOpenTargets/ticket-tracker/issues/48)
-     - combine CBTN+PNOC into `cohort == PBTA`
+     - combine CBTN+PNOC into `cohort == PBTA` [ticket 79](https://github.com/PediatricOpenTargets/ticket-tracker/issues/79)
+     - GMKF tumor ploidy was added [ticket 46](https://github.com/PediatricOpenTargets/ticket-tracker/issues/46)
      - harmonized tumor_descriptor per [ticket 61](https://github.com/PediatricOpenTargets/ticket-tracker/issues/61) 
      - updated clinical info for NBL samples which were missing in source files per [ticket43](https://github.com/PediatricOpenTargets/ticket-tracker/issues/43)
      - updated `experimental_strategy` for targeted capture samples per [ticket62](https://github.com/PediatricOpenTargets/ticket-tracker/issues/62)
