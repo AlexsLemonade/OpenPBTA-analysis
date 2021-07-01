@@ -3,14 +3,19 @@
 - release date: 2021-06-29
 - status: available
 - changes:
-   - Updated cancer_group, adding CBTN+PNOC as PBTA, harmonized tumor_descriptor, updated clinical info for NBL samples which were missing in source files
-      - histologies.tsv  
-   - Add cnv files with PBTA+GMKF samples
+   - Within `histologies.tsv`:
+     - Updated `cancer_group` logic to fix `Anaplastic` typo, remove benign tumors, and condense meningiomas [ticket 48](https://github.com/PediatricOpenTargets/ticket-tracker/issues/48)
+     - combine CBTN+PNOC into `cohort == PBTA`
+     - harmonized tumor_descriptor per [ticket 61](https://github.com/PediatricOpenTargets/ticket-tracker/issues/61) 
+     - updated clinical info for NBL samples which were missing in source files per [ticket 43](https://github.com/PediatricOpenTargets/ticket-tracker/issues/43)
+   - Add cnv files with PBTA+GMKF samples per [ticket 44](https://github.com/PediatricOpenTargets/ticket-tracker/issues/44):
       - cnv-cnvkit.seg.gz
       - cnv-controlfreec.tsv.gz
       - cnv-consensus.seg.gz 
       - consensus_seg_annotated_cn_autosomes.tsv.gz
       - consensus_seg_annotated_cn_autosomes_xy.tsv.gz
+    - Add EFO and MONDO cancer mapping file [ticket 78](https://github.com/PediatricOpenTargets/ticket-tracker/issues/78):
+    - Add ENSG to HUGO mapping file with RMTL designation [ticket 84](https://github.com/PediatricOpenTargets/ticket-tracker/issues/84) and [ticket 56](https://github.com/PediatricOpenTargets/ticket-tracker/issues/56)
 
 
 ## archived release
@@ -215,4 +220,3 @@ open-targets
     ├── WGS.hg38.strelka2.unpadded.bed
     └── WGS.hg38.vardict.100bp_padded.bed
 ```
-
