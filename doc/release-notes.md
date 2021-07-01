@@ -11,8 +11,6 @@
       - cnv-consensus.seg.gz 
       - consensus_seg_annotated_cn_autosomes.tsv.gz
       - consensus_seg_annotated_cn_autosomes_xy.tsv.gz
-      - cnvkit_annotated_cn_autosomes.tsv.gz
-      - cnvkit_annotated_cn_x_and_y.tsv.gz
 
 
 ## archived release
