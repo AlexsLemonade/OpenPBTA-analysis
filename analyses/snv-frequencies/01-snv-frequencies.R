@@ -2,11 +2,36 @@ suppressPackageStartupMessages(library(tidyverse))
 
 
 # Format numbers to percentage characters
-# Copied from @Richie Cotton's answer at
+# Adapted from @Richie Cotton's answer at
 # https://stackoverflow.com/a/7146270/4638182
 num_to_pct_chr <- function(x, digits = 2, format = "f", ...) {
-  paste0(formatC(100 * x, format = format, digits = digits, ...), "%")
+  stopifnot(!is.null(x))
+  if(length(x) == 0) {
+    stopifnot(is.numeric(x))
+    return(character(0))
+  }
+
+  fx <- paste0(formatC(100 * x, format = format, digits = digits, ...), "%")
+  # If there is any abnormal values other than NaN, check code correctness and
+  # handle them.
+  stopifnot(identical(sum(is.infinite(x)), as.integer(0)))
+  stopifnot(identical(fx == 'NaN%', is.na(x)))
+  # replace 'NaN%' with ''
+  rfx <- replace(fx, fx == 'NaN%', '')
+  return(rfx)
 }
+# # test cases
+# num_to_pct_chr(numeric(0))
+# num_to_pct_chr(c(1, -1.1, 0, 0.1, 0/0))
+# num_to_pct_chr(c(1, -1.1, 0, 0.1, NaN))
+# # following cases should fail
+# num_to_pct_chr(character(0))
+# num_to_pct_chr(c())
+# num_to_pct_chr(NULL)
+# num_to_pct_chr(c(1, -1.1, 0, 0.1, 1/0))
+# num_to_pct_chr(c(1, -1.1, 0, 0.1, -1/0))
+# num_to_pct_chr(c(1, -1.1, 0, 0.1, NA))
+# num_to_pct_chr(c(1, -1.1, 0, 0.1, NA, 0.1/0))
 
 
 
@@ -365,7 +390,7 @@ maf_df <- maf_df %>%
          Variant_Type, RefSeq, Gene, ENSP, HGVSp_Short, HotSpotAllele)
 
 rm(tumor_kfbids)
-gc(reset = TRUE)
+suppressMessages(gc(reset = TRUE))
 
 
 
@@ -392,7 +417,7 @@ mg_qres_df <- as_tibble(
 maf_df <- maf_df %>%
   left_join(mg_qres_df, by = 'Gene')
 
-gc(reset = TRUE)
+suppressMessages(gc(reset = TRUE))
 
 
 

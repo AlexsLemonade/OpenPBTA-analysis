@@ -40,7 +40,7 @@ Create a `Variant_ID` for each variant by concatenating `Chromosome`, `Start_Pos
 
 Add `Gene_full_name` and `Protein_RefSeq_ID` columns to each variant with annotations obtained from [mygene.info](http://mygene.info/about).
 
-For each `cancer_group`, get each cohort and all cohorts. Call each `cancer_group` and `cohort`(s) combination as `cancer_group_cohort`. For example,
+For each `cancer_group`, get each cohort and all cohorts. Call each `cancer_group` and `cohort`(s) combination as a `cancer_group_cohort`. For example,
 
 | cancer_group  | cohort           | n_samples |
 |---------------|------------------|-----------|
