@@ -109,7 +109,7 @@ git commit -m "Add second script for new analysis"
 git push origin new-analysis-second
 ```
 
-These steps can be repeated for `03-third-script.R` and updated `run-analysis.sh` at each step.
+These steps can be repeated for `03-third-script.R` and `run-analysis.sh` can be updated at each step.
 
 ### Updating your out-of-date branch
 
