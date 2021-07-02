@@ -75,7 +75,7 @@ git checkout -b new-analysis-first new-analysis
 git reset master
 ```
 
-Now we're ready to add, commit, and push `01-first-script.R` and the bash script `run-analysis.sh` with the information to run `01-first-script.R`
+Now we're ready to add, commit, and push `01-first-script.R` and the bash script `run-analysis.sh` with the information to run `01-first-script.R`.
 
 ```sh
 # add the first script
