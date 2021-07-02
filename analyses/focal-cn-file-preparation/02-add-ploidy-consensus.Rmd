@@ -8,7 +8,7 @@ author: Chante Bethell and Jaclyn Taroni for ALSF CCDL
 date: 2020
 ---
 
-The `pbta-histologies.tsv` file contains a `tumor_ploidy` column, which is tumor ploidy as inferred by ControlFreeC.
+The `histologies.tsv` file contains a `tumor_ploidy` column, which is tumor ploidy as inferred by ControlFreeC.
 The copy number information should be interpreted in the light of this information (see: [current version of Data Formats file](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/0e642ef0602ad04b8d0fbd80be626d4374fee928/doc/data-formats.md#a-note-on-ploidy)).
 
 This notebook adds ploidy information to the consensus SEG file and adds a status column that defines gain and loss broadly.
@@ -44,11 +44,12 @@ if(!dir.exists(output_dir)) {
 # TODO: the consensus SEG file is not currently in the data download -- when it
 # gets included we will have to change the file path here
 consensus_seg_file <- file.path("..", "copy_number_consensus_call", "results", 
-                                "pbta-cnv-consensus.seg.gz")
-histologies_file <- file.path("..", "..", "data", "pbta-histologies.tsv")
+                                "cnv-consensus.seg.gz")
+histologies_file <- file.path("..", "..", "data", "histologies.tsv")
 
 consensus_seg_df <- read_tsv(consensus_seg_file)
 histologies_df <- read_tsv(histologies_file,
+			   guess_max = 100000,
                            col_types = cols(
                              molecular_subtype = col_character()
                            ))

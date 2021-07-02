@@ -4,8 +4,8 @@ set -o pipefail
 
 # Use the OpenPBTA bucket as the default.
 URL=${OPENPBTA_URL:-https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/open-targets}
-RELEASE=${OPENPBTA_RELEASE:-v5}
-PREVIOUS=${OPENPBTA_RELEASE:-v4}
+RELEASE=${OPENPBTA_RELEASE:-v6}
+PREVIOUS=${OPENPBTA_RELEASE:-v5}
 
 # Remove old symlinks in data
 find data -type l -delete

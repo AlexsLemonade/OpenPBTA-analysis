@@ -12,9 +12,9 @@
 # This example assumes it is being run from the root of the repository.
 #
 # Rscript --vanilla analyses/focal-cn-file-preparation/03-prepare-cn-file.R \
-#   --cnv_file data/pbta-cnv-controlfreec.tsv.gz \
+#   --cnv_file data/cnv-controlfreec.tsv.gz \
 #   --gtf_file data/gencode.v27.primary_assembly.annotation.gtf.gz \
-#   --metadata data/pbta-histologies.tsv \
+#   --metadata data/histologies.tsv \
 #   --filename_lead "controlfreec_annotated_cn"
 #   --controlfreec
 
@@ -110,7 +110,7 @@ option_list <- list(
     c("--metadata"),
     type = "character",
     default = NULL,
-    help = "file path to pbta-histologies.tsv"
+    help = "file path to histologies.tsv"
   ),
   optparse::make_option(
     c("--filename_lead"),
@@ -198,7 +198,7 @@ if (opt$controlfreec) {
 
 #### Read in metadata file -----------------------------------------------------
 
-histologies_df <- readr::read_tsv(opt$metadata, guess_max = 10000)
+histologies_df <- readr::read_tsv(opt$metadata, guess_max = 100000)
 
 #### Annotation file -----------------------------------------------------------
 
@@ -235,7 +235,7 @@ tx_exons <- GenomicFeatures::exons(txdb, columns = "gene_id")
 # Removing copy neutral segments saves on the RAM required to run this step
 # and file size
 cnv_no_xy <- cnv_df %>%
-  dplyr::filter(!(chr %in% c("chrX", "chrY")), status != "neutral")
+  dplyr::filter(!(chr %in% c("chrX", "chrY")))
 
 # Merge and annotated no X&Y
 autosome_annotated_cn <- process_annotate_overlaps(cnv_df = cnv_no_xy,
@@ -243,7 +243,8 @@ autosome_annotated_cn <- process_annotate_overlaps(cnv_df = cnv_no_xy,
   # mark possible amplifications in autosomes
   dplyr::mutate(status = dplyr::case_when(
     copy_number > (2 * ploidy) ~ "amplification",
-    TRUE ~ status
+    copy_number == 0 ~ "deep deletion",
+    TRUE ~ as.character(status)
   ))
 
 # Output file name
@@ -260,11 +261,17 @@ if (xy_flag) {
   # Removing copy neutral segments saves on the RAM required to run this step
   # and file size
   cnv_sex_chrom <- cnv_df %>%
-    dplyr::filter(chr %in% c("chrX", "chrY"), status != "neutral")
+    dplyr::filter(chr %in% c("chrX", "chrY"))
 
   # Merge and annotated no X&Y
   sex_chrom_annotated_cn <- process_annotate_overlaps(cnv_df = cnv_sex_chrom,
-                                                      txdb_exons = tx_exons)
+                                                      txdb_exons = tx_exons) %>%
+    # mark possible deep loss in sex chromosome
+    dplyr::mutate(status = dplyr::case_when(
+      copy_number == 0  ~ "deep deletion",
+      TRUE ~ as.character(status)
+    ))
+
 
   # Add germline sex estimate into this data.frame
   sex_chrom_annotated_cn <- sex_chrom_annotated_cn %>%
