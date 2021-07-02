@@ -478,9 +478,40 @@ m_mut_freq_tbl <- m_mut_freq_tbl %>%
 
 
 # Add EFO, MONDO, and RMTL to the output table ---------------------------------
+ann_efo_mondo_cg_df <- efo_mondo_cg_df %>%
+  rename(Disease = cancer_group, EFO = efo_code, MONDO = mondo_code)
 
+m_mut_freq_tbl <- m_mut_freq_tbl %>%
+  left_join(ann_efo_mondo_cg_df, by = 'Disease') %>%
+  replace_na(list(EFO = '', MONDO = ''))
+stopifnot(identical(sum(is.na(m_mut_freq_tbl)), as.integer(0)))
 
+# asert all rmtl NAs have version NAs, vice versa
+stopifnot(identical(is.na(ensg_hugo_rmtl_df$rmtl),
+                    is.na(ensg_hugo_rmtl_df$version)))
+ann_ensg_hugo_rmtl_df <- ensg_hugo_rmtl_df %>%
+  select(ensg_id, rmtl, version) %>%
+  filter(!is.na(rmtl), !is.na(version)) %>%
+  mutate(RMTL = paste0(rmtl, ' (', version, ')')) %>%
+  select(ensg_id, RMTL) %>%
+  rename(Gene_Ensembl_ID = ensg_id)
 
+m_mut_freq_tbl <- m_mut_freq_tbl %>%
+  left_join(ann_ensg_hugo_rmtl_df, by = 'Gene_Ensembl_ID') %>%
+  replace_na(list(RMTL = ''))
+stopifnot(identical(sum(is.na(m_mut_freq_tbl)), as.integer(0)))
+
+m_mut_freq_tbl <- m_mut_freq_tbl %>%
+  select(Gene_symbol, Dataset, Disease, EFO, MONDO, Variant_ID, dbSNP_ID,
+         VEP_impact, SIFT_impact, PolyPhen_impact, Variant_classification,
+         Variant_type, Gene_full_name, RMTL, Protein_RefSeq_ID,
+         Gene_Ensembl_ID, Protein_Ensembl_ID, Protein_change,
+         Total_mutations_Over_Patients_in_dataset,
+         Frequency_in_overall_dataset,
+         Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset,
+         Frequency_in_primary_tumors,
+         Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
+         Frequency_in_relapse_tumors, HotSpot)
 
 # Output tsv and JSON -----------------------------------------------------
 write_tsv(m_mut_freq_tbl,
