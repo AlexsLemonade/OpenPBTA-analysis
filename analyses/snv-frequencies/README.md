@@ -76,6 +76,8 @@ Results are generated using PediatricOpenTargets/OpenPedCan-analysis data releas
 
 `results/snv-consensus-annotated-mut-freq.tsv` is the merged SNV mutation frequency tables of all `cancer_group_cohort`s.
 
+**Note:** When reading `snv-consensus-annotated-mut-freq.tsv` using `readr::read_tsv`, you can specify `na = character(0)` to avoid converting blank string entries to `NA`s, as suggested by @jharenza at <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/45#pullrequestreview-697753423>. This can be useful when converting `snv-consensus-annotated-mut-freq.tsv` to JSON, because the PediatricOpenTargets/OpenPedCan-analysis project favors empty string (`''`) as missing value over `NA`/`NaN`/`NULL`.
+
 ### Usage
 
 1. Change working directory to local `OpenPBTA-analysis`.
