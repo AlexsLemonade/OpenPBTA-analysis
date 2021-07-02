@@ -516,3 +516,5 @@ m_mut_freq_tbl <- m_mut_freq_tbl %>%
 # Output tsv and JSON -----------------------------------------------------
 write_tsv(m_mut_freq_tbl,
           file.path(tables_dir, 'snv-consensus-annotated-mut-freq.tsv'))
+
+message('Done running 01-snv-frequencies.R.')
