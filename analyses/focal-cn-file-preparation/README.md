@@ -45,8 +45,8 @@ See the notebook for more information. This notebook also prepares lists of copy
 
   | biospecimen_id | status | copy_number | ploidy | ensembl | gene_symbol | cytoband |
   |----------------|--------|-------------|--------|---------|-------------|---------|
-  Any segment that is copy neutral is filtered out of this table. In addition, [any segments with copy number > (2 * ploidy) are marked as amplifications](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/e2058dd43d9b1dd41b609e0c3429c72f79ff3be6/analyses/focal-cn-file-preparation/03-prepare-cn-file.R#L275) in the `status` column.
-  Any segment that is copy neutral is filtered out of this table. In addition, [any segments with copy number <= (ploidy -2 ) in autosomes chromosomes](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/5e9b68ed0c37d6c87bc67ee1f95be9e47ec9b4ca/analyses/focal-cn-file-preparation/04-prepare-cn-file.R#L244-L247) and [copy_number==0 in X/Y chromosomes are marked as deep deletions](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/5e9b68ed0c37d6c87bc67ee1f95be9e47ec9b4ca/analyses/focal-cn-file-preparation/04-prepare-cn-file.R#L270-L272) in the `status` column.
+  Any segment that is copy neutral is filtered out of this table. In addition, [any segments with copy number > (2 * ploidy) are marked as amplifications](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/e2058dd43d9b1dd41b609e0c3429c72f79ff3be6/analyses/focal-cn-file-preparation/03-prepare-cn-file.R#L275) in the `status` column. 
+Any segments with copy number == 0  are marked as deep deletions in the `status` column.
 
 * `05-define-most-focal-cn-units.Rmd` - This notebook defines the _most focal_ recurrent copy number units by removing focal changes that are within entire chromosome arm losses and gains.
 _Most focal_ here meaning if a chromosome arm is not clearly defined as a gain or loss (and is callable) we look to define the cytoband level status.
