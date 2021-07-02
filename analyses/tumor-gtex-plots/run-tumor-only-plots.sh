@@ -1,11 +1,9 @@
-# For this module, we will be combining CBTN and PNOC to a single cohort PBTA
-
 # 1. cohort + cancer_group level plots
-# only tumors: GMKF + PBTA (CBTN, PNOC)
+# only tumors: GMKF + PBTA 
 Rscript 01-tumor-gtex-plots.R \
---expr_mat '../../data/v5/gene-expression-rsem-tpm-collapsed.rds' \
---hist_file '../../data/v5/histologies.tsv' \
---cohort_list 'GMKF, CBTN, PNOC' \
+--expr_mat '../../data/gene-expression-rsem-tpm-collapsed.rds' \
+--hist_file '../../data/histologies.tsv' \
+--cohort_list 'GMKF, PBTA' \
 --tumor_vs_normal FALSE \
 --analysis_type 'cohort_cancer_group_level' \
 --plot_width 10 \
@@ -13,11 +11,11 @@ Rscript 01-tumor-gtex-plots.R \
 --mapping_file 'metadata.tsv'
 
 # 2. cancer_group level plots
-# only tumors: GMKF + PBTA (CBTN, PNOC) 
+# only tumors: GMKF + PBTA  
 Rscript 01-tumor-gtex-plots.R \
---expr_mat '../../data/v5/gene-expression-rsem-tpm-collapsed.rds' \
---hist_file '../../data/v5/histologies.tsv' \
---cohort_list 'GMKF, CBTN, PNOC' \
+--expr_mat '../../data/gene-expression-rsem-tpm-collapsed.rds' \
+--hist_file '../../data/histologies.tsv' \
+--cohort_list 'GMKF, PBTA' \
 --tumor_vs_normal FALSE \
 --analysis_type 'cancer_group_level' \
 --plot_width 10 \

@@ -16,9 +16,8 @@
 
 ### Methods 
 
-1. Combine `CBTN` and `PNOC` into one cohort: `PBTA`.
-2. Filter `cancer_subgroup` or `gtex_subgroup` with number of samples < 5 
-3. Currently only generating outputs for top 10 genes for the initial review
+1. Filter `cancer_subgroup` or `gtex_subgroup` with number of samples < 5 
+2. Currently only generating outputs for `GPC2` for the initial review
 
 ### Module structure
 
@@ -86,7 +85,7 @@ Options:
 
 ##### Inputs from data download:
 
-Using the current version v5:
+Using the current version:
 
 Expession matrix: `gene-expression-rsem-tpm-collapsed.rds` 
 Histologies file: `histologies.tsv`

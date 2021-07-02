@@ -56,12 +56,9 @@ cohort_list <- trimws(unlist(strsplit(cohort_list,",")))
 # filter histologies to cohort_list
 hist_file <- hist_file %>%
   filter(experimental_strategy == "RNA-Seq",
+         sample_type == "Normal" | !is.na(cancer_group),
          Kids_First_Biospecimen_ID %in% colnames(expr_mat),
          cohort %in% cohort_list) 
-
-# for this module, combine CBTN and PNOC in one cohort = PBTA
-hist_file <- hist_file %>%
-  mutate(cohort = ifelse(cohort %in% c("CBTN", "PNOC"), "PBTA", cohort))
 
 # match expression matrix to histologies file
 expr_mat <- expr_mat %>%
