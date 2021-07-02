@@ -320,6 +320,18 @@ relapse_indp_sdf <- read_tsv(
   col_types = cols(
     .default = col_guess()))
 
+# efo cancer_group mappings
+efo_mondo_cg_df <- read_tsv('../../data/efo-mondo-map.tsv',
+                            col_types = cols(.default = col_guess()))
+# efo_mondo_cg_df$cancer_group[
+#   !efo_mondo_cg_df$cancer_group %in% htl_df$cancer_group]
+stopifnot(identical(sum(is.na(efo_mondo_cg_df$cancer_group)), as.integer(0)))
+
+# ensg hugo rmtl mappings
+ensg_hugo_rmtl_df <- read_tsv('../../data/ensg-hugo-rmtl-v1-mapping.tsv',
+                              col_types = cols(.default = col_guess()))
+stopifnot(identical(sum(is.na(ensg_hugo_rmtl_df$ensg_id)), as.integer(0)))
+stopifnot(identical(sum(is.na(ensg_hugo_rmtl_df$gene_symbol)), as.integer(0)))
 
 
 # Subset independent samples in histology table --------------------------------
@@ -456,5 +468,20 @@ m_mut_freq_tbl <- bind_rows(mut_freq_tbl_list) %>%
 stopifnot(identical(nrow(m_mut_freq_tbl),
                     sum(sapply(mut_freq_tbl_list, nrow))))
 
+
+
+# Rename cohort in the output table --------------------------------------------
+m_mut_freq_tbl <- m_mut_freq_tbl %>%
+  mutate(Dataset = if_else(Dataset == 'PBTA&GMKF&TARGET',
+                           true = 'PedOT', false = Dataset))
+
+
+
+# Add EFO, MONDO, and RMTL to the output table ---------------------------------
+
+
+
+
+# Output tsv and JSON -----------------------------------------------------
 write_tsv(m_mut_freq_tbl,
           file.path(tables_dir, 'snv-consensus-annotated-mut-freq.tsv'))
