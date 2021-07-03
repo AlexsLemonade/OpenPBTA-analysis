@@ -512,16 +512,17 @@ m_mut_freq_tbl <- m_mut_freq_tbl %>%
 stopifnot(identical(sum(is.na(m_mut_freq_tbl)), as.integer(0)))
 
 m_mut_freq_tbl <- m_mut_freq_tbl %>%
-  select(Gene_symbol, Dataset, Disease, EFO, MONDO, Variant_ID, dbSNP_ID,
+  select(Gene_symbol, RMTL, Dataset, Disease, EFO, MONDO, Variant_ID, dbSNP_ID,
          VEP_impact, SIFT_impact, PolyPhen_impact, Variant_classification,
-         Variant_type, Gene_full_name, RMTL, Protein_RefSeq_ID,
+         Variant_type, Gene_full_name, Protein_RefSeq_ID,
          Gene_Ensembl_ID, Protein_Ensembl_ID, Protein_change,
          Total_mutations_Over_Patients_in_dataset,
          Frequency_in_overall_dataset,
          Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset,
          Frequency_in_primary_tumors,
          Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
-         Frequency_in_relapse_tumors, HotSpot)
+         Frequency_in_relapse_tumors, HotSpot) %>%
+  rename(Variant_ID_hg38 = Variant_ID)
 
 # Output tsv and JSON -----------------------------------------------------
 write_tsv(m_mut_freq_tbl,
