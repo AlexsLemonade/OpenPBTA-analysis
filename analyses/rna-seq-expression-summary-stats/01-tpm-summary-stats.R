@@ -219,20 +219,20 @@ get_expression_summary_stats <- function(exp_df, groups) {
 # load tpm matrix and sample metadata -------------------------------------
 # NOTE: TPM matrices may be replaced by batch effect removed TPM matrix
 # in the future
-# gtex target tcga gmkf pbta
+message('Read data...')
+
 tpm_df <- readRDS('../../data/gene-expression-rsem-tpm-collapsed.rds')
 
-suppressWarnings(
-  htl_df <- readr::read_tsv(
-    '../../data/histologies.tsv',
-    col_types = cols(
-      .default = col_guess(),
-      gtex_group = col_character(),
-      gtex_subgroup = col_character(),
-      EFS_days = col_number()
-    )
+htl_df <- readr::read_tsv(
+  '../../data/histologies.tsv',
+  col_types = cols(
+    .default = col_guess(),
+    gtex_group = col_character(),
+    gtex_subgroup = col_character(),
+    EFS_days = col_number()
   )
 )
+
 # assert read count matrix column names match metadata sample IDs
 stopifnot(all(colnames(tpm_df) %in% htl_df$Kids_First_Biospecimen_ID))
 # assert read count matrix column naems are unique
@@ -245,19 +245,6 @@ stopifnot(identical(
   nrow(htl_df),
   length(unique(htl_df$Kids_First_Biospecimen_ID))
 ))
-
-# combine CBTN and PNOC into one cohort, PBTA for this analysis
-# as suggested by @jharenza at
-# <https://github.com/PediatricOpenTargets/ticket-tracker/issues/51
-#      #issuecomment-866376252>
-htl_df$orig_cohort <- htl_df$cohort
-htl_df$cohort <- vapply(htl_df$orig_cohort, function(x) {
-  if (x %in% c('CBTN', 'PNOC')) {
-    return('PBTA')
-  } else {
-    return(x)
-  }
-}, character(1))
 
 # independent sample table
 suppressMessages(
@@ -273,9 +260,13 @@ rna_htl_df <- htl_df[
 stopifnot(all(rna_htl_df$Kids_First_Biospecimen_ID %in% colnames(tpm_df)))
 
 # gene symbol to ENSG id table
-suppressMessages(gid_gsb_tbl <- read_tsv('input/ens_symbol.tsv'))
-# remove duplicated row(s)
-gid_gsb_tbl <- unique(gid_gsb_tbl)
+gid_gsb_tbl <- read_tsv('../../data/ensg-hugo-rmtl-v1-mapping.tsv',
+                        col_types = cols(.default = col_guess()),
+                        guess_max = 10000) %>%
+  rename(gene_id = ensg_id) %>%
+  select(gene_id, gene_symbol) %>%
+  distinct() 
+
 # Collapse gid_gsb_tbl by gene_symbol.
 # If one gene_symbol is mapped to multiple gene_ids (ENSG IDs), the value of
 # the gene_id column in the collapsed gsb_gids_tbl is a comma separated list of
@@ -283,6 +274,7 @@ gid_gsb_tbl <- unique(gid_gsb_tbl)
 gsb_gids_tbl <- gid_gsb_tbl %>%
   group_by(gene_symbol) %>%
   summarise(gene_id = paste(gene_id, collapse = ','))
+
 stopifnot(identical(length(unique(gsb_gids_tbl$gene_symbol)),
                     nrow(gsb_gids_tbl)))
 gsb_gids_df <- data.frame(gsb_gids_tbl, stringsAsFactors = FALSE)
@@ -392,8 +384,6 @@ write_tsv(
 # - One type of z-score per table.
 # - Row-wise: Ensembl gene ID, gene symbol, cancer_group_cohort, TPM mean,
 #   TPM SD, TPM mean zscore, TPM mean quantile.
-rm(tpm_df, c_tpm_df, cc_tpm_df)
-gc(reset = TRUE, full = TRUE)
 
 # Convert a list of wide summary stat dfs into a single long df
 #
