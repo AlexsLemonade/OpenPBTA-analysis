@@ -200,7 +200,7 @@ get_expression_summary_stats <- function(exp_df, groups) {
   stopifnot(identical(
     sort(unique(as.vector(cg_mean_cgw_d_mat))),
     c("Expression between median and lower quartile",
-      "Expression between upper quartile and median", 
+      "Expression between upper quartile and median",
       "Highest expressed 25%", "Lowest expressed 25%")
   ))
 
@@ -265,7 +265,7 @@ gid_gsb_tbl <- read_tsv('../../data/ensg-hugo-rmtl-v1-mapping.tsv',
                         guess_max = 10000) %>%
   rename(gene_id = ensg_id) %>%
   select(gene_id, gene_symbol) %>%
-  distinct() 
+  distinct()
 
 # Collapse gid_gsb_tbl by gene_symbol.
 # If one gene_symbol is mapped to multiple gene_ids (ENSG IDs), the value of
@@ -380,7 +380,7 @@ write_tsv(
 
 # Generate combined long table -------------------------------------------------
 # - Combine cancer_group and cancer_group_cohort TPM mean/SD/zscore/quantile
-#   into one table. 
+#   into one table.
 # - One type of z-score per table.
 # - Row-wise: Ensembl gene ID, gene symbol, cancer_group_cohort, TPM mean,
 #   TPM SD, TPM mean zscore, TPM mean quantile.
@@ -390,7 +390,7 @@ write_tsv(
 # Args:
 # - sum_stat_df_list: a list of (n_genes, n_groups) summary statistics data
 #   frame. Rownames must be gene symbols. The names of sum_stat_df_list must in
-#   c("mean_df", "sd_df", "group_wise_zscore_df", "gene_wise_zscore_df", 
+#   c("mean_df", "sd_df", "group_wise_zscore_df", "gene_wise_zscore_df",
 #   "quant_df"). Must contain "mean_df" table.
 # - gsb_gids_df: gene symbol and ENSG ID data frame. Two columns must be
 #   gene_symbol and gene_id. Passed to get_output_ss_df.
@@ -409,7 +409,7 @@ sum_stat_df_list_wide_to_long <- function(sum_stat_df_list, gsb_gids_df,
                                           key_colname, sample_meta_df) {
   sum_stats_df_names_vec <- names(sum_stat_df_list)
   names(sum_stats_df_names_vec) <- sum_stats_df_names_vec
-  
+
   long_tbls <- lapply(sum_stats_df_names_vec, function(x) {
     x_df <- sum_stat_df_list[[x]]
     if (x == 'mean_df') {
@@ -455,8 +455,8 @@ ot_tpm_ss_long_tbl <- sum_stat_df_list_wide_to_long(
   ot_tpm_ss_dfs, gsb_gids_df, 'cancer_group', c_sample_meta_df) %>%
   mutate(cancer_group_cohort = paste0(cancer_group, '___AllCohorts')) %>%
   select(-cancer_group) %>%
-  select(gene_symbol, gene_id, cancer_group_cohort, tpm_mean, 
-         tpm_sd, tpm_mean_cancer_group_wise_zscore, tpm_mean_gene_wise_zscore, 
+  select(gene_symbol, gene_id, cancer_group_cohort, tpm_mean,
+         tpm_sd, tpm_mean_cancer_group_wise_zscore, tpm_mean_gene_wise_zscore,
          tpm_mean_cancer_group_wise_quantiles, n_samples,
          Kids_First_Biospecimen_IDs)
 
@@ -472,7 +472,7 @@ stopifnot(identical(colnames(m_tpm_ss_long_tbl),
 m_tpm_ss_long_tbl <- m_tpm_ss_long_tbl %>%
   separate(col = cancer_group_cohort, into = c('cancer_group', 'cohort'),
            sep = '___')
-stopifnot(identical(nrow(distinct(m_tpm_ss_long_tbl)), 
+stopifnot(identical(nrow(distinct(m_tpm_ss_long_tbl)),
                     nrow(m_tpm_ss_long_tbl)))
 stopifnot(identical(
   sum(is.na(m_tpm_ss_long_tbl[, c('gene_symbol', 'gene_id', 'cancer_group',
