@@ -13,3 +13,7 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 Rscript --vanilla '01-snv-frequencies.R'
+
+# --no-name option stops the filename and timestamp from being stored in the
+# output file. So rerun will have the same file.
+gzip --no-name results/snv-consensus-annotated-mut-freq.json

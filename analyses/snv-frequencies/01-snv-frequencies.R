@@ -402,7 +402,6 @@ maf_df <- maf_df %>%
          Variant_Type, RefSeq, Gene, ENSP, HGVSp_Short, HotSpotAllele)
 
 rm(tumor_kfbids)
-suppressMessages(gc(reset = TRUE))
 
 
 
@@ -428,8 +427,6 @@ mg_qres_df <- as_tibble(
 # add additional fields to MAF df
 maf_df <- maf_df %>%
   left_join(mg_qres_df, by = 'Gene')
-
-suppressMessages(gc(reset = TRUE))
 
 
 
@@ -516,5 +513,9 @@ m_mut_freq_tbl <- m_mut_freq_tbl %>%
 # Output tsv and JSON -----------------------------------------------------
 write_tsv(m_mut_freq_tbl,
           file.path(tables_dir, 'snv-consensus-annotated-mut-freq.tsv'))
+
+jsonlite::write_json(
+  m_mut_freq_tbl,
+  file.path(tables_dir, 'snv-consensus-annotated-mut-freq.json'))
 
 message('Done running 01-snv-frequencies.R.')
