@@ -22,11 +22,21 @@ Somatic calls that are retained if they are supported by atleast 2 callers OR ma
 
 * `snv-consensus-plus-hotspots.maf.tsv.gz`
 
+### Somatic Copy Number Variant (CNV) Data
+
+Somatic Copy Number Variant (CNV) data are provided in a modified [SEG format](https://software.broadinstitute.org/software/igv/SEG) for each of the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#somatic-copy-number-variant-calling) and denoted with the `cnv` prefix.
+**Somatic copy number data is only generated for whole genome sequencing (WGS) samples.**
+
+  * `cnv-cnvkit.seg.gz` is the the CNVkit SEG file. This file contains an additional column `copy.num` to denote copy number of each segment, derived from the CNS file output of the algorithm [described here](https://cnvkit.readthedocs.io/en/stable/fileformats.html).
+  * `cnv-controlfreec.tsv.gz` is the ControlFreeC TSV file. It is a merge of `*_CNVs` files produced from the algorithm, and columns are [described here](http://boevalab.inf.ethz.ch/FREEC/tutorial.html#OUTPUT).
+
+#### A Note on Ploidy
+
+The _copy number_ annotated in the CNVkit SEG file is annotated with respect to ploidy 2, however, the _status_ annotated in the ControlFreeC TSV file is annotated with respect to inferred ploidy from the algorithm, which is recorded in the `histologies.tsv` file. 
+
 ### Gene Expression Data
 
 Gene expression estimates from the [applied software packages](https://alexslemonade.github.io/OpenPBTA-manuscript/#gene-expression-abundance-estimation) are provided as a feature (e.g., gene or transcript) by sample matrix.
-For each method/measure (e.g., RSEM TPM, RSEM isoform counts), there are two matrices provided: one for each library selection method (`poly-A`, `stranded`). 
-See [this notebook](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/selection-strategy-comparison/01-selection-strategies.nb.html) for more information about _why_ this was necessary.
 Gene expression are available in multiple forms in the following files:
 
 * `gene-counts-rsem-expected_count.rds`
@@ -58,8 +68,24 @@ They can be viewed as _derivatives_ of Processed data files.
 
 ### Collapsed Expression Matrices
 
-Collapsed expression matrices are products of the [`analyses/collapse-rnaseq`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/collapse-rnaseq) analysis module.
+Collapsed expression matrices are products of the [`analyses/collapse-rnaseq`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/collapse-rnaseq) analysis module.
 In cases where more than one Ensembl gene identifier maps to the same gene symbol, the instance of the gene symbol with the maximum mean FPKM in the RSEM FPKM file is retained to produce the following files:
 
 * `gene-counts-rsem-expected_count-collapsed.rds`  
 * `gene-counts-rsem-expected_count-collapsed.rds`
+
+### Derived Copy Number Files
+
+#### Consensus Copy Number File
+
+Copy number consensus calls from the copy number and structural variant callers are a product of the [`analyses/copy_number_consensus_call`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/copy_number_consensus_call) analysis module. 
+
+* `cnv-consensus.seg.gz` contains consensus segments and segment means (log R ratios) from two or more callers, as described in the [analysis README](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/copy_number_consensus_call/README.md).
+
+##### Focal Copy Number Files
+
+Focal copy number files map the consensus calls (genomic segments) in WGS samples to genes for downstream analysis and are a product of the [`analysis/focal-cn-file-preparation`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/focal-cn-file-preparation).
+Note: these files contain biospecimens and genes with copy number changes.
+
+  - `consensus_seg_annotated_cn_autosomes.tsv.gz` contains focal gene copy number alterations for all autosomes.
+  - `consensus_seg_annotated_cn_x_and_y.tsv.gz` contains focal gene copy number alterations for the sex chromosomes.
