@@ -322,16 +322,29 @@ relapse_indp_sdf <- read_tsv(
 
 # efo cancer_group mappings
 efo_mondo_cg_df <- read_tsv('../../data/efo-mondo-map.tsv',
-                            col_types = cols(.default = col_guess()))
+                            col_types = cols(.default = col_guess())) %>%
+  distinct()
 # efo_mondo_cg_df$cancer_group[
 #   !efo_mondo_cg_df$cancer_group %in% htl_df$cancer_group]
+
+# assert all cancer_groups are not NA
 stopifnot(identical(sum(is.na(efo_mondo_cg_df$cancer_group)), as.integer(0)))
+# assert all cancer_groups are unique.
+# result SNV table is left joined by cancer_groups
+stopifnot(identical(length(unique(efo_mondo_cg_df$cancer_group)),
+                    nrow(efo_mondo_cg_df)))
 
 # ensg hugo rmtl mappings
 ensg_hugo_rmtl_df <- read_tsv('../../data/ensg-hugo-rmtl-v1-mapping.tsv',
-                              col_types = cols(.default = col_guess()))
+                              col_types = cols(.default = col_guess())) %>%
+  distinct()
+# assert all ensg_ids and gene_symbols are not NA
 stopifnot(identical(sum(is.na(ensg_hugo_rmtl_df$ensg_id)), as.integer(0)))
 stopifnot(identical(sum(is.na(ensg_hugo_rmtl_df$gene_symbol)), as.integer(0)))
+# assert all ensg_id are unique
+# result SNV table is left joined by ensg_id
+stopifnot(identical(length(unique(ensg_hugo_rmtl_df$ensg_id)),
+                    nrow(ensg_hugo_rmtl_df)))
 
 
 # Subset independent samples in histology table --------------------------------
