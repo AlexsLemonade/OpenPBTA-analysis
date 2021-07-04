@@ -642,7 +642,7 @@ stopifnot(identical(
 
 
 
-# Add EFO, MONDO, RMTL to long tables -------------------------------------
+# Add EFO, MONDO, RMTL to long tables ------------------------------------------
 ann_efo_mondo_cg_df <- efo_mondo_cg_df %>%
   rename(EFO = efo_code, MONDO = mondo_code)
 
@@ -674,11 +674,29 @@ m_tpm_ss_long_tbl <- m_tpm_ss_long_tbl %>%
          tpm_mean_cancer_group_wise_quantiles)
 
 
-# Output long tables ------------------------------------------------------
-write_tsv(select(m_tpm_ss_long_tbl, -tpm_mean_gene_wise_zscore),
+# Output long tables -----------------------------------------------------------
+# Output:
+# - one table that only contains gene-wise zscores
+# - one table that only contains group-wise zscores
+group_wise_zscore_m_tpm_ss_long_tbl <- select(
+  m_tpm_ss_long_tbl, -tpm_mean_gene_wise_zscore)
+
+gene_wise_zscore_m_tpm_ss_long_tbl <- select(
+  m_tpm_ss_long_tbl, -tpm_mean_cancer_group_wise_zscore)
+
+write_tsv(group_wise_zscore_m_tpm_ss_long_tbl,
           'results/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv')
 
-write_tsv(select(m_tpm_ss_long_tbl, -tpm_mean_cancer_group_wise_zscore),
+write_tsv(gene_wise_zscore_m_tpm_ss_long_tbl,
           'results/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv')
+
+jsonlite::write_json(
+  group_wise_zscore_m_tpm_ss_long_tbl,
+  'results/long_n_tpm_mean_sd_quantile_group_wise_zscore.json')
+
+jsonlite::write_json(
+  gene_wise_zscore_m_tpm_ss_long_tbl,
+  'results/long_n_tpm_mean_sd_quantile_gene_wise_zscore.json')
+
 
 message('Done running 01-tpm-summary-stats.R.')

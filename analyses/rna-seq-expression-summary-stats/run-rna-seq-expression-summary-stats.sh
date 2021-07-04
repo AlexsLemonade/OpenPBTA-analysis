@@ -28,3 +28,5 @@ Rscript --vanilla '01-tpm-summary-stats.R'
 # output file. So rerun will have the same file.
 gzip --no-name results/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv
 gzip --no-name results/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv
+gzip --no-name results/long_n_tpm_mean_sd_quantile_gene_wise_zscore.json
+gzip --no-name results/long_n_tpm_mean_sd_quantile_group_wise_zscore.json
