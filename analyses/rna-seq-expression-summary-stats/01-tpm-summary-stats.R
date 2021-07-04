@@ -159,7 +159,8 @@ get_expression_summary_stats <- function(exp_df, groups) {
   ))
 
   cg_mean_cgw_quant_out_df <- data.frame(
-    cg_mean_cgw_d_mat, check.names = FALSE, check.rows = FALSE)
+    cg_mean_cgw_d_mat, check.names = FALSE, check.rows = FALSE,
+    stringsAsFactors = FALSE)
   # assert gene symbols are the same as input data frame
   stopifnot(identical(rownames(cg_mean_cgw_quant_out_df), check_gids))
   # assert groups are the same as input data frame
@@ -183,6 +184,7 @@ get_expression_summary_stats <- function(exp_df, groups) {
 # Returns a (n_genes, n_groups + 2) summary statistics tibble with first two
 # columns as gene_id and gene_symbol.
 get_output_ss_df <- function(ss_df, gsb_gid_df) {
+  # Add gene_id and gene_symbol to each row
   # gene_symbol to gene_ids table for annotation
   gsb_gids_conv_df <- gsb_gid_df
   # assert all symbols are unique
@@ -199,12 +201,22 @@ get_output_ss_df <- function(ss_df, gsb_gid_df) {
   # assert rownames(ss_df) are the same as rownames(ss_gsb_gid_df)
   stopifnot(identical(rownames(ss_df), rownames(ss_gsb_gid_df)))
   ss_out_df <- cbind(ss_gsb_gid_df, ss_df)
-
   stopifnot(identical(rownames(ss_out_df), ss_out_df$gene_symbol))
+
   ss_out_df <- as_tibble(remove_rownames(ss_out_df))
   # assert colnames are not changed
   stopifnot(identical(colnames(ss_df),
                       colnames(select(ss_out_df, -gene_id, -gene_symbol))))
+
+  # Replace NA/NaNs with ''
+  # assert no NA/NaNs in gene_id or gene_symbol
+  stopifnot(identical(
+    as.integer(0),
+    sum(is.na(select(ss_out_df, gene_id, gene_symbol)))
+  ))
+  rm_na_ss_out_df <- mutate_all(
+    ss_out_df, function(x) replace_na(x, replace = ''))
+  stopifnot(identical(as.integer(0), sum(is.na(rm_na_ss_out_df))))
   return(ss_out_df)
 }
 
