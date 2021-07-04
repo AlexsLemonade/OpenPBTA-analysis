@@ -429,6 +429,33 @@ stopifnot(identical(length(unique(gsb_gids_tbl$gene_symbol)),
 gsb_gids_df <- data.frame(gsb_gids_tbl, stringsAsFactors = FALSE)
 
 
+# efo cancer_group mappings
+efo_mondo_cg_df <- read_tsv('../../data/efo-mondo-map.tsv',
+                            col_types = cols(.default = col_guess())) %>%
+  distinct()
+# efo_mondo_cg_df$cancer_group[
+#   !efo_mondo_cg_df$cancer_group %in% htl_df$cancer_group]
+
+# assert all cancer_groups are not NA
+stopifnot(identical(sum(is.na(efo_mondo_cg_df$cancer_group)), as.integer(0)))
+# assert all cancer_groups are unique.
+# result SNV table is left joined by cancer_groups
+stopifnot(identical(length(unique(efo_mondo_cg_df$cancer_group)),
+                    nrow(efo_mondo_cg_df)))
+
+
+# ensg hugo rmtl mappings
+ensg_hugo_rmtl_df <- read_tsv('../../data/ensg-hugo-rmtl-v1-mapping.tsv',
+                              col_types = cols(.default = col_guess())) %>%
+  distinct()
+# assert all ensg_ids and gene_symbols are not NA
+stopifnot(identical(sum(is.na(ensg_hugo_rmtl_df$ensg_id)), as.integer(0)))
+stopifnot(identical(sum(is.na(ensg_hugo_rmtl_df$gene_symbol)), as.integer(0)))
+# assert all ensg_id are unique
+# result SNV table is left joined by ensg_id
+stopifnot(identical(length(unique(ensg_hugo_rmtl_df$ensg_id)),
+                    nrow(ensg_hugo_rmtl_df)))
+
 
 # Summary statistics of all cohorts --------------------------------------------
 message('Compute TPM summary statistics for all cohorts...')
@@ -613,6 +640,41 @@ stopifnot(identical(
                                   'cohort', 'n_samples')])),
   as.integer(0)))
 
+
+
+# Add EFO, MONDO, RMTL to long tables -------------------------------------
+ann_efo_mondo_cg_df <- efo_mondo_cg_df %>%
+  rename(EFO = efo_code, MONDO = mondo_code)
+
+m_tpm_ss_long_tbl <- m_tpm_ss_long_tbl %>%
+  left_join(ann_efo_mondo_cg_df, by = 'cancer_group') %>%
+  replace_na(list(EFO = '', MONDO = ''))
+stopifnot(identical(sum(is.na(m_tpm_ss_long_tbl)), as.integer(0)))
+
+# asert all rmtl NAs have version NAs, vice versa
+stopifnot(identical(is.na(ensg_hugo_rmtl_df$rmtl),
+                    is.na(ensg_hugo_rmtl_df$version)))
+ann_ensg_hugo_rmtl_df <- ensg_hugo_rmtl_df %>%
+  select(ensg_id, rmtl, version) %>%
+  filter(!is.na(rmtl), !is.na(version)) %>%
+  mutate(RMTL = paste0(rmtl, ' (', version, ')')) %>%
+  select(ensg_id, RMTL) %>%
+  rename(gene_id = ensg_id)
+
+m_tpm_ss_long_tbl <- m_tpm_ss_long_tbl %>%
+  left_join(ann_ensg_hugo_rmtl_df, by = 'gene_id') %>%
+  replace_na(list(RMTL = ''))
+stopifnot(identical(sum(is.na(m_tpm_ss_long_tbl)), as.integer(0)))
+
+m_tpm_ss_long_tbl <- m_tpm_ss_long_tbl %>%
+  select(gene_symbol, RMTL, gene_id,
+         cancer_group, EFO, MONDO, n_samples, cohort,
+         tpm_mean, tpm_sd,
+         tpm_mean_cancer_group_wise_zscore, tpm_mean_gene_wise_zscore,
+         tpm_mean_cancer_group_wise_quantiles)
+
+
+# Output long tables ------------------------------------------------------
 write_tsv(select(m_tpm_ss_long_tbl, -tpm_mean_gene_wise_zscore),
           'results/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv')
 
