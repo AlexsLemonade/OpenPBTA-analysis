@@ -217,7 +217,7 @@ get_output_ss_df <- function(ss_df, gsb_gid_df) {
   rm_na_ss_out_df <- mutate_all(
     ss_out_df, function(x) replace_na(x, replace = ''))
   stopifnot(identical(as.integer(0), sum(is.na(rm_na_ss_out_df))))
-  return(ss_out_df)
+  return(rm_na_ss_out_df)
 }
 
 
