@@ -332,11 +332,13 @@ stopifnot(identical(
   ncol(tpm_df),
   length(unique(colnames(tpm_df)))
 ))
-# assert metadata sample IDs are unique
+# assert metadata sample IDs have no NA
 stopifnot(identical(
   as.integer(0),
   sum(is.na(htl_df$Kids_First_Biospecimen_ID))
 ))
+# assert metadata cohort have no NA
+stopifnot(identical(as.integer(0), sum(is.na(htl_df$cohort))))
 # assert metadata sample IDs are unique
 stopifnot(identical(
   nrow(htl_df),
@@ -391,13 +393,15 @@ message('Compute TPM summary statistics for all cohorts...')
 # select cancer samples
 # nf = n_samples filtered
 nf_all_cohorts_rna_htl_df <- rna_htl_df %>%
-  filter(!is.na(cancer_group)) %>%
+  filter(!is.na(cancer_group), !is.na(cohort)) %>%
   group_by(cancer_group) %>%
   filter(n() >= 5) %>%
-  ungroup()
+  ungroup() %>%
+  mutate(cancer_group_cohort = paste0(cancer_group, '___AllCohorts'))
+
 
 nf_all_cohorts_sample_meta_df <- get_sample_meta_df(
-  nf_all_cohorts_rna_htl_df, 'cancer_group')
+  nf_all_cohorts_rna_htl_df, 'cancer_group_cohort')
 write_tsv(nf_all_cohorts_sample_meta_df,
           'results/cancer_group_all_cohort_sample_metadata.tsv')
 
@@ -414,7 +418,8 @@ stopifnot(identical(
 
 # summary stats data frames
 nf_all_cohorts_tpm_ss_out_dfs <- get_expression_summary_stats_out_dfs(
-  nf_all_cohorts_tpm_df, nf_all_cohorts_rna_htl_df$cancer_group, gsb_gids_df)
+  nf_all_cohorts_tpm_df, nf_all_cohorts_rna_htl_df$cancer_group_cohort,
+  gsb_gids_df)
 
 write_tsv(nf_all_cohorts_tpm_ss_out_dfs$mean_df,
           'results/cancer_group_all_cohort_mean_tpm.tsv')
@@ -493,16 +498,10 @@ write_tsv(
 # - One type of z-score per table.
 # - Row-wise: Ensembl gene ID, gene symbol, cancer_group_cohort, TPM mean,
 #   TPM SD, TPM mean zscore, TPM mean quantile.
-
+message('Generate combined long table.')
 nf_all_cohorts_tpm_ss_long_tbl <- sum_stat_df_list_wide_to_long(
-  nf_all_cohorts_tpm_ss_out_dfs, 'cancer_group',
-  nf_all_cohorts_sample_meta_df) %>%
-  mutate(cancer_group_cohort = paste0(cancer_group, '___AllCohorts')) %>%
-  select(-cancer_group) %>%
-  select(gene_symbol, gene_id, cancer_group_cohort, tpm_mean,
-         tpm_sd, tpm_mean_cancer_group_wise_zscore, tpm_mean_gene_wise_zscore,
-         tpm_mean_cancer_group_wise_quantiles, n_samples,
-         Kids_First_Biospecimen_IDs)
+  nf_all_cohorts_tpm_ss_out_dfs, 'cancer_group_cohort',
+  nf_all_cohorts_sample_meta_df)
 
 nf_ind_cohort_tpm_ss_long_tbl <- sum_stat_df_list_wide_to_long(
   nf_ind_cohort_tpm_ss_out_dfs, 'cancer_group_cohort',
