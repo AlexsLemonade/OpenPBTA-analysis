@@ -2,38 +2,11 @@ suppressPackageStartupMessages(library(tidyverse))
 
 
 
-# Get summary statistics dataframe for output.
-#
-# Args:
-# - ss_df: (n_genes, n_groups) summary statistics data frame. Rownames must be
-#   gene symbols.
-# - gsb_gid_df: gene symbol and ENSG ID data frame. Two columns must be
-#   gene_symbol and gene_id. ENSG ID column can be a comma separated list of
-#   ENSG IDs for gene symbols that are mapped to multiple ENSG IDs.
-#
-# Returns a (n_genes, n_groups + 2) summary statistics tibble with first two
-# columns as gene_id and gene_symbol.
-get_output_ss_df <- function(ss_df, gsb_gid_df) {
-  gsb_gids_conv_df <- gsb_gid_df
-  # assert all symbols are unique
-  stopifnot(identical(length(unique(gsb_gids_conv_df$gene_symbol)),
-                      nrow(gsb_gids_conv_df)))
-  rownames(gsb_gids_conv_df) <- gsb_gids_conv_df$gene_symbol
-  # assert rownames are not changed automatically
-  stopifnot(identical(rownames(gsb_gids_conv_df),
-                      gsb_gids_conv_df$gene_symbol))
-
-  stopifnot(all(rownames(ss_df) %in% rownames(gsb_gids_conv_df)))
-  ss_gsb_gid_df <- gsb_gids_conv_df[rownames(ss_df), ]
-
-  # assert rownames(ss_df) are the same as rownames(ss_gsb_gid_df)
-  stopifnot(identical(rownames(ss_df), rownames(ss_gsb_gid_df)))
-  ss_out_df <- cbind(ss_gsb_gid_df, ss_df)
-
-  stopifnot(identical(rownames(ss_out_df), ss_out_df$gene_symbol))
-  ss_out_df <- remove_rownames(ss_out_df)
-  return(ss_out_df)
-}
+# Function definitions ---------------------------------------------------------
+# Favor function definitions in one file with data processing code over `source`
+# other scripts. `source` is not explicit on the function name of the imported
+# function. Even though the script can be named the same as the funtion name,
+# it is unclear whether other functions are also imported.
 
 
 # Generate means, standard deviations, z-scores, and ranks within each group.
@@ -198,6 +171,44 @@ get_expression_summary_stats <- function(exp_df, groups) {
 }
 
 
+# Get summary statistics dataframe for output.
+#
+# Args:
+# - ss_df: (n_genes, n_groups) summary statistics data frame. Rownames must be
+#   gene symbols.
+# - gsb_gid_df: gene symbol and ENSG ID data frame. Two columns must be
+#   gene_symbol and gene_id. ENSG ID column can be a comma separated list of
+#   ENSG IDs for gene symbols that are mapped to multiple ENSG IDs.
+#
+# Returns a (n_genes, n_groups + 2) summary statistics tibble with first two
+# columns as gene_id and gene_symbol.
+get_output_ss_df <- function(ss_df, gsb_gid_df) {
+  # gene_symbol to gene_ids table for annotation
+  gsb_gids_conv_df <- gsb_gid_df
+  # assert all symbols are unique
+  stopifnot(identical(length(unique(gsb_gids_conv_df$gene_symbol)),
+                      nrow(gsb_gids_conv_df)))
+  rownames(gsb_gids_conv_df) <- gsb_gids_conv_df$gene_symbol
+  # assert rownames are not changed automatically
+  stopifnot(identical(rownames(gsb_gids_conv_df),
+                      gsb_gids_conv_df$gene_symbol))
+
+  stopifnot(all(rownames(ss_df) %in% rownames(gsb_gids_conv_df)))
+  ss_gsb_gid_df <- gsb_gids_conv_df[rownames(ss_df), ]
+
+  # assert rownames(ss_df) are the same as rownames(ss_gsb_gid_df)
+  stopifnot(identical(rownames(ss_df), rownames(ss_gsb_gid_df)))
+  ss_out_df <- cbind(ss_gsb_gid_df, ss_df)
+
+  stopifnot(identical(rownames(ss_out_df), ss_out_df$gene_symbol))
+  ss_out_df <- as_tibble(remove_rownames(ss_out_df))
+  # assert colnames are not changed
+  stopifnot(identical(colnames(ss_df),
+                      colnames(select(ss_out_df, -gene_id, -gene_symbol))))
+  return(ss_out_df)
+}
+
+
 # Generate means, standard deviations, group/gene-wise z-scores, and ranks
 # within each group for output
 #
@@ -285,6 +296,39 @@ sum_stat_df_list_wide_to_long <- function(sum_stat_out_df_list, key_colname,
                                       select(-gene_symbol, -gene_id)))))
   return(m_ann_long_tbl)
 }
+
+
+# Formats a character vector of cohorts to
+# cohort1_n1_samples[&cohort2_n2_samples&cohort3_n3_samples]
+#
+# Args:
+# - cohort_vec: a character vector of cohorts
+#
+# Returns a string in the format of
+# cohort1_n1_samples[&cohort2_n2_samples&cohort3_n3_samples]
+format_cohort_sample_counts <- function(cohort_vec) {
+  stopifnot(identical(as.integer(0), sum(is.na(cohort_vec))))
+  stopifnot(is.character(cohort_vec))
+
+  cohort_df <- tibble(cohort = cohort_vec) %>%
+    group_by(cohort) %>%
+    summarise(cohort_n_samples = paste(unique(cohort),
+                                       length(cohort),
+                                       'samples', sep = '_')) %>%
+    arrange(cohort)
+
+  return(paste(cohort_df$cohort_n_samples, collapse = '&'))
+}
+# # test case
+# format_cohort_sample_counts(c('b', 'a', 'a', 'c', 'c'))
+# format_cohort_sample_counts(c('a', 'a', 'b'))
+# format_cohort_sample_counts(c('a', 'a'))
+# format_cohort_sample_counts(c('a'))
+# format_cohort_sample_counts(character(0))
+# # following cases should fail
+# format_cohort_sample_counts(c('a', NA))
+# format_cohort_sample_counts(c(NA))
+# format_cohort_sample_counts(c(NaN))
 
 
 
@@ -398,32 +442,6 @@ nf_all_cohorts_rna_htl_df <- rna_htl_df %>%
 # - grouping method is implicit in each-cohort grouping method
 
 
-# Formats a character vector of cohorts to
-# cohort1_n1_samples[&cohort2_n2_samples&cohort3_n3_samples]
-format_cohort_sample_counts <- function(cohort_vec) {
-  stopifnot(identical(as.integer(0), sum(is.na(cohort_vec))))
-  stopifnot(is.character(cohort_vec))
-
-  cohort_df <- tibble(cohort = cohort_vec) %>%
-    group_by(cohort) %>%
-    summarise(cohort_n_samples = paste(unique(cohort),
-                                       length(cohort),
-                                       'samples', sep = '_')) %>%
-    arrange(cohort)
-
-  return(paste(cohort_df$cohort_n_samples, collapse = '&'))
-}
-# # test case
-# format_cohort_sample_counts(c('b', 'a', 'a', 'c', 'c'))
-# format_cohort_sample_counts(c('a', 'a', 'b'))
-# format_cohort_sample_counts(c('a', 'a'))
-# format_cohort_sample_counts(c('a'))
-# format_cohort_sample_counts(character(0))
-# # following cases should fail
-# format_cohort_sample_counts(c('a', NA))
-# format_cohort_sample_counts(c(NA))
-# format_cohort_sample_counts(c(NaN))
-
 nf_all_cohorts_sample_meta_out_df <- nf_all_cohorts_rna_htl_df %>%
   group_by(sample_group) %>%
   summarise(
@@ -437,7 +455,7 @@ nf_all_cohorts_sample_meta_out_df <- nf_all_cohorts_rna_htl_df %>%
 write_tsv(nf_all_cohorts_sample_meta_out_df,
           'results/cancer_group_all_cohort_sample_metadata.tsv')
 
-# This table is used for annotating long tables in the end.
+# This table is used for annotating long tables in the last section.
 nf_all_cohorts_sample_meta_df <- nf_all_cohorts_rna_htl_df %>%
   group_by(sample_group) %>%
   summarise(
@@ -501,6 +519,7 @@ nf_ind_cohort_sample_meta_out_df <- nf_ind_cohort_rna_htl_df %>%
 write_tsv(nf_ind_cohort_sample_meta_out_df,
           'results/cancer_group_individual_cohort_sample_metadata.tsv')
 
+# This table is used for annotating long tables in the last section.
 nf_ind_cohort_sample_meta_df <- nf_ind_cohort_rna_htl_df %>%
   group_by(sample_group) %>%
   summarise(
