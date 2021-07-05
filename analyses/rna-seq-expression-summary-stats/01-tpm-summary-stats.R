@@ -344,6 +344,15 @@ format_cohort_sample_counts <- function(cohort_vec) {
 
 
 
+# Create output dir ------------------------------------------------------------
+tables_dir <- 'results'
+
+if (!dir.exists(tables_dir)) {
+  dir.create(tables_dir)
+}
+
+
+
 # Read data --------------------------------------------------------------------
 # NOTE: TPM matrices may be replaced by batch effect removed TPM matrix
 # in the future
@@ -684,19 +693,21 @@ group_wise_zscore_m_tpm_ss_long_tbl <- select(
 gene_wise_zscore_m_tpm_ss_long_tbl <- select(
   m_tpm_ss_long_tbl, -tpm_mean_cancer_group_wise_zscore)
 
-write_tsv(group_wise_zscore_m_tpm_ss_long_tbl,
-          'results/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv')
+write_tsv(
+  group_wise_zscore_m_tpm_ss_long_tbl,
+  file.path(tables_dir, 'long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv'))
 
-write_tsv(gene_wise_zscore_m_tpm_ss_long_tbl,
-          'results/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv')
+write_tsv(
+  gene_wise_zscore_m_tpm_ss_long_tbl,
+  file.path(tables_dir, 'long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv'))
 
 jsonlite::write_json(
   group_wise_zscore_m_tpm_ss_long_tbl,
-  'results/long_n_tpm_mean_sd_quantile_group_wise_zscore.json')
+  file.path(tables_dir, 'long_n_tpm_mean_sd_quantile_group_wise_zscore.json'))
 
 jsonlite::write_json(
   gene_wise_zscore_m_tpm_ss_long_tbl,
-  'results/long_n_tpm_mean_sd_quantile_gene_wise_zscore.json')
+  file.path(tables_dir, 'long_n_tpm_mean_sd_quantile_gene_wise_zscore.json'))
 
 
 message('Done running 01-tpm-summary-stats.R.')
