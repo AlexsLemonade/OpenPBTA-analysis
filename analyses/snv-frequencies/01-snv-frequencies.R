@@ -1,6 +1,8 @@
 suppressPackageStartupMessages(library(tidyverse))
 
 
+
+# Function definitions ----------------------------------------------------
 # Format numbers to percentage characters
 # Adapted from @Richie Cotton's answer at
 # https://stackoverflow.com/a/7146270/4638182
@@ -249,7 +251,7 @@ get_cg_ch_mut_freq_tbl <- function(maf_df, overall_histology_df,
            HotSpot = if_else(HotSpotAllele == 1, true = 'Y', false = 'N')) %>%
     arrange(desc(as.numeric(Total_mutations))) %>%
     select(Gene_symbol, Dataset, Disease, Variant_ID, dbSNP_ID,
-           VEP_impact, SIFT_impact, PolyPhen_impact,Variant_classification,
+           VEP_impact, SIFT_impact, PolyPhen_impact, Variant_classification,
            Variant_type, Gene_full_name, Protein_RefSeq_ID,
            Gene_Ensembl_ID, Protein_Ensembl_ID, Protein_change,
            Total_mutations_Over_Patients_in_dataset,
@@ -258,20 +260,7 @@ get_cg_ch_mut_freq_tbl <- function(maf_df, overall_histology_df,
            Frequency_in_primary_tumors,
            Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
            Frequency_in_relapse_tumors, HotSpot) %>%
-    replace_na(list(
-      Gene_symbol = '', Dataset = '', Disease = '',
-      Variant_ID = '', dbSNP_ID = '', VEP_impact = '',
-      SIFT_impact = '', PolyPhen_impact = '',
-      Variant_classification = '', Variant_type = '',
-      Gene_full_name = '', Protein_RefSeq_ID = '',
-      Gene_Ensembl_ID = '', Protein_Ensembl_ID = '',
-      Protein_change = '',
-      Total_mutations_Over_Patients_in_dataset = '',
-      Frequency_in_overall_dataset = '',
-      Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset = '',
-      Frequency_in_primary_tumors = '',
-      Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset = '',
-      Frequency_in_relapse_tumors = '', HotSpot = ''))
+    mutate_all(function(x) replace_na(x, replace = ''))
 
   return(output_var_df)
 }
@@ -364,14 +353,11 @@ td_htl_dfs <- list(
 )
 
 # keep only samples with non-NA cancer_group and cohort
-# add cancer_group_cohort column
 td_htl_dfs <- lapply(td_htl_dfs, function(x) {
   # assert all Kids_First_Biospecimen_IDs are unique
   stopifnot(identical(nrow(x), length(unique(x$Kids_First_Biospecimen_ID))))
 
   fx <- filter(x, !is.na(cancer_group), !is.na(cohort))
-  fx <- mutate(
-    fx, cancer_group_cohort = paste(cancer_group, cohort, sep = '___'))
   return(fx)
 })
 
