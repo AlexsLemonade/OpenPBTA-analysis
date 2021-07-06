@@ -42,7 +42,8 @@ spanningFragCountFilter=100
 rna_expression_file="${data_path}/gene-expression-rsem-tpm-collapsed.rds"
 
 # reference expression file
-normal_expression_file="${references_path}/gtex_adrenal_gland_TPM_hg38.rds"
+normal_expression_adrenal_gland="${references_path}/gtex_adrenal_gland_TPM_hg38.rds"
+normal_expression_brain="${references_path}/gtex_brain_TPM_hg38.rds"
 
 # metadata files
 if [[ RUN_FOR_SUBTYPING -eq "0" ]]
@@ -63,12 +64,12 @@ putative_oncogenic_fusion="${results_path}/fusion-putative-oncogenic.tsv"
 Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
                                        --clinicalFile $histologies_file \
                                        --specimenType "Adrenal Gland" \
-                                       --outputfile "${references_path}/gtex_adrenal_gland_TPM_hg38.rds"
+                                       --outputfile $normal_expression_adrenal_gland
                                        
 Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
                                        --clinicalFile $histologies_file \
                                        --specimenType "Brain" \
-                                       --outputfile "${references_path}/gtex_brain_TPM_hg38.rds"
+                                       --outputfile $normal_expression_brain
 
 # Run Fusion standardization for arriba caller
 Rscript 01-fusion-standardization.R --fusionfile $arriba_file \
