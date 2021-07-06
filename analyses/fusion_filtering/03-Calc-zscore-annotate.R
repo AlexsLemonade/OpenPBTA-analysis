@@ -43,7 +43,7 @@ suppressPackageStartupMessages(library("reshape2"))
 option_list <- list(
   make_option(c("-S", "--standardFusionCalls"),type="character",
               help="Standardized fusion calls (.RDS) "),
-  make_option(c("-c", "--zscoreFilter"), type="integer",default=2,
+  make_option(c("-z", "--zscoreFilter"), type="integer",default=2,
               help="zscore value to use as threshold for annotation of differential expression"),
   make_option(c("-e","--expressionMatrix"),type="character",
               help="expression matrix (FPKM for samples that need to be zscore normalized .RDS)"),
@@ -62,6 +62,7 @@ standardFusionCalls<-opt$standardFusionCalls
 expressionMatrix<-opt$expressionMatrix
 zscoreFilter<- opt$zscoreFilter
 saveZscoredMatrix<-opt$saveZscoredMatrix
+clinicalFile <- opt$clinicalFile
 gtexMatrix<-opt$normalExpressionMatrix
 
 print(gtexMatrix)
@@ -183,7 +184,7 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter
 
 # example run using GTEx
 # load GTEx data
-normData<-read_tsv(gtexMatrix) 
+normData<-readRDS(gtexMatrix) 
 
 # load standardaized fusion calls cohort
 standardFusionCalls<-readRDS(standardFusionCalls)
