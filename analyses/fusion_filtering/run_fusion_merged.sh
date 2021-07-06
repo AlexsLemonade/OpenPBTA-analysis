@@ -64,6 +64,11 @@ Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
                                        --clinicalFile $histologies_file \
                                        --specimenType "Adrenal Gland" \
                                        --outputfile "${references_path}/gtex_adrenal_gland_TPM_hg38.rds"
+                                       
+Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
+                                       --clinicalFile $histologies_file \
+                                       --specimenType "Brain" \
+                                       --outputfile "${references_path}/gtex_brain_TPM_hg38.rds"
 
 # Run Fusion standardization for arriba caller
 Rscript 01-fusion-standardization.R --fusionfile $arriba_file \
