@@ -35,6 +35,8 @@ library("qdapRegex")
 option_list <- list(
   make_option(c("-S", "--standardFusionFiles"),type="character",
               help="Standardized fusion calls from STARFusion (.TSV), Arriba (.TSV) "),
+  make_option(c("-y", "--cohortInterest"),type="character",
+              help="cohort of interest for the filtering"),
   make_option(c("-e","--expressionMatrix"),type="character",
               help="Matrix of expression for samples in standardFusion file (.RDS) "),
   make_option(c("-c","--clinicalFile"),type="character",
@@ -65,6 +67,7 @@ opt <- parse_args(OptionParser(option_list=option_list))
 # TO-DO
 # multiple opt values for each caller and output name from input fusion calls and expression Matrix?
 standardFusionFiles<-unlist(strsplit(opt$standardFusionFiles,","))
+cohortInterest<-unlist(strsplit(opt$cohortInterest,","))
 expressionMatrix<-opt$expressionMatrix
 readthroughFilter<-opt$readthroughFilter
 expressionFilter<-opt$expressionFilter
@@ -178,7 +181,7 @@ saveRDS(QCFiltered,paste0(opt$outputfile,"_QC_filtered.RDS"))
 expressionMatrix<-readRDS(expressionMatrix)
 # find the list of cohorts and sample type of interest
 matched_samples <- read.delim(clinicalFile, header = TRUE, sep = "\t", stringsAsFactors = FALSE) %>%
-  filter(cohort == "PBTA" | cohort == "GMKF") %>%
+  filter(cohort %in% cohortInterest) %>%
   filter(experimental_strategy == "RNA-Seq") %>%
   filter(sample_type == "Tumor") %>%
   tibble::column_to_rownames("Kids_First_Biospecimen_ID")
