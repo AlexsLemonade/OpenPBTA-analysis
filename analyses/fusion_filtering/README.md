@@ -61,9 +61,11 @@ bash run_fusion_merged.sh
 
 
 #### Order of scripts in analysis
+`00-normal-matrix-generation.R` : Based on the specific sample type, this script filter the gene expression file to contain only normal samples with the specific sample type
+
 `01-fusion-standardization.R` : Standardizes fusion calls from STARFusion and Arriba
 
-`02-fusion-filtering.R` : Filters artifacts by removing readthroughs and NEIGHBORS from annots column; annots column also contains red flag databases that are used to further filter common/normal occuring fusions; filters all fusions where both genes are expressed FPKM < 1 are removed as non-expressed; requires fusions to have at least 1 JunctionSpanningRead and SpanningFragCount-JunctionReadCount to be <100
+`02-fusion-filtering.R` : Filters artifacts by removing readthroughs and NEIGHBORS from annots column; annots column also contains red flag databases that are used to further filter common/normal occuring fusions; filters all fusions where both genes are expressed TPM < 1 are removed as non-expressed; requires fusions to have at least 1 JunctionSpanningRead and SpanningFragCount-JunctionReadCount to be <100
 
 `03-Calc-zscore-annotate.R` : Calculates z-score for gene fused gene's expression compared to GTeX brain samples and annotates differential expression status
 

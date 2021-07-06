@@ -62,7 +62,7 @@ putative_oncogenic_fusion="${results_path}/fusion-putative-oncogenic.tsv"
 # Run filtering code to get the reference file
 Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
                                        --clinicalFile $histologies_file \
-                                       --specimenType "Adrenal Gland"
+                                       --specimenType "Adrenal Gland" \
                                        --outputfile "${references_path}/gtex_adrenal_gland_TPM_hg38.rds"
 
 # Run Fusion standardization for arriba caller
