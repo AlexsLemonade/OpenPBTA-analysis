@@ -42,7 +42,8 @@ spanningFragCountFilter=100
 rna_expression_file="${data_path}/gene-expression-rsem-tpm-collapsed.rds"
 
 # reference expression file
-normal_expression_file="${references_path}/gtex_adrenal_gland_TPM_hg38.rds"
+normal_expression_adrenal_gland="${references_path}/gtex_adrenal_gland_TPM_hg38.rds"
+normal_expression_brain="${references_path}/gtex_brain_TPM_hg38.rds"
 
 # metadata files
 if [[ RUN_FOR_SUBTYPING -eq "0" ]]
@@ -50,7 +51,7 @@ then
    histologies_file="${data_path}/histologies.tsv" 
    independent_samples_file="${data_path}/independent-specimens.wgswxspanel.primary-plus.tsv"
 else 
-   histologies_file="${data_path}/pbta-histologies-base.tsv"  
+   histologies_file="${data_path}/histologies-base.tsv"  
    independent_samples_file="../independent-samples/results/independent-specimens.wgswxspanel.primary-plus.tsv" 
 fi
 
@@ -63,36 +64,42 @@ putative_oncogenic_fusion="${results_path}/fusion-putative-oncogenic.tsv"
 Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
                                        --clinicalFile $histologies_file \
                                        --specimenType "Adrenal Gland" \
-                                       --outputfile "${references_path}/gtex_adrenal_gland_TPM_hg38.rds"
+                                       --outputfile $normal_expression_adrenal_gland
+
+Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
+                                       --clinicalFile $histologies_file \
+                                       --specimenType "Brain" \
+                                       --outputfile $normal_expression_brain
 
 # Run Fusion standardization for arriba caller
 Rscript 01-fusion-standardization.R --fusionfile $arriba_file \
                                     --caller "arriba" \
                                     --outputfile $standard_arriba_file
-                                    
-                                    
+
+
 # Run Fusion standardization for starfusion caller
 Rscript 01-fusion-standardization.R --fusionfile $starfusion_file \
                                     --caller "starfusion" \
                                     --outputfile $standard_starfusion_file
 
-# Run Fusion general filtering for polya
+# Run Fusion general filtering for combined expression file
 Rscript 02-fusion-filtering.R --standardFusionFiles $standard_starfusion_file,$standard_arriba_file  \
                               --expressionMatrix $rna_expression_file \
                               --clinicalFile $histologies_file \
+                              --cohortInterest "PBTA,GMKF" \
                               --artifactFilter $artifact_filter  \
                               --spanningFragCountFilter $spanningFragCountFilter \
                               --readingFrameFilter $reading_frame_filter \
                               --referenceFolder $references_path \
                               --outputfile "${scratch_path}/standardFusionExp" \
                               --readthroughFilter
-                              
 
 # Fusion zscore annotation for filtered fusion for polya
 Rscript 03-Calc-zscore-annotate.R --standardFusionCalls "${scratch_path}/standardFusionExp_QC_expression_filtered_annotated.RDS" \
                                   --expressionMatrix $rna_expression_file \
                                   --clinicalFile $histologies_file \
-                                  --normalExpressionMatrix $normal_expression_file \
+                                  --cohortInterest "PBTA,GMKF" \
+                                  --normalExpressionMatrix $normal_expression_brain,$normal_expression_adrenal_gland \
                                   --outputfile "${scratch_path}/standardFusionExp_QC_expression"
 
 # Project specific filtering
