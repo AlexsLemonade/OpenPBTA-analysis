@@ -69,6 +69,7 @@ expressionMatrix<-opt$expressionMatrix
 readthroughFilter<-opt$readthroughFilter
 expressionFilter<-opt$expressionFilter
 artifactFilter<-opt$artifactFilter
+clinicalFile<-opt$clinicalFile
 junctionReadCountFilter<-opt$junctionReadCountFilter
 spanningFragCountFilter<-opt$spanningFragCountFilter
 referenceFolder<-opt$referenceFolder
