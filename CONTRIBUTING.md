@@ -61,7 +61,8 @@ If you find that the changes on your branch include multiple files and a large n
 You can read more about how to split up pull requests [here](https://graysonkoonce.com/stacked-pull-requests-keeping-github-diffs-small/) and in the ["4 Git strategies for Pull Requests splitting" section](https://www.thedroidsonroids.com/blog/splitting-pull-request#4-git-strategies-for-pull-requests-splitting) of this article.
 We include a simple example, adapted from the first link, below.
 
-I have a new analysis on a branch called `new-analysis` that includes three scripts: `01-first-script.R`, `02-second-script.R`, and `03-third-script.R`.
+I have a new analysis on a branch called `new-analysis` that includes three scripts: `01-first-script.R`, `02-second-script.R`, and `03-third-script.R` and a bash script `run-analysis.sh` that provides the commands to run each script.
+
 All three scripts have been committed to the `new-analysis` branch.
 To file three pull requests, one for each script, I could take the following approach:
 
@@ -74,11 +75,12 @@ git checkout -b new-analysis-first new-analysis
 git reset master
 ```
 
-Now we're ready to add, commit, and push `01-first-script.R`.
+Now we're ready to add, commit, and push `01-first-script.R` and the bash script `run-analysis.sh` with the information to run `01-first-script.R`.
 
 ```sh
 # add the first script
 git add analyses/new-analyses/01-first-script.R
+git add analyses/new-analyses/run-analysis.sh
 
 # stash all other changes (e.g., the second and third script)
 git stash --include-untracked --keep-index
@@ -90,7 +92,7 @@ git push origin new-analysis-first
 
 **We're then ready to file a pull request from the `new-analysis-first` branch.**
 
-To get a pull request ready for `02-second-script.R`, we'd do the following:
+To get a pull request ready for `02-second-script.R` and an updated `run-analysis.sh` with information to run `02-second-script.R`, we'd do the following:
 
 ```sh
 # create a new branch for this purpose
@@ -101,12 +103,13 @@ git stash pop
 
 # add, stash, commit, push
 git add analyses/new-analyses/02-second-script.R
+git add analyses/new-analyses/run-analysis.sh
 git stash --include-untracked --keep-index
 git commit -m "Add second script for new analysis"
 git push origin new-analysis-second
 ```
 
-These steps can be repeated for `03-third-script.R`.
+These steps can be repeated for `03-third-script.R` and `run-analysis.sh` can be updated at each step.
 
 ### Updating your out-of-date branch
 
