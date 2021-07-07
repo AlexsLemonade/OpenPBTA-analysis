@@ -209,6 +209,13 @@ putative_driver_fusions<-fusion_calls %>% dplyr::filter(!FusionName %in% FusionI
   # we want to remove annots column since there is difference in arriba annotation (uniquely has duplication/translocation/deletion values) and StarFusion annotation which will be counted twice since they are not unique
   dplyr::select(-annots,-cancer_group) %>% 
   unique() %>%
+  mutate(
+        BreakpointLocation = case_when(
+        Gene1A == Gene1B & !grepl("/", FusionName) ~ "Intragenic",
+        grepl("/", FusionName) ~ "Intergenic",
+        TRUE ~ "Genic"
+      )
+  ) %>%
   arrange(Sample, FusionName) 
 
 write.table(putative_driver_fusions,file.path(outputfolder,"fusion-putative-oncogenic.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
