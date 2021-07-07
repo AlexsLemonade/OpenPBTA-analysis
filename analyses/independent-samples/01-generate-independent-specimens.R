@@ -54,18 +54,31 @@ if (!dir.exists(out_dir)){
   dir.create(out_dir, recursive = TRUE)
 }
 
-wgs_primary_file <- file.path(out_dir, 
-                              "independent-specimens.wgs.primary.tsv")
-wgs_relapse_file <- file.path(out_dir, 
-                              "independent-specimens.wgs.relapse.tsv")
-wgs_primplus_file <- file.path(out_dir, 
-                              "independent-specimens.wgs.primary-plus.tsv")
-wgswxspanel_primary_file <- file.path(out_dir, 
-                              "independent-specimens.wgswxspanel.primary.tsv")
-wgswxspanel_relapse_file <- file.path(out_dir, 
-                              "independent-specimens.wgswxspanel.relapse.tsv")
-wgswxspanel_primplus_file <- file.path(out_dir, 
-                              "independent-specimens.wgswxspanel.primary-plus.tsv")
+wgs_primary_each_file <- file.path(out_dir, 
+                              "independent-specimens.wgs.primary.eachcohort.tsv")
+wgs_relapse_each_file <- file.path(out_dir, 
+                              "independent-specimens.wgs.relapse.eachcohort.tsv")
+wgs_primplus_each_file <- file.path(out_dir, 
+                              "independent-specimens.wgs.primary-plus.eachcohort.tsv")
+wgswxspanel_primary_each_file <- file.path(out_dir, 
+                              "independent-specimens.wgswxspanel.primary.eachcohort.tsv")
+wgswxspanel_relapse_each_file <- file.path(out_dir, 
+                              "independent-specimens.wgswxspanel.relapse.eachcohort.tsv")
+wgswxspanel_primplus_each_file <- file.path(out_dir, 
+                              "independent-specimens.wgswxspanel.primary-plus.eachcohort.tsv")
+
+wgs_primary_all_file <- file.path(out_dir, 
+                                   "independent-specimens.wgs.primary.allcohorts.tsv")
+wgs_relapse_all_file <- file.path(out_dir, 
+                                   "independent-specimens.wgs.relapse.allcohorts.tsv")
+wgs_primplus_all_file <- file.path(out_dir, 
+                                    "independent-specimens.wgs.primary-plus.allcohorts.tsv")
+wgswxspanel_primary_all_file <- file.path(out_dir, 
+                                           "independent-specimens.wgswxspanel.primary.allcohorts.tsv")
+wgswxspanel_relapse_all_file <- file.path(out_dir, 
+                                           "independent-specimens.wgswxspanel.relapse.allcohorts.tsv")
+wgswxspanel_primplus_all_file <- file.path(out_dir, 
+                                            "independent-specimens.wgswxspanel.primary-plus.allcohorts.tsv")
 
 # Read histology file
 histology_df <- readr::read_tsv(opts$histology_file, 
@@ -84,9 +97,13 @@ tumor_samples <- histology_df %>%
 wgs_samples <- tumor_samples %>%
   dplyr::filter(experimental_strategy == "WGS")
 
-wgs_primary <- independent_samples(wgs_samples, tumor_types = "primary", seed = 2020)
-wgs_relapse <- independent_samples(wgs_samples, tumor_types = "relapse", seed = 2020)
-wgs_primary_plus <- independent_samples(wgs_samples, tumor_types = "prefer_primary", seed = 2020)
+wgs_primary_each <- independent_samples(wgs_samples, tumor_types = "primary", independent_level = "each-cohort", seed = 2020)
+wgs_relapse_each <- independent_samples(wgs_samples, tumor_types = "relapse", independent_level = "each-cohort", seed = 2020)
+wgs_primary_plus_each <- independent_samples(wgs_samples, tumor_types = "prefer_primary", independent_level = "each-cohort", seed = 2020)
+
+wgs_primary_all <- independent_samples(wgs_samples, tumor_types = "primary", independent_level = "all-cohorts", seed = 2020)
+wgs_relapse_all <- independent_samples(wgs_samples, tumor_types = "relapse", independent_level = "all-cohorts", seed = 2020)
+wgs_primary_plus_all <- independent_samples(wgs_samples, tumor_types = "prefer_primary", independent_level = "all-cohorts", seed = 2020)
 
 # Generate lists for WXS and Panel samples 
 # WGS is generally preferred, so we will only include those where WGS is not available
@@ -94,29 +111,57 @@ wxs_panel_samples <-  tumor_samples %>%
   dplyr::filter(!(Kids_First_Participant_ID %in% 
                   wgs_samples$Kids_First_Participant_ID))
 
-wxs_panel_primary <- independent_samples(wxs_panel_samples, tumor_types = "primary", seed = 2020)
-wxs_panel_relapse <- independent_samples(wxs_panel_samples, tumor_types = "relapse", seed = 2020)
-wxs_panel_primary_plus <- independent_samples(wxs_panel_samples, tumor_types = "prefer_primary", seed = 2020)
+wxs_panel_primary_each <- independent_samples(wxs_panel_samples, tumor_types = "primary", independent_level = "each-cohort", seed = 2020)
+wxs_panel_relapse_each <- independent_samples(wxs_panel_samples, tumor_types = "relapse", independent_level = "each-cohort", seed = 2020)
+wxs_panel_primary_plus_each <- independent_samples(wxs_panel_samples, tumor_types = "prefer_primary", independent_level = "each-cohort", seed = 2020)
 
-# write files
-message(paste(nrow(wgs_primary), "WGS primary specimens"))
-readr::write_tsv(wgs_primary, wgs_primary_file)
+wxs_panel_primary_all <- independent_samples(wxs_panel_samples, tumor_types = "primary", independent_level = "all-cohorts", seed = 2020)
+wxs_panel_relapse_all <- independent_samples(wxs_panel_samples, tumor_types = "relapse", independent_level = "all-cohorts", seed = 2020)
+wxs_panel_primary_plus_all <- independent_samples(wxs_panel_samples, tumor_types = "prefer_primary", independent_level = "all-cohorts", seed = 2020)
 
-message(paste(nrow(wgs_relapse), "WGS relapse specimens"))
-readr::write_tsv(wgs_relapse, wgs_relapse_file)
+# write files for independent specimens considering cohort difference - for WGS specimens only 
+message(paste(nrow(wgs_primary_each), "WGS primary specimens for each cohort"))
+readr::write_tsv(wgs_primary_each, wgs_primary_each_file)
 
-message(paste(nrow(wgs_primary_plus), "WGS specimens (including non-primary)"))
-readr::write_tsv(wgs_primary_plus, wgs_primplus_file)
+message(paste(nrow(wgs_relapse_each), "WGS relapse specimens for each cohort"))
+readr::write_tsv(wgs_relapse_each, wgs_relapse_each_file)
 
-message(paste(nrow(wgs_primary) + nrow(wxs_panel_primary), "WGS+WXS+Panel primary specimens"))
-readr::write_tsv(dplyr::bind_rows(wgs_primary, wxs_panel_primary),
-                 wgswxspanel_primary_file)
+message(paste(nrow(wgs_primary_plus_each), "WGS specimens (including non-primary) for each cohort"))
+readr::write_tsv(wgs_primary_plus_each, wgs_primplus_each_file)
 
-message(paste(nrow(wgs_relapse) + nrow(wxs_panel_relapse), "WGS+WXS+Panel relapse specimens"))
-readr::write_tsv(dplyr::bind_rows(wgs_relapse, wxs_panel_relapse),
-                 wgswxspanel_relapse_file)
+# write files for independent specimens not considering cohort difference
+message(paste(nrow(wgs_primary_all), "WGS primary specimens for all cohorts"))
+readr::write_tsv(wgs_primary_all, wgs_primary_all_file)
 
-message(paste(nrow(wgs_primary_plus) + nrow(wxs_panel_primary_plus), "WGS+WXS+Panel specimens (including non-primary)"))
-readr::write_tsv(dplyr::bind_rows(wgs_primary_plus, wxs_panel_primary_plus),
-                 wgswxspanel_primplus_file)
+message(paste(nrow(wgs_relapse_all), "WGS relapse specimens for all cohorts"))
+readr::write_tsv(wgs_relapse_all, wgs_relapse_all_file)
 
+message(paste(nrow(wgs_primary_plus_all), "WGS specimens (including non-primary) for all cohorts"))
+readr::write_tsv(wgs_primary_plus_all, wgs_primplus_all_file)
+
+# write files for independent specimens considering cohort difference - for WGS+WXS+Panel specimens 
+message(paste(nrow(wgs_primary_each) + nrow(wxs_panel_primary_each), "WGS+WXS+Panel primary specimens for each cohort"))
+readr::write_tsv(dplyr::bind_rows(wgs_primary_each, wxs_panel_primary_each),
+                 wgswxspanel_primary_each_file)
+
+message(paste(nrow(wgs_relapse_each) + nrow(wxs_panel_relapse_each), "WGS+WXS+Panel relapse specimens for each cohort"))
+readr::write_tsv(dplyr::bind_rows(wgs_relapse_each, wxs_panel_relapse_each),
+                 wgswxspanel_relapse_each_file)
+
+message(paste(nrow(wgs_primary_plus_each) + nrow(wxs_panel_primary_plus_each), "WGS+WXS+Panel specimens (including non-primary) for each cohort"))
+readr::write_tsv(dplyr::bind_rows(wgs_primary_plus_each, wxs_panel_primary_plus_each),
+                 wgswxspanel_primplus_each_file)
+
+# write files for independent specimens not considering cohort difference - for WGS+WXS+Panel specimens 
+
+message(paste(nrow(wgs_primary_all) + nrow(wxs_panel_primary_all), "WGS+WXS+Panel primary specimens for all cohort"))
+readr::write_tsv(dplyr::bind_rows(wgs_primary_all, wxs_panel_primary_all),
+                 wgswxspanel_primary_all_file)
+
+message(paste(nrow(wgs_relapse_all) + nrow(wxs_panel_relapse_all), "WGS+WXS+Panel relapse specimens for all cohort"))
+readr::write_tsv(dplyr::bind_rows(wgs_relapse_all, wxs_panel_relapse_all),
+                 wgswxspanel_relapse_all_file)
+
+message(paste(nrow(wgs_primary_plus_all) + nrow(wxs_panel_primary_plus_all), "WGS+WXS+Panel specimens (including non-primary) for all cohort"))
+readr::write_tsv(dplyr::bind_rows(wgs_primary_plus_all, wxs_panel_primary_plus_all),
+                 wgswxspanel_primplus_all_file)
