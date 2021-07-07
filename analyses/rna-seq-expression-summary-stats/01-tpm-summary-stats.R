@@ -475,7 +475,7 @@ nf_all_cohorts_rna_htl_df <- rna_htl_df %>%
   group_by(cancer_group) %>%
   filter(n() >= 5) %>%
   ungroup() %>%
-  mutate(sample_group = paste0(cancer_group, '___AllCohorts'))
+  mutate(sample_group = paste0(cancer_group, '___PedOT'))
 # The sample_group column needs to describe three things of a sample:
 # - cancer_group
 # - cohort(s)
@@ -509,7 +509,7 @@ nf_all_cohorts_sample_meta_df <- nf_all_cohorts_rna_htl_df %>%
   summarise(
     n_samples = n(),
     cancer_group = unique(cancer_group),
-    cohort = 'AllCohorts') %>%
+    cohort = 'PedOT') %>%
   arrange(sample_group)
 
 
