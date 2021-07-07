@@ -108,7 +108,7 @@ td_htl_dfs <- lapply(td_htl_dfs, function(x) {
 
 
 
-# Subset tumor samples and used columns in MAF table ---------------------------
+# Subset tumor samples to filter alteration df ---------------------------
 tumor_kfbids <- htl_df %>%
   filter(sample_type == 'Tumor') %>%
   pull(Kids_First_Biospecimen_ID)
@@ -261,7 +261,7 @@ mg_qres_df <- as_tibble(
   rename(Gene = query, Gene_full_name = name,
          Protein_RefSeq_ID = refseq_protein)
 
-# add additional fields to MAF df
+# add additional fields to alteration df
 m_fus_freq_tbl <- m_fus_freq_tbl %>%
   left_join(mg_qres_df, by = c('Gene_Ensembl_ID'='Gene')) %>%
   replace_na(list(Gene_Ensembl_ID='',

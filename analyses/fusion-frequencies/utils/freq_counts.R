@@ -121,7 +121,7 @@ get_cg_cs_tbl <- function(histology_df) {
 # - ss_cancer_group: a character value of the cancer group to compute for.
 # - ss_cohorts: a vector of character values of the cohorts to compute for.
 #
-# Returns a MAF tibble with additional frequency columns.
+# Returns a tibble with additional frequency columns.
 get_cg_ch_mut_freq_tbl <- function(alt_df, overall_histology_df,
                                    primary_histology_df, relapse_histology_df,
                                    ss_cancer_group, ss_cohorts) {
