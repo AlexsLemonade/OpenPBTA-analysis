@@ -51,6 +51,8 @@ Output the long summary statistic tables in TSV and JSON formats using `readr::w
 
 ### Results
 
+The `NA`/`NaN`s in result tables are represented with blank string `''`s.
+
 #### `PedOT`(/`all-cohorts`) summary statistics tables
 
 The following wide tables are generated using the methods described above. Rows are genes. Columns are `sample_group`s, except that the first two columns are gene symbol and gene Ensembl ID.
