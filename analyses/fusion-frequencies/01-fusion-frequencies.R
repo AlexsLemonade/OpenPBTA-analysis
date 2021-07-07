@@ -101,8 +101,6 @@ td_htl_dfs <- lapply(td_htl_dfs, function(x) {
   stopifnot(identical(nrow(x), length(unique(x$Kids_First_Biospecimen_ID))))
   
   fx <- filter(x, !is.na(cancer_group), !is.na(cohort))
-  fx <- mutate(
-    fx, cancer_group_cohort = paste(cancer_group, cohort, sep = '___'))
   return(fx)
 })
 
@@ -147,7 +145,6 @@ fusion_df <- fusion_df  %>%
 
 
 rm(tumor_kfbids)
-suppressMessages(gc(reset = TRUE))
 
 
 
@@ -181,16 +178,16 @@ fus_freq_tbl_list <- lapply(
       filter(!is.na(Patients_in_dataset))
     
     if ( nrow(res_df) != 0 ){
-    # merge fusion dataframe with the counts and frequencies in each cancer_group
-    # - per cohort 
-    # - per primary samples in cohort
-    # - per relapse samples in cohort
-    fusion_df <- fusion_df %>% 
-      select(-Kids_First_Biospecimen_ID,-Kids_First_Participant_ID) %>%
-      unique() %>%
-      inner_join(res_df,by="Alt_ID") 
-    
-    return(fusion_df)
+      # merge fusion dataframe with the counts and frequencies in each cancer_group
+      # - per cohort 
+      # - per primary samples in cohort
+      # - per relapse samples in cohort
+      fusion_df <- fusion_df %>% 
+        select(-Kids_First_Biospecimen_ID,-Kids_First_Participant_ID) %>%
+        unique() %>%
+        inner_join(res_df,by="Alt_ID") 
+
+      return(fusion_df)
     }
   }
 )

@@ -32,13 +32,16 @@ Each `cancer_group` and `cohort`(s) combination is considered a `cancer_group_co
 
 Format the SNV mutation frequency table according to the latest spreadsheet that is attached in <https://github.com/PediatricOpenTargets/ticket-tracker/issues/64>.
 
-Merge the SNV mutation frequency tables of all `cancer_group_cohort`s.
+Merge the fusion frequency tables of all `cancer_group_cohort`s.
 
 ### Results
 
-Results are generated using PediatricOpenTargets/OpenPedCan-analysis data release v5.
+Results are generated using PediatricOpenTargets/OpenPedCan-analysis data release v6.
 
-`results/snv-consensus-annotated-mut-freq.tsv` is the merged Fusion frequency table for all `cancer_group_cohort`s
+The merged fusion frequency table of all `cancer_group_cohort`s is output in TSV and JSON formats using `readr::write_tsv()` and `jsonlite::write_json()` respectively.
+
+- `results/putative-oncogene-fusion-annotated-freq.json`
+- `results/putative-oncogene-fusion-annotated-freq.tsv`
 
 ### Analysis scripts
 
