@@ -42,7 +42,7 @@ sample_df <- readr::read_tsv(file.path(root_dir, "data", "histologies-base.tsv")
 Sort to just sequencing samples of tumors
 ```{r}
 seq_samples <- sample_df %>%
-  filter(experimental_strategy %in% c("WGS", "WXS", "Targeted Sequencing", "Targeted-Capture"), 
+  filter(experimental_strategy %in% c("WGS", "WXS", "Targeted Sequencing"),
          sample_type == "Tumor")
 ```
 
@@ -211,7 +211,7 @@ sets using the `"primary"` and `"prefer_primary"` resepectively.
 independents <- sample_df %>%
   filter(experimental_strategy == "WGS",
          sample_type == "Tumor", 
-         composition == "Solid Tissue"
+         composition == "Solid Tissue" | composition == "Bone Marrow",
          ) %>%
   independent_samples(tumor_types = "primary")
 

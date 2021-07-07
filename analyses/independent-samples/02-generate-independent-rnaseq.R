@@ -78,7 +78,7 @@ independent_dna_sample_df <- read_tsv(opts$independent_dna_sample_df)
 
 independent_rna_primary <- sample_df %>%
   filter(sample_type == "Tumor", 
-         composition == "Solid Tissue" | composition == "Bone Marrow", 
+         composition == "Solid Tissue" | composition == "Bone Marrow"
   ) %>%
   independent_rna_samples(independent_dna_sample_df = 
                             independent_dna_sample_df,
@@ -89,7 +89,7 @@ independent_rna_primary <- sample_df %>%
 
 independent_rna_relapse <- sample_df %>%
   filter(sample_type == "Tumor", 
-         composition == "Solid Tissue"
+         composition == "Solid Tissue" | composition == "Bone Marrow"
   ) %>%
   independent_rna_samples(independent_dna_sample_df = 
                             independent_dna_sample_df,

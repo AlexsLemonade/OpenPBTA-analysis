@@ -28,7 +28,7 @@ library(optparse)
 # source sample selection function
 source(file.path(analysis_dir, "independent-samples.R"))
 
-set.seed(201910)
+set.seed(2020)
 
 # Parse options
 option_list <- list(
@@ -68,17 +68,17 @@ wgswxspanel_primplus_file <- file.path(out_dir,
                               "independent-specimens.wgswxspanel.primary-plus.tsv")
 
 # Read histology file
-sample_df <- readr::read_tsv(opts$histology_file, 
+histology_df <- readr::read_tsv(opts$histology_file, 
                              guess_max = 100000,
                              col_types = readr::cols()) # suppress parse message
 
 
 # Filter to only samples from tumors, where composition is known to be Solid Tissue or Bone Marrow
 # Note that there are some samples with unknown composition, but these will be ignored for now.
-tumor_samples <- sample_df %>%
+tumor_samples <- histology_df %>%
   dplyr::filter(sample_type == "Tumor", 
                 composition == "Solid Tissue" | composition == "Bone Marrow", 
-                experimental_strategy %in% c("WGS", "WXS", "Targeted Sequencing", "Targeted-Capture"))
+                experimental_strategy %in% c("WGS", "WXS", "Targeted Sequencing"))
 
 # Generate WGS independent samples
 wgs_samples <- tumor_samples %>%
@@ -119,3 +119,4 @@ readr::write_tsv(dplyr::bind_rows(wgs_relapse, wxs_panel_relapse),
 message(paste(nrow(wgs_primary_plus) + nrow(wxs_panel_primary_plus), "WGS+WXS+Panel specimens (including non-primary)"))
 readr::write_tsv(dplyr::bind_rows(wgs_primary_plus, wxs_panel_primary_plus),
                  wgswxspanel_primplus_file)
+

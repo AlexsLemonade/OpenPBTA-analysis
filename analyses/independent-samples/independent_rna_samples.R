@@ -36,8 +36,8 @@ independent_rna_samples <- function(independent_dna_sample_df,
   match_type <- match.arg(match_type)
   tumor_description_rna_only <- match.arg(tumor_description_rna_only)
   if(!missing(seed)){set.seed(seed)}
-  primary_descs <- c("Initial CNS Tumor", "Primary tumor")
-  relapse_descs <- c("Recurrence", "Recurrent Tumor","Recurrent tumor","Progressive","Progressive Disease Post-Mortem")
+  primary_descs <- c("Initial CNS Tumor", "Primary Tumor")
+  relapse_descs <- c("Recurrence", "Progressive", "Progressive Disease Post Mortem")
   
   # Find sample set for the dna independent samples 
   # This will always be the included since in both the following
@@ -126,20 +126,31 @@ independent_rna_samples <- function(independent_dna_sample_df,
     sample_df <- bind_rows(matched_rna,only_rna_initial, only_rna_plus)
   } 
   
-  # get the samples from the earliest timepoints for each Participant
-  # age_at_diagnosis_days is no longer relevant,
-  # as it is the same for all samples from an participant, but
-  # leaving this in for future use in case we get specimen order data 
-  early_samples <- sample_df %>%
-    dplyr::group_by(Kids_First_Participant_ID) %>%
-    dplyr::summarize(age_at_diagnosis_days = min(age_at_diagnosis_days)) %>%
-    dplyr::left_join(sample_df, by = c("Kids_First_Participant_ID",
-                                       "age_at_diagnosis_days"))
-
-  # Choose randomly among specimens from the same participant
-  early_ind <- early_samples %>%
-    dplyr::group_by(Kids_First_Participant_ID) %>%
-    dplyr::summarize(Kids_First_Biospecimen_ID = sample(Kids_First_Biospecimen_ID, 1)) 
+  cohort_list <- sample_df$cohort %>% unique()
+  cancer_group_list <- sample_df$cancer_group %>% unique()    
   
-  return(early_ind)
+  independent_all <- data.frame(Kids_First_Participant_ID = character(), cohort = character(), cancer_group = character(), Kids_First_Biospecimen_ID = character(), stringsAsFactors = FALSE)
+  
+  for (i in 1:length(cohort_list)){
+    for (j in 1:length(cancer_group_list)){
+      # filter to the specific cancer group and cohort
+      cohort_name <- cohort_list[i]
+      cancer_group_name <- cancer_group_list[j]
+      filtered_df <- sample_df %>% filter(cohort == cohort_name) %>%
+        filter(cancer_group == cancer_group_name)
+      # some specific group does not have any specimen 
+      if(nrow(filtered_df) == 0){
+        independent_filtered <- data.frame(Kids_First_Participant_ID = character(), cohort = character(), cancer_group = character(), Kids_First_Biospecimen_ID = character(), stringsAsFactors = FALSE)
+        independent_all <- rbind(independent_all, independent_filtered)
+      }else{
+        # find the independent samples for the specific cancer group and cohort
+        independent_filtered <- filtered_df %>%
+          dplyr::group_by(Kids_First_Participant_ID, cohort, cancer_group) %>%
+          dplyr::summarize(Kids_First_Biospecimen_ID = sample(Kids_First_Biospecimen_ID, 1)) %>%
+          data.frame()
+        # merge the independent samples together
+        independent_all <- rbind(independent_all, independent_filtered)
+      }
+    }} 
+  return(independent_all)
 }
