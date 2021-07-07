@@ -124,17 +124,21 @@ fusion_df <- fusion_df  %>%
                 DomainRetainedGene1B,
                 reciprocal_exists,
                 ends_with("anno")) %>%
+  # Gather a alteration ID to use for count
+  # Update reciprocal_exits to fusion with atleast 1 kinase gene involved
   mutate(Alt_ID=paste(FusionName, Fusion_Type,sep="_"),
          reciprocal_exists_kinase = 
-           if_else(!is.na(DomainRetainedGene1A) |
-                     !is.na(DomainRetainedGene1B) ,
-                   reciprocal_exists, 
+           # if either gene are kinase we will have "Yes" or "No" values
+           # in DomainRetainedGene1A and DomainRetainedGene1B
+           if_else(is.na(DomainRetainedGene1A) &
+                     is.na(DomainRetainedGene1B) ,
                    # reciprocl_exists is a logical column
-                   FALSE)) %>%
+                   FALSE,
+                   reciprocal_exists)) %>%
   rename("Kids_First_Biospecimen_ID"="Sample",
          "Kinase_domain_retained_Gene1A" = "DomainRetainedGene1A",
          "Kinase_domain_retained_Gene1B" = "DomainRetainedGene1B",
-         "Reciprocal_exists_either_gene_kinase" = "reciprocal_exists")%>%
+         "Reciprocal_exists_either_gene_kinase" = "reciprocal_exists_kinase")%>%
   # replace NA to "" in columns that have NA
   replace_na(list("Kinase_domain_retained_Gene1A"="",
                   "Kinase_domain_retained_Gene1B"="",
