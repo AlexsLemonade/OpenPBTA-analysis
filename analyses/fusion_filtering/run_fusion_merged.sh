@@ -23,7 +23,7 @@ cd "$script_directory" || exit
 data_path="../../data"
 scratch_path="../../scratch"
 references_path="references"
-results_path="results/"
+results_path="results"
 
 
 # fusion files before and after standardization
@@ -64,12 +64,12 @@ putative_oncogenic_fusion="${results_path}/fusion-putative-oncogenic.tsv"
 Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
                                        --clinicalFile $histologies_file \
                                        --specimenType "Adrenal Gland" \
-                                       --outputfile "${references_path}/gtex_adrenal_gland_TPM_hg38.rds"
+                                       --outputfile $normal_expression_adrenal_gland
 
 Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
                                        --clinicalFile $histologies_file \
                                        --specimenType "Brain" \
-                                       --outputfile "${references_path}/gtex_brain_TPM_hg38.rds"
+                                       --outputfile $normal_expression_brain
 
 # Run Fusion standardization for arriba caller
 Rscript 01-fusion-standardization.R --fusionfile $arriba_file \
