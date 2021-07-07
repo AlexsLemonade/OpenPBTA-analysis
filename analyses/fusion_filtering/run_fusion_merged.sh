@@ -33,7 +33,7 @@ standard_arriba_file="${scratch_path}/arriba.tsv"
 standard_starfusion_file="${scratch_path}/starfusion.tsv"
 
 # general filtering parameters
-artifact_filter="GTEx|HGNC_GENEFAM|DGD_PARALOGS|Normal|BodyMap"
+artifact_filter="GTEx_Recurrent|DGD_PARALOGS|Normal|BodyMap"
 reading_frame_filter="in-frame|frameshift|other"
 spanningFragCountFilter=100
 
