@@ -145,7 +145,6 @@ fusion_df <- fusion_df  %>%
 
 
 rm(tumor_kfbids)
-suppressMessages(gc(reset = TRUE))
 
 
 
