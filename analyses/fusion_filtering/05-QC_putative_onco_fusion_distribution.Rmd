@@ -206,8 +206,28 @@ We can assume these fusions to be potential false calls because it is highly unl
 
 ```{r final filtering }
 putative_driver_fusions<-fusion_calls %>% dplyr::filter(!FusionName %in% FusionInNcg$FusionName) %>%
-  # we want to remove annots column since there is difference in arriba annotation (uniquely has duplication/translocation/deletion values) and StarFusion annotation which will be counted twice since they are not unique
-  dplyr::select(-annots,-cancer_group) %>% 
+  # we want to aggregate annots column since there is difference in arriba annotation (uniquely has duplication/translocation/deletion values) and StarFusion annotation which will be counted twice since they are not unique
+  group_by_at(setdiff(colnames(fusion_calls), 
+                      # remove caller specific columns
+                      c("JunctionReadCount",
+                        "SpanningFragCount",
+                        "Confidence",
+                        "caller","annots"))) %>%
+  summarise(annots=
+              
+                    # remove \" from annots in arriba
+            # `paste` so space is not added with `toString`
+                    paste(gsub("\"","",annots),collapse = ",")
+
+  ) %>%
+  mutate(annots = toString(
+    unique(
+      unlist(
+        str_split(annots,",")
+      )),
+    )
+  )%>%
+  dplyr::select(-cancer_group) %>% 
   unique() %>%
   mutate(
         BreakpointLocation = case_when(
