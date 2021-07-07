@@ -111,6 +111,7 @@ Input:
 - `../independent-samples/results/independent-specimens.wgs.relapse.tsv`
 - `../../data/efo-mondo-map.tsv`
 - `../../data/ensg-hugo-rmtl-v1-mapping.tsv`
+- `../fusion_filtering/references/genelistreference.txt`
 
 Output:
 
