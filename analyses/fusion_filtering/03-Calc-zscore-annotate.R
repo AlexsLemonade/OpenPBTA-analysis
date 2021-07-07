@@ -104,10 +104,6 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter
   for (j in 1:length(cohortInterest)){
     cohort_name = cohortInterest[j]
     
-    # example run using GTEx
-    # load GTEx data - make sure the expression data matches
-    normData<-readRDS(gtexMatrix[j]) 
-    
     # filter the expression to only the ones that are in the cohort and sample type of interest
     matched_samples <- read.delim(clinicalFile, header = TRUE, sep = "\t", stringsAsFactors = FALSE) %>%
       filter(cohort == cohort_name) %>%
@@ -128,9 +124,9 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter
     # log2 transformation
     expressionMatrixMatched<-log2(expressionMatrixMatched+1)
   
-    # gene matched
-    # get log transformed GTEx matrix
-    normData <- normData %>%
+    # example run using GTEx
+    # load GTEx data - make sure the expression data matches
+    normData<-readRDS(gtexMatrix[j]) %>%
       as.matrix()
     # rearrange to order with expressionMatrix
     normData <- normData[rownames(expressionMatrixMatched), ]
