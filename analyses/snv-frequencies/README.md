@@ -4,11 +4,13 @@
 
 ### Purpose
 
-Annotate each non-synonymous variant in `snv-consensus-plus-hotspots.maf.tsv.gz` with mutation frequencies per `(cohort, cancer_group, primary/relapse)`.
+- Annotate each non-synonymous variant in `snv-consensus-plus-hotspots.maf.tsv.gz` with mutation frequencies per `(cohort, cancer_group, primary/relapse)`.
+- Annotate each gene in `snv-consensus-plus-hotspots.maf.tsv.gz` with non-synonymous variant mutation frequencies per `(cohort, cancer_group, primary/relapse)`.
 
 Issues addressed:
 
-- <https://github.com/PediatricOpenTargets/ticket-tracker/issues/64>
+- Variant-level mutation frequencies: <https://github.com/PediatricOpenTargets/ticket-tracker/issues/64>
+- Gene-level mutation frequencies: <https://github.com/PediatricOpenTargets/ticket-tracker/issues/91>
 - <https://github.com/PediatricOpenTargets/ticket-tracker/issues/8>. This issue is no longer compatible with the purpose of this module. This module intends to compute mutation frequencies for each variant, but this issue intents to compute the mutation frequencies for each gene. This issue is listed here for future reference.
 
 ### Methods
@@ -36,9 +38,11 @@ Variant_Classification %in% c('Frame_Shift_Del',
                               'Translation_Start_Site')
 ```
 
-Create a `Variant_ID` for each variant by concatenating `Chromosome`, `Start_Position`, `Reference_Allele`, and `Tumor_Seq_Allele2` with `'_'`.
-
 Add `Gene_full_name` and `Protein_RefSeq_ID` columns to each variant with annotations obtained from [mygene.info](http://mygene.info/about).
+
+Generate variant-level and gene-level non-synonymous mutation frequencies using the following procedures.
+
+For vairant-level analysis, create a `Variant_ID` for each variant by concatenating `Chromosome`, `Start_Position`, `Reference_Allele`, and `Tumor_Seq_Allele2` with `'_'`.
 
 For each `cancer_group`, get each cohort and all cohorts. Call each `cancer_group` and `cohort`(s) combination as a `cancer_group_cohort`. For example,
 
@@ -52,17 +56,17 @@ For each `cancer_group`, get each cohort and all cohorts. Call each `cancer_grou
 For each `cancer_group_cohort` with `n_samples` >= 5, compute `Frequency_in_overall_dataset`, `Frequency_in_primary_tumors`, and `Frequency_in_relapse_tumors` as following:
 
 - `Frequency_in_overall_dataset`:
-  - For each unique variant, count the number of patients (identified by `Kids_First_Participant_ID`) that have the variant, and call this number `Total_mutations`.
+  - For each unique variant/gene, count the number of patients (identified by `Kids_First_Participant_ID`) that have mutations at the variant/gene, and call this number `Total_mutations`.
   - Count the total number of patients in the `cancer_group_cohort`, and call this number `Patients_in_dataset`.
   - `Frequency_in_overall_dataset = Total_mutations / Patients_in_dataset`.
 
 - `Frequency_in_primary_tumors`:
-  - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `../independent-samples/results/independent-specimens.wgs.primary.tsv`, and call this number `Total_primary_tumors_mutated`.
+  - For each unique variant/gene, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that have mutations at the variant/gene and are in the `../independent-samples/results/independent-specimens.wgs.primary.tsv`, and call this number `Total_primary_tumors_mutated`.
   - Count the total number of samples in the `cancer_group_cohort` that are also in the `../independent-samples/results/independent-specimens.wgs.primary.tsv`, and call this number `Primary_tumors_in_dataset`.
   - `Frequency_in_primary_tumors = Total_primary_tumors_mutated / Primary_tumors_in_dataset`.
 
 - `Frequency_in_relapse_tumors`:
-  - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `../independent-samples/results/independent-specimens.wgs.relapse.tsv`, and call this number `Total_relapse_tumors_mutated`.
+  - For each unique variant/gene, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that have mutations at the variant/gene and are in the `../independent-samples/results/independent-specimens.wgs.relapse.tsv`, and call this number `Total_relapse_tumors_mutated`.
   - Count the total number of samples in the `cancer_group_cohort` that are also in the `../independent-samples/results/independent-specimens.wgs.relapse.tsv`, and call this number `Relapse_tumors_in_dataset`.
   - `Frequency_in_relapse_tumors = Total_relapse_tumors_mutated / Relapse_tumors_in_dataset`.
 
