@@ -23,7 +23,7 @@ cd "$script_directory" || exit
 data_path="../../data"
 scratch_path="../../scratch"
 references_path="references"
-results_path="results/"
+results_path="results"
 
 
 # fusion files before and after standardization
