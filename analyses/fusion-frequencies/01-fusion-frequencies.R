@@ -1,5 +1,4 @@
 
-
 # Create output dir ------------------------------------------------------------
 
 # Detect the ".git" folder -- this will in the project root directory.
@@ -13,7 +12,7 @@ data_dir <- file.path(root_dir, "data")
 module_dir <- file.path(root_dir, "analyses", "fusion-frequencies")
 results_dir <- file.path(module_dir, "results")
 
-# Source function
+# Source function to gather counts and frequency calculation per cohort and cancer_group
 source(file.path(module_dir,"utils","freq_counts.R"))
 
 # Create results folder if it doesn't exist
@@ -125,11 +124,17 @@ fusion_df <- fusion_df  %>%
                 DomainRetainedGene1B,
                 reciprocal_exists,
                 ends_with("anno")) %>%
-  mutate(Alt_ID=paste(FusionName, Fusion_Type),sep="_") %>%
+  mutate(Alt_ID=paste(FusionName, Fusion_Type,sep="_"),
+         reciprocal_exists_kinase = 
+           if_else(!is.na(DomainRetainedGene1A) |
+                     !is.na(DomainRetainedGene1B) ,
+                   reciprocal_exists, 
+                   # reciprocl_exists is a logical column
+                   FALSE)) %>%
   rename("Kids_First_Biospecimen_ID"="Sample",
          "Kinase_domain_retained_Gene1A" = "DomainRetainedGene1A",
          "Kinase_domain_retained_Gene1B" = "DomainRetainedGene1B",
-         "Reciprocal_exists" = "reciprocal_exists")%>%
+         "Reciprocal_exists_either_gene_kinase" = "reciprocal_exists")%>%
   # replace NA to "" in columns that have NA
   replace_na(list("Kinase_domain_retained_Gene1A"="",
                   "Kinase_domain_retained_Gene1B"="",
@@ -201,7 +206,7 @@ m_fus_freq_tbl <- m_fus_freq_tbl %>%
   # replace NA to "" in columns that have NA
   replace_na(list("Kinase_domain_retained_Gene1A"="",
                   "Kinase_domain_retained_Gene1B"="",
-                  "Reciprocal_exists"="",
+                  "Reciprocal_exists_either_gene_kinase"="",
                   "Gene1A_anno"="",
                   "Gene1B_anno"="",
                   "Gene2A_anno"="",
@@ -272,6 +277,9 @@ m_fus_freq_tbl <- m_fus_freq_tbl %>%
   select(gene_symbol, RMTL, Gene_Ensembl_ID,
          Gene_full_name, gene_position, FusionName,
          Dataset, Disease, EFO, MONDO, Fusion_Type,
+         Kinase_domain_retained_Gene1A,
+         Kinase_domain_retained_Gene1B,
+         Reciprocal_exists_either_gene_kinase,
          Total_alterations_Over_Patients_in_dataset,
          Frequency_in_overall_dataset,
          Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset,
