@@ -36,7 +36,7 @@ Merge the SNV mutation frequency tables of all `cancer_group_cohort`s.
 
 ### Results
 
-Results are generated using PediatricOpenTargets/OpenPedCan-analysis data release v5.
+Results are generated using PediatricOpenTargets/OpenPedCan-analysis data release v6.
 
 `results/snv-consensus-annotated-mut-freq.tsv` is the merged Fusion frequency table for all `cancer_group_cohort`s
 
