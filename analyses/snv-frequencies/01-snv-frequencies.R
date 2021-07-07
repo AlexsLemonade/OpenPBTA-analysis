@@ -105,7 +105,163 @@ get_cg_cs_tbl <- function(histology_df) {
 
 
 
-# Generate mutation frequency table for (cancer_group, cohort)
+# Generate overall/primary/relapse mutation frequency table for a set of samples
+#
+# Args:
+# - maf_df: a MAF tibble. Must contain the following fields:
+#   Kids_First_Biospecimen_ID and var_group_col. Kids_First_Biospecimen_IDs must
+#   be a subset of the ones in overall_histology_df.
+# - var_group_col: the column name in maf_df to group variants when computing
+#   mutation frequencies. For example, if var_group_col is 'Variant_Unique_ID',
+#   the mutation frequencies are at variant level; if var_group_col is 'Gene_ID'
+#   the mutation frequences are at gene level.
+# - overall_histology_df: the histology tibble that contains a set of samples
+#   for computing mutation frequencies. Must contain the following fields:
+#   Kids_First_Biospecimen_ID, Kids_First_Participant_ID. This is used for
+#   computing the following columns: Total_mutations, Patients_in_dataset,
+#   Total_mutations_Over_Patients_in_dataset and Frequency_in_overall_dataset.
+# - primary_histology_df: the histology tibble that contains primary tumor
+#   samples. Must contain the Kids_First_Biospecimen_ID field.
+# - relapse_histology_df: the histology tibble that contains relapse tumor
+#   samples. Must contain the Kids_First_Biospecimen_ID field.
+#
+# Returns a MAF tibble with additional frequency columns.
+get_opr_mut_freq_tbl <- function(maf_df, var_group_col,
+                                 overall_histology_df, primary_histology_df,
+                                 relapse_histology_df) {
+  # check input parameters
+  stopifnot(is.character(var_group_col))
+  stopifnot(identical(length(var_group_col), as.integer(1)))
+  stopifnot(identical(sum(is.na(var_group_col)), as.integer(0)))
+  # asser no NAs in Kids_First_Biospecimen_ID or var_group_col
+  stopifnot(identical(
+    sum(is.na(select_at(maf_df,
+                        c('Kids_First_Biospecimen_ID', var_group_col)))),
+    as.integer(0)
+  ))
+  stopifnot(identical(
+    sum(is.na(overall_histology_df$Kids_First_Biospecimen_ID)),
+    as.integer(0)
+  ))
+    stopifnot(identical(
+    sum(is.na(primary_histology_df$Kids_First_Biospecimen_ID)),
+    as.integer(0)
+  ))
+  stopifnot(identical(
+    sum(is.na(relapse_histology_df$Kids_First_Biospecimen_ID)),
+    as.integer(0)
+  ))
+  # assert all samples in maf_df are in overall_histology_df
+  stopifnot(all(maf_df$Kids_First_Biospecimen_ID %in%
+                  overall_histology_df$Kids_First_Biospecimen_ID))
+
+  # ss represents selected samples in overall_histology_df
+  bpid_ss_htl_df <- overall_histology_df %>%
+    select(Kids_First_Biospecimen_ID, Kids_First_Participant_ID)
+
+  ss_n_patients <- length(unique(bpid_ss_htl_df$Kids_First_Participant_ID))
+
+  ss_primary_kfbids <- primary_histology_df %>%
+    filter(Kids_First_Biospecimen_ID %in%
+             bpid_ss_htl_df$Kids_First_Biospecimen_ID) %>%
+    pull(Kids_First_Biospecimen_ID)
+
+  ss_n_primary_tumors <- length(ss_primary_kfbids)
+
+  ss_relapse_kfbids <- relapse_histology_df %>%
+    filter(Kids_First_Biospecimen_ID %in%
+             bpid_ss_htl_df$Kids_First_Biospecimen_ID) %>%
+    pull(Kids_First_Biospecimen_ID)
+
+  ss_n_relapse_tumors <- length(ss_relapse_kfbids)
+
+  # If one var_group_col value has more than one records in one
+  # Kids_First_Biospecimen_ID, treat multiple records as a single mutation. The
+  # following procedure is still correct when computing mutation frequencies.
+  #
+  # Patient level frequencies: for each variant, check how many unique
+  # Kids_First_Participant_IDs. Having one or more records for duplicated
+  # variants will not change the number of patients, so the patient level
+  # frequencies will not be chagned.
+  #
+  # Sample level frequencies: for each variant, check how many unique
+  # Kids_First_Biospecimen_IDs are in primary or relapse independent
+  # Kids_First_Biospecimen_IDs. Having one or more records for duplicated
+  # variants will not change the number of Kids_First_Biospecimen_IDs, so the
+  # sample level frequencies will not be chagned.
+  #
+  # distinct() is necessary, because we only count one sample once, even if the
+  # sample has multiple mutations that belong to the variant group
+  sample_var_df <- maf_df %>%
+    select_at(c('Kids_First_Biospecimen_ID', var_group_col)) %>%
+    distinct()
+
+  patient_var_df <- sample_var_df %>%
+    left_join(bpid_ss_htl_df, by = 'Kids_First_Biospecimen_ID') %>%
+    group_by_at(var_group_col) %>%
+    summarise(Total_mutations = length(unique(Kids_First_Participant_ID))) %>%
+    mutate(Patients_in_dataset = ss_n_patients) %>%
+    mutate(Total_mutations_Over_Patients_in_dataset =
+             paste(Total_mutations, Patients_in_dataset, sep = '/')) %>%
+    mutate(Frequency_in_overall_dataset = num_to_pct_chr(
+      Total_mutations / Patients_in_dataset))
+
+  # td = tumor descriptor
+  td_var_df <- sample_var_df %>%
+    group_by_at(var_group_col) %>%
+    summarise(
+      Total_primary_tumors_mutated =
+        sum(unique(Kids_First_Biospecimen_ID) %in% ss_primary_kfbids),
+      Total_relapse_tumors_mutated =
+        sum(unique(Kids_First_Biospecimen_ID) %in% ss_relapse_kfbids)) %>%
+    mutate(Primary_tumors_in_dataset = ss_n_primary_tumors,
+           Relapse_tumors_in_dataset = ss_n_relapse_tumors) %>%
+    mutate(Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset =
+             paste(Total_primary_tumors_mutated,
+                   Primary_tumors_in_dataset, sep = '/'),
+           Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset =
+             paste(Total_relapse_tumors_mutated, Relapse_tumors_in_dataset,
+                   sep = '/')) %>%
+    mutate(Frequency_in_primary_tumors = num_to_pct_chr(
+      Total_primary_tumors_mutated / Primary_tumors_in_dataset)) %>%
+    mutate(Frequency_in_relapse_tumors = num_to_pct_chr(
+      Total_relapse_tumors_mutated / Relapse_tumors_in_dataset))
+
+  mut_freq_tbl <- inner_join(patient_var_df, td_var_df, by = var_group_col)
+  # assertions to make sure the join is one-on-one
+  stopifnot(identical(nrow(mut_freq_tbl), nrow(td_var_df)))
+  stopifnot(identical(nrow(mut_freq_tbl), nrow(patient_var_df)))
+  stopifnot(identical(
+    nrow(mut_freq_tbl),
+    length(unique(mut_freq_tbl[, var_group_col, drop = TRUE]))
+  ))
+  stopifnot(identical(sort(mut_freq_tbl[, var_group_col, drop = TRUE]),
+                      sort(td_var_df[, var_group_col, drop = TRUE])))
+  stopifnot(identical(sort(mut_freq_tbl[, var_group_col, drop = TRUE]),
+                      sort(patient_var_df[, var_group_col, drop = TRUE])))
+  stopifnot(identical(
+    sort(colnames(mut_freq_tbl)),
+    sort(c(var_group_col,
+           'Total_mutations',
+           'Patients_in_dataset',
+           'Total_primary_tumors_mutated',
+           'Total_relapse_tumors_mutated',
+           'Primary_tumors_in_dataset',
+           'Relapse_tumors_in_dataset',
+           'Total_mutations_Over_Patients_in_dataset',
+           'Frequency_in_overall_dataset',
+           'Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset',
+           'Frequency_in_primary_tumors',
+           'Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset',
+           'Frequency_in_relapse_tumors'))
+  ))
+
+  return(mut_freq_tbl)
+}
+
+
+
+# Generate variant-level mutation frequency table for a (cancer_group, cohort)
 #
 # Args:
 # - maf_df: a MAF tibble. Must contain the following fields:
@@ -134,97 +290,41 @@ get_cg_cs_tbl <- function(histology_df) {
 # - primary_histology_df: the histology tibble that contains primary tumor
 #   samples. Must contain the Kids_First_Biospecimen_ID field.
 # - relapse_histology_df: the histology tibble that contains relapse tumor
-#   samples.
-#   Must contain the Kids_First_Biospecimen_ID field.
+#   samples. Must contain the Kids_First_Biospecimen_ID field.
 # - ss_cancer_group: a character value of the cancer group to compute for.
 # - ss_cohorts: a vector of character values of the cohorts to compute for.
 #
 # Returns a MAF tibble with additional frequency columns.
-get_cg_ch_mut_freq_tbl <- function(maf_df, overall_histology_df,
-                                   primary_histology_df, relapse_histology_df,
-                                   ss_cancer_group, ss_cohorts) {
+get_cg_ch_var_level_mut_freq_tbl <- function(maf_df, overall_histology_df,
+                                             primary_histology_df,
+                                             relapse_histology_df,
+                                             ss_cancer_group, ss_cohorts) {
+  # check input parameters
+  stopifnot(is.character(ss_cancer_group))
   stopifnot(identical(length(ss_cancer_group), as.integer(1)))
   stopifnot(identical(sum(is.na(ss_cancer_group)), as.integer(0)))
+
+  stopifnot(is.character(ss_cohorts))
   stopifnot(!is.null(length(ss_cohorts)))
   stopifnot(identical(length(ss_cohorts), length(unique(ss_cohorts))))
   stopifnot(identical(sum(is.na(ss_cohorts)), as.integer(0)))
   stopifnot(length(ss_cohorts) >= 1)
+
   # ss = subset
   ss_htl_df <- overall_histology_df %>%
     filter(cancer_group == ss_cancer_group,
            cohort %in% ss_cohorts)
 
-  bpid_ss_htl_df <- ss_htl_df %>%
-    select(Kids_First_Biospecimen_ID, Kids_First_Participant_ID)
-
-  ss_n_patients <- length(unique(bpid_ss_htl_df$Kids_First_Participant_ID))
-
-  ss_primary_kfbids <- primary_histology_df %>%
-    filter(Kids_First_Biospecimen_ID %in%
-             bpid_ss_htl_df$Kids_First_Biospecimen_ID) %>%
-    pull(Kids_First_Biospecimen_ID)
-
-  ss_n_primary_tumors <- length(ss_primary_kfbids)
-
-  ss_relapse_kfbids <- relapse_histology_df %>%
-    filter(Kids_First_Biospecimen_ID %in%
-             bpid_ss_htl_df$Kids_First_Biospecimen_ID) %>%
-    pull(Kids_First_Biospecimen_ID)
-
-  ss_n_relapse_tumors <- length(ss_relapse_kfbids)
-
-
   ss_maf_df <- maf_df %>%
     filter(Kids_First_Biospecimen_ID %in% ss_htl_df$Kids_First_Biospecimen_ID)
-
-  # gc(reset = TRUE) If one Variant_ID has more than one records in one
-  # Kids_First_Biospecimen_ID, treat multiple records as a single mutation. This
-  # is reasonable when computing mutation frequencies.
+  # Need to subset overall_histology_df and maf_df, because they are not subset
+  # in get_opr_mut_freq_tbl().
   #
-  # Patient level frequencies: for each variant, check how many unique
-  # Kids_First_Participant_IDs. Having one or more records for duplicated
-  # variants will not change the number of patients, so the patient level
-  # frequencies will not be chagned.
-  #
-  # Sample level frequencies: for each variant, check how many unique
-  # Kids_First_Biospecimen_IDs are in primary or relapse independent
-  # Kids_First_Biospecimen_IDs. Having one or more records for duplicated
-  # variants will not change the number of Kids_First_Biospecimen_IDs, so the
-  # sample level frequencies will not be chagned.
-  sample_var_df <- ss_maf_df %>%
-    select(Kids_First_Biospecimen_ID, Variant_ID) %>%
-    distinct()
-
-  patient_var_df <- sample_var_df %>%
-    left_join(bpid_ss_htl_df, by = 'Kids_First_Biospecimen_ID') %>%
-    group_by(Variant_ID) %>%
-    summarise(Total_mutations = length(unique(Kids_First_Participant_ID))) %>%
-    mutate(Patients_in_dataset = ss_n_patients) %>%
-    mutate(Total_mutations_Over_Patients_in_dataset =
-             paste(Total_mutations, Patients_in_dataset, sep = '/')) %>%
-    mutate(Frequency_in_overall_dataset = num_to_pct_chr(
-      Total_mutations / Patients_in_dataset))
-
-  # td = tumor descriptor
-  td_var_df <- sample_var_df %>%
-    group_by(Variant_ID) %>%
-    summarise(
-      Total_primary_tumors_mutated =
-        sum(unique(Kids_First_Biospecimen_ID) %in% ss_primary_kfbids),
-      Total_relapse_tumors_mutated =
-        sum(unique(Kids_First_Biospecimen_ID) %in% ss_relapse_kfbids)) %>%
-    mutate(Primary_tumors_in_dataset = ss_n_primary_tumors,
-           Relapse_tumors_in_dataset = ss_n_relapse_tumors) %>%
-    mutate(Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset =
-             paste(Total_primary_tumors_mutated,
-                   Primary_tumors_in_dataset, sep = '/'),
-           Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset =
-             paste(Total_relapse_tumors_mutated, Relapse_tumors_in_dataset,
-                   sep = '/')) %>%
-    mutate(Frequency_in_primary_tumors = num_to_pct_chr(
-      Total_primary_tumors_mutated / Primary_tumors_in_dataset)) %>%
-    mutate(Frequency_in_relapse_tumors = num_to_pct_chr(
-      Total_relapse_tumors_mutated / Relapse_tumors_in_dataset))
+  # No need to subset primary_histology_df and relapse_histology_df, because
+  # they are subset in get_opr_mut_freq_tbl().
+  ss_mut_freq_df <- get_opr_mut_freq_tbl(ss_maf_df, 'Variant_ID',
+                                         ss_htl_df, primary_histology_df,
+                                         relapse_histology_df)
 
   # If one Variant_ID has more than 1 values in the summarised fields, add
   # code to handle duplicates.
@@ -244,8 +344,7 @@ get_cg_ch_mut_freq_tbl <- function(maf_df, overall_histology_df,
               Protein_Ensembl_ID = unique(ENSP),
               Protein_change = unique(HGVSp_Short),
               HotSpotAllele = unique(HotSpotAllele)) %>%
-    left_join(patient_var_df, by = 'Variant_ID') %>%
-    left_join(td_var_df, by = 'Variant_ID') %>%
+    left_join(ss_mut_freq_df, by = 'Variant_ID') %>%
     mutate(Disease = ss_cancer_group,
            Dataset = paste(ss_cohorts, collapse = '&'),
            HotSpot = if_else(HotSpotAllele == 1, true = 'Y', false = 'N')) %>%
@@ -450,7 +549,7 @@ mut_freq_tbl_list <- lapply(
     stopifnot(identical(paste(c_cohorts, collapse = '&'), cgcs_row$cohort))
     message(paste(c_cancer_group, cgcs_row$cohort))
 
-    res_df <- get_cg_ch_mut_freq_tbl(
+    res_df <- get_cg_ch_var_level_mut_freq_tbl(
       maf_df, td_htl_dfs$overall_htl_df, td_htl_dfs$primary_htl_df,
       td_htl_dfs$relapse_htl_df, c_cancer_group, c_cohorts)
     return(res_df)
