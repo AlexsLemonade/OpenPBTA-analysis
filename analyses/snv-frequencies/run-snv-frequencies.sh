@@ -12,14 +12,6 @@ script_directory="$(perl -e 'use File::Basename;
  print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
-# If results directory exists, remove the existing results.
-# If existing .gz files exist, gzip command asks for confirmation.
-# Design-wise, it is not surprising to remove previously generated results
-# before a new run.
-if [[ -d results ]]; then
-    rm -r results
-fi
-
 mkdir -p results
 
 Rscript --vanilla '01-snv-frequencies.R'
