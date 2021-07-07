@@ -10,7 +10,6 @@ Within each cancer group and cohort, calculate TPM means, standard deviations, z
 
 Select independent RNA-seq samples using `independent-specimens.rnaseq.primary.tsv` in the results of the `independent-samples` analysis module.
 
-Combine CBTN and PNOC into one cohort, PBTA.
 
 For each `cancer_group`, select one of the following two sets of samples:
 
