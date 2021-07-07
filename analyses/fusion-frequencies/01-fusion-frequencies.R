@@ -177,8 +177,8 @@ fus_freq_tbl_list <- lapply(
     res_df <- get_cg_ch_mut_freq_tbl(
       fusion_df, td_htl_dfs$overall_htl_df, td_htl_dfs$primary_htl_df,
       td_htl_dfs$relapse_htl_df, c_cancer_group, c_cohorts) %>%
-      # if Alt_ID has no counts delete the row
-      filter(!is.na(Total_alterations))
+      # if Alt_ID has no matched Patients_in_dataset
+      filter(!is.na(Patients_in_dataset))
     
     if ( nrow(res_df) != 0 ){
     # merge fusion dataframe with the counts and frequencies in each cancer_group
@@ -272,7 +272,7 @@ suppressMessages(gc(reset = TRUE))
 
 m_fus_freq_tbl <- m_fus_freq_tbl %>%
   select(gene_symbol, RMTL, Gene_Ensembl_ID,
-         Gene_full_name, FusionName,
+         Gene_full_name, gene_position, FusionName,
          Dataset, Disease, EFO, MONDO, Fusion_Type,
          Total_alterations_Over_Patients_in_dataset,
          Frequency_in_overall_dataset,
@@ -280,7 +280,7 @@ m_fus_freq_tbl <- m_fus_freq_tbl %>%
          Frequency_in_primary_tumors,
          Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
          Frequency_in_relapse_tumors) %>%
-  rename(
+  rename(Gene_Position = gene_position,
          Gene_Symbol = gene_symbol)
 
 
