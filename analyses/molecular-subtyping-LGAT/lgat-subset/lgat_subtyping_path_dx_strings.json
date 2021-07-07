@@ -6,7 +6,7 @@
     "exclude_path_dx": [
         "dysembryoplastic neuroepithelial tumor"
     ],
-    "exclude_path_free_text": [
+    "recode_path_free_text": [
         "desmoplastic infantile astrocytoma",
         "glioneuronal"
     ]
