@@ -13,7 +13,7 @@ Select independent RNA-seq samples using `independent-specimens.rnaseq.primary.t
 Group all samples with one of the following two methods:
 
 - Each `sample_group` includes all samples in one `cancer_group` and one `cohort`. Call this grouping method `each-cohort`.
-- Each `sample_group` includes all samples in one `cancer_group` and all `cohort`(s). Call this grouping method `PedOT` (or `all-cohorts`).
+- Each `sample_group` includes all samples in one `cancer_group` and all `cohort`(s). Call this grouping method `all-cohorts` (or `PedOT`).
 
 For each grouping method, compute summary statistics as following:
 
@@ -53,11 +53,11 @@ Output the long summary statistic tables in TSV and JSON formats using `readr::w
 
 The `NA`/`NaN`s in result tables are represented with blank string `''`s.
 
-#### `PedOT`(/`all-cohorts`) summary statistics tables
+#### `all-cohorts`(/`PedOT`) summary statistics tables
 
 The following wide tables are generated using the methods described above. Rows are genes. Columns are `sample_group`s, except that the first two columns are gene symbol and gene Ensembl ID.
 
-In `PedOT` result tables, a `sample_group` is a string that concatenates a `cancer_group` and `___PedOT`, e.g. `Meningioma___PedOT`, `Neuroblastoma___PedOT`, and `Diffuse midline glioma___PedOT`.
+In `all-cohorts` result tables, a `sample_group` is a string that concatenates a `cancer_group` and `___all_cohorts`, e.g. `Meningioma___all_cohorts`, `Neuroblastoma___all_cohorts`, and `Diffuse midline glioma___all_cohorts`.
 
 
 If one gene symbol matches to multiple Ensembl IDs, the value of the Ensembl ID column is a comma separated list of all Ensembl IDs, e.g. `ENSG00000206952,ENSG00000281910`. In `inpiut/ens_symbol.tsv`, `SNORA50A` is mapped to both `ENSG00000206952` and `ENSG00000281910`.
@@ -119,7 +119,7 @@ Each row of the long table is a tab-delimited record of the following columns, a
 - `tpm_mean_cancer_group_wise_zscore`/`tpm_mean_gene_wise_zscore`
 - `tpm_mean_cancer_group_wise_quantiles`
 
-If the record is generated using the `PedOT`/(`all-cohorts`) grouping method, the `cohort` column takes the value of `PedOT`.
+If the record is generated using the `all-cohorts`(/`PedOT`) grouping method, the `cohort` column takes the value of `all_cohorts`.
 
 Different from the wide tables, the `gene_id` does not contain comma-separated ENSG IDs. If one gene symbol matches to multiple Ensembl IDs, each Ensembl gene ID will become one row in the long table. For example:
 
@@ -146,7 +146,7 @@ CDR1    ENSG00000281508    Atypical Teratoid Rhabdoid Tumor    PBTA    332.28961
 ### Usage
 
 1. Change working directory to local `OpenPBTA-analysis`.
-2. Download data using `bash download-data.sh`. Make sure `data/gene-expression-rsem-tpm-collapsed.rds`, `data/histologies.tsv`, `data/ensg-hugo-rmtl-v1-mapping.tsv`, and `data/efo-mondo-map.tsv` are downloaded.
+2. Download data using `bash download-data.sh`.
 3. Run this analysis module in the continuous integration (CI) docker image using `./scripts/run_in_ci.sh bash analyses/rna-seq-expression-summary-stats/run-rna-seq-expression-summary-stats.sh`.
 
 ### Module structure
