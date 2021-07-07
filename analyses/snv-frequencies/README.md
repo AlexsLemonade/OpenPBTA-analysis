@@ -72,16 +72,19 @@ Merge the SNV mutation frequency tables of all `cancer_group_cohort`s.
 
 ### Results
 
-Results are generated using PediatricOpenTargets/OpenPedCan-analysis data release v5.
+Results are generated using PediatricOpenTargets/OpenPedCan-analysis data release v6.
 
-`results/snv-consensus-annotated-mut-freq.tsv` is the merged SNV mutation frequency tables of all `cancer_group_cohort`s.
+The merged SNV mutation frequency table of all `cancer_group_cohort`s is output in TSV and JSON formats using `readr::write_tsv()` and `jsonlite::write_json()` respectively.
+
+- `results/snv-consensus-annotated-mut-freq.tsv`
+- `snv-consensus-annotated-mut-freq.json.gz`
 
 **Note:** When reading `snv-consensus-annotated-mut-freq.tsv` using `readr::read_tsv`, you can specify `na = character(0)` to avoid converting blank string entries to `NA`s, as suggested by @jharenza at <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/45#pullrequestreview-697753423>. This can be useful when converting `snv-consensus-annotated-mut-freq.tsv` to JSON, because the PediatricOpenTargets/OpenPedCan-analysis project favors empty string (`''`) as missing value over `NA`/`NaN`/`NULL`.
 
 ### Usage
 
 1. Change working directory to local `OpenPBTA-analysis`.
-2. Download data using `bash download-data.sh`. Make sure `data/gene-counts-rsem-expected_count-collapsed.rds` is downloaded.
+2. Download data using `bash download-data.sh`.
 3. Run this analysis module in the continuous integration (CI) docker image using `./scripts/run_in_ci.sh bash analyses/snv-frequencies/run-snv-frequencies.sh`.
 
 ### Analysis scripts
@@ -102,7 +105,10 @@ Input:
 - `../../data/snv-consensus-plus-hotspots.maf.tsv.gz`
 - `../independent-samples/results/independent-specimens.wgs.primary.tsv`
 - `../independent-samples/results/independent-specimens.wgs.relapse.tsv`
+- `../../data/efo-mondo-map.tsv`
+- `../../data/ensg-hugo-rmtl-v1-mapping.tsv`
 
 Output:
 
 - `results/snv-consensus-annotated-mut-freq.tsv`
+- `results/snv-consensus-annotated-mut-freq.json`
