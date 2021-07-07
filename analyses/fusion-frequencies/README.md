@@ -32,7 +32,7 @@ Each `cancer_group` and `cohort`(s) combination is considered a `cancer_group_co
 
 Format the SNV mutation frequency table according to the latest spreadsheet that is attached in <https://github.com/PediatricOpenTargets/ticket-tracker/issues/64>.
 
-Merge the SNV mutation frequency tables of all `cancer_group_cohort`s.
+Merge the fusion frequency tables of all `cancer_group_cohort`s.
 
 ### Results
 
