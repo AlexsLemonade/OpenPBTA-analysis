@@ -70,11 +70,24 @@ gtexMatrix<-unlist(strsplit(opt$normalExpressionMatrix,","))
 
 print(gtexMatrix)
 
-ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter=zscoreFilter,saveZscoredMatrix=saveZscoredMatrix,expressionMatrix=expressionMatrix){
+# load standardaized fusion calls cohort
+standardFusionCalls<-readRDS(standardFusionCalls)
+
+# load expression Matrix for cohort
+expressionMatrix<-readRDS(expressionMatrix) 
+
+# load GTEx norm data for each cohort
+normData <-lapply(gtexMatrix, readRDS)
+
+ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,
+                            normData=normData, zscoreFilter=zscoreFilter,
+                            saveZscoredMatrix=saveZscoredMatrix,cohort_BSids= cohort_BSids,
+                            expressionMatrix=expressionMatrix){
   #  @param standardFusionCalls : Annotates standardizes fusion calls from callers [STARfusion| Arriba] or QC filtered fusion
   #  @param zscoreFilter : Zscore value to use as threshold for annotation of differential expression
   #  @param normData: normalizing expression dataset to calculate zscore
   #  @param expressionMatrix: Expression matrix associated with the fusion calls
+  #  @param cohort_BSids: biospecimen ID for cohort of interest to filter/subset expression matrix
   #  @param saveZscoredMatrix: File to save zscored matrix calculated for the normalized data and expression matrix
   #  @results : expression_annotated_fusions is a standardized fusion call set with standard
               # column headers with additional columns below from expression annotation
@@ -100,23 +113,13 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter
     # Retain only distinct rows
     dplyr::distinct()
   
-  expression_annotated_cohort_combined <- data.frame()
-  for (j in 1:length(cohortInterest)){
-    cohort_name = cohortInterest[j]
-    
-    # filter the expression to only the ones that are in the cohort and sample type of interest
-    matched_samples <- read.delim(clinicalFile, header = TRUE, sep = "\t", stringsAsFactors = FALSE) %>%
-      filter(cohort == cohort_name) %>%
-      filter(experimental_strategy == "RNA-Seq") %>%
-      filter(sample_type == "Tumor") %>%
-      tibble::column_to_rownames("Kids_First_Biospecimen_ID")
     
     # filter the fusion results to contain only samples in the cohort of interest
-    fusion_sample_gene_df_matched <- fusion_sample_gene_df %>% filter(Sample %in% rownames(matched_samples))
+    fusion_sample_gene_df_matched <- fusion_sample_gene_df %>% filter(Sample %in% cohort_BSids)
     fusion_sample_list <- fusion_sample_gene_df_matched$Sample %>% unique()
     
     expressionMatrixMatched <- expressionMatrix  %>%
-      select(rownames(matched_samples)) %>%
+      select(cohort_BSids) %>%
       select(fusion_sample_list) 
   
     # remove 0s 
@@ -124,9 +127,8 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter
     # log2 transformation
     expressionMatrixMatched<-log2(expressionMatrixMatched+1)
   
-    # example run using GTEx
-    # load GTEx data - make sure the expression data matches
-    normData<-readRDS(gtexMatrix[j]) %>%
+    # convert the expression data to data matrix
+    normData <- normData %>% data.frame() %>%
       as.matrix()
     # rearrange to order with expressionMatrix
     normData <- normData[rownames(expressionMatrixMatched), ]
@@ -186,23 +188,20 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,zscoreFilter
          dplyr::distinct()
        expression_annotated_fusions <- rbind(expression_annotated_fusions, expression_annotated_fusion_individual)
      }
-    expression_annotated_cohort_combined <- rbind(expression_annotated_cohort_combined, expression_annotated_fusions)
-    }
-  return (expression_annotated_cohort_combined)
+  return (expression_annotated_fusions)
 }
 
-# load standardaized fusion calls cohort
-standardFusionCalls<-readRDS(standardFusionCalls)
+GTExZscoredAnnotation_filtered_fusions <- data.frame()
+for (j in (1:length(cohortInterest))) {
+  cohort_BSids <- read.delim(clinicalFile, header = TRUE, sep = "\t", stringsAsFactors = FALSE) %>%
+    # uses each value x in cohortInterest
+    filter(cohort == cohortInterest[j]) %>% filter(experimental_strategy == "RNA-Seq") %>%
+    filter(sample_type == "Tumor") %>% pull("Kids_First_Biospecimen_ID")
+  # use index to find the matched normal data
+  normData = normData[j]
+  GTExZscoredAnnotation_filtered_fusions_individual <-ZscoredAnnotation(standardFusionCalls,zscoreFilter,normData=normData,cohort_BSids=cohort_BSids, expressionMatrix = expressionMatrix)
+  GTExZscoredAnnotation_filtered_fusions <- rbind(GTExZscoredAnnotation_filtered_fusions, GTExZscoredAnnotation_filtered_fusions_individual)
+  }
 
-# load expression Matrix for cohort
-expressionMatrix<-readRDS(expressionMatrix) 
-
-# for cohort level run the expressionMatrix divided by broad_histology will be provided to the function as normData and expressionMatrix
-
-GTExZscoredAnnotation_filtered_fusions<- ZscoredAnnotation(standardFusionCalls, zscoreFilter, expressionMatrix = expressionMatrix)
 saveRDS(GTExZscoredAnnotation_filtered_fusions,paste0(opt$outputfile,"_GTExComparison_annotated.RDS"))
-
-
-
-
 
