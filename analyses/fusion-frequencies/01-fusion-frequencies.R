@@ -101,8 +101,6 @@ td_htl_dfs <- lapply(td_htl_dfs, function(x) {
   stopifnot(identical(nrow(x), length(unique(x$Kids_First_Biospecimen_ID))))
   
   fx <- filter(x, !is.na(cancer_group), !is.na(cohort))
-  fx <- mutate(
-    fx, cancer_group_cohort = paste(cancer_group, cohort, sep = '___'))
   return(fx)
 })
 
