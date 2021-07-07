@@ -229,8 +229,9 @@ m_fus_freq_tbl <- m_fus_freq_tbl %>%
 stopifnot(identical(is.na(ensg_hugo_rmtl_df$rmtl),
                     is.na(ensg_hugo_rmtl_df$version)))
 ann_ensg_hugo_rmtl_df <- ensg_hugo_rmtl_df %>%
-  filter(!is.na(rmtl), !is.na(version)) %>%
-  mutate(RMTL = paste0(rmtl, ' (', version, ')')) %>%
+  mutate(RMTL = if_else((!is.na(rmtl) & !is.na(version)),
+                        paste0(rmtl, ' (', version, ')'),
+                        '')) %>%
   select(ensg_id, RMTL,gene_symbol) %>%
   rename(Gene_Ensembl_ID = ensg_id) 
 
