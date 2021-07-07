@@ -218,9 +218,8 @@ get_cg_ch_mut_freq_tbl <- function(alt_df, overall_histology_df,
       Frequency_in_overall_dataset = '',
       Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset = '',
       Frequency_in_primary_tumors = '',
-      Total_relapse_tum60ors_mutated_Over_Relapse_tumors_in_dataset = '',
+      Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset = '',
       Frequency_in_relapse_tumors = ''))
   
   return(output_var_df)
 }
-
