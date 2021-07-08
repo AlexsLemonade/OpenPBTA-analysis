@@ -68,11 +68,11 @@ rnaseq_primplus_each_file <- file.path(out_dir,
                                   "independent-specimens.rnaseq.primary-plus.eachcohort.tsv")
 
 rnaseq_primary_all_file <- file.path(out_dir, 
-                                 "independent-specimens.rnaseq.primary.allcohorts.tsv")
+                                 "independent-specimens.rnaseq.primary.tsv")
 rnaseq_relapse_all_file <- file.path(out_dir, 
-                                 "independent-specimens.rnaseq.relapse.allcohorts.tsv")
+                                 "independent-specimens.rnaseq.relapse.tsv")
 rnaseq_primplus_all_file <- file.path(out_dir, 
-                                  "independent-specimens.rnaseq.primary-plus.allcohorts.tsv")
+                                  "independent-specimens.rnaseq.primary-plus.tsv")
 
 # Read histology file
 sample_df <- readr::read_tsv(opts$histology_file, 

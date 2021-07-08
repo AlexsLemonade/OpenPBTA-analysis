@@ -68,17 +68,17 @@ wgswxspanel_primplus_each_file <- file.path(out_dir,
                               "independent-specimens.wgswxspanel.primary-plus.eachcohort.tsv")
 
 wgs_primary_all_file <- file.path(out_dir, 
-                                   "independent-specimens.wgs.primary.allcohorts.tsv")
+                                   "independent-specimens.wgs.primary.tsv")
 wgs_relapse_all_file <- file.path(out_dir, 
-                                   "independent-specimens.wgs.relapse.allcohorts.tsv")
+                                   "independent-specimens.wgs.relapse.tsv")
 wgs_primplus_all_file <- file.path(out_dir, 
-                                    "independent-specimens.wgs.primary-plus.allcohorts.tsv")
+                                    "independent-specimens.wgs.primary-plus.tsv")
 wgswxspanel_primary_all_file <- file.path(out_dir, 
-                                           "independent-specimens.wgswxspanel.primary.allcohorts.tsv")
+                                           "independent-specimens.wgswxspanel.primary.tsv")
 wgswxspanel_relapse_all_file <- file.path(out_dir, 
-                                           "independent-specimens.wgswxspanel.relapse.allcohorts.tsv")
+                                           "independent-specimens.wgswxspanel.relapse.tsv")
 wgswxspanel_primplus_all_file <- file.path(out_dir, 
-                                            "independent-specimens.wgswxspanel.primary-plus.allcohorts.tsv")
+                                            "independent-specimens.wgswxspanel.primary-plus.tsv")
 
 # Read histology file
 histology_df <- readr::read_tsv(opts$histology_file, 

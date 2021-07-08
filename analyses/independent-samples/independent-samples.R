@@ -76,7 +76,8 @@ independent_samples <- function(histology_df,
             dplyr::filter(is.na(cancer_group))
         }else{
           filtered_df <- sample_df %>% dplyr::filter(cohort == cohort_name) %>%
-            dplyr::filter(cancer_group == cancer_group_name)}
+            dplyr::filter(cancer_group == cancer_group_name)
+          }
         # some specific group does not have any specimen 
         if(nrow(filtered_df) == 0){
           independent_filtered <- data.frame(Kids_First_Participant_ID = character(), Kids_First_Biospecimen_ID = character(), stringsAsFactors = FALSE)
