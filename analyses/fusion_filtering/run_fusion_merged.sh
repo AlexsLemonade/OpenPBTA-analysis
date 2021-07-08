@@ -70,13 +70,13 @@ Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
                                        --clinicalFile $histologies_file \
                                        --specimenType "Brain" \
                                        --outputfile $normal_expression_brain
-                                       
+
 # Run Fusion standardization for arriba caller
 Rscript 01-fusion-standardization.R --fusionfile $arriba_file \
                                     --caller "arriba" \
                                     --outputfile $standard_arriba_file
-                                    
-                                    
+
+
 # Run Fusion standardization for starfusion caller
 Rscript 01-fusion-standardization.R --fusionfile $starfusion_file \
                                     --caller "starfusion" \
