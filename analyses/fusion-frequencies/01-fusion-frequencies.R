@@ -31,7 +31,7 @@ stopifnot(identical(
   as.integer(0)))
 
 fusion_df <- read_tsv(file.path(root_dir,
-  'analyses/fusion_filtering/results/pbta-fusion-putative-oncogenic.tsv'))
+  'analyses/fusion_filtering/results/fusion-putative-oncogenic.tsv'))
 # assert all records have Sample
 stopifnot(identical(sum(is.na(fusion_df$Sample)), as.integer(0)))
 
@@ -123,6 +123,8 @@ fusion_df <- fusion_df  %>%
                 DomainRetainedGene1A,
                 DomainRetainedGene1B,
                 reciprocal_exists,
+                annots,
+                BreakpointLocation,
                 ends_with("anno")) %>%
   # Gather a alteration ID to use for count
   # Update reciprocal_exits to fusion with atleast 1 kinase gene involved
@@ -281,7 +283,7 @@ m_fus_freq_tbl <- m_fus_freq_tbl %>%
   select(gene_symbol, RMTL, Gene_Ensembl_ID,
          Gene_full_name, gene_position, FusionName,
          Dataset, Disease, EFO, MONDO, Fusion_Type,
-         Kinase_domain_retained_Gene1A,
+         BreakpointLocation,Kinase_domain_retained_Gene1A,
          Kinase_domain_retained_Gene1B,
          Reciprocal_exists_either_gene_kinase,
          Total_alterations_Over_Patients_in_dataset,
@@ -289,7 +291,8 @@ m_fus_freq_tbl <- m_fus_freq_tbl %>%
          Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset,
          Frequency_in_primary_tumors,
          Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
-         Frequency_in_relapse_tumors) %>%
+         Frequency_in_relapse_tumors,
+         annots) %>%
   rename(Gene_Position = gene_position,
          Gene_Symbol = gene_symbol)
 
