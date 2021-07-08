@@ -3,7 +3,7 @@
 ## Summary
 
 Many analyses that involve mutation frequencies or co-occurence require that all samples be independent.
-However, the PBTA data set includes many cases where multiple speciments were taken from a single individual.
+However, the PBTA+GMKF data set includes many cases where multiple speciments were taken from a single individual.
 This analysis creates lists of samples such that there are no cases where more than one specimen is included from each individual.
 
 As different analyses may require different sets of data, we actually generate a few different sets, stored in the `results` subdirectory:
@@ -33,17 +33,17 @@ use OPENPBTA_BASE_SUBTYPING=1 to run this module using the pbta-histologies-base
 OPENPBTA_BASE_SUBTYPING=1 ../analyses/independent-samples/run-independent-samples.sh 
 ```
 
-OR by default uses pbta-histologies.tsv from data folder
+OR by default uses histologies.tsv from data folder
 ```sh
 bash analyses/independent-samples/run-independent-samples.sh
 ```
 
 ## Methods
 
-When presented with more than one specimen from a given individual, the script randomly selects one specimen to include, with preference for primary tumors and whole genome sequences where available.
-There is also a preference for the earliest collected samples, but as this data is not currently available, that code is not currently relevant.
+When presented with more than one specimen from a given individual with a specific cancer group and cohort, the script randomly selects one specimen to include, with preference for primary tumors and whole genome sequences where available.
+There is also a preference for the earliest collected samples, but as this data is not currently available, that code is currently deleted.
 
-When multiple RNA-Seq samples exist per participant, the script matches the independent whole genome or whole exome sample_ids to gather matched RNA-Seq sample. If participant has onle RNA-Seq sample then a primary (and secondary if applicable) sample is randomly selected per participant  
+When multiple RNA-Seq samples exist per participant, the script matches the independent whole genome or whole exome sample_ids to gather matched RNA-Seq sample. If participant has onle RNA-Seq sample then a primary (and secondary if applicable) sample is randomly selected per participant per cancer group per cohort. 
 
 ## Relevant links
 The methods are described in the manuscript here:
