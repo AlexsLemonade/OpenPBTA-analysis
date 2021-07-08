@@ -24,6 +24,7 @@ data_path="../../data"
 scratch_path="../../scratch"
 references_path="references"
 results_path="results"
+independent_samples_path="../independent-samples/results"
 
 
 # fusion files before and after standardization
@@ -33,7 +34,7 @@ standard_arriba_file="${scratch_path}/arriba.tsv"
 standard_starfusion_file="${scratch_path}/starfusion.tsv"
 
 # general filtering parameters
-artifact_filter="GTEx|HGNC_GENEFAM|DGD_PARALOGS|Normal|BodyMap"
+artifact_filter="GTEx_Recurrent|DGD_PARALOGS|Normal|BodyMap"
 reading_frame_filter="in-frame|frameshift|other"
 spanningFragCountFilter=100
 
@@ -45,14 +46,16 @@ rna_expression_file="${data_path}/gene-expression-rsem-tpm-collapsed.rds"
 normal_expression_adrenal_gland="${references_path}/gtex_adrenal_gland_TPM_hg38.rds"
 normal_expression_brain="${references_path}/gtex_brain_TPM_hg38.rds"
 
+# independent samples for curating fusion per sample
+independent_samples_primary="${independent_samples_path}/independent-specimens.rnaseq.primary.tsv"
+independent_samples_relapse="${independent_samples_path}/independent-specimens.rnaseq.relapse.tsv"
+
 # metadata files
 if [[ RUN_FOR_SUBTYPING -eq "0" ]]
 then
    histologies_file="${data_path}/histologies.tsv" 
-   independent_samples_file="${data_path}/independent-specimens.wgswxspanel.primary-plus.tsv"
 else 
    histologies_file="${data_path}/histologies-base.tsv"  
-   independent_samples_file="../independent-samples/results/independent-specimens.wgswxspanel.primary-plus.tsv" 
 fi
 
 
@@ -111,6 +114,8 @@ Rscript -e "rmarkdown::render('05-QC_putative_onco_fusion_distribution.Rmd',para
 # Recurrent fusion/fused genes
 Rscript 06-recurrent-fusions-per-cancer-group.R --standardFusionCalls $putative_oncogenic_fusion \
                                                 --clinicalFile $histologies_file \
+                                                --cohortInterest "PBTA,GMKF" \
                                                 --outputfolder $results_path \
-                                                --independentSpecimensFile $independent_samples_file
+                                                --independentPrimary $independent_samples_primary \
+                                                --independentRelapse $independent_samples_relapse
 

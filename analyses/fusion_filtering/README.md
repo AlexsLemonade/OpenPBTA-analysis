@@ -67,7 +67,7 @@ bash run_fusion_merged.sh
 
 `02-fusion-filtering.R` : Filters artifacts by removing readthroughs and NEIGHBORS from annots column; annots column also contains red flag databases that are used to further filter common/normal occuring fusions; filters all fusions where both genes are expressed TPM < 1 are removed as non-expressed; requires fusions to have at least 1 JunctionSpanningRead and SpanningFragCount-JunctionReadCount to be <100
 
-`03-Calc-zscore-annotate.R` : Calculates z-score for gene fused gene's expression compared to GTeX brain samples and annotates differential expression status
+`03-Calc-zscore-annotate.R` : Calculates z-score for gene fused gene's expression compared to GTeX normal samples. Please note that for different cohort, different normal expression files are used and hence the input for the cohort of interest and the input for the normal GTEx expression file needs to be in order
 
 `04-project-specific-filtering.Rmd` : Performs project specific filtering. We prioritize the fusions as putative-oncogenic fusions if any fused gene in the fusion is annotated as kinases, oncogenes, tumor suppressors, curated transcription factors or present in COSMIC Cancer Gene Census list. We also annotated fusions if they are present in TCGA fusions list.
 All fusion calls are additionally have columns `reciprocal_exists` to specify if within the Sample a fusion GeneX--GeneY has a reciprocal GeneY--GeneX . `DomainRetainedGene1A` and `DomainRetainedGene1B` are added to identify kinase domain retention for Gene1A (5` Gene) and Gene1B (3` Gene).
