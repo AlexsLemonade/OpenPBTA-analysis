@@ -398,13 +398,15 @@ stopifnot(identical(sum(is.na(maf_df$Tumor_Sample_Barcode)), as.integer(0)))
 
 # primary independent sample data frame
 primary_indp_sdf <- read_tsv(
-  '../independent-samples/results/independent-specimens.wgs.primary.tsv',
+  file.path('..', 'independent-samples', 'results',
+            'independent-specimens.wgs.primary.eachcohort.tsv'),
   col_types = cols(
     .default = col_guess()))
 
 # relapse independent samples
 relapse_indp_sdf <- read_tsv(
-  '../independent-samples/results/independent-specimens.wgs.relapse.tsv',
+  file.path('..', 'independent-samples', 'results',
+            'independent-specimens.wgs.relapse.eachcohort.tsv'),
   col_types = cols(
     .default = col_guess()))
 
