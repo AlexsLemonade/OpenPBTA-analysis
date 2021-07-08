@@ -198,7 +198,7 @@ for (j in (1:length(cohortInterest))) {
     filter(cohort == cohortInterest[j]) %>% filter(experimental_strategy == "RNA-Seq") %>%
     filter(sample_type == "Tumor") %>% pull("Kids_First_Biospecimen_ID")
   # use index to find the matched normal data
-  normData = normData[j]
+  normData = normData[[j]]
   GTExZscoredAnnotation_filtered_fusions_individual <-ZscoredAnnotation(standardFusionCalls,zscoreFilter,normData=normData,cohort_BSids=cohort_BSids, expressionMatrix = expressionMatrix)
   GTExZscoredAnnotation_filtered_fusions <- rbind(GTExZscoredAnnotation_filtered_fusions, GTExZscoredAnnotation_filtered_fusions_individual)
   }
