@@ -39,20 +39,20 @@ spanningFragCountFilter=100
 
 
 # relevant gene expression files
-polya_expression_file="${data_path}/pbta-gene-expression-rsem-fpkm.polya.rds"
-stranded_expression_file="${data_path}/pbta-gene-expression-rsem-fpkm.stranded.rds"
+rna_expression_file="${data_path}/gene-expression-rsem-tpm-collapsed.rds"
 
 # reference expression file
-normal_expression_file="${references_path}/Brain_FPKM_hg38_matrix.txt.zip"
+normal_expression_adrenal_gland="${references_path}/gtex_adrenal_gland_TPM_hg38.rds"
+normal_expression_brain="${references_path}/gtex_brain_TPM_hg38.rds"
 
 # metadata files
-if [[ RUN_FOR_SUBTYPING == "0" ]]
+if [[ RUN_FOR_SUBTYPING -eq "0" ]]
 then
-   histologies_file="${data_path}/pbta-histologies.tsv" 
-   independent_samples_file="${data_path}/independent-specimens.wgswxs.primary-plus.tsv"
+   histologies_file="${data_path}/histologies.tsv" 
+   independent_samples_file="${data_path}/independent-specimens.wgswxspanel.primary-plus.tsv"
 else 
-   histologies_file="${data_path}/pbta-histologies-base.tsv"  
-   independent_samples_file="../independent-samples/results/independent-specimens.wgswxs.primary-plus.tsv" 
+   histologies_file="${data_path}/histologies-base.tsv"  
+   independent_samples_file="../independent-samples/results/independent-specimens.wgswxspanel.primary-plus.tsv" 
 fi
 
 
@@ -60,7 +60,17 @@ fi
 
 putative_oncogenic_fusion="${results_path}/pbta-fusion-putative-oncogenic.tsv"
 
+# Run filtering code to get the reference file
+Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
+                                       --clinicalFile $histologies_file \
+                                       --specimenType "Adrenal Gland" \
+                                       --outputfile $normal_expression_adrenal_gland
 
+Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
+                                       --clinicalFile $histologies_file \
+                                       --specimenType "Brain" \
+                                       --outputfile $normal_expression_brain
+                                       
 # Run Fusion standardization for arriba caller
 Rscript 01-fusion-standardization.R --fusionfile $arriba_file \
                                     --caller "arriba" \
