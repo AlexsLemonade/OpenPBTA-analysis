@@ -14,17 +14,23 @@ option_list <- list(
               help="Standardized fusion calls (.tsv) "),
   make_option(c("-c","--clinicalFile"),type="character",
               help="Histology file for all samples (.tsv)"),
+  make_option(c("-y", "--cohortInterest"),type="character",
+              help="cohorts of interest for the filtering"),
   make_option(c("-o","--outputfolder"),type="character",
               help="output folder for results "),
-  make_option(c("-i","--independentSpecimensFile"),type="character",
-              help="independent specimens WGS/WXS/panel to match to rnaseq")
+  make_option(c("-i","--independentPrimary"),type="character",
+              help="independent RNA specimens for WGS+WXS+panel with primary tumor"),
+  make_option(c("-i","--independentRelapse"),type="character",
+              help="independent RNA specimens for WGS+WXS+panel with relapse tumor")
 )
 
 opt <- parse_args(OptionParser(option_list=option_list))
 standardFusionCalls<-opt$standardFusionCalls
 clinicalFile<-opt$clinicalFile
+cohortInterest<-unlist(strsplit(opt$cohortInterest,","))
 outputfolder<-opt$outputfolder
-independentSpecimensFile<-opt$independentSpecimensFile
+independentPrimary<-opt$independentPrimary
+independentRelapse<-opt$independentRelapse
 seed <- opt$seed
 
 set.seed(seed)
@@ -36,55 +42,14 @@ standardFusionCalls <- read_tsv(standardFusionCalls) %>%
 clinical<-read_tsv(clinicalFile,col_types = readr::cols(molecular_subtype = readr::col_character()), guess_max = 100000) %>% 
   arrange(Kids_First_Biospecimen_ID,sample_id,tumor_descriptor,experimental_strategy,composition) %>%
   #select for only relevant cohort 
-  filter(cohort == "GMKF" | cohort == "PBTA")
+  filter(cohort %in% cohortInterest)
 
-# gather RNA-seq from WGS/WXS/panel samples in independent-specimens.wgswxspanel.primary-plus.tsv
-independentSpecimens<-read_tsv(independentSpecimensFile) %>% 
-  arrange(Kids_First_Biospecimen_ID) %>% as.data.frame()
-
-sampleIDMatchedIndependent<-clinical %>% 
-  dplyr::filter(Kids_First_Biospecimen_ID %in% independentSpecimens$Kids_First_Biospecimen_ID) %>% 
-  dplyr::select(sample_id) %>% as.vector() 
-
-# PNOC sampleIDs have .WXS which would need to .RNA-Seq ; Panel not in independent sample list ; so using patient ID to match
-clinical_pnoc<-clinical %>% 
-  dplyr::filter(cohort=="PNOC",experimental_strategy=="RNA-Seq",tumor_descriptor=="Initial CNS Tumor") %>% 
-  dplyr::select(Kids_First_Participant_ID,Kids_First_Biospecimen_ID)
-
-clinical_rna<-clinical %>% 
-  # select WGS/WXS/panel matched sampleIDs + experimental_strategy=="RNA-Seq" +composition == "Solid Tissue" & "Bone Marrow"
-  dplyr::filter(sample_id %in% sampleIDMatchedIndependent$sample_id,
-         experimental_strategy == "RNA-Seq") %>%
-         filter(composition == "Solid Tissue" | composition == "Bone Marrow") %>%
-  dplyr::group_by(Kids_First_Participant_ID) %>%
-  # sample 1 of BS_IDs for multiple sampleID found in matching with WGS/WXS/panel
-  dplyr::summarize(Kids_First_Biospecimen_ID = sample(Kids_First_Biospecimen_ID, 1)) 
-
-# match RNASeq only files
-clinical_dna<-clinical %>% 
-  dplyr::filter(experimental_strategy == "WGS" | experimental_strategy == "WXS" | experimental_strategy == "Targeted Sequencing" | experimental_strategy == "Targeted-Capture") %>%
-  filter(sample_type=="Tumor")
-
-# remove samples which have WGS/WXS/panel because those would have been captured from the independent-wgswxspanel-sample
-clinical_rna_v2<-clinical %>% 
-  dplyr::filter(experimental_strategy == "RNA-Seq",!Kids_First_Participant_ID %in% clinical_dna$Kids_First_Participant_ID)
-
-clinical_rna_initial<-clinical_rna_v2 %>% 
-  dplyr::filter(tumor_descriptor=="Initial CNS Tumor") %>% 
-  filter(composition == "Solid Tissue" | composition == "Bone Marrow") %>%
-  dplyr::select("Kids_First_Participant_ID","Kids_First_Biospecimen_ID")
-
-clinical_rna_non_initial<- clinical_rna_v2 %>% 
-  dplyr::filter(!Kids_First_Participant_ID %in% clinical_rna_initial$Kids_First_Participant_ID ) %>% 
-  dplyr::filter(experimental_strategy=="RNA-Seq") %>%
-  filter(composition == "Solid Tissue" | composition == "Bone Marrow") %>%
-  as.data.frame() %>% 
-  dplyr::group_by(Kids_First_Participant_ID) %>%
-  # random sample 1 of BS_IDs for multiple sampleID found in matching with WGS/WXS/panel
-  dplyr::summarize(Kids_First_Biospecimen_ID = sample(Kids_First_Biospecimen_ID, 1)) 
+# read in the files for independent specimens
+rnaseq_primary_all_file <- read_tsv(independentPrimary)
+rnaseq_relapse_all_file <- read_tsv(independentRelapse)
 
 # bind WGS/WXS/panel matched RNA-Seq + RNAseq only samples initial tumor samples + RNAseq only recurrent/progressive samples + RNASeq matched to PNOC samples
-clinical_rna<-rbind(clinical_rna,clinical_rna_initial,clinical_rna_non_initial,clinical_pnoc) %>% unique()
+clinical_rna<-rbind(rnaseq_primary_all_file,rnaseq_relapse_all_file) %>% unique()
 clinical_rna<-clinical_rna %>% left_join(clinical,by=c("Kids_First_Participant_ID","Kids_First_Biospecimen_ID"))
 
 # Putative Driver Fusions annotated with cancer_group
