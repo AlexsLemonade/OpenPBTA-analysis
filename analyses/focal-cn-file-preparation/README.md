@@ -2,7 +2,7 @@
 
 **Module authors:** Chante Bethell ([@cbethell](https://github.com/cbethell)), Joshua Shapiro ([@jashapiro](https://github.com/jashapiro)), and Jaclyn Taroni ([@jaclyn-taroni](https://github.com/jaclyn-taroni))
 
-The copy number data from OpenPBTA are provided as ranges or segments.
+The copy number data from OpenPedCan are provided as ranges or segments.
 The purpose of this module is to map from those ranges to gene identifiers for consumption by downstream analyses (e.g., OncoPrint plotting).
 
 ### Running this analysis
@@ -24,10 +24,10 @@ RUN_ORIGINAL=1 bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
 
 ### Scripts and notebooks
 
-* `01-add-ploidy-cnvkit.Rmd` - The two CNV callers, CNVkit and ControlFreeC, do not handle ploidy in the same way ([A Note on Ploidy](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/de661fbe740717472fcf01c7d9b74fe1b946aece/doc/data-formats.md#a-note-on-ploidy) in the Data Formats documentation).
+* `01-add-ploidy-cnvkit.Rmd` - The two CNV callers, CNVkit and ControlFreeC, do not handle ploidy in the same way ([A Note on Ploidy](https://github.com/AlexsLemonade/OpenPedCan-analysis/blob/de661fbe740717472fcf01c7d9b74fe1b946aece/doc/data-formats.md#a-note-on-ploidy) in the Data Formats documentation).
   This notebook adds the ploidy inferred via ControlFreeC to the CNVkit data and adds a status column that defines gain and loss broadly.
   Specifically, segments with copy number fewer than ploidy are losses, segments with copy number greater than ploidy are marked as a gain, and segments where copy number is equal to ploidy are marked as neutral.
-  (Note that [the logic around sex chromosomes in males when ploidy = 3 leaves something to be desired](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/259#discussion_r345354403)).
+  (Note that [the logic around sex chromosomes in males when ploidy = 3 leaves something to be desired](https://github.com/AlexsLemonade/OpenPedCan-analysis/pull/259#discussion_r345354403)).
 
 * `02-add-ploidy-consensus.Rmd` - This is very similar to the CNVkit file prep (`01-add-ploidy-cnvkit.Rmd`).
 However, there are instances in the consensus SEG file where `copy.num` is `NA` which are removed.
@@ -45,7 +45,7 @@ See the notebook for more information. This notebook also prepares lists of copy
 
   | biospecimen_id | status | copy_number | ploidy | ensembl | gene_symbol | cytoband |
   |----------------|--------|-------------|--------|---------|-------------|---------|
-  Any segment that is copy neutral is filtered out of this table. In addition, [any segments with copy number > (2 * ploidy) are marked as amplifications](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/e2058dd43d9b1dd41b609e0c3429c72f79ff3be6/analyses/focal-cn-file-preparation/03-prepare-cn-file.R#L275) in the `status` column.
+  Any segment that is copy neutral is filtered out of this table. In addition, [any segments with copy number > (2 * ploidy) are marked as amplifications](https://github.com/AlexsLemonade/OpenPedCan-analysis/blob/e2058dd43d9b1dd41b609e0c3429c72f79ff3be6/analyses/focal-cn-file-preparation/03-prepare-cn-file.R#L275) in the `status` column.
 
 * `05-define-most-focal-cn-units.Rmd` - This notebook defines the _most focal_ recurrent copy number units by removing focal changes that are within entire chromosome arm losses and gains.
 _Most focal_ here meaning if a chromosome arm is not clearly defined as a gain or loss (and is callable) we look to define the cytoband level status.
@@ -57,7 +57,7 @@ To make these calls, the following decisions around cutoffs were made:
 	This decision was made because it seems reasonable to expect a region to be more than 50% callable for a 	dominant status call to be made.
 
 * `06-find-recurrent-calls.Rmd` - This notebook determines the recurrent focal copy number dominant status calls by region using the output of `05-define-most-focal-cn-units.Rmd`.
-Recurrence here has been arbitrarily defined based on the plotting of the distribution of status calls and a [similar decision](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/66bb67a7bf29aad4510a0913a2dbc88da0013be8/analyses/fusion_filtering/06-recurrent-fusions-per-histology.R#L152) made in `analyses/fusion_filtering/06-recurrent-fusions-per-histology.R` to make the cutoff for recurrence to be greater than a count of 3 samples that have the same CN status call in the same region.
+Recurrence here has been arbitrarily defined based on the plotting of the distribution of status calls and a [similar decision](https://github.com/AlexsLemonade/OpenPedCan-analysis/blob/66bb67a7bf29aad4510a0913a2dbc88da0013be8/analyses/fusion_filtering/06-recurrent-fusions-per-histology.R#L152) made in `analyses/fusion_filtering/06-recurrent-fusions-per-histology.R` to make the cutoff for recurrence to be greater than a count of 3 samples that have the same CN status call in the same region.
 This notebook returns a `TSV` file with the recurrent copy number status calls, regions and biospecimen IDs.
 
 * `rna-expression-validation.R` - This script examines RNA-seq expression levels (RSEM FPKM) of genes that are called as deletions.

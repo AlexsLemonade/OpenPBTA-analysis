@@ -3,3 +3,12 @@ annotation_files/txdb_from_gencode.v27.gtf.db
 
 # Some GISTIC files are too large to be committed
 gistic-results
+
+# ignore large files
+results/cnvkit_annotated_cn_autosomes.tsv.gz
+results/controlfreec_annotated_cn_autosomes.tsv.gz
+
+# corresponding xy for the above large files
+results/cnvkit_annotated_cn_x_and_y.tsv.gz
+results/controlfreec_annotated_cn_x_and_y.tsv.gz
+~                                                 

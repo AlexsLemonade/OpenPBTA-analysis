@@ -62,7 +62,7 @@ focal_cn_df <-
   # Filter out the `uncallable` statuses
   filter(status != "uncallable")
 
-metadata <- read_tsv(file.path("..", "..", "data", "pbta-histologies.tsv"), guess_max = 10000)
+metadata <- read_tsv(file.path("..", "..", "data", "histologies.tsv"), guess_max = 100000)
 ```
 
 ## Find recurrent calls
