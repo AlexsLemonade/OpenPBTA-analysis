@@ -204,4 +204,3 @@ for (j in (1:length(cohortInterest))) {
   }
 
 saveRDS(GTExZscoredAnnotation_filtered_fusions,paste0(opt$outputfile,"_GTExComparison_annotated.RDS"))
-
