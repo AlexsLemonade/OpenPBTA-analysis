@@ -8,7 +8,7 @@ For each cancer group and cohort, calculate TPM means, standard deviations, z-sc
 
 ### Methods
 
-Select independent RNA-seq samples using `independent-specimens.rnaseq.primary.tsv` in the results of the `independent-samples` analysis module.
+Select independent RNA-seq samples using `independent-specimens.rnaseq.primary.eachcohort.tsv` in the results of the `independent-samples` analysis module.
 
 Group all samples with one of the following two methods:
 
@@ -169,8 +169,10 @@ CDR1    ENSG00000281508    Atypical Teratoid Rhabdoid Tumor    PBTA    332.28961
 │   ├── cancer_group_individual_cohort_sample_metadata.tsv
 │   ├── cancer_group_individual_cohort_standard_deviation_tpm.tsv
 │   ├── long_n_tpm_mean_sd_quantile_gene_wise_zscore.json.gz
+│   ├── long_n_tpm_mean_sd_quantile_gene_wise_zscore.jsonl.gz
 │   ├── long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz
 │   ├── long_n_tpm_mean_sd_quantile_group_wise_zscore.json.gz
+│   ├── long_n_tpm_mean_sd_quantile_group_wise_zscore.jsonl.gz
 │   └── long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz
 └── run-rna-seq-expression-summary-stats.sh
 ```
@@ -191,6 +193,7 @@ Input:
 - `../../data/histologies.tsv`
 - `../../data/ensg-hugo-rmtl-v1-mapping.tsv`
 - `../../data/efo-mondo-map.tsv`
+- `../independent-samples/results/independent-specimens.rnaseq.primary.eachcohort.tsv`
 
 Output:
 

@@ -394,7 +394,7 @@ stopifnot(identical(
 # independent sample table
 rna_idps_df <- read_tsv(
   file.path('..', 'independent-samples', 'results',
-            'independent-specimens.rnaseq.primary.tsv'),
+            'independent-specimens.rnaseq.primary.eachcohort.tsv'),
   col_types = cols(.default = col_guess()))
 
 rna_idps_kfbids <- rna_idps_df$Kids_First_Biospecimen_ID
