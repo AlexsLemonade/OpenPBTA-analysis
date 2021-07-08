@@ -267,20 +267,19 @@ get_opr_mut_freq_tbl <- function(maf_df, var_group_col,
 # - maf_df: a MAF tibble. Must contain the following fields:
 #   Kids_First_Biospecimen_ID,
 #   Variant_ID,
-#   Gene_symbol,
+#   Hugo_Symbol,
 #   Gene_full_name,
-#   dbSNP_ID,
-#   VEP_impact,
-#   SIFT_impact,
-#   PolyPhen_impact,
-#   Variant_classification,
-#   Variant_type,
-#   mRNA_RefSeq_ID,
+#   dbSNP_RS,
+#   IMPACT,
+#   SIFT,
+#   PolyPhen,
+#   Variant_Classification,
+#   Variant_Type,
 #   Protein_RefSeq_ID,
-#   Gene_Ensembl_ID,
-#   Protein_Ensembl_ID,
-#   Protein_change,
-#   HotSpot.
+#   Gene,
+#   ENSP,
+#   HGVSp_Short,
+#   HotSpotAllele.
 # - overall_histology_df: the histology tibble that contains all samples. Must
 #   contain the following fields: Kids_First_Biospecimen_ID,
 #   Kids_First_Participant_ID, cancer_group, and cohort. This
@@ -328,6 +327,10 @@ get_cg_ch_var_level_mut_freq_tbl <- function(maf_df, overall_histology_df,
 
   # If one Variant_ID has more than 1 values in the summarised fields, add
   # code to handle duplicates.
+  # In case we need mRNA_RefSeq_ID in the future, add to the summarise call.
+  #            mRNA_RefSeq_ID = unique(RefSeq),
+  # Allow one Variant_ID mapped to multiple ENSP IDs, in order to be consistent
+  # with the gene-level table.
   output_var_df <- ss_maf_df %>%
     group_by(Variant_ID) %>%
     summarise(Gene_symbol = unique(Hugo_Symbol),
@@ -338,10 +341,10 @@ get_cg_ch_var_level_mut_freq_tbl <- function(maf_df, overall_histology_df,
               PolyPhen_impact = unique(PolyPhen),
               Variant_classification = unique(Variant_Classification),
               Variant_type = unique(Variant_Type),
-              mRNA_RefSeq_ID = unique(RefSeq),
               Protein_RefSeq_ID = unique(Protein_RefSeq_ID),
               Gene_Ensembl_ID = unique(Gene),
-              Protein_Ensembl_ID = unique(ENSP),
+              Protein_Ensembl_ID = paste(
+                discard(unique(ENSP), is.na), collapse = ','),
               Protein_change = unique(HGVSp_Short),
               HotSpotAllele = unique(HotSpotAllele)) %>%
     left_join(ss_mut_freq_df, by = 'Variant_ID') %>%
@@ -359,6 +362,94 @@ get_cg_ch_var_level_mut_freq_tbl <- function(maf_df, overall_histology_df,
            Frequency_in_primary_tumors,
            Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
            Frequency_in_relapse_tumors, HotSpot) %>%
+    mutate_all(function(x) replace_na(x, replace = ''))
+
+  return(output_var_df)
+}
+
+
+
+# Generate gene-level mutation frequency table for a (cancer_group, cohort)
+#
+# Args:
+# - maf_df: a MAF tibble. Must contain the following fields:
+#   Kids_First_Biospecimen_ID,
+#   Hugo_Symbol,
+#   Gene_full_name,
+#   Protein_RefSeq_ID,
+#   Gene,
+#   ENSP.
+# - overall_histology_df: the histology tibble that contains all samples. Must
+#   contain the following fields: Kids_First_Biospecimen_ID,
+#   Kids_First_Participant_ID, cancer_group, and cohort. This
+#   is used for computing the following columns: Total_mutations,
+#   Patients_in_dataset, Total_mutations_Over_Patients_in_dataset and
+#   Frequency_in_overall_dataset.
+# - primary_histology_df: the histology tibble that contains primary tumor
+#   samples. Must contain the Kids_First_Biospecimen_ID field.
+# - relapse_histology_df: the histology tibble that contains relapse tumor
+#   samples. Must contain the Kids_First_Biospecimen_ID field.
+# - ss_cancer_group: a character value of the cancer group to compute for.
+# - ss_cohorts: a vector of character values of the cohorts to compute for.
+#
+# Returns a MAF tibble with additional frequency columns.
+get_cg_ch_gene_level_mut_freq_tbl <- function(maf_df, overall_histology_df,
+                                              primary_histology_df,
+                                              relapse_histology_df,
+                                              ss_cancer_group, ss_cohorts) {
+  # check input parameters
+  stopifnot(is.character(ss_cancer_group))
+  stopifnot(identical(length(ss_cancer_group), as.integer(1)))
+  stopifnot(identical(sum(is.na(ss_cancer_group)), as.integer(0)))
+
+  stopifnot(is.character(ss_cohorts))
+  stopifnot(!is.null(length(ss_cohorts)))
+  stopifnot(identical(length(ss_cohorts), length(unique(ss_cohorts))))
+  stopifnot(identical(sum(is.na(ss_cohorts)), as.integer(0)))
+  stopifnot(length(ss_cohorts) >= 1)
+
+  # ss = subset
+  ss_htl_df <- overall_histology_df %>%
+    filter(cancer_group == ss_cancer_group,
+           cohort %in% ss_cohorts)
+
+  ss_maf_df <- maf_df %>%
+    filter(Kids_First_Biospecimen_ID %in% ss_htl_df$Kids_First_Biospecimen_ID)
+  # Need to subset overall_histology_df and maf_df, because they are not subset
+  # in get_opr_mut_freq_tbl().
+  #
+  # No need to subset primary_histology_df and relapse_histology_df, because
+  # they are subset in get_opr_mut_freq_tbl().
+  #
+  # Gene column is Gene Ensembl ENSG ID
+  ss_mut_freq_df <- get_opr_mut_freq_tbl(ss_maf_df, 'Gene',
+                                         ss_htl_df, primary_histology_df,
+                                         relapse_histology_df)
+
+  # If one Gene has more than 1 values in the summarised fields, add
+  # code to handle duplicates.
+  # In case we need mRNA_RefSeq_ID in the future, add to the summarise call.
+  #            mRNA_RefSeq_ID = unique(RefSeq),
+  output_var_df <- ss_maf_df %>%
+    group_by(Gene) %>%
+    summarise(Gene_symbol = unique(Hugo_Symbol),
+              Gene_full_name = unique(Gene_full_name),
+              Protein_RefSeq_ID = unique(Protein_RefSeq_ID),
+              Protein_Ensembl_ID = paste(
+                discard(unique(ENSP), is.na), collapse = ',')) %>%
+    left_join(ss_mut_freq_df, by = 'Gene') %>%
+    rename(Gene_Ensembl_ID = Gene) %>%
+    mutate(Disease = ss_cancer_group,
+           Dataset = paste(ss_cohorts, collapse = '&')) %>%
+    arrange(desc(as.numeric(Total_mutations))) %>%
+    select(Gene_symbol, Dataset, Disease, Gene_full_name, Protein_RefSeq_ID,
+           Gene_Ensembl_ID, Protein_Ensembl_ID,
+           Total_mutations_Over_Patients_in_dataset,
+           Frequency_in_overall_dataset,
+           Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset,
+           Frequency_in_primary_tumors,
+           Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
+           Frequency_in_relapse_tumors) %>%
     mutate_all(function(x) replace_na(x, replace = ''))
 
   return(output_var_df)
@@ -436,6 +527,14 @@ stopifnot(identical(sum(is.na(ensg_hugo_rmtl_df$gene_symbol)), as.integer(0)))
 stopifnot(identical(length(unique(ensg_hugo_rmtl_df$ensg_id)),
                     nrow(ensg_hugo_rmtl_df)))
 
+# gene symbol and gene type mapping
+gsb_gtype_df <- read_tsv('../fusion_filtering/references/genelistreference.txt',
+                         col_types = cols(.default = col_guess()))
+# gsb_gtype_df %>%
+#   group_by(Gene_Symbol) %>%
+#   summarise(n_uniq_types = length(unique(type)),
+#             types = paste(sort(unique(type)), collapse = ',')) %>%
+#   filter(n_uniq_types > 1)
 
 # Subset independent samples in histology table --------------------------------
 message('Prepare data...')
@@ -551,37 +650,63 @@ mut_freq_tbl_list <- lapply(
     stopifnot(identical(paste(c_cohorts, collapse = '&'), cgcs_row$cohort))
     message(paste(c_cancer_group, cgcs_row$cohort))
 
-    res_df <- get_cg_ch_var_level_mut_freq_tbl(
+    var_level_tbl <- get_cg_ch_var_level_mut_freq_tbl(
       maf_df, td_htl_dfs$overall_htl_df, td_htl_dfs$primary_htl_df,
       td_htl_dfs$relapse_htl_df, c_cancer_group, c_cohorts)
-    return(res_df)
+
+    gene_level_tbl <- get_cg_ch_gene_level_mut_freq_tbl(
+      maf_df, td_htl_dfs$overall_htl_df, td_htl_dfs$primary_htl_df,
+      td_htl_dfs$relapse_htl_df, c_cancer_group, c_cohorts)
+
+    res_list <- list(var_level_tbl = var_level_tbl,
+                     gene_level_tbl = gene_level_tbl)
+    return(res_list)
   }
 )
 
-m_mut_freq_tbl <- bind_rows(mut_freq_tbl_list) %>%
-  distinct()
-
+var_level_mut_freq_tbl <- distinct(bind_rows(
+  lapply(mut_freq_tbl_list, function(x) x$var_level_tbl)
+))
 # assert all rows are unique
-stopifnot(identical(nrow(m_mut_freq_tbl),
-                    sum(sapply(mut_freq_tbl_list, nrow))))
+stopifnot(identical(
+  nrow(var_level_mut_freq_tbl),
+  sum(sapply(mut_freq_tbl_list, function(x) nrow(x$var_level_tbl)))
+))
 
+gene_level_mut_freq_tbl <- distinct(bind_rows(
+  lapply(mut_freq_tbl_list, function(x) x$gene_level_tbl)
+))
+# assert all rows are unique
+stopifnot(identical(
+  nrow(gene_level_mut_freq_tbl),
+  sum(sapply(mut_freq_tbl_list, function(x) nrow(x$gene_level_tbl)))
+))
 
 
 # Rename cohort in the output table --------------------------------------------
-m_mut_freq_tbl <- m_mut_freq_tbl %>%
+var_level_mut_freq_tbl <- var_level_mut_freq_tbl %>%
   mutate(Dataset = if_else(Dataset == 'PBTA&GMKF&TARGET',
                            true = 'PedOT', false = Dataset))
 
+gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
+  mutate(Dataset = if_else(Dataset == 'PBTA&GMKF&TARGET',
+                           true = 'PedOT', false = Dataset))
 
 
 # Add EFO, MONDO, and RMTL to the output table ---------------------------------
 ann_efo_mondo_cg_df <- efo_mondo_cg_df %>%
   rename(Disease = cancer_group, EFO = efo_code, MONDO = mondo_code)
 
-m_mut_freq_tbl <- m_mut_freq_tbl %>%
+var_level_mut_freq_tbl <- var_level_mut_freq_tbl %>%
   left_join(ann_efo_mondo_cg_df, by = 'Disease') %>%
   replace_na(list(EFO = '', MONDO = ''))
-stopifnot(identical(sum(is.na(m_mut_freq_tbl)), as.integer(0)))
+stopifnot(identical(sum(is.na(var_level_mut_freq_tbl)), as.integer(0)))
+
+gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
+  left_join(ann_efo_mondo_cg_df, by = 'Disease') %>%
+  replace_na(list(EFO = '', MONDO = ''))
+stopifnot(identical(sum(is.na(gene_level_mut_freq_tbl)), as.integer(0)))
+
 
 # asert all rmtl NAs have version NAs, vice versa
 stopifnot(identical(is.na(ensg_hugo_rmtl_df$rmtl),
@@ -593,12 +718,20 @@ ann_ensg_hugo_rmtl_df <- ensg_hugo_rmtl_df %>%
   select(ensg_id, RMTL) %>%
   rename(Gene_Ensembl_ID = ensg_id)
 
-m_mut_freq_tbl <- m_mut_freq_tbl %>%
+var_level_mut_freq_tbl <- var_level_mut_freq_tbl %>%
   left_join(ann_ensg_hugo_rmtl_df, by = 'Gene_Ensembl_ID') %>%
   replace_na(list(RMTL = ''))
-stopifnot(identical(sum(is.na(m_mut_freq_tbl)), as.integer(0)))
+stopifnot(identical(sum(is.na(var_level_mut_freq_tbl)), as.integer(0)))
 
-m_mut_freq_tbl <- m_mut_freq_tbl %>%
+gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
+  left_join(ann_ensg_hugo_rmtl_df, by = 'Gene_Ensembl_ID') %>%
+  replace_na(list(RMTL = ''))
+stopifnot(identical(sum(is.na(gene_level_mut_freq_tbl)), as.integer(0)))
+
+
+# Output tsv and JSON -----------------------------------------------------
+# reorder for output
+var_level_mut_freq_tbl <- var_level_mut_freq_tbl %>%
   select(Gene_symbol, RMTL, Dataset, Disease, EFO, MONDO, Variant_ID, dbSNP_ID,
          VEP_impact, SIFT_impact, PolyPhen_impact, Variant_classification,
          Variant_type, Gene_full_name, Protein_RefSeq_ID,
@@ -611,12 +744,32 @@ m_mut_freq_tbl <- m_mut_freq_tbl %>%
          Frequency_in_relapse_tumors, HotSpot) %>%
   rename(Variant_ID_hg38 = Variant_ID)
 
-# Output tsv and JSON -----------------------------------------------------
-write_tsv(m_mut_freq_tbl,
-          file.path(tables_dir, 'snv-consensus-annotated-mut-freq.tsv'))
+gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
+  select(Gene_symbol, RMTL, Dataset, Disease, EFO, MONDO,
+         Gene_full_name, Protein_RefSeq_ID,
+         Gene_Ensembl_ID, Protein_Ensembl_ID,
+         Total_mutations_Over_Patients_in_dataset,
+         Frequency_in_overall_dataset,
+         Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset,
+         Frequency_in_primary_tumors,
+         Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
+         Frequency_in_relapse_tumors)
+
+write_tsv(
+  var_level_mut_freq_tbl,
+  file.path(tables_dir, 'var-level-snv-consensus-annotated-mut-freq.tsv'))
 
 jsonlite::write_json(
-  m_mut_freq_tbl,
-  file.path(tables_dir, 'snv-consensus-annotated-mut-freq.json'))
+  var_level_mut_freq_tbl,
+  file.path(tables_dir, 'var-level-snv-consensus-annotated-mut-freq.json'))
+
+write_tsv(
+  gene_level_mut_freq_tbl,
+  file.path(tables_dir, 'gene-level-snv-consensus-annotated-mut-freq.tsv'))
+
+jsonlite::write_json(
+  gene_level_mut_freq_tbl,
+  file.path(tables_dir, 'gene-level-snv-consensus-annotated-mut-freq.json'))
+
 
 message('Done running 01-snv-frequencies.R.')
