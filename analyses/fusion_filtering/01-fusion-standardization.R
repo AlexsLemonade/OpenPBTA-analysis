@@ -62,7 +62,6 @@ fusion_calls$Sample <- fusion_calls$tumor_id
 fusion_calls$Caller <- caller
 
 
-
 standard_fusion <- function(fusion_calls=fusion_calls,caller=caller) {
   # @param fusion_calls A dataframe from star fusion or arriba (more callers to be added)
   # @param caller string options STARfusion/arriba
