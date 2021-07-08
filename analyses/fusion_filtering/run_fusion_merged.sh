@@ -24,7 +24,7 @@ data_path="../../data"
 scratch_path="../../scratch"
 references_path="references"
 results_path="results"
-independent_sample_path="../independent-samples/results"
+independent_samples_path="../independent-samples/results"
 
 
 # fusion files before and after standardization
@@ -47,17 +47,15 @@ normal_expression_adrenal_gland="${references_path}/gtex_adrenal_gland_TPM_hg38.
 normal_expression_brain="${references_path}/gtex_brain_TPM_hg38.rds"
 
 # independent samples for curating fusion per sample
-independent_samples_primary="${independent_sample_path}/independent-specimens.rnaseq.primary.tsv"
-independent_samples_relapse="${independent_sample_path}/independent-specimens.rnaseq.relapse.tsv"
+independent_samples_primary="${independent_samples_path}/independent-specimens.rnaseq.primary.tsv"
+independent_samples_relapse="${independent_samples_path}/independent-specimens.rnaseq.relapse.tsv"
 
 # metadata files
 if [[ RUN_FOR_SUBTYPING -eq "0" ]]
 then
    histologies_file="${data_path}/histologies.tsv" 
-   independent_samples_file="${data_path}/independent-specimens.wgswxspanel.primary-plus.tsv"
 else 
    histologies_file="${data_path}/histologies-base.tsv"  
-   independent_samples_file="../independent-samples/results/independent-specimens.wgswxspanel.primary-plus.tsv" 
 fi
 
 
@@ -118,6 +116,6 @@ Rscript 06-recurrent-fusions-per-cancer-group.R --standardFusionCalls $putative_
                                                 --clinicalFile $histologies_file \
                                                 --cohortInterest "PBTA,GMKF" \
                                                 --outputfolder $results_path \
-                                                --independentPrimary $independent_samples_primary
+                                                --independentPrimary $independent_samples_primary \
                                                 --independentRelapse $independent_samples_relapse
 

@@ -18,9 +18,9 @@ option_list <- list(
               help="cohorts of interest for the filtering"),
   make_option(c("-o","--outputfolder"),type="character",
               help="output folder for results "),
-  make_option(c("-i","--independentPrimary"),type="character",
+  make_option(c("-p","--independentPrimary"),type="character",
               help="independent RNA specimens for WGS+WXS+panel with primary tumor"),
-  make_option(c("-i","--independentRelapse"),type="character",
+  make_option(c("-r","--independentRelapse"),type="character",
               help="independent RNA specimens for WGS+WXS+panel with relapse tumor")
 )
 
