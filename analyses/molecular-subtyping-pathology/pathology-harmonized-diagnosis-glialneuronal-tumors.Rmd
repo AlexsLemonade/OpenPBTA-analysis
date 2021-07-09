@@ -117,7 +117,8 @@ glioneuronal_df <- subtype_df %>%
                  "rosette forming glioneuronal tumor") ~ 
         "Rosette-forming glioneuronal tumor",
       TRUE ~ "Glial-neuronal tumor NOS"  # All others
-    )
+    ),
+    Notes = "Updated via pathology_free_text_diagnosis"
   )
 ```
 

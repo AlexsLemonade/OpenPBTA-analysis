@@ -69,7 +69,7 @@ results_dir <- "results"
 ```{r}
 # clinical pbta histology
 clinical <- readr::read_tsv(file.path(data_dir,
-                                "pbta-histologies-base.tsv")) 
+                                "pbta-histologies-base.tsv"), guess_max = 10000) 
 
 ```
 
@@ -86,20 +86,14 @@ pnoc003_review <- readr::read_tsv(file.path("input","pnoc003-clinical-review.tsv
   
 # subtyping from molecular-subtype-HGG
 subtype <- readr::read_tsv(file.path(results_dir,
-                         "compiled_molecular_subtypes.tsv")) %>%  
-  # ids to match
-  left_join(clinical[,c("Kids_First_Participant_ID",
-                        "Kids_First_Biospecimen_ID",
-                        # need tumor_descriptor to match to clinical review
-                        "tumor_descriptor")],by=c("Kids_First_Biospecimen_ID",
-                                       "Kids_First_Participant_ID")) 
+                         "compiled_molecular_subtypes_and_report_info.tsv"),guess_max = 10000) 
 
 ```
 
 #### Output file
 
 ```{r}
-output_file <- file.path(results_dir, "compiled_molecular_subtypes_with_clinical_feedback.tsv")
+output_file <- file.path(results_dir, "compiled_molecular_subtypes_with_clinical_feedback_and_report_info.tsv")
 ```
 
 

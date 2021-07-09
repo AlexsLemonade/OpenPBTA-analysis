@@ -70,8 +70,9 @@ cpp_df <- histologies_df %>%
   # Atypical choroid plexus papilloma
   mutate(harmonized_diagnosis = case_when(
     str_detect(pathology_free_text_dx_lower, "atypical") ~ "Atypical choroid plexus papilloma",
-    TRUE ~ "Choroid plexus papilloma"
-  )) %>%
+    TRUE ~ "Choroid plexus papilloma"),
+    Notes = "Updated via pathology_free_text_diagnosis"
+  ) %>%
   select(-pathology_free_text_dx_lower)
 ```
 

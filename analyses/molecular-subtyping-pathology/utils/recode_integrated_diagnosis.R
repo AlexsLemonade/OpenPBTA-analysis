@@ -45,13 +45,20 @@ recode_integrated_diagnosis <- function(histologies_df,
     # String detection in pathology free text per the table
     dplyr::mutate(
       integrated_diagnosis = dplyr::case_when(
-        # if NA add the new integrated diagnosis
+        # if NA integrated diagnosis keep as NA since there is no subtype to integrate
+        is.na(integrated_diagnosis) ~ NA_character_,
+        # if there is an existing integrated_diagnosis then replace with new integrated_diagnosis
+        stringr::str_detect(pathology_free_text_dx_lower,
+                            include_path_free_text_dx_terms) ~ str_replace(integrated_diagnosis,old_integrated_diagnosis_term,replace_integrated_diagnosis_term),
+      ),
+      harmonized_diagnosis = dplyr::case_when(
+        # if NA integrated diagnosis keep as NA since there is no subtype to integrate
         is.na(integrated_diagnosis) ~ replace_integrated_diagnosis_term,
         # if there is an existing integrated_diagnosis then replace with new integrated_diagnosis
         stringr::str_detect(pathology_free_text_dx_lower,
                             include_path_free_text_dx_terms) ~ str_replace(integrated_diagnosis,old_integrated_diagnosis_term,replace_integrated_diagnosis_term),
       ),
-      Notes = "Updated via OpenPBTA subtyping and pathology_free_text_diagnosis"
+      Notes = if_else(is.na(integrated_diagnosis),"Updated via pathology_free_text_diagnosis" , "Updated via OpenPBTA subtyping and pathology_free_text_diagnosis")
     ) 
   
   if(!is.null(exclude_path_free_text_dx_terms)){
