@@ -74,6 +74,10 @@ Format the SNV mutation frequency table according to the latest spreadsheet that
 
 Merge the SNV mutation frequency tables of all `cancer_group_cohort`s.
 
+Add EFO, MONDO, and RMTL columns to variant-level and gene-level tables. The EFO, MONDO, and RMTL information is obtained from PediatricOpenTargets/OpenPedCan-analysis data release.
+
+Add a `Gene_type` column to gene-level tables. The `Gene_type` information is obtained from `../fusion_filtering/references/genelistreference.txt`, and its sources are described at <https://github.com/d3b-center/annoFuse#prerequisites-for-cohort-level-analysis>.
+
 ### Results
 
 Results are generated using PediatricOpenTargets/OpenPedCan-analysis data release v6.
