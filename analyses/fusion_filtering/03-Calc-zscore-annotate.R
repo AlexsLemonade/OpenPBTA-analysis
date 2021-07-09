@@ -116,7 +116,6 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,
     fusion_sample_gene_df_matched <- fusion_sample_gene_df %>% filter(Sample %in% cohort_BSids)
     fusion_sample_list <- fusion_sample_gene_df_matched$Sample %>% unique()
     
-    print(length(fusion_sample_list))
     expressionMatrixMatched <- expressionMatrix  %>%
       select(cohort_BSids) %>%
       select(fusion_sample_list) 
