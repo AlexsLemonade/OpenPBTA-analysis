@@ -78,12 +78,17 @@ Merge the SNV mutation frequency tables of all `cancer_group_cohort`s.
 
 Results are generated using PediatricOpenTargets/OpenPedCan-analysis data release v6.
 
-The merged SNV mutation frequency table of all `cancer_group_cohort`s is output in TSV and JSON formats using `readr::write_tsv()` and `jsonlite::write_json()` respectively.
+The merged variant-level and gene-level SNV mutation frequency tables of all `cancer_group_cohort`s is output in TSV, JSON, and JSONL formats.
 
-- `results/snv-consensus-annotated-mut-freq.tsv`
-- `snv-consensus-annotated-mut-freq.json.gz`
+- `results/gene-level-snv-consensus-annotated-mut-freq.json.gz`
+- `results/gene-level-snv-consensus-annotated-mut-freq.jsonl.gz`
+- `results/gene-level-snv-consensus-annotated-mut-freq.tsv`
 
-**Note:** When reading `snv-consensus-annotated-mut-freq.tsv` using `readr::read_tsv`, you can specify `na = character(0)` to avoid converting blank string entries to `NA`s, as suggested by @jharenza at <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/45#pullrequestreview-697753423>. This can be useful when converting `snv-consensus-annotated-mut-freq.tsv` to JSON, because the PediatricOpenTargets/OpenPedCan-analysis project favors empty string (`''`) as missing value over `NA`/`NaN`/`NULL`.
+- `results/var-level-snv-consensus-annotated-mut-freq.json.gz`
+- `results/var-level-snv-consensus-annotated-mut-freq.jsonl.gz`
+- `results/var-level-snv-consensus-annotated-mut-freq.tsv`
+
+**Note:** When reading `{var,gene}-level-snv-consensus-annotated-mut-freq.tsv` using `readr::read_tsv`, you can specify `na = character(0)` to avoid converting blank string entries to `NA`s, as suggested by @jharenza at <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/45#pullrequestreview-697753423>. This can be useful when converting `{var,gene}-level-snv-consensus-annotated-mut-freq.tsv` to JSON, because the PediatricOpenTargets/OpenPedCan-analysis project favors empty string (`''`) as missing value over `NA`/`NaN`/`NULL`.
 
 ### Usage
 
@@ -115,5 +120,9 @@ Input:
 
 Output:
 
-- `results/snv-consensus-annotated-mut-freq.tsv`
-- `results/snv-consensus-annotated-mut-freq.json`
+- `results/gene-level-snv-consensus-annotated-mut-freq.json.gz`
+- `results/gene-level-snv-consensus-annotated-mut-freq.jsonl.gz`
+- `results/gene-level-snv-consensus-annotated-mut-freq.tsv`
+- `results/var-level-snv-consensus-annotated-mut-freq.json.gz`
+- `results/var-level-snv-consensus-annotated-mut-freq.jsonl.gz`
+- `results/var-level-snv-consensus-annotated-mut-freq.tsv`
