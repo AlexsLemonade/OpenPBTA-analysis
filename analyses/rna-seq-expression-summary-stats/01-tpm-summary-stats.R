@@ -359,6 +359,11 @@ if (!dir.exists(tables_dir)) {
 message('Read data...')
 
 tpm_df <- readRDS('../../data/gene-expression-rsem-tpm-collapsed.rds')
+# assert read count matrix column naems are unique
+stopifnot(identical(
+  ncol(tpm_df),
+  length(unique(colnames(tpm_df)))
+))
 
 htl_df <- readr::read_tsv(
   '../../data/histologies.tsv',
@@ -369,14 +374,8 @@ htl_df <- readr::read_tsv(
     EFS_days = col_number()
   )
 )
-
 # assert read count matrix column names match metadata sample IDs
 stopifnot(all(colnames(tpm_df) %in% htl_df$Kids_First_Biospecimen_ID))
-# assert read count matrix column naems are unique
-stopifnot(identical(
-  ncol(tpm_df),
-  length(unique(colnames(tpm_df)))
-))
 # assert metadata sample IDs have no NA
 stopifnot(identical(
   as.integer(0),
@@ -423,6 +422,9 @@ stopifnot(identical(
   as.integer(0),
   sum(is.na(str_detect(gid_gsb_tbl$gene_id, ',')))
 ))
+# assert all gene_id and gene_symbols are not NA
+stopifnot(identical(sum(is.na(gid_gsb_tbl$gene_id)), as.integer(0)))
+stopifnot(identical(sum(is.na(gid_gsb_tbl$gene_symbol)), as.integer(0)))
 
 
 # Collapse gid_gsb_tbl by gene_symbol.
