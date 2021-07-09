@@ -261,6 +261,37 @@ get_opr_mut_freq_tbl <- function(maf_df, var_group_col,
 
 
 
+# Return a single character value for representing a set of cohorts
+#
+# Args:
+# - cohort_vec: a character vector of cohort values
+#
+# Returns a single character value for representing the cohort_vec.
+get_cohort_set_value <- function(cohort_vec) {
+  stopifnot(is.character(cohort_vec))
+  stopifnot(!is.null(length(cohort_vec)))
+  stopifnot(identical(length(cohort_vec), length(unique(cohort_vec))))
+  stopifnot(identical(sum(is.na(cohort_vec)), as.integer(0)))
+  stopifnot(length(cohort_vec) >= 1)
+
+  if (identical(length(cohort_vec), as.integer(1))) {
+    return(cohort_vec)
+  } else {
+    return('all_cohorts')
+  }
+}
+# # test cases
+# get_cohort_set_value(c('a'))
+# get_cohort_set_value(c('a', 'b'))
+# get_cohort_set_value(c('a', 'b', 'c'))
+# # following cases should fail
+# get_cohort_set_value(character(0))
+# get_cohort_set_value(numeric(0))
+# get_cohort_set_value(c(1))
+# get_cohort_set_value(c(1, 2))
+
+
+
 # Generate variant-level mutation frequency table for a (cancer_group, cohort)
 #
 # Args:
@@ -349,7 +380,7 @@ get_cg_ch_var_level_mut_freq_tbl <- function(maf_df, overall_histology_df,
               HotSpotAllele = unique(HotSpotAllele)) %>%
     left_join(ss_mut_freq_df, by = 'Variant_ID') %>%
     mutate(Disease = ss_cancer_group,
-           Dataset = paste(ss_cohorts, collapse = '&'),
+           Dataset = get_cohort_set_value(ss_cohorts),
            HotSpot = if_else(HotSpotAllele == 1, true = 'Y', false = 'N')) %>%
     arrange(desc(as.numeric(Total_mutations))) %>%
     select(Gene_symbol, Dataset, Disease, Variant_ID, dbSNP_ID,
@@ -440,7 +471,7 @@ get_cg_ch_gene_level_mut_freq_tbl <- function(maf_df, overall_histology_df,
     left_join(ss_mut_freq_df, by = 'Gene') %>%
     rename(Gene_Ensembl_ID = Gene) %>%
     mutate(Disease = ss_cancer_group,
-           Dataset = paste(ss_cohorts, collapse = '&')) %>%
+           Dataset = get_cohort_set_value(ss_cohorts)) %>%
     arrange(desc(as.numeric(Total_mutations))) %>%
     select(Gene_symbol, Dataset, Disease, Gene_full_name, Protein_RefSeq_ID,
            Gene_Ensembl_ID, Protein_Ensembl_ID,
