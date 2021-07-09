@@ -67,7 +67,9 @@ saveZscoredMatrix<-opt$saveZscoredMatrix
 clinicalFile <- opt$clinicalFile
 cohortInterest<-unlist(strsplit(opt$cohortInterest,","))
 gtexMatrix<-unlist(strsplit(opt$normalExpressionMatrix,","))
-
+print(cohortInterest)
+print(cohortInterest[1])
+print(cohortInterest[2])
 print(gtexMatrix)
 
 # load standardaized fusion calls cohort
@@ -113,30 +115,35 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,
     # Retain only distinct rows
     dplyr::distinct()
   
-    
+    print(length(cohort_BSids))
+    print(dim(expressionMatrix))
     # filter the fusion results to contain only samples in the cohort of interest
     fusion_sample_gene_df_matched <- fusion_sample_gene_df %>% filter(Sample %in% cohort_BSids)
     fusion_sample_list <- fusion_sample_gene_df_matched$Sample %>% unique()
     
+    print(length(fusion_sample_list))
     expressionMatrixMatched <- expressionMatrix  %>%
       select(cohort_BSids) %>%
       select(fusion_sample_list) 
-  
+    
+    print(dim(expressionMatrixMatched))
+    
     # remove 0s 
     expressionMatrixMatched<-expressionMatrixMatched[rowMeans(expressionMatrixMatched)!=0,]
     # log2 transformation
     expressionMatrixMatched<-log2(expressionMatrixMatched+1)
   
     # convert the expression data to data matrix
-    normData <- normData %>% data.frame() %>%
+    normData_matched <- normData_matched %>% data.frame() %>%
       as.matrix()
+    print(dim(normData_matched))
     # rearrange to order with expressionMatrix
-    normData <- normData[rownames(expressionMatrixMatched), ]
+    normData_matched <- normData_matched[rownames(expressionMatrixMatched), ]
     # log2 transformation
-    normData <- log2(normData + 1)
-    #normData mean and sd
-    normData_means <- rowMeans(normData, na.rm = TRUE)
-    normData_sd <- apply(normData, 1, sd, na.rm = TRUE)
+    normData_matched <- log2(normData_matched + 1)
+    #normData_matched mean and sd
+    normData_means <- rowMeans(normData_matched, na.rm = TRUE)
+    normData_sd <- apply(normData_matched, 1, sd, na.rm = TRUE)
     
     # subtract mean
     expressionMatrixzscored <- sweep(expressionMatrixMatched, 1, normData_means, FUN = "-")
@@ -197,9 +204,10 @@ for (j in (1:length(cohortInterest))) {
     # uses each value x in cohortInterest
     filter(cohort == cohortInterest[j]) %>% filter(experimental_strategy == "RNA-Seq") %>%
     filter(sample_type == "Tumor") %>% pull("Kids_First_Biospecimen_ID")
+  
   # use index to find the matched normal data
-  normData = normData[[j]]
-  GTExZscoredAnnotation_filtered_fusions_individual <-ZscoredAnnotation(standardFusionCalls,zscoreFilter,normData=normData,cohort_BSids=cohort_BSids, expressionMatrix = expressionMatrix)
+  normData_matched <- normData[[j]]
+  GTExZscoredAnnotation_filtered_fusions_individual <-ZscoredAnnotation(standardFusionCalls,zscoreFilter,normData=normData_matched,cohort_BSids=cohort_BSids, expressionMatrix = expressionMatrix)
   GTExZscoredAnnotation_filtered_fusions <- rbind(GTExZscoredAnnotation_filtered_fusions, GTExZscoredAnnotation_filtered_fusions_individual)
   }
 

@@ -45,6 +45,7 @@ rna_expression_file="${data_path}/gene-expression-rsem-tpm-collapsed.rds"
 normal_expression_adrenal_gland="${references_path}/gtex_adrenal_gland_TPM_hg38.rds"
 normal_expression_brain="${references_path}/gtex_brain_TPM_hg38.rds"
 
+
 # metadata files
 if [[ RUN_FOR_SUBTYPING -eq "0" ]]
 then
@@ -70,13 +71,13 @@ Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
                                        --clinicalFile $histologies_file \
                                        --specimenType "Brain" \
                                        --outputfile $normal_expression_brain
-                                       
+
 # Run Fusion standardization for arriba caller
 Rscript 01-fusion-standardization.R --fusionfile $arriba_file \
                                     --caller "arriba" \
                                     --outputfile $standard_arriba_file
-                                    
-                                    
+
+
 # Run Fusion standardization for starfusion caller
 Rscript 01-fusion-standardization.R --fusionfile $starfusion_file \
                                     --caller "starfusion" \
