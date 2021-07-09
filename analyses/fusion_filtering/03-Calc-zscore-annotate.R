@@ -67,10 +67,7 @@ saveZscoredMatrix<-opt$saveZscoredMatrix
 clinicalFile <- opt$clinicalFile
 cohortInterest<-unlist(strsplit(opt$cohortInterest,","))
 gtexMatrix<-unlist(strsplit(opt$normalExpressionMatrix,","))
-print(cohortInterest)
-print(cohortInterest[1])
-print(cohortInterest[2])
-print(gtexMatrix)
+
 
 # load standardaized fusion calls cohort
 standardFusionCalls<-readRDS(standardFusionCalls)
@@ -114,9 +111,7 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,
     dplyr::arrange(Sample, FusionName) %>%
     # Retain only distinct rows
     dplyr::distinct()
-  
-    print(length(cohort_BSids))
-    print(dim(expressionMatrix))
+    
     # filter the fusion results to contain only samples in the cohort of interest
     fusion_sample_gene_df_matched <- fusion_sample_gene_df %>% filter(Sample %in% cohort_BSids)
     fusion_sample_list <- fusion_sample_gene_df_matched$Sample %>% unique()
@@ -126,7 +121,6 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,
       select(cohort_BSids) %>%
       select(fusion_sample_list) 
     
-    print(dim(expressionMatrixMatched))
     
     # remove 0s 
     expressionMatrixMatched<-expressionMatrixMatched[rowMeans(expressionMatrixMatched)!=0,]
@@ -136,7 +130,7 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,
     # convert the expression data to data matrix
     normData_matched <- normData_matched %>% data.frame() %>%
       as.matrix()
-    print(dim(normData_matched))
+
     # rearrange to order with expressionMatrix
     normData_matched <- normData_matched[rownames(expressionMatrixMatched), ]
     # log2 transformation
