@@ -74,7 +74,13 @@ Format the SNV mutation frequency table according to the latest spreadsheet that
 
 Merge the SNV mutation frequency tables of all `cancer_group_cohort`s.
 
-Add EFO, MONDO, and RMTL columns to variant-level and gene-level tables. The EFO, MONDO, and RMTL information is obtained from PediatricOpenTargets/OpenPedCan-analysis data release.
+Add EFO, MONDO, RMTL, PedcBioPortal oncoprint plot URL, and PedcBioPortal lollipop plot URL columns to variant-level and gene-level tables. The EFO, MONDO, and RMTL information is obtained from PediatricOpenTargets/OpenPedCan-analysis data release. The PedcBioPortal `case_set_id`s in the URLs are obtained from [the `sample-lists` PedcBioPortal web API](https://pedcbioportal.kidsfirstdrc.org/api/swagger-ui.html#/Sample_Lists), with the following command:
+
+```bash
+curl -X GET "https://pedcbioportal.kidsfirstdrc.org/api/studies/ped_opentargets_2021/sample-lists" -H "accept: application/json" -H "Authorization: Bearer YOUR-API-ACCESS-TOKEN" > ped_opentargets_2021_pedcbio_case_set_ids.json
+```
+
+To update the `case_set_id`s, rerun the `curl` command with your own PedcBioPortal web API access token. The token can be requested and downloaded at <https://pedcbioportal.kidsfirstdrc.org/webAPI>. More information about the access token is at <https://docs.cbioportal.org/2.2-authorization-and-authentication/authenticating-users-via-tokens#using-data-access-tokens>.
 
 Add a `Gene_type` column to gene-level tables. The `Gene_type` information is obtained from `../fusion_filtering/references/genelistreference.txt`, and its sources are described at <https://github.com/d3b-center/annoFuse#prerequisites-for-cohort-level-analysis>.
 
