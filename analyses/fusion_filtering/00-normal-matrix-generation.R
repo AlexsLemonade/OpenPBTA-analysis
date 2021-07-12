@@ -12,7 +12,6 @@ option_list <- list(
               help="Histology file for all samples (.TSV) "),
   make_option(c("-s","--specimenType"),type="character",
               help="which specimen type to collect normal expression"),
-
   make_option(c("-o","--outputFile"),type="character",
               help="normalization TPM expression data to compare (.rds)")
 )
@@ -23,6 +22,7 @@ clinicalFile<-opt$clinicalFile
 specimenType<- opt$specimenType
 outputFile<- opt$outputFile
 
+
 #read in clinical file to find the list of normal specimens
 histology_df <- read.delim(clinicalFile, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
 normal_specimen <- histology_df %>% filter(gtex_group == specimenType) %>% 
@@ -32,6 +32,5 @@ normal_specimen <- histology_df %>% filter(gtex_group == specimenType) %>%
 #read in expression matrix with all specimens and only select 
 expressionMatrix <- readRDS(expressionMatrix)
 normal_expression_matrix <- expressionMatrix %>% select(rownames(normal_specimen))
-
 
 saveRDS(normal_expression_matrix,outputFile)
