@@ -5,12 +5,12 @@
 # oncogenic drivers of a tumor and in some cases, appropriate therapy
 
 # Example run:
-# Rscript analyses/fusion_filtering/02-fusion-filtering.R -S scratch/arriba.tsv --expressionMatrix data/pbta-gene-expression-rsem-fpkm.stranded.rds --readthroughFilter --artifactFilter "GTEx|HGNC_GENEFAM|DGD_PARALOGS|Normal|BodyMap" --junctionReadCountFilter 1 --spanningFragCountFilter 100 --readingFrameFilter "in-frame|frameshift|other" --referenceFolder analyses/fusion_filtering/references/ --outputfile scratch/arriba_stranded_V2 -t 1
+# Rscript analyses/fusion_filtering/02-fusion-filtering.R -S scratch/arriba.tsv --expressionMatrix data/gene-expression-rsem-tpm-collapsed.rds --readthroughFilter --artifactFilter "GTEx_Recurrent|DGD_PARALOGS|Normal|BodyMap" --junctionReadCountFilter 1 --spanningFragCountFilter 100 --readingFrameFilter "in-frame|frameshift|other" --referenceFolder analyses/fusion_filtering/references/ --outputFile scratch/standardFusionExp -t 1
 #
 # Command line arguments
 #
 # standardFusionFiles  :Standardized fusion calls from STARFusion and Arriba from 01-fusion-standardization.R as comma separated file names
-# expressionFilter        :Integer threshold of expression for both gene in fusion  partners with FPKM<1
+# expressionFilter        :Integer threshold of expression for both gene in fusion  partners with TPM<1
 # junctionReadCountFilter	:Integer threshold for JunctionReadCount per fusion to remove false calls with 0
 #				                   supporting junction reads
 # spanningFragCountFilter	:Integer threashold for (SpanningFragCount-JunctionReadCount) to remove false
@@ -22,11 +22,8 @@
 # referenceFolder		      :Path to folder with all reference gene list and fusion file list with the following files
 #                          genelistreference.txt A dataframe of genes of interest ; columns 1 : GeneNames 2: Source file 3: Type
 #                          fusionreference.txt A dataframe of fusion of interest ; columns 1 : FusionName 2: Source file 3: Type
-# outputfile			        :Filename prefix for QC filtered and gene of interest annotated fusion calls (prefix for _QC_expression_filtered_annotated.RDS)")
+# outputFile			        :Filename prefix for QC filtered and gene of interest annotated fusion calls (prefix for _QC_expression_filtered_annotated.RDS)")
 #
-
-
-
 
 
 
@@ -38,8 +35,12 @@ library("qdapRegex")
 option_list <- list(
   make_option(c("-S", "--standardFusionFiles"),type="character",
               help="Standardized fusion calls from STARFusion (.TSV), Arriba (.TSV) "),
+  make_option(c("-y", "--cohortInterest"),type="character",
+              help="cohort of interest for the filtering"),
   make_option(c("-e","--expressionMatrix"),type="character",
               help="Matrix of expression for samples in standardFusion file (.RDS) "),
+  make_option(c("-c","--clinicalFile"),type="character",
+              help="clinical file for all samples (.tsv)"),
   make_option(c("-r", "--readthroughFilter"),action = "store_true",
               help="Boolean to filter readthrough",default=FALSE),
   make_option(c("-t","--expressionFilter"), type="integer",
@@ -54,7 +55,7 @@ option_list <- list(
                help="reading frame filtering ( regex to capture inframe|frameshift|other)"),
   make_option(c("-R","--referenceFolder"),type="character",
                 help="reference folder with required gene lists"),
-  make_option(c("-o","--outputfile"),type="character",
+  make_option(c("-o","--outputFile"),type="character",
               help="Filtered fusion calls (prefix for _QC_expression_filtered_annotated.RDS)")
 )
 
@@ -66,10 +67,12 @@ opt <- parse_args(OptionParser(option_list=option_list))
 # TO-DO
 # multiple opt values for each caller and output name from input fusion calls and expression Matrix?
 standardFusionFiles<-unlist(strsplit(opt$standardFusionFiles,","))
+cohortInterest<-unlist(strsplit(opt$cohortInterest,","))
 expressionMatrix<-opt$expressionMatrix
 readthroughFilter<-opt$readthroughFilter
 expressionFilter<-opt$expressionFilter
 artifactFilter<-opt$artifactFilter
+clinicalFile<-opt$clinicalFile
 junctionReadCountFilter<-opt$junctionReadCountFilter
 spanningFragCountFilter<-opt$spanningFragCountFilter
 referenceFolder<-opt$referenceFolder
@@ -98,9 +101,6 @@ standardFusioncalls<-standardFusioncalls %>%
          Gene1B=gsub("[(].*","",Gene1B),
          Gene2B=gsub("[(].*","",Gene2B)) %>%
   as.data.frame()
-
-
-
 
 
 ############# artifactFiltering #############
@@ -170,7 +170,7 @@ fusion_filtering_QC<-function(standardFusioncalls=standardFusioncalls,readingFra
 # QC filter: artifact and read support
 QCFiltered<-fusion_filtering_QC(standardFusioncalls = standardFusioncalls,junctionReadCountFilter = junctionReadCountFilter,spanningFragCountFilter = spanningFragCountFilter,readingFrameFilter = readingFrameFilter,artifactFilter = artifactFilter,readthroughFilter = readthroughFilter)
 
-saveRDS(QCFiltered,paste0(opt$outputfile,"_QC_filtered.RDS"))
+saveRDS(QCFiltered,paste0(opt$outputFile,"_QC_filtered.RDS"))
 
 
 ############################################
@@ -179,8 +179,16 @@ saveRDS(QCFiltered,paste0(opt$outputfile,"_QC_filtered.RDS"))
 
 # load expressionMatrix RDS for expression based filtering for less than given threshold
 expressionMatrix<-readRDS(expressionMatrix)
-expressionMatrix <- cbind(expressionMatrix, colsplit(expressionMatrix$gene_id, pattern = '_', names = c("EnsembleID","GeneSymbol")))
-
+# find the list of cohorts and sample type of interest
+matched_samples <- read.delim(clinicalFile, header = TRUE, sep = "\t", stringsAsFactors = FALSE) %>%
+  filter(cohort %in% cohortInterest) %>%
+  filter(experimental_strategy == "RNA-Seq") %>%
+  filter(sample_type == "Tumor") %>%
+  tibble::column_to_rownames("Kids_First_Biospecimen_ID")
+# filter the expression to only the ones that are in the cohort and sample type of interest
+expressionMatrix <- expressionMatrix %>%
+  select(rownames(matched_samples)) %>%
+  tibble::rownames_to_column("GeneSymbol")
 
 # The idea from @jaclyn-taroni
 # Generate two data frames that keep track of all gene symbols involved for each sample-fusion name pair and contain a sample's expression value for a gene symbol in long format. Use these to  filter all the available fusions to just the ones with either gene from the fusion pair to have expression above the threshold.
@@ -200,10 +208,7 @@ fusion_sample_gene_df <- QCFiltered %>%
   # Retain only distinct rows
   dplyr::distinct()
 
-
 expression_long_df <- expressionMatrix %>%
-  # Keep the gene symbols and the samples themselves
-  dplyr::select(-one_of("gene_id","EnsembleID")) %>%
   # Get the data into long format
   reshape2::melt(variable.name = "Sample",
                  value.name = "expression_value") %>%
@@ -235,8 +240,6 @@ expression_filtered_fusions <- fusion_sample_gene_df %>%
   dplyr::select(c('LeftBreakpoint','RightBreakpoint','FusionName' , 'Sample' ,
                   'Caller' ,'Fusion_Type' , 'JunctionReadCount' ,'SpanningFragCount' ,
                   'Confidence' ,'annots','Gene1A','Gene2A','Gene1B','Gene2B'))
-
-
 
 ###############annotation###############
 # column 1 as GeneName 2 source file 3 type; collapse to summarize type
@@ -277,7 +280,7 @@ annotate_fusion_calls<-function(standardFusioncalls=standardFusioncalls,geneList
 
 # Annotate QC filtered fusion calls
 annotated_filtered_fusions<-annotate_fusion_calls(standardFusioncalls = expression_filtered_fusions,geneListReferenceDataTab = geneListReferenceDataTab ,fusionReferenceDataTab = fusionReferenceDataTab )
-saveRDS(annotated_filtered_fusions,paste0(opt$outputfile,"_QC_expression_filtered_annotated.RDS"))
+saveRDS(annotated_filtered_fusions,paste0(opt$outputFile,"_QC_expression_filtered_annotated.RDS"))
 
 
 
