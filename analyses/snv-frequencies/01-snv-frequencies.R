@@ -792,36 +792,10 @@ stopifnot(identical(length(pcb_pot_case_set_id_vec),
 
 
 
-# Subset independent samples in histology table --------------------------------
-message('Prepare data...')
-# td = tumor descriptor
-td_htl_dfs <- list(
-  primary_htl_df = htl_df %>%
-    filter(Kids_First_Biospecimen_ID %in%
-             primary_indp_sdf$Kids_First_Biospecimen_ID),
-
-  relapse_htl_df = htl_df %>%
-    filter(Kids_First_Biospecimen_ID %in%
-             relapse_indp_sdf$Kids_First_Biospecimen_ID),
-
-  overall_htl_df = htl_df %>%
-    filter(sample_type == 'Tumor')
-)
-
-# keep only samples with non-NA cancer_group and cohort
-td_htl_dfs <- lapply(td_htl_dfs, function(x) {
-  # assert all Kids_First_Biospecimen_IDs are unique
-  stopifnot(identical(nrow(x), length(unique(x$Kids_First_Biospecimen_ID))))
-
-  fx <- filter(x, !is.na(cancer_group), !is.na(cohort))
-  return(fx)
-})
-
-
-
 # Subset tumor samples and used columns in MAF table ---------------------------
 tumor_kfbids <- htl_df %>%
-  filter(sample_type == 'Tumor') %>%
+  filter(sample_type == 'Tumor', !is.na(cancer_group),
+         !is.na(cohort)) %>%
   pull(Kids_First_Biospecimen_ID)
 
 # It is ok to subset non-synonymous variants before computing frequencies,
@@ -857,6 +831,35 @@ maf_df <- maf_df %>%
          Variant_Type, RefSeq, Gene, ENSP, HGVSp_Short, HotSpotAllele)
 
 rm(tumor_kfbids)
+
+
+
+# Subset independent samples in histology table --------------------------------
+message('Prepare data...')
+# subset histology dataframe to have only samples that are in SNV MAF
+maf_sample_htl_df <- htl_df %>%
+  filter(Kids_First_Biospecimen_ID %in% maf_df$Kids_First_Biospecimen_ID)
+# assert all samples are unique
+stopifnot(identical(
+  nrow(maf_sample_htl_df),
+  length(unique(maf_sample_htl_df$Kids_First_Biospecimen_ID))
+))
+# assert samples are the same
+stopifnot(identical(sort(unique(maf_df$Kids_First_Biospecimen_ID)),
+                    sort(maf_sample_htl_df$Kids_First_Biospecimen_ID)))
+
+# td = tumor descriptor
+td_htl_dfs <- list(
+  primary_htl_df = maf_sample_htl_df %>%
+    filter(Kids_First_Biospecimen_ID %in%
+             primary_indp_sdf$Kids_First_Biospecimen_ID),
+
+  relapse_htl_df = maf_sample_htl_df %>%
+    filter(Kids_First_Biospecimen_ID %in%
+             relapse_indp_sdf$Kids_First_Biospecimen_ID),
+
+  overall_htl_df = maf_sample_htl_df
+)
 
 
 

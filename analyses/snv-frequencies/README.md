@@ -15,7 +15,13 @@ Issues addressed:
 
 ### Methods
 
-Subset `snv-consensus-plus-hotspots.maf.tsv.gz` to keep only samples with `sample_type == 'Tumor'`.
+#### Subset overlapping tumor samples between `snv-consensus-plus-hotspots.maf.tsv.gz` and `histologies.tsv`
+
+Subset `snv-consensus-plus-hotspots.maf.tsv.gz` to keep only samples with `sample_type == 'Tumor'` and non-NA `cancer_group` and `cohort` values in `histologies.tsv`.
+
+Subset `histologies.tsv`, `../independent-samples/results/independent-specimens.wgswxspanel.primary.eachcohort.tsv`, and `../independent-samples/results/independent-specimens.wgswxspanel.relapse.eachcohort.tsv` to keep only samples that are in the `snv-consensus-plus-hotspots.maf.tsv.gz` subset.
+
+#### Subset non-synonymous variants
 
 Subset `snv-consensus-plus-hotspots.maf.tsv.gz` to keep only non-synonymous variants with the following code.
 
@@ -38,9 +44,9 @@ Variant_Classification %in% c('Frame_Shift_Del',
                               'Translation_Start_Site')
 ```
 
-Add `Gene_full_name` and `Protein_RefSeq_ID` columns to each variant with annotations obtained from [mygene.info](http://mygene.info/about).
+#### Generate variant-level and gene-level non-synonymous mutation frequencies
 
-Generate variant-level and gene-level non-synonymous mutation frequencies using the following procedures.
+Add `Gene_full_name` and `Protein_RefSeq_ID` columns to each variant with annotations obtained from [mygene.info](http://mygene.info/about).
 
 For vairant-level analysis, create a `Variant_ID` for each variant by concatenating `Chromosome`, `Start_Position`, `Reference_Allele`, and `Tumor_Seq_Allele2` with `'_'`.
 
@@ -61,18 +67,20 @@ For each `cancer_group_cohort` with `n_samples` >= 5, compute `Frequency_in_over
   - `Frequency_in_overall_dataset = Total_mutations / Patients_in_dataset`.
 
 - `Frequency_in_primary_tumors`:
-  - For each unique variant/gene, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that have mutations at the variant/gene and are in the `../independent-samples/results/independent-specimens.wgswxspanel.primary.tsv`, and call this number `Total_primary_tumors_mutated`.
-  - Count the total number of samples in the `cancer_group_cohort` that are also in the `../independent-samples/results/independent-specimens.wgswxspanel.primary.tsv`, and call this number `Primary_tumors_in_dataset`.
+  - For each unique variant/gene, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that have mutations at the variant/gene and are in the independent primary sample list, and call this number `Total_primary_tumors_mutated`.
+  - Count the total number of samples in the `cancer_group_cohort` that are also in the independent primary sample list, and call this number `Primary_tumors_in_dataset`.
   - `Frequency_in_primary_tumors = Total_primary_tumors_mutated / Primary_tumors_in_dataset`.
 
 - `Frequency_in_relapse_tumors`:
-  - For each unique variant/gene, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that have mutations at the variant/gene and are in the `../independent-samples/results/independent-specimens.wgswxspanel.relapse.tsv`, and call this number `Total_relapse_tumors_mutated`.
-  - Count the total number of samples in the `cancer_group_cohort` that are also in the `../independent-samples/results/independent-specimens.wgswxspanel.relapse.tsv`, and call this number `Relapse_tumors_in_dataset`.
+  - For each unique variant/gene, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that have mutations at the variant/gene and are in the independent relapse sample list, and call this number `Total_relapse_tumors_mutated`.
+  - Count the total number of samples in the `cancer_group_cohort` that are also in the independent relapse sample list, and call this number `Relapse_tumors_in_dataset`.
   - `Frequency_in_relapse_tumors = Total_relapse_tumors_mutated / Relapse_tumors_in_dataset`.
 
 Format the SNV mutation frequency table according to the latest spreadsheet that is attached in <https://github.com/PediatricOpenTargets/ticket-tracker/issues/64>.
 
 Merge the SNV mutation frequency tables of all `cancer_group_cohort`s.
+
+#### Add annotations
 
 Add EFO, MONDO, RMTL, PedcBioPortal oncoprint plot URL, and PedcBioPortal lollipop plot URL columns to variant-level and gene-level tables. The EFO, MONDO, and RMTL information is obtained from PediatricOpenTargets/OpenPedCan-analysis data release. The PedcBioPortal `case_set_id`s in the URLs are obtained from [the `sample-lists` PedcBioPortal web API](https://pedcbioportal.kidsfirstdrc.org/api/swagger-ui.html#/Sample_Lists), with the following command:
 
