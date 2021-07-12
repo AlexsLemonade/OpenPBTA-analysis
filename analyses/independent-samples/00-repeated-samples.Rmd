@@ -42,7 +42,7 @@ sample_df <- readr::read_tsv(file.path(root_dir, "data", "histologies-base.tsv")
 Sort to just sequencing samples of tumors
 ```{r}
 seq_samples <- sample_df %>%
-  filter(experimental_strategy %in% c("WGS", "WXS", "Targeted Sequencing", "Targeted-Capture"), 
+  filter(experimental_strategy %in% c("WGS", "WXS", "Targeted Sequencing"),
          sample_type == "Tumor")
 ```
 
@@ -144,7 +144,7 @@ No_WGS <- WXS_panel_participants[!(WXS_panel_participants %in% WGS_participants)
 length(No_WGS)
 ```
 
-So there are currently 16 samples with missing WGS data, but that may change in a future release.
+So there are currently 1071 samples with missing WGS data, but that may change in a future release.
 
 Just to check, is this still true when we restrict to early samples?
 ```{r}
@@ -165,7 +165,7 @@ No_WGS <- WXS_panel_participants[!(WXS_panel_participants %in% WGS_participants)
 length(No_WGS)
 ```
 
-No change. For now, we will look only at WGS samples, but this could be adjusted in future analysis.
+If we limit to early samples, there will be 1162 specimens that does not have WGS data.
 
 
 
@@ -211,7 +211,7 @@ sets using the `"primary"` and `"prefer_primary"` resepectively.
 independents <- sample_df %>%
   filter(experimental_strategy == "WGS",
          sample_type == "Tumor", 
-         composition == "Solid Tissue"
+         composition == "Solid Tissue" | composition == "Bone Marrow",
          ) %>%
   independent_samples(tumor_types = "primary")
 
