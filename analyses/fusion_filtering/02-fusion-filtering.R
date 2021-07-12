@@ -5,7 +5,7 @@
 # oncogenic drivers of a tumor and in some cases, appropriate therapy
 
 # Example run:
-# Rscript analyses/fusion_filtering/02-fusion-filtering.R -S scratch/arriba.tsv --expressionMatrix data/gene-expression-rsem-tpm-collapsed.rds --readthroughFilter --artifactFilter "GTEx_Recurrent|DGD_PARALOGS|Normal|BodyMap" --junctionReadCountFilter 1 --spanningFragCountFilter 100 --readingFrameFilter "in-frame|frameshift|other" --referenceFolder analyses/fusion_filtering/references/ --outputfile scratch/standardFusionExp -t 1
+# Rscript analyses/fusion_filtering/02-fusion-filtering.R -S scratch/arriba.tsv --expressionMatrix data/gene-expression-rsem-tpm-collapsed.rds --readthroughFilter --artifactFilter "GTEx_Recurrent|DGD_PARALOGS|Normal|BodyMap" --junctionReadCountFilter 1 --spanningFragCountFilter 100 --readingFrameFilter "in-frame|frameshift|other" --referenceFolder analyses/fusion_filtering/references/ --outputFile scratch/standardFusionExp -t 1
 #
 # Command line arguments
 #
@@ -22,7 +22,7 @@
 # referenceFolder		      :Path to folder with all reference gene list and fusion file list with the following files
 #                          genelistreference.txt A dataframe of genes of interest ; columns 1 : GeneNames 2: Source file 3: Type
 #                          fusionreference.txt A dataframe of fusion of interest ; columns 1 : FusionName 2: Source file 3: Type
-# outputfile			        :Filename prefix for QC filtered and gene of interest annotated fusion calls (prefix for _QC_expression_filtered_annotated.RDS)")
+# outputFile			        :Filename prefix for QC filtered and gene of interest annotated fusion calls (prefix for _QC_expression_filtered_annotated.RDS)")
 #
 
 
@@ -55,7 +55,7 @@ option_list <- list(
                help="reading frame filtering ( regex to capture inframe|frameshift|other)"),
   make_option(c("-R","--referenceFolder"),type="character",
                 help="reference folder with required gene lists"),
-  make_option(c("-o","--outputfile"),type="character",
+  make_option(c("-o","--outputFile"),type="character",
               help="Filtered fusion calls (prefix for _QC_expression_filtered_annotated.RDS)")
 )
 
@@ -170,7 +170,7 @@ fusion_filtering_QC<-function(standardFusioncalls=standardFusioncalls,readingFra
 # QC filter: artifact and read support
 QCFiltered<-fusion_filtering_QC(standardFusioncalls = standardFusioncalls,junctionReadCountFilter = junctionReadCountFilter,spanningFragCountFilter = spanningFragCountFilter,readingFrameFilter = readingFrameFilter,artifactFilter = artifactFilter,readthroughFilter = readthroughFilter)
 
-saveRDS(QCFiltered,paste0(opt$outputfile,"_QC_filtered.RDS"))
+saveRDS(QCFiltered,paste0(opt$outputFile,"_QC_filtered.RDS"))
 
 
 ############################################
@@ -280,7 +280,7 @@ annotate_fusion_calls<-function(standardFusioncalls=standardFusioncalls,geneList
 
 # Annotate QC filtered fusion calls
 annotated_filtered_fusions<-annotate_fusion_calls(standardFusioncalls = expression_filtered_fusions,geneListReferenceDataTab = geneListReferenceDataTab ,fusionReferenceDataTab = fusionReferenceDataTab )
-saveRDS(annotated_filtered_fusions,paste0(opt$outputfile,"_QC_expression_filtered_annotated.RDS"))
+saveRDS(annotated_filtered_fusions,paste0(opt$outputFile,"_QC_expression_filtered_annotated.RDS"))
 
 
 

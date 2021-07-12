@@ -15,7 +15,7 @@ option_list <- list(
   make_option(c("-c","--clinicalFile"),type="character",
               help="Histology file for all samples (.tsv)"),
   make_option(c("-y", "--cohortInterest"),type="character",
-              help="cohorts of interest for the filtering"),
+              help="comma separated cohorts of interest for the filtering"),
   make_option(c("-o","--outputfolder"),type="character",
               help="output folder for results "),
   make_option(c("-p","--independentPrimary"),type="character",

@@ -62,6 +62,7 @@ fi
 # data release files to use for recurrent fusion/fused genes detection
 
 putative_oncogenic_fusion="${results_path}/fusion-putative-oncogenic.tsv"
+<<<<<<< HEAD
 
 # Run filtering code to get the reference file
 Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
@@ -73,17 +74,36 @@ Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
                                        --clinicalFile $histologies_file \
                                        --specimenType "Brain" \
                                        --outputfile $normal_expression_brain
+=======
 
+# Run filtering code to get the reference file
+Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
+                                       --clinicalFile $histologies_file \
+                                       --specimenType "Adrenal Gland" \
+                                       --outputFile $normal_expression_adrenal_gland
+>>>>>>> e252ace72f0623377d18ee475d47baf25439d3e1
+
+Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
+                                       --clinicalFile $histologies_file \
+                                       --specimenType "Brain" \
+                                       --outputFile $normal_expression_brain
+                                       
 # Run Fusion standardization for arriba caller
 Rscript 01-fusion-standardization.R --fusionfile $arriba_file \
                                     --caller "arriba" \
+<<<<<<< HEAD
                                     --outputfile $standard_arriba_file
 
 
+=======
+                                    --outputFile $standard_arriba_file
+                                    
+                                    
+>>>>>>> e252ace72f0623377d18ee475d47baf25439d3e1
 # Run Fusion standardization for starfusion caller
 Rscript 01-fusion-standardization.R --fusionfile $starfusion_file \
                                     --caller "starfusion" \
-                                    --outputfile $standard_starfusion_file
+                                    --outputFile $standard_starfusion_file
 
 # Run Fusion general filtering for combined expression file
 Rscript 02-fusion-filtering.R --standardFusionFiles $standard_starfusion_file,$standard_arriba_file  \
@@ -94,6 +114,7 @@ Rscript 02-fusion-filtering.R --standardFusionFiles $standard_starfusion_file,$s
                               --spanningFragCountFilter $spanningFragCountFilter \
                               --readingFrameFilter $reading_frame_filter \
                               --referenceFolder $references_path \
+<<<<<<< HEAD
                               --outputfile "${scratch_path}/standardFusionExp" \
                               --readthroughFilter
 
@@ -104,6 +125,22 @@ Rscript 03-Calc-zscore-annotate.R --standardFusionCalls "${scratch_path}/standar
                                   --cohortInterest "PBTA,GMKF" \
                                   --normalExpressionMatrix $normal_expression_brain,$normal_expression_adrenal_gland \
                                   --outputfile "${scratch_path}/standardFusionExp_QC_expression"
+=======
+                              --outputFile "${scratch_path}/standardFusionExp" \
+                              --readthroughFilter
+
+# Fusion zscore annotation for filtered fusion for polya
+Rscript 03-Calc-zscore-annotate.R --standardFusionCalls "${scratch_path}/standardFusionPolyaExp_QC_expression_filtered_annotated.RDS" \
+                                  --expressionMatrix $polya_expression_file \
+                                  --normalExpressionMatrix $normal_expression_file \
+                                  --outputFile "${scratch_path}/standardFusionPolyaExp_QC_expression"
+
+# Fusion zscore annotation for filtered fusion for stranded
+Rscript 03-Calc-zscore-annotate.R --standardFusionCalls "${scratch_path}/standardFusionStrandedExp_QC_expression_filtered_annotated.RDS" \
+                                  --expressionMatrix $stranded_expression_file \
+                                  --normalExpressionMatrix $normal_expression_file \
+                                  --outputFile "${scratch_path}/standardFusionStrandedExp_QC_expression"
+>>>>>>> e252ace72f0623377d18ee475d47baf25439d3e1
 
 # Project specific filtering
 Rscript -e "rmarkdown::render('04-project-specific-filtering.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
