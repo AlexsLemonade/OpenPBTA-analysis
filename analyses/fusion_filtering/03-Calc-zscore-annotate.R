@@ -22,7 +22,7 @@
 #                               GeneSymbol( rownames) to be used to normalize samples
 # expressionMatrix : expression matrix (FPKM for samples that need to be zscore normalized)
 # saveZscoredMatrix : path to save zscored matrix from GTEx normalization
-# outputfile	: Output file is a standardized fusion call set with standard
+# outputFile	: Output file is a standardized fusion call set with standard
 # column headers with additional columns below from expression annotation
 # zscore_Gene1A : zscore from GTEx/cohort normalization for Gene1A
 # zscore_Gene1B : zscore from GTEx/cohort normalization for Gene1B
@@ -55,7 +55,7 @@ option_list <- list(
               help="path to save zscored matrix from GTEx normalization (.RDS)"),
   make_option(c("-n","--normalExpressionMatrix"),type="character",
               help="normalization TPM expression data to compare (.rds) - please make sure it matches the cohort"),
-  make_option(c("-o","--outputfile"),type="character",
+  make_option(c("-o","--outputFile"),type="character",
               help="Standardized fusion calls with additional annotation from GTEx zscore comparison (.TSV)")
 )
 
@@ -68,7 +68,6 @@ clinicalFile <- opt$clinicalFile
 cohortInterest<-unlist(strsplit(opt$cohortInterest,","))
 gtexMatrix<-unlist(strsplit(opt$normalExpressionMatrix,","))
 
-print(gtexMatrix)
 
 # load standardaized fusion calls cohort
 standardFusionCalls<-readRDS(standardFusionCalls)
@@ -112,7 +111,6 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,
     dplyr::arrange(Sample, FusionName) %>%
     # Retain only distinct rows
     dplyr::distinct()
-  
     
     # filter the fusion results to contain only samples in the cohort of interest
     fusion_sample_gene_df_matched <- fusion_sample_gene_df %>% filter(Sample %in% cohort_BSids)
@@ -121,22 +119,24 @@ ZscoredAnnotation<-function(standardFusionCalls=standardFusionCalls,
     expressionMatrixMatched <- expressionMatrix  %>%
       select(cohort_BSids) %>%
       select(fusion_sample_list) 
-  
+    
+    
     # remove 0s 
     expressionMatrixMatched<-expressionMatrixMatched[rowMeans(expressionMatrixMatched)!=0,]
     # log2 transformation
     expressionMatrixMatched<-log2(expressionMatrixMatched+1)
   
     # convert the expression data to data matrix
-    normData <- normData %>% data.frame() %>%
+    normData_matched <- normData_matched %>% data.frame() %>%
       as.matrix()
+
     # rearrange to order with expressionMatrix
-    normData <- normData[rownames(expressionMatrixMatched), ]
+    normData_matched <- normData_matched[rownames(expressionMatrixMatched), ]
     # log2 transformation
-    normData <- log2(normData + 1)
-    #normData mean and sd
-    normData_means <- rowMeans(normData, na.rm = TRUE)
-    normData_sd <- apply(normData, 1, sd, na.rm = TRUE)
+    normData_matched <- log2(normData_matched + 1)
+    #normData_matched mean and sd
+    normData_means <- rowMeans(normData_matched, na.rm = TRUE)
+    normData_sd <- apply(normData_matched, 1, sd, na.rm = TRUE)
     
     # subtract mean
     expressionMatrixzscored <- sweep(expressionMatrixMatched, 1, normData_means, FUN = "-")
@@ -197,10 +197,11 @@ for (j in (1:length(cohortInterest))) {
     # uses each value x in cohortInterest
     filter(cohort == cohortInterest[j]) %>% filter(experimental_strategy == "RNA-Seq") %>%
     filter(sample_type == "Tumor") %>% pull("Kids_First_Biospecimen_ID")
+  
   # use index to find the matched normal data
-  normData = normData[[j]]
-  GTExZscoredAnnotation_filtered_fusions_individual <-ZscoredAnnotation(standardFusionCalls,zscoreFilter,normData=normData,cohort_BSids=cohort_BSids, expressionMatrix = expressionMatrix)
+  normData_matched <- normData[[j]]
+  GTExZscoredAnnotation_filtered_fusions_individual <-ZscoredAnnotation(standardFusionCalls,zscoreFilter,normData=normData_matched,cohort_BSids=cohort_BSids, expressionMatrix = expressionMatrix)
   GTExZscoredAnnotation_filtered_fusions <- rbind(GTExZscoredAnnotation_filtered_fusions, GTExZscoredAnnotation_filtered_fusions_individual)
   }
 
-saveRDS(GTExZscoredAnnotation_filtered_fusions,paste0(opt$outputfile,"_GTExComparison_annotated.RDS"))
+saveRDS(GTExZscoredAnnotation_filtered_fusions,paste0(opt$outputFile,"_GTExComparison_annotated.RDS"))
