@@ -22,7 +22,7 @@
 #                               GeneSymbol( rownames) to be used to normalize samples
 # expressionMatrix : expression matrix (FPKM for samples that need to be zscore normalized)
 # saveZscoredMatrix : path to save zscored matrix from GTEx normalization
-# outputfile	: Output file is a standardized fusion call set with standard
+# outputFile	: Output file is a standardized fusion call set with standard
 # column headers with additional columns below from expression annotation
 # zscore_Gene1A : zscore from GTEx/cohort normalization for Gene1A
 # zscore_Gene1B : zscore from GTEx/cohort normalization for Gene1B
@@ -55,7 +55,7 @@ option_list <- list(
               help="path to save zscored matrix from GTEx normalization (.RDS)"),
   make_option(c("-n","--normalExpressionMatrix"),type="character",
               help="normalization TPM expression data to compare (.rds) - please make sure it matches the cohort"),
-  make_option(c("-o","--outputfile"),type="character",
+  make_option(c("-o","--outputFile"),type="character",
               help="Standardized fusion calls with additional annotation from GTEx zscore comparison (.TSV)")
 )
 
@@ -204,4 +204,4 @@ for (j in (1:length(cohortInterest))) {
   GTExZscoredAnnotation_filtered_fusions <- rbind(GTExZscoredAnnotation_filtered_fusions, GTExZscoredAnnotation_filtered_fusions_individual)
   }
 
-saveRDS(GTExZscoredAnnotation_filtered_fusions,paste0(opt$outputfile,"_GTExComparison_annotated.RDS"))
+saveRDS(GTExZscoredAnnotation_filtered_fusions,paste0(opt$outputFile,"_GTExComparison_annotated.RDS"))
