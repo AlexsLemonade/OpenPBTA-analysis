@@ -22,6 +22,7 @@ clinicalFile<-opt$clinicalFile
 specimenType<- opt$specimenType
 outputFile<- opt$outputFile
 
+
 #read in clinical file to find the list of normal specimens
 histology_df <- read.delim(clinicalFile, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
 normal_specimen <- histology_df %>% filter(gtex_group == specimenType) %>% 
@@ -34,4 +35,3 @@ normal_expression_matrix <- expressionMatrix %>% select(rownames(normal_specimen
 
 
 saveRDS(normal_expression_matrix,outputFile)
-
