@@ -2,7 +2,7 @@
 
 ## Overview
 
-The PBTA data set contains CNVs called from different callers, ie. Manta, CNVkit, and Freec. 
+The PedCan data set contains CNVs called from different callers, ie. Manta, CNVkit, and Freec. 
 The goal is to use all of these callers to reduce false positives and come up with a final consensus list of CNVs.
 This analysis uses information from the following files generated from the 3 callers
 
@@ -23,7 +23,7 @@ The analysis produces the following output files
 ## Running the pipeline
 
 To run the entire pipeline, make sure to have the latest release of the three input files mentioned in the Overview section.
-Go to OpenPBTA-analysis/analyses/copy_number_consensus_call and run `bash run_consensus_call.sh`
+Go to OpenPedCan-analysis/analyses/copy_number_consensus_call and run `bash run_consensus_call.sh`
 
 ## Methods
 
