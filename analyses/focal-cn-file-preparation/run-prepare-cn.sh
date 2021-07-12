@@ -22,7 +22,7 @@ cd "$script_directory" || exit
 scratch_dir=../../scratch
 data_dir=../../data
 results_dir=../../analyses/focal-cn-file-preparation/results
-histologies_file=${data_dir}/pbta-histologies.tsv
+histologies_file=${data_dir}/histologies.tsv
 gtf_file=${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz
 goi_file=../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt
 independent_specimens_file=${data_dir}/independent-specimens.wgswxs.primary.tsv
@@ -61,7 +61,7 @@ for strategy in ${libraryStrategies[@]}; do
 
     Rscript --vanilla rna-expression-validation.R \
       --annotated_cnv_file results/consensus_seg_annotated_cn_${chromosome_type}.tsv.gz \
-      --expression_file ${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.${strategy}.rds \
+      --expression_file ${data_dir}/gene-expression-rsem-fpkm-collapsed.${strategy}.rds \
       --independent_specimens_file $independent_specimens_file \
       --metadata $histologies_file \
       --goi_list $goi_file \
@@ -86,7 +86,7 @@ if [ "$RUN_ORIGINAL" -gt "0" ]; then
 
   # Run annotation step for ControlFreeC
   Rscript --vanilla 04-prepare-cn-file.R \
-    --cnv_file ${data_dir}/pbta-cnv-controlfreec.tsv.gz \
+    --cnv_file ${data_dir}/cnv-controlfreec.tsv.gz \
     --gtf_file $gtf_file \
     --metadata $histologies_file \
     --filename_lead "controlfreec_annotated_cn" \
@@ -98,7 +98,7 @@ if [ "$RUN_ORIGINAL" -gt "0" ]; then
       for chromosome_type in ${chromosomesType[@]}; do
         Rscript --vanilla rna-expression-validation.R \
           --annotated_cnv_file results/${filename}_${chromosome_type}.tsv.gz \
-          --expression_file ${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.${strategy}.rds \
+          --expression_file ${data_dir}/gene-expression-rsem-fpkm-collapsed.${strategy}.rds \
           --independent_specimens_file $independent_specimens_file \
           --metadata $histologies_file \
           --goi_list $goi_file \

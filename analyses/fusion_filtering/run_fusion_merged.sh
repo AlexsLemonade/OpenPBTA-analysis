@@ -66,11 +66,12 @@ Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
                                        --specimenType "Adrenal Gland" \
                                        --outputFile $normal_expression_adrenal_gland
 
+
 Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
                                        --clinicalFile $histologies_file \
                                        --specimenType "Brain" \
                                        --outputFile $normal_expression_brain
-                                       
+                          
 # Run Fusion standardization for arriba caller
 Rscript 01-fusion-standardization.R --fusionfile $arriba_file \
                                     --caller "arriba" \
