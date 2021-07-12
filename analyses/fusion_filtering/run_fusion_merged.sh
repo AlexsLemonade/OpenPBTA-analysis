@@ -23,8 +23,7 @@ cd "$script_directory" || exit
 data_path="../../data"
 scratch_path="../../scratch"
 references_path="references"
-results_path="results"
-independent_samples_path="../independent-samples/results"
+results_path="results/"
 
 
 # fusion files before and after standardization
@@ -46,22 +45,20 @@ rna_expression_file="${data_path}/gene-expression-rsem-tpm-collapsed.rds"
 normal_expression_adrenal_gland="${references_path}/gtex_adrenal_gland_TPM_hg38.rds"
 normal_expression_brain="${references_path}/gtex_brain_TPM_hg38.rds"
 
-# independent samples for curating fusion per sample
-independent_samples_primary="${independent_samples_path}/independent-specimens.rnaseq.primary.tsv"
-independent_samples_relapse="${independent_samples_path}/independent-specimens.rnaseq.relapse.tsv"
-
 # metadata files
 if [[ RUN_FOR_SUBTYPING -eq "0" ]]
 then
    histologies_file="${data_path}/histologies.tsv" 
+   independent_samples_file="${data_path}/independent-specimens.wgswxspanel.primary-plus.tsv"
 else 
    histologies_file="${data_path}/histologies-base.tsv"  
+   independent_samples_file="../independent-samples/results/independent-specimens.wgswxspanel.primary-plus.tsv" 
 fi
 
 
 # data release files to use for recurrent fusion/fused genes detection
 
-putative_oncogenic_fusion="${results_path}/fusion-putative-oncogenic.tsv"
+putative_oncogenic_fusion="${results_path}/pbta-fusion-putative-oncogenic.tsv"
 
 # Run filtering code to get the reference file
 Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
@@ -97,17 +94,11 @@ Rscript 02-fusion-filtering.R --standardFusionFiles $standard_starfusion_file,$s
                               --outputFile "${scratch_path}/standardFusionExp" \
                               --readthroughFilter
 
-# Fusion zscore annotation for filtered fusion for polya
+# Fusion zscore annotation for filtered fusion for the combined RNA expression file
 Rscript 03-Calc-zscore-annotate.R --standardFusionCalls "${scratch_path}/standardFusionPolyaExp_QC_expression_filtered_annotated.RDS" \
                                   --expressionMatrix $polya_expression_file \
                                   --normalExpressionMatrix $normal_expression_file \
                                   --outputFile "${scratch_path}/standardFusionPolyaExp_QC_expression"
-
-# Fusion zscore annotation for filtered fusion for stranded
-Rscript 03-Calc-zscore-annotate.R --standardFusionCalls "${scratch_path}/standardFusionStrandedExp_QC_expression_filtered_annotated.RDS" \
-                                  --expressionMatrix $stranded_expression_file \
-                                  --normalExpressionMatrix $normal_expression_file \
-                                  --outputFile "${scratch_path}/standardFusionStrandedExp_QC_expression"
 
 # Project specific filtering
 Rscript -e "rmarkdown::render('04-project-specific-filtering.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
@@ -116,10 +107,8 @@ Rscript -e "rmarkdown::render('04-project-specific-filtering.Rmd',params=list(ba
 Rscript -e "rmarkdown::render('05-QC_putative_onco_fusion_distribution.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
 # Recurrent fusion/fused genes
-Rscript 06-recurrent-fusions-per-cancer-group.R --standardFusionCalls $putative_oncogenic_fusion \
-                                                --clinicalFile $histologies_file \
-                                                --cohortInterest "PBTA,GMKF" \
-                                                --outputfolder $results_path \
-                                                --independentPrimary $independent_samples_primary \
-                                                --independentRelapse $independent_samples_relapse
+Rscript 06-recurrent-fusions-per-histology.R --standardFusionCalls $putative_oncogenic_fusion \
+                                             --clinicalFile $histologies_file \
+                                             --outputfolder $results_path \
+                                             --independentSpecimensFile $independent_samples_file
 
