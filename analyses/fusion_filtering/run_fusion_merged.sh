@@ -95,6 +95,7 @@ Rscript 02-fusion-filtering.R --standardFusionFiles $standard_starfusion_file,$s
                               --outputFile "${scratch_path}/standardFusionExp" \
                               --readthroughFilter
 
+
 # Fusion zscore annotation for filtered fusion for the combined RNA expression file
 Rscript 03-Calc-zscore-annotate.R --standardFusionCalls "${scratch_path}/standardFusionPolyaExp_QC_expression_filtered_annotated.RDS" \
                                   --expressionMatrix $polya_expression_file \
