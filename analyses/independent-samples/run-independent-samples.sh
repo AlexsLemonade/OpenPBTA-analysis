@@ -23,6 +23,9 @@ else
    HISTOLOGY_FILE="../../data/histologies-base.tsv"  
 fi
 
+independent_DNA_each="results/independent-specimens.wgswxspanel.primary-plus.eachcohort.tsv"
+independent_DNA_all="results/independent-specimens.wgswxspanel.primary-plus.allcohorts.tsv"
+
 Rscript 01-generate-independent-specimens.R \
   -f $HISTOLOGY_FILE \
   -o results
@@ -31,4 +34,5 @@ Rscript 01-generate-independent-specimens.R \
 Rscript 02-generate-independent-rnaseq.R \
   --histology_file $HISTOLOGY_FILE \
   --output_directory results \
-  --independent_dna_sample_df results/independent-specimens.wgswxspanel.primary-plus.tsv
+  --independent_dna_sample_df_each $independent_DNA_each \
+  --independent_dna_sample_df_all $independent_DNA_all

@@ -5,7 +5,7 @@ author: J. Taroni for ALSF CCDL
 date: 2019
 ---
 
-The `pbta-histologies.tsv` file contains a `tumor_ploidy` column, which is tumor ploidy as inferred by ControlFreeC.
+The `histologies.tsv` file contains a `tumor_ploidy` column, which is tumor ploidy as inferred by ControlFreeC.
 The copy number information should be interpreted in the light of this information (see: [current version of Data Formats section of README](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/390f1e08e481da5ec0b2c62d886d5fd298bbf017#data-formats)).
 
 This notebook adds ploidy information to the CNVkit results and adds a status column that defines gain and loss broadly.
@@ -17,13 +17,13 @@ library(dplyr)
 ### Read in data
 
 ```{r}
-cnvkit_file <- file.path("..", "..", "data", "pbta-cnv-cnvkit.seg.gz")
+cnvkit_file <- file.path("..", "..", "data", "cnv-cnvkit.seg.gz")
 cnvkit_df <- readr::read_tsv(cnvkit_file)
 ```
 
 ```{r}
-histologies_file <- file.path("..", "..", "data", "pbta-histologies.tsv")
-histologies_df <- readr::read_tsv(histologies_file, guess_max = 10000)
+histologies_file <- file.path("..", "..", "data", "histologies.tsv")
+histologies_df <- readr::read_tsv(histologies_file, guess_max = 100000)
 ```
 
 ### Add inferred ploidy information to CNVkit results

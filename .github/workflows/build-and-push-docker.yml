@@ -21,6 +21,7 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v1 
         with:
+          registry: pgc-images.sbgenomics.com
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
       - name: Build and push
@@ -28,6 +29,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: kfdrc/open-pedcan:latest
+          tags: pgc-images.sbgenomics.com/d3b-bixu/open-pedcan:latest
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}

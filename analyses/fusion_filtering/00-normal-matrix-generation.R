@@ -12,6 +12,7 @@ option_list <- list(
               help="Histology file for all samples (.TSV) "),
   make_option(c("-s","--specimenType"),type="character",
               help="which specimen type to collect normal expression"),
+
   make_option(c("-o","--outputFile"),type="character",
               help="normalization TPM expression data to compare (.rds)")
 )
@@ -32,5 +33,5 @@ normal_specimen <- histology_df %>% filter(gtex_group == specimenType) %>%
 expressionMatrix <- readRDS(expressionMatrix)
 normal_expression_matrix <- expressionMatrix %>% select(rownames(normal_specimen))
 
-saveRDS(normal_expression_matrix,outputFile)
 
+saveRDS(normal_expression_matrix,outputFile)
