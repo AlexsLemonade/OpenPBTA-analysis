@@ -61,13 +61,13 @@ For each `cancer_group_cohort` with `n_samples` >= 5, compute `Frequency_in_over
   - `Frequency_in_overall_dataset = Total_mutations / Patients_in_dataset`.
 
 - `Frequency_in_primary_tumors`:
-  - For each unique variant/gene, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that have mutations at the variant/gene and are in the `../independent-samples/results/independent-specimens.wgs.primary.tsv`, and call this number `Total_primary_tumors_mutated`.
-  - Count the total number of samples in the `cancer_group_cohort` that are also in the `../independent-samples/results/independent-specimens.wgs.primary.tsv`, and call this number `Primary_tumors_in_dataset`.
+  - For each unique variant/gene, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that have mutations at the variant/gene and are in the `../independent-samples/results/independent-specimens.wgswxspanel.primary.tsv`, and call this number `Total_primary_tumors_mutated`.
+  - Count the total number of samples in the `cancer_group_cohort` that are also in the `../independent-samples/results/independent-specimens.wgswxspanel.primary.tsv`, and call this number `Primary_tumors_in_dataset`.
   - `Frequency_in_primary_tumors = Total_primary_tumors_mutated / Primary_tumors_in_dataset`.
 
 - `Frequency_in_relapse_tumors`:
-  - For each unique variant/gene, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that have mutations at the variant/gene and are in the `../independent-samples/results/independent-specimens.wgs.relapse.tsv`, and call this number `Total_relapse_tumors_mutated`.
-  - Count the total number of samples in the `cancer_group_cohort` that are also in the `../independent-samples/results/independent-specimens.wgs.relapse.tsv`, and call this number `Relapse_tumors_in_dataset`.
+  - For each unique variant/gene, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that have mutations at the variant/gene and are in the `../independent-samples/results/independent-specimens.wgswxspanel.relapse.tsv`, and call this number `Total_relapse_tumors_mutated`.
+  - Count the total number of samples in the `cancer_group_cohort` that are also in the `../independent-samples/results/independent-specimens.wgswxspanel.relapse.tsv`, and call this number `Relapse_tumors_in_dataset`.
   - `Frequency_in_relapse_tumors = Total_relapse_tumors_mutated / Relapse_tumors_in_dataset`.
 
 Format the SNV mutation frequency table according to the latest spreadsheet that is attached in <https://github.com/PediatricOpenTargets/ticket-tracker/issues/64>.

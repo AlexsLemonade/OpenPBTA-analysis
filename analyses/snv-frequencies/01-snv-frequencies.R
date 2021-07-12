@@ -464,7 +464,6 @@ add_cg_ch_pedcbio_pedot_plot_urls <- function(mut_freq_tbl,
       mutate(PedcBio_PedOT_mutations_plot_URL = get_pcb_pot_plot_url(
         Gene_symbol, ss_case_set_id, 'mutations'))
   } else {
-    print(ss_case_set_id)
     a_mut_freq_tbl <- mut_freq_tbl %>%
       mutate(PedcBio_PedOT_oncoprint_plot_URL = '') %>%
       mutate(PedcBio_PedOT_mutations_plot_URL = '')
@@ -723,14 +722,14 @@ stopifnot(identical(sum(is.na(maf_df$Tumor_Sample_Barcode)), as.integer(0)))
 # primary independent sample data frame
 primary_indp_sdf <- read_tsv(
   file.path('..', 'independent-samples', 'results',
-            'independent-specimens.wgs.primary.eachcohort.tsv'),
+            'independent-specimens.wgswxspanel.primary.eachcohort.tsv'),
   col_types = cols(
     .default = col_guess()))
 
 # relapse independent samples
 relapse_indp_sdf <- read_tsv(
   file.path('..', 'independent-samples', 'results',
-            'independent-specimens.wgs.relapse.eachcohort.tsv'),
+            'independent-specimens.wgswxspanel.relapse.eachcohort.tsv'),
   col_types = cols(
     .default = col_guess()))
 
