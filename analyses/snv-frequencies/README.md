@@ -138,9 +138,9 @@ Input:
 
 Output:
 
-- `results/gene-level-snv-consensus-annotated-mut-freq.json.gz`
-- `results/gene-level-snv-consensus-annotated-mut-freq.jsonl.gz`
+- `results/gene-level-snv-consensus-annotated-mut-freq.json`
+- `results/gene-level-snv-consensus-annotated-mut-freq.jsonl`
 - `results/gene-level-snv-consensus-annotated-mut-freq.tsv`
-- `results/var-level-snv-consensus-annotated-mut-freq.json.gz`
-- `results/var-level-snv-consensus-annotated-mut-freq.jsonl.gz`
+- `results/var-level-snv-consensus-annotated-mut-freq.json`
+- `results/var-level-snv-consensus-annotated-mut-freq.jsonl`
 - `results/var-level-snv-consensus-annotated-mut-freq.tsv`
