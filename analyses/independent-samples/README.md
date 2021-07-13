@@ -6,7 +6,7 @@ Many analyses that involve mutation frequencies or co-occurence require that all
 However, the PBTA+GMKF data set includes many cases where multiple speciments were taken from a single individual.
 This analysis creates lists of samples such that there are no cases where more than one specimen is included from each individual.
 
-As different analyses may require different sets of data, we actually generate a few different sets, stored in the `results` subdirectory. We also run the analyses based on different 'independent_level', either 'each-cohort' or 'all-cohorts'. When running with 'each-cohort', we call independent samples for each cohort+cancer_type - and same samples in different cohorts are called "independent". When running with 'all-cohorts', we call independent samples regardless of cohort or cancer_type - and same samples in different cohorts are considered the same.
+As different analyses may require different sets of data, we actually generate a few different sets, stored in the `results` subdirectory. We also run the analyses based on different 'independent_level', either 'each-cohort' or 'all-cohorts'. When running with 'each-cohort', we call independent samples (based on Kids_First_Participant_ID) for each cohort+cancer_type - and same samples (based on Kids_First_Participant_ID) in different cohorts are called "independent". When running with 'all-cohorts', we call independent samples (based on Kids_First_Participant_ID) regardless of cohort or cancer_type - and same samples (based on Kids_First_Participant_ID) in different cohorts are considered the same.
 
 The following output are generated when we run with 'all-cohorts'
 * Primary specimens only with whole genome sequence (WGS):  
