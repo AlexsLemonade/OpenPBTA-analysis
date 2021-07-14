@@ -229,7 +229,7 @@ m_fus_freq_tbl <- m_fus_freq_tbl %>%
 stopifnot(identical(sum(is.na(m_fus_freq_tbl)), as.integer(0)))
 
 m_fus_freq_tbl <- m_fus_freq_tbl %>%
-  select(keep_cols,
+  select(keep_cols, Disease,
          Total_alterations_Over_Patients_in_dataset,
          Frequency_in_overall_dataset,
          Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset,
