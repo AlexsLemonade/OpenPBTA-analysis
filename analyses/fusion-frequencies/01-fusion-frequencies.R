@@ -106,7 +106,6 @@ tumor_kfbids <- htl_df %>%
   filter(sample_type == 'Tumor') %>%
   pull(Kids_First_Biospecimen_ID)
 
-head(fusion_df)
 
 fusion_df <- fusion_df  %>%
   # We want to keep track of the gene symbols for each sample-fusion pair
@@ -141,6 +140,7 @@ fusion_df <- fusion_df  %>%
   # replace NA to "" in columns that have NA
   replace_na(list("Kinase_domain_retained_Gene1A"="",
                   "Kinase_domain_retained_Gene1B"="",
+                  "Reciprocal_exists_either_gene_kinase"="",
                   "Gene1A_anno"="",
                   "Gene1B_anno"="",
                   "Gene2A_anno"="",
@@ -149,16 +149,27 @@ fusion_df <- fusion_df  %>%
   # We want a single column that contains the gene symbols
   tidyr::gather(Gene1A, Gene1B, Gene2A, Gene2B,
                 key = gene_position, value = gene_symbol) %>%
-  filter(!is.na(gene_symbol))
+  filter(!is.na(gene_symbol)) %>%
+  dplyr::rename(Gene_Position = gene_position,
+                Gene_Symbol = gene_symbol)
 
 print(alt_id)
 
-if (length(alt_id) > 1){
+if (opt$alt_id == "FusionName,Fusion_Type") {
   fusion_df <- fusion_df %>%
     mutate( Alt_ID=paste(!!as.name(alt_id),sep="_"))
-} else{
+  keep_cols <- c("FusionName","Fusion_Type","Gene_Symbol", "Gene_Position",
+                 "Fusion_anno","BreakpointLocation", "annots",
+                 "Kinase_domain_retained_Gene1A",
+                 "Kinase_domain_retained_Gene1B",
+                 "Reciprocal_exists_either_gene_kinase",
+                 "Gene1A_anno","Gene1B_anno","Gene2A_anno","Gene2B_anno")
+  
+} else if (opt$alt_id == "Gene_Symbol") {
   fusion_df <- fusion_df %>%
-    mutate( Alt_ID )
+    mutate( Alt_ID = "Gene_Symbol" )
+  keep_cols <-c("Gene_Symbol")
+
 }
 
 rm(tumor_kfbids)
@@ -213,33 +224,18 @@ m_fus_freq_tbl <- bind_rows(fus_freq_tbl_list) %>%
 
 m_fus_freq_tbl <- m_fus_freq_tbl %>%
   mutate(Dataset = if_else(Dataset == 'PBTA&GMKF&TARGET',
-                           true = 'PedOT', false = Dataset))%>%
-  # replace NA to "" in columns that have NA
-  replace_na(list("Kinase_domain_retained_Gene1A"="",
-                  "Kinase_domain_retained_Gene1B"="",
-                  "Reciprocal_exists_either_gene_kinase"="",
-                  "Gene1A_anno"="",
-                  "Gene1B_anno"="",
-                  "Gene2A_anno"="",
-                  "Gene2B_anno"="",
-                  "Fusion_anno"="")
-  )
+                           true = 'PedOT', false = Dataset))
 
 stopifnot(identical(sum(is.na(m_fus_freq_tbl)), as.integer(0)))
 
 m_fus_freq_tbl <- m_fus_freq_tbl %>%
-  select(gene_symbol, gene_position, FusionName, Disease,
-         Fusion_Type,Fusion_anno,ends_with("anno"), 
-         BreakpointLocation,Kinase_domain_retained_Gene1A,
-         Kinase_domain_retained_Gene1B,
-         Reciprocal_exists_either_gene_kinase,
+  select(keep_cols,
          Total_alterations_Over_Patients_in_dataset,
          Frequency_in_overall_dataset,
          Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset,
          Frequency_in_primary_tumors,
          Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
-         Frequency_in_relapse_tumors,
-         annots) %>%
+         Frequency_in_relapse_tumors) %>%
   write_tsv(file.path(results_dir, paste0(output_filename,'.tsv')))
 
 

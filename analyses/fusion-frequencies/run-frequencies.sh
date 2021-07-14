@@ -12,7 +12,7 @@ script_directory="$(perl -e 'use File::Basename;
  print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
-# gather frequencies
+# gather frequencies at FusionName and Fusion_Type level
 Rscript 01-fusion-frequencies.R --fusion_file ../fusion_filtering/results/fusion-putative-oncogenic.tsv \
 	--alt_id "FusionName,Fusion_Type" \
 	--input_histologies ../../data/histologies.tsv \
@@ -20,3 +20,10 @@ Rscript 01-fusion-frequencies.R --fusion_file ../fusion_filtering/results/fusion
 	--relapse_independence_list ../independent-samples/results/independent-specimens.wgs.relapse.tsv \
 	--output_filename "putative-oncogene-fusion-freq"
 
+# gather frequencies at Fused Gene level
+Rscript 01-fusion-frequencies.R --fusion_file ../fusion_filtering/results/fusion-putative-oncogenic.tsv \
+        --alt_id "Gene_Symbol" \
+        --input_histologies ../../data/histologies.tsv \
+        --primary_independence_list ../independent-samples/results/independent-specimens.wgs.primary.tsv \
+        --relapse_independence_list ../independent-samples/results/independent-specimens.wgs.relapse.tsv \
+        --output_filename "putative-oncogene-fused-gene-freq"
