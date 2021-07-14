@@ -82,7 +82,21 @@ Merge the SNV mutation frequency tables of all `cancer_group_cohort`s.
 
 #### Add annotations
 
-Add EFO, MONDO, RMTL, PedcBioPortal oncoprint plot URL, and PedcBioPortal lollipop plot URL columns to variant-level and gene-level tables. The EFO, MONDO, and RMTL information is obtained from PediatricOpenTargets/OpenPedCan-analysis data release. The PedcBioPortal `case_set_id`s in the URLs are obtained from [the `sample-lists` PedcBioPortal web API](https://pedcbioportal.kidsfirstdrc.org/api/swagger-ui.html#/Sample_Lists), with the following command:
+Add the following columns to variant-level and gene-level tables:
+
+- EFO
+- MONDO
+- RMTL
+- OncoKB cancer gene
+- OncoKB oncogene/TSG (tumor suppresor gene)
+- PedcBioPortal oncoprint plot URL
+- PedcBioPortal lollipop plot URL columns
+
+The EFO, MONDO, and RMTL information is obtained from PediatricOpenTargets/OpenPedCan-analysis data release.
+
+The OncoKB cancer gene and oncogene/TSG is listed in `input/oncokb_cancer_gene_list.tsv`, which is downloaded from <https://www.oncokb.org/cancerGenes>. The last update of the table is on 06/16/2021. To update the table, re-download the updated table from <https://www.oncokb.org/cancerGenes>.
+
+The PedcBioPortal `case_set_id`s in the URLs are obtained from [the `sample-lists` PedcBioPortal web API](https://pedcbioportal.kidsfirstdrc.org/api/swagger-ui.html#/Sample_Lists), with the following command:
 
 ```bash
 curl -X GET "https://pedcbioportal.kidsfirstdrc.org/api/studies/ped_opentargets_2021/sample-lists" -H "accept: application/json" -H "Authorization: Bearer YOUR-API-ACCESS-TOKEN" > ped_opentargets_2021_pedcbio_case_set_ids.json
@@ -130,11 +144,13 @@ Input:
 
 - `../../data/histologies.tsv`
 - `../../data/snv-consensus-plus-hotspots.maf.tsv.gz`
-- `../independent-samples/results/independent-specimens.wgs.primary.tsv`
-- `../independent-samples/results/independent-specimens.wgs.relapse.tsv`
 - `../../data/efo-mondo-map.tsv`
 - `../../data/ensg-hugo-rmtl-v1-mapping.tsv`
+- `../independent-samples/results/independent-specimens.wgs.primary.tsv`
+- `../independent-samples/results/independent-specimens.wgs.relapse.tsv`
 - `../fusion_filtering/references/genelistreference.txt`
+- `input/oncokb_cancer_gene_list.tsv`
+- `input/ped_opentargets_2021_pedcbio_case_set_ids.json`
 
 Output:
 

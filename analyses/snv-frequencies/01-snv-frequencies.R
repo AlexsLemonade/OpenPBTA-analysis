@@ -790,6 +790,15 @@ pcb_pot_case_set_id_vec <- vapply(
 stopifnot(identical(length(pcb_pot_case_set_id_vec),
                     length(unique(pcb_pot_case_set_id_vec))))
 
+# gene symbol to OncoKB cancer gene, oncogene and tumor suppressor gene mappings
+oncokb_cancer_gene_df <- read_tsv('input/oncokb_cancer_gene_list.tsv',
+                                  col_types = cols(.default = col_guess()))
+# assert no NA in gene symbols
+stopifnot(identical(sum(is.na(select(oncokb_cancer_gene_df, `Hugo Symbol`))),
+                    as.integer(0)))
+# assert all symbols are unique
+stopifnot(identical(nrow(oncokb_cancer_gene_df),
+                    length(unique(oncokb_cancer_gene_df$`Hugo Symbol`))))
 
 
 # Subset tumor samples and used columns in MAF table ---------------------------
@@ -1010,6 +1019,32 @@ gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
   replace_na(list(Gene_type = ''))
 stopifnot(identical(sum(is.na(gene_level_mut_freq_tbl)), as.integer(0)))
 
+# Add OncoKB cancer gene and oncogene/TSG (tumor suppressor gene)
+# all genes in input/oncokb_cancer_gene_list.tsv are OncoKB cancer genes
+oncokb_cancer_gene_ann_df <- oncokb_cancer_gene_df %>%
+  select(`Hugo Symbol`, `Is Oncogene`, `Is Tumor Suppressor Gene`) %>%
+  rename(Gene_symbol = `Hugo Symbol`,
+         is_onco = `Is Oncogene`,
+         is_tsg = `Is Tumor Suppressor Gene`) %>%
+  mutate(OncoKB_cancer_gene = 'Y',
+         OncoKB_oncogene_TSG = case_when(
+           is_onco == 'Yes' & is_tsg == 'Yes' ~ 'Oncogene,TumorSuppressorGene',
+           is_onco == 'Yes' ~ 'Oncogene',
+           is_tsg == 'Yes' ~ 'TumorSuppressorGene',
+           TRUE ~ '')) %>%
+  select(Gene_symbol, OncoKB_cancer_gene, OncoKB_oncogene_TSG)
+# unieuqness of oncokb_cancer_gene_df$`Hugo Symbol` is asserted after reading
+var_level_mut_freq_tbl <- var_level_mut_freq_tbl %>%
+  left_join(oncokb_cancer_gene_ann_df, by = 'Gene_symbol') %>%
+  replace_na(list(OncoKB_cancer_gene = 'N', OncoKB_oncogene_TSG = ''))
+stopifnot(identical(sum(is.na(var_level_mut_freq_tbl)), as.integer(0)))
+
+gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
+  left_join(oncokb_cancer_gene_ann_df, by = 'Gene_symbol') %>%
+  replace_na(list(OncoKB_cancer_gene = 'N', OncoKB_oncogene_TSG = ''))
+stopifnot(identical(sum(is.na(gene_level_mut_freq_tbl)), as.integer(0)))
+
+
 
 
 # Output tsv and JSON -----------------------------------------------------
@@ -1024,7 +1059,8 @@ var_level_mut_freq_tbl <- var_level_mut_freq_tbl %>%
          Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset,
          Frequency_in_primary_tumors,
          Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
-         Frequency_in_relapse_tumors, HotSpot,
+         Frequency_in_relapse_tumors,
+         HotSpot, OncoKB_cancer_gene, OncoKB_oncogene_TSG,
          PedcBio_PedOT_oncoprint_plot_URL, PedcBio_PedOT_mutations_plot_URL) %>%
   rename(Variant_ID_hg38 = Variant_ID)
 
@@ -1038,6 +1074,7 @@ gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
          Frequency_in_primary_tumors,
          Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
          Frequency_in_relapse_tumors,
+         OncoKB_cancer_gene, OncoKB_oncogene_TSG,
          PedcBio_PedOT_oncoprint_plot_URL, PedcBio_PedOT_mutations_plot_URL)
 
 write_tsv(
