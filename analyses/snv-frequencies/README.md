@@ -2,6 +2,19 @@
 
 **Module author:** Yuanchao Zhang ([@logstar](https://github.com/logstar))
 
+- [Annotate SNV table with mutation frequencies](#annotate-snv-table-with-mutation-frequencies)
+  - [Purpose](#purpose)
+  - [Methods](#methods)
+    - [Subset overlapping tumor samples between `snv-consensus-plus-hotspots.maf.tsv.gz` and `histologies.tsv`](#subset-overlapping-tumor-samples-between-snv-consensus-plus-hotspotsmaftsvgz-and-histologiestsv)
+    - [Subset non-synonymous variants](#subset-non-synonymous-variants)
+    - [Generate variant-level and gene-level non-synonymous mutation frequencies](#generate-variant-level-and-gene-level-non-synonymous-mutation-frequencies)
+    - [Add annotations](#add-annotations)
+  - [Results](#results)
+  - [Usage](#usage)
+  - [Analysis scripts](#analysis-scripts)
+    - [`01-snv-frequencies.R`](#01-snv-frequenciesr)
+  - [Guide on how to update `01-snv-frequencies.R`](#guide-on-how-to-update-01-snv-frequenciesr)
+
 ### Purpose
 
 - Annotate each non-synonymous variant in `snv-consensus-plus-hotspots.maf.tsv.gz` with mutation frequencies per `(cohort, cancer_group, primary/relapse)`.
@@ -160,3 +173,47 @@ Output:
 - `results/var-level-snv-consensus-annotated-mut-freq.json`
 - `results/var-level-snv-consensus-annotated-mut-freq.jsonl`
 - `results/var-level-snv-consensus-annotated-mut-freq.tsv`
+
+### Guide on how to update `01-snv-frequencies.R`
+
+Read the script. `01-snv-frequencies.R` contains the following sections:
+
+- Function definitions. This section contains the definitions of all functions used in this script. These functions directly use column names of input data, so any future updates need to check whether the column names are changed in new data releases. This script is originally developed using v6 data release.
+- Create output dir. This section creates output directory.
+- Read data. This section reads all input data.
+- Subset tumor samples and used columns in MAF table. This section subsets MAF table.
+- Subset independent samples in histology table. This section subsets histology table and creates primary and relapse independent sample histology tables.
+- Add additional annotations. This section adds Gene_full_name and Protein_RefSeq_ID to the MAF table.
+- Compute mutation frequencies. This section:
+  - computes mutation frequencies for 1) each cancer_group and each cohort and 2) each cancer_group and all cohorts
+  - add each-cohot and all-cohort PedcBio URLs
+  - creates gene-level and variant-level mutation frqeuency tables
+- Add annotations to the output table. This section adds various annotations to the mutation frequency tables.
+- Output tsv and JSON. This section outputs mutation frequency tables in tsv and JSON formats.
+
+Common updates:
+
+- Add new gene annotations:
+  - Load gene HUGO symbol (/gene Ensembl ENSG ID) annotation table in the Read data section. Make sure the HUGO symbol (/gene Ensembl ENSG ID) column has no NA or duplicate.
+  - Add annotations to the mutation frequency tables in the Add annotations to the output table section. Replace `NA`s with `''`.
+  - Reorder new columns before output.
+- Add new variant annotations:
+  - Load variant_ID annotation table in the Read data section. Make sure the variant_ID column has no NA or duplicate.
+  - Add annotations to the MAF table in the Add additional annotations section. Replace `NA`s with `''`.
+  - Retain the new annotation columns in the `get_cg_ch_var_level_mut_freq_tbl()` and `get_cg_ch_gene_level_mut_freq_tbl()` functions.
+  - Reorder new columns before output.
+- Change the notation for all_cohorts:
+  - Change `'all_cohorts'` to other values in the `get_cohort_set_value()` function.
+- Change the format of PedcBio URLs:
+  - Change the `get_pcb_pot_csi()` and `get_pcb_pot_ploAt_url()` functions.
+  - If `case_set_id`s are no longer used for linking PedcBio, the whole worflow needs to be redesigned.
+- Add new PedcBio URLs:
+  - Change the `add_cg_ch_pedcbio_pedot_plot_urls()` function.
+  - Retain the new URL columns in the `get_cg_ch_var_level_mut_freq_tbl()` and `get_cg_ch_gene_level_mut_freq_tbl()` functions.
+- Add new mutation frequency columns:
+  - Change the `get_opr_mut_freq_tbl()` function.
+  - Retain the new mutation frequency columns in the `get_cg_ch_var_level_mut_freq_tbl()` and `get_cg_ch_gene_level_mut_freq_tbl()` functions.
+
+The `stopifnot()` statements are assertions for the input data, so the output would be expected. If any assertion fails, additional code needs to be added mainly to remove NAs and handle duplicates in the data, so that the assertion pases.
+
+The commented test cases below function definitions can be used to test if the function works as expected.
