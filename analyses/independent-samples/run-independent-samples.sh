@@ -16,12 +16,15 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 
 Rscript -e "rmarkdown::render('00-repeated-samples.Rmd',params=list(base_run = ${RUN_FOR_SUBTYPING}), clean = TRUE)"
 
-if [[ RUN_FOR_SUBTYPING == "0" ]]
+if [[ RUN_FOR_SUBTYPING -eq "0" ]]
 then
    HISTOLOGY_FILE="../../data/histologies.tsv" 
 else 
    HISTOLOGY_FILE="../../data/histologies-base.tsv"  
 fi
+
+independent_DNA_each="results/independent-specimens.wgswxspanel.primary-plus.eachcohort.tsv"
+independent_DNA_all="results/independent-specimens.wgswxspanel.primary-plus.allcohorts.tsv"
 
 Rscript 01-generate-independent-specimens.R \
   -f $HISTOLOGY_FILE \
@@ -31,4 +34,5 @@ Rscript 01-generate-independent-specimens.R \
 Rscript 02-generate-independent-rnaseq.R \
   --histology_file $HISTOLOGY_FILE \
   --output_directory results \
-  --independent_dna_sample_df results/independent-specimens.wgswxspanel.primary-plus.tsv
+  --independent_dna_sample_df_each $independent_DNA_each \
+  --independent_dna_sample_df_all $independent_DNA_all
