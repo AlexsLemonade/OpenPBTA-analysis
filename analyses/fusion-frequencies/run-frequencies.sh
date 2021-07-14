@@ -12,5 +12,11 @@ script_directory="$(perl -e 'use File::Basename;
  print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
+# gather frequencies
+Rscript 01-fusion-frequencies.R --fusion_file ../fusion_filtering/results/fusion-putative-oncogenic.tsv \
+	--alt_id "FusionName,Fusion_Type" \
+	--input_histologies ../../data/histologies.tsv \
+	--primary_independence_list ../independent-samples/results/independent-specimens.wgs.primary.tsv \
+	--relapse_independence_list ../independent-samples/results/independent-specimens.wgs.relapse.tsv \
+	--output_filename "putative-oncogene-fusion-freq"
 
-Rscript --vanilla '01-fusion-frequencies.R'

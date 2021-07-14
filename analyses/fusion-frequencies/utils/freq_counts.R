@@ -43,7 +43,7 @@ collapse_rp_lists <- function(xl) {
   sapply(fxl, function(x) {
     stopifnot(is.character(x))
   })
-  fxv <- unique(reduce(fxl, c, .init = character(0)))
+  fxv <- unique(purrr::reduce(fxl, c, .init = character(0)))
   np_fxv <- fxv[str_detect(fxv, '^NP_')]
   c_np_fxv <- paste(np_fxv, collapse = ',')
   return(c_np_fxv)

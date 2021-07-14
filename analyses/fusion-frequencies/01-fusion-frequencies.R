@@ -1,3 +1,35 @@
+# Read filtered fusion calls to convert into json format for OpenTarget portal
+# attached gene and disease annotation and gatheres frequency at FusionName or
+# Gene_Symbol level
+
+suppressPackageStartupMessages(library(optparse))
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(rtracklayer))
+
+option_list <- list(
+  make_option(c("-i", "--fusion_file"), type = "character",
+              help = "Input filtered fusion from `fusion_filtering` module "),
+  make_option(c("-a", "--alt_id"), type = "character",
+              help = "columnname from fusion_file to be used as Alt_ID or multiple comma separated columnames"),
+  make_option(c("-c", "--input_histologies"), type  = "character",
+              help = "Input histologies.tsv "),
+  make_option(c("-p", "--primary_independence_list"), type = "character",
+              help = "Input independence list for primary samples"),
+  make_option(c("-r", "--relapse_independence_list"), type = "character",
+              help = "Input independence list for relapse samples"),
+  make_option(c("-o", "--output_filename"), type = "character", 
+              default = "putative-oncogene-fusion-freq",
+              help = "Output filename suffix ")
+)
+
+# parse the parameters
+opt <- parse_args(OptionParser(option_list = option_list))
+fusion_file <- opt$fusion_file
+input_histologies <- opt$input_histologies
+primary_independence_list <- opt$primary_independence_list
+relapse_independence_list <- opt$relapse_independence_list
+output_filename <- opt$output_filename
+alt_id <- unlist(strsplit(opt$alt_id,","))
 
 # Create output dir ------------------------------------------------------------
 
@@ -5,7 +37,6 @@
 # Use this as the root directory to ensure proper sourcing of functions no
 # matter where this is called from
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-setwd(root_dir)
 
 # Set path to results, plots, and subset files directories
 data_dir <- file.path(root_dir, "data")
@@ -22,7 +53,7 @@ if (!dir.exists(results_dir)) {
 
 # Read fusion, independent sample list, and histology data ------------------------
 message('Read data...')
-htl_df <- read_tsv(file.path(data_dir,'histologies.tsv'), guess_max = 100000,
+htl_df <- read_tsv(input_histologies, guess_max = 100000,
                    col_types = cols(.default = col_guess()))
 # assert no Kids_First_Biospecimen_ID or Kids_First_Participant_ID is NA
 stopifnot(identical(
@@ -30,52 +61,19 @@ stopifnot(identical(
                    Kids_First_Participant_ID))),
   as.integer(0)))
 
-fusion_df <- read_tsv(file.path(root_dir,
-  'analyses/fusion_filtering/results/fusion-putative-oncogenic.tsv'))
+fusion_df <- read_tsv(fusion_file)
 # assert all records have Sample
 stopifnot(identical(sum(is.na(fusion_df$Sample)), as.integer(0)))
 
 # primary independent sample data frame
-primary_indp_sdf <- read_tsv(file.path(
-  root_dir,
-  'analyses/independent-samples/results/independent-specimens.wgs.primary.tsv'),
+primary_indp_sdf <- read_tsv(primary_independence_list,
   col_types = cols(
     .default = col_guess()))
 
 # relapse independent samples
-relapse_indp_sdf <- read_tsv(file.path(
-  root_dir,
-  'analyses/independent-samples/results/independent-specimens.wgs.relapse.tsv'),
+relapse_indp_sdf <- read_tsv(relapse_independence_list,
   col_types = cols(
     .default = col_guess()))
-
-#efo cancer_group mappings
-efo_mondo_cg_df <- read_tsv(file.path(data_dir,'efo-mondo-map.tsv'),
-                            col_types = cols(.default = col_guess())) %>%
-  distinct()
-# efo_mondo_cg_df$cancer_group[
-#   !efo_mondo_cg_df$cancer_group %in% htl_df$cancer_group]
-
-# assert all cancer_groups are not NA
-stopifnot(identical(sum(is.na(efo_mondo_cg_df$cancer_group)), as.integer(0)))
-# assert all cancer_groups are unique.
-# result SNV table is left joined by cancer_groups
-stopifnot(identical(length(unique(efo_mondo_cg_df$cancer_group)),
-                    nrow(efo_mondo_cg_df)))
-
-# ensg hugo rmtl mappings
-ensg_hugo_rmtl_df <- read_tsv(file.path(data_dir,'ensg-hugo-rmtl-v1-mapping.tsv'),
-                              col_types = cols(.default = col_guess())) %>%
-  distinct()
-# assert all ensg_ids and gene_symbols are not NA
-stopifnot(identical(sum(is.na(ensg_hugo_rmtl_df$ensg_id)), as.integer(0)))
-stopifnot(identical(sum(is.na(ensg_hugo_rmtl_df$gene_symbol)), as.integer(0)))
-# assert all ensg_id are unique
-# result SNV table is left joined by ensg_id
-stopifnot(identical(length(unique(ensg_hugo_rmtl_df$ensg_id)),
-                    nrow(ensg_hugo_rmtl_df)))
-
-
 
 # Subset independent samples in histology table --------------------------------
 message('Prepare data...')
@@ -103,12 +101,12 @@ td_htl_dfs <- lapply(td_htl_dfs, function(x) {
   return(fx)
 })
 
-
-
 # Subset tumor samples to filter alteration df ---------------------------
 tumor_kfbids <- htl_df %>%
   filter(sample_type == 'Tumor') %>%
   pull(Kids_First_Biospecimen_ID)
+
+head(fusion_df)
 
 fusion_df <- fusion_df  %>%
   # We want to keep track of the gene symbols for each sample-fusion pair
@@ -126,9 +124,8 @@ fusion_df <- fusion_df  %>%
                 annots,
                 BreakpointLocation,
                 ends_with("anno")) %>%
-  # Gather a alteration ID to use for count
   # Update reciprocal_exits to fusion with atleast 1 kinase gene involved
-  mutate(Alt_ID=paste(FusionName, Fusion_Type,sep="_"),
+  mutate(
          reciprocal_exists_kinase = 
            # if either gene are kinase we will have "Yes" or "No" values
            # in DomainRetainedGene1A and DomainRetainedGene1B
@@ -137,7 +134,7 @@ fusion_df <- fusion_df  %>%
                    # reciprocl_exists is a logical column
                    FALSE,
                    reciprocal_exists)) %>%
-  rename("Kids_First_Biospecimen_ID"="Sample",
+  dplyr::rename("Kids_First_Biospecimen_ID"="Sample",
          "Kinase_domain_retained_Gene1A" = "DomainRetainedGene1A",
          "Kinase_domain_retained_Gene1B" = "DomainRetainedGene1B",
          "Reciprocal_exists_either_gene_kinase" = "reciprocal_exists_kinase")%>%
@@ -154,9 +151,17 @@ fusion_df <- fusion_df  %>%
                 key = gene_position, value = gene_symbol) %>%
   filter(!is.na(gene_symbol))
 
+print(alt_id)
+
+if (length(alt_id) > 1){
+  fusion_df <- fusion_df %>%
+    mutate( Alt_ID=paste(!!as.name(alt_id),sep="_"))
+} else{
+  fusion_df <- fusion_df %>%
+    mutate( Alt_ID )
+}
 
 rm(tumor_kfbids)
-
 
 
 # Compute mutation frequencies -------------------------------------------------
@@ -222,67 +227,9 @@ m_fus_freq_tbl <- m_fus_freq_tbl %>%
 
 stopifnot(identical(sum(is.na(m_fus_freq_tbl)), as.integer(0)))
 
-             
-
-
-# Add EFO, MONDO, and RMTL to the output table ---------------------------------
-ann_efo_mondo_cg_df <- efo_mondo_cg_df %>%
-  rename(Disease = cancer_group, EFO = efo_code, MONDO = mondo_code)
-
 m_fus_freq_tbl <- m_fus_freq_tbl %>%
-  left_join(ann_efo_mondo_cg_df, by = 'Disease') %>%
-  replace_na(list(EFO = '', MONDO = ''))
-
-# asert all rmtl NAs have version NAs, vice versa
-stopifnot(identical(is.na(ensg_hugo_rmtl_df$rmtl),
-                    is.na(ensg_hugo_rmtl_df$version)))
-ann_ensg_hugo_rmtl_df <- ensg_hugo_rmtl_df %>%
-  mutate(RMTL = if_else((!is.na(rmtl) & !is.na(version)),
-                        paste0(rmtl, ' (', version, ')'),
-                        '')) %>%
-  select(ensg_id, RMTL,gene_symbol) %>%
-  rename(Gene_Ensembl_ID = ensg_id) 
-
-m_fus_freq_tbl <- m_fus_freq_tbl %>%
-  left_join(ann_ensg_hugo_rmtl_df, by = "gene_symbol") %>%
-  replace_na(list(RMTL = '',
-                  Gene_Ensembl_ID = ''))
-stopifnot(identical(sum(is.na(m_fus_freq_tbl)), as.integer(0)))
-
-
-# Add additional gene annotations ---------------------------------------------------
-message('Retrieve Gene_full_name and Protein_RefSeq_ID from mygene.info...')
-ens_gids <- ensg_hugo_rmtl_df$ensg_id[which(ensg_hugo_rmtl_df$gene_symbol %in%
-                                              fusion_df$gene_symbol)]
-ens_gids <- ens_gids[!is.na(ens_gids)]
-
-mg_qres_list <- mygene::queryMany(
-  ens_gids, scopes = 'ensembl.gene', fields = c('refseq', 'name'),
-  species = 'human', returnall = TRUE, return.as = 'DataFrame')
-
-mg_qres_df <- as_tibble(
-  mg_qres_list$response[, c('query', 'notfound', 'name', 'refseq.protein')]) %>%
-  replace_na(list(notfound = FALSE)) %>%
-  filter(!notfound) %>%
-  group_by(query) %>%
-  summarise(name = paste(unique(name), collapse = ', '),
-            refseq_protein = collapse_rp_lists(refseq.protein)) %>%
-  rename(Gene = query, Gene_full_name = name,
-         Protein_RefSeq_ID = refseq_protein)
-
-# add additional fields to alteration df
-m_fus_freq_tbl <- m_fus_freq_tbl %>%
-  left_join(mg_qres_df, by = c('Gene_Ensembl_ID'='Gene')) %>%
-  replace_na(list(Gene_Ensembl_ID='',
-                  Gene_full_name=''))
-
-suppressMessages(gc(reset = TRUE))
-
-
-m_fus_freq_tbl <- m_fus_freq_tbl %>%
-  select(gene_symbol, RMTL, Gene_Ensembl_ID,
-         Gene_full_name, gene_position, FusionName,
-         Dataset, Disease, EFO, MONDO, Fusion_Type,
+  select(gene_symbol, gene_position, FusionName, Disease,
+         Fusion_Type,Fusion_anno,ends_with("anno"), 
          BreakpointLocation,Kinase_domain_retained_Gene1A,
          Kinase_domain_retained_Gene1B,
          Reciprocal_exists_either_gene_kinase,
@@ -293,17 +240,6 @@ m_fus_freq_tbl <- m_fus_freq_tbl %>%
          Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
          Frequency_in_relapse_tumors,
          annots) %>%
-  rename(Gene_Position = gene_position,
-         Gene_Symbol = gene_symbol)
+  write_tsv(file.path(results_dir, paste0(output_filename,'.tsv')))
 
 
-# assert all rows are unique
-# stopifnot(identical(nrow(m_fus_freq_tbl),
-#                     sum(sapply(fus_freq_tbl_list, nrow))))
-
-write_tsv(m_fus_freq_tbl,
-          file.path(results_dir, 'putative-oncogene-fusion-annotated-freq.tsv'))
-
-jsonlite::write_json(
-  m_fus_freq_tbl,
-  file.path(results_dir, 'putative-oncogene-fusion-annotated-freq.json'))
