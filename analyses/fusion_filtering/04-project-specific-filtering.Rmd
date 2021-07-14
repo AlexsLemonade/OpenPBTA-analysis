@@ -41,7 +41,7 @@ params:
     input: integer
   base_histology:
     label: "Base histology file"
-    value: data/histologies-base.tsv
+    value: data/histologies.tsv
     input: file
 ---
 
