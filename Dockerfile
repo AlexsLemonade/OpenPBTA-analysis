@@ -406,6 +406,15 @@ RUN ./install_bioc.r \
 RUN ./install_bioc.r \
     mygene
 
+# Even though apt-get section at top, add installation here to avoid re-RUN
+# previous steps in docker build.
+# There are other out-of-order cases.
+# We can reorganize this Dockerfile when CI is available, so it is easier to
+# test for reproducibility.
+# Install json processor jq
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    jq
+
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
 
