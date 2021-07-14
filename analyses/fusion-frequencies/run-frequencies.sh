@@ -16,14 +16,14 @@ cd "$script_directory" || exit
 Rscript 01-fusion-frequencies.R --fusion_file ../fusion_filtering/results/fusion-putative-oncogenic.tsv \
 	--alt_id "FusionName,Fusion_Type" \
 	--input_histologies ../../data/histologies.tsv \
-	--primary_independence_list ../independent-samples/results/independent-specimens.wgs.primary.tsv \
-	--relapse_independence_list ../independent-samples/results/independent-specimens.wgs.relapse.tsv \
+	--primary_independence_list ../independent-samples/results/independent-specimens.wgswxspanel.primary.tsv \
+	--relapse_independence_list ../independent-samples/results/independent-specimens.wgswxspanel.relapse.tsv \
 	--output_filename "putative-oncogene-fusion-freq"
 
 # gather frequencies at Fused Gene level
 Rscript 01-fusion-frequencies.R --fusion_file ../fusion_filtering/results/fusion-putative-oncogenic.tsv \
         --alt_id "Gene_Symbol" \
         --input_histologies ../../data/histologies.tsv \
-        --primary_independence_list ../independent-samples/results/independent-specimens.wgs.primary.tsv \
-        --relapse_independence_list ../independent-samples/results/independent-specimens.wgs.relapse.tsv \
+        --primary_independence_list ../independent-samples/results/independent-specimens.wgswxspanel.primary.tsv \
+        --relapse_independence_list ../independent-samples/results/independent-specimens.wgswxspanel.relapse.tsv \
         --output_filename "putative-oncogene-fused-gene-freq"

@@ -167,7 +167,7 @@ if (opt$alt_id == "FusionName,Fusion_Type") {
   
 } else if (opt$alt_id == "Gene_Symbol") {
   fusion_df <- fusion_df %>%
-    mutate( Alt_ID = "Gene_Symbol" )
+    mutate( Alt_ID = Gene_Symbol )
   keep_cols <-c("Gene_Symbol")
 
 }
