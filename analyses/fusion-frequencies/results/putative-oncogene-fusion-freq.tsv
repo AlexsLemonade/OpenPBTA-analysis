@@ -188,7 +188,6 @@ RBFOX2--IGLC2	frameshift	RBFOX2	Gene1A		Genic	[INTRACHROMOSOMAL[chr22:12.84Mb]],
 TEF/AL008582.1--CCDC134	other	TEF	Gene1A		Intergenic	[], deletion			FALSE	TranscriptionFactor				1/14	7.14%	0/7	0.00%	0/3	0.00%
 ZBED4/ALG12--LPA	other	ZBED4	Gene1A		Intergenic	[], translocation			FALSE	TranscriptionFactor				1/14	7.14%	0/7	0.00%	0/3	0.00%
 PTPRZ1--MET	in-frame	PTPRZ1	Gene1A	TCGAFusion	Genic	[ChimerPub, FA_CancerSupp, ChimerSeq, INTRACHROMOSOMAL[chr7:5.07Mb]], duplication		Yes	TRUE		Kinase, CosmicCensus, Oncogene, Kinase			1/14	7.14%	0/7	0.00%	0/3	0.00%
-C11orf95--RELA	in-frame	C11orf95	Gene1A		Genic	[INTRACHROMOSOMAL[chr11:1.88Mb]], duplication			FALSE		Oncogene, TranscriptionFactor			1/14	7.14%	0/7	0.00%	0/3	0.00%
 PTPRZ1--MET	frameshift	PTPRZ1	Gene1A	TCGAFusion	Genic	[ChimerPub, FA_CancerSupp, ChimerSeq, INTRACHROMOSOMAL[chr7:5.07Mb]], duplication		No	FALSE		Kinase, CosmicCensus, Oncogene, Kinase			1/14	7.14%	0/7	0.00%	0/3	0.00%
 PTPRZ1--MET	in-frame	PTPRZ1	Gene1A	TCGAFusion	Genic	[ChimerPub, FA_CancerSupp, ChimerSeq, INTRACHROMOSOMAL[chr7:5.07Mb]], duplication		Yes	FALSE		Kinase, CosmicCensus, Oncogene, Kinase			1/14	7.14%	0/7	0.00%	0/3	0.00%
 ARHGEF12--ETS1	frameshift	ARHGEF12	Gene1A		Genic	[INTRACHROMOSOMAL[chr11:7.97Mb]], inversion			FALSE	TumorSuppressorGene, CosmicCensus, Oncogene	Oncogene, TranscriptionFactor			1/14	7.14%	0/7	0.00%	0/3	0.00%
@@ -216,8 +215,6 @@ CLTCL1--T	frameshift	CLTCL1	Gene1A		Genic	[INTERCHROMOSOMAL[chr22--chr6]], trans
 CR381572.2/CR381572.1--MYO18B	other	CR381572.2	Gene1A		Intergenic	[], translocation			FALSE		TumorSuppressorGene			1/14	7.14%	0/7	0.00%	0/3	0.00%
 GNAZ--MYO18B	other	GNAZ	Gene1A		Genic	[INTRACHROMOSOMAL[chr22:2.62Mb]], deletion			FALSE		TumorSuppressorGene			1/14	7.14%	0/7	0.00%	0/3	0.00%
 HMGCR--SH3YL1	in-frame	HMGCR	Gene1A		Genic	[INTERCHROMOSOMAL[chr5--chr2]], translocation			FALSE	Oncogene				1/14	7.14%	0/7	0.00%	0/3	0.00%
-LPA--QKI	frameshift	LPA	Gene1A		Genic	[INTRACHROMOSOMAL[chr6:2.75Mb]], inversion			FALSE		TumorSuppressorGene, CosmicCensus			1/14	7.14%	0/7	0.00%	0/3	0.00%
-LPA--QKI	in-frame	LPA	Gene1A		Genic	[INTRACHROMOSOMAL[chr6:2.75Mb]], inversion			FALSE		TumorSuppressorGene, CosmicCensus			1/14	7.14%	0/7	0.00%	0/3	0.00%
 LPAL2--QKI	other	LPAL2	Gene1A		Genic	[INTRACHROMOSOMAL[chr6:2.89Mb]], inversion			FALSE		TumorSuppressorGene, CosmicCensus			1/14	7.14%	0/7	0.00%	0/3	0.00%
 MYO18B--LINC02560	frameshift	MYO18B	Gene1A		Genic	[INTERCHROMOSOMAL[chr22--chr19]], translocation			FALSE	TumorSuppressorGene				1/14	7.14%	0/7	0.00%	0/3	0.00%
 MYO18B--LINC02560	other	MYO18B	Gene1A		Genic	[INTERCHROMOSOMAL[chr22--chr19]]			FALSE	TumorSuppressorGene				1/14	7.14%	0/7	0.00%	0/3	0.00%
@@ -282,7 +279,6 @@ RBFOX2--IGLC2	frameshift	IGLC2	Gene1B		Genic	[INTRACHROMOSOMAL[chr22:12.84Mb]], 
 TEF/AL008582.1--CCDC134	other	CCDC134	Gene1B		Intergenic	[], deletion			FALSE	TranscriptionFactor				1/14	7.14%	0/7	0.00%	0/3	0.00%
 ZBED4/ALG12--LPA	other	LPA	Gene1B		Intergenic	[], translocation			FALSE	TranscriptionFactor				1/14	7.14%	0/7	0.00%	0/3	0.00%
 PTPRZ1--MET	in-frame	MET	Gene1B	TCGAFusion	Genic	[ChimerPub, FA_CancerSupp, ChimerSeq, INTRACHROMOSOMAL[chr7:5.07Mb]], duplication		Yes	TRUE		Kinase, CosmicCensus, Oncogene, Kinase			1/14	7.14%	0/7	0.00%	0/3	0.00%
-C11orf95--RELA	in-frame	RELA	Gene1B		Genic	[INTRACHROMOSOMAL[chr11:1.88Mb]], duplication			FALSE		Oncogene, TranscriptionFactor			1/14	7.14%	0/7	0.00%	0/3	0.00%
 PTPRZ1--MET	frameshift	MET	Gene1B	TCGAFusion	Genic	[ChimerPub, FA_CancerSupp, ChimerSeq, INTRACHROMOSOMAL[chr7:5.07Mb]], duplication		No	FALSE		Kinase, CosmicCensus, Oncogene, Kinase			1/14	7.14%	0/7	0.00%	0/3	0.00%
 PTPRZ1--MET	in-frame	MET	Gene1B	TCGAFusion	Genic	[ChimerPub, FA_CancerSupp, ChimerSeq, INTRACHROMOSOMAL[chr7:5.07Mb]], duplication		Yes	FALSE		Kinase, CosmicCensus, Oncogene, Kinase			1/14	7.14%	0/7	0.00%	0/3	0.00%
 ARHGEF12--ETS1	frameshift	ETS1	Gene1B		Genic	[INTRACHROMOSOMAL[chr11:7.97Mb]], inversion			FALSE	TumorSuppressorGene, CosmicCensus, Oncogene	Oncogene, TranscriptionFactor			1/14	7.14%	0/7	0.00%	0/3	0.00%
@@ -310,8 +306,6 @@ CLTCL1--T	frameshift	T	Gene1B		Genic	[INTERCHROMOSOMAL[chr22--chr6]], translocat
 CR381572.2/CR381572.1--MYO18B	other	MYO18B	Gene1B		Intergenic	[], translocation			FALSE		TumorSuppressorGene			1/14	7.14%	0/7	0.00%	0/3	0.00%
 GNAZ--MYO18B	other	MYO18B	Gene1B		Genic	[INTRACHROMOSOMAL[chr22:2.62Mb]], deletion			FALSE		TumorSuppressorGene			1/14	7.14%	0/7	0.00%	0/3	0.00%
 HMGCR--SH3YL1	in-frame	SH3YL1	Gene1B		Genic	[INTERCHROMOSOMAL[chr5--chr2]], translocation			FALSE	Oncogene				1/14	7.14%	0/7	0.00%	0/3	0.00%
-LPA--QKI	frameshift	QKI	Gene1B		Genic	[INTRACHROMOSOMAL[chr6:2.75Mb]], inversion			FALSE		TumorSuppressorGene, CosmicCensus			1/14	7.14%	0/7	0.00%	0/3	0.00%
-LPA--QKI	in-frame	QKI	Gene1B		Genic	[INTRACHROMOSOMAL[chr6:2.75Mb]], inversion			FALSE		TumorSuppressorGene, CosmicCensus			1/14	7.14%	0/7	0.00%	0/3	0.00%
 LPAL2--QKI	other	QKI	Gene1B		Genic	[INTRACHROMOSOMAL[chr6:2.89Mb]], inversion			FALSE		TumorSuppressorGene, CosmicCensus			1/14	7.14%	0/7	0.00%	0/3	0.00%
 MYO18B--LINC02560	frameshift	LINC02560	Gene1B		Genic	[INTERCHROMOSOMAL[chr22--chr19]], translocation			FALSE	TumorSuppressorGene				1/14	7.14%	0/7	0.00%	0/3	0.00%
 MYO18B--LINC02560	other	LINC02560	Gene1B		Genic	[INTERCHROMOSOMAL[chr22--chr19]]			FALSE	TumorSuppressorGene				1/14	7.14%	0/7	0.00%	0/3	0.00%
@@ -880,7 +874,6 @@ TAPBP--GPX6	frameshift	TAPBP	Gene1A		Genic	[INTRACHROMOSOMAL[chr6:4.77Mb]], dele
 TDRP--DEPTOR	frameshift	TDRP	Gene1A		Genic	[INTRACHROMOSOMAL[chr8:119.33Mb]], inversion			FALSE					1/55	1.82%	0/34	0.00%	0/13	0.00%
 TNIK--AL035696.3	frameshift	TNIK	Gene1A		Genic	[INTERCHROMOSOMAL[chr3--chr6]], translocation/5'-5'	No		FALSE	Kinase, Kinase				1/55	1.82%	0/34	0.00%	0/13	0.00%
 AP001978.1/AP001541.1--RSF1	other	AP001978.1	Gene1A		Intergenic	[], inversion			FALSE		Oncogene			1/55	1.82%	0/34	0.00%	0/13	0.00%
-RSF1--AP001978.1/AP001541.1	frameshift	RSF1	Gene1A		Intergenic	[], inversion			FALSE	Oncogene				1/55	1.82%	0/34	0.00%	0/13	0.00%
 ATP13A4--FGF12	other	ATP13A4	Gene1A		Genic	[INTRACHROMOSOMAL[chr3:0.63Mb]], deletion			FALSE		Oncogene			1/55	1.82%	0/34	0.00%	0/13	0.00%
 RFWD2--TNR	frameshift	RFWD2	Gene1A		Genic	[INTRACHROMOSOMAL[chr1:0.20Mb]], deletion			FALSE	TumorSuppressorGene	Oncogene			1/55	1.82%	0/34	0.00%	0/13	0.00%
 TNR--RFWD2	other	TNR	Gene1A	TCGAFusion	Genic	[FA_CancerSupp, INTRACHROMOSOMAL[chr1:0.20Mb]], duplication			FALSE	Oncogene	TumorSuppressorGene			2/55	3.64%	0/34	0.00%	0/13	0.00%
@@ -889,7 +882,6 @@ CNTNAP2--MPP6	other	CNTNAP2	Gene1A		Genic	[INTRACHROMOSOMAL[chr7:121.42Mb]], inv
 COA1--RPL6P21/DGKB	other	COA1	Gene1A		Intergenic	[], duplication			FALSE					1/55	1.82%	0/34	0.00%	0/13	0.00%
 FKBP9--TNRC18	frameshift	FKBP9	Gene1A		Genic	[INTRACHROMOSOMAL[chr7:27.53Mb]], inversion			FALSE	CosmicCensus				1/55	1.82%	0/34	0.00%	0/13	0.00%
 MET/CAPZA2--SLC26A4	other	MET	Gene1A		Intergenic	[], inversion	Yes		TRUE	Kinase, CosmicCensus, Oncogene, Kinase				1/55	1.82%	0/34	0.00%	0/13	0.00%
-MPP6--CNTNAP2	frameshift	MPP6	Gene1A		Genic	[INTRACHROMOSOMAL[chr7:121.42Mb]], inversion/3'-3'			FALSE		TumorSuppressorGene, CosmicCensus			1/55	1.82%	0/34	0.00%	0/13	0.00%
 OSBPL3--DCAF13P1/RNU6-392P	frameshift	OSBPL3	Gene1A		Intergenic	[], duplication			FALSE	Oncogene				1/55	1.82%	0/34	0.00%	0/13	0.00%
 PIAS1--IGF1R	frameshift	PIAS1	Gene1A		Genic	[INTRACHROMOSOMAL[chr15:30.45Mb]], deletion		No	FALSE	TumorSuppressorGene	Kinase, Oncogene, Kinase			1/55	1.82%	0/34	0.00%	0/13	0.00%
 SLC26A4--MET/CAPZA2	frameshift	SLC26A4	Gene1A		Intergenic	[], inversion		No	TRUE		Kinase, CosmicCensus, Oncogene, Kinase			1/55	1.82%	0/34	0.00%	0/13	0.00%
@@ -966,7 +958,6 @@ ADGRL3--NFXL1	frameshift	ADGRL3	Gene1A		Genic	[INTRACHROMOSOMAL[chr4:13.29Mb]], 
 ASCC1--CCAR1	in-frame	ASCC1	Gene1A		Genic	[INTRACHROMOSOMAL[chr10:3.30Mb]], inversion			FALSE		TumorSuppressorGene			1/55	1.82%	0/34	0.00%	0/13	0.00%
 ASCC1--CCAR1	frameshift	ASCC1	Gene1A		Genic	[INTRACHROMOSOMAL[chr10:3.30Mb]], inversion			FALSE		TumorSuppressorGene			1/55	1.82%	0/34	0.00%	0/13	0.00%
 ASCC1--CTNNA3	frameshift	ASCC1	Gene1A		Genic	[INTRACHROMOSOMAL[chr10:4.40Mb]], inversion/5'-5'			FALSE		TumorSuppressorGene			1/55	1.82%	0/34	0.00%	0/13	0.00%
-CCAR1--GRID1	frameshift	CCAR1	Gene1A		Genic	[INTRACHROMOSOMAL[chr10:16.81Mb]], inversion			FALSE	TumorSuppressorGene				1/55	1.82%	0/34	0.00%	0/13	0.00%
 LINC01515--PCGF6	other	LINC01515	Gene1A		Genic	[INTRACHROMOSOMAL[chr10:37.53Mb]], inversion			FALSE		TranscriptionFactor			1/55	1.82%	0/34	0.00%	0/13	0.00%
 PCGF6--LINC01515	frameshift	PCGF6	Gene1A		Genic	[INTRACHROMOSOMAL[chr10:37.53Mb]], inversion			FALSE	TranscriptionFactor				1/55	1.82%	0/34	0.00%	0/13	0.00%
 PTPRJ--MIR8070/USP47	frameshift	PTPRJ	Gene1A		Intergenic	[], inversion			FALSE	TumorSuppressorGene, Oncogene				1/55	1.82%	0/34	0.00%	0/13	0.00%
@@ -1024,7 +1015,6 @@ PHACTR4--USH2A	other	PHACTR4	Gene1A		Genic	[INTRACHROMOSOMAL[chr1:187.12Mb]], in
 SFMBT2--BDH1	frameshift	SFMBT2	Gene1A		Genic	[INTERCHROMOSOMAL[chr10--chr3]], translocation/5'-5'			FALSE	Oncogene				1/55	1.82%	0/34	0.00%	0/13	0.00%
 ZEB2--LINC01798	frameshift	ZEB2	Gene1A		Genic	[INTRACHROMOSOMAL[chr2:77.63Mb]], inversion			FALSE	Oncogene, TranscriptionFactor				1/55	1.82%	0/34	0.00%	0/13	0.00%
 ZNF589--GABRA3	frameshift	ZNF589	Gene1A		Genic	[INTERCHROMOSOMAL[chr3--chrX]], translocation			FALSE	TranscriptionFactor				1/55	1.82%	0/34	0.00%	0/13	0.00%
-TNR--RFWD2	other	TNR	Gene1A	TCGAFusion	Genic	[FA_CancerSupp, INTRACHROMOSOMAL[chr1:0.20Mb]], duplication			FALSE	Oncogene	TumorSuppressorGene			2/55	3.64%	0/34	0.00%	0/13	0.00%
 PARP11--XPC	other	PARP11	Gene1A		Genic	[INTERCHROMOSOMAL[chr12--chr3]], translocation			FALSE		CosmicCensus, Oncogene			1/55	1.82%	0/34	0.00%	0/13	0.00%
 AC022387.1--DDR2	other	AC022387.1	Gene1A		Genic	[INTERCHROMOSOMAL[chr10--chr1]], translocation/3'-3'		No	FALSE		Kinase, TumorSuppressorGene, CosmicCensus, Kinase			1/55	1.82%	0/34	0.00%	0/13	0.00%
 PCNX1--DPF3	frameshift	PCNX1	Gene1A		Genic	[INTRACHROMOSOMAL[chr14:1.50Mb]], deletion/5'-5'			FALSE		TranscriptionFactor			1/55	1.82%	0/34	0.00%	0/13	0.00%
@@ -1365,7 +1355,6 @@ TAPBP--GPX6	frameshift	GPX6	Gene1B		Genic	[INTRACHROMOSOMAL[chr6:4.77Mb]], delet
 TDRP--DEPTOR	frameshift	DEPTOR	Gene1B		Genic	[INTRACHROMOSOMAL[chr8:119.33Mb]], inversion			FALSE					1/55	1.82%	0/34	0.00%	0/13	0.00%
 TNIK--AL035696.3	frameshift	AL035696.3	Gene1B		Genic	[INTERCHROMOSOMAL[chr3--chr6]], translocation/5'-5'	No		FALSE	Kinase, Kinase				1/55	1.82%	0/34	0.00%	0/13	0.00%
 AP001978.1/AP001541.1--RSF1	other	RSF1	Gene1B		Intergenic	[], inversion			FALSE		Oncogene			1/55	1.82%	0/34	0.00%	0/13	0.00%
-RSF1--AP001978.1/AP001541.1	frameshift	AP001978.1	Gene1B		Intergenic	[], inversion			FALSE	Oncogene				1/55	1.82%	0/34	0.00%	0/13	0.00%
 ATP13A4--FGF12	other	FGF12	Gene1B		Genic	[INTRACHROMOSOMAL[chr3:0.63Mb]], deletion			FALSE		Oncogene			1/55	1.82%	0/34	0.00%	0/13	0.00%
 RFWD2--TNR	frameshift	TNR	Gene1B		Genic	[INTRACHROMOSOMAL[chr1:0.20Mb]], deletion			FALSE	TumorSuppressorGene	Oncogene			1/55	1.82%	0/34	0.00%	0/13	0.00%
 TNR--RFWD2	other	RFWD2	Gene1B	TCGAFusion	Genic	[FA_CancerSupp, INTRACHROMOSOMAL[chr1:0.20Mb]], duplication			FALSE	Oncogene	TumorSuppressorGene			2/55	3.64%	0/34	0.00%	0/13	0.00%
@@ -1374,7 +1363,6 @@ CNTNAP2--MPP6	other	MPP6	Gene1B		Genic	[INTRACHROMOSOMAL[chr7:121.42Mb]], invers
 COA1--RPL6P21/DGKB	other	RPL6P21	Gene1B		Intergenic	[], duplication			FALSE					1/55	1.82%	0/34	0.00%	0/13	0.00%
 FKBP9--TNRC18	frameshift	TNRC18	Gene1B		Genic	[INTRACHROMOSOMAL[chr7:27.53Mb]], inversion			FALSE	CosmicCensus				1/55	1.82%	0/34	0.00%	0/13	0.00%
 MET/CAPZA2--SLC26A4	other	SLC26A4	Gene1B		Intergenic	[], inversion	Yes		TRUE	Kinase, CosmicCensus, Oncogene, Kinase				1/55	1.82%	0/34	0.00%	0/13	0.00%
-MPP6--CNTNAP2	frameshift	CNTNAP2	Gene1B		Genic	[INTRACHROMOSOMAL[chr7:121.42Mb]], inversion/3'-3'			FALSE		TumorSuppressorGene, CosmicCensus			1/55	1.82%	0/34	0.00%	0/13	0.00%
 OSBPL3--DCAF13P1/RNU6-392P	frameshift	DCAF13P1	Gene1B		Intergenic	[], duplication			FALSE	Oncogene				1/55	1.82%	0/34	0.00%	0/13	0.00%
 PIAS1--IGF1R	frameshift	IGF1R	Gene1B		Genic	[INTRACHROMOSOMAL[chr15:30.45Mb]], deletion		No	FALSE	TumorSuppressorGene	Kinase, Oncogene, Kinase			1/55	1.82%	0/34	0.00%	0/13	0.00%
 SLC26A4--MET/CAPZA2	frameshift	MET	Gene1B		Intergenic	[], inversion		No	TRUE		Kinase, CosmicCensus, Oncogene, Kinase			1/55	1.82%	0/34	0.00%	0/13	0.00%
@@ -1451,7 +1439,6 @@ ADGRL3--NFXL1	frameshift	NFXL1	Gene1B		Genic	[INTRACHROMOSOMAL[chr4:13.29Mb]], i
 ASCC1--CCAR1	in-frame	CCAR1	Gene1B		Genic	[INTRACHROMOSOMAL[chr10:3.30Mb]], inversion			FALSE		TumorSuppressorGene			1/55	1.82%	0/34	0.00%	0/13	0.00%
 ASCC1--CCAR1	frameshift	CCAR1	Gene1B		Genic	[INTRACHROMOSOMAL[chr10:3.30Mb]], inversion			FALSE		TumorSuppressorGene			1/55	1.82%	0/34	0.00%	0/13	0.00%
 ASCC1--CTNNA3	frameshift	CTNNA3	Gene1B		Genic	[INTRACHROMOSOMAL[chr10:4.40Mb]], inversion/5'-5'			FALSE		TumorSuppressorGene			1/55	1.82%	0/34	0.00%	0/13	0.00%
-CCAR1--GRID1	frameshift	GRID1	Gene1B		Genic	[INTRACHROMOSOMAL[chr10:16.81Mb]], inversion			FALSE	TumorSuppressorGene				1/55	1.82%	0/34	0.00%	0/13	0.00%
 LINC01515--PCGF6	other	PCGF6	Gene1B		Genic	[INTRACHROMOSOMAL[chr10:37.53Mb]], inversion			FALSE		TranscriptionFactor			1/55	1.82%	0/34	0.00%	0/13	0.00%
 PCGF6--LINC01515	frameshift	LINC01515	Gene1B		Genic	[INTRACHROMOSOMAL[chr10:37.53Mb]], inversion			FALSE	TranscriptionFactor				1/55	1.82%	0/34	0.00%	0/13	0.00%
 PTPRJ--MIR8070/USP47	frameshift	MIR8070	Gene1B		Intergenic	[], inversion			FALSE	TumorSuppressorGene, Oncogene				1/55	1.82%	0/34	0.00%	0/13	0.00%
@@ -1509,7 +1496,6 @@ PHACTR4--USH2A	other	USH2A	Gene1B		Genic	[INTRACHROMOSOMAL[chr1:187.12Mb]], inve
 SFMBT2--BDH1	frameshift	BDH1	Gene1B		Genic	[INTERCHROMOSOMAL[chr10--chr3]], translocation/5'-5'			FALSE	Oncogene				1/55	1.82%	0/34	0.00%	0/13	0.00%
 ZEB2--LINC01798	frameshift	LINC01798	Gene1B		Genic	[INTRACHROMOSOMAL[chr2:77.63Mb]], inversion			FALSE	Oncogene, TranscriptionFactor				1/55	1.82%	0/34	0.00%	0/13	0.00%
 ZNF589--GABRA3	frameshift	GABRA3	Gene1B		Genic	[INTERCHROMOSOMAL[chr3--chrX]], translocation			FALSE	TranscriptionFactor				1/55	1.82%	0/34	0.00%	0/13	0.00%
-TNR--RFWD2	other	RFWD2	Gene1B	TCGAFusion	Genic	[FA_CancerSupp, INTRACHROMOSOMAL[chr1:0.20Mb]], duplication			FALSE	Oncogene	TumorSuppressorGene			2/55	3.64%	0/34	0.00%	0/13	0.00%
 PARP11--XPC	other	XPC	Gene1B		Genic	[INTERCHROMOSOMAL[chr12--chr3]], translocation			FALSE		CosmicCensus, Oncogene			1/55	1.82%	0/34	0.00%	0/13	0.00%
 AC022387.1--DDR2	other	DDR2	Gene1B		Genic	[INTERCHROMOSOMAL[chr10--chr1]], translocation/3'-3'		No	FALSE		Kinase, TumorSuppressorGene, CosmicCensus, Kinase			1/55	1.82%	0/34	0.00%	0/13	0.00%
 PCNX1--DPF3	frameshift	DPF3	Gene1B		Genic	[INTRACHROMOSOMAL[chr14:1.50Mb]], deletion/5'-5'			FALSE		TranscriptionFactor			1/55	1.82%	0/34	0.00%	0/13	0.00%
@@ -1621,7 +1607,6 @@ CDK5R1--SOX9-AS1/LINC00511	other	LINC00511	Gene2B		Intergenic	[], deletion			FAL
 MEF2D--AL162591.2/AL162591.1	frameshift	AL162591.1	Gene2B		Intergenic	[], deletion			FALSE	Oncogene, TranscriptionFactor				1/55	1.82%	0/34	0.00%	0/13	0.00%
 MEF2D--ATP8B2/AL162591.2	frameshift	AL162591.2	Gene2B		Intergenic	[], deletion			FALSE	Oncogene, TranscriptionFactor				1/55	1.82%	0/34	0.00%	0/13	0.00%
 NCOR2--LINC02041/SST	frameshift	SST	Gene2B		Intergenic	[], translocation			FALSE	CosmicCensus, Oncogene				1/55	1.82%	0/34	0.00%	0/13	0.00%
-RSF1--AP001978.1/AP001541.1	frameshift	AP001541.1	Gene2B		Intergenic	[], inversion			FALSE	Oncogene				1/55	1.82%	0/34	0.00%	0/13	0.00%
 COA1--RPL6P21/DGKB	other	DGKB	Gene2B		Intergenic	[], duplication			FALSE					1/55	1.82%	0/34	0.00%	0/13	0.00%
 OSBPL3--DCAF13P1/RNU6-392P	frameshift	RNU6-392P	Gene2B		Intergenic	[], duplication			FALSE	Oncogene				1/55	1.82%	0/34	0.00%	0/13	0.00%
 SLC26A4--MET/CAPZA2	frameshift	CAPZA2	Gene2B		Intergenic	[], inversion		No	TRUE		Kinase, CosmicCensus, Oncogene, Kinase			1/55	1.82%	0/34	0.00%	0/13	0.00%
@@ -1768,7 +1753,6 @@ ARHGEF10--ARHGEF10	in-frame	ARHGEF10	Gene1A		Intragenic	[SELFIE, INTRACHROMOSOMA
 ABCC9--ABCC9	frameshift	ABCC9	Gene1A		Intragenic	[SELFIE, INTRACHROMOSOMAL[chr12:0.15Mb]], duplication/non-canonical_splicing			FALSE					3/86	3.49%	0/60	0.00%	0/17	0.00%
 PAK2--PIGX	in-frame	PAK2	Gene1A		Genic	[CCLE, INTRACHROMOSOMAL[chr3:0.00Mb], LOCAL_REARRANGEMENT:+:[3850]], duplication	No		FALSE	Kinase, Kinase				1/86	1.16%	0/60	0.00%	0/17	0.00%
 SOHLH2--CCDC169	frameshift	SOHLH2	Gene1A		Genic	[INTRACHROMOSOMAL[chr13:0.01Mb], LOCAL_REARRANGEMENT:-:[7393]], duplication			FALSE	TranscriptionFactor				1/86	1.16%	0/60	0.00%	0/17	0.00%
-C11orf95--RELA	in-frame	C11orf95	Gene1A		Genic	[INTRACHROMOSOMAL[chr11:1.88Mb]], duplication			FALSE		Oncogene, TranscriptionFactor			25/86	29.07%	0/60	0.00%	0/17	0.00%
 LINC02246--NRIP1	other	LINC02246	Gene1A		Genic	[INTRACHROMOSOMAL[chr21:0.04Mb], LOCAL_REARRANGEMENT:-:[42683]], duplication			FALSE		Oncogene			1/86	1.16%	0/60	0.00%	0/17	0.00%
 RELA--C11orf95	in-frame	RELA	Gene1A		Genic	[INTRACHROMOSOMAL[chr11:1.88Mb]], deletion			FALSE	Oncogene, TranscriptionFactor				1/86	1.16%	0/60	0.00%	0/17	0.00%
 NF1--AC138207.8	frameshift	NF1	Gene1A		Genic	[INTRACHROMOSOMAL[chr17:0.00Mb], LOCAL_REARRANGEMENT:+:[1800]], duplication			FALSE	TumorSuppressorGene, CosmicCensus, Oncogene				1/86	1.16%	0/60	0.00%	0/17	0.00%
@@ -2003,7 +1987,6 @@ EP300--BCOR	in-frame	EP300	Gene1A	TCGAFusion	Genic	[FA_CancerSupp, ChimerSeq, IN
 SGMS1--ARHGAP22	other	SGMS1	Gene1A		Genic	[INTRACHROMOSOMAL[chr10:1.65Mb]], deletion			FALSE	TumorSuppressorGene, Oncogene				1/86	1.16%	0/60	0.00%	0/17	0.00%
 MAML2--AP000787.1/AP001790.1	other	MAML2	Gene1A		Intergenic	[], inversion			FALSE	CosmicCensus, Oncogene				1/86	1.16%	0/60	0.00%	0/17	0.00%
 MAML2--NHSL2	frameshift	MAML2	Gene1A		Genic	[INTERCHROMOSOMAL[chr11--chrX]], translocation/5'-5'			FALSE	CosmicCensus, Oncogene				1/86	1.16%	0/60	0.00%	0/17	0.00%
-YAP1--MAML2	in-frame	YAP1	Gene1A	TCGAFusion	Genic	[ChimerPub, Klijn_CellLines, CCLE, INTRACHROMOSOMAL[chr11:5.77Mb]], inversion			FALSE	TumorSuppressorGene, Oncogene	CosmicCensus, Oncogene			2/86	2.33%	0/60	0.00%	0/17	0.00%
 ABCC9--ABCC9	in-frame	ABCC9	Gene1A		Intragenic	[SELFIE, INTRACHROMOSOMAL[chr12:0.15Mb]], duplication/non-canonical_splicing			FALSE					3/86	3.49%	0/60	0.00%	0/17	0.00%
 AIP--RCN1	other	AIP	Gene1A		Genic	[INTRACHROMOSOMAL[chr11:35.38Mb]], duplication			FALSE	TumorSuppressorGene				1/86	1.16%	0/60	0.00%	0/17	0.00%
 HOXC10--TRHDE	frameshift	HOXC10	Gene1A		Genic	[INTRACHROMOSOMAL[chr12:18.28Mb]], deletion			FALSE	TranscriptionFactor				1/86	1.16%	0/60	0.00%	0/17	0.00%
@@ -2049,7 +2032,6 @@ ARHGEF10--ARHGEF10	in-frame	ARHGEF10	Gene1B		Intragenic	[SELFIE, INTRACHROMOSOMA
 ABCC9--ABCC9	frameshift	ABCC9	Gene1B		Intragenic	[SELFIE, INTRACHROMOSOMAL[chr12:0.15Mb]], duplication/non-canonical_splicing			FALSE					3/86	3.49%	0/60	0.00%	0/17	0.00%
 PAK2--PIGX	in-frame	PIGX	Gene1B		Genic	[CCLE, INTRACHROMOSOMAL[chr3:0.00Mb], LOCAL_REARRANGEMENT:+:[3850]], duplication	No		FALSE	Kinase, Kinase				1/86	1.16%	0/60	0.00%	0/17	0.00%
 SOHLH2--CCDC169	frameshift	CCDC169	Gene1B		Genic	[INTRACHROMOSOMAL[chr13:0.01Mb], LOCAL_REARRANGEMENT:-:[7393]], duplication			FALSE	TranscriptionFactor				1/86	1.16%	0/60	0.00%	0/17	0.00%
-C11orf95--RELA	in-frame	RELA	Gene1B		Genic	[INTRACHROMOSOMAL[chr11:1.88Mb]], duplication			FALSE		Oncogene, TranscriptionFactor			25/86	29.07%	0/60	0.00%	0/17	0.00%
 LINC02246--NRIP1	other	NRIP1	Gene1B		Genic	[INTRACHROMOSOMAL[chr21:0.04Mb], LOCAL_REARRANGEMENT:-:[42683]], duplication			FALSE		Oncogene			1/86	1.16%	0/60	0.00%	0/17	0.00%
 RELA--C11orf95	in-frame	C11orf95	Gene1B		Genic	[INTRACHROMOSOMAL[chr11:1.88Mb]], deletion			FALSE	Oncogene, TranscriptionFactor				1/86	1.16%	0/60	0.00%	0/17	0.00%
 NF1--AC138207.8	frameshift	AC138207.8	Gene1B		Genic	[INTRACHROMOSOMAL[chr17:0.00Mb], LOCAL_REARRANGEMENT:+:[1800]], duplication			FALSE	TumorSuppressorGene, CosmicCensus, Oncogene				1/86	1.16%	0/60	0.00%	0/17	0.00%
@@ -2284,7 +2266,6 @@ EP300--BCOR	in-frame	BCOR	Gene1B	TCGAFusion	Genic	[FA_CancerSupp, ChimerSeq, INT
 SGMS1--ARHGAP22	other	ARHGAP22	Gene1B		Genic	[INTRACHROMOSOMAL[chr10:1.65Mb]], deletion			FALSE	TumorSuppressorGene, Oncogene				1/86	1.16%	0/60	0.00%	0/17	0.00%
 MAML2--AP000787.1/AP001790.1	other	AP000787.1	Gene1B		Intergenic	[], inversion			FALSE	CosmicCensus, Oncogene				1/86	1.16%	0/60	0.00%	0/17	0.00%
 MAML2--NHSL2	frameshift	NHSL2	Gene1B		Genic	[INTERCHROMOSOMAL[chr11--chrX]], translocation/5'-5'			FALSE	CosmicCensus, Oncogene				1/86	1.16%	0/60	0.00%	0/17	0.00%
-YAP1--MAML2	in-frame	MAML2	Gene1B	TCGAFusion	Genic	[ChimerPub, Klijn_CellLines, CCLE, INTRACHROMOSOMAL[chr11:5.77Mb]], inversion			FALSE	TumorSuppressorGene, Oncogene	CosmicCensus, Oncogene			2/86	2.33%	0/60	0.00%	0/17	0.00%
 ABCC9--ABCC9	in-frame	ABCC9	Gene1B		Intragenic	[SELFIE, INTRACHROMOSOMAL[chr12:0.15Mb]], duplication/non-canonical_splicing			FALSE					3/86	3.49%	0/60	0.00%	0/17	0.00%
 AIP--RCN1	other	RCN1	Gene1B		Genic	[INTRACHROMOSOMAL[chr11:35.38Mb]], duplication			FALSE	TumorSuppressorGene				1/86	1.16%	0/60	0.00%	0/17	0.00%
 HOXC10--TRHDE	frameshift	TRHDE	Gene1B		Genic	[INTRACHROMOSOMAL[chr12:18.28Mb]], deletion			FALSE	TranscriptionFactor				1/86	1.16%	0/60	0.00%	0/17	0.00%
@@ -2383,7 +2364,6 @@ AL445673.1--PRRX1/MROH9	other	AL445673.1	Gene1A		Intergenic	[], deletion			FALSE
 WRN--WRN	in-frame	WRN	Gene1A		Intragenic	[SELFIE, INTRACHROMOSOMAL[chr8:0.14Mb]], duplication/non-canonical_splicing			FALSE	CosmicCensus, Oncogene	CosmicCensus, Oncogene			1/7	14.29%	0/3	0.00%	0/2	0.00%
 KIAA1549--BRAF	frameshift	KIAA1549	Gene1A	TCGAFusion	Genic	[Cosmic, ChimerPub, ChimerSeq, chimerdb_pubmed, ChimerKB, INTRACHROMOSOMAL[chr7:1.74Mb]], duplication		No	FALSE	CosmicCensus, Oncogene	Kinase, CosmicCensus, Oncogene, Kinase			1/7	14.29%	0/3	0.00%	0/2	0.00%
 GOPC--ROS1	in-frame	GOPC	Gene1A		Genic	[chimerdb_pubmed, ChimerKB, ChimerPub, Cosmic, Mitelman, INTRACHROMOSOMAL[chr6:0.13Mb]], deletion/read-through		Yes	FALSE	CosmicCensus, Oncogene	CosmicCensus, Oncogene, Kinase			1/7	14.29%	0/3	0.00%	0/2	0.00%
-C11orf95--RELA	in-frame	C11orf95	Gene1A		Genic	[INTRACHROMOSOMAL[chr11:1.88Mb]], duplication			FALSE		Oncogene, TranscriptionFactor			1/7	14.29%	0/3	0.00%	0/2	0.00%
 AL139099.5--CLU	other	AL139099.5	Gene1A		Genic	[INTERCHROMOSOMAL[chr14--chr8]]			FALSE		TumorSuppressorGene, Oncogene			1/7	14.29%	0/3	0.00%	0/2	0.00%
 MKRN7P--AL031686.1/ZNF334	other	MKRN7P	Gene1A		Intergenic	[], duplication			FALSE					1/7	14.29%	0/3	0.00%	0/2	0.00%
 RN7SL1--CLU	other	RN7SL1	Gene1A		Genic	[INTERCHROMOSOMAL[chr14--chr8]]			FALSE		TumorSuppressorGene, Oncogene			1/7	14.29%	0/3	0.00%	0/2	0.00%
@@ -2413,7 +2393,6 @@ AL445673.1--PRRX1/MROH9	other	PRRX1	Gene1B		Intergenic	[], deletion			FALSE		Cos
 WRN--WRN	in-frame	WRN	Gene1B		Intragenic	[SELFIE, INTRACHROMOSOMAL[chr8:0.14Mb]], duplication/non-canonical_splicing			FALSE	CosmicCensus, Oncogene	CosmicCensus, Oncogene			1/7	14.29%	0/3	0.00%	0/2	0.00%
 KIAA1549--BRAF	frameshift	BRAF	Gene1B	TCGAFusion	Genic	[Cosmic, ChimerPub, ChimerSeq, chimerdb_pubmed, ChimerKB, INTRACHROMOSOMAL[chr7:1.74Mb]], duplication		No	FALSE	CosmicCensus, Oncogene	Kinase, CosmicCensus, Oncogene, Kinase			1/7	14.29%	0/3	0.00%	0/2	0.00%
 GOPC--ROS1	in-frame	ROS1	Gene1B		Genic	[chimerdb_pubmed, ChimerKB, ChimerPub, Cosmic, Mitelman, INTRACHROMOSOMAL[chr6:0.13Mb]], deletion/read-through		Yes	FALSE	CosmicCensus, Oncogene	CosmicCensus, Oncogene, Kinase			1/7	14.29%	0/3	0.00%	0/2	0.00%
-C11orf95--RELA	in-frame	RELA	Gene1B		Genic	[INTRACHROMOSOMAL[chr11:1.88Mb]], duplication			FALSE		Oncogene, TranscriptionFactor			1/7	14.29%	0/3	0.00%	0/2	0.00%
 AL139099.5--CLU	other	CLU	Gene1B		Genic	[INTERCHROMOSOMAL[chr14--chr8]]			FALSE		TumorSuppressorGene, Oncogene			1/7	14.29%	0/3	0.00%	0/2	0.00%
 MKRN7P--AL031686.1/ZNF334	other	AL031686.1	Gene1B		Intergenic	[], duplication			FALSE					1/7	14.29%	0/3	0.00%	0/2	0.00%
 RN7SL1--CLU	other	CLU	Gene1B		Genic	[INTERCHROMOSOMAL[chr14--chr8]]			FALSE		TumorSuppressorGene, Oncogene			1/7	14.29%	0/3	0.00%	0/2	0.00%
@@ -2657,7 +2636,6 @@ ASTN2--ANKS6	in-frame	ASTN2	Gene1A		Genic	[INTRACHROMOSOMAL[chr9:17.63Mb]], dele
 CABLES1--LAMA3	frameshift	CABLES1	Gene1A		Genic	[INTRACHROMOSOMAL[chr18:0.43Mb]], inversion/3'-3'			FALSE	TumorSuppressorGene				1/84	1.19%	0/29	0.00%	0/20	0.00%
 FLJ31104/AC008892.1--POU6F1	other	FLJ31104	Gene1A		Intergenic	[], translocation			FALSE		TranscriptionFactor			1/84	1.19%	0/29	0.00%	0/20	0.00%
 MYLK--MYLK	frameshift	MYLK	Gene1A		Intragenic	[SELFIE, [\ChimerSeq\], INTRACHROMOSOMAL[chr3:0.27Mb]], duplication/non-canonical_splicing	No	No	TRUE	Kinase	Kinase			1/84	1.19%	0/29	0.00%	0/20	0.00%
-POU6F1--FLJ31104/AC008892.1	other	POU6F1	Gene1A		Intergenic	[], translocation			FALSE	TranscriptionFactor				1/84	1.19%	0/29	0.00%	0/20	0.00%
 FARSA--ERCC2	in-frame	FARSA	Gene1A		Genic	[INTRACHROMOSOMAL[chr19:32.42Mb]], duplication			FALSE		CosmicCensus, Oncogene			1/84	1.19%	0/29	0.00%	0/20	0.00%
 FARSA--ERCC2	other	FARSA	Gene1A		Genic	[INTRACHROMOSOMAL[chr19:32.42Mb]]			FALSE		CosmicCensus, Oncogene			1/84	1.19%	0/29	0.00%	0/20	0.00%
 FOXN3--EFCAB11	frameshift	FOXN3	Gene1A		Genic	[FA_CancerSupp, INTRACHROMOSOMAL[chr14:0.18Mb]], duplication			FALSE	TranscriptionFactor				1/84	1.19%	0/29	0.00%	0/20	0.00%
@@ -2766,8 +2744,6 @@ GLIS3--RFX3	other	GLIS3	Gene1A		Genic	[INTRACHROMOSOMAL[chr9:0.30Mb]], deletion	
 FN1--COL1A1	frameshift	FN1	Gene1A		Genic	[INTERCHROMOSOMAL[chr2--chr17]]			FALSE	Oncogene	CosmicCensus, Oncogene			2/84	2.38%	0/29	0.00%	0/20	0.00%
 PLAGL1--PHACTR2	other	PLAGL1	Gene1A		Genic	[INTRACHROMOSOMAL[chr6:0.11Mb]], inversion			FALSE	TumorSuppressorGene, Oncogene, TranscriptionFactor				1/84	1.19%	0/29	0.00%	0/20	0.00%
 DAW1--ZNF609	frameshift	DAW1	Gene1A		Genic	[INTERCHROMOSOMAL[chr2--chr15]], translocation			FALSE		TranscriptionFactor			1/84	1.19%	0/29	0.00%	0/20	0.00%
-TARSL2--WFS1	frameshift	TARSL2	Gene1A		Genic	[INTERCHROMOSOMAL[chr15--chr4]]			FALSE					1/84	1.19%	0/29	0.00%	0/20	0.00%
-TARSL2--WFS1	in-frame	TARSL2	Gene1A		Genic	[INTERCHROMOSOMAL[chr15--chr4]], translocation			FALSE					1/84	1.19%	0/29	0.00%	0/20	0.00%
 TARSL2--WFS1	frameshift	TARSL2	Gene1A		Genic	[INTERCHROMOSOMAL[chr15--chr4]], translocation			FALSE					1/84	1.19%	0/29	0.00%	0/20	0.00%
 TARSL2--ZNF609	other	TARSL2	Gene1A		Genic	[INTRACHROMOSOMAL[chr15:36.97Mb]], inversion			FALSE		TranscriptionFactor			1/84	1.19%	0/29	0.00%	0/20	0.00%
 AGAP2--AC080011.1/AC087883.1	frameshift	AGAP2	Gene1A		Intergenic	[], duplication			FALSE	Oncogene				1/84	1.19%	0/29	0.00%	0/20	0.00%
@@ -3054,7 +3030,6 @@ SGMS1--AC068898.1	other	SGMS1	Gene1A		Genic	[INTRACHROMOSOMAL[chr10:1.63Mb]], de
 ZNF26--FAM135B	frameshift	ZNF26	Gene1A		Genic	[INTERCHROMOSOMAL[chr12--chr8]], translocation			FALSE	TranscriptionFactor	CosmicCensus			1/84	1.19%	0/29	0.00%	0/20	0.00%
 ZNF84--AC100807.1/AC087354.1	frameshift	ZNF84	Gene1A		Intergenic	[], translocation			FALSE	TranscriptionFactor				1/84	1.19%	0/29	0.00%	0/20	0.00%
 RHBDD1--LYN	frameshift	RHBDD1	Gene1A		Genic	[INTERCHROMOSOMAL[chr2--chr8]], translocation/5'-5'		No	FALSE		Kinase, Oncogene, Kinase			1/84	1.19%	0/29	0.00%	0/20	0.00%
-TARSL2--WFS1	frameshift	TARSL2	Gene1A		Genic	[INTERCHROMOSOMAL[chr15--chr4]], translocation			FALSE					1/84	1.19%	0/29	0.00%	0/20	0.00%
 TOP2A--SMG1	frameshift	TOP2A	Gene1A		Genic	[INTERCHROMOSOMAL[chr17--chr16]], translocation		No	FALSE	Oncogene	Kinase, Kinase			1/84	1.19%	0/29	0.00%	0/20	0.00%
 COL5A1--TSC22D1	frameshift	COL5A1	Gene1A		Genic	[INTERCHROMOSOMAL[chr9--chr13]], translocation			FALSE		TumorSuppressorGene, TranscriptionFactor			1/84	1.19%	0/29	0.00%	0/20	0.00%
 SFPQ--SSX2IP	other	SFPQ	Gene1A		Genic	[INTRACHROMOSOMAL[chr1:49.45Mb]], inversion/5'-5'			FALSE	CosmicCensus, Oncogene				1/84	1.19%	0/29	0.00%	0/20	0.00%
@@ -3125,8 +3100,6 @@ PTPRS--SLC6A3	frameshift	PTPRS	Gene1A		Genic	[INTERCHROMOSOMAL[chr19--chr5]], tr
 ST20--CEMIP	other	ST20	Gene1A		Genic	[INTRACHROMOSOMAL[chr15:0.86Mb]]			FALSE	TumorSuppressorGene				1/84	1.19%	0/29	0.00%	0/20	0.00%
 TIAM1--LINC01695	other	TIAM1	Gene1A		Genic	[INTRACHROMOSOMAL[chr21:2.89Mb]], inversion/5'-5'			FALSE	Oncogene				1/84	1.19%	0/29	0.00%	0/20	0.00%
 TMBIM6--CXXC5	frameshift	TMBIM6	Gene1A		Genic	[INTERCHROMOSOMAL[chr12--chr5]], translocation			FALSE		TumorSuppressorGene, TranscriptionFactor			1/84	1.19%	0/29	0.00%	0/20	0.00%
-TRIT1--AL603840.1	frameshift	TRIT1	Gene1A		Genic	[INTRACHROMOSOMAL[chr1:15.70Mb]], inversion			FALSE	TumorSuppressorGene				1/84	1.19%	0/29	0.00%	0/20	0.00%
-TRIT1--AL603840.1	other	TRIT1	Gene1A		Genic	[INTRACHROMOSOMAL[chr1:15.70Mb]]			FALSE	TumorSuppressorGene				1/84	1.19%	0/29	0.00%	0/20	0.00%
 ASH1L--CADM3	frameshift	ASH1L	Gene1A		Genic	[INTRACHROMOSOMAL[chr1:3.61Mb]], inversion			FALSE	TranscriptionFactor	TumorSuppressorGene			1/84	1.19%	0/29	0.00%	0/20	0.00%
 CORO1C--API5	frameshift	CORO1C	Gene1A		Genic	[INTERCHROMOSOMAL[chr12--chr11]], translocation			FALSE	Oncogene				1/84	1.19%	0/29	0.00%	0/20	0.00%
 CORO1C--HNRNPKP3/API5	frameshift	CORO1C	Gene1A		Intergenic	[], translocation			FALSE	Oncogene				1/84	1.19%	0/29	0.00%	0/20	0.00%
@@ -3404,7 +3377,6 @@ ASTN2--ANKS6	in-frame	ANKS6	Gene1B		Genic	[INTRACHROMOSOMAL[chr9:17.63Mb]], dele
 CABLES1--LAMA3	frameshift	LAMA3	Gene1B		Genic	[INTRACHROMOSOMAL[chr18:0.43Mb]], inversion/3'-3'			FALSE	TumorSuppressorGene				1/84	1.19%	0/29	0.00%	0/20	0.00%
 FLJ31104/AC008892.1--POU6F1	other	POU6F1	Gene1B		Intergenic	[], translocation			FALSE		TranscriptionFactor			1/84	1.19%	0/29	0.00%	0/20	0.00%
 MYLK--MYLK	frameshift	MYLK	Gene1B		Intragenic	[SELFIE, [\ChimerSeq\], INTRACHROMOSOMAL[chr3:0.27Mb]], duplication/non-canonical_splicing	No	No	TRUE	Kinase	Kinase			1/84	1.19%	0/29	0.00%	0/20	0.00%
-POU6F1--FLJ31104/AC008892.1	other	FLJ31104	Gene1B		Intergenic	[], translocation			FALSE	TranscriptionFactor				1/84	1.19%	0/29	0.00%	0/20	0.00%
 FARSA--ERCC2	in-frame	ERCC2	Gene1B		Genic	[INTRACHROMOSOMAL[chr19:32.42Mb]], duplication			FALSE		CosmicCensus, Oncogene			1/84	1.19%	0/29	0.00%	0/20	0.00%
 FARSA--ERCC2	other	ERCC2	Gene1B		Genic	[INTRACHROMOSOMAL[chr19:32.42Mb]]			FALSE		CosmicCensus, Oncogene			1/84	1.19%	0/29	0.00%	0/20	0.00%
 FOXN3--EFCAB11	frameshift	EFCAB11	Gene1B		Genic	[FA_CancerSupp, INTRACHROMOSOMAL[chr14:0.18Mb]], duplication			FALSE	TranscriptionFactor				1/84	1.19%	0/29	0.00%	0/20	0.00%
@@ -3513,8 +3485,6 @@ GLIS3--RFX3	other	RFX3	Gene1B		Genic	[INTRACHROMOSOMAL[chr9:0.30Mb]], deletion		
 FN1--COL1A1	frameshift	COL1A1	Gene1B		Genic	[INTERCHROMOSOMAL[chr2--chr17]]			FALSE	Oncogene	CosmicCensus, Oncogene			2/84	2.38%	0/29	0.00%	0/20	0.00%
 PLAGL1--PHACTR2	other	PHACTR2	Gene1B		Genic	[INTRACHROMOSOMAL[chr6:0.11Mb]], inversion			FALSE	TumorSuppressorGene, Oncogene, TranscriptionFactor				1/84	1.19%	0/29	0.00%	0/20	0.00%
 DAW1--ZNF609	frameshift	ZNF609	Gene1B		Genic	[INTERCHROMOSOMAL[chr2--chr15]], translocation			FALSE		TranscriptionFactor			1/84	1.19%	0/29	0.00%	0/20	0.00%
-TARSL2--WFS1	frameshift	WFS1	Gene1B		Genic	[INTERCHROMOSOMAL[chr15--chr4]]			FALSE					1/84	1.19%	0/29	0.00%	0/20	0.00%
-TARSL2--WFS1	in-frame	WFS1	Gene1B		Genic	[INTERCHROMOSOMAL[chr15--chr4]], translocation			FALSE					1/84	1.19%	0/29	0.00%	0/20	0.00%
 TARSL2--WFS1	frameshift	WFS1	Gene1B		Genic	[INTERCHROMOSOMAL[chr15--chr4]], translocation			FALSE					1/84	1.19%	0/29	0.00%	0/20	0.00%
 TARSL2--ZNF609	other	ZNF609	Gene1B		Genic	[INTRACHROMOSOMAL[chr15:36.97Mb]], inversion			FALSE		TranscriptionFactor			1/84	1.19%	0/29	0.00%	0/20	0.00%
 AGAP2--AC080011.1/AC087883.1	frameshift	AC080011.1	Gene1B		Intergenic	[], duplication			FALSE	Oncogene				1/84	1.19%	0/29	0.00%	0/20	0.00%
@@ -3801,7 +3771,6 @@ SGMS1--AC068898.1	other	AC068898.1	Gene1B		Genic	[INTRACHROMOSOMAL[chr10:1.63Mb]
 ZNF26--FAM135B	frameshift	FAM135B	Gene1B		Genic	[INTERCHROMOSOMAL[chr12--chr8]], translocation			FALSE	TranscriptionFactor	CosmicCensus			1/84	1.19%	0/29	0.00%	0/20	0.00%
 ZNF84--AC100807.1/AC087354.1	frameshift	AC100807.1	Gene1B		Intergenic	[], translocation			FALSE	TranscriptionFactor				1/84	1.19%	0/29	0.00%	0/20	0.00%
 RHBDD1--LYN	frameshift	LYN	Gene1B		Genic	[INTERCHROMOSOMAL[chr2--chr8]], translocation/5'-5'		No	FALSE		Kinase, Oncogene, Kinase			1/84	1.19%	0/29	0.00%	0/20	0.00%
-TARSL2--WFS1	frameshift	WFS1	Gene1B		Genic	[INTERCHROMOSOMAL[chr15--chr4]], translocation			FALSE					1/84	1.19%	0/29	0.00%	0/20	0.00%
 TOP2A--SMG1	frameshift	SMG1	Gene1B		Genic	[INTERCHROMOSOMAL[chr17--chr16]], translocation		No	FALSE	Oncogene	Kinase, Kinase			1/84	1.19%	0/29	0.00%	0/20	0.00%
 COL5A1--TSC22D1	frameshift	TSC22D1	Gene1B		Genic	[INTERCHROMOSOMAL[chr9--chr13]], translocation			FALSE		TumorSuppressorGene, TranscriptionFactor			1/84	1.19%	0/29	0.00%	0/20	0.00%
 SFPQ--SSX2IP	other	SSX2IP	Gene1B		Genic	[INTRACHROMOSOMAL[chr1:49.45Mb]], inversion/5'-5'			FALSE	CosmicCensus, Oncogene				1/84	1.19%	0/29	0.00%	0/20	0.00%
@@ -3872,8 +3841,6 @@ PTPRS--SLC6A3	frameshift	SLC6A3	Gene1B		Genic	[INTERCHROMOSOMAL[chr19--chr5]], t
 ST20--CEMIP	other	CEMIP	Gene1B		Genic	[INTRACHROMOSOMAL[chr15:0.86Mb]]			FALSE	TumorSuppressorGene				1/84	1.19%	0/29	0.00%	0/20	0.00%
 TIAM1--LINC01695	other	LINC01695	Gene1B		Genic	[INTRACHROMOSOMAL[chr21:2.89Mb]], inversion/5'-5'			FALSE	Oncogene				1/84	1.19%	0/29	0.00%	0/20	0.00%
 TMBIM6--CXXC5	frameshift	CXXC5	Gene1B		Genic	[INTERCHROMOSOMAL[chr12--chr5]], translocation			FALSE		TumorSuppressorGene, TranscriptionFactor			1/84	1.19%	0/29	0.00%	0/20	0.00%
-TRIT1--AL603840.1	frameshift	AL603840.1	Gene1B		Genic	[INTRACHROMOSOMAL[chr1:15.70Mb]], inversion			FALSE	TumorSuppressorGene				1/84	1.19%	0/29	0.00%	0/20	0.00%
-TRIT1--AL603840.1	other	AL603840.1	Gene1B		Genic	[INTRACHROMOSOMAL[chr1:15.70Mb]]			FALSE	TumorSuppressorGene				1/84	1.19%	0/29	0.00%	0/20	0.00%
 ASH1L--CADM3	frameshift	CADM3	Gene1B		Genic	[INTRACHROMOSOMAL[chr1:3.61Mb]], inversion			FALSE	TranscriptionFactor	TumorSuppressorGene			1/84	1.19%	0/29	0.00%	0/20	0.00%
 CORO1C--API5	frameshift	API5	Gene1B		Genic	[INTERCHROMOSOMAL[chr12--chr11]], translocation			FALSE	Oncogene				1/84	1.19%	0/29	0.00%	0/20	0.00%
 CORO1C--HNRNPKP3/API5	frameshift	HNRNPKP3	Gene1B		Intergenic	[], translocation			FALSE	Oncogene				1/84	1.19%	0/29	0.00%	0/20	0.00%
@@ -3970,7 +3937,6 @@ PLCE1--C10orf35/AL450311.1	frameshift	AL450311.1	Gene2B		Intergenic	[], inversio
 TRRAP--NPM1P14/AC002463.1	frameshift	AC002463.1	Gene2B		Intergenic	[], deletion	No		FALSE	Kinase, CosmicCensus, Kinase				1/84	1.19%	0/29	0.00%	0/20	0.00%
 VAV3--5S_rRNA/DEFB115	frameshift	DEFB115	Gene2B		Intergenic	[], translocation			FALSE	Oncogene				1/84	1.19%	0/29	0.00%	0/20	0.00%
 ZNF33B--AL583859.2/AL136452.1	frameshift	AL136452.1	Gene2B		Intergenic	[], deletion			FALSE	TranscriptionFactor				1/84	1.19%	0/29	0.00%	0/20	0.00%
-POU6F1--FLJ31104/AC008892.1	other	AC008892.1	Gene2B		Intergenic	[], translocation			FALSE	TranscriptionFactor				1/84	1.19%	0/29	0.00%	0/20	0.00%
 GAS2--RB1CC1/NPBWR1	frameshift	NPBWR1	Gene2B		Intergenic	[], translocation			FALSE		TumorSuppressorGene, Oncogene			1/84	1.19%	0/29	0.00%	0/20	0.00%
 SMG1--OR8B10P/AP000916.2	frameshift	AP000916.2	Gene2B		Intergenic	[], translocation	Yes		FALSE	Kinase, Kinase				1/84	1.19%	0/29	0.00%	0/20	0.00%
 NBEA--AC023310.4/NBEAP1	frameshift	NBEAP1	Gene2B		Intergenic	[], translocation			FALSE	CosmicCensus				1/84	1.19%	0/29	0.00%	0/20	0.00%
@@ -4366,7 +4332,6 @@ TNNI3K--TNNI3K	frameshift	TNNI3K	Gene1A		Intragenic	[SELFIE, INTRACHROMOSOMAL[ch
 TTC39B--TTC39B	frameshift	TTC39B	Gene1A		Intragenic	[SELFIE, INTRACHROMOSOMAL[chr9:0.14Mb]], duplication/non-canonical_splicing			FALSE	Oncogene	Oncogene			1/285	0.35%	0/225	0.00%	0/48	0.00%
 PPIE--INPP4B	other	PPIE	Gene1A		Genic	[INTERCHROMOSOMAL[chr1--chr4]], translocation			FALSE		TumorSuppressorGene			1/285	0.35%	0/225	0.00%	0/48	0.00%
 FUCA2--FGFR1OP	frameshift	FUCA2	Gene1A		Genic	[INTRACHROMOSOMAL[chr6:23.49Mb]], duplication/5'-5'			FALSE		CosmicCensus, Oncogene			1/285	0.35%	0/225	0.00%	0/48	0.00%
-TNR--RFWD2	other	TNR	Gene1A	TCGAFusion	Genic	[FA_CancerSupp, INTRACHROMOSOMAL[chr1:0.20Mb]], duplication			FALSE	Oncogene	TumorSuppressorGene			1/285	0.35%	0/225	0.00%	0/48	0.00%
 AC022387.1--DDR2	other	AC022387.1	Gene1A		Genic	[INTERCHROMOSOMAL[chr10--chr1]], translocation/3'-3'		No	FALSE		Kinase, TumorSuppressorGene, CosmicCensus, Kinase			1/285	0.35%	0/225	0.00%	0/48	0.00%
 KIAA1549--KIAA1549	frameshift	KIAA1549	Gene1A		Intragenic	[SELFIE, [\ChimerSeq\], INTRACHROMOSOMAL[chr7:0.15Mb]], duplication/non-canonical_splicing			FALSE	CosmicCensus, Oncogene	CosmicCensus, Oncogene			1/285	0.35%	0/225	0.00%	0/48	0.00%
 ABI1--SLX4IP	frameshift	ABI1	Gene1A		Genic	[INTERCHROMOSOMAL[chr10--chr20]], translocation/5'-5'			FALSE	CosmicCensus, Oncogene				1/285	0.35%	0/225	0.00%	0/48	0.00%
@@ -4707,7 +4672,6 @@ TNNI3K--TNNI3K	frameshift	TNNI3K	Gene1B		Intragenic	[SELFIE, INTRACHROMOSOMAL[ch
 TTC39B--TTC39B	frameshift	TTC39B	Gene1B		Intragenic	[SELFIE, INTRACHROMOSOMAL[chr9:0.14Mb]], duplication/non-canonical_splicing			FALSE	Oncogene	Oncogene			1/285	0.35%	0/225	0.00%	0/48	0.00%
 PPIE--INPP4B	other	INPP4B	Gene1B		Genic	[INTERCHROMOSOMAL[chr1--chr4]], translocation			FALSE		TumorSuppressorGene			1/285	0.35%	0/225	0.00%	0/48	0.00%
 FUCA2--FGFR1OP	frameshift	FGFR1OP	Gene1B		Genic	[INTRACHROMOSOMAL[chr6:23.49Mb]], duplication/5'-5'			FALSE		CosmicCensus, Oncogene			1/285	0.35%	0/225	0.00%	0/48	0.00%
-TNR--RFWD2	other	RFWD2	Gene1B	TCGAFusion	Genic	[FA_CancerSupp, INTRACHROMOSOMAL[chr1:0.20Mb]], duplication			FALSE	Oncogene	TumorSuppressorGene			1/285	0.35%	0/225	0.00%	0/48	0.00%
 AC022387.1--DDR2	other	DDR2	Gene1B		Genic	[INTERCHROMOSOMAL[chr10--chr1]], translocation/3'-3'		No	FALSE		Kinase, TumorSuppressorGene, CosmicCensus, Kinase			1/285	0.35%	0/225	0.00%	0/48	0.00%
 KIAA1549--KIAA1549	frameshift	KIAA1549	Gene1B		Intragenic	[SELFIE, [\ChimerSeq\], INTRACHROMOSOMAL[chr7:0.15Mb]], duplication/non-canonical_splicing			FALSE	CosmicCensus, Oncogene	CosmicCensus, Oncogene			1/285	0.35%	0/225	0.00%	0/48	0.00%
 ABI1--SLX4IP	frameshift	SLX4IP	Gene1B		Genic	[INTERCHROMOSOMAL[chr10--chr20]], translocation/5'-5'			FALSE	CosmicCensus, Oncogene				1/285	0.35%	0/225	0.00%	0/48	0.00%
@@ -5753,7 +5717,6 @@ NF2--LINC01638/AL020994.3	frameshift	NF2	Gene1A		Intergenic	[], inversion			FALS
 TFDP2--PDS5A	other	TFDP2	Gene1A		Genic	[INTERCHROMOSOMAL[chr3--chr4]], translocation			FALSE	TranscriptionFactor				1/27	3.70%	0/17	0.00%	0/6	0.00%
 EYA1--PHF20L1	frameshift	EYA1	Gene1A		Genic	[INTRACHROMOSOMAL[chr8:61.41Mb]], inversion			FALSE					1/27	3.70%	0/17	0.00%	0/6	0.00%
 PHF20L1--EYA1	frameshift	PHF20L1	Gene1A		Genic	[INTRACHROMOSOMAL[chr8:61.41Mb]], inversion			FALSE					1/27	3.70%	0/17	0.00%	0/6	0.00%
-YAP1--MAML2	in-frame	YAP1	Gene1A	TCGAFusion	Genic	[ChimerPub, Klijn_CellLines, CCLE, INTRACHROMOSOMAL[chr11:5.77Mb]], inversion			FALSE	TumorSuppressorGene, Oncogene	CosmicCensus, Oncogene			1/27	3.70%	0/17	0.00%	0/6	0.00%
 GSE1--FAM19A5	frameshift	GSE1	Gene1A		Genic	[INTERCHROMOSOMAL[chr16--chr22]], translocation			FALSE	Oncogene				1/27	3.70%	0/17	0.00%	0/6	0.00%
 NSD1--SLIT3	frameshift	NSD1	Gene1A		Genic	[INTRACHROMOSOMAL[chr5:7.83Mb]], duplication/5'-5'			FALSE	CosmicCensus, Oncogene				1/27	3.70%	0/17	0.00%	0/6	0.00%
 ADD3--SNRPGP12/MXI1	other	ADD3	Gene1A		Intergenic	[], inversion			FALSE	Oncogene				1/27	3.70%	0/17	0.00%	0/6	0.00%
@@ -5845,7 +5808,6 @@ NF2--LINC01638/AL020994.3	frameshift	LINC01638	Gene1B		Intergenic	[], inversion	
 TFDP2--PDS5A	other	PDS5A	Gene1B		Genic	[INTERCHROMOSOMAL[chr3--chr4]], translocation			FALSE	TranscriptionFactor				1/27	3.70%	0/17	0.00%	0/6	0.00%
 EYA1--PHF20L1	frameshift	PHF20L1	Gene1B		Genic	[INTRACHROMOSOMAL[chr8:61.41Mb]], inversion			FALSE					1/27	3.70%	0/17	0.00%	0/6	0.00%
 PHF20L1--EYA1	frameshift	EYA1	Gene1B		Genic	[INTRACHROMOSOMAL[chr8:61.41Mb]], inversion			FALSE					1/27	3.70%	0/17	0.00%	0/6	0.00%
-YAP1--MAML2	in-frame	MAML2	Gene1B	TCGAFusion	Genic	[ChimerPub, Klijn_CellLines, CCLE, INTRACHROMOSOMAL[chr11:5.77Mb]], inversion			FALSE	TumorSuppressorGene, Oncogene	CosmicCensus, Oncogene			1/27	3.70%	0/17	0.00%	0/6	0.00%
 GSE1--FAM19A5	frameshift	FAM19A5	Gene1B		Genic	[INTERCHROMOSOMAL[chr16--chr22]], translocation			FALSE	Oncogene				1/27	3.70%	0/17	0.00%	0/6	0.00%
 NSD1--SLIT3	frameshift	SLIT3	Gene1B		Genic	[INTRACHROMOSOMAL[chr5:7.83Mb]], duplication/5'-5'			FALSE	CosmicCensus, Oncogene				1/27	3.70%	0/17	0.00%	0/6	0.00%
 ADD3--SNRPGP12/MXI1	other	SNRPGP12	Gene1B		Intergenic	[], inversion			FALSE	Oncogene				1/27	3.70%	0/17	0.00%	0/6	0.00%
@@ -5981,7 +5943,6 @@ CU104787.1--KMT2C	other	CU104787.1	Gene1A		Genic	[INTERCHROMOSOMAL[chr22--chr7]]
 ZFHX3--AC140912.1/AC009033.1	other	ZFHX3	Gene1A		Intergenic	[], duplication			FALSE	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor				1/344	0.29%	0/335	0.00%	0/0	
 CAPN7--HOXD8	frameshift	CAPN7	Gene1A		Genic	[INTERCHROMOSOMAL[chr3--chr2]], translocation			FALSE		TranscriptionFactor			1/344	0.29%	0/335	0.00%	0/0	
 LPIN1--E2F6	frameshift	LPIN1	Gene1A		Genic	[INTRACHROMOSOMAL[chr2:0.21Mb]], duplication/5'-5'			FALSE		Oncogene, TranscriptionFactor			1/344	0.29%	0/335	0.00%	0/0	
-NBAS--FAM49A	frameshift	NBAS	Gene1A		Genic	[CCLE, INTRACHROMOSOMAL[chr2:0.99Mb]], duplication			FALSE		Oncogene			3/344	0.87%	0/335	0.00%	0/0	
 NBAS--FAM49A/AC008164.1	frameshift	NBAS	Gene1A		Intergenic	[], duplication			FALSE		Oncogene			3/344	0.87%	0/335	0.00%	0/0	
 RERE--USP24	in-frame	RERE	Gene1A		Genic	[INTRACHROMOSOMAL[chr1:46.25Mb]], duplication			FALSE	Oncogene	Oncogene			1/344	0.29%	0/335	0.00%	0/0	
 NR3C1--MAST4	in-frame	NR3C1	Gene1A		Genic	[INTRACHROMOSOMAL[chr5:76.11Mb]], inversion		Yes	FALSE	TranscriptionFactor	Kinase, Kinase			1/344	0.29%	0/335	0.00%	0/0	
@@ -6406,7 +6367,6 @@ CU104787.1--KMT2C	other	KMT2C	Gene1B		Genic	[INTERCHROMOSOMAL[chr22--chr7]], tra
 ZFHX3--AC140912.1/AC009033.1	other	AC140912.1	Gene1B		Intergenic	[], duplication			FALSE	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor				1/344	0.29%	0/335	0.00%	0/0	
 CAPN7--HOXD8	frameshift	HOXD8	Gene1B		Genic	[INTERCHROMOSOMAL[chr3--chr2]], translocation			FALSE		TranscriptionFactor			1/344	0.29%	0/335	0.00%	0/0	
 LPIN1--E2F6	frameshift	E2F6	Gene1B		Genic	[INTRACHROMOSOMAL[chr2:0.21Mb]], duplication/5'-5'			FALSE		Oncogene, TranscriptionFactor			1/344	0.29%	0/335	0.00%	0/0	
-NBAS--FAM49A	frameshift	FAM49A	Gene1B		Genic	[CCLE, INTRACHROMOSOMAL[chr2:0.99Mb]], duplication			FALSE		Oncogene			3/344	0.87%	0/335	0.00%	0/0	
 NBAS--FAM49A/AC008164.1	frameshift	FAM49A	Gene1B		Intergenic	[], duplication			FALSE		Oncogene			3/344	0.87%	0/335	0.00%	0/0	
 RERE--USP24	in-frame	USP24	Gene1B		Genic	[INTRACHROMOSOMAL[chr1:46.25Mb]], duplication			FALSE	Oncogene	Oncogene			1/344	0.29%	0/335	0.00%	0/0	
 NR3C1--MAST4	in-frame	MAST4	Gene1B		Genic	[INTRACHROMOSOMAL[chr5:76.11Mb]], inversion		Yes	FALSE	TranscriptionFactor	Kinase, Kinase			1/344	0.29%	0/335	0.00%	0/0	
@@ -7080,7 +7040,6 @@ SPARC--LTBP4	in-frame	SPARC	Gene1A		Genic	[INTERCHROMOSOMAL[chr5--chr19]], trans
 CLU--CD74	frameshift	CLU	Gene1A		Genic	[INTERCHROMOSOMAL[chr8--chr5]], translocation			FALSE	TumorSuppressorGene, Oncogene	CosmicCensus, Oncogene			1/16	6.25%	0/12	0.00%	0/2	0.00%
 CTNND1--KHDRBS1	in-frame	CTNND1	Gene1A		Genic	[INTERCHROMOSOMAL[chr11--chr1]], translocation			FALSE	TumorSuppressorGene, CosmicCensus, Oncogene				1/16	6.25%	0/12	0.00%	0/2	0.00%
 SH3PXD2A--HTRA1	frameshift	SH3PXD2A	Gene1A		Genic	[ChimerSeq, INTRACHROMOSOMAL[chr10:18.61Mb]], inversion			FALSE		TumorSuppressorGene, Oncogene			2/16	12.50%	0/12	0.00%	0/2	0.00%
-SH3PXD2A--HTRA1	in-frame	SH3PXD2A	Gene1A		Genic	[ChimerSeq, INTRACHROMOSOMAL[chr10:18.61Mb]], inversion			FALSE		TumorSuppressorGene, Oncogene			2/16	12.50%	0/12	0.00%	0/2	0.00%
 CHD9--VGLL3	in-frame	CHD9	Gene1A		Genic	[INTERCHROMOSOMAL[chr16--chr3]], translocation			FALSE	Oncogene				1/16	6.25%	0/12	0.00%	0/2	0.00%
 CHD9--VGLL3	in-frame	CHD9	Gene1A		Genic	[INTERCHROMOSOMAL[chr16--chr3]]			FALSE	Oncogene				1/16	6.25%	0/12	0.00%	0/2	0.00%
 VGLL3--CHD9	frameshift	VGLL3	Gene1A		Genic	[INTERCHROMOSOMAL[chr3--chr16]], translocation			FALSE		Oncogene			1/16	6.25%	0/12	0.00%	0/2	0.00%
@@ -7096,7 +7055,6 @@ SPARC--LTBP4	in-frame	LTBP4	Gene1B		Genic	[INTERCHROMOSOMAL[chr5--chr19]], trans
 CLU--CD74	frameshift	CD74	Gene1B		Genic	[INTERCHROMOSOMAL[chr8--chr5]], translocation			FALSE	TumorSuppressorGene, Oncogene	CosmicCensus, Oncogene			1/16	6.25%	0/12	0.00%	0/2	0.00%
 CTNND1--KHDRBS1	in-frame	KHDRBS1	Gene1B		Genic	[INTERCHROMOSOMAL[chr11--chr1]], translocation			FALSE	TumorSuppressorGene, CosmicCensus, Oncogene				1/16	6.25%	0/12	0.00%	0/2	0.00%
 SH3PXD2A--HTRA1	frameshift	HTRA1	Gene1B		Genic	[ChimerSeq, INTRACHROMOSOMAL[chr10:18.61Mb]], inversion			FALSE		TumorSuppressorGene, Oncogene			2/16	12.50%	0/12	0.00%	0/2	0.00%
-SH3PXD2A--HTRA1	in-frame	HTRA1	Gene1B		Genic	[ChimerSeq, INTRACHROMOSOMAL[chr10:18.61Mb]], inversion			FALSE		TumorSuppressorGene, Oncogene			2/16	12.50%	0/12	0.00%	0/2	0.00%
 CHD9--VGLL3	in-frame	VGLL3	Gene1B		Genic	[INTERCHROMOSOMAL[chr16--chr3]], translocation			FALSE	Oncogene				1/16	6.25%	0/12	0.00%	0/2	0.00%
 CHD9--VGLL3	in-frame	VGLL3	Gene1B		Genic	[INTERCHROMOSOMAL[chr16--chr3]]			FALSE	Oncogene				1/16	6.25%	0/12	0.00%	0/2	0.00%
 VGLL3--CHD9	frameshift	CHD9	Gene1B		Genic	[INTERCHROMOSOMAL[chr3--chr16]], translocation			FALSE		Oncogene			1/16	6.25%	0/12	0.00%	0/2	0.00%
@@ -7189,7 +7147,6 @@ CU104787.1--KMT2C	other	CU104787.1	Gene1A		Genic	[INTERCHROMOSOMAL[chr22--chr7]]
 ZFHX3--AC140912.1/AC009033.1	other	ZFHX3	Gene1A		Intergenic	[], duplication			FALSE	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor				1/1042	0.10%	0/335	0.00%	0/0	
 CAPN7--HOXD8	frameshift	CAPN7	Gene1A		Genic	[INTERCHROMOSOMAL[chr3--chr2]], translocation			FALSE		TranscriptionFactor			1/1042	0.10%	0/335	0.00%	0/0	
 LPIN1--E2F6	frameshift	LPIN1	Gene1A		Genic	[INTRACHROMOSOMAL[chr2:0.21Mb]], duplication/5'-5'			FALSE		Oncogene, TranscriptionFactor			1/1042	0.10%	0/335	0.00%	0/0	
-NBAS--FAM49A	frameshift	NBAS	Gene1A		Genic	[CCLE, INTRACHROMOSOMAL[chr2:0.99Mb]], duplication			FALSE		Oncogene			3/1042	0.29%	0/335	0.00%	0/0	
 NBAS--FAM49A/AC008164.1	frameshift	NBAS	Gene1A		Intergenic	[], duplication			FALSE		Oncogene			3/1042	0.29%	0/335	0.00%	0/0	
 RERE--USP24	in-frame	RERE	Gene1A		Genic	[INTRACHROMOSOMAL[chr1:46.25Mb]], duplication			FALSE	Oncogene	Oncogene			1/1042	0.10%	0/335	0.00%	0/0	
 NR3C1--MAST4	in-frame	NR3C1	Gene1A		Genic	[INTRACHROMOSOMAL[chr5:76.11Mb]], inversion		Yes	FALSE	TranscriptionFactor	Kinase, Kinase			1/1042	0.10%	0/335	0.00%	0/0	
@@ -7615,7 +7572,6 @@ CU104787.1--KMT2C	other	KMT2C	Gene1B		Genic	[INTERCHROMOSOMAL[chr22--chr7]], tra
 ZFHX3--AC140912.1/AC009033.1	other	AC140912.1	Gene1B		Intergenic	[], duplication			FALSE	TumorSuppressorGene, CosmicCensus, Oncogene, TranscriptionFactor				1/1042	0.10%	0/335	0.00%	0/0	
 CAPN7--HOXD8	frameshift	HOXD8	Gene1B		Genic	[INTERCHROMOSOMAL[chr3--chr2]], translocation			FALSE		TranscriptionFactor			1/1042	0.10%	0/335	0.00%	0/0	
 LPIN1--E2F6	frameshift	E2F6	Gene1B		Genic	[INTRACHROMOSOMAL[chr2:0.21Mb]], duplication/5'-5'			FALSE		Oncogene, TranscriptionFactor			1/1042	0.10%	0/335	0.00%	0/0	
-NBAS--FAM49A	frameshift	FAM49A	Gene1B		Genic	[CCLE, INTRACHROMOSOMAL[chr2:0.99Mb]], duplication			FALSE		Oncogene			3/1042	0.29%	0/335	0.00%	0/0	
 NBAS--FAM49A/AC008164.1	frameshift	FAM49A	Gene1B		Intergenic	[], duplication			FALSE		Oncogene			3/1042	0.29%	0/335	0.00%	0/0	
 RERE--USP24	in-frame	USP24	Gene1B		Genic	[INTRACHROMOSOMAL[chr1:46.25Mb]], duplication			FALSE	Oncogene	Oncogene			1/1042	0.10%	0/335	0.00%	0/0	
 NR3C1--MAST4	in-frame	MAST4	Gene1B		Genic	[INTRACHROMOSOMAL[chr5:76.11Mb]], inversion		Yes	FALSE	TranscriptionFactor	Kinase, Kinase			1/1042	0.10%	0/335	0.00%	0/0	

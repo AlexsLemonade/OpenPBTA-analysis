@@ -236,6 +236,7 @@ m_fus_freq_tbl <- m_fus_freq_tbl %>%
          Frequency_in_primary_tumors,
          Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
          Frequency_in_relapse_tumors) %>%
+  unique() %>%
   write_tsv(file.path(results_dir, paste0(output_filename,'.tsv')))
 
 
