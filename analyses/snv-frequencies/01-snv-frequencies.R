@@ -1,10 +1,6 @@
 library(tidyverse)
 
 
-# To update how to handle all_cohorts, change the following functions:
-#
-# - get_cohort_set_value
-# - get_pcb_pot_csi
 
 # Function definitions ----------------------------------------------------
 # Format numbers to percentage characters
