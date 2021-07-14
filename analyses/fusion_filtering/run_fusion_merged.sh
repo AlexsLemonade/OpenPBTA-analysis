@@ -97,10 +97,10 @@ Rscript 02-fusion-filtering.R --standardFusionFiles $standard_starfusion_file,$s
 
 
 # Fusion zscore annotation for filtered fusion for the combined RNA expression file
-Rscript 03-Calc-zscore-annotate.R --standardFusionCalls "${scratch_path}/standardFusionPolyaExp_QC_expression_filtered_annotated.RDS" \
+Rscript 03-Calc-zscore-annotate.R --standardFusionCalls "${scratch_path}/standardFusionExp_QC_expression_filtered_annotated.RDS" \
                                   --expressionMatrix $polya_expression_file \
                                   --normalExpressionMatrix $normal_expression_file \
-                                  --outputFile "${scratch_path}/standardFusionPolyaExp_QC_expression"
+                                  --outputFile "${scratch_path}/standardFusionExp_QC_expression"
 
 # Project specific filtering
 Rscript -e "rmarkdown::render('04-project-specific-filtering.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
