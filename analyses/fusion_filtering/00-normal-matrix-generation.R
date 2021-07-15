@@ -33,5 +33,4 @@ normal_specimen <- histology_df %>% filter(gtex_group == specimenType) %>%
 expressionMatrix <- readRDS(expressionMatrix)
 normal_expression_matrix <- expressionMatrix %>% select(rownames(normal_specimen))
 
-
 saveRDS(normal_expression_matrix,outputFile)
