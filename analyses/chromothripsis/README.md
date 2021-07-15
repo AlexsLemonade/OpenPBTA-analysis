@@ -17,6 +17,8 @@ This module runs ShatterSeek, identifies chromothripsis regions, and visualizes 
 
 `03-plot-chromothripsis-by-histology.Rmd`: This script plots the proportion of tumors with chromothripsis across histology groups.
 
+`04-plot-chromothripsis-and-breakpoint-data.Rmd`: This script plots the chromothripsis results alongside breakpoint data from `analyses/chromosomal-instability/`.
+
 More scripts will be added for visualization.
 
 #### Output tables
@@ -32,4 +34,6 @@ More scripts will be added for visualization.
 - `any_regions` : Summary variable indicating whether a sample has no calls, >=1 low-confidence call, or >=1 high-confidence call
 
 #### Plots
-`plots/03-histology/*`: Proportion of tumors with chromothripsis across histology groups, with a breakdown by confidence level (high or low confidence chromothripsis) and by the number of chromothripsis regions observed
+`plots/03-histology/*`: Proportion of tumors with chromothripsis across histology groups, with a breakdown by confidence level (high or low confidence chromothripsis) and by the number of chromothripsis regions observed.
+
+`plots/04-breakpoint-data/*`: Scatterplots/stripcharts showing the number of chromothripsis regions per sample alongside the breakpoint counts calculated from SV and CNV data in `analyses/chromosomal-instability/`.
