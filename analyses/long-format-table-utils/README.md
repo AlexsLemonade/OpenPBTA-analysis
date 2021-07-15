@@ -46,7 +46,11 @@ Add the following gene annotations:
 | `OncoKB_oncogene_TSG`  | `analyses/snv-frequencies/input/oncokb_cancer_gene_list.tsv` |
 | `Gene_full_name`       | TBD. Download from <https://mygene.info/> to this module.                    |
 
-Note: only add `Gene_type` to gene-level tables, which can be implemented with the `{{TBD}}` argument in the `{{TBD}}` function.
+The `RMTL` information is obtained from PediatricOpenTargets/OpenPedCan-analysis data release.
+
+Note: only add `Gene_type` to gene-level tables, which can be implemented with the `{{TBD}}` argument in the `{{TBD}}` function. The `Gene_type` information is obtained from `../fusion_filtering/references/genelistreference.txt`, and its sources are described at <https://github.com/d3b-center/annoFuse#prerequisites-for-cohort-level-analysis>.
+
+The `OncoKB_cancer_gene` and `OncoKB_oncogene_TSG` information is listed in `annotator/annotation-data/oncokb-cancer-gene-list.tsv`, which is downloaded from <https://www.oncokb.org/cancerGenes>. The last update of the table is on 06/16/2021. To update the table, re-download the updated table from <https://www.oncokb.org/cancerGenes>.
 
 Add the following disease(/`cancer_group`) annotations:
 
@@ -54,6 +58,8 @@ Add the following disease(/`cancer_group`) annotations:
 |------------------------|--------------------------|
 | `EFO`                  | `data/efo-mondo-map.tsv` |
 | `MONDO`                | `data/efo-mondo-map.tsv` |
+
+The `EFO` and `MONDO` information is obtained from PediatricOpenTargets/OpenPedCan-analysis data release.
 
 ##### API usage of long-format table annotator
 
