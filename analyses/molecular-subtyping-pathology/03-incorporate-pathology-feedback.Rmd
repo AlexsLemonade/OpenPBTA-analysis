@@ -219,7 +219,7 @@ compiled_df <- compiled_df %>%
       TRUE ~ molecular_subtype
     ),
     Notes = case_when(
-      sample_id == "7316-1106" ~ "Updated via OpenPBTA subtyping",
+      sample_id == "7316-1106" ~ "Updated via OpenPBTA subtyping and via pathology review",
       TRUE ~ Notes
     )
   )
