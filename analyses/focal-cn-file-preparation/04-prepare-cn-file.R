@@ -240,9 +240,10 @@ cnv_no_xy <- cnv_df %>%
 # Merge and annotated no X&Y
 autosome_annotated_cn <- process_annotate_overlaps(cnv_df = cnv_no_xy,
                                                    txdb_exons = tx_exons) %>%
-  # mark possible amplifications in autosomes
+  # mark possible amplifications and deep loss in autosomes
   dplyr::mutate(status = dplyr::case_when(
     copy_number > (2 * ploidy) ~ "amplification",
+    copy_number == 0 ~ "deep deletion",
     TRUE ~ status
   ))
 
@@ -264,7 +265,13 @@ if (xy_flag) {
 
   # Merge and annotated no X&Y
   sex_chrom_annotated_cn <- process_annotate_overlaps(cnv_df = cnv_sex_chrom,
-                                                      txdb_exons = tx_exons)
+                                                      txdb_exons = tx_exons) %>%
+  # mark possible deep loss in sex chromosome
+  dplyr::mutate(status = dplyr::case_when(
+    copy_number == 0  ~ "deep deletion",
+    TRUE ~ status
+  )) 
+  
 
   # Add germline sex estimate into this data.frame
   sex_chrom_annotated_cn <- sex_chrom_annotated_cn %>%
