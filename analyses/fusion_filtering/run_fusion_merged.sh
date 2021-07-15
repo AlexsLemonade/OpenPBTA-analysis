@@ -102,7 +102,7 @@ Rscript 03-Calc-zscore-annotate.R --standardFusionCalls "${scratch_path}/standar
                                   --clinicalFile $histologies_file \
                                   --cohortInterest "PBTA,GMKF" \
                                   --normalExpressionMatrix $normal_expression_brain,$normal_expression_adrenal_gland \
-                                  --outputfile "${scratch_path}/standardFusionExp_QC_expression"
+                                  --outputFile "${scratch_path}/standardFusionExp_QC_expression"
 
 # Project specific filtering
 Rscript -e "rmarkdown::render('04-project-specific-filtering.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
