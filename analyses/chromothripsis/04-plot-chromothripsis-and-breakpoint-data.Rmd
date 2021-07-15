@@ -45,8 +45,8 @@ sv_densities <- read_tsv(file.path(breakpoint_data_dir, "sv_breaks_densities.tsv
 
 # Rename columns before merging
 cnv_densities <- cnv_densities %>%
-  rename(Kids_First_Biospecimen_ID = samples) %>%
-  rename(cnv_breaks_count = breaks_count)
+  rename(Kids_First_Biospecimen_ID = samples,
+         cnv_breaks_count = breaks_count)
 sv_densities <- sv_densities %>%
   rename(Kids_First_Biospecimen_ID = samples) %>%
   rename(sv_breaks_count = breaks_count)
