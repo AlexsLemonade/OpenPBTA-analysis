@@ -31,8 +31,8 @@ collapse_rp_lists <- function(rp_vec_list) {
   })
 
   # combimed vector of unique refseq.protein values
-  uniq_c_rm_null_rp_vec <- unique(
-    purrr::reduce(rm_null_rp_vec_list, c, .init = character(0)))
+  uniq_c_rm_null_rp_vec <- sort(unique(
+    purrr::reduce(rm_null_rp_vec_list, c, .init = character(0))))
   # remove NA
   rm_na_uniq_c_rm_null_rp_vec <- purrr::discard(
     uniq_c_rm_null_rp_vec, is.na)
@@ -78,7 +78,7 @@ collapse_name_vec <- function(gn_vec) {
                 "to handle non-character values."))
   }
   # remove NAs
-  uniq_rm_na_gn_vec <- unique(purrr::discard(gn_vec, is.na))
+  uniq_rm_na_gn_vec <- sort(unique(purrr::discard(gn_vec, is.na)))
 
   clp_gn_str <- paste(uniq_rm_na_gn_vec, collapse = ",")
   if (identical(clp_gn_str, "")) {
