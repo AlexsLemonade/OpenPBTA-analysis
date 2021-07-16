@@ -16,4 +16,5 @@ cd "$script_directory" || exit
 # download/update annotation data
 echo 'Update annotator data...'
 bash 'annotator/run-download-annotation-data.sh'
-echo 'Done'
+
+echo 'Done running update-long-format-table-utils.sh'
