@@ -145,10 +145,7 @@ if (!opt$include_introns) {
 
 # Read in cnv file
 if (!is.null(opt$cnv_file)) {
-  cnv_df <- readr::read_tsv(opt$cnv_file) %>%
-    dplyr::mutate(Variant_Classification = dplyr::case_when(Variant_Classification == "loss" ~ "Del",
-                                                            Variant_Classification %in% c("gain", "amplification") ~ "Amp",
-                                                            TRUE ~ as.character(Variant_Classification)))
+  cnv_df <- readr::read_tsv(opt$cnv_file) 
 }
 
 # Read in fusion file and join
@@ -244,6 +241,7 @@ maf_object <- prepare_maf_object(
   metadata = metadata,
   fusion_df = fusion_df
 )
+
 
 #### Subset MAF Object (Optional)----------------------------------------------
 
