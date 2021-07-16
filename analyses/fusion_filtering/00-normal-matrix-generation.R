@@ -34,5 +34,3 @@ expressionMatrix <- readRDS(expressionMatrix)
 normal_expression_matrix <- expressionMatrix %>% select(rownames(normal_specimen))
 
 saveRDS(normal_expression_matrix,outputFile)
-
-
