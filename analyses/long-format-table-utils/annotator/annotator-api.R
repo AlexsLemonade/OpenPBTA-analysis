@@ -20,5 +20,27 @@
 annotate_long_format_table <- function(long_format_table,
                                        is_gene_level_table = FALSE,
                                        add_Protein_RefSeq_ID = FALSE) {
-
+  # Detect the ".git" folder -- this will in the project root directory. Use
+  # this as the root directory to ensure proper execution, no matter where it is
+  # called from.
+  #
+  # This only works if the working directory is OpenPedCan-analysis or a
+  # subdirectory of OpenPedCan-analysis
+  #
+  # root_dir is the absolute path of OpenPedCan-analysis
+  #
+  # Adapted from the oncoprint-landscape module.
+  tryCatch(
+    {
+      root_dir <- rprojroot::find_root(rprojroot::has_file(".git/index"))
+    },
+    error = function(err_cond) {
+      # adapted from http://adv-r.had.co.nz/Exceptions-Debugging.html
+      err_cond$message <- paste0(
+        err_cond$message,
+        "\nTry re-running this script with working directory as ",
+        "OpenPedCan-analysis or a subdirectory of OpenPedCan-analysis.\n")
+      stop(err_cond)
+    }
+  )
 }
