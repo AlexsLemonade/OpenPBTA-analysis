@@ -60,7 +60,7 @@ if ( params$base_run ==0 ){
 }
 
 histology <- clinical %>%
-   select("Kids_First_Biospecimen_ID",
+   dplyr::select("Kids_First_Biospecimen_ID",
           "sample_id",
           "cancer_predispositions",
           "sample_type",
@@ -93,13 +93,13 @@ classifier_score_stranded <- read_tsv(
   file.path(
     results_dir,
     "pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv"))%>%
-  select(sample_id,tp53_score)
+  dplyr::select(sample_id,tp53_score)
 
 classifier_score_polya <-read_tsv(
   file.path(
     results_dir,
     "pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv")) %>%
-  select(sample_id,tp53_score)
+  dplyr::select(sample_id,tp53_score)
 
 classifier_score<- rbind(classifier_score_polya,classifier_score_stranded) %>%
   dplyr::rename(Kids_First_Biospecimen_ID_RNA=sample_id) %>%
@@ -118,6 +118,12 @@ sv_overlap <- read_tsv(
   file.path(
     results_dir,
     "sv_overlap_tp53.tsv"))
+
+# Structural variant as a fusion in exon1/intron1
+fusion_overlap <- read_tsv(
+  file.path(
+    results_dir,
+    "fusion_bk_tp53_loss.tsv"))
 
 ```
 
@@ -166,7 +172,8 @@ tp53_hotspot_maf <- data.table::fread(
                                               "HGVSp_Short"),
                                    data.table = FALSE) %>%
   filter(Hugo_Symbol == "TP53") %>%
-  select(colnames(tp53_consensus_maf))
+  dplyr::select(colnames(tp53_consensus_maf))
+
 
 
 tp53_consensus_hotspot_maf <- tp53_consensus_maf %>%
@@ -211,7 +218,7 @@ We will gather values per sample_id since DNA and RNA samples can be only matche
 
 ```{r}
 
-tp53_alterations_dna <- histology %>%
+tp53_alterations <- histology %>%
   filter(experimental_strategy != "RNA-Seq") %>%
   # merge cell line composition
   left_join(cell_line_composition) %>%
@@ -226,9 +233,11 @@ tp53_alterations_dna <- histology %>%
   # join SV 
   left_join(sv_overlap,by=c("Kids_First_Biospecimen_ID"="Kids.First.Biospecimen.ID.Tumor",
                             "sample_id")) %>%
-  dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID) 
+  dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID) %>%
+  # join fusion
+  left_join(fusion_overlap,by="sample_id") 
 
-tp53_alterations_score <- tp53_alterations_dna %>%
+tp53_alterations_score <- tp53_alterations %>%
   # add classifier score
   full_join(classifier_score,by=c("sample_id",
                                   "cell_line_composition",
@@ -236,8 +245,8 @@ tp53_alterations_score <- tp53_alterations_dna %>%
                                   "sample_type",
                                   "Kids_First_Participant_ID")) %>%
   # select useful columns
-  select(sample_id,Kids_First_Biospecimen_ID_RNA,Kids_First_Biospecimen_ID_DNA,
-         tp53_score,cancer_predispositions,HGVSp_Short,copy_number,SV.type,hotspot,activating) %>%
+  dplyr::select(sample_id,Kids_First_Biospecimen_ID_RNA,Kids_First_Biospecimen_ID_DNA,
+         tp53_score,cancer_predispositions,HGVSp_Short,copy_number,SV.type,FusionName,hotspot,activating) %>%
   arrange(sample_id) %>%
   unique() %>%
   replace_na(list(hotspot = 0, activating = 0))
@@ -265,9 +274,11 @@ tp53_alterations_score_wide <- tp53_alterations_score %>%
     SNV_indel_counts= length(unique(HGVSp_Short[!is.na(HGVSp_Short)])), 
     CNV_loss_counts = length(unique(copy_number[!is.na(copy_number)])),
     SV_counts = length(unique(SV.type[!is.na(SV.type)])),
+    Fusion_counts = length(unique(FusionName[!is.na(FusionName)])),
     HGVSp_Short = toString(unique(HGVSp_Short)),
     CNV_loss_evidence = toString(unique(copy_number)),
     SV_type = toString(unique(SV.type)),
+    Fusion_evidence = toString(unique(FusionName)),
     # summarize unique hotspot values per sample_id
     hotspot = max(unique(hotspot[!is.na(hotspot) ])),
     activating = max(unique(activating[!is.na(activating)]))) 
@@ -291,10 +302,10 @@ tp53_alterations_score_wide <- tp53_alterations_score_wide %>%
         activating == 0 &
           # check if mutated variant AA position overlaps hotspot database 
           ( hotspot == 1  |
-              # check if sample_id has SNV+(CNV|SV) mutation
+              # check if sample_id has SNV+(CNV|SV|Fusion) mutation
               # suggesting both alleles are mutated
               (SNV_indel_counts >= 1 & 
-                 (CNV_loss_counts >=1 | SV_counts >=1) ) |
+                 (CNV_loss_counts >=1 | SV_counts >=1 | Fusion_counts >=1 ) ) |
               # check if more than 1 SNV is present
               # suggesting both alleles are mutated
               SNV_indel_counts > 1 |
@@ -303,10 +314,10 @@ tp53_alterations_score_wide <- tp53_alterations_score_wide %>%
               # germline TP53 mutant as cancer predisposition 
               (SNV_indel_counts >= 1 & 
                              grepl("Li-Fraumeni syndrome",cancer_predispositions)) |
-              # check if CNV|SV mutant  and has
+              # check if CNV|SV mutant|Fusion  and has
               # Li-Fraumeni syndrome suggesting
               # germline TP53 mutant as cancer predisposition 
-              ((CNV_loss_counts >= 1 | SV_counts >=1 ) & 
+              ((CNV_loss_counts >= 1 | SV_counts >=1 | Fusion_counts >=1) & 
                              grepl("Li-Fraumeni syndrome",cancer_predispositions)) |
               # check if tp53 inactivating score for RNA_Seq is greater that 0.5
               # and has Li-Fraumeni syndrome suggesting
@@ -314,9 +325,9 @@ tp53_alterations_score_wide <- tp53_alterations_score_wide %>%
               (tp53_score > 0.5 & 
                              grepl("Li-Fraumeni syndrome",cancer_predispositions)) |
               # check if tp53 inactivating score for RNA_Seq is greater that 0.5
-              # and has 1 or more SNV| (CNV|SV) loss in TP53
+              # and has 1 or more SNV| (CNV|SV|Fusion) loss in TP53
               (tp53_score > 0.5 & 
-                             (SNV_indel_counts >= 1 | (CNV_loss_counts >=1 | SV_counts >=1 )))
+                             (SNV_indel_counts >= 1 | (CNV_loss_counts >=1 | SV_counts >=1 |Fusion_counts >=1)))
           ) ~ "loss",
         # when activating == 1
         activating == 1 ~ "activated",
