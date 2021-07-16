@@ -4,12 +4,12 @@ Adapted from [snv-frequencies](https://github.com/logstar/OpenPedCan-analysis/tr
 **Module author:** Yuanchao Zhang ([@logstar](https://github.com/logstar))
 
 Adapted from [fusion-frequencies](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/kgaonkar6/fusion_freq/analyses/fusion-frequencies)
-**Module author:** Krutika Gaonkar ([@kgaonkar6](https://github.com/logstar)
+**Module author:** Krutika Gaonkar ([@kgaonkar6](https://github.com/kgaonkar6))
 
 Adapted by Eric Wafula ([@ewafula](https://github.com/ewafula)) 
 
 ### Purpose
-Uses `consensus_seg_annotated_cn_autosomes.tsv` and `consensus_seg_annotated_cn_x_and_y.tsv` consensus CNV calls and variant types (`amplification`, `deep deletion`, `gain`, `loss`, and `neutral`) to determine `Ensembl` gene-level mutation frequencies for each cancer type in an overall cohort dateset and in the independent primary/relapse cohort subsets of the data.
+Uses `consensus_seg_annotated_cn_autosomes.tsv.gz` and `consensus_seg_annotated_cn_x_and_y.tsv.gz` consensus CNV calls and variant types (`amplification`, `deep deletion`, `gain`, `loss`, and `neutral`) to determine `Ensembl` gene-level mutation frequencies for each cancer type in an overall cohort dateset and in the independent primary/relapse cohort subsets of the data.
 
 
 #### Additional annotation
@@ -43,13 +43,18 @@ Results are generated using PediatricOpenTargets/OpenPedCan-analysis data releas
 
 The merged fusion frequency table of all `cancer_group_cohort`s is output in TSV and JSONL formats.
 
-- `cnv-consensus-annotated-frequencies.jsonl`
-- `cnv-consensus-annotated-frequencies.tsv`
+- `consensus_seg_annotated_cn_autosomes_freq.tsv.gz`
+- `consensus_seg_annotated_cn_autosomes_freq.jsonl.gz`
+- `consensus_seg_annotated_cn_x_and_y_freq.tsv.gz`
+- `consensus_seg_annotated_cn_x_and_y_freq.jsonl.gz`
 
 ### Analysis scripts
 
 ### `run-cnv-frequencies-analysis.sh`
 This is a bash script wrapper for setting input file paths for the main anlysis script, `01-cnv-frequencies.py`. All file paths in set in this script are based on root directory of this Git repository . Therefore, the script should always be run from the root directory of OPenPedCan-analysis
+
+Adapted from [snv-callers analysis module](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/analyses/snv-callers/run_caller_consensus_analysis.sh)
+**Module author:** Candace Savonen ([@cansavvy](https://github.com/cansavvy))
 
 
 Usage:
@@ -63,9 +68,9 @@ Python functions to create copy number variation (CNV) cancer type and study gen
 
 
 Usage:
-```
+```bash
 python3 analysis/cnv-frequencies/01-cnv-frequencies.py HISTOLOGY_FILE CNV_FILE \
-                                PRIMARY_TUMORS RELAPSE_TUMORS EFO_MONDO ENSG_RMTL
+                                PRIMARY_TUMORS RELAPSE_TUMORS ONCOKB EFO_MONDO ENSG_RMTL
 ```
 
 Parameter Options:
@@ -82,9 +87,12 @@ positional arguments:
                   
   RELAPSE_TUMORS  OPenPedCan independent relapse tumor samples file 
                   (independent-specimens.wgs.relapse.tsv)
-                  
-  EFO_MONDO       OPenPedCan disease to EFO/MONDO mapping file 
+
+  ONCOKB          OPenPedCan disease to EFO/MONDO mapping file 
                   (efo-mondo-map.tsv)
+                  
+  EFO_MONDO       OPenPedCan Hugo gene symbols to OnckKB categories mapping file
+                  (OncoKB_Oncogene-TSG_genes.tsv)
                   
   ENSG_RMTL       OPenPedCan Ensembl to RMTL mapping file 
                   (ensg-hugo-rmtl-v*-mapping.tsv)
@@ -97,12 +105,16 @@ optional arguments:
 Input:
 
 - `data/histologies.tsv`
-- `data/consensus_seg_annotated_cn_autosomes.tsv`
+- `data/consensus_seg_annotated_cn_autosomes.tsv.gz`
+- `data/consensus_seg_annotated_cn_x_and_y.tsv.gz`
 - `analyses/independent-samples/results/independent-specimens.wgs.primary.tsv`
 - `analyses/independent-samples/results/independent-specimens.wgs.relapse.tsv`
+- `analyses/cnv-frequencies/input/input/OncoKB_Oncogene-TSG_genes.tsv`
 - `data/efo-mondo-map.tsv`
 - `data/ensg-hugo-rmtl-v1-mapping.tsv`
 
 Output:
-- `analysis/cnv-frequencies/results/cnv-consensus-annotated-frequencies.jsonl`
-- `analysis/cnv-frequencies/results/cnv-consensus-annotated-frequencies.tsv`
+- `analysis/cnv-frequencies/results/consensus_seg_annotated_cn_autosomes_freq.tsv.gz`
+- `analysis/cnv-frequencies/results/consensus_seg_annotated_cn_autosomes_freq.jsonl.gz`
+- `analysis/cnv-frequencies/results/consensus_seg_annotated_cn_x_and_y_freq.tsv.gz`
+- `analysis/cnv-frequencies/results/consensus_seg_annotated_cn_x_and_y_freq.jsonl.gz`
