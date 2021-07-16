@@ -313,15 +313,18 @@ all_subtype <- bind_rows(all_rna_subtype,
     # OR don't have RNA to check for LGG variant or fusion
     # so status will be To be classified
     molecular_subtype=="NA" & (is.na(Kids_First_Biospecimen_ID_DNA) |
-                                  is.na(Kids_First_Biospecimen_ID_RNA))  ~ "LGG, To be classified",
+                                 is.na(Kids_First_Biospecimen_ID_RNA))  ~ "LGG, To be classified",
     # when molecular_subtype is not NA 
     TRUE ~ stringr::str_c("LGG, ", molecular_subtype))) %>%
   # recode if glialneuronal tumors
-  dplyr::mutate(molecular_subtype = case_when(str_detect(pathology_free_text_diagnosis,
-                                                       paste(path_dx_list$recode_path_free_text,collapse = "|")) &
-                                                pathology_diagnosis == "Low-grade glioma/astrocytoma (WHO grade I/II)" ~ 
-                                               gsub("LGG,","GNT,",molecular_subtype),
-                                             TRUE ~ molecular_subtype)) %>%
+  dplyr::mutate(molecular_subtype = case_when(
+    str_detect(pathology_free_text_diagnosis, 
+               paste(path_dx_list$recode_path_free_text,collapse = "|")) &
+      pathology_diagnosis == "Low-grade glioma/astrocytoma (WHO grade I/II)" ~ 
+      gsub("LGG,","GNT,",molecular_subtype),
+    pathology_diagnosis == "Ganglioglioma" ~
+      gsub("LGG,|GNT,","GNG,",molecular_subtype),
+    TRUE ~ molecular_subtype)) %>%
   dplyr::select(-pathology_free_text_diagnosis,
                 -pathology_diagnosis) %>%
   unique() %>%
