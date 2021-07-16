@@ -13,24 +13,96 @@
 # results
 #
 # Args:
-# - xl: list of refseq.protein character vectors from mygene.info query results
-collapse_rp_lists <- function(xl) {
-  fxl <- purrr::discard(xl, is.null)
-  # assert all characters
-  sapply(fxl, function(x) {
-    stopifnot(is.character(x))
+# - rp_vec_list: list of refseq.protein character vectors from mygene.info query
+#   results
+#
+# Returns a single character value of a comma-separated refseq.protein value or
+# NA
+collapse_rp_lists <- function(rp_vec_list) {
+  # remove list elements that are NULL
+  rm_null_rp_vec_list <- purrr::discard(rp_vec_list, is.null)
+  # assert non-null list elements are all characters
+  lapply(rm_null_rp_vec_list, function(x) {
+    if (!is.character(x)) {
+      stop(paste0("mygene query returns non-character refseq.protein.\n",
+                  "Check query results. Revise download-annotation-data.R ",
+                  "to handle non-character values."))
+    }
   })
-  fxv <- unique(purrr::reduce(fxl, c, .init = character(0)))
-  np_fxv <- fxv[stringr::str_detect(fxv, "^NP_")]
-  c_np_fxv <- paste(np_fxv, collapse = ",")
-  return(c_np_fxv)
+
+  # combimed vector of unique refseq.protein values
+  uniq_c_rm_null_rp_vec <- unique(
+    purrr::reduce(rm_null_rp_vec_list, c, .init = character(0)))
+  # remove NA
+  rm_na_uniq_c_rm_null_rp_vec <- purrr::discard(
+    uniq_c_rm_null_rp_vec, is.na)
+  # keep only NP_### refseq.protein values
+  np_rp_vec <- purrr::keep(
+    rm_na_uniq_c_rm_null_rp_vec, function(x) stringr::str_detect(x, "^NP_"))
+
+  clp_np_rp_str <- paste(np_rp_vec, collapse = ",")
+
+  if (identical(clp_np_rp_str, "")) {
+    # no NP_### value for the gene query
+    # dplyr::summarise needs function return value to be character for a
+    # character column. as.character(NA) is still NA rather than "NA".
+    return(as.character(NA))
+  } else{
+    return(clp_np_rp_str)
+  }
 }
 # # test cases
 # collapse_rp_lists(list(NULL, NULL, NULL))
 # collapse_rp_lists(list())
 # collapse_rp_lists(list(c("NP_1", "NP_2"), c("NP_1", "NP_3")))
+# collapse_rp_lists(list(c("NX_1", "NA"), c("NP_1", "NP_3")))
 # collapse_rp_lists(list(c("NP_1", "NP_2"), NULL, c("NP_1", "NP_3")))
-# collapse_rp_lists(list(c("NP_1", "NP_2")))
+# collapse_rp_lists(list(c("NP_3", "NP_2")))
+# collapse_rp_lists(list(c("NP_1", "NP_2"), NULL, c("NP_1", "NP_3", NA),
+#                        c(NA, NA, character(0)), c(NA, character(0)),
+#                        character(0)))
+
+
+
+# Collapse a name character vector from mygene.info query results
+#
+# Args:
+# - gn_vec: character vector of name values from mygene.info query results
+#
+# Returns a single character value of a comma-separated name value or NA
+collapse_name_vec <- function(gn_vec) {
+  # assert non-null list elements are all characters
+  if (!is.character(gn_vec)) {
+    stop(paste0("mygene query returns non-character refseq.protein.\n",
+                "Check query results. Revise download-annotation-data.R ",
+                "to handle non-character values."))
+  }
+  # remove NAs
+  uniq_rm_na_gn_vec <- unique(purrr::discard(gn_vec, is.na))
+
+  clp_gn_str <- paste(uniq_rm_na_gn_vec, collapse = ",")
+  if (identical(clp_gn_str, "")) {
+    # no non-NA name for the gene query
+    # dplyr::summarise needs function return value to be character for a
+    # character column. as.character(NA) is still NA rather than "NA".
+    return(as.character(NA))
+  } else {
+    return(clp_gn_str)
+  }
+}
+# # test cases
+# collapse_name_vec(c("a", "b"))
+# collapse_name_vec(c("a", "b", NA))
+# collapse_name_vec(c("a", "a", "a", "b", "d"))
+# collapse_name_vec(c("d", "a", "a", "b", "d"))
+# collapse_name_vec(c(NA, character(0)))
+# is.na(collapse_name_vec(c(NA, character(0))))
+# class(collapse_name_vec(c(NA, character(0))))
+# collapse_name_vec(c(NA, NA, NA, character(0)))
+# collapse_name_vec(character(0))
+# # folloing cases should fail
+# collapse_name_vec(c(1))
+
 
 
 
@@ -106,12 +178,19 @@ mg_qres_list <- mygene::queryMany(
   ens_gids, scopes = "ensembl.gene", fields = c("refseq", "name"),
   species = "human", returnall = TRUE, return.as = "DataFrame")
 
-mg_qres_df <- tibble::as_tibble(
+found_mg_qres_df <- tibble::as_tibble(
   mg_qres_list$response[, c("query", "notfound", "name", "refseq.protein")]) %>%
   tidyr::replace_na(list(notfound = FALSE)) %>%
-  dplyr::filter(!notfound) %>%
+  dplyr::filter(!notfound)
+
+# remove rows that have both NA name and NULL refseq.protein
+rm_bnn_found_mg_qres_df <- found_mg_qres_df %>%
+  dplyr::filter(!(is.na(name) & purrr::map_lgl(refseq.protein, is.null)))
+
+# collapses name and refseq.protein for output
+out_rm_bnn_found_mg_qres_df <- rm_bnn_found_mg_qres_df %>%
   dplyr::group_by(query) %>%
-  dplyr::summarise(name = paste(unique(name), collapse = ", "),
+  dplyr::summarise(name = collapse_name_vec(name),
                    refseq_protein = collapse_rp_lists(refseq.protein)) %>%
   dplyr::rename(Gene_Ensembl_ID = query, Gene_full_name = name,
                 Protein_RefSeq_ID = refseq_protein)
@@ -120,5 +199,7 @@ mg_qres_df <- tibble::as_tibble(
 
 # Output TSV file --------------------------------------------------------------
 readr::write_tsv(
-  mg_qres_df,
+  out_rm_bnn_found_mg_qres_df,
   file.path(output_data_dir, "ensg-gene-full-name-refseq-protein.tsv"))
+
+message("Done running download-annotation-data.R")
