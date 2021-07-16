@@ -394,13 +394,26 @@ RUN ./install_bioc.r \
 
 RUN R -e "remotes::install_github('d3b-center/annoFuse',ref = 'c6a2111b5949ca2aae3853f7f34de3d0db4ffa33', dependencies = TRUE)"
 
-# Packages for RNA-seq differential gene expression analysis
+# Package for RNA-seq differential gene expression analysis
 RUN ./install_bioc.r \
     DESeq2
 
-# Packages for remove unwanted variation from RNA-Seq data
+# Package for removing unwanted variation from RNA-Seq data
 RUN ./install_bioc.r \
     RUVSeq
+
+# Package for querying gene IDs and symbols
+RUN ./install_bioc.r \
+    mygene
+
+# Even though apt-get section at top, add installation here to avoid re-RUN
+# previous steps in docker build.
+# There are other out-of-order cases.
+# We can reorganize this Dockerfile when CI is available, so it is easier to
+# test for reproducibility.
+# Install json processor jq
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    jq
 
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for

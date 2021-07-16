@@ -11,6 +11,10 @@ params:
     label: "Input putative oncogene fusion dataframe"
     value: scratch/fusion-putative-oncogenic-preQC.tsv
     input: file
+  countBroadHistology:
+    label: "Integer cutoff of fusion found in more than N broad histology groups"
+    value: 4
+    input: integer
   countCancerGroup:
     label: "Integer cutoff of fusion found in more than N cancer groups"
     value: 4
@@ -47,7 +51,8 @@ This removal of filtering lets us gather fusion calls known in oncogenic genes p
 
 ### QC filtering proposed
 
-Here I plot some barplots to identify fusions found in more than 4 cancer groups to remove fusions found to be artefactual because of the multiple diverse cancer groups it's found in across OpenPBTA dataset. (We have decided more than 4 here because we have seen that some known fusions like EWSR1−−FLI1 is seen is 4 different cancer groups in our current clinical file)
+Here I plot some barplots to identify fusions found in more than 4 cancer groups - they are just for visualization purposes.
+When actually filtering the fusions, we remove fusions that are found in more 4 *broad_histology* groups - they are found to be artifactual because of the multiple diverse broad histologies in OpenPedCan dataset. (We have decided more than 4 here because we have seen that some known fusions, like EWSR1−−FLI1, is seen is 4 different cancer groups in our current clinical file)
 
 
 dataPutativeFusion file used as input is
@@ -56,7 +61,7 @@ dataPutativeFusion file used as input is
 
 + Plus non-oncogenic fusion which are called by both callers and found in more than 2 samples in each cancer group (these non-oncogenic fusions are removed if they fuse to more than 5 partner fusions or found in more than 1 cancer group.)
 
-This notebook assumes you are in Openanalysis project folder structure and have run steps 1:4 of fusion_filtering
+This notebook assumes you are in OpenPedCan-analysis project folder structure and have run steps 1:4 of fusion_filtering
 
 ### Load data
 
@@ -71,7 +76,7 @@ suppressPackageStartupMessages(library("reshape2"))
 suppressPackageStartupMessages(library("qdapRegex"))
 
 ####read putative oncogene fusion files
-fusion_calls<-read_tsv(file.path(root_dir,params$dataPutativeFusion))
+fusion_calls<-read_tsv(file.path(root_dir,params$dataPutativeFusion),guess_max = 100000 )
 
 ####read files from results folder
 outputfolder<-params$outputfolder
@@ -79,10 +84,10 @@ outputfolder<-params$outputfolder
 #### get histology file
 if ( params$base_run ==0 ){
 clinical<-read_tsv(file.path(root_dir, params$histology), guess_max = 100000) %>%
-  dplyr::select(Kids_First_Biospecimen_ID, Kids_First_Participant_ID, cancer_group)
+  dplyr::select(Kids_First_Biospecimen_ID, Kids_First_Participant_ID, cancer_group, broad_histology)
 } else {
 clinical<-read_tsv(file.path(root_dir, params$base_histology), guess_max = 100000) %>%
-  dplyr::select(Kids_First_Biospecimen_ID, Kids_First_Participant_ID, cancer_group)
+  dplyr::select(Kids_First_Biospecimen_ID, Kids_First_Participant_ID, cancer_group, broad_histology)
 }
 
 
@@ -92,6 +97,9 @@ fusion_calls<-fusion_calls %>%
 
 #### get count cutoff for cancer group
 countCancerGroup<-params$countCancerGroup
+
+#### get count cutoff for broad histology
+countBroadHistology<-params$countBroadHistology
 ```
 
 ##### We want to review subset of filtering options for putative-driver-fusions 
@@ -105,7 +113,6 @@ countCancerGroup<-params$countCancerGroup
 putative_driver_annotated_other_fusions <- fusion_calls %>%
   dplyr::filter(Fusion_Type=="other") %>%
   unique()
-
 
 
 #local rearrangements
@@ -183,9 +190,10 @@ plotNcg(fusion_calls, filterN = countCancerGroup,plot_title = "Total putative on
 
 ### get fusions that are found in more than 4 cancer groups
 
-```{r get fusions that are found in more than 4 cancer groups }
+```{r get fusions that are found in more than 4 cancer groups}
 # count number of fusions in putative oncogene annotated fused gene are in more than N (countCancerGroup) cancer groups
 FusionInNcg<-fusion_calls %>% dplyr::select(FusionName,cancer_group) %>% unique() %>% group_by(FusionName) %>% tally(name="count")
+
 FusionInNcg<-FusionInNcg[FusionInNcg$count>countCancerGroup,]
 FusionInNcg
 
@@ -197,53 +205,24 @@ multiCGFusion<-fusion_calls %>% dplyr::filter(FusionName %in% FusionInNcg$Fusion
 
 ggplot(multiCGFusion,aes(x=multiCGFusion$FusionName,fill=multiCGFusion$cancer_group))+geom_bar()+theme(axis.text.x = element_text(angle=90))+coord_flip()+ylab("count")+xlab("FusionName(Total)")
 
-
 ```
 
-### Filtering fusions found in more than 4 cancer groups removes 1183 fusions.  
+### Filtering fusions found in more than 4 broad histologies removes 1183 fusions.  
 
-We can assume these fusions to be potential false calls because it is highly unlikely that fusions of biological importance occur in these highly divese cancer groups. We (Krutika, Jo Lynne and Payal ) also manually reviewed "Total putative oncogene fusion" plots to look for genes that are found in more than 4 cancer groups and none seemed to interesting/relevant.
+We can assume these fusions to be potential false calls because it is highly unlikely that fusions of biological importance occur in these highly divese cancer groups. We (Krutika, Jo Lynne and Payal ) also manually reviewed "Total putative oncogene fusion" plots to look for genes that are found in more than 4 broad histology and none seemed to interesting/relevant.
 
 ```{r final filtering }
-putative_driver_fusions<-fusion_calls %>% dplyr::filter(!FusionName %in% FusionInNcg$FusionName) %>%
-  # we want to aggregate annots column since there is difference in arriba annotation (uniquely has duplication/translocation/deletion values) and StarFusion annotation which will be counted twice since they are not unique
-  # Example for fusion BRAF--ANTXR1 with the same breakpoint the annots per caller are:
-  # Arriba "[\"INTERCHROMOSOMAL[chr7--chr2]\"],translocation"
-  # StarFusion [INTERCHROMOSOMAL[chr7--chr2]] 
-  group_by_at(setdiff(colnames(fusion_calls), 
-                      # remove caller specific columns
-                      c("JunctionReadCount",
-                        "SpanningFragCount",
-                        "Confidence",
-                        "caller","annots"))) %>%
-  summarise(annots=
-              # remove \" from annots in arriba
-              # `paste` so space is not added with `toString`
-              # Example output: [INTERCHROMOSOMAL[chr7--chr2]],  [INTERCHROMOSOMAL[chr7--chr2]], translocation
-              paste(gsub("\"","",annots),collapse = ",")
-            
-  ) %>%
-  # collapse by splitting by the above summarized `annots`
-  # column by "," to get a unique string
-  # Example output: [INTERCHROMOSOMAL[chr7--chr2]], translocation
-  mutate(annots = toString(
-    unique(
-      unlist(
-        str_split(annots,",")
-      )),
-    )
-  )%>%
-  dplyr::select(-cancer_group) %>% 
+# count number of fusions in putative oncogene annotated fused gene are in more than N (countBroadHistology) histology group
+FusionInNbh<-fusion_calls %>% dplyr::select(FusionName,broad_histology) %>% unique() %>% group_by(FusionName) %>% tally(name="count")
+
+# select fusions that will be filtered (found in more than 4 broad histology groups)
+FusionInNbh<-FusionInNcg[FusionInNcg$count>countBroadHistology,]
+FusionInNbh
+
+putative_driver_fusions<-fusion_calls %>% dplyr::filter(!FusionName %in% FusionInNbh$FusionName) %>%
+  # we want to remove annots column since there is difference in arriba annotation (uniquely has duplication/translocation/deletion values) and StarFusion annotation which will be counted twice since they are not unique
+  dplyr::select(-annots,-broad_histology) %>% 
   unique() %>%
-  mutate(
-        BreakpointLocation = case_when(
-        # gene1A and gene1B are the same so these are breakpoints within the gene
-        Gene1A == Gene1B & !grepl("/", FusionName) ~ "Intragenic",
-        # the "/" is an annotation for intergenic fusions called by arriba 
-        grepl("/", FusionName) ~ "Intergenic",
-        TRUE ~ "Genic"
-      )
-  ) %>%
   arrange(Sample, FusionName) 
 
 write.table(putative_driver_fusions,file.path(outputfolder,"fusion-putative-oncogenic.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
