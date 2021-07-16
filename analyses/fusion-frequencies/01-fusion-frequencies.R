@@ -61,7 +61,7 @@ stopifnot(identical(
                    Kids_First_Participant_ID))),
   as.integer(0)))
 
-fusion_df <- read_tsv(fusion_file)
+fusion_df <- read_tsv(fusion_file, guess_max = 100000)
 # assert all records have Sample
 stopifnot(identical(sum(is.na(fusion_df$Sample)), as.integer(0)))
 
