@@ -107,7 +107,7 @@ Rscript 03-Calc-zscore-annotate.R --standardFusionCalls "${scratch_path}/standar
 # Project specific filtering
 Rscript -e "rmarkdown::render('04-project-specific-filtering.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
-# QC filter putative oncogene found in more than 4 cancer groups
+# QC filter putative oncogene found in more than 4 histologies
 Rscript -e "rmarkdown::render('05-QC_putative_onco_fusion_distribution.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
 # Recurrent fusion/fused genes
@@ -116,3 +116,4 @@ Rscript 06-recurrent-fusions-per-cancer-group.R --standardFusionCalls $putative_
                                                 --cohortInterest "PBTA,GMKF" \
                                                 --outputfolder $results_path \
                                                 --independentSpecimensFile $independent_samples_file
+
