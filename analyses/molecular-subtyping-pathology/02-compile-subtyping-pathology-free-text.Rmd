@@ -36,6 +36,7 @@ data_dir <- file.path("..", "..", "data")
 results_dir <- file.path("results")
 histologies_file <- file.path(data_dir, "pbta-histologies-base.tsv")
 compiled_subtypes_file <- file.path(results_dir, "compiled_molecular_subtypes.tsv")
+meningioma_subtypes_file <- file.path(results_dir, "meningioma_subtypes.tsv")
 lgat_recode_file <- file.path(results_dir, "lgat-pathology-free-text-subtypes.tsv")
 glialnueronal_recode_file <- file.path(results_dir, "glialneuronal_tumor_subtypes.tsv")
 cranio_adam_recode_file <- file.path(results_dir, "cranio_adam_subtypes.tsv")
@@ -70,6 +71,7 @@ compiled_subtypes_df <- readr::read_tsv(compiled_subtypes_file) %>%
                                        "Kids_First_Participant_ID")) 
 
 lgat_recode_df <- readr::read_tsv(lgat_recode_file)
+meningioma_subtypes_df <- readr::read_tsv(meningioma_subtypes_file)
 glialnueronal_recode_df <- readr::read_tsv(glialnueronal_recode_file)
 cranio_adam_recode_df <- readr::read_tsv(cranio_adam_recode_file)
 cns_lymphoma_subtypes_df <- readr::read_tsv(cns_lymphoma_subtypes_file) 
@@ -79,6 +81,16 @@ choroid_plexus_papilloma_subtypes_df <- readr::read_tsv(choroid_plexus_papilloma
 ```
 
 ## Update subtypes
+
+### Add meningioma subtypes
+```{r}
+compiled_subtypes_df <- compiled_subtypes_df %>%
+  # add
+  bind_rows(meningioma_subtypes_df)
+
+
+```
+
 
 ### Recoded LGAT integrated_diagnosis 
 ```{r}
