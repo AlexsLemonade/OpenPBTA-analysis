@@ -224,12 +224,12 @@ m_fus_freq_tbl <- bind_rows(fus_freq_tbl_list) %>%
 
 m_fus_freq_tbl <- m_fus_freq_tbl %>%
   mutate(Dataset = if_else(Dataset == 'PBTA&GMKF&TARGET',
-                           true = 'PedOT', false = Dataset))
+                           true = 'all_cohorts', false = Dataset))
 
 stopifnot(identical(sum(is.na(m_fus_freq_tbl)), as.integer(0)))
 
 m_fus_freq_tbl <- m_fus_freq_tbl %>%
-  select(keep_cols, Disease,
+  select(keep_cols, Disease, Dataset,
          Total_alterations_Over_Patients_in_dataset,
          Frequency_in_overall_dataset,
          Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset,
