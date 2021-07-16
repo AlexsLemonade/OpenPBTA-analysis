@@ -37,6 +37,8 @@ The `update-long-format-table-utils.sh` runs data downloading scripts in sub-mod
 
 Users could also use `git diff --stat` to check for data file changes.
 
+Note: To update `annotator/annotation-data/oncokb-cancer-gene-list.tsv` (last updated on 06/16/2021), re-download the updated table from <https://www.oncokb.org/cancerGenes>. The website does not provide any URL for downloading the table, so the maintainer of this module has to manually update the table.
+
 #### Add gene and `cancer_group` annotations
 
 ##### Implementation of long-format table annotator
