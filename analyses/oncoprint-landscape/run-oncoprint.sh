@@ -16,13 +16,15 @@ cd "$script_directory" || exit
 #### Files ---------------------------------------------------------------------
 
 maf_consensus=../../data/pbta-snv-consensus-mutation.maf.tsv.gz
+hotspots_maf=../../analyses/hotspots-detection/results/pbta-snv-scavenged-hotspots.maf.tsv.gz
 fusion_file=../../data/pbta-fusion-putative-oncogenic.tsv
 histologies_file=../../data/pbta-histologies.tsv
 intermediate_directory=../../scratch/oncoprint_files
 primary_filename="primary_only"
 primaryplus_filename="primary-plus"
 focal_directory=../focal-cn-file-preparation/results
-focal_cnv_file=${focal_directory}/consensus_seg_most_focal_cn_status.tsv.gz
+consensus_seg_autosomes_cnv_file=${focal_directory}/consensus_seg_annotated_cn_autosomes.tsv.gz
+consensus_seg_cnv_xy_cnv_file=${focal_directory}/consensus_seg_annotated_cn_x_and_y.tsv.gz
 oncoprint_data_directory=data
 
 #### Prep genes of interest lists ----------------------------------------------
@@ -37,7 +39,9 @@ Rscript --vanilla 00-prepare-goi-lists.R
 
 Rscript --vanilla 01-map-to-sample_id.R \
   --maf_file ${maf_consensus} \
-  --cnv_file ${focal_cnv_file} \
+  --hotspots_maf_file ${hotspots_maf} \
+  --cnv_autosomes_file ${consensus_seg_autosomes_cnv_file} \
+  --cnv_xy_file ${consensus_seg_cnv_xy_cnv_file} \
   --fusion_file ${fusion_file} \
   --metadata_file ${histologies_file} \
   --output_directory ${intermediate_directory} \
@@ -48,7 +52,9 @@ Rscript --vanilla 01-map-to-sample_id.R \
 
 Rscript --vanilla 01-map-to-sample_id.R \
   --maf_file ${maf_consensus} \
-  --cnv_file ${focal_cnv_file} \
+  --hotspots_maf_file ${hotspots_maf} \
+  --cnv_autosomes_file ${consensus_seg_autosomes_cnv_file} \
+  --cnv_xy_file ${consensus_seg_cnv_xy_cnv_file} \
   --fusion_file ${fusion_file} \
   --metadata_file ${histologies_file} \
   --output_directory ${intermediate_directory} \
