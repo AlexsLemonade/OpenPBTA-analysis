@@ -5,6 +5,7 @@
 - [Long-format table utils](#long-format-table-utils)
   - [Purpose](#purpose)
   - [Methods](#methods)
+    - [Update downloaded data that are used in this module](#update-downloaded-data-that-are-used-in-this-module)
     - [Add gene and `cancer_group` annotations](#add-gene-and-cancer_group-annotations)
       - [Implementation of long-format table annotator](#implementation-of-long-format-table-annotator)
       - [API usage of long-format table annotator](#api-usage-of-long-format-table-annotator)
@@ -16,13 +17,25 @@ Create application programming interface (API) and command line interface (CLI) 
 
 This module is suggested by @jharenza and @kgaonkar6 in Slack at <https://opentargetspediatrics.slack.com/archives/C021Z53SK98/p1626290031138100?thread_ts=1626287625.133600&cid=C021Z53SK98>, in order to alleviate the burdens of analysis module developers for adding annotations and keeping track of what annotations need to be added. This module could also potentially handle large file storage issues at a later point, since the file size limit of GitHub is 100MB.
 
-| Implemented function                                                                      | Available interface(s)                                                                                 |
-|-------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
-| [Add gene and `cancer_group` annotations](#implementation-of-long-format-table-annotator) | [R API](#api-usage-of-long-format-table-annotator), [R CLI](#cli-usage-of-long-format-table-annotator) |
+| Sub-module name                                               | Implemented function                    | Available interface(s)                                                                                 |
+|---------------------------------------------------------------|-----------------------------------------|--------------------------------------------------------------------------------------------------------|
+| [`annotator`](#implementation-of-long-format-table-annotator) | Add gene and `cancer_group` annotations | [R API](#api-usage-of-long-format-table-annotator), [R CLI](#cli-usage-of-long-format-table-annotator) |
 
 API and CLI usages and descriptions are in the Methods section.
 
 ### Methods
+
+#### Update downloaded data that are used in this module
+
+Run the following command to update downloaded data that are used in this module.
+
+```bash
+bash update-long-format-table-utils.sh
+```
+
+The `update-long-format-table-utils.sh` runs data downloading scripts in sub-modules, e.g. `annotator/run-download-annotation-data.sh`. The data downloading scripts use `git diff --stat` to check for data file changes.
+
+Users could also use `git diff --stat` to check for data file changes.
 
 #### Add gene and `cancer_group` annotations
 
@@ -38,19 +51,22 @@ Check input long-format tables have the following columns:
 
 Add the following gene annotations:
 
-| Annotation column name | Source data                                                  |
-|------------------------|--------------------------------------------------------------|
-| `RMTL`                 | `data/ensg-hugo-rmtl-v1-mapping.tsv`                         |
-| `Gene_type`            | `analyses/fusion_filtering/references/genelistreference.txt` |
-| `OncoKB_cancer_gene`   | `analyses/snv-frequencies/input/oncokb_cancer_gene_list.tsv` |
-| `OncoKB_oncogene_TSG`  | `analyses/snv-frequencies/input/oncokb_cancer_gene_list.tsv` |
-| `Gene_full_name`       | TBD. Download from <https://mygene.info/> to this module.                    |
+| Annotation column name | Source data                                                                                         |
+|------------------------|-----------------------------------------------------------------------------------------------------|
+| `RMTL`                 | `data/ensg-hugo-rmtl-v1-mapping.tsv`                                                                |
+| `Gene_type`            | `analyses/fusion_filtering/references/genelistreference.txt`                                        |
+| `OncoKB_cancer_gene`   | `analyses/snv-frequencies/input/oncokb_cancer_gene_list.tsv`                                        |
+| `OncoKB_oncogene_TSG`  | `analyses/snv-frequencies/input/oncokb_cancer_gene_list.tsv`                                        |
+| `Gene_full_name`       | `analyses/long-format-table-utils/annotator/annotation-data/ensg-gene-full-name-refseq-protein.tsv` |
+| `Protein_RefSeq_ID`    | `analyses/long-format-table-utils/annotator/annotation-data/ensg-gene-full-name-refseq-protein.tsv` |
 
 The `RMTL` information is obtained from PediatricOpenTargets/OpenPedCan-analysis data release.
 
 Note: only add `Gene_type` to gene-level tables, which can be implemented with the `{{TBD}}` argument in the `{{TBD}}` function. The `Gene_type` information is obtained from `../fusion_filtering/references/genelistreference.txt`, and its sources are described at <https://github.com/d3b-center/annoFuse#prerequisites-for-cohort-level-analysis>.
 
 The `OncoKB_cancer_gene` and `OncoKB_oncogene_TSG` information is listed in `annotator/annotation-data/oncokb-cancer-gene-list.tsv`, which is downloaded from <https://www.oncokb.org/cancerGenes>. The last update of the table is on 06/16/2021. To update the table, re-download the updated table from <https://www.oncokb.org/cancerGenes>.
+
+The `Gene_full_name` and `Protein_RefSeq_ID` information is downloaded from <https://mygene.info/> using the [mygene package](https://bioconductor.org/packages/release/bioc/html/mygene.html).
 
 Add the following disease(/`cancer_group`) annotations:
 
