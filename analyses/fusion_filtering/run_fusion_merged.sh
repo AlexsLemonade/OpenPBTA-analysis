@@ -23,7 +23,7 @@ cd "$script_directory" || exit
 data_path="../../data"
 scratch_path="../../scratch"
 references_path="references"
-results_path="results"
+results_path="results/"
 
 
 # fusion files before and after standardization
@@ -58,29 +58,30 @@ fi
 
 # data release files to use for recurrent fusion/fused genes detection
 
-putative_oncogenic_fusion="${results_path}/fusion-putative-oncogenic.tsv"
+putative_oncogenic_fusion="${results_path}/pbta-fusion-putative-oncogenic.tsv"
 
 # Run filtering code to get the reference file
 Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
                                        --clinicalFile $histologies_file \
                                        --specimenType "Adrenal Gland" \
-                                       --outputfile $normal_expression_adrenal_gland
+                                       --outputFile $normal_expression_adrenal_gland
+
 
 Rscript 00-normal-matrix-generation.R  --expressionMatrix $rna_expression_file \
                                        --clinicalFile $histologies_file \
                                        --specimenType "Brain" \
-                                       --outputfile $normal_expression_brain
+                                       --outputFile $normal_expression_brain
 
 # Run Fusion standardization for arriba caller
 Rscript 01-fusion-standardization.R --fusionfile $arriba_file \
                                     --caller "arriba" \
-                                    --outputfile $standard_arriba_file
-
-
+                                    --outputFile $standard_arriba_file
+                                    
+                                    
 # Run Fusion standardization for starfusion caller
 Rscript 01-fusion-standardization.R --fusionfile $starfusion_file \
                                     --caller "starfusion" \
-                                    --outputfile $standard_starfusion_file
+                                    --outputFile $standard_starfusion_file
 
 # Run Fusion general filtering for combined expression file
 Rscript 02-fusion-filtering.R --standardFusionFiles $standard_starfusion_file,$standard_arriba_file  \
@@ -91,16 +92,17 @@ Rscript 02-fusion-filtering.R --standardFusionFiles $standard_starfusion_file,$s
                               --spanningFragCountFilter $spanningFragCountFilter \
                               --readingFrameFilter $reading_frame_filter \
                               --referenceFolder $references_path \
-                              --outputfile "${scratch_path}/standardFusionExp" \
+                              --outputFile "${scratch_path}/standardFusionExp" \
                               --readthroughFilter
 
-# Fusion zscore annotation for filtered fusion for polya
+
+# Fusion zscore annotation for filtered fusion for the combined RNA expression file
 Rscript 03-Calc-zscore-annotate.R --standardFusionCalls "${scratch_path}/standardFusionExp_QC_expression_filtered_annotated.RDS" \
                                   --expressionMatrix $rna_expression_file \
                                   --clinicalFile $histologies_file \
                                   --cohortInterest "PBTA,GMKF" \
                                   --normalExpressionMatrix $normal_expression_brain,$normal_expression_adrenal_gland \
-                                  --outputfile "${scratch_path}/standardFusionExp_QC_expression"
+                                  --outputFile "${scratch_path}/standardFusionExp_QC_expression"
 
 # Project specific filtering
 Rscript -e "rmarkdown::render('04-project-specific-filtering.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
@@ -109,8 +111,8 @@ Rscript -e "rmarkdown::render('04-project-specific-filtering.Rmd',params=list(ba
 Rscript -e "rmarkdown::render('05-QC_putative_onco_fusion_distribution.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
 # Recurrent fusion/fused genes
-Rscript 06-recurrent-fusions-per-cancer-group.R --standardFusionCalls $putative_oncogenic_fusion \
-                                                --clinicalFile $histologies_file \
-                                                --outputfolder $results_path \
-                                                --independentSpecimensFile $independent_samples_file
+Rscript 06-recurrent-fusions-per-histology.R --standardFusionCalls $putative_oncogenic_fusion \
+                                             --clinicalFile $histologies_file \
+                                             --outputfolder $results_path \
+                                             --independentSpecimensFile $independent_samples_file
 
