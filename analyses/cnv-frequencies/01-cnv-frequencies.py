@@ -17,11 +17,11 @@ import os
 import sys
 import csv
 import json
-import mygene
 import argparse
 import numpy as np
 import pandas as pd
 from functools import reduce
+from collections import OrderedDict
 
 
 def read_parameters():
@@ -30,10 +30,11 @@ def read_parameters():
      p.add_argument('CNV_FILE', type=str, default=None, help="OPenPedCan CNV consensus file (consensus_seg_annotated_cn_autosomes.tsv or consensus_seg_annotated_cn_x_and_y.tsv)\n\n")
      p.add_argument('PRIMARY_TUMORS', type=str, default=None, help="OPenPedCan independent primary tumor samples file (independent-specimens.wgs.primary.tsv)\n\n")
      p.add_argument('RELAPSE_TUMORS', type=str, default=None, help="OPenPedCan independent relapse tumor samples file (independent-specimens.wgs.relapse.tsv)\n\n")
+     p.add_argument('ENSG_NAME', type=str, default=None, help="OPenPedCan Ensembl to gene full name mapping file (ensg-gene-full-name-refseq-protein.tsv)\n\n")
      p.add_argument('ONCOKB', type=str, default=None, help="OPenPedCan Hugo gene symbols to OncoKB categories mapping file (OncoKB_Oncogene-TSG_genes.tsv)\n\n")
      p.add_argument('EFO_MONDO', type=str, default=None, help="OPenPedCan disease to EFO/MONDO mapping file (efo-mondo-map.tsv)\n\n")
      p.add_argument('ENSG_RMTL', type=str, default=None, help="OPenPedCan Ensembl to RMTL mapping file (ensg-hugo-rmtl-v*-mapping.tsv)\n\n")
-     p.add_argument('-v', '--version', action='version', version="classify_reads.py version {} ({})".format(__version__, __date__), help="Print the current 01-snv-frequencies.py version and exit\n\n")
+     p.add_argument('-v', '--version', action='version', version="classify_reads.py version {} ({})".format(__version__, __date__), help="Print the current 01-cnv-frequencies.py version and exit\n\n")
      return p.parse_args()
 
 
@@ -105,8 +106,9 @@ def compute_variant_frequencies(all_tumors_df, primary_tumors_file, relapase_tum
      def func(x):
           d = {}
           d["Gene_Symbol"] = ",".join(x["gene_symbol"].unique())
-          d["total_alterations"] = x["Kids_First_Participant_ID"].nunique()
-          return pd.Series(d, index=["Gene_Symbol", "total_alterations"])
+          d["total_sample_alterations"] = x["Kids_First_Biospecimen_ID"].nunique()
+          d["total_patient_alterations"] = x["Kids_First_Participant_ID"].nunique()
+          return(pd.Series(d, index=["Gene_Symbol", "total_sample_alterations", "total_patient_alterations"]))
      all_tumors_frequecy_dfs = []
      primary_tumors_frequecy_dfs = []
      relapse_tumors_frequecy_dfs = []
@@ -119,13 +121,18 @@ def compute_variant_frequencies(all_tumors_df, primary_tumors_file, relapase_tum
                          df = tumor_df[(tumor_df["cancer_group"] == row["cancer_group"]) & (tumor_df["cohort"] == row["cohort"])]
                     if df.empty:
                          continue
+                    num_samples = df["Kids_First_Biospecimen_ID"].nunique()
                     num_patients = df["Kids_First_Participant_ID"].nunique()
                     df = df.groupby(["ensembl", "status"]).apply(func)
                     df = df.rename_axis(["Gene_Ensembl_ID", "Variant_Type"]).reset_index()
                     df["num_patients"] = num_patients
                     for i, j in df.iterrows():
-                         df.at[i, "Total_Alterations/Patients_in_Dataset"] = "{}/{}".format(j["total_alterations"], num_patients)
-                         df.at[i, "Frequency_in_Overall_Dataset"] = "{:.2f}".format((j["total_alterations"]/num_patients)*100)
+                         if df_name == "primary_tumors" or df_name == "relapse_tumors":
+                              df.at[i, "Total_Alterations/Patients_in_Dataset"] = "{}/{}".format(j["total_sample_alterations"], num_samples)
+                              df.at[i, "Frequency_in_Overall_Dataset"] = "{:.2f}%".format((j["total_sample_alterations"]/num_samples)*100)
+                         if df_name == "all_tumors":
+                              df.at[i, "Total_Alterations/Patients_in_Dataset"] = "{}/{}".format(j["total_patient_alterations"], num_patients)
+                              df.at[i, "Frequency_in_Overall_Dataset"] = "{:.2f}%".format((j["total_patient_alterations"]/num_patients)*100)
                          df.at[i, "Dataset"] = row["cohort"]
                          df.at[i, "Disease"] = row["cancer_group"]
                     df = df [["Gene_Symbol", "Gene_Ensembl_ID", "Variant_Type", "Dataset", "Disease", "Total_Alterations/Patients_in_Dataset", "Frequency_in_Overall_Dataset"]]
@@ -144,17 +151,18 @@ def compute_variant_frequencies(all_tumors_df, primary_tumors_file, relapase_tum
      merging_list.append(all_tumors_frequecy_df)
      # frequencies in independent primary tumors
      primary_tumors_frequecy_df = pd.concat(primary_tumors_frequecy_dfs, sort=False, ignore_index=True)
-     primary_tumors_frequecy_df.rename(columns={"Total_Alterations/Patients_in_Dataset": "Total_Primary_Tumors_Altered/Patients_in_Dataset", "Frequency_in_Overall_Dataset": "Frequency_in_Primary_Tumors"}, inplace=True)
+     primary_tumors_frequecy_df.rename(columns={"Total_Alterations/Patients_in_Dataset": "Total_Primary_Tumors_Altered/Primary_Tumors_in_Dataset", "Frequency_in_Overall_Dataset": "Frequency_in_Primary_Tumors"}, inplace=True)
      merging_list.append(primary_tumors_frequecy_df)
      # frequencies in independent relapse tumors
      relapse_tumors_frequecy_df = pd.concat(relapse_tumors_frequecy_dfs, sort=False, ignore_index=True)
-     relapse_tumors_frequecy_df.rename(columns={"Total_Alterations/Patients_in_Dataset": "Total_Relapse_Tumors_Altered/Patients_in_Dataset", "Frequency_in_Overall_Dataset": "Frequency_in_Relapse_Tumors"}, inplace=True)
+     relapse_tumors_frequecy_df.rename(columns={"Total_Alterations/Patients_in_Dataset": "Total_Relapse_Tumors_Altered/Relapse_Tumors_in_Dataset", "Frequency_in_Overall_Dataset": "Frequency_in_Relapse_Tumors"}, inplace=True)
      merging_list.append(relapse_tumors_frequecy_df)
      cnv_frequency_df = reduce(lambda x, y: pd.merge(x, y, how="outer", on=["Gene_Symbol", "Gene_Ensembl_ID", "Variant_Type", "Dataset", "Disease"]), merging_list).fillna("")
+     cnv_frequency_df = cnv_frequency_df.replace({"Total_Primary_Tumors_Altered/Primary_Tumors_in_Dataset": "", "Total_Relapse_Tumors_Altered/Relapse_Tumors_in_Dataset": ""}, "0/0")
      return(cnv_frequency_df)
 
 
-def get_annotations(cnv_frequency_df, oncokb_mapping_file, efo_mondo_mapping_file, rmtl_mapping_file):
+def get_annotations(cnv_frequency_df, ensg_gene_name_mapping_file, oncokb_mapping_file, efo_mondo_mapping_file, rmtl_mapping_file):
      # insert annotation columns in the CNV frequency dataframe
      cnv_frequency_df["RMTL"] = cnv_frequency_df.insert(1, "RMTL", "")
      cnv_frequency_df["Gene_Full_Name"] = cnv_frequency_df.insert(3, "Gene_Full_Name", "")
@@ -165,13 +173,12 @@ def get_annotations(cnv_frequency_df, oncokb_mapping_file, efo_mondo_mapping_fil
      cnv_frequency_df.fillna("", inplace=True)
 
      # populate CNV frequency dataframe with full gene names
-     mg = mygene.MyGeneInfo()
-     ensembl_gene_list = list(cnv_frequency_df["Gene_Ensembl_ID"].unique())
-     for ensembl_gene in ensembl_gene_list:
-          gene_name = mg.getgene(ensembl_gene, fields="name")
-          if (gene_name is None) or ("name" not in gene_name):
-               continue
-          cnv_frequency_df.loc[cnv_frequency_df.Gene_Ensembl_ID == ensembl_gene, "Gene_Full_Name"] = gene_name["name"]
+     row_index = -1
+     ensembl_gene_name_df = pd.read_csv(ensg_gene_name_mapping_file, sep="\t")
+     for ensembl_id in ensembl_gene_name_df["Gene_Ensembl_ID"]:
+          row_index += 1
+          if ensembl_id in list(cnv_frequency_df.Gene_Ensembl_ID):
+               cnv_frequency_df.loc[cnv_frequency_df.Gene_Ensembl_ID == ensembl_id, "Gene_Full_Name"] = ensembl_gene_name_df.at[row_index, "Gene_full_name"]
 
      # populate CNV frequency dataframe with OncoKB categories
      row_index = -1
@@ -179,7 +186,7 @@ def get_annotations(cnv_frequency_df, oncokb_mapping_file, efo_mondo_mapping_fil
      for gene_symbol in oncokb_df["hugo_symbol"]:
           row_index += 1
           if gene_symbol in list(cnv_frequency_df.Gene_Symbol):
-               cnv_frequency_df.loc[cnv_frequency_df.Gene_Symbol == gene_symbol , "OncoKB_Category"] = oncokb_df.at[row_index, "oncokb_category"]
+               cnv_frequency_df.loc[cnv_frequency_df.Gene_Symbol == gene_symbol, "OncoKB_Category"] = oncokb_df.at[row_index, "oncokb_category"]
 
      # populate CNV frequency dataframe with EFO and MONDO disease accessions
      row_index = -1
@@ -210,7 +217,7 @@ def main():
      all_tumors_df = merge_histology_and_cnv_data(args.HISTOLOGY_FILE, args.CNV_FILE)
      cancer_group_cohort_df = get_cancer_groups_and_cohorts(all_tumors_df)
      cnv_frequency_df = compute_variant_frequencies(all_tumors_df, args.PRIMARY_TUMORS, args.RELAPSE_TUMORS, cancer_group_cohort_df)
-     cnv_frequency_df = get_annotations(cnv_frequency_df, args.ONCOKB, args.EFO_MONDO, args.ENSG_RMTL)
+     cnv_frequency_df = get_annotations(cnv_frequency_df, args.ENSG_NAME, args.ONCOKB, args.EFO_MONDO, args.ENSG_RMTL)
 
      # write annotated CNV frequencies to the results directory
      results_dir = "{}/results".format(os.path.dirname(__file__))
@@ -224,8 +231,12 @@ def main():
      tsv_file = open(results_tsv, 'r')
      jsonl_file = open(results_jsonl, 'w')
      reader = csv.DictReader(tsv_file, delimiter="\t")
+     headers = reader.fieldnames
      for row in reader:
-          json.dump(row, jsonl_file)
+          row_dict = OrderedDict()
+          for header in headers:
+               row_dict[header] = row[header]
+          json.dump(row_dict, jsonl_file)
           jsonl_file.write("\n")
      tsv_file.close()
      jsonl_file.close()

@@ -24,13 +24,13 @@ Each `cancer_group` and `cohort`(s) combination is considered a `cancer_group_co
   - `Frequency_in_overall_dataset = Total_alterations / Patients_in_dataset`.
 
 - `Frequency_in_primary_tumors`:
-  - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `independent-specimens.wgs.primary.tsv`, and call this number `Total_primary_tumors_alterated`.
-  - Count the total number of samples in the `cancer_group_cohort` that are also in the `independent-specimens.wgs.primary.tsv`, and call this number `Primary_tumors_in_dataset`.
+  - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `independent-specimens.wgs.primary.eachcohort.tsv`, and call this number `Total_primary_tumors_alterated`.
+  - Count the total number of samples in the `cancer_group_cohort` that are also in the `independent-specimens.wgs.primary.eachcohort.tsv`, and call this number `Primary_tumors_in_dataset`.
   - `Frequency_in_primary_tumors = Total_primary_tumors_alterated / Primary_tumors_in_dataset`.
 
 - `Frequency_in_relapse_tumors`:
-  - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `independent-specimens.wgs.relapse.tsv`, and call this number `Total_relapse_tumors_alterated`.
-  - Count the total number of samples in the `cancer_group_cohort` that are also in the `independent-specimens.wgs.relapse.tsv`, and call this number `Relapse_tumors_in_dataset`.
+  - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `independent-specimens.wgs.relapse.eachcohort.tsv`, and call this number `Total_relapse_tumors_alterated`.
+  - Count the total number of samples in the `cancer_group_cohort` that are also in the `independent-specimens.wgs.relapse.eachcohort.tsv`, and call this number `Relapse_tumors_in_dataset`.
   - `Frequency_in_relapse_tumors = Total_relapse_tumors_alterated / Relapse_tumors_in_dataset`.
 
 Format the CNV mutation frequency table according to the latest spreadsheet that is attached in <https://github.com/PediatricOpenTargets/ticket-tracker/issues/66>.
@@ -70,7 +70,7 @@ Python functions to create copy number variation (CNV) cancer type and study gen
 Usage:
 ```bash
 python3 analysis/cnv-frequencies/01-cnv-frequencies.py HISTOLOGY_FILE CNV_FILE \
-                                PRIMARY_TUMORS RELAPSE_TUMORS ONCOKB EFO_MONDO ENSG_RMTL
+                                PRIMARY_TUMORS RELAPSE_TUMORS ENSG_NAME ONCOKB EFO_MONDO ENSG_RMTL
 ```
 
 Parameter Options:
@@ -88,6 +88,9 @@ positional arguments:
   RELAPSE_TUMORS  OPenPedCan independent relapse tumor samples file 
                   (independent-specimens.wgs.relapse.tsv)
 
+  ENSG_NAME       OPenPedCan Ensembl to gene full name mapping file 
+                  (ensg-gene-full-name-refseq-protein.tsv)
+
   ONCOKB          OPenPedCan disease to EFO/MONDO mapping file 
                   (efo-mondo-map.tsv)
                   
@@ -99,7 +102,7 @@ positional arguments:
                   
 optional arguments:
   -h, --help      show this help message and exit
-  -v, --version   Print the current 01-snv-frequencies.py version and exit
+  -v, --version   Print the current 01-cnv-frequencies.py version and exit
 ```
 
 Input:
@@ -107,9 +110,10 @@ Input:
 - `data/histologies.tsv`
 - `data/consensus_seg_annotated_cn_autosomes.tsv.gz`
 - `data/consensus_seg_annotated_cn_x_and_y.tsv.gz`
-- `analyses/independent-samples/results/independent-specimens.wgs.primary.tsv`
-- `analyses/independent-samples/results/independent-specimens.wgs.relapse.tsv`
-- `analyses/cnv-frequencies/input/input/OncoKB_Oncogene-TSG_genes.tsv`
+- `analyses/independent-samples/results/independent-specimens.wgs.primary.eachcohort.tsv`
+- `analyses/independent-samples/results/independent-specimens.wgs.relapse.eachcohort.tsv`
+- `analyses/cnv-frequencies/input/ensg-gene-full-name-refseq-protein.tsv`
+- `analyses/cnv-frequencies/input/OncoKB_Oncogene-TSG_genes.tsv`
 - `data/efo-mondo-map.tsv`
 - `data/ensg-hugo-rmtl-v1-mapping.tsv`
 
