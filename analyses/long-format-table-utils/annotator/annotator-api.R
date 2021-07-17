@@ -1,8 +1,8 @@
 # Add gene and cancer_group annotations to a long-format table
 #
 # Args:
-# - long_format_table: A data.frame or tibble that contains the following
-#   columns as character:
+# - long_format_table: A tibble that contains the following columns as
+#   character:
 #   - Gene_symbol: HUGO symbols, e.g. PHLPP1, TM6SF1, and DNAH5
 #   - Gene_Ensembl_ID: Ensembl ENSG IDs without `.#` versions, e.g.
 #     ENSG00000039139, ENSG00000111261, and ENSG00000169710
@@ -17,22 +17,23 @@
 # - replace_na_with_empty_string: TRUE or FALSE on whether to replace NAs with
 #   empty strings for **ALL** columns. Default value is TRUE.
 #
-# Returns a data.frame or tibble, based on input table type, with additonal
-# annotation columns
+# Returns a tibble with additonal annotation columns
 annotate_long_format_table <- function(long_format_table,
                                        is_gene_level_table = FALSE,
                                        add_Protein_RefSeq_ID = FALSE,
                                        replace_na_with_empty_string = TRUE) {
-  # Check input long_format_table class is tibble or data.frame
-  if (tibble::is_tibble(long_format_table)) {
-    output_tbl_type <- "tibble"
-  } else if (is.data.frame(long_format_table)) {
-    output_tbl_type <- "data.frame"
-  } else {
+  # Check input long_format_table class is tibble
+  #
+  # The function now only supports tibble, because handling data.frame or other
+  # types of table is complex.
+  #
+  # Support for other types of table could be added if required at a later
+  # point.
+  if (!tibble::is_tibble(long_format_table)) {
     stop(paste0(
       "Unsupported table type ", class(long_format_table),
-      ".\nTry to convert the long_format_table to",
-      " tibble::tibble or data.frame."))
+      ".\nTry converting the long_format_table to",
+      " tibble::tibble with tibble::as_tibble."))
   }
   # Check colnames(long_format_table) is character
   if (is.null(colnames(long_format_table))) {
