@@ -99,8 +99,8 @@ annotate_long_format_table <- function(long_format_table,
               "genelistreference.txt"),
     col_types = readr::cols(.default = readr::col_guess()),
     guess_max = 100000))
-  # Gene ENSG ID -> gene hugo symbol, RMTL, and RMTL version
-  ensg_hgsb_rmtl_df <- dplyr::distinct(readr::read_tsv(
+  # Gene ENSG ID -> RMTL
+  ensg_rmtl_df <- dplyr::distinct(readr::read_tsv(
     file.path(root_dir, "data", "ensg-hugo-rmtl-v1-mapping.tsv"),
     col_types = readr::cols(.default = readr::col_guess()),
     guess_max = 100000))
@@ -162,19 +162,13 @@ annotate_long_format_table <- function(long_format_table,
   }
 
   # assert all ensg_ids and gene_symbols are not NA
-  if (!identical(sum(is.na(ensg_hgsb_rmtl_df$ensg_id)), as.integer(0))) {
+  if (!identical(sum(is.na(ensg_rmtl_df$ensg_id)), as.integer(0))) {
     stop(paste0("ensg-hugo-rmtl-v1-mapping.tsv ",
                 "has NAs in the ensg_id column.\n",
                 "Check data integrity. Submit a data question GitHub issue."))
   }
-  if (!identical(sum(is.na(ensg_hgsb_rmtl_df$gene_symbol)), as.integer(0))) {
-    stop(paste0("ensg-hugo-rmtl-v1-mapping.tsv ",
-                "has NAs in the gene_symbol column.\n",
-                "Check data integrity. Submit a data question GitHub issue."))
-  }
   # assert all ensg_id are unique
-  if (!identical(length(unique(ensg_hgsb_rmtl_df$ensg_id)),
-                 nrow(ensg_hgsb_rmtl_df))) {
+  if (!identical(length(unique(ensg_rmtl_df$ensg_id)), nrow(ensg_rmtl_df))) {
     stop(paste0("ensg-hugo-rmtl-v1-mapping.tsv ",
                 "has duplicates in the ensg_id column.\n",
                 "Check data integrity. Submit a data question GitHub issue."))
