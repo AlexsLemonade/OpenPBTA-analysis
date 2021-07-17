@@ -57,8 +57,8 @@ Add the following gene annotations:
 |------------------------|-----------------------------------------------------------------------------------------------------|
 | `RMTL`                 | `data/ensg-hugo-rmtl-v1-mapping.tsv`                                                                |
 | `Gene_type`            | `analyses/fusion_filtering/references/genelistreference.txt`                                        |
-| `OncoKB_cancer_gene`   | `analyses/snv-frequencies/input/oncokb_cancer_gene_list.tsv`                                        |
-| `OncoKB_oncogene_TSG`  | `analyses/snv-frequencies/input/oncokb_cancer_gene_list.tsv`                                        |
+| `OncoKB_cancer_gene`   | `analyses/long-format-table-utils/annotator/annotation-data/oncokb-cancer-gene-list.tsv`            |
+| `OncoKB_oncogene_TSG`  | `analyses/long-format-table-utils/annotator/annotation-data/oncokb-cancer-gene-list.tsv`            |
 | `Gene_full_name`       | `analyses/long-format-table-utils/annotator/annotation-data/ensg-gene-full-name-refseq-protein.tsv` |
 | `Protein_RefSeq_ID`    | `analyses/long-format-table-utils/annotator/annotation-data/ensg-gene-full-name-refseq-protein.tsv` |
 
