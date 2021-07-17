@@ -79,4 +79,37 @@ annotate_long_format_table <- function(long_format_table,
       stop(err_cond)
     }
   )
+
+  # Read annotation data and remove duplicated rows
+  # Gene ENSG ID -> gene full name and protein refseq ID
+  ensg_gname_prt_refseq_df <- dplyr::distinct(readr::read_tsv(
+    file.path(root_dir, "analyses", "long-format-table-utils", "annotator",
+              "annotation-data", "ensg-gene-full-name-refseq-protein.tsv"),
+    col_types = readr::cols(.default = readr::col_guess()),
+    guess_max = 100000))
+  # Gene hugo symbol -> OncoKB cancer gene and oncogene/TSG
+  hgsb_oncokb_cgene_oncogene_tsg_df <- dplyr::distinct(readr::read_tsv(
+    file.path(root_dir, "analyses", "long-format-table-utils", "annotator",
+              "annotation-data", "oncokb-cancer-gene-list.tsv"),
+    col_types = readr::cols(.default = readr::col_guess()),
+    guess_max = 100000))
+  # Gene hugo symbol -> gene type
+  hgsb_gtype_df <- dplyr::distinct(readr::read_tsv(
+    file.path(root_dir, "analyses", "fusion_filtering", "references",
+              "genelistreference.txt"),
+    col_types = readr::cols(.default = readr::col_guess()),
+    guess_max = 100000))
+  # Gene ENSG ID -> gene hugo symbol, RMTL, and RMTL version
+  ensg_hgsb_rmtl_df <- dplyr::distinct(readr::read_tsv(
+    file.path(root_dir, "data", "ensg-hugo-rmtl-v1-mapping.tsv"),
+    col_types = readr::cols(.default = readr::col_guess()),
+    guess_max = 100000))
+  # cancer_group -> EFO and MONDO
+  cgroup_efo_mondo_df <- dplyr::distinct(readr::read_tsv(
+    file.path(root_dir, "data", "efo-mondo-map.tsv"),
+    col_types = readr::cols(.default = readr::col_guess()),
+    guess_max = 100000))
+
+
+
 }
