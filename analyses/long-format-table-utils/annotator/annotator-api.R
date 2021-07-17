@@ -1,4 +1,4 @@
-# Add gene and cancer_group annotations to long-format tables
+# Add gene and cancer_group annotations to a long-format table
 #
 # Args:
 # - long_format_table: A data.frame or tibble that contains the following
@@ -110,6 +110,96 @@ annotate_long_format_table <- function(long_format_table,
     col_types = readr::cols(.default = readr::col_guess()),
     guess_max = 100000))
 
+
+  # Check no NA or duplicate in the key columns of annotation data tables
+  #
+  # For an annotation table, NA or duplicate should not exist in the key
+  # column that is used to join_by for adding annotations to the input table
+
+  # assert no NA in gene symbols
+  if (!identical(sum(is.na(dplyr::pull(ensg_gname_prt_refseq_df,
+                                       Gene_Ensembl_ID))),
+                 as.integer(0))) {
+    stop(paste0("analyses/long-format-table-utils/annotator/annotation-data/",
+                "ensg-gene-full-name-refseq-protein.tsv ",
+                "has NAs in the Gene_Ensembl_ID column.\n",
+                "Check data integrity. Submit a data question GitHub issue."))
+  }
+  # assert all symbols are unique
+  if (!identical(nrow(ensg_gname_prt_refseq_df),
+                 length(unique(dplyr::pull(ensg_gname_prt_refseq_df,
+                                           Gene_Ensembl_ID))))) {
+    stop(paste0("analyses/long-format-table-utils/annotator/annotation-data/",
+                "ensg-gene-full-name-refseq-protein.tsv ",
+                "has duplicates in the Gene_Ensembl_ID column.\n",
+                "Check data integrity. Submit a data question GitHub issue."))
+  }
+
+  # assert no NA in gene symbols
+  if (!identical(sum(is.na(dplyr::pull(hgsb_oncokb_cgene_oncogene_tsg_df,
+                                       `Hugo Symbol`))),
+                 as.integer(0))) {
+    stop(paste0("analyses/long-format-table-utils/annotator/annotation-data/",
+                "oncokb-cancer-gene-list.tsv ",
+                "has NAs in the `Hugo Symbol` column.\n",
+                "Check data integrity. Submit a data question GitHub issue."))
+  }
+  # assert all symbols are unique
+  if (!identical(nrow(hgsb_oncokb_cgene_oncogene_tsg_df),
+                 length(unique(dplyr::pull(hgsb_oncokb_cgene_oncogene_tsg_df,
+                                           `Hugo Symbol`))))) {
+    stop(paste0("analyses/long-format-table-utils/annotator/annotation-data/",
+                "oncokb-cancer-gene-list.tsv ",
+                "has duplicates in the `Hugo Symbol` column.\n",
+                "Check data integrity. Submit a data question GitHub issue."))
+  }
+
+  # assert no NA in hgsb_gtype_df
+  if (!identical(sum(is.na(hgsb_gtype_df)), as.integer(0))) {
+    stop(paste0("analyses/fusion_filtering/references/genelistreference.txt ",
+                "has NAs in the table.\n",
+                "Check data integrity. Submit a data question GitHub issue."))
+  }
+
+  # assert all ensg_ids and gene_symbols are not NA
+  if (!identical(sum(is.na(ensg_hgsb_rmtl_df$ensg_id)), as.integer(0))) {
+    stop(paste0("ensg-hugo-rmtl-v1-mapping.tsv ",
+                "has NAs in the ensg_id column.\n",
+                "Check data integrity. Submit a data question GitHub issue."))
+  }
+  if (!identical(sum(is.na(ensg_hgsb_rmtl_df$gene_symbol)), as.integer(0))) {
+    stop(paste0("ensg-hugo-rmtl-v1-mapping.tsv ",
+                "has NAs in the gene_symbol column.\n",
+                "Check data integrity. Submit a data question GitHub issue."))
+  }
+  # assert all ensg_id are unique
+  if (!identical(length(unique(ensg_hgsb_rmtl_df$ensg_id)),
+                 nrow(ensg_hgsb_rmtl_df))) {
+    stop(paste0("ensg-hugo-rmtl-v1-mapping.tsv ",
+                "has duplicates in the ensg_id column.\n",
+                "Check data integrity. Submit a data question GitHub issue."))
+  }
+  # asert all rmtl NAs have version NAs, vice versa
+  if (!identical(is.na(ensg_hugo_rmtl_df$rmtl),
+                 is.na(ensg_hugo_rmtl_df$version))) {
+    stop(paste0("ensg-hugo-rmtl-v1-mapping.tsv ",
+                "has rmtl column NAs with version column non-NAs, or",
+                "version column NAs with rmtl column non-NAs\n",
+                "Check data integrity. Submit a data question GitHub issue."))
+  }
+
+  # assert all cancer_groups are not NA
+  if (!identical(sum(is.na(cgroup_efo_mondo_df$cancer_group)), as.integer(0))) {
+    stop(paste0("efo-mondo-map.tsv has NAs in the cancer_group column.\n",
+                "Check data integrity. Submit a data question GitHub issue."))
+  }
+  # assert all cancer_groups are unique.
+  if (!identical(length(unique(cgroup_efo_mondo_df$cancer_group)),
+                 nrow(cgroup_efo_mondo_df))) {
+    stop(
+      paste0("efo-mondo-map.tsv has duplicates in the cancer_group column.\n",
+             "Check data integrity. Submit a data question GitHub issue."))
+  }
 
 
 }
