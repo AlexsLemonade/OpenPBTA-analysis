@@ -39,7 +39,7 @@ annotate_long_format_table <- function(long_format_table,
     stop("colnames(long_format_table) is NULL. Check data integrity.")
   } else if (!is.character(colnames(long_format_table))) {
     stop("colnames(long_format_table) is not character. Check data integrity.")
-  } 
+  }
   # Check required columns are in long_format_table walk is like sapply, but it
   # returns input argument invisibly even if there is any other return
   # values
@@ -196,4 +196,55 @@ annotate_long_format_table <- function(long_format_table,
   }
 
 
+  # Process annotation data for joining input table
+  #
+  # pp in variable names means preprocessed
+  #
+  # %>% is not used, so the user's environment will not be modified by importing
+  # the %>% in this file
+  pp_hgsb_oncokb_cgene_oncogene_tsg_df <- dplyr::select(
+    hgsb_oncokb_cgene_oncogene_tsg_df,
+    `Hugo Symbol`, `Is Oncogene`, `Is Tumor Suppressor Gene`)
+  pp_hgsb_oncokb_cgene_oncogene_tsg_df <- dplyr::rename(
+    pp_hgsb_oncokb_cgene_oncogene_tsg_df,
+    Gene_symbol = `Hugo Symbol`,
+    is_onco = `Is Oncogene`,
+    is_tsg = `Is Tumor Suppressor Gene`)
+  pp_hgsb_oncokb_cgene_oncogene_tsg_df <- dplyr::mutate(
+    pp_hgsb_oncokb_cgene_oncogene_tsg_df,
+    OncoKB_cancer_gene = 'Y',
+    OncoKB_oncogene_TSG = dplyr::case_when(
+      is_onco == 'Yes' & is_tsg == 'Yes' ~ 'Oncogene,TumorSuppressorGene',
+      is_onco == 'Yes' ~ 'Oncogene',
+      is_tsg == 'Yes' ~ 'TumorSuppressorGene',
+      TRUE ~ ''))
+  pp_hgsb_oncokb_cgene_oncogene_tsg_df <- dplyr::select(
+    pp_hgsb_oncokb_cgene_oncogene_tsg_df,
+    Gene_symbol, OncoKB_cancer_gene, OncoKB_oncogene_TSG)
+
+  pp_hgsb_gtype_df <- dplyr::group_by(hgsb_gtype_df, Gene_Symbol)
+  pp_hgsb_gtype_df <- dplyr::summarise(
+    pp_hgsb_gtype_df,
+    Gene_type = paste(sort(unique(purrr::discard(type, is.na))),
+                      collapse = ","))
+  pp_hgsb_gtype_df <- dplyr::rename(pp_hgsb_gtype_df, Gene_symbol = Gene_Symbol)
+
+  pp_ensg_rmtl_df <- dplyr::select(ensg_rmtl_df, ensg_id, rmtl, version)
+  pp_ensg_rmtl_df <- dplyr::filter(
+    pp_ensg_rmtl_df, !is.na(rmtl), !is.na(version))
+  pp_ensg_rmtl_df <- dplyr::mutate(
+    pp_ensg_rmtl_df, RMTL = paste0(rmtl, ' (', version, ')'))
+  pp_ensg_rmtl_df <- dplyr::select(pp_ensg_rmtl_df, ensg_id, RMTL)
+  pp_ensg_rmtl_df <- dplyr::rename(pp_ensg_rmtl_df, Gene_Ensembl_ID = ensg_id)
+
+  pp_cgroup_efo_mondo_df <- dplyr::rename(
+    cgroup_efo_mondo_df,
+    Disease = cancer_group, EFO = efo_code, MONDO = mondo_code)
+
+  # # Code for checking data
+  # print(head(ensg_gname_prt_refseq_df))
+  # print(head(pp_hgsb_oncokb_cgene_oncogene_tsg_df))
+  # print(head(pp_hgsb_gtype_df))
+  # print(head(pp_ensg_rmtl_df))
+  # print(head(pp_cgroup_efo_mondo_df))
 }
