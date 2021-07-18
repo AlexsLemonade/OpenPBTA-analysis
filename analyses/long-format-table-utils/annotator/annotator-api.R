@@ -13,6 +13,8 @@
 #   Default value is FALSE.
 # - add_Protein_RefSeq_ID: TRUE or FALSE on whether to add Protein_RefSeq_ID
 #   column. Default value is FALSE.
+# - add_OncoKB_columns: TRUE or FALSE on whether to add OncoKB_cancer_gene and
+#   OncoKB_oncogene_TSG columns. Default value is FALSE.
 # - replace_na_with_empty_string: TRUE or FALSE on whether to replace NAs with
 #   empty strings for **ALL** columns. Default value is TRUE.
 #
@@ -20,6 +22,7 @@
 annotate_long_format_table <- function(long_format_table,
                                        add_Gene_type = FALSE,
                                        add_Protein_RefSeq_ID = FALSE,
+                                       add_OncoKB_columns = FALSE,
                                        replace_na_with_empty_string = TRUE) {
   # Check input long_format_table class is tibble
   #
@@ -259,11 +262,13 @@ annotate_long_format_table <- function(long_format_table,
       ann_long_format_table, -Protein_RefSeq_ID)
   }
 
-  ann_long_format_table <- dplyr::left_join(
-    ann_long_format_table, pp_hgsb_oncokb_cgene_oncogene_tsg_df,
-    by = "Gene_symbol")
-  ann_long_format_table <- tidyr::replace_na(
-    ann_long_format_table, list(OncoKB_cancer_gene = "N"))
+  if (add_OncoKB_columns) {
+    ann_long_format_table <- dplyr::left_join(
+      ann_long_format_table, pp_hgsb_oncokb_cgene_oncogene_tsg_df,
+      by = "Gene_symbol")
+    ann_long_format_table <- tidyr::replace_na(
+      ann_long_format_table, list(OncoKB_cancer_gene = "N"))
+  }
 
   if (add_Gene_type) {
     ann_long_format_table <- dplyr::left_join(
