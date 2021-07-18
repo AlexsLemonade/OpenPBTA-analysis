@@ -9,9 +9,8 @@
 #   - Disease: The `cancer_group` in the `histologies.tsv`, e.g.
 #     Adamantinomatous Craniopharyngioma, Atypical Teratoid Rhabdoid Tumor, and
 #     Low-grade glioma/astrocytoma
-# - is_gene_level_table: TRUE or FALSE on whether the input table is gene-level.
-#   If the input table is gene-level, Gene_type column will be added, otherwise
-#   will not. Default value is FALSE.
+# - add_Gene_type: TRUE or FALSE on whether to add Gene_type column or not.
+#   Default value is FALSE.
 # - add_Protein_RefSeq_ID: TRUE or FALSE on whether to add Protein_RefSeq_ID
 #   column. Default value is FALSE.
 # - replace_na_with_empty_string: TRUE or FALSE on whether to replace NAs with
@@ -19,7 +18,7 @@
 #
 # Returns a tibble with additonal annotation columns
 annotate_long_format_table <- function(long_format_table,
-                                       is_gene_level_table = FALSE,
+                                       add_Gene_type = FALSE,
                                        add_Protein_RefSeq_ID = FALSE,
                                        replace_na_with_empty_string = TRUE) {
   # Check input long_format_table class is tibble
@@ -266,7 +265,7 @@ annotate_long_format_table <- function(long_format_table,
   ann_long_format_table <- tidyr::replace_na(
     ann_long_format_table, list(OncoKB_cancer_gene = "N"))
 
-  if (is_gene_level_table) {
+  if (add_Gene_type) {
     ann_long_format_table <- dplyr::left_join(
       ann_long_format_table, pp_hgsb_gtype_df, by = "Gene_symbol")
   }
