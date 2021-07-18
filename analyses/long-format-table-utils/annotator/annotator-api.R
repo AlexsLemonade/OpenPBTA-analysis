@@ -218,7 +218,7 @@ annotate_long_format_table <- function(long_format_table,
       is_onco == "Yes" & is_tsg == "Yes" ~ "Oncogene,TumorSuppressorGene",
       is_onco == "Yes" ~ "Oncogene",
       is_tsg == "Yes" ~ "TumorSuppressorGene",
-      TRUE ~ ""))
+      TRUE ~ as.character(NA)))
   pp_hgsb_oncokb_cgene_oncogene_tsg_df <- dplyr::select(
     pp_hgsb_oncokb_cgene_oncogene_tsg_df,
     Gene_symbol, OncoKB_cancer_gene, OncoKB_oncogene_TSG)
@@ -248,4 +248,38 @@ annotate_long_format_table <- function(long_format_table,
   # print(head(pp_hgsb_gtype_df))
   # print(head(pp_ensg_rmtl_df))
   # print(head(pp_cgroup_efo_mondo_df))
+
+
+  # Annotate input table
+  ann_long_format_table <- long_format_table
+
+  ann_long_format_table <- dplyr::left_join(
+    ann_long_format_table, ensg_gname_prt_refseq_df, by = "Gene_Ensembl_ID")
+  if (!add_Protein_RefSeq_ID) {
+    ann_long_format_table <- dplyr::select(
+      ann_long_format_table, -Protein_RefSeq_ID)
+  }
+
+  ann_long_format_table <- dplyr::left_join(
+    ann_long_format_table, pp_hgsb_oncokb_cgene_oncogene_tsg_df,
+    by = "Gene_symbol")
+  ann_long_format_table <- tidyr::replace_na(
+    ann_long_format_table, list(OncoKB_cancer_gene = "N"))
+
+  if (is_gene_level_table) {
+    ann_long_format_table <- dplyr::left_join(
+      ann_long_format_table, pp_hgsb_gtype_df, by = "Gene_symbol")
+  }
+
+  ann_long_format_table <- dplyr::left_join(
+    ann_long_format_table, pp_ensg_rmtl_df, by = "Gene_Ensembl_ID")
+
+  ann_long_format_table <- dplyr::left_join(
+    ann_long_format_table, pp_cgroup_efo_mondo_df, by = "Disease")
+
+  if (replace_na_with_empty_string) {
+    ann_long_format_table <- dplyr::mutate_all(
+      ann_long_format_table, function(x) replace_na(x, replace = ""))
+  }
+  return(ann_long_format_table)
 }
