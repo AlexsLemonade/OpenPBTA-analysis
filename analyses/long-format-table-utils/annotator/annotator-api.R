@@ -9,21 +9,22 @@
 #   - Disease: The `cancer_group` in the `histologies.tsv`, e.g.
 #     Adamantinomatous Craniopharyngioma, Atypical Teratoid Rhabdoid Tumor, and
 #     Low-grade glioma/astrocytoma
-# - add_Gene_type: TRUE or FALSE on whether to add Gene_type column or not.
-#   Default value is FALSE.
-# - add_Protein_RefSeq_ID: TRUE or FALSE on whether to add Protein_RefSeq_ID
-#   column. Default value is FALSE.
-# - add_OncoKB_columns: TRUE or FALSE on whether to add OncoKB_cancer_gene and
-#   OncoKB_oncogene_TSG columns. Default value is FALSE.
+# - columns_to_add: a character vector of unique names of the columns to be
+#   added to the input table. The vector can contain zero or more of the
+#   following column names: "RMTL", "Gene_type", "OncoKB_cancer_gene",
+#   "OncoKB_oncogene_TSG", "Gene_full_name", "Protein_RefSeq_ID", "EFO", and
+#   "MONDO". Default value is to add all columns. Note that match.arg is **NOT**
+#   used for this parameter, because exact matches are required.
 # - replace_na_with_empty_string: TRUE or FALSE on whether to replace NAs with
-#   empty strings for **ALL** columns. Default value is TRUE.
+#   empty strings for **ALL** columns of the input table. Default value is TRUE.
 #
 # Returns a tibble with additonal annotation columns
-annotate_long_format_table <- function(long_format_table,
-                                       add_Gene_type = FALSE,
-                                       add_Protein_RefSeq_ID = FALSE,
-                                       add_OncoKB_columns = FALSE,
-                                       replace_na_with_empty_string = TRUE) {
+annotate_long_format_table <- function(
+  long_format_table,
+  columns_to_add = c("RMTL", "Gene_type", "OncoKB_cancer_gene",
+                     "OncoKB_oncogene_TSG", "Gene_full_name",
+                     "Protein_RefSeq_ID", "EFO", "MONDO"),
+  replace_na_with_empty_string = TRUE) {
   # Check input long_format_table class is tibble
   #
   # The function now only supports tibble, because handling data.frame or other
@@ -47,14 +48,47 @@ annotate_long_format_table <- function(long_format_table,
   # returns input argument invisibly even if there is any other return
   # values
   # Ref: https://purrr.tidyverse.org/reference/index.html
+  required_columns <- c("Gene_symbol", "Gene_Ensembl_ID", "Disease")
   purrr::walk(
-    c("Gene_symbol", "Gene_Ensembl_ID", "Disease"),
+    required_columns,
     function(req_col) {
       if (!(req_col %in% colnames(long_format_table))) {
         stop(paste0(
           req_col, " is not in colnames(long_format_table).\n",
           "Add a ", req_col, " column or rename an existing column to ",
-          req_col, "."))
+          req_col, ". Required columns are c(\"",
+          paste(required_columns, collapse = "\", \""), "\")."))
+      }
+    }
+  )
+  # The columns_to_add must match exactly, so match.arg is not used.
+  if (is.null(columns_to_add)) {
+    stop(paste0("columns_to_add cannot be NULL. ",
+                "Read the documentation/comment/docstring for usage."))
+  }
+  if (!is.character(columns_to_add)) {
+    stop(paste0("columns_to_add must be a character vector. ",
+                "Read the documentation/comment/docstring for usage."))
+  }
+  if (!identical(length(columns_to_add), length(unique(columns_to_add)))) {
+    stop(paste0("columns_to_add values must be unique. ",
+                "Read the documentation/comment/docstring for usage."))
+  }
+  if (identical(columns_to_add, character(0))) {
+    # no column to add, so return the input table
+    return(long_format_table)
+  }
+  available_ann_columns <- c("RMTL", "Gene_type", "OncoKB_cancer_gene",
+                             "OncoKB_oncogene_TSG", "Gene_full_name",
+                             "Protein_RefSeq_ID", "EFO", "MONDO")
+  purrr::walk(
+    columns_to_add,
+    function(col_add) {
+      if (!(col_add %in% available_ann_columns)) {
+        stop(paste0(
+          col_add, " is not available.\n",
+          "Available annotation columns are c(\"",
+          paste(available_ann_columns, collapse = "\", \""), "\")."))
       }
     }
   )
@@ -257,29 +291,47 @@ annotate_long_format_table <- function(long_format_table,
 
   ann_long_format_table <- dplyr::left_join(
     ann_long_format_table, ensg_gname_prt_refseq_df, by = "Gene_Ensembl_ID")
-  if (!add_Protein_RefSeq_ID) {
+  if (!("Protein_RefSeq_ID" %in% columns_to_add)) {
     ann_long_format_table <- dplyr::select(
       ann_long_format_table, -Protein_RefSeq_ID)
   }
-
-  if (add_OncoKB_columns) {
-    ann_long_format_table <- dplyr::left_join(
-      ann_long_format_table, pp_hgsb_oncokb_cgene_oncogene_tsg_df,
-      by = "Gene_symbol")
-    ann_long_format_table <- tidyr::replace_na(
-      ann_long_format_table, list(OncoKB_cancer_gene = "N"))
+  if (!("Gene_full_name" %in% columns_to_add)) {
+    ann_long_format_table <- dplyr::select(
+      ann_long_format_table, -Gene_full_name)
   }
 
-  if (add_Gene_type) {
+  ann_long_format_table <- dplyr::left_join(
+    ann_long_format_table, pp_hgsb_oncokb_cgene_oncogene_tsg_df,
+    by = "Gene_symbol")
+  ann_long_format_table <- tidyr::replace_na(
+    ann_long_format_table, list(OncoKB_cancer_gene = "N"))
+  if (!("OncoKB_cancer_gene" %in% columns_to_add)) {
+    ann_long_format_table <- dplyr::select(
+      ann_long_format_table, -OncoKB_cancer_gene)
+  }
+  if (!("OncoKB_oncogene_TSG" %in% columns_to_add)) {
+    ann_long_format_table <- dplyr::select(
+      ann_long_format_table, -OncoKB_oncogene_TSG)
+  }
+
+  if ("Gene_type" %in% columns_to_add) {
     ann_long_format_table <- dplyr::left_join(
       ann_long_format_table, pp_hgsb_gtype_df, by = "Gene_symbol")
   }
 
-  ann_long_format_table <- dplyr::left_join(
-    ann_long_format_table, pp_ensg_rmtl_df, by = "Gene_Ensembl_ID")
+  if ("RMTL" %in% columns_to_add) {
+    ann_long_format_table <- dplyr::left_join(
+      ann_long_format_table, pp_ensg_rmtl_df, by = "Gene_Ensembl_ID")
+  }
 
   ann_long_format_table <- dplyr::left_join(
     ann_long_format_table, pp_cgroup_efo_mondo_df, by = "Disease")
+  if (!("EFO" %in% columns_to_add)) {
+    ann_long_format_table <- dplyr::select(ann_long_format_table, -EFO)
+  }
+  if (!("MONDO" %in% columns_to_add)) {
+    ann_long_format_table <- dplyr::select(ann_long_format_table, -MONDO)
+  }
 
   if (replace_na_with_empty_string) {
     ann_long_format_table <- dplyr::mutate_all(
