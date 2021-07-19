@@ -131,7 +131,7 @@ ambiguous_biospecimens <- metadata %>%
 not_tumor_biospecimens <- metadata %>%
   dplyr::filter(
     sample_type != "Tumor",
-    composition == "Solid Tissue"
+    composition != "Solid Tissue"
   ) %>%
   dplyr::pull(Kids_First_Biospecimen_ID)
 
