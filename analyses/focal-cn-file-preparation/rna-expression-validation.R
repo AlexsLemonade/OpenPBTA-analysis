@@ -116,7 +116,7 @@ source(
 ambiguous_sample_ids <- metadata %>%
   dplyr::filter(
     sample_type == "Tumor",
-    composition == "Solid Tissue",
+    composition == "Solid Tissue"
   ) %>%
   dplyr::group_by(sample_id) %>%
   dplyr::tally() %>%
