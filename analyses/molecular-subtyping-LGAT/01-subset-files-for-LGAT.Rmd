@@ -124,25 +124,6 @@ lgat_specimens_df <- clinical %>%
                 sample_type == "Tumor",
                 composition == "Solid Tissue")
 
-# We only exclude on the basis of the strings in pathology free text diagnosis
-# when pathology diagnosis indicates LGG because ganglioglioma tumors are 
-# glial-neuronal tumors that should be subtyped in this module
-# See: https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/995#issuecomment-822744120
-lgat_specimens_df <- lgat_specimens_df %>%
-  dplyr::filter(
-    # If the pathology diagnosis is LGG, exclude samples with matching pathology free text
-    # diagnosis but retain samples if pathology free text is NA!
-    (pathology_diagnosis == "Low-grade glioma/astrocytoma (WHO grade I/II)" &
-       (str_detect(str_to_lower(pathology_free_text_diagnosis),
-                   paste(path_dx_list$exclude_path_free_text,
-                         collapse = "|"),
-                   negate = TRUE) |
-          is.na(pathology_free_text_diagnosis))) |
-      # Or if the pathology diagnosis is one of these three entries, include the samples
-      pathology_diagnosis %in% c("Ganglioglioma",
-                                 "Ganglioglioma;Low-grade glioma/astrocytoma (WHO grade I/II)",
-                                 "Low-grade glioma/astrocytoma (WHO grade I/II);Other"))
-
 # Write this intermediate file to the subset directory as it allows for
 # inspection
 write_tsv(lgat_specimens_df, file.path(subset_dir, "lgat_metadata.tsv"))
