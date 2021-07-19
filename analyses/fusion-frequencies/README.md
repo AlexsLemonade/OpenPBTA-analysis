@@ -6,12 +6,15 @@ Adapted from [snv-frequencies](https://github.com/logstar/OpenPedCan-analysis/tr
 Adapted by Krutika Gaonkar ([@kgaonkar6](https://github.com/kgaonkar6)) 
 
 ### Purpose
-Uses `fusion-putative-oncogenic.tsv` and a `Alt_ID` for each `FusionName` and `Fusion_Type` concatenated by "_" to count occurence in  each cancer_group in a given dataset, primary or relapse cohorts.
+Uses `fusion-putative-oncogenic.tsv` and a `Alt_ID` for each `FusionName` and `Fusion_Type` concatenated by "_" OR Fused Gene to count occurence in  each cancer_group in a given dataset, primary or relapse cohorts.
+
+Each gene invloved in the fusion is annotated by a Gene_Position, for example:
+ - In a genic fusion where both breakpoints are within gene body the Gene_Position `Gene1A` will be the 5` gene and Gene1B will be 3` gene
+ - In an intergenic fusion where one or both breakpoint are outside the gene body, if the 5` breakpoint is a region between GeneX and GeneY  the Gene_Position of GeneX will be Gene1A, for GeneY will be Gene2A and their 3` breakpoint is within GeneE will be denoted as Gene_Position `Gene1B`.
+ - In an intergenic fusion where one or both breakpoint are outside the gene body, if the 3` breakpoint is within GeneE the Gene_Position of GeneE will be Gene1A and the 5` breakpoint is within GeneY and GeneZ, Gene Y will be denoted as Gene_Position `Gene1B` and GeneZ will be denoted as `Gene2B`.   
 
 
 #### Additional annotation
-
-Add `Gene_full_name` and `Protein_RefSeq_ID` columns to each variant with annotations obtained from [mygene.info](http://mygene.info/about).
 
 Each `cancer_group` and `cohort`(s) combination is considered a `cancer_group_cohort`. `cancer_group_cohort` with `n_samples` >= 5, compute `Frequency_in_overall_dataset`, `Frequency_in_primary_tumors`, and `Frequency_in_relapse_tumors` as following:
 
@@ -21,32 +24,24 @@ Each `cancer_group` and `cohort`(s) combination is considered a `cancer_group_co
   - `Frequency_in_overall_dataset = Total_alterations / Patients_in_dataset`.
 
 - `Frequency_in_primary_tumors`:
-  - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `../independent-samples/results/independent-specimens.wgs.primary.tsv`, and call this number `Total_primary_tumors_alterated`.
-  - Count the total number of samples in the `cancer_group_cohort` that are also in the `../independent-samples/results/independent-specimens.wgs.primary.tsv`, and call this number `Primary_tumors_in_dataset`.
+  - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `../independent-samples/results/independent-specimens.rnaseq.primary.eachcohort.tsv`, and call this number `Total_primary_tumors_alterated`.
+  - Count the total number of samples in the `cancer_group_cohort` that are also in the `../independent-samples/results/independent-specimens.rnaseq.primary.eachcohort.tsv`, and call this number `Primary_tumors_in_dataset`.
   - `Frequency_in_primary_tumors = Total_primary_tumors_alterated / Primary_tumors_in_dataset`.
 
 - `Frequency_in_relapse_tumors`:
-  - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `../independent-samples/results/independent-specimens.wgs.relapse.tsv`, and call this number `Total_relapse_tumors_alterated`.
-  - Count the total number of samples in the `cancer_group_cohort` that are also in the `../independent-samples/results/independent-specimens.wgs.relapse.tsv`, and call this number `Relapse_tumors_in_dataset`.
+  - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `../independent-samples/results/independent-specimens.rnaseq.relapase.eachcohort.tsv`, and call this number `Total_relapse_tumors_alterated`.
+  - Count the total number of samples in the `cancer_group_cohort` that are also in the `../independent-samples/results/independent-specimens.rnaseq.relapase.eachcohort.tsv`, and call this number `Relapse_tumors_in_dataset`.
   - `Frequency_in_relapse_tumors = Total_relapse_tumors_alterated / Relapse_tumors_in_dataset`.
 
 Format the SNV mutation frequency table according to the latest spreadsheet that is attached in <https://github.com/PediatricOpenTargets/ticket-tracker/issues/64>.
 
 Merge the fusion frequency tables of all `cancer_group_cohort`s.
 
-### Results
-
-Results are generated using PediatricOpenTargets/OpenPedCan-analysis data release v6.
-
-The merged fusion frequency table of all `cancer_group_cohort`s is output in TSV and JSON formats using `readr::write_tsv()` and `jsonlite::write_json()` respectively.
-
-- `results/putative-oncogene-fusion-annotated-freq.json`
-- `results/putative-oncogene-fusion-annotated-freq.tsv`
 
 ### Analysis scripts
 
-### `fusion-frequencies.R`
-This script annotates each FusionName with occurence of Fusion_Type and frequencies in each cancer_cohort in dataset, primary and relapse.
+### `01-fusion-frequencies.R`
+This script annotates each FusionName with occurence of Fusion_Type OR Fused Gene and frequencies in each cancer_cohort in dataset, primary and relapse.
 
 
 Usage:
@@ -60,9 +55,11 @@ Input:
 
 - `../../data/histologies.tsv`
 - `../fusion_filtering/results/fusion-putative-oncogenic.tsv`
-- `../independent-samples/results/independent-specimens.rnaseq.primary.tsv`
-- `../independent-samples/results/independent-specimens.rnaseq.relapse.tsv`
+- `../independent-samples/results/independent-specimens.rnaseq.primary.eachcohort.tsv`
+- `../independent-samples/results/independent-specimens.rnaseq.relapse.eachcohort.tsv`
 
-Output:
-- putative-oncogene-fusion-annotated-freq.json
-- putative-oncogene-fusion-annotated-freq.tsv
+Results
+
+- `results/putative-oncogene-fusion-freq.tsv`
+- `results/putative-oncogene-fused-gene-freq.tsv`
+

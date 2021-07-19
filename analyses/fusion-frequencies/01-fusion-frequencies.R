@@ -200,9 +200,7 @@ fus_freq_tbl_list <- lapply(
     # Call function for each cohort and cancer_group
     res_df <- get_cg_ch_mut_freq_tbl(
       fusion_df, td_htl_dfs$overall_htl_df, td_htl_dfs$primary_htl_df,
-      td_htl_dfs$relapse_htl_df, c_cancer_group, c_cohorts) %>%
-      # if Alt_ID has no matched Patients_in_dataset
-      filter(!is.na(Patients_in_dataset))
+      td_htl_dfs$relapse_htl_df, c_cancer_group, c_cohorts) 
     
     if ( nrow(res_df) != 0 ){
       # merge fusion dataframe with the counts and frequencies in each cancer_group
@@ -236,5 +234,4 @@ m_fus_freq_tbl <- m_fus_freq_tbl %>%
          Frequency_in_primary_tumors,
          Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
          Frequency_in_relapse_tumors) %>%
-  unique() %>%
   write_tsv(file.path(results_dir, paste0(output_filename,'.tsv')))
