@@ -157,7 +157,7 @@ print(alt_id)
 
 if (identical(alt_id, c("FusionName", "Fusion_Type"))) {
   fusion_df <- fusion_df %>%
-    mutate( Alt_ID=paste(!!as.name(alt_id),sep="_"))
+    mutate( Alt_ID=paste(!!as.name(alt_id[1]), !!as.name(alt_id[2]),sep="_"))
   keep_cols <- c("FusionName","Fusion_Type","Gene_Symbol", "Gene_Position",
                  "Fusion_anno","BreakpointLocation", "annots",
                  "Kinase_domain_retained_Gene1A",
