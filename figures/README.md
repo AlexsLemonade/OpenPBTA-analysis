@@ -52,7 +52,7 @@ However, we list information about the resources, intermediate steps, and [PBTA 
 ## Color Palette Usage
 
 This project has a set of unified color palettes.
-There are 6 sets of hex color keys to be used for all final figures, stored as 6 TSV files in the `figures/palettes` folder.
+There are 5 sets of hex color keys to be used for all final figures, stored as 5 TSV files in the `figures/palettes` folder.
 `hex_codes` contains the colors to be passed to your plotting code and `color_names` contains short descriptors of each color (e.g. `gradient_1`, or `divergent_neutral`).
 Each palette contains an `na_color` that is the same color in all palettes.
 This color should be used for all `NA` values.
