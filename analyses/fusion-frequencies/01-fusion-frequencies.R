@@ -223,7 +223,7 @@ m_fus_freq_tbl <- bind_rows(fus_freq_tbl_list) %>%
   distinct()
 
 m_fus_freq_tbl <- m_fus_freq_tbl %>%
-  mutate(Dataset = if_else(Dataset == 'PBTA&GMKF&TARGET',
+  mutate(Dataset = if_else(str_detect(Dataset, '&'),
                            true = 'all_cohorts', false = Dataset))
 
 stopifnot(identical(sum(is.na(m_fus_freq_tbl)), as.integer(0)))
