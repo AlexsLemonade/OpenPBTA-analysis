@@ -91,6 +91,8 @@ annotate_long_format_table <- function(
   available_ann_columns <- c("RMTL", "Gene_type", "OncoKB_cancer_gene",
                              "OncoKB_oncogene_TSG", "Gene_full_name",
                              "Protein_RefSeq_ID", "EFO", "MONDO")
+  # Assert columns_to_add columns are available and not already in the input
+  # long_format_table
   purrr::walk(
     columns_to_add,
     function(col_add) {
@@ -99,6 +101,9 @@ annotate_long_format_table <- function(
           col_add, " is not available.\n",
           "Available annotation columns are ",
           char_vec_to_str(available_ann_columns), "."))
+      }
+      if (col_add %in% colnames(long_format_table)) {
+        stop(paste0(col_add, " is already in the input long_format_table."))
       }
     }
   )
