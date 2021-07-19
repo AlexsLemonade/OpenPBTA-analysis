@@ -1,14 +1,10 @@
 # Author: Komal S. Rathi
-# Date: 07/22/2020
-# Function:
-# Script to perform MB molecular subtyping
+# Function: Script to perform MB molecular subtyping
 
 # load libraries
 suppressPackageStartupMessages(library(optparse))
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(medulloPackage))
-suppressPackageStartupMessages(library(MM2S))
-suppressPackageStartupMessages(library(org.Hs.eg.db))
 
 # source classification function
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
@@ -40,17 +36,17 @@ corrected_mat <- readRDS(corrected_mat)
 uncorrected_mat <- readRDS(uncorrected_mat)
 
 # combination of dataset and methods
-methods <- c('MM2S', 'medullo-classifier')
+methods <- c('medullo-classifier')
 mats <- c('corrected_mat', 'uncorrected_mat')
 combo <- expand.grid(mats, methods, stringsAsFactors = F) 
 
 # classify mb samples
 print("Classify medulloblastoma subtypes...")
-mb.classify <- apply(combo, 1, FUN = function(x) classify.mb(expr.input = x[1], method = x[2]))
-names(mb.classify) <- apply(combo, 1, FUN = function(x) paste0(x[1], '_', x[2]))
+mb_classify <- apply(combo, 1, FUN = function(x) classify_mb(exprs_input = x[1], method = x[2]))
+names(mb_classify) <- apply(combo, 1, FUN = function(x) paste0(x[1], '_', x[2]))
 
 # save output to rds object
 print("Writing output to file..")
 outputfile <- file.path(output_dir, paste0(output_prefix, ".rds"))
-saveRDS(mb.classify, file = outputfile)
+saveRDS(mb_classify, file = outputfile)
 print("Done!")

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Module author: Komal S. Rathi
-# 2020
+# 2021
 
 # This script runs the steps for molecular subtyping of Medulloblastoma samples
 
