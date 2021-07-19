@@ -13,8 +13,11 @@
 #   added to the input table. The vector can contain zero or more of the
 #   following column names: "RMTL", "Gene_type", "OncoKB_cancer_gene",
 #   "OncoKB_oncogene_TSG", "Gene_full_name", "Protein_RefSeq_ID", "EFO", and
-#   "MONDO". Default value is to add all columns. Note that match.arg is **NOT**
-#   used for this parameter, because exact matches are required.
+#   "MONDO". Default value is to add all columns. Notes:
+#   - match.arg is **NOT** used for this parameter, because exact matches are
+#     required
+#   - The order of added columns may not be the same as the values of
+#     columns_to_add
 # - replace_na_with_empty_string: TRUE or FALSE on whether to replace NAs with
 #   empty strings for **ALL** columns of the input table. Default value is TRUE.
 #
