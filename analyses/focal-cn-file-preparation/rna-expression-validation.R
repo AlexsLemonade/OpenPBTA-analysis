@@ -46,7 +46,7 @@ option_list <- list(
     c("--metadata"),
     type = "character",
     default = NULL,
-    help = "file path to pbta-histologies.tsv"
+    help = "file path to histologies.tsv"
   ),
   optparse::make_option(
     c("--goi_list"),
@@ -116,7 +116,7 @@ source(
 ambiguous_sample_ids <- metadata %>%
   dplyr::filter(
     sample_type == "Tumor",
-    composition == "Solid Tissue"
+    composition == "Solid Tissue",
   ) %>%
   dplyr::group_by(sample_id) %>%
   dplyr::tally() %>%
