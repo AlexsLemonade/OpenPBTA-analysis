@@ -280,7 +280,7 @@ mb_results_df <- bind_exp_strategies(mb_results_df) %>%
 cranio_results_df <- bind_exp_strategies(cranio_results_df) %>%
   inner_join(select(histologies_df,join_cols),
              by = "Kids_First_Biospecimen_ID") %>%
-  mutate(integrated_diagnosis = case_when(molecular_subtype == "CRANIO, ADAM" ~"Adamantimomatous craniopharyngioma",
+  mutate(integrated_diagnosis = case_when(molecular_subtype == "CRANIO, ADAM" ~"Adamantinomatous craniopharyngioma",
                                           molecular_subtype == "CRANIO, PAP" ~"Papillary craniopharyngioma", 
                                           TRUE ~ NA_character_),
          broad_histology = "Tumors of sellar region",
@@ -293,12 +293,12 @@ cranio_results_df <- bind_exp_strategies(cranio_results_df) %>%
 neurocytoma_results_df <- neurocytoma_results_df %>%
   inner_join(select(histologies_df,join_cols),
             by = "Kids_First_Biospecimen_ID") %>%
-  mutate(integrated_diagnosis = case_when(molecular_subtype == "CNC"~ "Central Neurocytoma",
+  mutate(harmonized_diagnosis = case_when(molecular_subtype == "CNC"~ "Central Neurocytoma",
                                           molecular_subtype == "EVN" ~"Extraventricular Neurocytoma", 
                                         TRUE ~ NA_character_),
          broad_histology = "Neuronal and mixed neuronal-glial tumor",
          short_histology = "Neurocytoma",
-         Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes))
+         Notes = if_else(!is.na(harmonized_diagnosis), "Updated via OpenPBTA subtyping", Notes))
 ```
 
 ### Handling Chordoma

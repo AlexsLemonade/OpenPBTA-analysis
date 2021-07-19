@@ -9,11 +9,11 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="JN Taroni for ALSF CCDL (code)" />
+<meta name="author" content="Jaclyn Taroni for ALSF CCDL, Jo Lynne Rokita for D3b" />
 
-<meta name="date" content="2021-01-01" />
+<meta name="date" content="2020-01-01" />
 
-<title>Recoding adamantinomatous craniopharyngiomas</title>
+<title>Incorporating CHOP pathology input to molecular subtyping calls</title>
 
 <script>/*! jQuery v1.11.3 | (c) 2005, 2015 jQuery Foundation, Inc. | jquery.org/license */
 !function(a,b){"object"==typeof module&&"object"==typeof module.exports?module.exports=a.document?b(a,!0):function(a){if(!a.document)throw new Error("jQuery requires a window with a document");return b(a)}:b(a)}("undefined"!=typeof window?window:this,function(a,b){var c=[],d=c.slice,e=c.concat,f=c.push,g=c.indexOf,h={},i=h.toString,j=h.hasOwnProperty,k={},l="1.11.3",m=function(a,b){return new m.fn.init(a,b)},n=/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,o=/^-ms-/,p=/-([\da-z])/gi,q=function(a,b){return b.toUpperCase()};m.fn=m.prototype={jquery:l,constructor:m,selector:"",length:0,toArray:function(){return d.call(this)},get:function(a){return null!=a?0>a?this[a+this.length]:this[a]:d.call(this)},pushStack:function(a){var b=m.merge(this.constructor(),a);return b.prevObject=this,b.context=this.context,b},each:function(a,b){return m.each(this,a,b)},map:function(a){return this.pushStack(m.map(this,function(b,c){return a.call(b,c,b)}))},slice:function(){return this.pushStack(d.apply(this,arguments))},first:function(){return this.eq(0)},last:function(){return this.eq(-1)},eq:function(a){var b=this.length,c=+a+(0>a?b:0);return this.pushStack(c>=0&&b>c?[this[c]]:[])},end:function(){return this.prevObject||this.constructor(null)},push:f,sort:c.sort,splice:c.splice},m.extend=m.fn.extend=function(){var a,b,c,d,e,f,g=arguments[0]||{},h=1,i=arguments.length,j=!1;for("boolean"==typeof g&&(j=g,g=arguments[h]||{},h++),"object"==typeof g||m.isFunction(g)||(g={}),h===i&&(g=this,h--);i>h;h++)if(null!=(e=arguments[h]))for(d in e)a=g[d],c=e[d],g!==c&&(j&&c&&(m.isPlainObject(c)||(b=m.isArray(c)))?(b?(b=!1,f=a&&m.isArray(a)?a:[]):f=a&&m.isPlainObject(a)?a:{},g[d]=m.extend(j,f,c)):void 0!==c&&(g[d]=c));return g},m.extend({expando:"jQuery"+(l+Math.random()).replace(/\D/g,""),isReady:!0,error:function(a){throw new Error(a)},noop:function(){},isFunction:function(a){return"function"===m.type(a)},isArray:Array.isArray||function(a){return"array"===m.type(a)},isWindow:function(a){return null!=a&&a==a.window},isNumeric:function(a){return!m.isArray(a)&&a-parseFloat(a)+1>=0},isEmptyObject:function(a){var b;for(b in a)return!1;return!0},isPlainObject:function(a){var b;if(!a||"object"!==m.type(a)||a.nodeType||m.isWindow(a))return!1;try{if(a.constructor&&!j.call(a,"constructor")&&!j.call(a.constructor.prototype,"isPrototypeOf"))return!1}catch(c){return!1}if(k.ownLast)for(b in a)return j.call(a,b);for(b in a);return void 0===b||j.call(a,b)},type:function(a){return null==a?a+"":"object"==typeof a||"function"==typeof a?h[i.call(a)]||"object":typeof a},globalEval:function(b){b&&m.trim(b)&&(a.execScript||function(b){a.eval.call(a,b)})(b)},camelCase:function(a){return a.replace(o,"ms-").replace(p,q)},nodeName:function(a,b){return a.nodeName&&a.nodeName.toLowerCase()===b.toLowerCase()},each:function(a,b,c){var d,e=0,f=a.length,g=r(a);if(c){if(g){for(;f>e;e++)if(d=b.apply(a[e],c),d===!1)break}else for(e in a)if(d=b.apply(a[e],c),d===!1)break}else if(g){for(;f>e;e++)if(d=b.call(a[e],e,a[e]),d===!1)break}else for(e in a)if(d=b.call(a[e],e,a[e]),d===!1)break;return a},trim:function(a){return null==a?"":(a+"").replace(n,"")},makeArray:function(a,b){var c=b||[];return null!=a&&(r(Object(a))?m.merge(c,"string"==typeof a?[a]:a):f.call(c,a)),c},inArray:function(a,b,c){var d;if(b){if(g)return g.call(b,a,c);for(d=b.length,c=c?0>c?Math.max(0,d+c):c:0;d>c;c++)if(c in b&&b[c]===a)return c}return-1},merge:function(a,b){var c=+b.length,d=0,e=a.length;while(c>d)a[e++]=b[d++];if(c!==c)while(void 0!==b[d])a[e++]=b[d++];return a.length=e,a},grep:function(a,b,c){for(var d,e=[],f=0,g=a.length,h=!c;g>f;f++)d=!b(a[f],f),d!==h&&e.push(a[f]);return e},map:function(a,b,c){var d,f=0,g=a.length,h=r(a),i=[];if(h)for(;g>f;f++)d=b(a[f],f,c),null!=d&&i.push(d);else for(f in a)d=b(a[f],f,c),null!=d&&i.push(d);return e.apply([],i)},guid:1,proxy:function(a,b){var c,e,f;return"string"==typeof b&&(f=a[b],b=a,a=f),m.isFunction(a)?(c=d.call(arguments,2),e=function(){return a.apply(b||this,c.concat(d.call(arguments)))},e.guid=a.guid=a.guid||m.guid++,e):void 0},now:function(){return+new Date},support:k}),m.each("Boolean Number String Function Array Date RegExp Object Error".split(" "),function(a,b){h["[object "+b+"]"]=b.toLowerCase()});function r(a){var b="length"in a&&a.length,c=m.type(a);return"function"===c||m.isWindow(a)?!1:1===a.nodeType&&b?!0:"array"===c||0===b||"number"==typeof b&&b>0&&b-1 in a}var s=function(a){var b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u="sizzle"+1*new Date,v=a.document,w=0,x=0,y=ha(),z=ha(),A=ha(),B=function(a,b){return a===b&&(l=!0),0},C=1<<31,D={}.hasOwnProperty,E=[],F=E.pop,G=E.push,H=E.push,I=E.slice,J=function(a,b){for(var c=0,d=a.length;d>c;c++)if(a[c]===b)return c;return-1},K="checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped",L="[\\x20\\t\\r\\n\\f]",M="(?:\\\\.|[\\w-]|[^\\x00-\\xa0])+",N=M.replace("w","w#"),O="\\["+L+"*("+M+")(?:"+L+"*([*^$|!~]?=)"+L+"*(?:'((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\"|("+N+"))|)"+L+"*\\]",P=":("+M+")(?:\\((('((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\")|((?:\\\\.|[^\\\\()[\\]]|"+O+")*)|.*)\\)|)",Q=new RegExp(L+"+","g"),R=new RegExp("^"+L+"+|((?:^|[^\\\\])(?:\\\\.)*)"+L+"+$","g"),S=new RegExp("^"+L+"*,"+L+"*"),T=new RegExp("^"+L+"*([>+~]|"+L+")"+L+"*"),U=new RegExp("="+L+"*([^\\]'\"]*?)"+L+"*\\]","g"),V=new RegExp(P),W=new RegExp("^"+N+"$"),X={ID:new RegExp("^#("+M+")"),CLASS:new RegExp("^\\.("+M+")"),TAG:new RegExp("^("+M.replace("w","w*")+")"),ATTR:new RegExp("^"+O),PSEUDO:new RegExp("^"+P),CHILD:new RegExp("^:(only|first|last|nth|nth-last)-(child|of-type)(?:\\("+L+"*(even|odd|(([+-]|)(\\d*)n|)"+L+"*(?:([+-]|)"+L+"*(\\d+)|))"+L+"*\\)|)","i"),bool:new RegExp("^(?:"+K+")$","i"),needsContext:new RegExp("^"+L+"*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\("+L+"*((?:-\\d)?\\d*)"+L+"*\\)|)(?=[^-]|$)","i")},Y=/^(?:input|select|textarea|button)$/i,Z=/^h\d$/i,$=/^[^{]+\{\s*\[native \w/,_=/^(?:#([\w-]+)|(\w+)|\.([\w-]+))$/,aa=/[+~]/,ba=/'|\\/g,ca=new RegExp("\\\\([\\da-f]{1,6}"+L+"?|("+L+")|.)","ig"),da=function(a,b,c){var d="0x"+b-65536;return d!==d||c?b:0>d?String.fromCharCode(d+65536):String.fromCharCode(d>>10|55296,1023&d|56320)},ea=function(){m()};try{H.apply(E=I.call(v.childNodes),v.childNodes),E[v.childNodes.length].nodeType}catch(fa){H={apply:E.length?function(a,b){G.apply(a,I.call(b))}:function(a,b){var c=a.length,d=0;while(a[c++]=b[d++]);a.length=c-1}}}function ga(a,b,d,e){var f,h,j,k,l,o,r,s,w,x;if((b?b.ownerDocument||b:v)!==n&&m(b),b=b||n,d=d||[],k=b.nodeType,"string"!=typeof a||!a||1!==k&&9!==k&&11!==k)return d;if(!e&&p){if(11!==k&&(f=_.exec(a)))if(j=f[1]){if(9===k){if(h=b.getElementById(j),!h||!h.parentNode)return d;if(h.id===j)return d.push(h),d}else if(b.ownerDocument&&(h=b.ownerDocument.getElementById(j))&&t(b,h)&&h.id===j)return d.push(h),d}else{if(f[2])return H.apply(d,b.getElementsByTagName(a)),d;if((j=f[3])&&c.getElementsByClassName)return H.apply(d,b.getElementsByClassName(j)),d}if(c.qsa&&(!q||!q.test(a))){if(s=r=u,w=b,x=1!==k&&a,1===k&&"object"!==b.nodeName.toLowerCase()){o=g(a),(r=b.getAttribute("id"))?s=r.replace(ba,"\\$&"):b.setAttribute("id",s),s="[id='"+s+"'] ",l=o.length;while(l--)o[l]=s+ra(o[l]);w=aa.test(a)&&pa(b.parentNode)||b,x=o.join(",")}if(x)try{return H.apply(d,w.querySelectorAll(x)),d}catch(y){}finally{r||b.removeAttribute("id")}}}return i(a.replace(R,"$1"),b,d,e)}function ha(){var a=[];function b(c,e){return a.push(c+" ")>d.cacheLength&&delete b[a.shift()],b[c+" "]=e}return b}function ia(a){return a[u]=!0,a}function ja(a){var b=n.createElement("div");try{return!!a(b)}catch(c){return!1}finally{b.parentNode&&b.parentNode.removeChild(b),b=null}}function ka(a,b){var c=a.split("|"),e=a.length;while(e--)d.attrHandle[c[e]]=b}function la(a,b){var c=b&&a,d=c&&1===a.nodeType&&1===b.nodeType&&(~b.sourceIndex||C)-(~a.sourceIndex||C);if(d)return d;if(c)while(c=c.nextSibling)if(c===b)return-1;return a?1:-1}function ma(a){return function(b){var c=b.nodeName.toLowerCase();return"input"===c&&b.type===a}}function na(a){return function(b){var c=b.nodeName.toLowerCase();return("input"===c||"button"===c)&&b.type===a}}function oa(a){return ia(function(b){return b=+b,ia(function(c,d){var e,f=a([],c.length,b),g=f.length;while(g--)c[e=f[g]]&&(c[e]=!(d[e]=c[e]))})})}function pa(a){return a&&"undefined"!=typeof a.getElementsByTagName&&a}c=ga.support={},f=ga.isXML=function(a){var b=a&&(a.ownerDocument||a).documentElement;return b?"HTML"!==b.nodeName:!1},m=ga.setDocument=function(a){var b,e,g=a?a.ownerDocument||a:v;return g!==n&&9===g.nodeType&&g.documentElement?(n=g,o=g.documentElement,e=g.defaultView,e&&e!==e.top&&(e.addEventListener?e.addEventListener("unload",ea,!1):e.attachEvent&&e.attachEvent("onunload",ea)),p=!f(g),c.attributes=ja(function(a){return a.className="i",!a.getAttribute("className")}),c.getElementsByTagName=ja(function(a){return a.appendChild(g.createComment("")),!a.getElementsByTagName("*").length}),c.getElementsByClassName=$.test(g.getElementsByClassName),c.getById=ja(function(a){return o.appendChild(a).id=u,!g.getElementsByName||!g.getElementsByName(u).length}),c.getById?(d.find.ID=function(a,b){if("undefined"!=typeof b.getElementById&&p){var c=b.getElementById(a);return c&&c.parentNode?[c]:[]}},d.filter.ID=function(a){var b=a.replace(ca,da);return function(a){return a.getAttribute("id")===b}}):(delete d.find.ID,d.filter.ID=function(a){var b=a.replace(ca,da);return function(a){var c="undefined"!=typeof a.getAttributeNode&&a.getAttributeNode("id");return c&&c.value===b}}),d.find.TAG=c.getElementsByTagName?function(a,b){return"undefined"!=typeof b.getElementsByTagName?b.getElementsByTagName(a):c.qsa?b.querySelectorAll(a):void 0}:function(a,b){var c,d=[],e=0,f=b.getElementsByTagName(a);if("*"===a){while(c=f[e++])1===c.nodeType&&d.push(c);return d}return f},d.find.CLASS=c.getElementsByClassName&&function(a,b){return p?b.getElementsByClassName(a):void 0},r=[],q=[],(c.qsa=$.test(g.querySelectorAll))&&(ja(function(a){o.appendChild(a).innerHTML="<a id='"+u+"'></a><select id='"+u+"-\f]' msallowcapture=''><option selected=''></option></select>",a.querySelectorAll("[msallowcapture^='']").length&&q.push("[*^$]="+L+"*(?:''|\"\")"),a.querySelectorAll("[selected]").length||q.push("\\["+L+"*(?:value|"+K+")"),a.querySelectorAll("[id~="+u+"-]").length||q.push("~="),a.querySelectorAll(":checked").length||q.push(":checked"),a.querySelectorAll("a#"+u+"+*").length||q.push(".#.+[+~]")}),ja(function(a){var b=g.createElement("input");b.setAttribute("type","hidden"),a.appendChild(b).setAttribute("name","D"),a.querySelectorAll("[name=d]").length&&q.push("name"+L+"*[*^$|!~]?="),a.querySelectorAll(":enabled").length||q.push(":enabled",":disabled"),a.querySelectorAll("*,:x"),q.push(",.*:")})),(c.matchesSelector=$.test(s=o.matches||o.webkitMatchesSelector||o.mozMatchesSelector||o.oMatchesSelector||o.msMatchesSelector))&&ja(function(a){c.disconnectedMatch=s.call(a,"div"),s.call(a,"[s!='']:x"),r.push("!=",P)}),q=q.length&&new RegExp(q.join("|")),r=r.length&&new RegExp(r.join("|")),b=$.test(o.compareDocumentPosition),t=b||$.test(o.contains)?function(a,b){var c=9===a.nodeType?a.documentElement:a,d=b&&b.parentNode;return a===d||!(!d||1!==d.nodeType||!(c.contains?c.contains(d):a.compareDocumentPosition&&16&a.compareDocumentPosition(d)))}:function(a,b){if(b)while(b=b.parentNode)if(b===a)return!0;return!1},B=b?function(a,b){if(a===b)return l=!0,0;var d=!a.compareDocumentPosition-!b.compareDocumentPosition;return d?d:(d=(a.ownerDocument||a)===(b.ownerDocument||b)?a.compareDocumentPosition(b):1,1&d||!c.sortDetached&&b.compareDocumentPosition(a)===d?a===g||a.ownerDocument===v&&t(v,a)?-1:b===g||b.ownerDocument===v&&t(v,b)?1:k?J(k,a)-J(k,b):0:4&d?-1:1)}:function(a,b){if(a===b)return l=!0,0;var c,d=0,e=a.parentNode,f=b.parentNode,h=[a],i=[b];if(!e||!f)return a===g?-1:b===g?1:e?-1:f?1:k?J(k,a)-J(k,b):0;if(e===f)return la(a,b);c=a;while(c=c.parentNode)h.unshift(c);c=b;while(c=c.parentNode)i.unshift(c);while(h[d]===i[d])d++;return d?la(h[d],i[d]):h[d]===v?-1:i[d]===v?1:0},g):n},ga.matches=function(a,b){return ga(a,null,null,b)},ga.matchesSelector=function(a,b){if((a.ownerDocument||a)!==n&&m(a),b=b.replace(U,"='$1']"),!(!c.matchesSelector||!p||r&&r.test(b)||q&&q.test(b)))try{var d=s.call(a,b);if(d||c.disconnectedMatch||a.document&&11!==a.document.nodeType)return d}catch(e){}return ga(b,n,null,[a]).length>0},ga.contains=function(a,b){return(a.ownerDocument||a)!==n&&m(a),t(a,b)},ga.attr=function(a,b){(a.ownerDocument||a)!==n&&m(a);var e=d.attrHandle[b.toLowerCase()],f=e&&D.call(d.attrHandle,b.toLowerCase())?e(a,b,!p):void 0;return void 0!==f?f:c.attributes||!p?a.getAttribute(b):(f=a.getAttributeNode(b))&&f.specified?f.value:null},ga.error=function(a){throw new Error("Syntax error, unrecognized expression: "+a)},ga.uniqueSort=function(a){var b,d=[],e=0,f=0;if(l=!c.detectDuplicates,k=!c.sortStable&&a.slice(0),a.sort(B),l){while(b=a[f++])b===a[f]&&(e=d.push(f));while(e--)a.splice(d[e],1)}return k=null,a},e=ga.getText=function(a){var b,c="",d=0,f=a.nodeType;if(f){if(1===f||9===f||11===f){if("string"==typeof a.textContent)return a.textContent;for(a=a.firstChild;a;a=a.nextSibling)c+=e(a)}else if(3===f||4===f)return a.nodeValue}else while(b=a[d++])c+=e(b);return c},d=ga.selectors={cacheLength:50,createPseudo:ia,match:X,attrHandle:{},find:{},relative:{">":{dir:"parentNode",first:!0}," ":{dir:"parentNode"},"+":{dir:"previousSibling",first:!0},"~":{dir:"previousSibling"}},preFilter:{ATTR:function(a){return a[1]=a[1].replace(ca,da),a[3]=(a[3]||a[4]||a[5]||"").replace(ca,da),"~="===a[2]&&(a[3]=" "+a[3]+" "),a.slice(0,4)},CHILD:function(a){return a[1]=a[1].toLowerCase(),"nth"===a[1].slice(0,3)?(a[3]||ga.error(a[0]),a[4]=+(a[4]?a[5]+(a[6]||1):2*("even"===a[3]||"odd"===a[3])),a[5]=+(a[7]+a[8]||"odd"===a[3])):a[3]&&ga.error(a[0]),a},PSEUDO:function(a){var b,c=!a[6]&&a[2];return X.CHILD.test(a[0])?null:(a[3]?a[2]=a[4]||a[5]||"":c&&V.test(c)&&(b=g(c,!0))&&(b=c.indexOf(")",c.length-b)-c.length)&&(a[0]=a[0].slice(0,b),a[2]=c.slice(0,b)),a.slice(0,3))}},filter:{TAG:function(a){var b=a.replace(ca,da).toLowerCase();return"*"===a?function(){return!0}:function(a){return a.nodeName&&a.nodeName.toLowerCase()===b}},CLASS:function(a){var b=y[a+" "];return b||(b=new RegExp("(^|"+L+")"+a+"("+L+"|$)"))&&y(a,function(a){return b.test("string"==typeof a.className&&a.className||"undefined"!=typeof a.getAttribute&&a.getAttribute("class")||"")})},ATTR:function(a,b,c){return function(d){var e=ga.attr(d,a);return null==e?"!="===b:b?(e+="","="===b?e===c:"!="===b?e!==c:"^="===b?c&&0===e.indexOf(c):"*="===b?c&&e.indexOf(c)>-1:"$="===b?c&&e.slice(-c.length)===c:"~="===b?(" "+e.replace(Q," ")+" ").indexOf(c)>-1:"|="===b?e===c||e.slice(0,c.length+1)===c+"-":!1):!0}},CHILD:function(a,b,c,d,e){var f="nth"!==a.slice(0,3),g="last"!==a.slice(-4),h="of-type"===b;return 1===d&&0===e?function(a){return!!a.parentNode}:function(b,c,i){var j,k,l,m,n,o,p=f!==g?"nextSibling":"previousSibling",q=b.parentNode,r=h&&b.nodeName.toLowerCase(),s=!i&&!h;if(q){if(f){while(p){l=b;while(l=l[p])if(h?l.nodeName.toLowerCase()===r:1===l.nodeType)return!1;o=p="only"===a&&!o&&"nextSibling"}return!0}if(o=[g?q.firstChild:q.lastChild],g&&s){k=q[u]||(q[u]={}),j=k[a]||[],n=j[0]===w&&j[1],m=j[0]===w&&j[2],l=n&&q.childNodes[n];while(l=++n&&l&&l[p]||(m=n=0)||o.pop())if(1===l.nodeType&&++m&&l===b){k[a]=[w,n,m];break}}else if(s&&(j=(b[u]||(b[u]={}))[a])&&j[0]===w)m=j[1];else while(l=++n&&l&&l[p]||(m=n=0)||o.pop())if((h?l.nodeName.toLowerCase()===r:1===l.nodeType)&&++m&&(s&&((l[u]||(l[u]={}))[a]=[w,m]),l===b))break;return m-=e,m===d||m%d===0&&m/d>=0}}},PSEUDO:function(a,b){var c,e=d.pseudos[a]||d.setFilters[a.toLowerCase()]||ga.error("unsupported pseudo: "+a);return e[u]?e(b):e.length>1?(c=[a,a,"",b],d.setFilters.hasOwnProperty(a.toLowerCase())?ia(function(a,c){var d,f=e(a,b),g=f.length;while(g--)d=J(a,f[g]),a[d]=!(c[d]=f[g])}):function(a){return e(a,0,c)}):e}},pseudos:{not:ia(function(a){var b=[],c=[],d=h(a.replace(R,"$1"));return d[u]?ia(function(a,b,c,e){var f,g=d(a,null,e,[]),h=a.length;while(h--)(f=g[h])&&(a[h]=!(b[h]=f))}):function(a,e,f){return b[0]=a,d(b,null,f,c),b[0]=null,!c.pop()}}),has:ia(function(a){return function(b){return ga(a,b).length>0}}),contains:ia(function(a){return a=a.replace(ca,da),function(b){return(b.textContent||b.innerText||e(b)).indexOf(a)>-1}}),lang:ia(function(a){return W.test(a||"")||ga.error("unsupported lang: "+a),a=a.replace(ca,da).toLowerCase(),function(b){var c;do if(c=p?b.lang:b.getAttribute("xml:lang")||b.getAttribute("lang"))return c=c.toLowerCase(),c===a||0===c.indexOf(a+"-");while((b=b.parentNode)&&1===b.nodeType);return!1}}),target:function(b){var c=a.location&&a.location.hash;return c&&c.slice(1)===b.id},root:function(a){return a===o},focus:function(a){return a===n.activeElement&&(!n.hasFocus||n.hasFocus())&&!!(a.type||a.href||~a.tabIndex)},enabled:function(a){return a.disabled===!1},disabled:function(a){return a.disabled===!0},checked:function(a){var b=a.nodeName.toLowerCase();return"input"===b&&!!a.checked||"option"===b&&!!a.selected},selected:function(a){return a.parentNode&&a.parentNode.selectedIndex,a.selected===!0},empty:function(a){for(a=a.firstChild;a;a=a.nextSibling)if(a.nodeType<6)return!1;return!0},parent:function(a){return!d.pseudos.empty(a)},header:function(a){return Z.test(a.nodeName)},input:function(a){return Y.test(a.nodeName)},button:function(a){var b=a.nodeName.toLowerCase();return"input"===b&&"button"===a.type||"button"===b},text:function(a){var b;return"input"===a.nodeName.toLowerCase()&&"text"===a.type&&(null==(b=a.getAttribute("type"))||"text"===b.toLowerCase())},first:oa(function(){return[0]}),last:oa(function(a,b){return[b-1]}),eq:oa(function(a,b,c){return[0>c?c+b:c]}),even:oa(function(a,b){for(var c=0;b>c;c+=2)a.push(c);return a}),odd:oa(function(a,b){for(var c=1;b>c;c+=2)a.push(c);return a}),lt:oa(function(a,b,c){for(var d=0>c?c+b:c;--d>=0;)a.push(d);return a}),gt:oa(function(a,b,c){for(var d=0>c?c+b:c;++d<b;)a.push(d);return a})}},d.pseudos.nth=d.pseudos.eq;for(b in{radio:!0,checkbox:!0,file:!0,password:!0,image:!0})d.pseudos[b]=ma(b);for(b in{submit:!0,reset:!0})d.pseudos[b]=na(b);function qa(){}qa.prototype=d.filters=d.pseudos,d.setFilters=new qa,g=ga.tokenize=function(a,b){var c,e,f,g,h,i,j,k=z[a+" "];if(k)return b?0:k.slice(0);h=a,i=[],j=d.preFilter;while(h){(!c||(e=S.exec(h)))&&(e&&(h=h.slice(e[0].length)||h),i.push(f=[])),c=!1,(e=T.exec(h))&&(c=e.shift(),f.push({value:c,type:e[0].replace(R," ")}),h=h.slice(c.length));for(g in d.filter)!(e=X[g].exec(h))||j[g]&&!(e=j[g](e))||(c=e.shift(),f.push({value:c,type:g,matches:e}),h=h.slice(c.length));if(!c)break}return b?h.length:h?ga.error(a):z(a,i).slice(0)};function ra(a){for(var b=0,c=a.length,d="";c>b;b++)d+=a[b].value;return d}function sa(a,b,c){var d=b.dir,e=c&&"parentNode"===d,f=x++;return b.first?function(b,c,f){while(b=b[d])if(1===b.nodeType||e)return a(b,c,f)}:function(b,c,g){var h,i,j=[w,f];if(g){while(b=b[d])if((1===b.nodeType||e)&&a(b,c,g))return!0}else while(b=b[d])if(1===b.nodeType||e){if(i=b[u]||(b[u]={}),(h=i[d])&&h[0]===w&&h[1]===f)return j[2]=h[2];if(i[d]=j,j[2]=a(b,c,g))return!0}}}function ta(a){return a.length>1?function(b,c,d){var e=a.length;while(e--)if(!a[e](b,c,d))return!1;return!0}:a[0]}function ua(a,b,c){for(var d=0,e=b.length;e>d;d++)ga(a,b[d],c);return c}function va(a,b,c,d,e){for(var f,g=[],h=0,i=a.length,j=null!=b;i>h;h++)(f=a[h])&&(!c||c(f,d,e))&&(g.push(f),j&&b.push(h));return g}function wa(a,b,c,d,e,f){return d&&!d[u]&&(d=wa(d)),e&&!e[u]&&(e=wa(e,f)),ia(function(f,g,h,i){var j,k,l,m=[],n=[],o=g.length,p=f||ua(b||"*",h.nodeType?[h]:h,[]),q=!a||!f&&b?p:va(p,m,a,h,i),r=c?e||(f?a:o||d)?[]:g:q;if(c&&c(q,r,h,i),d){j=va(r,n),d(j,[],h,i),k=j.length;while(k--)(l=j[k])&&(r[n[k]]=!(q[n[k]]=l))}if(f){if(e||a){if(e){j=[],k=r.length;while(k--)(l=r[k])&&j.push(q[k]=l);e(null,r=[],j,i)}k=r.length;while(k--)(l=r[k])&&(j=e?J(f,l):m[k])>-1&&(f[j]=!(g[j]=l))}}else r=va(r===g?r.splice(o,r.length):r),e?e(null,g,r,i):H.apply(g,r)})}function xa(a){for(var b,c,e,f=a.length,g=d.relative[a[0].type],h=g||d.relative[" "],i=g?1:0,k=sa(function(a){return a===b},h,!0),l=sa(function(a){return J(b,a)>-1},h,!0),m=[function(a,c,d){var e=!g&&(d||c!==j)||((b=c).nodeType?k(a,c,d):l(a,c,d));return b=null,e}];f>i;i++)if(c=d.relative[a[i].type])m=[sa(ta(m),c)];else{if(c=d.filter[a[i].type].apply(null,a[i].matches),c[u]){for(e=++i;f>e;e++)if(d.relative[a[e].type])break;return wa(i>1&&ta(m),i>1&&ra(a.slice(0,i-1).concat({value:" "===a[i-2].type?"*":""})).replace(R,"$1"),c,e>i&&xa(a.slice(i,e)),f>e&&xa(a=a.slice(e)),f>e&&ra(a))}m.push(c)}return ta(m)}function ya(a,b){var c=b.length>0,e=a.length>0,f=function(f,g,h,i,k){var l,m,o,p=0,q="0",r=f&&[],s=[],t=j,u=f||e&&d.find.TAG("*",k),v=w+=null==t?1:Math.random()||.1,x=u.length;for(k&&(j=g!==n&&g);q!==x&&null!=(l=u[q]);q++){if(e&&l){m=0;while(o=a[m++])if(o(l,g,h)){i.push(l);break}k&&(w=v)}c&&((l=!o&&l)&&p--,f&&r.push(l))}if(p+=q,c&&q!==p){m=0;while(o=b[m++])o(r,s,g,h);if(f){if(p>0)while(q--)r[q]||s[q]||(s[q]=F.call(i));s=va(s)}H.apply(i,s),k&&!f&&s.length>0&&p+b.length>1&&ga.uniqueSort(i)}return k&&(w=v,j=t),r};return c?ia(f):f}return h=ga.compile=function(a,b){var c,d=[],e=[],f=A[a+" "];if(!f){b||(b=g(a)),c=b.length;while(c--)f=xa(b[c]),f[u]?d.push(f):e.push(f);f=A(a,ya(e,d)),f.selector=a}return f},i=ga.select=function(a,b,e,f){var i,j,k,l,m,n="function"==typeof a&&a,o=!f&&g(a=n.selector||a);if(e=e||[],1===o.length){if(j=o[0]=o[0].slice(0),j.length>2&&"ID"===(k=j[0]).type&&c.getById&&9===b.nodeType&&p&&d.relative[j[1].type]){if(b=(d.find.ID(k.matches[0].replace(ca,da),b)||[])[0],!b)return e;n&&(b=b.parentNode),a=a.slice(j.shift().value.length)}i=X.needsContext.test(a)?0:j.length;while(i--){if(k=j[i],d.relative[l=k.type])break;if((m=d.find[l])&&(f=m(k.matches[0].replace(ca,da),aa.test(j[0].type)&&pa(b.parentNode)||b))){if(j.splice(i,1),a=f.length&&ra(j),!a)return H.apply(e,f),e;break}}}return(n||h(a,o))(f,b,!p,e,aa.test(a)&&pa(b.parentNode)||b),e},c.sortStable=u.split("").sort(B).join("")===u,c.detectDuplicates=!!l,m(),c.sortDetached=ja(function(a){return 1&a.compareDocumentPosition(n.createElement("div"))}),ja(function(a){return a.innerHTML="<a href='#'></a>","#"===a.firstChild.getAttribute("href")})||ka("type|href|height|width",function(a,b,c){return c?void 0:a.getAttribute(b,"type"===b.toLowerCase()?1:2)}),c.attributes&&ja(function(a){return a.innerHTML="<input/>",a.firstChild.setAttribute("value",""),""===a.firstChild.getAttribute("value")})||ka("value",function(a,b,c){return c||"input"!==a.nodeName.toLowerCase()?void 0:a.defaultValue}),ja(function(a){return null==a.getAttribute("disabled")})||ka(K,function(a,b,c){var d;return c?void 0:a[b]===!0?b.toLowerCase():(d=a.getAttributeNode(b))&&d.specified?d.value:null}),ga}(a);m.find=s,m.expr=s.selectors,m.expr[":"]=m.expr.pseudos,m.unique=s.uniqueSort,m.text=s.getText,m.isXMLDoc=s.isXML,m.contains=s.contains;var t=m.expr.match.needsContext,u=/^<(\w+)\s*\/?>(?:<\/\1>|)$/,v=/^.[^:#\[\.,]*$/;function w(a,b,c){if(m.isFunction(b))return m.grep(a,function(a,d){return!!b.call(a,d,a)!==c});if(b.nodeType)return m.grep(a,function(a){return a===b!==c});if("string"==typeof b){if(v.test(b))return m.filter(b,a,c);b=m.filter(b,a)}return m.grep(a,function(a){return m.inArray(a,b)>=0!==c})}m.filter=function(a,b,c){var d=b[0];return c&&(a=":not("+a+")"),1===b.length&&1===d.nodeType?m.find.matchesSelector(d,a)?[d]:[]:m.find.matches(a,m.grep(b,function(a){return 1===a.nodeType}))},m.fn.extend({find:function(a){var b,c=[],d=this,e=d.length;if("string"!=typeof a)return this.pushStack(m(a).filter(function(){for(b=0;e>b;b++)if(m.contains(d[b],this))return!0}));for(b=0;e>b;b++)m.find(a,d[b],c);return c=this.pushStack(e>1?m.unique(c):c),c.selector=this.selector?this.selector+" "+a:a,c},filter:function(a){return this.pushStack(w(this,a||[],!1))},not:function(a){return this.pushStack(w(this,a||[],!0))},is:function(a){return!!w(this,"string"==typeof a&&t.test(a)?m(a):a||[],!1).length}});var x,y=a.document,z=/^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]*))$/,A=m.fn.init=function(a,b){var c,d;if(!a)return this;if("string"==typeof a){if(c="<"===a.charAt(0)&&">"===a.charAt(a.length-1)&&a.length>=3?[null,a,null]:z.exec(a),!c||!c[1]&&b)return!b||b.jquery?(b||x).find(a):this.constructor(b).find(a);if(c[1]){if(b=b instanceof m?b[0]:b,m.merge(this,m.parseHTML(c[1],b&&b.nodeType?b.ownerDocument||b:y,!0)),u.test(c[1])&&m.isPlainObject(b))for(c in b)m.isFunction(this[c])?this[c](b[c]):this.attr(c,b[c]);return this}if(d=y.getElementById(c[2]),d&&d.parentNode){if(d.id!==c[2])return x.find(a);this.length=1,this[0]=d}return this.context=y,this.selector=a,this}return a.nodeType?(this.context=this[0]=a,this.length=1,this):m.isFunction(a)?"undefined"!=typeof x.ready?x.ready(a):a(m):(void 0!==a.selector&&(this.selector=a.selector,this.context=a.context),m.makeArray(a,this))};A.prototype=m.fn,x=m(y);var B=/^(?:parents|prev(?:Until|All))/,C={children:!0,contents:!0,next:!0,prev:!0};m.extend({dir:function(a,b,c){var d=[],e=a[b];while(e&&9!==e.nodeType&&(void 0===c||1!==e.nodeType||!m(e).is(c)))1===e.nodeType&&d.push(e),e=e[b];return d},sibling:function(a,b){for(var c=[];a;a=a.nextSibling)1===a.nodeType&&a!==b&&c.push(a);return c}}),m.fn.extend({has:function(a){var b,c=m(a,this),d=c.length;return this.filter(function(){for(b=0;d>b;b++)if(m.contains(this,c[b]))return!0})},closest:function(a,b){for(var c,d=0,e=this.length,f=[],g=t.test(a)||"string"!=typeof a?m(a,b||this.context):0;e>d;d++)for(c=this[d];c&&c!==b;c=c.parentNode)if(c.nodeType<11&&(g?g.index(c)>-1:1===c.nodeType&&m.find.matchesSelector(c,a))){f.push(c);break}return this.pushStack(f.length>1?m.unique(f):f)},index:function(a){return a?"string"==typeof a?m.inArray(this[0],m(a)):m.inArray(a.jquery?a[0]:a,this):this[0]&&this[0].parentNode?this.first().prevAll().length:-1},add:function(a,b){return this.pushStack(m.unique(m.merge(this.get(),m(a,b))))},addBack:function(a){return this.add(null==a?this.prevObject:this.prevObject.filter(a))}});function D(a,b){do a=a[b];while(a&&1!==a.nodeType);return a}m.each({parent:function(a){var b=a.parentNode;return b&&11!==b.nodeType?b:null},parents:function(a){return m.dir(a,"parentNode")},parentsUntil:function(a,b,c){return m.dir(a,"parentNode",c)},next:function(a){return D(a,"nextSibling")},prev:function(a){return D(a,"previousSibling")},nextAll:function(a){return m.dir(a,"nextSibling")},prevAll:function(a){return m.dir(a,"previousSibling")},nextUntil:function(a,b,c){return m.dir(a,"nextSibling",c)},prevUntil:function(a,b,c){return m.dir(a,"previousSibling",c)},siblings:function(a){return m.sibling((a.parentNode||{}).firstChild,a)},children:function(a){return m.sibling(a.firstChild)},contents:function(a){return m.nodeName(a,"iframe")?a.contentDocument||a.contentWindow.document:m.merge([],a.childNodes)}},function(a,b){m.fn[a]=function(c,d){var e=m.map(this,b,c);return"Until"!==a.slice(-5)&&(d=c),d&&"string"==typeof d&&(e=m.filter(d,e)),this.length>1&&(C[a]||(e=m.unique(e)),B.test(a)&&(e=e.reverse())),this.pushStack(e)}});var E=/\S+/g,F={};function G(a){var b=F[a]={};return m.each(a.match(E)||[],function(a,c){b[c]=!0}),b}m.Callbacks=function(a){a="string"==typeof a?F[a]||G(a):m.extend({},a);var b,c,d,e,f,g,h=[],i=!a.once&&[],j=function(l){for(c=a.memory&&l,d=!0,f=g||0,g=0,e=h.length,b=!0;h&&e>f;f++)if(h[f].apply(l[0],l[1])===!1&&a.stopOnFalse){c=!1;break}b=!1,h&&(i?i.length&&j(i.shift()):c?h=[]:k.disable())},k={add:function(){if(h){var d=h.length;!function f(b){m.each(b,function(b,c){var d=m.type(c);"function"===d?a.unique&&k.has(c)||h.push(c):c&&c.length&&"string"!==d&&f(c)})}(arguments),b?e=h.length:c&&(g=d,j(c))}return this},remove:function(){return h&&m.each(arguments,function(a,c){var d;while((d=m.inArray(c,h,d))>-1)h.splice(d,1),b&&(e>=d&&e--,f>=d&&f--)}),this},has:function(a){return a?m.inArray(a,h)>-1:!(!h||!h.length)},empty:function(){return h=[],e=0,this},disable:function(){return h=i=c=void 0,this},disabled:function(){return!h},lock:function(){return i=void 0,c||k.disable(),this},locked:function(){return!i},fireWith:function(a,c){return!h||d&&!i||(c=c||[],c=[a,c.slice?c.slice():c],b?i.push(c):j(c)),this},fire:function(){return k.fireWith(this,arguments),this},fired:function(){return!!d}};return k},m.extend({Deferred:function(a){var b=[["resolve","done",m.Callbacks("once memory"),"resolved"],["reject","fail",m.Callbacks("once memory"),"rejected"],["notify","progress",m.Callbacks("memory")]],c="pending",d={state:function(){return c},always:function(){return e.done(arguments).fail(arguments),this},then:function(){var a=arguments;return m.Deferred(function(c){m.each(b,function(b,f){var g=m.isFunction(a[b])&&a[b];e[f[1]](function(){var a=g&&g.apply(this,arguments);a&&m.isFunction(a.promise)?a.promise().done(c.resolve).fail(c.reject).progress(c.notify):c[f[0]+"With"](this===d?c.promise():this,g?[a]:arguments)})}),a=null}).promise()},promise:function(a){return null!=a?m.extend(a,d):d}},e={};return d.pipe=d.then,m.each(b,function(a,f){var g=f[2],h=f[3];d[f[1]]=g.add,h&&g.add(function(){c=h},b[1^a][2].disable,b[2][2].lock),e[f[0]]=function(){return e[f[0]+"With"](this===e?d:this,arguments),this},e[f[0]+"With"]=g.fireWith}),d.promise(e),a&&a.call(e,e),e},when:function(a){var b=0,c=d.call(arguments),e=c.length,f=1!==e||a&&m.isFunction(a.promise)?e:0,g=1===f?a:m.Deferred(),h=function(a,b,c){return function(e){b[a]=this,c[a]=arguments.length>1?d.call(arguments):e,c===i?g.notifyWith(b,c):--f||g.resolveWith(b,c)}},i,j,k;if(e>1)for(i=new Array(e),j=new Array(e),k=new Array(e);e>b;b++)c[b]&&m.isFunction(c[b].promise)?c[b].promise().done(h(b,k,c)).fail(g.reject).progress(h(b,j,i)):--f;return f||g.resolveWith(k,c),g.promise()}});var H;m.fn.ready=function(a){return m.ready.promise().done(a),this},m.extend({isReady:!1,readyWait:1,holdReady:function(a){a?m.readyWait++:m.ready(!0)},ready:function(a){if(a===!0?!--m.readyWait:!m.isReady){if(!y.body)return setTimeout(m.ready);m.isReady=!0,a!==!0&&--m.readyWait>0||(H.resolveWith(y,[m]),m.fn.triggerHandler&&(m(y).triggerHandler("ready"),m(y).off("ready")))}}});function I(){y.addEventListener?(y.removeEventListener("DOMContentLoaded",J,!1),a.removeEventListener("load",J,!1)):(y.detachEvent("onreadystatechange",J),a.detachEvent("onload",J))}function J(){(y.addEventListener||"load"===event.type||"complete"===y.readyState)&&(I(),m.ready())}m.ready.promise=function(b){if(!H)if(H=m.Deferred(),"complete"===y.readyState)setTimeout(m.ready);else if(y.addEventListener)y.addEventListener("DOMContentLoaded",J,!1),a.addEventListener("load",J,!1);else{y.attachEvent("onreadystatechange",J),a.attachEvent("onload",J);var c=!1;try{c=null==a.frameElement&&y.documentElement}catch(d){}c&&c.doScroll&&!function e(){if(!m.isReady){try{c.doScroll("left")}catch(a){return setTimeout(e,50)}I(),m.ready()}}()}return H.promise(b)};var K="undefined",L;for(L in m(k))break;k.ownLast="0"!==L,k.inlineBlockNeedsLayout=!1,m(function(){var a,b,c,d;c=y.getElementsByTagName("body")[0],c&&c.style&&(b=y.createElement("div"),d=y.createElement("div"),d.style.cssText="position:absolute;border:0;width:0;height:0;top:0;left:-9999px",c.appendChild(d).appendChild(b),typeof b.style.zoom!==K&&(b.style.cssText="display:inline;margin:0;border:0;padding:1px;width:1px;zoom:1",k.inlineBlockNeedsLayout=a=3===b.offsetWidth,a&&(c.style.zoom=1)),c.removeChild(d))}),function(){var a=y.createElement("div");if(null==k.deleteExpando){k.deleteExpando=!0;try{delete a.test}catch(b){k.deleteExpando=!1}}a=null}(),m.acceptData=function(a){var b=m.noData[(a.nodeName+" ").toLowerCase()],c=+a.nodeType||1;return 1!==c&&9!==c?!1:!b||b!==!0&&a.getAttribute("classid")===b};var M=/^(?:\{[\w\W]*\}|\[[\w\W]*\])$/,N=/([A-Z])/g;function O(a,b,c){if(void 0===c&&1===a.nodeType){var d="data-"+b.replace(N,"-$1").toLowerCase();if(c=a.getAttribute(d),"string"==typeof c){try{c="true"===c?!0:"false"===c?!1:"null"===c?null:+c+""===c?+c:M.test(c)?m.parseJSON(c):c}catch(e){}m.data(a,b,c)}else c=void 0}return c}function P(a){var b;for(b in a)if(("data"!==b||!m.isEmptyObject(a[b]))&&"toJSON"!==b)return!1;
@@ -2805,7 +2805,7 @@ $(document).ready(function () {
 </style>
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("pathology-subtyping-craniopharyngioma.Rmd");
+  window.initializeSourceEmbed("04-incorporate-pathology-feedback.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>
@@ -2931,24 +2931,477 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Recoding adamantinomatous craniopharyngiomas</h1>
-<h4 class="author">JN Taroni for ALSF CCDL (code)</h4>
-<h4 class="date">2021</h4>
+<h1 class="title toc-ignore">Incorporating CHOP pathology input to molecular subtyping calls</h1>
+<h4 class="author">Jaclyn Taroni for ALSF CCDL, Jo Lynne Rokita for D3b</h4>
+<h4 class="date">2020</h4>
 
 </div>
 
 
 <!-- rnb-text-begin -->
-<p><em>Background adapted from <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/994">#994</a></em></p>
-<p>There are Craniopharyngioma samples which may have been annotated as “To be classified” in <code>molecular-subtyping-CRANIO</code> because they lack canonical mutations. However, for adamantinomatous craniopharyngioma, the b-catenin SNV is not present in all samples (<a href="https://doi.org/10.1093/jnen/nlw116">ref</a>):</p>
+<p><em>Authorship above refers to this notebook <strong>only</strong>.</em></p>
+<div id="background" class="section level2">
+<h2>Background</h2>
+<p>As part of this project, we have undertaken several analyses that use molecular data to subtype or reclassify biospecimens. In some cases, our analyses have resulted in an update of the <code>integrated_diagnosis</code> field included in the clinical file (<code>pbta-histologies.tsv</code> [<a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/doc/data-formats.md#data-caveats">doc</a>]). However, not all logic included in the code of the repository was ultimately in agreement with feedback from pathologists at CHOP. In this notebook, we will make changes and document the cases where the logic in the modules of the repository deviate from the final labels.</p>
+</div>
+<div id="pathology-feedback" class="section level2">
+<h2>Pathology Feedback</h2>
+<p>Here, we’re copying the table from <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/609#issuecomment-602821376">#606 (comment)</a> here:</p>
+<table>
+<colgroup>
+<col width="3%"></col>
+<col width="2%"></col>
+<col width="1%"></col>
+<col width="1%"></col>
+<col width="3%"></col>
+<col width="3%"></col>
+<col width="6%"></col>
+<col width="5%"></col>
+<col width="12%"></col>
+<col width="12%"></col>
+<col width="14%"></col>
+<col width="2%"></col>
+<col width="10%"></col>
+<col width="2%"></col>
+<col width="9%"></col>
+<col width="3%"></col>
+<col width="2%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Kids_First_Biospecimen_ID</th>
+<th>glioma_brain_region</th>
+<th>sample_id</th>
+<th>aliquot_id</th>
+<th>Kids_First_Participant_ID</th>
+<th>experimental_strategy</th>
+<th>pathology_diagnosis</th>
+<th>integrated_diagnosis</th>
+<th>Notes from Path inspection</th>
+<th>Action</th>
+<th>Given to Rita 3/13/20</th>
+<th>short_histology</th>
+<th>broad_histology</th>
+<th>broad_composition</th>
+<th>Notes</th>
+<th>cancer_predispositions</th>
+<th>molecular_subtype</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>BS_C6ZZ3FY5</td>
+<td>hemispheric</td>
+<td>7316-1105</td>
+<td>470017</td>
+<td>PT_X71D7G5S</td>
+<td>RNA-Seq</td>
+<td>Supratentorial or Spinal Cord PNET</td>
+<td>High-grade glioma</td>
+<td>No path report available</td>
+<td>reviewed - OK with new dx</td>
+<td>1 slide, pathology report</td>
+<td>HGAT</td>
+<td>Diffuse astrocytic and oligodendroglial tumor</td>
+<td>tumor</td>
+<td>Updated via OpenPBTA subtyping</td>
+<td>None documented</td>
+<td>HGG, H3 G35</td>
+</tr>
+<tr class="even">
+<td>BS_P8WN8XEQ</td>
+<td>hemispheric</td>
+<td>7316-1105</td>
+<td>549712</td>
+<td>PT_X71D7G5S</td>
+<td>WGS</td>
+<td>Supratentorial or Spinal Cord PNET</td>
+<td>High-grade glioma</td>
+<td>No path report available</td>
+<td>reviewed - OK with new dx</td>
+<td>1 slide, pathology report</td>
+<td>HGAT</td>
+<td>Diffuse astrocytic and oligodendroglial tumor</td>
+<td>tumor</td>
+<td>Updated via OpenPBTA subtyping</td>
+<td>None documented</td>
+<td>HGG, H3 G35</td>
+</tr>
+<tr class="odd">
+<td>BS_23M72ABG</td>
+<td>NA</td>
+<td>7316-523</td>
+<td>588343</td>
+<td>PT_AQWDQW27</td>
+<td>RNA-Seq</td>
+<td>Meningioma</td>
+<td></s>Ependymoma</s> Meningioma</td>
+<td>No path report available</td>
+<td>reviewed - keep as meningioma</td>
+<td>2 slides, pathology report; email request for radiology</td>
+<td>tumor</td>
+<td><s>Ependymal tumor</s></td>
+<td>tumor</td>
+<td></td>
+<td>None documented</td>
+<td><s>ST-EPN-YAP</s></td>
+</tr>
+<tr class="even">
+<td>BS_5JM573JC</td>
+<td>hemispheric</td>
+<td>7316-2255</td>
+<td>717166</td>
+<td>PT_6Q0NPVP3</td>
+<td>RNA-Seq</td>
+<td>Ganglioglioma</td>
+<td>Diffuse midline glioma</td>
+<td>Path report ganglioglioma with extensive chondroid metaplasia</td>
+<td>need to review radiology report; if not diffuse, ganglioglioma, H3 mut - cannot review</td>
+<td>pathology report (no slides - from Pitt); email request for radiology - will not receive in the short term</td>
+<td>HGAT</td>
+<td>Diffuse astrocytic and oligodendroglial tumor</td>
+<td>tumor</td>
+<td>Updated via OpenPBTA subtyping</td>
+<td>None documented</td>
+<td>DMG, H3 K28</td>
+</tr>
+<tr class="odd">
+<td>BS_E5H6CFYT</td>
+<td>hemispheric</td>
+<td>7316-2255</td>
+<td>711134</td>
+<td>PT_6Q0NPVP3</td>
+<td>WGS</td>
+<td>Ganglioglioma</td>
+<td>Diffuse midline glioma</td>
+<td>Path report ganglioglioma with extensive chondroid metaplasia</td>
+<td>need to review radiology report; if not diffuse, ganglioglioma, H3 mut - cannot review</td>
+<td>pathology report (no slides - from Pitt); email request for radiology - will not receive in the short term</td>
+<td>HGAT</td>
+<td>Diffuse astrocytic and oligodendroglial tumor</td>
+<td>tumor</td>
+<td>Updated via OpenPBTA subtyping</td>
+<td>None documented</td>
+<td>DMG, H3 K28</td>
+</tr>
+<tr class="even">
+<td>BS_BFDEZK1C</td>
+<td>other</td>
+<td>7316-1102</td>
+<td>549714</td>
+<td>PT_5BWZA0NT</td>
+<td>WGS</td>
+<td>Supratentorial or Spinal Cord PNET</td>
+<td>Diffuse midline glioma</td>
+<td>No path report available</td>
+<td>reviewed - OK with new dx</td>
+<td>3 slides, pathology report</td>
+<td>HGAT</td>
+<td>Diffuse astrocytic and oligodendroglial tumor</td>
+<td>tumor</td>
+<td>Updated via OpenPBTA subtyping</td>
+<td>None documented</td>
+<td>DMG, H3 K28</td>
+</tr>
+<tr class="odd">
+<td>BS_MB7WN0ZB</td>
+<td>other</td>
+<td>7316-1102</td>
+<td>470031</td>
+<td>PT_5BWZA0NT</td>
+<td>RNA-Seq</td>
+<td>Supratentorial or Spinal Cord PNET</td>
+<td>Diffuse midline glioma</td>
+<td>No path report available</td>
+<td>reviewed - OK with new dx</td>
+<td>3 slides, pathology report</td>
+<td>HGAT</td>
+<td>Diffuse astrocytic and oligodendroglial tumor</td>
+<td>tumor</td>
+<td>Updated via OpenPBTA subtyping</td>
+<td>None documented</td>
+<td>DMG, H3 K28</td>
+</tr>
+<tr class="even">
+<td>BS_H1XPVS9A</td>
+<td>hemispheric</td>
+<td>7316-1106</td>
+<td>549575</td>
+<td>PT_T8V9ES93</td>
+<td>RNA-Seq</td>
+<td>High-grade glioma/astrocytoma (WHO grade III/IV)</td>
+<td><s>High-grade glioma</s> Low-grade glioma</td>
+<td>No path report available</td>
+<td>reviewed - new dx: Malignant PXA with BRAF V600E mutation</td>
+<td>2 slides, pathology report</td>
+<td>HGAT</td>
+<td><s>Diffuse astrocytic and oligodendroglial tumor</s> Low-grade astrocytic tumor</td>
+<td>tumor</td>
+<td>Updated via OpenPBTA subtyping</td>
+<td>None documented</td>
+<td>LGG, BRAF V600E</td>
+</tr>
+<tr class="odd">
+<td>BS_J4E9SW51</td>
+<td>hemispheric</td>
+<td>7316-1106</td>
+<td>549708</td>
+<td>PT_T8V9ES93</td>
+<td>WGS</td>
+<td>High-grade glioma/astrocytoma (WHO grade III/IV)</td>
+<td><s>High-grade glioma</s> Low-grade glioma</td>
+<td>No path report available</td>
+<td>reviewed - OK with new dx (PXA/LGG)</td>
+<td>2 slides, pathology report</td>
+<td>HGAT</td>
+<td><s>Diffuse astrocytic and oligodendroglial tumor</s> Low-grade astrocytic tumor</td>
+<td>tumor</td>
+<td>Updated via OpenPBTA subtyping</td>
+<td>None documented</td>
+<td>LGG, BRAF V600E</td>
+</tr>
+<tr class="even">
+<td>BS_J8VX4D17</td>
+<td>mixed</td>
+<td>7316-506</td>
+<td>588299</td>
+<td>PT_7E3V3JFX</td>
+<td>RNA-Seq</td>
+<td>Ependymoma</td>
+<td><s>Diffuse midline glioma</s> Ependymoma</td>
+<td>Path report posterior fossa ependymoma</td>
+<td>reviewed - keep EPN with H3 mut- rare</td>
+<td></td>
+<td>HGAT</td>
+<td><s>Diffuse astrocytic and oligodendroglial tumor</s> Ependymal tumor</td>
+<td>tumor</td>
+<td>Updated via OpenPBTA subtyping</td>
+<td>None documented</td>
+<td><s>DMG, H3 K28</s></td>
+</tr>
+<tr class="odd">
+<td>BS_G16NM5WJ</td>
+<td>mixed</td>
+<td>7316-506</td>
+<td>588011</td>
+<td>PT_7E3V3JFX</td>
+<td>WGS</td>
+<td>Ependymoma</td>
+<td><s>Diffuse midline glioma</s> Ependymoma</td>
+<td>Path report posterior fossa ependymoma</td>
+<td>reviewed - keep EPN with H3 mut- rare</td>
+<td></td>
+<td>HGAT</td>
+<td><s>Diffuse astrocytic and oligodendroglial tumor</s> Ependymal tumor</td>
+<td>tumor</td>
+<td>Updated via OpenPBTA subtyping</td>
+<td>None documented</td>
+<td><s>DMG, H3 K28</s></td>
+</tr>
+<tr class="even">
+<td>BS_KSKZ9J7J</td>
+<td>NA</td>
+<td>7316-765</td>
+<td>470731</td>
+<td>PT_80NVYCBS</td>
+<td>RNA-Seq</td>
+<td>Ependymoma</td>
+<td>CNS Embryonal Tumor</td>
+<td>Path report anaplastic ependymoma</td>
+<td>reviewed - OK with new dx</td>
+<td></td>
+<td>Embryonal Tumor</td>
+<td>Embryonal tumor</td>
+<td>tumor</td>
+<td>Updated via OpenPBTA subtyping</td>
+<td>None documented</td>
+<td>CNS HGNET-MN1</td>
+</tr>
+<tr class="odd">
+<td>BS_K07KNTFY</td>
+<td>NA</td>
+<td>7316-272</td>
+<td>588001</td>
+<td>PT_00G007DM</td>
+<td>WGS</td>
+<td>Medulloblastoma</td>
+<td>Embryonal tumor with multilayer rosettes</td>
+<td>Path report had “medulloblastoma” handwritten, but final dx ETMR with multilayer rosettes</td>
+<td>reviewed - OK with new dx</td>
+<td></td>
+<td>ETMR</td>
+<td>Embryonal tumor</td>
+<td>tumor</td>
+<td>Updated via OpenPBTA subtyping</td>
+<td>None documented</td>
+<td>ETMR, C19MC-altered</td>
+</tr>
+<tr class="even">
+<td>BS_QWNBZ9RJ</td>
+<td>NA</td>
+<td>7316-272</td>
+<td>588287</td>
+<td>PT_00G007DM</td>
+<td>RNA-Seq</td>
+<td>Medulloblastoma</td>
+<td>Embryonal tumor with multilayer rosettes</td>
+<td>Path report had “medulloblastoma” handwritten, but final dx ETMR with multilayer rosettes</td>
+<td>reviewed - OK with new dx</td>
+<td></td>
+<td>ETMR</td>
+<td>Embryonal tumor</td>
+<td>tumor</td>
+<td>Updated via OpenPBTA subtyping</td>
+<td>None documented</td>
+<td>ETMR, C19MC-altered</td>
+</tr>
+<tr class="odd">
+<td>BS_P39SQPTS</td>
+<td>NA</td>
+<td>7316-447</td>
+<td>588300</td>
+<td>PT_01MZ62KG</td>
+<td>RNA-Seq</td>
+<td>Pineoblastoma</td>
+<td>Embryonal tumor with multilayer rosettes</td>
+<td>Path report PNET/pineoblastoma; “there are scattered true rosettes (Flexner-Wintersteiner)”</td>
+<td>reviewed - OK with new dx</td>
+<td></td>
+<td>ETMR</td>
+<td>Embryonal tumor</td>
+<td>tumor</td>
+<td>Updated via OpenPBTA subtyping</td>
+<td>None documented</td>
+<td>ETMR, C19MC-altered</td>
+</tr>
+<tr class="even">
+<td>BS_TE8QFF7T</td>
+<td>NA</td>
+<td>7316-447</td>
+<td>588012</td>
+<td>PT_01MZ62KG</td>
+<td>WGS</td>
+<td>Pineoblastoma</td>
+<td>Embryonal tumor with multilayer rosettes</td>
+<td>Path report PNET/pineoblastoma; “there are scattered true rosettes (Flexner-Wintersteiner)”</td>
+<td>reviewed - OK with new dx</td>
+<td></td>
+<td>ETMR</td>
+<td>Embryonal tumor</td>
+<td>tumor</td>
+<td>Updated via OpenPBTA subtyping</td>
+<td>None documented</td>
+<td>ETMR, C19MC-altered</td>
+</tr>
+<tr class="odd">
+<td>BS_N6N147BY</td>
+<td>NA</td>
+<td>7316-238</td>
+<td>232096</td>
+<td>PT_X648RVMK</td>
+<td>RNA-Seq</td>
+<td>High-grade glioma/astrocytoma (WHO grade III/IV)</td>
+<td>Embryonal tumor with multilayer rosettes</td>
+<td>Path report handwritten “high grade glioma”; final dx infiltrating glioneuronal neoplasm</td>
+<td>reviewed - OK with new dx (ETMR original tumor 7316-2975 and this one consistent)</td>
+<td></td>
+<td>ETMR</td>
+<td>Embryonal tumor</td>
+<td>tumor</td>
+<td>Updated via OpenPBTA subtyping</td>
+<td>None documented</td>
+<td>ETMR, C19MC-altered</td>
+</tr>
+<tr class="even">
+<td>BS_5P1TN10Z</td>
+<td>hemispheric</td>
+<td>7316-158</td>
+<td>746061</td>
+<td>PT_9BZETM0M</td>
+<td>RNA-Seq</td>
+<td>Supratentorial or Spinal Cord PNET</td>
+<td>High-grade glioma</td>
+<td>Path report PNET</td>
+<td>reviewed - OK with new dx grade III-IV</td>
+<td></td>
+<td>HGAT</td>
+<td>Diffuse astrocytic and oligodendroglial tumor</td>
+<td>tumor</td>
+<td>from PNET to HGG due to H3F3A mutation;Updated via OpenPBTA subtyping</td>
+<td>None documented</td>
+<td>HGG, H3 G35</td>
+</tr>
+<tr class="odd">
+<td>BS_STNH7YSX</td>
+<td>hemispheric</td>
+<td>7316-158</td>
+<td>746056</td>
+<td>PT_9BZETM0M</td>
+<td>WGS</td>
+<td>Supratentorial or Spinal Cord PNET</td>
+<td>High-grade glioma</td>
+<td>Path report PNET</td>
+<td>reviewed - OK with new dx grade III-IV</td>
+<td></td>
+<td>HGAT</td>
+<td>Diffuse astrocytic and oligodendroglial tumor</td>
+<td>tumor</td>
+<td>from PNET to HGG due to H3F3A mutation;Updated via OpenPBTA subtyping</td>
+<td>None documented</td>
+<td>HGG, H3 G35</td>
+</tr>
+<tr class="even">
+<td>BS_TV5B86ZD</td>
+<td>hemispheric</td>
+<td>7316-158</td>
+<td>150593</td>
+<td>PT_9BZETM0M</td>
+<td>RNA-Seq</td>
+<td>Supratentorial or Spinal Cord PNET</td>
+<td>High-grade glioma</td>
+<td>Path report PNET</td>
+<td>reviewed - OK with new dx grade III-IV</td>
+<td></td>
+<td>HGAT</td>
+<td>Diffuse astrocytic and oligodendroglial tumor</td>
+<td>tumor</td>
+<td>from PNET to HGG due to H3F3A mutation;Updated via OpenPBTA subtyping</td>
+<td>None documented</td>
+<td>HGG, H3 G35</td>
+</tr>
+</tbody>
+</table>
+<p>And the notes:</p>
 <blockquote>
-<p>In our cohort of [adamantinomatous craniopharyngiomas] specimens from 117 patients we found <em>CTNNB1</em> mutations in 89 cases (76.1%).</p>
+<h4 id="few-notes">Few notes:</h4>
+<ol style="list-style-type: decimal">
+<li><code>PT_7E3V3JFX</code> specimens were consistent with the original EPN dx, so pathology would call this a rare EPN, H3 K28 mutated tumor, rather than DMG.</li>
+<li><code>PT_AQWDQW27</code> specimen was consistent with meningioma, even though it has a hallmark EPN fusion, so pathology would also call this a rare meningioma with a <em>YAP1</em> fusion.</li>
+<li>Because 1 is a rare tumor (maybe first seen), the logic of searching for all H3 K28 mutations in <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249">HGG subtyping</a> would convert this sample by default.</li>
+<li>Pathology confirmed this HGG BRAF V600E mutant tumor, <a href="https://cbethell.github.io/open-pbta-output/09-HGG-with-braf-clustering.nb.html#identify_sample_that_clusters_with_lgat"><code>BS_H1XPVS9A</code></a>, to be a LGAT (PXA). I updated <code>molecular_subtype</code> here based on what it would look like, but this should come through via the LGAT <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/631">subtyping</a> ticket. How should we add this info?</li>
+<li>Per <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/905">this issue</a>, we are updating BS_YB99Q6TN (WGS) and BS_5965SFPZ (which is the matched RNAseq sample) belonging to sample_id== “7316-2557” as H3 K28M as per manual review of the pathology report, which lists the integrated diagnosis for this tumor as “DIFFUSE MIDLINE GLIOMA, H3-K27M MUTANT”. The K28M mutation is also found in Mutect2 calls.</li>
+</ol>
 </blockquote>
-<p>There are samples described as <code>Adamantinomatous</code> in pathology reports, so we can update the <code>harmonized_diagnosis</code> and <code>molecular_subtype</code> information accordingly.</p>
+</div>
 <div id="set-up" class="section level2">
 <h2>Set up</h2>
-<div id="libraries" class="section level3">
-<h3>Libraries</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVGhpcyBsb2dpYyBpcyB0aGUgc2FtZSBhcyBhbmFseXNlcy9nZW5lLXNldC1lbnJpY2htZW50LWFuYWx5c2lzLzAyLW1vZGVsLWdzZWEuUm1kIiwiIyBBc3NpZ25pbmcgcGFyYW1zJGlzX2NpIHRvIHJ1bm5pbmdfaW5fY2kgYXZvaWRzIGEgbG9ja2VkIGJpbmRpbmcgZXJyb3IiLCJydW5uaW5nX2luX2NpIDwtIHBhcmFtcyRpc19jaSIsIiIsIiMgQXJlIHdlIHRlc3Rpbmc/IEluIGNhc2Ugb2YgYSBub24gMC8xIG51bWJlciwgd2UgcmVjYXN0IGFzIGxvZ2ljYWwsIGFuZCB0aGVuIiwiIyBlbnN1cmUgbG9naWNhbC4iLCJpZiAocnVubmluZ19pbl9jaSAlaW4lIGMoMCwxKSkgcnVubmluZ19pbl9jaSA8LSBhcy5sb2dpY2FsKHJ1bm5pbmdfaW5fY2kpIiwiaWYgKCEoaXMubG9naWNhbChydW5uaW5nX2luX2NpKSkpXG57XG4gIHN0b3AoXCJcXG5cXG5FUlJPUjogVGhlIHBhcmFtZXRlciBgaXNfY2lgIHNob3VsZCBiZSBGQUxTRS9UUlVFIChvciAwLzEpLlwiKVxufSJdfQ== -->
+<pre class="r"><code># This logic is the same as analyses/gene-set-enrichment-analysis/02-model-gsea.Rmd
+# Assigning params$is_ci to running_in_ci avoids a locked binding error
+running_in_ci &lt;- params$is_ci
+
+# Are we testing? In case of a non 0/1 number, we recast as logical, and then
+# ensure logical.
+if (running_in_ci %in% c(0,1)) running_in_ci &lt;- as.logical(running_in_ci)
+if (!(is.logical(running_in_ci)))
+{
+  stop(&quot;\n\nERROR: The parameter `is_ci` should be FALSE/TRUE (or 0/1).&quot;)
+}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoibGlicmFyeSh0aWR5dmVyc2UpIn0= -->
@@ -2970,195 +3423,714 @@ div.tocify {
 <!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-</div>
-<div id="input" class="section level3">
-<h3>Input</h3>
+<div id="directory-and-files" class="section level3">
+<h3>Directory and files</h3>
+<div id="directories" class="section level4">
+<h4>Directories</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbImRhdGFfZGlyIDwtIGZpbGUucGF0aChcIi4uXCIsIFwiLi5cIiwgXCJkYXRhXCIpIiwicmVzdWx0c19kaXIgPC0gXCJyZXN1bHRzXCIiLCJoaXN0b2xvZ2llc19maWxlIDwtIGZpbGUucGF0aChkYXRhX2RpciwgXCJwYnRhLWhpc3RvbG9naWVzLWJhc2UudHN2XCIpIiwiY29tcGlsZWRfc3VidHlwZXNfZmlsZSA8LSBmaWxlLnBhdGgocmVzdWx0c19kaXIsIFwiY29tcGlsZWRfbW9sZWN1bGFyX3N1YnR5cGVzLnRzdlwiKSJdfQ== -->
-<pre class="r"><code>data_dir &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;data&quot;)
-results_dir &lt;- &quot;results&quot;
-histologies_file &lt;- file.path(data_dir, &quot;pbta-histologies-base.tsv&quot;)
-compiled_subtypes_file &lt;- file.path(results_dir, &quot;compiled_molecular_subtypes.tsv&quot;)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbInJvb3RfZGlyIDwtIHJwcm9qcm9vdDo6ZmluZF9yb290KHJwcm9qcm9vdDo6aGFzX2RpcihcIi5naXRcIikpIiwiZGF0YV9kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcImRhdGFcIikiLCJyZXN1bHRzX2RpciA8LSBcInJlc3VsdHNcIiJdfQ== -->
+<pre class="r"><code>root_dir &lt;- rprojroot::find_root(rprojroot::has_dir(&quot;.git&quot;))
+data_dir &lt;- file.path(root_dir, &quot;data&quot;)
+results_dir &lt;- &quot;results&quot;</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="output" class="section level3">
-<h3>Output</h3>
+<div id="input" class="section level4">
+<h4>Input</h4>
+<p>When we run this locally, we want to tie it to a specific version of the histologies file <em>prior</em> to feedback we received from pathology that is recorded on <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/609">#609</a>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoib3V0cHV0X2ZpbGUgPC0gZmlsZS5wYXRoKHJlc3VsdHNfZGlyLCBcImNyYW5pb19hZGFtX3N1YnR5cGVzLnRzdlwiKSJ9 -->
-<pre class="r"><code>output_file &lt;- file.path(results_dir, &quot;cranio_adam_subtypes.tsv&quot;)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiaWYgKHJ1bm5pbmdfaW5fY2kpIHtcbiAgaGlzdG9sb2dpZXNfZmlsZSA8LSBmaWxlLnBhdGgoZGF0YV9kaXIsIFwicGJ0YS1oaXN0b2xvZ2llcy1iYXNlLnRzdlwiKVxufSBlbHNlIHtcbiAgaGlzdG9sb2dpZXNfZmlsZSA8LSBmaWxlLnBhdGgoZGF0YV9kaXIsIFwicmVsZWFzZS12MTgtMjAyMDExMjNcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJwYnRhLWhpc3RvbG9naWVzLWJhc2UudHN2XCIpXG59In0= -->
+<pre class="r"><code>if (running_in_ci) {
+  histologies_file &lt;- file.path(data_dir, &quot;pbta-histologies-base.tsv&quot;)
+} else {
+  histologies_file &lt;- file.path(data_dir, &quot;release-v18-20201123&quot;,
+                                &quot;pbta-histologies-base.tsv&quot;)
+}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjpbImNvbXBpbGVkX3Jlc3VsdHNfZmlsZSA8LSBmaWxlLnBhdGgocmVzdWx0c19kaXIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiY29tcGlsZWRfbW9sZWN1bGFyX3N1YnR5cGVzX3dpdGhfY2xpbmljYWxfZmVlZGJhY2tfYW5kX3JlcG9ydF9pbmZvLnRzdlwiKSIsImZ1c2lvbnNfZmlsZSA8LSBmaWxlLnBhdGgocm9vdF9kaXIsXG4gIFwiYW5hbHlzZXNcIixcbiAgXCJmdXNpb25fZmlsdGVyaW5nXCIsXG4gIFwicmVzdWx0c1wiLFxuICBcInBidGEtZnVzaW9uLXB1dGF0aXZlLW9uY29nZW5pYy50c3ZcIikiXX0= -->
+<pre class="r"><code>compiled_results_file &lt;- file.path(results_dir,
+                                   &quot;compiled_molecular_subtypes_with_clinical_feedback_and_report_info.tsv&quot;)
+fusions_file &lt;- file.path(root_dir,
+  &quot;analyses&quot;,
+  &quot;fusion_filtering&quot;,
+  &quot;results&quot;,
+  &quot;pbta-fusion-putative-oncogenic.tsv&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="output" class="section level4">
+<h4>Output</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoib3V0cHV0X2ZpbGUgPC0gZmlsZS5wYXRoKHJlc3VsdHNfZGlyLFxuICAgICAgICAgICAgICAgICAgICAgICAgIFwiY29tcGlsZWRfbW9sZWN1bGFyX3N1YnR5cGVzX3dpdGhfY2xpbmljYWxfcGF0aG9sb2d5X2ZlZWRiYWNrX2FuZF9yZXBvcnRfaW5mby50c3ZcIikifQ== -->
+<pre class="r"><code>output_file &lt;- file.path(results_dir,
+                         &quot;compiled_molecular_subtypes_with_clinical_pathology_feedback_and_report_info.tsv&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
 </div>
 </div>
 <div id="read-in-data" class="section level2">
 <h2>Read in data</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiaGlzdG9sb2dpZXNfZGYgPC0gcmVhZF90c3YoaGlzdG9sb2dpZXNfZmlsZSkifQ== -->
-<pre class="r"><code>histologies_df &lt;- read_tsv(histologies_file)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgaW50ZWdyYXRlZF9kaWFnbm9zaXMgPSBjb2xfbG9naWNhbCgpLFxuICBOb3RlcyA9IGNvbF9sb2dpY2FsKCksXG4gIE9TX2RheXMgPSBjb2xfZG91YmxlKCksXG4gIGFnZV9sYXN0X3VwZGF0ZV9kYXlzID0gY29sX2RvdWJsZSgpLFxuICBtb2xlY3VsYXJfc3VidHlwZSA9IGNvbF9sb2dpY2FsKCksXG4gIG5vcm1hbF9mcmFjdGlvbiA9IGNvbF9kb3VibGUoKSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBjb2xfZG91YmxlKCksXG4gIHR1bW9yX3Bsb2lkeSA9IGNvbF9kb3VibGUoKVxuKVxuIn0= -->
-<pre><code>Parsed with column specification:
-cols(
-  .default = col_character(),
-  integrated_diagnosis = col_logical(),
-  Notes = col_logical(),
-  OS_days = col_double(),
-  age_last_update_days = col_double(),
-  molecular_subtype = col_logical(),
-  normal_fraction = col_double(),
-  tumor_fraction = col_double(),
-  tumor_ploidy = col_double()
-)</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
-<pre><code>See spec(...) for full column specifications.</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoic3VidHlwZXNfZGYgPC0gcmVhZF90c3YoY29tcGlsZWRfc3VidHlwZXNfZmlsZSxcbiAgICAgICAgICAgICAgICAgICAgICAgIGd1ZXNzX21heCA9IDEwMDAwKSJ9 -->
-<pre class="r"><code>subtypes_df &lt;- read_tsv(compiled_subtypes_file,
-                        guess_max = 10000)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBzYW1wbGVfaWQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIG1vbGVjdWxhcl9zdWJ0eXBlID0gY29sX2NoYXJhY3RlcigpLFxuICBpbnRlZ3JhdGVkX2RpYWdub3NpcyA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgc2hvcnRfaGlzdG9sb2d5ID0gY29sX2NoYXJhY3RlcigpLFxuICBicm9hZF9oaXN0b2xvZ3kgPSBjb2xfY2hhcmFjdGVyKCksXG4gIE5vdGVzID0gY29sX2NoYXJhY3RlcigpXG4pXG4ifQ== -->
-<pre><code>Parsed with column specification:
-cols(
-  Kids_First_Participant_ID = col_character(),
-  sample_id = col_character(),
-  Kids_First_Biospecimen_ID = col_character(),
-  molecular_subtype = col_character(),
-  integrated_diagnosis = col_character(),
-  short_histology = col_character(),
-  broad_histology = col_character(),
-  Notes = col_character()
-)</code></pre>
-<!-- rnb-message-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<div id="samples-to-be-reclassified" class="section level3">
-<h3>Samples to be reclassified</h3>
-<p>The instructions on <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/994">#994</a> are to use specific sample identifiers to do the reclassification because it is on the basis of pathology report review.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiam9pbmVkX2RmIDwtIGhpc3RvbG9naWVzX2RmICU+JVxuICBzZWxlY3QoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCxcbiAgICAgICAgIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsXG4gICAgICAgICBzYW1wbGVfaWQsXG4gICAgICAgICBzYW1wbGVfdHlwZSwgICMgcmVxdWlyZWQgdG8gZmlsdGVyIG91dCBub3JtYWwgc2FtcGxlc1xuICAgICAgICAgcGF0aG9sb2d5X2RpYWdub3NpcyxcbiAgICAgICAgIHBhdGhvbG9neV9mcmVlX3RleHRfZGlhZ25vc2lzLFxuICAgICAgICAgdHVtb3JfZGVzY3JpcHRvcikgJT4lXG4gIGlubmVyX2pvaW4oc3VidHlwZXNfZGYsXG4gICAgICAgICAgICAgYnkgPSBjKFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLCBcbiAgICAgICAgICAgICAgICAgICAgXCJLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEXCIsXG4gICAgICAgICAgICAgICAgICAgIFwic2FtcGxlX2lkXCIpKSJ9 -->
-<pre class="r"><code>joined_df &lt;- histologies_df %&gt;%
-  select(Kids_First_Biospecimen_ID,
-         Kids_First_Participant_ID,
-         sample_id,
-         sample_type,  # required to filter out normal samples
-         pathology_diagnosis,
-         pathology_free_text_diagnosis,
-         tumor_descriptor) %&gt;%
-  inner_join(subtypes_df,
-             by = c(&quot;Kids_First_Biospecimen_ID&quot;, 
-                    &quot;Kids_First_Participant_ID&quot;,
-                    &quot;sample_id&quot;))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbImhpc3RvbG9naWVzX2RmIDwtIHJlYWRfdHN2KGhpc3RvbG9naWVzX2ZpbGUsIGd1ZXNzX21heCA9IDEwMDAwKSIsImNvbXBpbGVkX2RmIDwtIHJlYWRfdHN2KGNvbXBpbGVkX3Jlc3VsdHNfZmlsZSwgZ3Vlc3NfbWF4ID0gMTAwMDApIiwiZnVzaW9uc19kZiA8LSByZWFkX3RzdihmdXNpb25zX2ZpbGUsIGd1ZXNzX21heCA9IDEwMDAwKSJdfQ== -->
+<pre class="r"><code>histologies_df &lt;- read_tsv(histologies_file, guess_max = 10000)
+compiled_df &lt;- read_tsv(compiled_results_file, guess_max = 10000)
+fusions_df &lt;- read_tsv(fusions_file, guess_max = 10000)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Here’s the same filtering steps that are performed on the issue itself that we’ll save in a new data frame.</p>
+</div>
+<div id="revise-subtyping-calls-based-on-pathology-feedback" class="section level2">
+<h2>Revise subtyping calls based on pathology feedback</h2>
+<div id="pt_7e3v3jfx" class="section level3">
+<h3><code>PT_7E3V3JFX</code></h3>
+<p><code>PT_7E3V3JFX</code> was classified in <code>molecular-subtyping-HGG</code> as <code>DMG, H3 K28</code> because the first step in that module was to identify any samples in the cohort with “defining lesions:” H3 K28 or H3 G35 (original subtyping issue: <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249">#249</a>).</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjpbImFjcF9kZiA8LSBqb2luZWRfZGYgJT4lXG4gICMgU2FtZSBsb2dpYyBhcyBvbiB0aGUgaXNzdWUhXG4gIGZpbHRlcihwYXRob2xvZ3lfZGlhZ25vc2lzID09IFwiQ3JhbmlvcGhhcnluZ2lvbWFcIixcbiAgICAgICAgIG1vbGVjdWxhcl9zdWJ0eXBlID09IFwiQ1JBTklPLCBUbyBiZSBjbGFzc2lmaWVkXCIsXG4gICAgICAgICBzdHJfZGV0ZWN0KHN0cl90b19sb3dlcihwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3NpcyksIFxuICAgICAgICAgICAgICAgICAgICBcImFkYW1hbnRpbm9tYXRvdXNcIikpICU+JVxuICBzZWxlY3Qoc2FtcGxlX2lkLFxuICAgICAgICAgcGF0aG9sb2d5X2ZyZWVfdGV4dF9kaWFnbm9zaXMsXG4gICAgICAgICBtb2xlY3VsYXJfc3VidHlwZSkgJT4lXG4gIGRpc3RpbmN0KCkiLCIiLCJhY3BfZGYiXX0= -->
-<pre class="r"><code>acp_df &lt;- joined_df %&gt;%
-  # Same logic as on the issue!
-  filter(pathology_diagnosis == &quot;Craniopharyngioma&quot;,
-         molecular_subtype == &quot;CRANIO, To be classified&quot;,
-         str_detect(str_to_lower(pathology_free_text_diagnosis), 
-                    &quot;adamantinomatous&quot;)) %&gt;%
-  select(sample_id,
-         pathology_free_text_diagnosis,
-         molecular_subtype) %&gt;%
-  distinct()
-
-acp_df</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgJT4lXG4gIGZpbHRlcihLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID09IFwiUFRfN0UzVjNKRlhcIikifQ== -->
+<pre class="r"><code>compiled_df %&gt;%
+  filter(Kids_First_Participant_ID == &quot;PT_7E3V3JFX&quot;)</code></pre>
 <!-- rnb-source-end -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["sample_id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["pathology_free_text_diagnosis"],"name":[2],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[3],"type":["chr"],"align":["left"]}],"data":[{"1":"7316-3891","2":"adamantinomatous craniopharyngioma","3":"CRANIO, To be classified"},{"1":"7316-1795","2":"craniopharyngioma, adamantinomatous type, who grade i","3":"CRANIO, To be classified"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID"],"name":[3],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[4],"type":["chr"],"align":["left"]},{"label":["integrated_diagnosis"],"name":[5],"type":["chr"],"align":["left"]},{"label":["short_histology"],"name":[6],"type":["chr"],"align":["left"]},{"label":["broad_histology"],"name":[7],"type":["chr"],"align":["left"]},{"label":["Notes"],"name":[8],"type":["chr"],"align":["left"]},{"label":["tumor_descriptor"],"name":[9],"type":["chr"],"align":["left"]},{"label":["harmonized_diagnosis"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_7E3V3JFX","2":"7316-506","3":"BS_G16NM5WJ","4":"DMG, H3 K28","5":"Diffuse midline glioma, H3 K28-mutant","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_7E3V3JFX","2":"7316-506","3":"BS_G16NM5WJ","4":"EPN, To be classified","5":"NA","6":"Ependymoma","7":"Ependymal tumor","8":"NA","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_7E3V3JFX","2":"7316-506","3":"BS_J8VX4D17","4":"DMG, H3 K28","5":"Diffuse midline glioma, H3 K28-mutant","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_7E3V3JFX","2":"7316-506","3":"BS_J8VX4D17","4":"EPN, To be classified","5":"NA","6":"Ependymoma","7":"Ependymal tumor","8":"NA","9":"Initial CNS Tumor","10":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>We can pull the <code>sample_id</code> values out and use that in our next steps.</p>
+<p>The relevant notes above are</p>
+<blockquote>
+<ol style="list-style-type: decimal">
+<li><code>PT_7E3V3JFX</code> specimens were consistent with the original EPN dx, so pathology would call this a rare EPN, H3 K28 mutated tumor, rather than DMG.</li>
+<li>Because 1 is a rare tumor (maybe first seen), the logic of searching for all H3 K28 mutations in <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249">HGG subtyping</a> would convert this sample by default - how to handle this?</li>
+</ol>
+</blockquote>
+<p>So we will revise the <code>molecular_subtype</code>, <code>integrated_diagnosis</code>, <code>short_histology</code>, and <code>broad_histology</code> accordingly.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoic2FtcGxlX2lkc19yZWNsYXNzaWZpY2F0aW9uIDwtIGFjcF9kZiAlPiVcbiAgcHVsbChzYW1wbGVfaWQpIn0= -->
-<pre class="r"><code>sample_ids_reclassification &lt;- acp_df %&gt;%
-  pull(sample_id)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgPC0gY29tcGlsZWRfZGYgJT4lXG4gIG11dGF0ZShcbiAgICBpbnRlZ3JhdGVkX2RpYWdub3NpcyA9IGNhc2Vfd2hlbihcbiAgICAgIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgPT0gXCJQVF83RTNWM0pGWFwiIH4gXCJFcGVuZHltb21hLCBIMyBLMjgtbXV0YW50XCIsXG4gICAgICBUUlVFIH4gaW50ZWdyYXRlZF9kaWFnbm9zaXNcbiAgICApLFxuICAgIHNob3J0X2hpc3RvbG9neSA9IGNhc2Vfd2hlbihcbiAgICAgIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgPT0gXCJQVF83RTNWM0pGWFwiIH4gXCJFcGVuZHltb21hXCIsXG4gICAgICBUUlVFIH4gc2hvcnRfaGlzdG9sb2d5XG4gICAgKSxcbiAgICBicm9hZF9oaXN0b2xvZ3kgPSBjYXNlX3doZW4oXG4gICAgICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID09IFwiUFRfN0UzVjNKRlhcIiB+IFwiRXBlbmR5bWFsIHR1bW9yXCIsXG4gICAgICBUUlVFIH4gYnJvYWRfaGlzdG9sb2d5XG4gICAgKSxcbiAgICBtb2xlY3VsYXJfc3VidHlwZSA9IGNhc2Vfd2hlbihcbiAgICAgIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgPT0gXCJQVF83RTNWM0pGWFwiIH4gXCJFUE4sIEgzIEsyOFwiLFxuICAgICAgVFJVRSB+IG1vbGVjdWxhcl9zdWJ0eXBlXG4gICAgKSxcbiAgICBOb3RlcyA9IGNhc2Vfd2hlbihcbiAgICAgIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgPT0gXCJQVF83RTNWM0pGWFwiIH4gXCJVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmdcIixcbiAgICAgIFRSVUUgfiBOb3Rlc1xuICAgIClcbiAgKSJ9 -->
+<pre class="r"><code>compiled_df &lt;- compiled_df %&gt;%
+  mutate(
+    integrated_diagnosis = case_when(
+      Kids_First_Participant_ID == &quot;PT_7E3V3JFX&quot; ~ &quot;Ependymoma, H3 K28-mutant&quot;,
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      Kids_First_Participant_ID == &quot;PT_7E3V3JFX&quot; ~ &quot;Ependymoma&quot;,
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      Kids_First_Participant_ID == &quot;PT_7E3V3JFX&quot; ~ &quot;Ependymal tumor&quot;,
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      Kids_First_Participant_ID == &quot;PT_7E3V3JFX&quot; ~ &quot;EPN, H3 K28&quot;,
+      TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(
+      Kids_First_Participant_ID == &quot;PT_7E3V3JFX&quot; ~ &quot;Updated via OpenPBTA subtyping&quot;,
+      TRUE ~ Notes
+    )
+  )</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
+<div id="bs_h1xpvs9a" class="section level3">
+<h3><code>BS_H1XPVS9A</code></h3>
+<p><code>BS_H1XPVS9A</code> is from a sample with a BRAF V600E mutation that is H3 wildtype. This sample was originally labeled as a HGG. In low-dimensional transcriptomic space (e.g., UMAP, t-SNE), <code>BS_H1XPVS9A</code> clusters with LGG samples - most likely due to harboring a BRAF V600E mutation. (See <code>molecular-subtyping-HGG</code>.)</p>
+<p>The relevant note from above:</p>
+<blockquote>
+<ol start="4" style="list-style-type: decimal">
+<li>Pathology confirmed this HGG BRAF V600E mutant tumor, <code>BS_H1XPVS9A</code> to be a malignant PXA. <span class="citation">@kgaonkar6</span> updated <code>molecular_subtype</code> here based on what it would look like, but this should come through via the LGAT <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/631">subtyping</a> ticket.</li>
+</ol>
+</blockquote>
+<p>The steps for LGAT subtyping are to classify LGG samples on the basis of the presence/absence of <em>BRAF</em> fusions and BRAF V600E mutations.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgJT4lXG4gIGZpbHRlcihLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID09IFwiQlNfSDFYUFZTOUFcIikgJT4lXG4gIHNlbGVjdChLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELCBzYW1wbGVfaWQpICU+JVxuICBsZWZ0X2pvaW4oY29tcGlsZWRfZGYpIn0= -->
+<pre class="r"><code>compiled_df %&gt;%
+  filter(Kids_First_Biospecimen_ID == &quot;BS_H1XPVS9A&quot;) %&gt;%
+  select(Kids_First_Participant_ID, sample_id) %&gt;%
+  left_join(compiled_df)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiSm9pbmluZywgYnkgPSBjKFwiS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRFwiLCBcInNhbXBsZV9pZFwiKVxuIn0= -->
+<pre><code>Joining, by = c(&quot;Kids_First_Participant_ID&quot;, &quot;sample_id&quot;)</code></pre>
+<!-- rnb-message-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID"],"name":[3],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[4],"type":["chr"],"align":["left"]},{"label":["integrated_diagnosis"],"name":[5],"type":["chr"],"align":["left"]},{"label":["short_histology"],"name":[6],"type":["chr"],"align":["left"]},{"label":["broad_histology"],"name":[7],"type":["chr"],"align":["left"]},{"label":["Notes"],"name":[8],"type":["chr"],"align":["left"]},{"label":["tumor_descriptor"],"name":[9],"type":["chr"],"align":["left"]},{"label":["harmonized_diagnosis"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_T8V9ES93","2":"7316-1106","3":"BS_H1XPVS9A","4":"HGG, H3 wildtype","5":"High-grade glioma/astrocytoma, H3 wildtype","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_T8V9ES93","2":"7316-1106","3":"BS_J4E9SW51","4":"HGG, H3 wildtype","5":"High-grade glioma/astrocytoma, H3 wildtype","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
 </div>
-<div id="recode-adamantinomatous-craniopharyngiomas" class="section level2">
-<h2>Recode adamantinomatous craniopharyngiomas</h2>
-<p>We can use the following table from <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/994">#994</a> to guide how we recode the labels for these samples.</p>
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>We know from <code>molecular-subtyping-HGG</code> that a BRAF V600E mutation is present. Now we have to check for the presence of <em>BRAF</em> fusions.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiZnVzaW9uc19kZiAlPiVcbiAgZmlsdGVyKHN0cl9kZXRlY3QoRnVzaW9uTmFtZSwgXCJCUkFGXCIpLFxuICAgICAgICAgU2FtcGxlID09IFwiQlNfSDFYUFZTOUFcIikifQ== -->
+<pre class="r"><code>fusions_df %&gt;%
+  filter(str_detect(FusionName, &quot;BRAF&quot;),
+         Sample == &quot;BS_H1XPVS9A&quot;)</code></pre>
+<!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Sample"],"name":[1],"type":["chr"],"align":["left"]},{"label":["FusionName"],"name":[2],"type":["chr"],"align":["left"]},{"label":["zscore_Gene1A"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["zscore_Gene1B"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["zscore_Gene2A"],"name":[5],"type":["lgl"],"align":["right"]},{"label":["zscore_Gene2B"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["note_expression_Gene1A"],"name":[7],"type":["chr"],"align":["left"]},{"label":["note_expression_Gene1B"],"name":[8],"type":["chr"],"align":["left"]},{"label":["note_expression_Gene2A"],"name":[9],"type":["lgl"],"align":["right"]},{"label":["note_expression_Gene2B"],"name":[10],"type":["chr"],"align":["left"]},{"label":["LeftBreakpoint"],"name":[11],"type":["chr"],"align":["left"]},{"label":["RightBreakpoint"],"name":[12],"type":["chr"],"align":["left"]},{"label":["Fusion_Type"],"name":[13],"type":["chr"],"align":["left"]},{"label":["JunctionReadCount"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["SpanningFragCount"],"name":[15],"type":["dbl"],"align":["right"]},{"label":["Confidence"],"name":[16],"type":["chr"],"align":["left"]},{"label":["Gene1A"],"name":[17],"type":["chr"],"align":["left"]},{"label":["Gene2A"],"name":[18],"type":["lgl"],"align":["right"]},{"label":["Gene1B"],"name":[19],"type":["chr"],"align":["left"]},{"label":["Gene2B"],"name":[20],"type":["chr"],"align":["left"]},{"label":["Gene1A_anno"],"name":[21],"type":["chr"],"align":["left"]},{"label":["Gene1B_anno"],"name":[22],"type":["chr"],"align":["left"]},{"label":["Gene2A_anno"],"name":[23],"type":["lgl"],"align":["right"]},{"label":["Gene2B_anno"],"name":[24],"type":["lgl"],"align":["right"]},{"label":["Fusion_anno"],"name":[25],"type":["chr"],"align":["left"]},{"label":["CalledBy"],"name":[26],"type":["chr"],"align":["left"]},{"label":["caller.count"],"name":[27],"type":["dbl"],"align":["right"]},{"label":["DomainRetainedGene1A"],"name":[28],"type":["chr"],"align":["left"]},{"label":["DomainRetainedGene1B"],"name":[29],"type":["chr"],"align":["left"]},{"label":["reciprocal_exists"],"name":[30],"type":["lgl"],"align":["right"]},{"label":["Kids_First_Participant_ID"],"name":[31],"type":["chr"],"align":["left"]}],"data":[],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>There are no <em>BRAF</em> fusions in <code>BS_H1XPVS9A</code>, so we are able to classify this sample (<code>7316-1106</code>) as <code>LGG, BRAF V600E</code>.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgPC0gY29tcGlsZWRfZGYgJT4lXG4gIG11dGF0ZShcbiAgICBpbnRlZ3JhdGVkX2RpYWdub3NpcyA9IGNhc2Vfd2hlbihcbiAgICAgIHNhbXBsZV9pZCA9PSBcIjczMTYtMTEwNlwiIH4gXCJQbGVvbW9ycGhpYyB4YW50aG9hc3Ryb2N5dG9tLCBCUkFGIFY2MDBFXCIsXG4gICAgICBUUlVFIH4gaW50ZWdyYXRlZF9kaWFnbm9zaXNcbiAgICApLFxuICAgIHNob3J0X2hpc3RvbG9neSA9IGNhc2Vfd2hlbihcbiAgICAgIHNhbXBsZV9pZCA9PSBcIjczMTYtMTEwNlwiIH4gXCJMR0FUXCIsXG4gICAgICBUUlVFIH4gc2hvcnRfaGlzdG9sb2d5XG4gICAgKSxcbiAgICBicm9hZF9oaXN0b2xvZ3kgPSBjYXNlX3doZW4oXG4gICAgICBzYW1wbGVfaWQgPT0gXCI3MzE2LTExMDZcIiB+IFwiTG93LWdyYWRlIGFzdHJvY3l0aWMgdHVtb3JcIixcbiAgICAgIFRSVUUgfiBicm9hZF9oaXN0b2xvZ3lcbiAgICApLFxuICAgIG1vbGVjdWxhcl9zdWJ0eXBlID0gY2FzZV93aGVuKFxuICAgICAgc2FtcGxlX2lkID09IFwiNzMxNi0xMTA2XCIgfiBcIkxHRywgQlJBRiBWNjAwRVwiLFxuICAgICAgVFJVRSB+IG1vbGVjdWxhcl9zdWJ0eXBlXG4gICAgKSxcbiAgICBOb3RlcyA9IGNhc2Vfd2hlbihcbiAgICAgIHNhbXBsZV9pZCA9PSBcIjczMTYtMTEwNlwiIH4gXCJVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmcgYW5kIHZpYSBwYXRob2xvZ3kgcmV2aWV3XCIsXG4gICAgICBUUlVFIH4gTm90ZXNcbiAgICApXG4gICkifQ== -->
+<pre class="r"><code>compiled_df &lt;- compiled_df %&gt;%
+  mutate(
+    integrated_diagnosis = case_when(
+      sample_id == &quot;7316-1106&quot; ~ &quot;Pleomorphic xanthoastrocytom, BRAF V600E&quot;,
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      sample_id == &quot;7316-1106&quot; ~ &quot;LGAT&quot;,
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      sample_id == &quot;7316-1106&quot; ~ &quot;Low-grade astrocytic tumor&quot;,
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      sample_id == &quot;7316-1106&quot; ~ &quot;LGG, BRAF V600E&quot;,
+      TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(
+      sample_id == &quot;7316-1106&quot; ~ &quot;Updated via OpenPBTA subtyping and via pathology review&quot;,
+      TRUE ~ Notes
+    )
+  )</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="pt_aqwdqw27" class="section level3">
+<h3><code>PT_AQWDQW27</code></h3>
+<blockquote>
+<ol start="2" style="list-style-type: decimal">
+<li><code>PT_AQWDQW27</code> specimen was consistent with meningioma, even though it has a hallmark EPN fusion, so pathology would also call this a rare meningioma with a <em>YAP1</em> fusion.</li>
+</ol>
+</blockquote>
+<p>The <code>molecular-subtyping-EPN</code> module has not been completed yet, but the logic that is in that module may mean that we need to include revising the labels of <code>PT_AQWDQW27</code>.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgJT4lXG4gIGZpbHRlcihLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID09IFwiUFRfQVFXRFFXMjdcIikifQ== -->
+<pre class="r"><code>compiled_df %&gt;%
+  filter(Kids_First_Participant_ID == &quot;PT_AQWDQW27&quot;)</code></pre>
+<!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID"],"name":[3],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[4],"type":["chr"],"align":["left"]},{"label":["integrated_diagnosis"],"name":[5],"type":["chr"],"align":["left"]},{"label":["short_histology"],"name":[6],"type":["chr"],"align":["left"]},{"label":["broad_histology"],"name":[7],"type":["chr"],"align":["left"]},{"label":["Notes"],"name":[8],"type":["chr"],"align":["left"]},{"label":["tumor_descriptor"],"name":[9],"type":["chr"],"align":["left"]},{"label":["harmonized_diagnosis"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_AQWDQW27","2":"7316-523","3":"BS_23M72ABG","4":"NA","5":"NA","6":"Meningioma","7":"Meningioma","8":"Updated via OpenPBTA subtyping from pathology_free_text_diagnosis","9":"Initial CNS Tumor","10":"Atypical meningioma"},{"1":"PT_AQWDQW27","2":"7316-1705","3":"BS_D3KVGMRJ","4":"NA","5":"NA","6":"Meningioma","7":"Meningioma","8":"Updated via OpenPBTA subtyping from pathology_free_text_diagnosis","9":"Progressive","10":"Atypical meningioma"},{"1":"PT_AQWDQW27","2":"7316-1705","3":"BS_D9GEXXHX","4":"NA","5":"NA","6":"Meningioma","7":"Meningioma","8":"Updated via OpenPBTA subtyping from pathology_free_text_diagnosis","9":"Progressive","10":"Atypical meningioma"},{"1":"PT_AQWDQW27","2":"7316-523","3":"BS_EDZCAHR2","4":"NA","5":"NA","6":"Meningioma","7":"Meningioma","8":"Updated via OpenPBTA subtyping from pathology_free_text_diagnosis","9":"Initial CNS Tumor","10":"Atypical meningioma"},{"1":"PT_AQWDQW27","2":"7316-1476","3":"BS_JR56RQDC","4":"NA","5":"NA","6":"Meningioma","7":"Meningioma","8":"Updated via OpenPBTA subtyping from pathology_free_text_diagnosis","9":"Progressive","10":"Atypical meningioma"},{"1":"PT_AQWDQW27","2":"7316-1476","3":"BS_KR4MP5ET","4":"NA","5":"NA","6":"Meningioma","7":"Meningioma","8":"Updated via OpenPBTA subtyping from pathology_free_text_diagnosis","9":"Progressive","10":"Atypical meningioma"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-source-begin eyJkYXRhIjoiIyBUaGlzIHNhbXBsZSBpcyBtaXNzaW5nIGZyb20gdGhlIEVQTiB0YWJsZSwgYnV0IGl0IHNob3VsZCBiZSB0aGVyZSAtIHdpbGwgaGF2ZSB0byBpbnZlc3RpZ2F0ZSBhbmQgdXBkYXRlIHRoaXMgbGF0ZXIuIn0= -->
+<pre class="r"><code># This sample is missing from the EPN table, but it should be there - will have to investigate and update this later.</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="pt_6q0npvp3" class="section level3">
+<h3><code>PT_6Q0NPVP3</code></h3>
+<p>The specimens for this patient, BS_5JM573JC and BS_E5H6CFYT, were classified as HGAT due to the presence of a histone mutation, but with the removal of LGAT from the HGAT module, this sample will no longer show up in two modules.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgJT4lXG4gIGZpbHRlcihLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID09IFwiUFRfNlEwTlBWUDNcIikifQ== -->
+<pre class="r"><code>compiled_df %&gt;%
+  filter(Kids_First_Participant_ID == &quot;PT_6Q0NPVP3&quot;)</code></pre>
+<!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID"],"name":[3],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[4],"type":["chr"],"align":["left"]},{"label":["integrated_diagnosis"],"name":[5],"type":["chr"],"align":["left"]},{"label":["short_histology"],"name":[6],"type":["chr"],"align":["left"]},{"label":["broad_histology"],"name":[7],"type":["chr"],"align":["left"]},{"label":["Notes"],"name":[8],"type":["chr"],"align":["left"]},{"label":["tumor_descriptor"],"name":[9],"type":["chr"],"align":["left"]},{"label":["harmonized_diagnosis"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_6Q0NPVP3","2":"7316-2255","3":"BS_5JM573JC","4":"GNG, H3","5":"GNG, H3","6":"Ganglioglioma","7":"Low-grade astrocytic tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_6Q0NPVP3","2":"7316-2255","3":"BS_E5H6CFYT","4":"GNG, H3","5":"GNG, H3","6":"Ganglioglioma","7":"Low-grade astrocytic tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="are-there-any-other-duplicate-subtypes" class="section level3">
+<h3>Are there any other duplicate subtypes?</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjpbInVuaXF1ZV9zdWJ0eXBlcyA8LSBjb21waWxlZF9kZiAlPiVcbiAgc2VsZWN0KEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsIHNhbXBsZV9pZCwgbW9sZWN1bGFyX3N1YnR5cGUpICU+JVxuICBkaXN0aW5jdCgpIiwiIiwidW5pcXVlX3N1YnR5cGVzW2R1cGxpY2F0ZWQodW5pcXVlX3N1YnR5cGVzJHNhbXBsZV9pZCksXSJdfQ== -->
+<pre class="r"><code>unique_subtypes &lt;- compiled_df %&gt;%
+  select(Kids_First_Participant_ID, sample_id, molecular_subtype) %&gt;%
+  distinct()
+
+unique_subtypes[duplicated(unique_subtypes$sample_id),]</code></pre>
+<!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[3],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_9BZETM0M","2":"7316-158","3":"HGG, H3 G35, TP53 loss"},{"1":"PT_5BWZA0NT","2":"7316-1102","3":"DMG, H3 K28"},{"1":"PT_X71D7G5S","2":"7316-1105","3":"HGG, H3 G35, TP53 loss"},{"1":"PT_JNEV57VK","2":"7316-3058","3":"DMG, H3 K28, TP53 activated"},{"1":"PT_KTRJ8TFY","2":"7316-3230","3":"HGG, H3 wildtype, TP53 loss"},{"1":"PT_VTM2STE3","2":"7316-2189","3":"HGG, H3 wildtype, TP53 loss"},{"1":"PT_80NVYCBS","2":"7316-765","3":"EPN, To be classified"},{"1":"PT_X648RVMK","2":"7316-238","3":"HGG, To be classified"},{"1":"PT_C2D4JXS1","2":"7316-1746","3":"HGG, To be classified"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-source-begin eyJkYXRhIjoiI1BUX0tUUko4VEZZIChmaXhlZCBpbiBjbGluaWNhbCBmZWVkYmFjaykgYW5kIFBUXzZRME5QVlAzIChmaXhlZCBpbiBIR0cgbW9kdWxlIHJlbW92aW5nIExHQVQpIn0= -->
+<pre class="r"><code>#PT_KTRJ8TFY (fixed in clinical feedback) and PT_6Q0NPVP3 (fixed in HGG module removing LGAT)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="pt_00g007dm" class="section level3">
+<h3><code>PT_00G007DM</code></h3>
+<p>7316-272 is subtyped as ETMR because a C19MC alteration was found and pathology review confirms the new diagnosis</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgPC0gY29tcGlsZWRfZGYgJT4lXG4gIG11dGF0ZShtb2xlY3VsYXJfc3VidHlwZT0gY2FzZV93aGVuKHNhbXBsZV9pZCA9PSBcIjczMTYtMjcyXCJ+XCJFVE1SLCBDMTlNQy1hbHRlcmVkXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFRSVUUgfiBtb2xlY3VsYXJfc3VidHlwZSksXG4gICAgICAgICBzaG9ydF9oaXN0b2xvZ3k9IGNhc2Vfd2hlbihzYW1wbGVfaWQgPT0gXCI3MzE2LTI3MlwiflwiRVRNUlwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBUUlVFIH4gc2hvcnRfaGlzdG9sb2d5KSxcbiAgICAgICAgIGludGVncmF0ZWRfZGlhZ25vc2lzID0gY2FzZV93aGVuKHNhbXBsZV9pZCA9PSBcIjczMTYtMjcyXCJ+XCJFbWJyeW9uYWwgdHVtb3Igd2l0aCBtdWx0aWxheWVyIHJvc2V0dGVzLCBDMTlNQy1hbHRlcmVkXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFRSVUUgfiBpbnRlZ3JhdGVkX2RpYWdub3NpcyksXG4gICAgICAgICBOb3RlcyA9IGNhc2Vfd2hlbihzYW1wbGVfaWQgPT0gXCI3MzE2LTI3MlwiIH4gXCJVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmdcIixcbiAgICAgIFRSVUUgfiBOb3Rlc1xuICAgIClcbiAgKSAlPiVcbiAgdW5pcXVlKCkifQ== -->
+<pre class="r"><code>compiled_df &lt;- compiled_df %&gt;%
+  mutate(molecular_subtype= case_when(sample_id == &quot;7316-272&quot;~&quot;ETMR, C19MC-altered&quot;,
+                                      TRUE ~ molecular_subtype),
+         short_histology= case_when(sample_id == &quot;7316-272&quot;~&quot;ETMR&quot;,
+                                      TRUE ~ short_histology),
+         integrated_diagnosis = case_when(sample_id == &quot;7316-272&quot;~&quot;Embryonal tumor with multilayer rosettes, C19MC-altered&quot;,
+                                      TRUE ~ integrated_diagnosis),
+         Notes = case_when(sample_id == &quot;7316-272&quot; ~ &quot;Updated via OpenPBTA subtyping&quot;,
+      TRUE ~ Notes
+    )
+  ) %&gt;%
+  unique()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>This sample has multiple specimens with different diagnoses and subtypes and this is actually expected, as there are two different diagnoses in the CBTN database and the C19MC alteration was only found in one of the samples.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgJT4lXG4gIGZpbHRlcihLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID09IFwiUFRfMDBHMDA3RE1cIikifQ== -->
+<pre class="r"><code>compiled_df %&gt;%
+  filter(Kids_First_Participant_ID == &quot;PT_00G007DM&quot;)</code></pre>
+<!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID"],"name":[3],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[4],"type":["chr"],"align":["left"]},{"label":["integrated_diagnosis"],"name":[5],"type":["chr"],"align":["left"]},{"label":["short_histology"],"name":[6],"type":["chr"],"align":["left"]},{"label":["broad_histology"],"name":[7],"type":["chr"],"align":["left"]},{"label":["Notes"],"name":[8],"type":["chr"],"align":["left"]},{"label":["tumor_descriptor"],"name":[9],"type":["chr"],"align":["left"]},{"label":["harmonized_diagnosis"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_00G007DM","2":"7316-272","3":"BS_K07KNTFY","4":"ETMR, C19MC-altered","5":"Embryonal tumor with multilayer rosettes, C19MC-altered","6":"ETMR","7":"Embryonal tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_00G007DM","2":"7316-272","3":"BS_QWNBZ9RJ","4":"ETMR, C19MC-altered","5":"Embryonal tumor with multilayer rosettes, C19MC-altered","6":"ETMR","7":"Embryonal tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="pt_5bwza0nt" class="section level3">
+<h3><code>PT_5BWZA0NT</code></h3>
+<p>This sample was inspected by pathology and should be annotated as DMG, H3 K28, so let’s update that.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgJT4lXG4gIGZpbHRlcihLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID09IFwiUFRfNUJXWkEwTlRcIikifQ== -->
+<pre class="r"><code>compiled_df %&gt;%
+  filter(Kids_First_Participant_ID == &quot;PT_5BWZA0NT&quot;)</code></pre>
+<!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID"],"name":[3],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[4],"type":["chr"],"align":["left"]},{"label":["integrated_diagnosis"],"name":[5],"type":["chr"],"align":["left"]},{"label":["short_histology"],"name":[6],"type":["chr"],"align":["left"]},{"label":["broad_histology"],"name":[7],"type":["chr"],"align":["left"]},{"label":["Notes"],"name":[8],"type":["chr"],"align":["left"]},{"label":["tumor_descriptor"],"name":[9],"type":["chr"],"align":["left"]},{"label":["harmonized_diagnosis"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_5BWZA0NT","2":"7316-1102","3":"BS_BFDEZK1C","4":"CNS Embryonal, NOS","5":"CNS Embryonal tumor, NOS","6":"Embryonal tumor","7":"Embryonal tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_5BWZA0NT","2":"7316-1102","3":"BS_BFDEZK1C","4":"DMG, H3 K28","5":"Diffuse midline glioma, H3 K28-mutant","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_5BWZA0NT","2":"7316-1102","3":"BS_MB7WN0ZB","4":"CNS Embryonal, NOS","5":"CNS Embryonal tumor, NOS","6":"Embryonal tumor","7":"Embryonal tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_5BWZA0NT","2":"7316-1102","3":"BS_MB7WN0ZB","4":"DMG, H3 K28","5":"Diffuse midline glioma, H3 K28-mutant","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgPC0gY29tcGlsZWRfZGYgJT4lXG4gIG11dGF0ZShcbiAgICBpbnRlZ3JhdGVkX2RpYWdub3NpcyA9IGNhc2Vfd2hlbihcbiAgICAgIHNhbXBsZV9pZCA9PSBcIjczMTYtMTEwMlwiIH4gXCJEaWZmdXNlIG1pZGxpbmUgZ2xpb21hLCBIMyBLMjgtbXV0YW50XCIsXG4gICAgICBUUlVFIH4gaW50ZWdyYXRlZF9kaWFnbm9zaXNcbiAgICApLFxuICAgIHNob3J0X2hpc3RvbG9neSA9IGNhc2Vfd2hlbihcbiAgICAgIHNhbXBsZV9pZCA9PSBcIjczMTYtMTEwMlwiIH4gXCJIR0FUXCIsXG4gICAgICBUUlVFIH4gc2hvcnRfaGlzdG9sb2d5XG4gICAgKSxcbiAgICBicm9hZF9oaXN0b2xvZ3kgPSBjYXNlX3doZW4oXG4gICAgICBzYW1wbGVfaWQgPT0gXCI3MzE2LTExMDJcIiB+IFwiRGlmZnVzZSBhc3Ryb2N5dGljIGFuZCBvbGlnb2RlbmRyb2dsaWFsIHR1bW9yXCIsXG4gICAgICBUUlVFIH4gYnJvYWRfaGlzdG9sb2d5XG4gICAgKSxcbiAgICBtb2xlY3VsYXJfc3VidHlwZSA9IGNhc2Vfd2hlbihcbiAgICAgIHNhbXBsZV9pZCA9PSBcIjczMTYtMTEwMlwiIH4gXCJETUcsIEgzIEsyOFwiLFxuICAgICAgVFJVRSB+IG1vbGVjdWxhcl9zdWJ0eXBlXG4gICAgKSxcbiAgICBOb3RlcyA9IGNhc2Vfd2hlbihcbiAgICAgIHNhbXBsZV9pZCA9PSBcIjczMTYtMTEwMlwiIH4gXCJVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmdcIixcbiAgICAgIFRSVUUgfiBOb3Rlc1xuICAgIClcbiAgKSJ9 -->
+<pre class="r"><code>compiled_df &lt;- compiled_df %&gt;%
+  mutate(
+    integrated_diagnosis = case_when(
+      sample_id == &quot;7316-1102&quot; ~ &quot;Diffuse midline glioma, H3 K28-mutant&quot;,
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      sample_id == &quot;7316-1102&quot; ~ &quot;HGAT&quot;,
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      sample_id == &quot;7316-1102&quot; ~ &quot;Diffuse astrocytic and oligodendroglial tumor&quot;,
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      sample_id == &quot;7316-1102&quot; ~ &quot;DMG, H3 K28&quot;,
+      TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(
+      sample_id == &quot;7316-1102&quot; ~ &quot;Updated via OpenPBTA subtyping&quot;,
+      TRUE ~ Notes
+    )
+  )</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="pt_80nvycbs" class="section level3">
+<h3><code>PT_80NVYCBS</code></h3>
+<p>This sample was inspected by pathology and should be CNS HGNET-MN1, so we will update here.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgJT4lXG4gIGZpbHRlcihLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID09IFwiUFRfODBOVllDQlNcIikifQ== -->
+<pre class="r"><code>compiled_df %&gt;%
+  filter(Kids_First_Participant_ID == &quot;PT_80NVYCBS&quot;)</code></pre>
+<!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID"],"name":[3],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[4],"type":["chr"],"align":["left"]},{"label":["integrated_diagnosis"],"name":[5],"type":["chr"],"align":["left"]},{"label":["short_histology"],"name":[6],"type":["chr"],"align":["left"]},{"label":["broad_histology"],"name":[7],"type":["chr"],"align":["left"]},{"label":["Notes"],"name":[8],"type":["chr"],"align":["left"]},{"label":["tumor_descriptor"],"name":[9],"type":["chr"],"align":["left"]},{"label":["harmonized_diagnosis"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_80NVYCBS","2":"7316-765","3":"BS_KSKZ9J7J","4":"CNS HGNET-MN1","5":"CNS Embryonal tumor, HGNET-MN1","6":"Embryonal tumor","7":"Embryonal tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_80NVYCBS","2":"7316-765","3":"BS_KSKZ9J7J","4":"EPN, To be classified","5":"NA","6":"Ependymoma","7":"Ependymal tumor","8":"NA","9":"Initial CNS Tumor","10":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgPC0gY29tcGlsZWRfZGYgJT4lXG4gIG11dGF0ZShcbiAgICBpbnRlZ3JhdGVkX2RpYWdub3NpcyA9IGNhc2Vfd2hlbihcbiAgICAgIHNhbXBsZV9pZCA9PSBcIjczMTYtNzY1XCIgfiBcIkNOUyBFbWJyeW9uYWwgdHVtb3IsIEhHTkVULU1OMVwiLFxuICAgICAgVFJVRSB+IGludGVncmF0ZWRfZGlhZ25vc2lzXG4gICAgKSxcbiAgICBzaG9ydF9oaXN0b2xvZ3kgPSBjYXNlX3doZW4oXG4gICAgICBzYW1wbGVfaWQgPT0gXCI3MzE2LTc2NVwiIH4gXCJFbWJyeW9uYWwgdHVtb3JcIixcbiAgICAgIFRSVUUgfiBzaG9ydF9oaXN0b2xvZ3lcbiAgICApLFxuICAgIGJyb2FkX2hpc3RvbG9neSA9IGNhc2Vfd2hlbihcbiAgICAgIHNhbXBsZV9pZCA9PSBcIjczMTYtNzY1XCIgfiBcIkVtYnJ5b25hbCB0dW1vclwiLFxuICAgICAgVFJVRSB+IGJyb2FkX2hpc3RvbG9neVxuICAgICksXG4gICAgbW9sZWN1bGFyX3N1YnR5cGUgPSBjYXNlX3doZW4oXG4gICAgICBzYW1wbGVfaWQgPT0gXCI3MzE2LTc2NVwiIH4gXCJDTlMgSEdORVQtTU4xXCIsXG4gICAgICBUUlVFIH4gbW9sZWN1bGFyX3N1YnR5cGVcbiAgICApLFxuICAgIE5vdGVzID0gY2FzZV93aGVuKFxuICAgICAgc2FtcGxlX2lkID09IFwiNzMxNi03NjVcIiB+IFwiVXBkYXRlZCB2aWEgT3BlblBCVEEgc3VidHlwaW5nXCIsXG4gICAgICBUUlVFIH4gTm90ZXNcbiAgICApXG4gICkifQ== -->
+<pre class="r"><code>compiled_df &lt;- compiled_df %&gt;%
+  mutate(
+    integrated_diagnosis = case_when(
+      sample_id == &quot;7316-765&quot; ~ &quot;CNS Embryonal tumor, HGNET-MN1&quot;,
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      sample_id == &quot;7316-765&quot; ~ &quot;Embryonal tumor&quot;,
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      sample_id == &quot;7316-765&quot; ~ &quot;Embryonal tumor&quot;,
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      sample_id == &quot;7316-765&quot; ~ &quot;CNS HGNET-MN1&quot;,
+      TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(
+      sample_id == &quot;7316-765&quot; ~ &quot;Updated via OpenPBTA subtyping&quot;,
+      TRUE ~ Notes
+    )
+  )</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="pt_9bzetm0m" class="section level3">
+<h3><code>PT_9BZETM0M</code></h3>
+<p>This sample was inspected by pathology and should be HGG, H3 G35, so we will update here.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgJT4lXG4gIGZpbHRlcihLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID09IFwiUFRfOUJaRVRNME1cIikifQ== -->
+<pre class="r"><code>compiled_df %&gt;%
+  filter(Kids_First_Participant_ID == &quot;PT_9BZETM0M&quot;)</code></pre>
+<!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID"],"name":[3],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[4],"type":["chr"],"align":["left"]},{"label":["integrated_diagnosis"],"name":[5],"type":["chr"],"align":["left"]},{"label":["short_histology"],"name":[6],"type":["chr"],"align":["left"]},{"label":["broad_histology"],"name":[7],"type":["chr"],"align":["left"]},{"label":["Notes"],"name":[8],"type":["chr"],"align":["left"]},{"label":["tumor_descriptor"],"name":[9],"type":["chr"],"align":["left"]},{"label":["harmonized_diagnosis"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_9BZETM0M","2":"7316-158","3":"BS_5P1TN10Z","4":"CNS Embryonal, NOS","5":"CNS Embryonal tumor, NOS","6":"Embryonal tumor","7":"Embryonal tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_9BZETM0M","2":"7316-158","3":"BS_5P1TN10Z","4":"HGG, H3 G35, TP53 loss","5":"High-grade glioma/astrocytoma, H3 G35-mutant","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_9BZETM0M","2":"7316-158","3":"BS_STNH7YSX","4":"CNS Embryonal, NOS","5":"CNS Embryonal tumor, NOS","6":"Embryonal tumor","7":"Embryonal tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_9BZETM0M","2":"7316-158","3":"BS_STNH7YSX","4":"HGG, H3 G35, TP53 loss","5":"High-grade glioma/astrocytoma, H3 G35-mutant","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_9BZETM0M","2":"7316-158","3":"BS_TV5B86ZD","4":"CNS Embryonal, NOS","5":"CNS Embryonal tumor, NOS","6":"Embryonal tumor","7":"Embryonal tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_9BZETM0M","2":"7316-158","3":"BS_TV5B86ZD","4":"HGG, H3 G35, TP53 loss","5":"High-grade glioma/astrocytoma, H3 G35-mutant","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgPC0gY29tcGlsZWRfZGYgJT4lXG4gIG11dGF0ZShcbiAgICBpbnRlZ3JhdGVkX2RpYWdub3NpcyA9IGNhc2Vfd2hlbihcbiAgICAgIHNhbXBsZV9pZCA9PSBcIjczMTYtMTU4XCIgfiBcIkhpZ2gtZ3JhZGUgZ2xpb21hL2FzdHJvY3l0b21hLCBIMyBHMzUtbXV0YW50XCIsXG4gICAgICBUUlVFIH4gaW50ZWdyYXRlZF9kaWFnbm9zaXNcbiAgICApLFxuICAgIHNob3J0X2hpc3RvbG9neSA9IGNhc2Vfd2hlbihcbiAgICAgIHNhbXBsZV9pZCA9PSBcIjczMTYtMTU4XCIgfiBcIkhHQVRcIixcbiAgICAgIFRSVUUgfiBzaG9ydF9oaXN0b2xvZ3lcbiAgICApLFxuICAgIGJyb2FkX2hpc3RvbG9neSA9IGNhc2Vfd2hlbihcbiAgICAgIHNhbXBsZV9pZCA9PSBcIjczMTYtMTU4XCIgfiBcIkRpZmZ1c2UgYXN0cm9jeXRpYyBhbmQgb2xpZ29kZW5kcm9nbGlhbCB0dW1vclwiLFxuICAgICAgVFJVRSB+IGJyb2FkX2hpc3RvbG9neVxuICAgICksXG4gICAgbW9sZWN1bGFyX3N1YnR5cGUgPSBjYXNlX3doZW4oXG4gICAgICBzYW1wbGVfaWQgPT0gXCI3MzE2LTE1OFwiIH4gXCJIR0csIEgzIEczNVwiLFxuICAgICAgVFJVRSB+IG1vbGVjdWxhcl9zdWJ0eXBlXG4gICAgKSxcbiAgICBOb3RlcyA9IGNhc2Vfd2hlbihcbiAgICAgIHNhbXBsZV9pZCA9PSBcIjczMTYtMTU4XCIgfiBcIlVwZGF0ZWQgdmlhIE9wZW5QQlRBIHN1YnR5cGluZ1wiLFxuICAgICAgVFJVRSB+IE5vdGVzXG4gICAgKVxuICAgIFxuICApIn0= -->
+<pre class="r"><code>compiled_df &lt;- compiled_df %&gt;%
+  mutate(
+    integrated_diagnosis = case_when(
+      sample_id == &quot;7316-158&quot; ~ &quot;High-grade glioma/astrocytoma, H3 G35-mutant&quot;,
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      sample_id == &quot;7316-158&quot; ~ &quot;HGAT&quot;,
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      sample_id == &quot;7316-158&quot; ~ &quot;Diffuse astrocytic and oligodendroglial tumor&quot;,
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      sample_id == &quot;7316-158&quot; ~ &quot;HGG, H3 G35&quot;,
+      TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(
+      sample_id == &quot;7316-158&quot; ~ &quot;Updated via OpenPBTA subtyping&quot;,
+      TRUE ~ Notes
+    )
+    
+  )</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="pt_c2d4jxs1" class="section level3">
+<h3><code>PT_C2D4JXS1</code></h3>
+<p>This sample has one biospecimen which did not have the H3 variant captured in consensus calls - will inspect this later and possibly will be fixed with <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/854">#819</a>.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgJT4lXG4gIGZpbHRlcihLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID09IFwiUFRfQzJENEpYUzFcIikifQ== -->
+<pre class="r"><code>compiled_df %&gt;%
+  filter(Kids_First_Participant_ID == &quot;PT_C2D4JXS1&quot;)</code></pre>
+<!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID"],"name":[3],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[4],"type":["chr"],"align":["left"]},{"label":["integrated_diagnosis"],"name":[5],"type":["chr"],"align":["left"]},{"label":["short_histology"],"name":[6],"type":["chr"],"align":["left"]},{"label":["broad_histology"],"name":[7],"type":["chr"],"align":["left"]},{"label":["Notes"],"name":[8],"type":["chr"],"align":["left"]},{"label":["tumor_descriptor"],"name":[9],"type":["chr"],"align":["left"]},{"label":["harmonized_diagnosis"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_C2D4JXS1","2":"7316-1746","3":"BS_0RQ4P069","4":"HGG, H3 wildtype, TP53 loss","5":"High-grade glioma/astrocytoma, H3 wildtype","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_C2D4JXS1","2":"7316-1746","3":"BS_68TZMZH1","4":"HGG, H3 wildtype, TP53 loss","5":"High-grade glioma/astrocytoma, H3 wildtype","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_C2D4JXS1","2":"7316-1746","3":"BS_AFBPM6CN","4":"HGG, H3 wildtype, TP53 loss","5":"High-grade glioma/astrocytoma, H3 wildtype","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_C2D4JXS1","2":"7316-1746","3":"BS_PNYN0AYD","4":"HGG, H3 wildtype, TP53 loss","5":"High-grade glioma/astrocytoma, H3 wildtype","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_C2D4JXS1","2":"7316-1746","3":"BS_R5SNFB5B","4":"HGG, To be classified","5":"NA","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"NA","9":"Initial CNS Tumor","10":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="pt_ktrj8tfy" class="section level3">
+<h3><code>PT_KTRJ8TFY</code></h3>
+<p>This sample has one biospecimen which did not have the H3 variant captured in consensus calls. It has the variant present only in VarDict calls and in IGV, and expect this will be fixed with <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/854">#819</a>.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgJT4lXG4gIGZpbHRlcihLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID09IFwiUFRfS1RSSjhURllcIikifQ== -->
+<pre class="r"><code>compiled_df %&gt;%
+  filter(Kids_First_Participant_ID == &quot;PT_KTRJ8TFY&quot;)</code></pre>
+<!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID"],"name":[3],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[4],"type":["chr"],"align":["left"]},{"label":["integrated_diagnosis"],"name":[5],"type":["chr"],"align":["left"]},{"label":["short_histology"],"name":[6],"type":["chr"],"align":["left"]},{"label":["broad_histology"],"name":[7],"type":["chr"],"align":["left"]},{"label":["Notes"],"name":[8],"type":["chr"],"align":["left"]},{"label":["tumor_descriptor"],"name":[9],"type":["chr"],"align":["left"]},{"label":["harmonized_diagnosis"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_KTRJ8TFY","2":"7316-3223","3":"BS_3VKW5988","4":"DMG, H3 K28, TP53 loss","5":"Diffuse midline glioma, H3 K28-mutant","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_KTRJ8TFY","2":"A09689","3":"BS_402W79TS","4":"DMG, H3 K28, TP53 loss","5":"Diffuse midline glioma, H3 K28-mutant","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_KTRJ8TFY","2":"7316-3230","3":"BS_5968GBGT","4":"DMG, H3 K28, TP53 loss","5":"Diffuse midline glioma, H3 K28-mutant","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Progressive Disease Post-Mortem","10":"NA"},{"1":"PT_KTRJ8TFY","2":"7316-3230","3":"BS_AF5D41PD","4":"DMG, H3 K28, TP53 loss","5":"Diffuse midline glioma, H3 K28-mutant","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Progressive Disease Post-Mortem","10":"NA"},{"1":"PT_KTRJ8TFY","2":"7316-3223","3":"BS_BQ81D2BP","4":"DMG, H3 K28, TP53 loss","5":"Diffuse midline glioma, H3 K28-mutant","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_KTRJ8TFY","2":"7316-3230","3":"BS_EE73VE7V","4":"HGG, H3 wildtype, TP53 loss","5":"High-grade glioma/astrocytoma, H3 wildtype","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Progressive Disease Post-Mortem","10":"NA"},{"1":"PT_KTRJ8TFY","2":"7316-3230","3":"BS_HYKV2TH9","4":"DMG, H3 K28, TP53 loss","5":"Diffuse midline glioma, H3 K28-mutant","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Progressive Disease Post-Mortem","10":"NA"},{"1":"PT_KTRJ8TFY","2":"A09689","3":"BS_NGSG2KB6","4":"DMG, H3 K28, TP53 loss","5":"Diffuse midline glioma, H3 K28-mutant","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="pt_x648rvmk" class="section level3">
+<h3><code>PT_X648RVMK</code></h3>
+<p>This sample was reviewed by pathology and confirmed to be ETMR, C19MC-altered. Will change here.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgJT4lXG4gIGZpbHRlcihLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID09IFwiUFRfWDY0OFJWTUtcIikifQ== -->
+<pre class="r"><code>compiled_df %&gt;%
+  filter(Kids_First_Participant_ID == &quot;PT_X648RVMK&quot;)</code></pre>
+<!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID"],"name":[3],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[4],"type":["chr"],"align":["left"]},{"label":["integrated_diagnosis"],"name":[5],"type":["chr"],"align":["left"]},{"label":["short_histology"],"name":[6],"type":["chr"],"align":["left"]},{"label":["broad_histology"],"name":[7],"type":["chr"],"align":["left"]},{"label":["Notes"],"name":[8],"type":["chr"],"align":["left"]},{"label":["tumor_descriptor"],"name":[9],"type":["chr"],"align":["left"]},{"label":["harmonized_diagnosis"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_X648RVMK","2":"7316-238","3":"BS_N6N147BY","4":"ETMR, C19MC-altered","5":"Embryonal tumor with multilayer rosettes, C19MC-altered","6":"ETMR","7":"Embryonal tumor","8":"Updated via OpenPBTA subtyping","9":"Progressive","10":"NA"},{"1":"PT_X648RVMK","2":"7316-238","3":"BS_N6N147BY","4":"HGG, To be classified","5":"NA","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"NA","9":"Progressive","10":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgPC0gY29tcGlsZWRfZGYgJT4lXG4gIG11dGF0ZShcbiAgICBpbnRlZ3JhdGVkX2RpYWdub3NpcyA9IGNhc2Vfd2hlbihcbiAgICAgIHNhbXBsZV9pZCA9PSBcIjczMTYtMjM4XCIgfiBcIkVtYnJ5b25hbCB0dW1vciB3aXRoIG11bHRpbGF5ZXIgcm9zZXR0ZXMsIEMxOU1DLWFsdGVyZWRcIixcbiAgICAgIFRSVUUgfiBpbnRlZ3JhdGVkX2RpYWdub3Npc1xuICAgICksXG4gICAgc2hvcnRfaGlzdG9sb2d5ID0gY2FzZV93aGVuKFxuICAgICAgc2FtcGxlX2lkID09IFwiNzMxNi0yMzhcIiB+IFwiRVRNUlwiLFxuICAgICAgVFJVRSB+IHNob3J0X2hpc3RvbG9neVxuICAgICksXG4gICAgYnJvYWRfaGlzdG9sb2d5ID0gY2FzZV93aGVuKFxuICAgICAgc2FtcGxlX2lkID09IFwiNzMxNi0yMzhcIiB+IFwiRW1icnlvbmFsIHR1bW9yXCIsXG4gICAgICBUUlVFIH4gYnJvYWRfaGlzdG9sb2d5XG4gICAgKSxcbiAgICBtb2xlY3VsYXJfc3VidHlwZSA9IGNhc2Vfd2hlbihcbiAgICAgIHNhbXBsZV9pZCA9PSBcIjczMTYtMjM4XCIgfiBcIkVUTVIsIEMxOU1DLWFsdGVyZWRcIixcbiAgICAgIFRSVUUgfiBtb2xlY3VsYXJfc3VidHlwZVxuICAgICksXG4gICAgTm90ZXMgPSBjYXNlX3doZW4oXG4gICAgICBzYW1wbGVfaWQgPT0gXCI3MzE2LTIzOFwiIH4gXCJVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmdcIixcbiAgICAgIFRSVUUgfiBOb3Rlc1xuICAgIClcbiAgKSJ9 -->
+<pre class="r"><code>compiled_df &lt;- compiled_df %&gt;%
+  mutate(
+    integrated_diagnosis = case_when(
+      sample_id == &quot;7316-238&quot; ~ &quot;Embryonal tumor with multilayer rosettes, C19MC-altered&quot;,
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      sample_id == &quot;7316-238&quot; ~ &quot;ETMR&quot;,
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      sample_id == &quot;7316-238&quot; ~ &quot;Embryonal tumor&quot;,
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      sample_id == &quot;7316-238&quot; ~ &quot;ETMR, C19MC-altered&quot;,
+      TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(
+      sample_id == &quot;7316-238&quot; ~ &quot;Updated via OpenPBTA subtyping&quot;,
+      TRUE ~ Notes
+    )
+  )</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="pt_x71d7g5s" class="section level3">
+<h3><code>PT_X71D7G5S</code></h3>
+<p>This sample was reviewed by pathology and confirmed to be H3 mutant. Will change here.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgJT4lXG4gIGZpbHRlcihLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID09IFwiUFRfWDcxRDdHNVNcIikifQ== -->
+<pre class="r"><code>compiled_df %&gt;%
+  filter(Kids_First_Participant_ID == &quot;PT_X71D7G5S&quot;)</code></pre>
+<!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID"],"name":[3],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[4],"type":["chr"],"align":["left"]},{"label":["integrated_diagnosis"],"name":[5],"type":["chr"],"align":["left"]},{"label":["short_histology"],"name":[6],"type":["chr"],"align":["left"]},{"label":["broad_histology"],"name":[7],"type":["chr"],"align":["left"]},{"label":["Notes"],"name":[8],"type":["chr"],"align":["left"]},{"label":["tumor_descriptor"],"name":[9],"type":["chr"],"align":["left"]},{"label":["harmonized_diagnosis"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_X71D7G5S","2":"7316-1105","3":"BS_C6ZZ3FY5","4":"CNS Embryonal, NOS","5":"CNS Embryonal tumor, NOS","6":"Embryonal tumor","7":"Embryonal tumor","8":"Updated via OpenPBTA subtyping","9":"Recurrence","10":"NA"},{"1":"PT_X71D7G5S","2":"7316-1105","3":"BS_C6ZZ3FY5","4":"HGG, H3 G35, TP53 loss","5":"High-grade glioma/astrocytoma, H3 G35-mutant","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Recurrence","10":"NA"},{"1":"PT_X71D7G5S","2":"7316-1105","3":"BS_P8WN8XEQ","4":"CNS Embryonal, NOS","5":"CNS Embryonal tumor, NOS","6":"Embryonal tumor","7":"Embryonal tumor","8":"Updated via OpenPBTA subtyping","9":"Recurrence","10":"NA"},{"1":"PT_X71D7G5S","2":"7316-1105","3":"BS_P8WN8XEQ","4":"HGG, H3 G35, TP53 loss","5":"High-grade glioma/astrocytoma, H3 G35-mutant","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Recurrence","10":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgPC0gY29tcGlsZWRfZGYgJT4lXG4gIG11dGF0ZShcbiAgICBpbnRlZ3JhdGVkX2RpYWdub3NpcyA9IGNhc2Vfd2hlbihcbiAgICAgIHNhbXBsZV9pZCA9PSBcIjczMTYtMTEwNVwiIH4gXCJIaWdoLWdyYWRlIGdsaW9tYS9hc3Ryb2N5dG9tYSwgSDMgRzM1LW11dGFudFwiLFxuICAgICAgVFJVRSB+IGludGVncmF0ZWRfZGlhZ25vc2lzXG4gICAgKSxcbiAgICBzaG9ydF9oaXN0b2xvZ3kgPSBjYXNlX3doZW4oXG4gICAgICBzYW1wbGVfaWQgPT0gXCI3MzE2LTExMDVcIiB+IFwiSEdBVFwiLFxuICAgICAgVFJVRSB+IHNob3J0X2hpc3RvbG9neVxuICAgICksXG4gICAgYnJvYWRfaGlzdG9sb2d5ID0gY2FzZV93aGVuKFxuICAgICAgc2FtcGxlX2lkID09IFwiNzMxNi0xMTA1XCIgfiBcIkRpZmZ1c2UgYXN0cm9jeXRpYyBhbmQgb2xpZ29kZW5kcm9nbGlhbCB0dW1vclwiLFxuICAgICAgVFJVRSB+IGJyb2FkX2hpc3RvbG9neVxuICAgICksXG4gICAgbW9sZWN1bGFyX3N1YnR5cGUgPSBjYXNlX3doZW4oXG4gICAgICBzYW1wbGVfaWQgPT0gXCI3MzE2LTExMDVcIiB+IFwiSEdHLCBIMyBHMzVcIixcbiAgICAgIFRSVUUgfiBtb2xlY3VsYXJfc3VidHlwZVxuICAgICksXG4gICAgTm90ZXMgPSBjYXNlX3doZW4oc2FtcGxlX2lkID09IFwiNzMxNi0xMTA1XCIgfiBcIlVwZGF0ZWQgdmlhIE9wZW5QQlRBIHN1YnR5cGluZ1wiLFxuICAgICAgVFJVRSB+IE5vdGVzXG4gICAgKVxuICApIn0= -->
+<pre class="r"><code>compiled_df &lt;- compiled_df %&gt;%
+  mutate(
+    integrated_diagnosis = case_when(
+      sample_id == &quot;7316-1105&quot; ~ &quot;High-grade glioma/astrocytoma, H3 G35-mutant&quot;,
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      sample_id == &quot;7316-1105&quot; ~ &quot;HGAT&quot;,
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      sample_id == &quot;7316-1105&quot; ~ &quot;Diffuse astrocytic and oligodendroglial tumor&quot;,
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      sample_id == &quot;7316-1105&quot; ~ &quot;HGG, H3 G35&quot;,
+      TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(sample_id == &quot;7316-1105&quot; ~ &quot;Updated via OpenPBTA subtyping&quot;,
+      TRUE ~ Notes
+    )
+  )</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="pt_a325eyr2" class="section level3">
+<h3><code>PT_A325EYR2</code></h3>
+<p>This sample was reviewed by pathology and confirmed to be H3 mutant, as per note 5 above.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgJT4lXG4gIGZpbHRlcihLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID09IFwiUFRfQTMyNUVZUjJcIikifQ== -->
+<pre class="r"><code>compiled_df %&gt;%
+  filter(Kids_First_Participant_ID == &quot;PT_A325EYR2&quot;)</code></pre>
+<!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID"],"name":[3],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[4],"type":["chr"],"align":["left"]},{"label":["integrated_diagnosis"],"name":[5],"type":["chr"],"align":["left"]},{"label":["short_histology"],"name":[6],"type":["chr"],"align":["left"]},{"label":["broad_histology"],"name":[7],"type":["chr"],"align":["left"]},{"label":["Notes"],"name":[8],"type":["chr"],"align":["left"]},{"label":["tumor_descriptor"],"name":[9],"type":["chr"],"align":["left"]},{"label":["harmonized_diagnosis"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_A325EYR2","2":"7316-2557","3":"BS_5965SFPZ","4":"DMG, H3 K28","5":"Diffuse midline glioma, H3 K28-mutant","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_A325EYR2","2":"7316-2557","3":"BS_YB99Q6TN","4":"DMG, H3 K28","5":"Diffuse midline glioma, H3 K28-mutant","6":"HGAT","7":"Diffuse astrocytic and oligodendroglial tumor","8":"Updated via OpenPBTA subtyping","9":"Initial CNS Tumor","10":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgPC0gY29tcGlsZWRfZGYgJT4lXG4gIG11dGF0ZShcbiAgICBpbnRlZ3JhdGVkX2RpYWdub3NpcyA9IGNhc2Vfd2hlbihcbiAgICAgIHNhbXBsZV9pZCA9PSBcIjczMTYtMjU1N1wiIH4gXCJEaWZmdXNlIG1pZGxpbmUgZ2xpb21hLCBIMyBLMjgtbXV0YW50XCIsXG4gICAgICBUUlVFIH4gaW50ZWdyYXRlZF9kaWFnbm9zaXNcbiAgICApLFxuICAgIHNob3J0X2hpc3RvbG9neSA9IGNhc2Vfd2hlbihcbiAgICAgIHNhbXBsZV9pZCA9PSBcIjczMTYtMjU1N1wiIH4gXCJIR0FUXCIsXG4gICAgICBUUlVFIH4gc2hvcnRfaGlzdG9sb2d5XG4gICAgKSxcbiAgICBicm9hZF9oaXN0b2xvZ3kgPSBjYXNlX3doZW4oXG4gICAgICBzYW1wbGVfaWQgPT0gXCI3MzE2LTI1NTdcIiB+IFwiRGlmZnVzZSBhc3Ryb2N5dGljIGFuZCBvbGlnb2RlbmRyb2dsaWFsIHR1bW9yXCIsXG4gICAgICBUUlVFIH4gYnJvYWRfaGlzdG9sb2d5XG4gICAgKSxcbiAgICBtb2xlY3VsYXJfc3VidHlwZSA9IGNhc2Vfd2hlbihcbiAgICAgIHNhbXBsZV9pZCA9PSBcIjczMTYtMjU1N1wiIH4gXCJETUcsIEgzIEsyOFwiLFxuICAgICAgVFJVRSB+IG1vbGVjdWxhcl9zdWJ0eXBlXG4gICAgKSxcbiAgICBOb3RlcyA9IGNhc2Vfd2hlbihcbiAgICAgIHNhbXBsZV9pZCA9PSBcIjczMTYtMjU1N1wiIH4gXCJVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmdcIixcbiAgICAgIFRSVUUgfiBOb3Rlc1xuICAgIClcbiAgKSJ9 -->
+<pre class="r"><code>compiled_df &lt;- compiled_df %&gt;%
+  mutate(
+    integrated_diagnosis = case_when(
+      sample_id == &quot;7316-2557&quot; ~ &quot;Diffuse midline glioma, H3 K28-mutant&quot;,
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      sample_id == &quot;7316-2557&quot; ~ &quot;HGAT&quot;,
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      sample_id == &quot;7316-2557&quot; ~ &quot;Diffuse astrocytic and oligodendroglial tumor&quot;,
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      sample_id == &quot;7316-2557&quot; ~ &quot;DMG, H3 K28&quot;,
+      TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(
+      sample_id == &quot;7316-2557&quot; ~ &quot;Updated via OpenPBTA subtyping&quot;,
+      TRUE ~ Notes
+    )
+  )</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="chordoma-samples-pathology-review" class="section level3">
+<h3>Chordoma samples pathology review</h3>
+<p>As discussed in <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/608">ticket</a> we will assign subtypes to chordoma samples through pathology review only since molecular subtypes were not sufficient.</p>
 <table>
-<colgroup>
-<col width="25%"></col>
-<col width="19%"></col>
-<col width="36%"></col>
-<col width="19%"></col>
-</colgroup>
 <thead>
 <tr class="header">
-<th>broad_histology</th>
-<th>short_histology</th>
-<th>harmonized_diagnosis</th>
+<th>sample_id</th>
 <th>molecular_subtype</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Tumors of sellar region</td>
-<td>Craniopharyngioma</td>
-<td>Adamantinomatous craniopharyngioma</td>
-<td>CRANIO, ADAM</td>
+<td>7316-1101</td>
+<td>CHDM, poorly differentiated</td>
+</tr>
+<tr class="even">
+<td>7316-2935</td>
+<td>CHDM, poorly differentiated</td>
+</tr>
+<tr class="odd">
+<td>7316-3295</td>
+<td>CHDM, poorly differentiated</td>
+</tr>
+<tr class="even">
+<td>7316-4062</td>
+<td>CHDM, poorly differentiated</td>
+</tr>
+<tr class="odd">
+<td>7316-921</td>
+<td>CHDM, conventional</td>
+</tr>
+<tr class="even">
+<td>7316-3632</td>
+<td>CHDM, conventional</td>
 </tr>
 </tbody>
 </table>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiY3JhbmlvX2FkYW1fZGYgPC0gam9pbmVkX2RmICU+JSBcbiAgZmlsdGVyKHNhbXBsZV9pZCAlaW4lIHNhbXBsZV9pZHNfcmVjbGFzc2lmaWNhdGlvbixcbiAgICAgICAgICMgRXhjbHVkZSBub3JtYWwgc2FtcGxlc1xuICAgICAgICAgc2FtcGxlX3R5cGUgIT0gXCJOb3JtYWxcIikgJT4lXG4gICMgRmlsdGVyIHRvIHJlbGV2YW50IElEIGFuZCBkaXNlYXNlIHR5cGUgbGFiZWwgY29sdW1uc1xuICBzZWxlY3QoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCxcbiAgICAgICAgIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsXG4gICAgICAgICBzYW1wbGVfaWQsXG4gICAgICAgICBicm9hZF9oaXN0b2xvZ3ksXG4gICAgICAgICBzaG9ydF9oaXN0b2xvZ3ksXG4gICAgICAgICBtb2xlY3VsYXJfc3VidHlwZSxcbiAgICAgICAgIHR1bW9yX2Rlc2NyaXB0b3IpICU+JVxuICAjIENvZGUgdGhlIHZhbHVlcyB0aGF0IGFyZSBpbiB0aGUgdGFibGUgYWJvdmVcbiAgbXV0YXRlKFxuICAgIGJyb2FkX2hpc3RvbG9neSA9IFwiVHVtb3JzIG9mIHNlbGxhciByZWdpb25cIixcbiAgICBzaG9ydF9oaXN0b2xvZ3kgPSBcIkNyYW5pb3BoYXJ5bmdpb21hXCIsXG4gICAgaGFybW9uaXplZF9kaWFnbm9zaXMgPSBcIkFkYW1hbnRpbm9tYXRvdXMgY3JhbmlvcGhhcnluZ2lvbWFcIixcbiAgICBtb2xlY3VsYXJfc3VidHlwZSA9IFwiQ1JBTklPLCBBREFNXCIsXG4gICAgTm90ZXMgPSBcIlVwZGF0ZWQgdmlhIE9wZW5QQlRBIHN1YnR5cGluZyBmcm9tIHBhdGhvbG9neV9mcmVlX3RleHRfZGlhZ25vc2lzXCJcbiAgKSJ9 -->
-<pre class="r"><code>cranio_adam_df &lt;- joined_df %&gt;% 
-  filter(sample_id %in% sample_ids_reclassification,
-         # Exclude normal samples
-         sample_type != &quot;Normal&quot;) %&gt;%
-  # Filter to relevant ID and disease type label columns
-  select(Kids_First_Biospecimen_ID,
-         Kids_First_Participant_ID,
-         sample_id,
-         broad_histology,
-         short_histology,
-         molecular_subtype,
-         tumor_descriptor) %&gt;%
-  # Code the values that are in the table above
-  mutate(
-    broad_histology = &quot;Tumors of sellar region&quot;,
-    short_histology = &quot;Craniopharyngioma&quot;,
-    harmonized_diagnosis = &quot;Adamantinomatous craniopharyngioma&quot;,
-    molecular_subtype = &quot;CRANIO, ADAM&quot;,
-    Notes = &quot;Updated via OpenPBTA subtyping from pathology_free_text_diagnosis&quot;
-  )</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbImNoZG1fcG9vcmx5X2RpZmZfc2FtcGxlX2lkcyA8LSBjKFwiNzMxNi0xMTAxXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIjczMTYtMjkzNVwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCI3MzE2LTMyOTVcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiNzMxNi00MDYyXCIpIiwiY2hkbV9jb252ZW50aW9uYWxfc2FtcGxlX2lkcyA8LSBjKFwiNzMxNi05MjFcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIjczMTYtMzYzMlwiKSIsIiAgIiwiY29tcGlsZWRfZGYgJT4lXG4gIGZpbHRlcihzYW1wbGVfaWQgJWluJSBjKGNoZG1fY29udmVudGlvbmFsX3NhbXBsZV9pZHMsY2hkbV9wb29ybHlfZGlmZl9zYW1wbGVfaWRzKSkgIl19 -->
+<pre class="r"><code>chdm_poorly_diff_sample_ids &lt;- c(&quot;7316-1101&quot;,
+                                 &quot;7316-2935&quot;,
+                                 &quot;7316-3295&quot;,
+                                 &quot;7316-4062&quot;)
+chdm_conventional_sample_ids &lt;- c(&quot;7316-921&quot;,
+                                  &quot;7316-3632&quot;)
+  
+compiled_df %&gt;%
+  filter(sample_id %in% c(chdm_conventional_sample_ids,chdm_poorly_diff_sample_ids)) </code></pre>
 <!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID"],"name":[3],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[4],"type":["chr"],"align":["left"]},{"label":["integrated_diagnosis"],"name":[5],"type":["chr"],"align":["left"]},{"label":["short_histology"],"name":[6],"type":["chr"],"align":["left"]},{"label":["broad_histology"],"name":[7],"type":["chr"],"align":["left"]},{"label":["Notes"],"name":[8],"type":["chr"],"align":["left"]},{"label":["tumor_descriptor"],"name":[9],"type":["chr"],"align":["left"]},{"label":["harmonized_diagnosis"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_HFQNKP5X","2":"7316-4062","3":"BS_5B6XZ7YP","4":"NA","5":"NA","6":"Chordoma","7":"Chordoma","8":"NA","9":"Progressive","10":"NA"},{"1":"PT_WTMSD2WB","2":"7316-3632","3":"BS_67PX06P3","4":"NA","5":"NA","6":"Chordoma","7":"Chordoma","8":"NA","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_HFQNKP5X","2":"7316-3295","3":"BS_6F49F7WH","4":"NA","5":"NA","6":"Chordoma","7":"Chordoma","8":"NA","9":"Recurrence","10":"NA"},{"1":"PT_HFQNKP5X","2":"7316-2935","3":"BS_9GN1QA3Q","4":"NA","5":"NA","6":"Chordoma","7":"Chordoma","8":"NA","9":"Progressive","10":"NA"},{"1":"PT_F1086Z0A","2":"7316-1101","3":"BS_BWZTMWTM","4":"NA","5":"NA","6":"Chordoma","7":"Chordoma","8":"NA","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_HFQNKP5X","2":"7316-4062","3":"BS_DBDXCXT5","4":"NA","5":"NA","6":"Chordoma","7":"Chordoma","8":"NA","9":"Progressive","10":"NA"},{"1":"PT_HFQNKP5X","2":"7316-3295","3":"BS_EJ9JKM1C","4":"NA","5":"NA","6":"Chordoma","7":"Chordoma","8":"NA","9":"Recurrence","10":"NA"},{"1":"PT_HFQNKP5X","2":"7316-921","3":"BS_FBJ516WW","4":"NA","5":"NA","6":"Chordoma","7":"Chordoma","8":"NA","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_HFQNKP5X","2":"7316-921","3":"BS_GFM6EA61","4":"NA","5":"NA","6":"Chordoma","7":"Chordoma","8":"NA","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_WTMSD2WB","2":"7316-3632","3":"BS_JTBM5TSE","4":"NA","5":"NA","6":"Chordoma","7":"Chordoma","8":"NA","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_F1086Z0A","2":"7316-1101","3":"BS_P4D8Y3S8","4":"NA","5":"NA","6":"Chordoma","7":"Chordoma","8":"NA","9":"Initial CNS Tumor","10":"NA"},{"1":"PT_HFQNKP5X","2":"7316-2935","3":"BS_YB07VF1X","4":"NA","5":"NA","6":"Chordoma","7":"Chordoma","8":"NA","9":"Progressive","10":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Write to file!</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoid3JpdGVfdHN2KGNyYW5pb19hZGFtX2RmLCBvdXRwdXRfZmlsZSkifQ== -->
-<pre class="r"><code>write_tsv(cranio_adam_df, output_file)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfZGYgPC0gY29tcGlsZWRfZGYgJT4lXG4gICAgbXV0YXRlKG1vbGVjdWxhcl9zdWJ0eXBlID0gY2FzZV93aGVuKFxuICAgICAgc2FtcGxlX2lkICVpbiUgY2hkbV9wb29ybHlfZGlmZl9zYW1wbGVfaWRzIH4gXCJDSERNLCBwb29ybHkgZGlmZmVyZW50aWF0ZWRcIixcbiAgICAgIHNhbXBsZV9pZCAlaW4lIGNoZG1fY29udmVudGlvbmFsX3NhbXBsZV9pZHMgfiBcIkNIRE0sIGNvbnZlbnRpb25hbFwiLFxuICAgICAgVFJVRSB+IG1vbGVjdWxhcl9zdWJ0eXBlKSxcbiAgIGhhcm1vbml6ZWRfZGlhZ25vc2lzID0gY2FzZV93aGVuKHN0cl9kZXRlY3QobW9sZWN1bGFyX3N1YnR5cGUsIFwiQ0hETVwiKSB+XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJfcmVwbGFjZShtb2xlY3VsYXJfc3VidHlwZSwgXCJDSERNLCBcIiwgXCJDaG9yZG9tYSwgXCIpLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFRSVUUgfiBoYXJtb25pemVkX2RpYWdub3NpcyksXG4gICAgTm90ZXMgPSBjYXNlX3doZW4oc2FtcGxlX2lkICVpbiUgYyhjaGRtX2NvbnZlbnRpb25hbF9zYW1wbGVfaWRzLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNoZG1fcG9vcmx5X2RpZmZfc2FtcGxlX2lkcykgfiBcIlVwZGF0ZWQgdmlhIHBhdGhvbG9neSByZXZpZXdcIixcbiAgICAgIFRSVUUgfiBOb3Rlc1xuICAgIClcbikifQ== -->
+<pre class="r"><code>compiled_df &lt;- compiled_df %&gt;%
+    mutate(molecular_subtype = case_when(
+      sample_id %in% chdm_poorly_diff_sample_ids ~ &quot;CHDM, poorly differentiated&quot;,
+      sample_id %in% chdm_conventional_sample_ids ~ &quot;CHDM, conventional&quot;,
+      TRUE ~ molecular_subtype),
+   harmonized_diagnosis = case_when(str_detect(molecular_subtype, &quot;CHDM&quot;) ~
+                                    str_replace(molecular_subtype, &quot;CHDM, &quot;, &quot;Chordoma, &quot;), 
+                                    TRUE ~ harmonized_diagnosis),
+    Notes = case_when(sample_id %in% c(chdm_conventional_sample_ids,
+                                        chdm_poorly_diff_sample_ids) ~ &quot;Updated via pathology review&quot;,
+      TRUE ~ Notes
+    )
+)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>###Check list of subtypes look as expected at this point in time</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgc29ydCBmaXJzdCIsImxpc3Rfc3VidHlwZXMgPC0gY29tcGlsZWRfZGYgJT4lXG4gIGZpbHRlcighZ3JlcGwoXCJUbyBiZSBjbGFzc2lmaWVkXCIsIG1vbGVjdWxhcl9zdWJ0eXBlKSkgJT4lXG4gIHNlbGVjdChpbnRlZ3JhdGVkX2RpYWdub3NpcywgbW9sZWN1bGFyX3N1YnR5cGUpICU+JVxuICBkaXN0aW5jdCgpICU+JVxuICBhcnJhbmdlKGludGVncmF0ZWRfZGlhZ25vc2lzKSIsImxpc3Rfc3VidHlwZXMiXX0= -->
+<pre class="r"><code># sort first
+list_subtypes &lt;- compiled_df %&gt;%
+  filter(!grepl(&quot;To be classified&quot;, molecular_subtype)) %&gt;%
+  select(integrated_diagnosis, molecular_subtype) %&gt;%
+  distinct() %&gt;%
+  arrange(integrated_diagnosis)
+list_subtypes</code></pre>
+<!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["integrated_diagnosis"],"name":[1],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"Adamantinomatous craniopharyngioma","2":"CRANIO, ADAM"},{"1":"CNS Embryonal tumor, HGNET-MN1","2":"CNS HGNET-MN1"},{"1":"CNS Embryonal tumor, NOS","2":"CNS Embryonal, NOS"},{"1":"CNS neuroblastoma","2":"CNS NB-FOXR2"},{"1":"Diffuse fibrillary astrocytoma, BRAF V600E","2":"LGG, BRAF V600E"},{"1":"Diffuse fibrillary astrocytoma, IDH","2":"LGG, IDH"},{"1":"Diffuse fibrillary astrocytoma, KIAA1549-BRAF","2":"LGG, KIAA1549-BRAF"},{"1":"Diffuse fibrillary astrocytoma, wildtype","2":"LGG, wildtype"},{"1":"Diffuse midline glioma, H3 K28-mutant","2":"DMG, H3 K28"},{"1":"Diffuse midline glioma, H3 K28-mutant","2":"DMG, H3 K28, TP53 activated"},{"1":"Diffuse midline glioma, H3 K28-mutant","2":"DMG, H3 K28, TP53 loss"},{"1":"Embryonal tumor with multilayer rosettes, C19MC-altered","2":"ETMR, C19MC-altered"},{"1":"Embryonal tumor with multilayer rosettes, NOS","2":"ETMR, NOS"},{"1":"Ependymoma, H3 K28-mutant","2":"EPN, H3 K28"},{"1":"Ependymoma, Posterior Fossa, Type A","2":"EPN, PF A"},{"1":"Ependymoma, Supratentorial, RELA fusion positive","2":"EPN, ST RELA"},{"1":"Ependymoma, Supratentorial, YAP1 fusion positive","2":"EPN, ST YAP1"},{"1":"Ewing sarcoma","2":"EWS"},{"1":"Gliomatosis cerebri, IDH","2":"LGG, IDH"},{"1":"GNG, BRAF V600E","2":"GNG, BRAF V600E"},{"1":"GNG, BRAF V600E, CDKN2A/B","2":"GNG, BRAF V600E, CDKN2A/B"},{"1":"GNG, FGFR","2":"GNG, FGFR"},{"1":"GNG, H3","2":"GNG, H3"},{"1":"GNG, IDH","2":"GNG, IDH"},{"1":"GNG, KIAA1549-BRAF","2":"GNG, KIAA1549-BRAF"},{"1":"GNG, MYB/MYBL1","2":"GNG, MYB/MYBL1"},{"1":"GNG, NF1-germline","2":"GNG, NF1-germline"},{"1":"GNG, NF1-somatic, BRAF V600E","2":"GNG, NF1-somatic, BRAF V600E"},{"1":"GNG, other MAPK","2":"GNG, other MAPK"},{"1":"GNG, other MAPK, IDH","2":"GNG, other MAPK, IDH"},{"1":"GNG, RTK","2":"GNG, RTK"},{"1":"GNG, RTK, CDKN2A/B","2":"GNG, RTK, CDKN2A/B"},{"1":"GNG, wildtype","2":"GNG, wildtype"},{"1":"High-grade glioma/astrocytoma, H3 G35-mutant","2":"HGG, H3 G35, TP53 loss"},{"1":"High-grade glioma/astrocytoma, H3 G35-mutant","2":"HGG, H3 G35"},{"1":"High-grade glioma/astrocytoma, H3 wildtype","2":"HGG, H3 wildtype"},{"1":"High-grade glioma/astrocytoma, H3 wildtype","2":"HGG, H3 wildtype, TP53 activated"},{"1":"High-grade glioma/astrocytoma, H3 wildtype","2":"HGG, H3 wildtype, TP53 loss"},{"1":"High-grade glioma/astrocytoma, IDH-mutant","2":"HGG, IDH, TP53 loss"},{"1":"High-grade glioma/astrocytoma, IDH-mutant","2":"HGG, IDH, TP53 activated"},{"1":"Low-grade glioma/astrocytoma, BRAF V600E","2":"LGG, BRAF V600E"},{"1":"Low-grade glioma/astrocytoma, BRAF V600E, CDKN2A/B","2":"LGG, BRAF V600E, CDKN2A/B"},{"1":"Low-grade glioma/astrocytoma, FGFR","2":"LGG, FGFR"},{"1":"Low-grade glioma/astrocytoma, IDH","2":"LGG, IDH"},{"1":"Low-grade glioma/astrocytoma, KIAA1549-BRAF","2":"LGG, KIAA1549-BRAF"},{"1":"Low-grade glioma/astrocytoma, MYB/MYBL1","2":"LGG, MYB/MYBL1"},{"1":"Low-grade glioma/astrocytoma, NF1-germline","2":"LGG, NF1-germline"},{"1":"Low-grade glioma/astrocytoma, NF1-germline, FGFR","2":"LGG, NF1-germline, FGFR"},{"1":"Low-grade glioma/astrocytoma, NF1-somatic","2":"LGG, NF1-somatic"},{"1":"Low-grade glioma/astrocytoma, other MAPK","2":"LGG, other MAPK"},{"1":"Low-grade glioma/astrocytoma, RTK","2":"LGG, RTK"},{"1":"Low-grade glioma/astrocytoma, wildtype","2":"LGG, wildtype"},{"1":"Medulloblastoma, group 3","2":"MB, Group3"},{"1":"Medulloblastoma, group 4","2":"MB, Group4"},{"1":"Medulloblastoma, SHH-activated","2":"MB, SHH"},{"1":"Medulloblastoma, WNT-activated","2":"MB, WNT"},{"1":"Oligodendroglioma, wildtype","2":"LGG, wildtype"},{"1":"Pilocytic astrocytoma, BRAF V600E","2":"LGG, BRAF V600E"},{"1":"Pilocytic astrocytoma, FGFR","2":"LGG, FGFR"},{"1":"Pilocytic astrocytoma, KIAA1549-BRAF","2":"LGG, KIAA1549-BRAF"},{"1":"Pilocytic astrocytoma, KIAA1549-BRAF, other MAPK","2":"LGG, KIAA1549-BRAF, other MAPK"},{"1":"Pilocytic astrocytoma, NF1-germline","2":"LGG, NF1-germline"},{"1":"Pilocytic astrocytoma, NF1-somatic","2":"LGG, NF1-somatic"},{"1":"Pilocytic astrocytoma, NF1-somatic, FGFR","2":"LGG, NF1-somatic, FGFR"},{"1":"Pilocytic astrocytoma, other MAPK","2":"LGG, other MAPK"},{"1":"Pilocytic astrocytoma, RTK","2":"LGG, RTK"},{"1":"Pilocytic astrocytoma, wildtype","2":"LGG, wildtype"},{"1":"Pleomorphic xanthoastrocytom, BRAF V600E","2":"LGG, BRAF V600E"},{"1":"Pleomorphic xanthoastrocytoma, BRAF V600E","2":"LGG, BRAF V600E"},{"1":"Pleomorphic xanthoastrocytoma, BRAF V600E, CDKN2A/B","2":"LGG, BRAF V600E, CDKN2A/B"},{"1":"Pleomorphic xanthoastrocytoma, NF1-somatic, NF1-germline, CDKN2A/B","2":"LGG, NF1-somatic, NF1-germline, CDKN2A/B"},{"1":"Pleomorphic xanthoastrocytoma, RTK, CDKN2A/B","2":"LGG, RTK, CDKN2A/B"},{"1":"Pleomorphic xanthoastrocytoma, wildtype","2":"LGG, wildtype"},{"1":"Subependymal Giant Cell Astrocytoma, RTK, CDKN2A/B","2":"LGG, RTK, CDKN2A/B"},{"1":"Subependymal Giant Cell Astrocytoma, wildtype","2":"LGG, wildtype"},{"1":"NA","2":"NA"},{"1":"NA","2":"CHDM, poorly differentiated"},{"1":"NA","2":"CHDM, conventional"},{"1":"NA","2":"EVN"},{"1":"NA","2":"CNC"},{"1":"NA","2":"CRANIO, ADAM"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="write-revised-table-to-file" class="section level3">
+<h3>Write revised table to file</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgc29ydCBmaXJzdCIsImNvbXBpbGVkX2RmIDwtIGNvbXBpbGVkX2RmICU+JVxuICBhcnJhbmdlKEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsIHNhbXBsZV9pZCkgJT4lXG4gIGRpc3RpbmN0KCkgIyB0byByZW1vdmUgZHVwbGljYXRlcyBmcm9tIGFib3ZlIiwid3JpdGVfdHN2KGNvbXBpbGVkX2RmLCBvdXRwdXRfZmlsZSkiXX0= -->
+<pre class="r"><code># sort first
+compiled_df &lt;- compiled_df %&gt;%
+  arrange(Kids_First_Participant_ID, sample_id) %&gt;%
+  distinct() # to remove duplicates from above
+write_tsv(compiled_df, output_file)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
 </div>
 <div id="session-info" class="section level2">
 <h2>Session Info</h2>
@@ -3167,7 +4139,7 @@ acp_df</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoic2Vzc2lvbkluZm8oKSJ9 -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgIFxuIFszXSBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgIFxuWzExXSBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcblsxXSBmb3JjYXRzXzAuNC4wICAgc3RyaW5ncl8xLjQuMCAgIGRwbHlyXzAuOC4zICAgICBwdXJycl8wLjMuMiAgICBcbls1XSByZWFkcl8xLjMuMSAgICAgdGlkeXJfMC44LjMgICAgIHRpYmJsZV8yLjEuMyAgICBnZ3Bsb3QyXzMuMi4wICBcbls5XSB0aWR5dmVyc2VfMS4yLjFcblxubG9hZGVkIHZpYSBhIG5hbWVzcGFjZSAoYW5kIG5vdCBhdHRhY2hlZCk6XG4gWzFdIFJjcHBfMS4wLjEgICAgICAgY2VsbHJhbmdlcl8xLjEuMCBwaWxsYXJfMS40LjIgICAgIGNvbXBpbGVyXzMuNi4wICBcbiBbNV0gYmFzZTY0ZW5jXzAuMS0zICB0b29sc18zLjYuMCAgICAgIGRpZ2VzdF8wLjYuMjAgICAgbHVicmlkYXRlXzEuNy40IFxuIFs5XSBqc29ubGl0ZV8xLjYgICAgIGV2YWx1YXRlXzAuMTQgICAgbmxtZV8zLjEtMTQwICAgICBndGFibGVfMC4zLjAgICAgXG5bMTNdIGxhdHRpY2VfMC4yMC0zOCAgcGtnY29uZmlnXzIuMC4yICBybGFuZ18wLjQuMCAgICAgIGNsaV8xLjEuMCAgICAgICBcblsxN10gcnN0dWRpb2FwaV8wLjEwICB5YW1sXzIuMi4wICAgICAgIGhhdmVuXzIuMS4xICAgICAgeGZ1bl8wLjggICAgICAgIFxuWzIxXSB3aXRocl8yLjEuMiAgICAgIHhtbDJfMS4yLjAgICAgICAgaHR0cl8xLjQuMCAgICAgICBrbml0cl8xLjIzICAgICAgXG5bMjVdIGdlbmVyaWNzXzAuMC4yICAgaG1zXzAuNC4yICAgICAgICBncmlkXzMuNi4wICAgICAgIHRpZHlzZWxlY3RfMC4yLjVcblsyOV0gZ2x1ZV8xLjMuMSAgICAgICBSNl8yLjQuMCAgICAgICAgIHJlYWR4bF8xLjMuMSAgICAgcm1hcmtkb3duXzEuMTMgIFxuWzMzXSBtb2RlbHJfMC4xLjQgICAgIG1hZ3JpdHRyXzEuNSAgICAgYmFja3BvcnRzXzEuMS40ICBzY2FsZXNfMS4wLjAgICAgXG5bMzddIGh0bWx0b29sc18wLjMuNiAgcnZlc3RfMC4zLjQgICAgICBhc3NlcnR0aGF0XzAuMi4xIGNvbG9yc3BhY2VfMS40LTFcbls0MV0gc3RyaW5naV8xLjQuMyAgICBsYXp5ZXZhbF8wLjIuMiAgIG11bnNlbGxfMC41LjAgICAgYnJvb21fMC41LjIgICAgIFxuWzQ1XSBjcmF5b25fMS4zLjQgICAgXG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgIFxuIFszXSBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgIFxuWzExXSBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcblsxXSBmb3JjYXRzXzAuNC4wICAgc3RyaW5ncl8xLjQuMCAgIGRwbHlyXzAuOC4zICAgICBwdXJycl8wLjMuMiAgICBcbls1XSByZWFkcl8xLjMuMSAgICAgdGlkeXJfMC44LjMgICAgIHRpYmJsZV8yLjEuMyAgICBnZ3Bsb3QyXzMuMi4wICBcbls5XSB0aWR5dmVyc2VfMS4yLjFcblxubG9hZGVkIHZpYSBhIG5hbWVzcGFjZSAoYW5kIG5vdCBhdHRhY2hlZCk6XG4gWzFdIFJjcHBfMS4wLjEgICAgICAgY2VsbHJhbmdlcl8xLjEuMCBwaWxsYXJfMS40LjIgICAgIGNvbXBpbGVyXzMuNi4wICBcbiBbNV0gYmFzZTY0ZW5jXzAuMS0zICB0b29sc18zLjYuMCAgICAgIGRpZ2VzdF8wLjYuMjAgICAgbHVicmlkYXRlXzEuNy40IFxuIFs5XSBqc29ubGl0ZV8xLjYgICAgIGV2YWx1YXRlXzAuMTQgICAgbmxtZV8zLjEtMTQwICAgICBndGFibGVfMC4zLjAgICAgXG5bMTNdIGxhdHRpY2VfMC4yMC0zOCAgcGtnY29uZmlnXzIuMC4yICBybGFuZ18wLjQuMCAgICAgIGNsaV8xLjEuMCAgICAgICBcblsxN10gcnN0dWRpb2FwaV8wLjEwICB5YW1sXzIuMi4wICAgICAgIGhhdmVuXzIuMS4xICAgICAgeGZ1bl8wLjggICAgICAgIFxuWzIxXSB3aXRocl8yLjEuMiAgICAgIHhtbDJfMS4yLjAgICAgICAgaHR0cl8xLjQuMCAgICAgICBrbml0cl8xLjIzICAgICAgXG5bMjVdIGhtc18wLjQuMiAgICAgICAgZ2VuZXJpY3NfMC4wLjIgICBycHJvanJvb3RfMS4zLTIgIGdyaWRfMy42LjAgICAgICBcblsyOV0gdGlkeXNlbGVjdF8wLjIuNSBnbHVlXzEuMy4xICAgICAgIFI2XzIuNC4wICAgICAgICAgcmVhZHhsXzEuMy4xICAgIFxuWzMzXSBybWFya2Rvd25fMS4xMyAgIG1vZGVscl8wLjEuNCAgICAgbWFncml0dHJfMS41ICAgICBiYWNrcG9ydHNfMS4xLjQgXG5bMzddIHNjYWxlc18xLjAuMCAgICAgaHRtbHRvb2xzXzAuMy42ICBydmVzdF8wLjMuNCAgICAgIGFzc2VydHRoYXRfMC4yLjFcbls0MV0gY29sb3JzcGFjZV8xLjQtMSBzdHJpbmdpXzEuNC4zICAgIGxhenlldmFsXzAuMi4yICAgbXVuc2VsbF8wLjUuMCAgIFxuWzQ1XSBicm9vbV8wLjUuMiAgICAgIGNyYXlvbl8xLjMuNCAgICBcbiJ9 -->
 <pre><code>R version 3.6.0 (2019-04-26)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Debian GNU/Linux 9 (stretch)
@@ -3198,19 +4170,17 @@ loaded via a namespace (and not attached):
 [13] lattice_0.20-38  pkgconfig_2.0.2  rlang_0.4.0      cli_1.1.0       
 [17] rstudioapi_0.10  yaml_2.2.0       haven_2.1.1      xfun_0.8        
 [21] withr_2.1.2      xml2_1.2.0       httr_1.4.0       knitr_1.23      
-[25] generics_0.0.2   hms_0.4.2        grid_3.6.0       tidyselect_0.2.5
-[29] glue_1.3.1       R6_2.4.0         readxl_1.3.1     rmarkdown_1.13  
-[33] modelr_0.1.4     magrittr_1.5     backports_1.1.4  scales_1.0.0    
-[37] htmltools_0.3.6  rvest_0.3.4      assertthat_0.2.1 colorspace_1.4-1
-[41] stringi_1.4.3    lazyeval_0.2.2   munsell_0.5.0    broom_0.5.2     
-[45] crayon_1.3.4    </code></pre>
+[25] hms_0.4.2        generics_0.0.2   rprojroot_1.3-2  grid_3.6.0      
+[29] tidyselect_0.2.5 glue_1.3.1       R6_2.4.0         readxl_1.3.1    
+[33] rmarkdown_1.13   modelr_0.1.4     magrittr_1.5     backports_1.1.4 
+[37] scales_1.0.0     htmltools_0.3.6  rvest_0.3.4      assertthat_0.2.1
+[41] colorspace_1.4-1 stringi_1.4.3    lazyeval_0.2.2   munsell_0.5.0   
+[45] broom_0.5.2      crayon_1.3.4    </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUmVjb2RpbmcgYWRhbWFudGlub21hdG91cyBjcmFuaW9waGFyeW5naW9tYXMiCm91dHB1dDogCiAgaHRtbF9ub3RlYm9vazoKICAgIHRvYzogdHJ1ZQogICAgdG9jX2Zsb2F0OiB0cnVlCmF1dGhvcjogSk4gVGFyb25pIGZvciBBTFNGIENDREwgKGNvZGUpCmRhdGU6IDIwMjEKLS0tCgpfQmFja2dyb3VuZCBhZGFwdGVkIGZyb20gWyM5OTRdKGh0dHBzOi8vZ2l0aHViLmNvbS9BbGV4c0xlbW9uYWRlL09wZW5QQlRBLWFuYWx5c2lzL2lzc3Vlcy85OTQpXwoKVGhlcmUgYXJlIENyYW5pb3BoYXJ5bmdpb21hIHNhbXBsZXMgd2hpY2ggbWF5IGhhdmUgYmVlbiBhbm5vdGF0ZWQgYXMgIlRvIGJlIGNsYXNzaWZpZWQiIGluIGBtb2xlY3VsYXItc3VidHlwaW5nLUNSQU5JT2AgYmVjYXVzZSB0aGV5IGxhY2sgY2Fub25pY2FsIG11dGF0aW9ucy4KSG93ZXZlciwgZm9yIGFkYW1hbnRpbm9tYXRvdXMgY3JhbmlvcGhhcnluZ2lvbWEsIHRoZSBiLWNhdGVuaW4gU05WIGlzIG5vdCBwcmVzZW50IGluIGFsbCBzYW1wbGVzIChbcmVmXShodHRwczovL2RvaS5vcmcvMTAuMTA5My9qbmVuL25sdzExNikpOgoKPiBJbiBvdXIgY29ob3J0IG9mIFthZGFtYW50aW5vbWF0b3VzIGNyYW5pb3BoYXJ5bmdpb21hc10gc3BlY2ltZW5zIGZyb20gMTE3IHBhdGllbnRzIHdlIGZvdW5kIF9DVE5OQjFfIG11dGF0aW9ucyBpbiA4OSBjYXNlcyAoNzYuMSUpLgoKVGhlcmUgYXJlIHNhbXBsZXMgZGVzY3JpYmVkIGFzIGBBZGFtYW50aW5vbWF0b3VzYCBpbiBwYXRob2xvZ3kgcmVwb3J0cywgc28gd2UgY2FuIHVwZGF0ZSB0aGUgYGhhcm1vbml6ZWRfZGlhZ25vc2lzYCBhbmQgYG1vbGVjdWxhcl9zdWJ0eXBlYCBpbmZvcm1hdGlvbiBhY2NvcmRpbmdseS4KCiMjIFNldCB1cAoKIyMjIExpYnJhcmllcwoKYGBge3J9CmxpYnJhcnkodGlkeXZlcnNlKQpgYGAKCiMjIyBJbnB1dAoKYGBge3J9CmRhdGFfZGlyIDwtIGZpbGUucGF0aCgiLi4iLCAiLi4iLCAiZGF0YSIpCnJlc3VsdHNfZGlyIDwtICJyZXN1bHRzIgpoaXN0b2xvZ2llc19maWxlIDwtIGZpbGUucGF0aChkYXRhX2RpciwgInBidGEtaGlzdG9sb2dpZXMtYmFzZS50c3YiKQpjb21waWxlZF9zdWJ0eXBlc19maWxlIDwtIGZpbGUucGF0aChyZXN1bHRzX2RpciwgImNvbXBpbGVkX21vbGVjdWxhcl9zdWJ0eXBlcy50c3YiKQpgYGAKCiMjIyBPdXRwdXQKCmBgYHtyfQpvdXRwdXRfZmlsZSA8LSBmaWxlLnBhdGgocmVzdWx0c19kaXIsICJjcmFuaW9fYWRhbV9zdWJ0eXBlcy50c3YiKQpgYGAKCiMjIFJlYWQgaW4gZGF0YQoKYGBge3J9Cmhpc3RvbG9naWVzX2RmIDwtIHJlYWRfdHN2KGhpc3RvbG9naWVzX2ZpbGUpCmBgYAoKYGBge3J9CnN1YnR5cGVzX2RmIDwtIHJlYWRfdHN2KGNvbXBpbGVkX3N1YnR5cGVzX2ZpbGUsCiAgICAgICAgICAgICAgICAgICAgICAgIGd1ZXNzX21heCA9IDEwMDAwKQpgYGAKCiMjIyBTYW1wbGVzIHRvIGJlIHJlY2xhc3NpZmllZAoKVGhlIGluc3RydWN0aW9ucyBvbiBbIzk5NF0oaHR0cHM6Ly9naXRodWIuY29tL0FsZXhzTGVtb25hZGUvT3BlblBCVEEtYW5hbHlzaXMvaXNzdWVzLzk5NCkgYXJlIHRvIHVzZSBzcGVjaWZpYyBzYW1wbGUgaWRlbnRpZmllcnMgdG8gZG8gdGhlIHJlY2xhc3NpZmljYXRpb24gYmVjYXVzZSBpdCBpcyBvbiB0aGUgYmFzaXMgb2YgcGF0aG9sb2d5IHJlcG9ydCByZXZpZXcuCgpgYGB7cn0Kam9pbmVkX2RmIDwtIGhpc3RvbG9naWVzX2RmICU+JQogIHNlbGVjdChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lELAogICAgICAgICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELAogICAgICAgICBzYW1wbGVfaWQsCiAgICAgICAgIHNhbXBsZV90eXBlLCAgIyByZXF1aXJlZCB0byBmaWx0ZXIgb3V0IG5vcm1hbCBzYW1wbGVzCiAgICAgICAgIHBhdGhvbG9neV9kaWFnbm9zaXMsCiAgICAgICAgIHBhdGhvbG9neV9mcmVlX3RleHRfZGlhZ25vc2lzLAogICAgICAgICB0dW1vcl9kZXNjcmlwdG9yKSAlPiUKICBpbm5lcl9qb2luKHN1YnR5cGVzX2RmLAogICAgICAgICAgICAgYnkgPSBjKCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEIiwgCiAgICAgICAgICAgICAgICAgICAgIktpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQiLAogICAgICAgICAgICAgICAgICAgICJzYW1wbGVfaWQiKSkKYGBgCgpIZXJlJ3MgdGhlIHNhbWUgZmlsdGVyaW5nIHN0ZXBzIHRoYXQgYXJlIHBlcmZvcm1lZCBvbiB0aGUgaXNzdWUgaXRzZWxmIHRoYXQgd2UnbGwgc2F2ZSBpbiBhIG5ldyBkYXRhIGZyYW1lLgoKYGBge3J9CmFjcF9kZiA8LSBqb2luZWRfZGYgJT4lCiAgIyBTYW1lIGxvZ2ljIGFzIG9uIHRoZSBpc3N1ZSEKICBmaWx0ZXIocGF0aG9sb2d5X2RpYWdub3NpcyA9PSAiQ3JhbmlvcGhhcnluZ2lvbWEiLAogICAgICAgICBtb2xlY3VsYXJfc3VidHlwZSA9PSAiQ1JBTklPLCBUbyBiZSBjbGFzc2lmaWVkIiwKICAgICAgICAgc3RyX2RldGVjdChzdHJfdG9fbG93ZXIocGF0aG9sb2d5X2ZyZWVfdGV4dF9kaWFnbm9zaXMpLCAKICAgICAgICAgICAgICAgICAgICAiYWRhbWFudGlub21hdG91cyIpKSAlPiUKICBzZWxlY3Qoc2FtcGxlX2lkLAogICAgICAgICBwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3NpcywKICAgICAgICAgbW9sZWN1bGFyX3N1YnR5cGUpICU+JQogIGRpc3RpbmN0KCkKCmFjcF9kZgpgYGAKCldlIGNhbiBwdWxsIHRoZSBgc2FtcGxlX2lkYCB2YWx1ZXMgb3V0IGFuZCB1c2UgdGhhdCBpbiBvdXIgbmV4dCBzdGVwcy4KCmBgYHtyfQpzYW1wbGVfaWRzX3JlY2xhc3NpZmljYXRpb24gPC0gYWNwX2RmICU+JQogIHB1bGwoc2FtcGxlX2lkKQpgYGAKCiMjIFJlY29kZSBhZGFtYW50aW5vbWF0b3VzIGNyYW5pb3BoYXJ5bmdpb21hcwoKV2UgY2FuIHVzZSB0aGUgZm9sbG93aW5nIHRhYmxlIGZyb20gWyM5OTRdKGh0dHBzOi8vZ2l0aHViLmNvbS9BbGV4c0xlbW9uYWRlL09wZW5QQlRBLWFuYWx5c2lzL2lzc3Vlcy85OTQpIHRvIGd1aWRlIGhvdyB3ZSByZWNvZGUgdGhlIGxhYmVscyBmb3IgdGhlc2Ugc2FtcGxlcy4KCnwgYnJvYWRfaGlzdG9sb2d5ICAgICAgICAgfCBzaG9ydF9oaXN0b2xvZ3kgICB8IGhhcm1vbml6ZWRfZGlhZ25vc2lzICAgICAgICAgICAgICAgfCBtb2xlY3VsYXJfc3VidHlwZSB8CnwtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfC0tLS0tLS0tLS0tLS0tLS0tLS18LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfC0tLS0tLS0tLS0tLS0tLS0tLS18CnwgVHVtb3JzIG9mIHNlbGxhciByZWdpb24gfCBDcmFuaW9waGFyeW5naW9tYSB8IEFkYW1hbnRpbm9tYXRvdXMgY3JhbmlvcGhhcnluZ2lvbWEgfCBDUkFOSU8sIEFEQU0gICAgICB8CgpgYGB7cn0KY3JhbmlvX2FkYW1fZGYgPC0gam9pbmVkX2RmICU+JSAKICBmaWx0ZXIoc2FtcGxlX2lkICVpbiUgc2FtcGxlX2lkc19yZWNsYXNzaWZpY2F0aW9uLAogICAgICAgICAjIEV4Y2x1ZGUgbm9ybWFsIHNhbXBsZXMKICAgICAgICAgc2FtcGxlX3R5cGUgIT0gIk5vcm1hbCIpICU+JQogICMgRmlsdGVyIHRvIHJlbGV2YW50IElEIGFuZCBkaXNlYXNlIHR5cGUgbGFiZWwgY29sdW1ucwogIHNlbGVjdChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lELAogICAgICAgICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELAogICAgICAgICBzYW1wbGVfaWQsCiAgICAgICAgIGJyb2FkX2hpc3RvbG9neSwKICAgICAgICAgc2hvcnRfaGlzdG9sb2d5LAogICAgICAgICBtb2xlY3VsYXJfc3VidHlwZSwKICAgICAgICAgdHVtb3JfZGVzY3JpcHRvcikgJT4lCiAgIyBDb2RlIHRoZSB2YWx1ZXMgdGhhdCBhcmUgaW4gdGhlIHRhYmxlIGFib3ZlCiAgbXV0YXRlKAogICAgYnJvYWRfaGlzdG9sb2d5ID0gIlR1bW9ycyBvZiBzZWxsYXIgcmVnaW9uIiwKICAgIHNob3J0X2hpc3RvbG9neSA9ICJDcmFuaW9waGFyeW5naW9tYSIsCiAgICBoYXJtb25pemVkX2RpYWdub3NpcyA9ICJBZGFtYW50aW5vbWF0b3VzIGNyYW5pb3BoYXJ5bmdpb21hIiwKICAgIG1vbGVjdWxhcl9zdWJ0eXBlID0gIkNSQU5JTywgQURBTSIsCiAgICBOb3RlcyA9ICJVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmcgZnJvbSBwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3NpcyIKICApCmBgYAoKV3JpdGUgdG8gZmlsZSEKCmBgYHtyfQp3cml0ZV90c3YoY3JhbmlvX2FkYW1fZGYsIG91dHB1dF9maWxlKQpgYGAKCiMjIFNlc3Npb24gSW5mbwoKYGBge3J9CnNlc3Npb25JbmZvKCkKYGBgCgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiSW5jb3Jwb3JhdGluZyBDSE9QIHBhdGhvbG9neSBpbnB1dCB0byBtb2xlY3VsYXIgc3VidHlwaW5nIGNhbGxzIgpvdXRwdXQ6CiAgaHRtbF9ub3RlYm9vazoKICAgIHRvYzogVFJVRQogICAgdG9jX2Zsb2F0OiBUUlVFCmF1dGhvcjogSmFjbHluIFRhcm9uaSBmb3IgQUxTRiBDQ0RMLCBKbyBMeW5uZSBSb2tpdGEgZm9yIEQzYgpkYXRlOiAyMDIwCnBhcmFtczoKICBpc19jaTogRkFMU0UKLS0tCgpfQXV0aG9yc2hpcCBhYm92ZSByZWZlcnMgdG8gdGhpcyBub3RlYm9vayAqKm9ubHkqKi5fCgojIyBCYWNrZ3JvdW5kCgpBcyBwYXJ0IG9mIHRoaXMgcHJvamVjdCwgd2UgaGF2ZSB1bmRlcnRha2VuIHNldmVyYWwgYW5hbHlzZXMgdGhhdCB1c2UgbW9sZWN1bGFyIGRhdGEgdG8gc3VidHlwZSBvciByZWNsYXNzaWZ5IGJpb3NwZWNpbWVucy4KSW4gc29tZSBjYXNlcywgb3VyIGFuYWx5c2VzIGhhdmUgcmVzdWx0ZWQgaW4gYW4gdXBkYXRlIG9mIHRoZSBgaW50ZWdyYXRlZF9kaWFnbm9zaXNgIGZpZWxkIGluY2x1ZGVkIGluIHRoZSBjbGluaWNhbCBmaWxlIChgcGJ0YS1oaXN0b2xvZ2llcy50c3ZgIFtbZG9jXShodHRwczovL2dpdGh1Yi5jb20vQWxleHNMZW1vbmFkZS9PcGVuUEJUQS1hbmFseXNpcy9ibG9iL21hc3Rlci9kb2MvZGF0YS1mb3JtYXRzLm1kI2RhdGEtY2F2ZWF0cyldKS4KSG93ZXZlciwgbm90IGFsbCBsb2dpYyBpbmNsdWRlZCBpbiB0aGUgY29kZSBvZiB0aGUgcmVwb3NpdG9yeSB3YXMgdWx0aW1hdGVseSBpbiBhZ3JlZW1lbnQgd2l0aCBmZWVkYmFjayBmcm9tIHBhdGhvbG9naXN0cyBhdCBDSE9QLgpJbiB0aGlzIG5vdGVib29rLCB3ZSB3aWxsIG1ha2UgY2hhbmdlcyBhbmQgZG9jdW1lbnQgdGhlIGNhc2VzIHdoZXJlIHRoZSBsb2dpYyBpbiB0aGUgbW9kdWxlcyBvZiB0aGUgcmVwb3NpdG9yeSBkZXZpYXRlIGZyb20gdGhlIGZpbmFsIGxhYmVscy4KCiMjIFBhdGhvbG9neSBGZWVkYmFjawoKSGVyZSwgd2UncmUgY29weWluZyB0aGUgdGFibGUgZnJvbSBbIzYwNiAoY29tbWVudCldKGh0dHBzOi8vZ2l0aHViLmNvbS9BbGV4c0xlbW9uYWRlL09wZW5QQlRBLWFuYWx5c2lzL2lzc3Vlcy82MDkjaXNzdWVjb21tZW50LTYwMjgyMTM3NikgaGVyZToKCnwgS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCB8IGdsaW9tYV9icmFpbl9yZWdpb24gfCBzYW1wbGVfaWQgfCBhbGlxdW90X2lkIHwgS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCB8IGV4cGVyaW1lbnRhbF9zdHJhdGVneSB8IHBhdGhvbG9neV9kaWFnbm9zaXMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IGludGVncmF0ZWRfZGlhZ25vc2lzICAgICAgICAgICAgICAgICAgICAgfCBOb3RlcyBmcm9tIFBhdGggaW5zcGVjdGlvbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgQWN0aW9uICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBHaXZlbiB0byBSaXRhIDMvMTMvMjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgc2hvcnRfaGlzdG9sb2d5IHwgYnJvYWRfaGlzdG9sb2d5ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgYnJvYWRfY29tcG9zaXRpb24gfCBOb3RlcyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBjYW5jZXJfcHJlZGlzcG9zaXRpb25zIHwgbW9sZWN1bGFyX3N1YnR5cGUgICB8CnwtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS18LS0tLS0tLS0tLS0tLS0tLS0tLS0tfC0tLS0tLS0tLS0tfC0tLS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS18LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS18LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS18LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0tLS0tfC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0tLS0tLS18CnwgQlNfQzZaWjNGWTUgICAgICAgICAgICAgICB8IGhlbWlzcGhlcmljICAgICAgICAgfCA3MzE2LTExMDUgfCA0NzAwMTcgICAgIHwgUFRfWDcxRDdHNVMgICAgICAgICAgICAgICB8IFJOQS1TZXEgICAgICAgICAgICAgICB8IFN1cHJhdGVudG9yaWFsIG9yIFNwaW5hbCBDb3JkIFBORVQgICAgICAgICAgICAgICB8IEhpZ2gtZ3JhZGUgZ2xpb21hICAgICAgICAgICAgICAgICAgICAgICAgfCBObyBwYXRoIHJlcG9ydCBhdmFpbGFibGUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgcmV2aWV3ZWQgLSBPSyB3aXRoIG5ldyBkeCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAxIHNsaWRlLCBwYXRob2xvZ3kgcmVwb3J0ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgSEdBVCAgICAgICAgICAgIHwgRGlmZnVzZSBhc3Ryb2N5dGljIGFuZCBvbGlnb2RlbmRyb2dsaWFsIHR1bW9yICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgdHVtb3IgICAgICAgICAgICAgfCBVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBOb25lIGRvY3VtZW50ZWQgICAgICAgIHwgSEdHLCBIMyBHMzUgICAgICAgICB8CnwgQlNfUDhXTjhYRVEgICAgICAgICAgICAgICB8IGhlbWlzcGhlcmljICAgICAgICAgfCA3MzE2LTExMDUgfCA1NDk3MTIgICAgIHwgUFRfWDcxRDdHNVMgICAgICAgICAgICAgICB8IFdHUyAgICAgICAgICAgICAgICAgICB8IFN1cHJhdGVudG9yaWFsIG9yIFNwaW5hbCBDb3JkIFBORVQgICAgICAgICAgICAgICB8IEhpZ2gtZ3JhZGUgZ2xpb21hICAgICAgICAgICAgICAgICAgICAgICAgfCBObyBwYXRoIHJlcG9ydCBhdmFpbGFibGUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgcmV2aWV3ZWQgLSBPSyB3aXRoIG5ldyBkeCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAxIHNsaWRlLCBwYXRob2xvZ3kgcmVwb3J0ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgSEdBVCAgICAgICAgICAgIHwgRGlmZnVzZSBhc3Ryb2N5dGljIGFuZCBvbGlnb2RlbmRyb2dsaWFsIHR1bW9yICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgdHVtb3IgICAgICAgICAgICAgfCBVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBOb25lIGRvY3VtZW50ZWQgICAgICAgIHwgSEdHLCBIMyBHMzUgICAgICAgICB8CnwgQlNfMjNNNzJBQkcgICAgICAgICAgICAgICB8IE5BICAgICAgICAgICAgICAgICAgfCA3MzE2LTUyMyAgfCA1ODgzNDMgICAgIHwgUFRfQVFXRFFXMjcgICAgICAgICAgICAgICB8IFJOQS1TZXEgICAgICAgICAgICAgICB8IE1lbmluZ2lvbWEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IDwvcz5FcGVuZHltb21hPC9zPiBNZW5pbmdpb21hICAgICAgICAgICAgICAgICAgIHwgTm8gcGF0aCByZXBvcnQgYXZhaWxhYmxlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IHJldmlld2VkIC0ga2VlcCBhcyBtZW5pbmdpb21hICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgMiBzbGlkZXMsIHBhdGhvbG9neSByZXBvcnQ7IGVtYWlsIHJlcXVlc3QgZm9yIHJhZGlvbG9neSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IHR1bW9yICAgICAgICAgICB8IDxzPkVwZW5keW1hbCB0dW1vcjwvcz4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCB0dW1vciAgICAgICAgICAgICB8ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IE5vbmUgZG9jdW1lbnRlZCAgICAgICAgfCA8cz5TVC1FUE4tWUFQPC9zPiAgICAgICAgICB8CnwgQlNfNUpNNTczSkMgICAgICAgICAgICAgICB8IGhlbWlzcGhlcmljICAgICAgICAgfCA3MzE2LTIyNTUgfCA3MTcxNjYgICAgIHwgUFRfNlEwTlBWUDMgICAgICAgICAgICAgICB8IFJOQS1TZXEgICAgICAgICAgICAgICB8IEdhbmdsaW9nbGlvbWEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IERpZmZ1c2UgbWlkbGluZSBnbGlvbWEgICAgICAgICAgICAgICAgICAgfCBQYXRoIHJlcG9ydCBnYW5nbGlvZ2xpb21hIHdpdGggZXh0ZW5zaXZlIGNob25kcm9pZCBtZXRhcGxhc2lhICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgbmVlZCB0byByZXZpZXcgcmFkaW9sb2d5IHJlcG9ydDsgaWYgbm90IGRpZmZ1c2UsIGdhbmdsaW9nbGlvbWEsIEgzIG11dCAtIGNhbm5vdCByZXZpZXcgfCBwYXRob2xvZ3kgcmVwb3J0IChubyBzbGlkZXMgLSBmcm9tIFBpdHQpOyBlbWFpbCByZXF1ZXN0IGZvciByYWRpb2xvZ3kgLSB3aWxsIG5vdCByZWNlaXZlIGluIHRoZSBzaG9ydCB0ZXJtIHwgSEdBVCAgICAgICAgICAgIHwgRGlmZnVzZSBhc3Ryb2N5dGljIGFuZCBvbGlnb2RlbmRyb2dsaWFsIHR1bW9yICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgdHVtb3IgICAgICAgICAgICAgfCBVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmcgICAgICAgICAgICAgICAgICAgICAgICAgfCBOb25lIGRvY3VtZW50ZWQgICAgICAgIHwgRE1HLCBIMyBLMjggICAgICAgICB8CnwgQlNfRTVINkNGWVQgICAgICAgICAgICAgICB8IGhlbWlzcGhlcmljICAgICAgICAgfCA3MzE2LTIyNTUgfCA3MTExMzQgICAgIHwgUFRfNlEwTlBWUDMgICAgICAgICAgICAgICB8IFdHUyAgICAgICAgICAgICAgICAgICB8IEdhbmdsaW9nbGlvbWEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IERpZmZ1c2UgbWlkbGluZSBnbGlvbWEgICAgICAgICAgICAgICAgICAgfCBQYXRoIHJlcG9ydCBnYW5nbGlvZ2xpb21hIHdpdGggZXh0ZW5zaXZlIGNob25kcm9pZCBtZXRhcGxhc2lhICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgbmVlZCB0byByZXZpZXcgcmFkaW9sb2d5IHJlcG9ydDsgaWYgbm90IGRpZmZ1c2UsIGdhbmdsaW9nbGlvbWEsIEgzIG11dCAtIGNhbm5vdCByZXZpZXcgfCBwYXRob2xvZ3kgcmVwb3J0IChubyBzbGlkZXMgLSBmcm9tIFBpdHQpOyBlbWFpbCByZXF1ZXN0IGZvciByYWRpb2xvZ3kgLSB3aWxsIG5vdCByZWNlaXZlIGluIHRoZSBzaG9ydCB0ZXJtIHwgSEdBVCAgICAgICAgICAgIHwgRGlmZnVzZSBhc3Ryb2N5dGljIGFuZCBvbGlnb2RlbmRyb2dsaWFsIHR1bW9yICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgdHVtb3IgICAgICAgICAgICAgfCBVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmcgICAgICAgICAgICAgICAgICAgICAgICAgfCBOb25lIGRvY3VtZW50ZWQgICAgICAgIHwgRE1HLCBIMyBLMjggICAgICAgICB8CnwgQlNfQkZERVpLMUMgICAgICAgICAgICAgICB8IG90aGVyICAgICAgICAgICAgICAgfCA3MzE2LTExMDIgfCA1NDk3MTQgICAgIHwgUFRfNUJXWkEwTlQgICAgICAgICAgICAgICB8IFdHUyAgICAgICAgICAgICAgICAgICB8IFN1cHJhdGVudG9yaWFsIG9yIFNwaW5hbCBDb3JkIFBORVQgICAgICAgICAgICAgICB8IERpZmZ1c2UgbWlkbGluZSBnbGlvbWEgICAgICAgICAgICAgICAgICAgfCBObyBwYXRoIHJlcG9ydCBhdmFpbGFibGUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgcmV2aWV3ZWQgLSBPSyB3aXRoIG5ldyBkeCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAzIHNsaWRlcywgcGF0aG9sb2d5IHJlcG9ydCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgSEdBVCAgICAgICAgICAgIHwgRGlmZnVzZSBhc3Ryb2N5dGljIGFuZCBvbGlnb2RlbmRyb2dsaWFsIHR1bW9yICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgdHVtb3IgICAgICAgICAgICAgfCBVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBOb25lIGRvY3VtZW50ZWQgICAgICAgIHwgRE1HLCBIMyBLMjggICAgICAgICB8CnwgQlNfTUI3V04wWkIgICAgICAgICAgICAgICB8IG90aGVyICAgICAgICAgICAgICAgfCA3MzE2LTExMDIgfCA0NzAwMzEgICAgIHwgUFRfNUJXWkEwTlQgICAgICAgICAgICAgICB8IFJOQS1TZXEgICAgICAgICAgICAgICB8IFN1cHJhdGVudG9yaWFsIG9yIFNwaW5hbCBDb3JkIFBORVQgICAgICAgICAgICAgICB8IERpZmZ1c2UgbWlkbGluZSBnbGlvbWEgICAgICAgICAgICAgICAgICAgfCBObyBwYXRoIHJlcG9ydCBhdmFpbGFibGUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgcmV2aWV3ZWQgLSBPSyB3aXRoIG5ldyBkeCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAzIHNsaWRlcywgcGF0aG9sb2d5IHJlcG9ydCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgSEdBVCAgICAgICAgICAgIHwgRGlmZnVzZSBhc3Ryb2N5dGljIGFuZCBvbGlnb2RlbmRyb2dsaWFsIHR1bW9yICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgdHVtb3IgICAgICAgICAgICAgfCBVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBOb25lIGRvY3VtZW50ZWQgICAgICAgIHwgRE1HLCBIMyBLMjggICAgICAgICB8CnwgQlNfSDFYUFZTOUEgICAgICAgICAgICAgICB8IGhlbWlzcGhlcmljICAgICAgICAgfCA3MzE2LTExMDYgfCA1NDk1NzUgICAgIHwgUFRfVDhWOUVTOTMgICAgICAgICAgICAgICB8IFJOQS1TZXEgICAgICAgICAgICAgICB8IEhpZ2gtZ3JhZGUgZ2xpb21hL2FzdHJvY3l0b21hIChXSE8gZ3JhZGUgSUlJL0lWKSB8IDxzPkhpZ2gtZ3JhZGUgZ2xpb21hPC9zPiBMb3ctZ3JhZGUgZ2xpb21hICAgICAgIHwgTm8gcGF0aCByZXBvcnQgYXZhaWxhYmxlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IHJldmlld2VkIC0gbmV3IGR4OiBNYWxpZ25hbnQgUFhBIHdpdGggQlJBRiBWNjAwRSBtdXRhdGlvbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IDIgc2xpZGVzLCBwYXRob2xvZ3kgcmVwb3J0ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBIR0FUICAgICAgICAgICAgfCA8cz5EaWZmdXNlIGFzdHJvY3l0aWMgYW5kIG9saWdvZGVuZHJvZ2xpYWwgdHVtb3I8L3M+IExvdy1ncmFkZSBhc3Ryb2N5dGljIHR1bW9yIHwgdHVtb3IgICAgICAgICAgICAgfCBVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBOb25lIGRvY3VtZW50ZWQgICAgICAgIHwgTEdHLCBCUkFGIFY2MDBFICAgICAgICAgIHwKfCBCU19KNEU5U1c1MSAgICAgICAgICAgICAgIHwgaGVtaXNwaGVyaWMgICAgICAgICB8IDczMTYtMTEwNiB8IDU0OTcwOCAgICAgfCBQVF9UOFY5RVM5MyAgICAgICAgICAgICAgIHwgV0dTICAgICAgICAgICAgICAgICAgIHwgSGlnaC1ncmFkZSBnbGlvbWEvYXN0cm9jeXRvbWEgKFdITyBncmFkZSBJSUkvSVYpIHwgPHM+SGlnaC1ncmFkZSBnbGlvbWE8L3M+IExvdy1ncmFkZSBnbGlvbWEgICAgICAgfCBObyBwYXRoIHJlcG9ydCBhdmFpbGFibGUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgcmV2aWV3ZWQgLSBPSyB3aXRoIG5ldyBkeCAoUFhBL0xHRykgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAyIHNsaWRlcywgcGF0aG9sb2d5IHJlcG9ydCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgSEdBVCAgICAgICAgICAgIHwgPHM+RGlmZnVzZSBhc3Ryb2N5dGljIGFuZCBvbGlnb2RlbmRyb2dsaWFsIHR1bW9yPC9zPiBMb3ctZ3JhZGUgYXN0cm9jeXRpYyB0dW1vciB8IHR1bW9yICAgICAgICAgICAgIHwgVXBkYXRlZCB2aWEgT3BlblBCVEEgc3VidHlwaW5nICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgTm9uZSBkb2N1bWVudGVkICAgICAgICB8IExHRywgQlJBRiBWNjAwRSAgICAgICAgICB8CnwgQlNfSjhWWDREMTcgICAgICAgICAgICAgICB8IG1peGVkICAgICAgICAgICAgICAgfCA3MzE2LTUwNiAgfCA1ODgyOTkgICAgIHwgUFRfN0UzVjNKRlggICAgICAgICAgICAgICB8IFJOQS1TZXEgICAgICAgICAgICAgICB8IEVwZW5keW1vbWEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IDxzPkRpZmZ1c2UgbWlkbGluZSBnbGlvbWE8L3M+IEVwZW5keW1vbWEgICAgICAgIHwgUGF0aCByZXBvcnQgcG9zdGVyaW9yIGZvc3NhIGVwZW5keW1vbWEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IHJldmlld2VkIC0ga2VlcCBFUE4gd2l0aCBIMyBtdXQtIHJhcmUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IEhHQVQgICAgICAgICAgICB8IDxzPkRpZmZ1c2UgYXN0cm9jeXRpYyBhbmQgb2xpZ29kZW5kcm9nbGlhbCB0dW1vcjwvcz4gRXBlbmR5bWFsIHR1bW9yICAgICAgICAgICAgfCB0dW1vciAgICAgICAgICAgICB8IFVwZGF0ZWQgdmlhIE9wZW5QQlRBIHN1YnR5cGluZyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IE5vbmUgZG9jdW1lbnRlZCAgICAgICAgfCA8cz5ETUcsIEgzIEsyODwvcz4gICAgICAgICB8CnwgQlNfRzE2Tk01V0ogICAgICAgICAgICAgICB8IG1peGVkICAgICAgICAgICAgICAgfCA3MzE2LTUwNiAgfCA1ODgwMTEgICAgIHwgUFRfN0UzVjNKRlggICAgICAgICAgICAgICB8IFdHUyAgICAgICAgICAgICAgICAgICB8IEVwZW5keW1vbWEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IDxzPkRpZmZ1c2UgbWlkbGluZSBnbGlvbWE8L3M+IEVwZW5keW1vbWEgICAgICAgIHwgUGF0aCByZXBvcnQgcG9zdGVyaW9yIGZvc3NhIGVwZW5keW1vbWEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IHJldmlld2VkIC0ga2VlcCBFUE4gd2l0aCBIMyBtdXQtIHJhcmUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IEhHQVQgICAgICAgICAgICB8IDxzPkRpZmZ1c2UgYXN0cm9jeXRpYyBhbmQgb2xpZ29kZW5kcm9nbGlhbCB0dW1vcjwvcz4gRXBlbmR5bWFsIHR1bW9yICAgICAgICAgICAgfCB0dW1vciAgICAgICAgICAgICB8IFVwZGF0ZWQgdmlhIE9wZW5QQlRBIHN1YnR5cGluZyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IE5vbmUgZG9jdW1lbnRlZCAgICAgICAgfCA8cz5ETUcsIEgzIEsyODwvcz4gICAgICAgICB8CnwgQlNfS1NLWjlKN0ogICAgICAgICAgICAgICB8IE5BICAgICAgICAgICAgICAgICAgfCA3MzE2LTc2NSAgfCA0NzA3MzEgICAgIHwgUFRfODBOVllDQlMgICAgICAgICAgICAgICB8IFJOQS1TZXEgICAgICAgICAgICAgICB8IEVwZW5keW1vbWEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IENOUyBFbWJyeW9uYWwgVHVtb3IgICAgICAgICAgICAgICAgICAgICAgfCBQYXRoIHJlcG9ydCBhbmFwbGFzdGljIGVwZW5keW1vbWEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgcmV2aWV3ZWQgLSBPSyB3aXRoIG5ldyBkeCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgRW1icnlvbmFsIFR1bW9yIHwgRW1icnlvbmFsIHR1bW9yICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgdHVtb3IgICAgICAgICAgICAgfCBVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBOb25lIGRvY3VtZW50ZWQgICAgICAgIHwgQ05TIEhHTkVULU1OMSAgICAgICB8CnwgQlNfSzA3S05URlkgICAgICAgICAgICAgICB8IE5BICAgICAgICAgICAgICAgICAgfCA3MzE2LTI3MiAgfCA1ODgwMDEgICAgIHwgUFRfMDBHMDA3RE0gICAgICAgICAgICAgICB8IFdHUyAgICAgICAgICAgICAgICAgICB8IE1lZHVsbG9ibGFzdG9tYSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IEVtYnJ5b25hbCB0dW1vciB3aXRoIG11bHRpbGF5ZXIgcm9zZXR0ZXMgfCBQYXRoIHJlcG9ydCBoYWQgIm1lZHVsbG9ibGFzdG9tYSIgaGFuZHdyaXR0ZW4sIGJ1dCBmaW5hbCBkeCBFVE1SIHdpdGggbXVsdGlsYXllciByb3NldHRlcyAgIHwgcmV2aWV3ZWQgLSBPSyB3aXRoIG5ldyBkeCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgRVRNUiAgICAgICAgICAgIHwgRW1icnlvbmFsIHR1bW9yICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgdHVtb3IgICAgICAgICAgICAgfCBVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBOb25lIGRvY3VtZW50ZWQgICAgICAgIHwgRVRNUiwgQzE5TUMtYWx0ZXJlZCB8CnwgQlNfUVdOQlo5UkogICAgICAgICAgICAgICB8IE5BICAgICAgICAgICAgICAgICAgfCA3MzE2LTI3MiAgfCA1ODgyODcgICAgIHwgUFRfMDBHMDA3RE0gICAgICAgICAgICAgICB8IFJOQS1TZXEgICAgICAgICAgICAgICB8IE1lZHVsbG9ibGFzdG9tYSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IEVtYnJ5b25hbCB0dW1vciB3aXRoIG11bHRpbGF5ZXIgcm9zZXR0ZXMgfCBQYXRoIHJlcG9ydCBoYWQgIm1lZHVsbG9ibGFzdG9tYSIgaGFuZHdyaXR0ZW4sIGJ1dCBmaW5hbCBkeCBFVE1SIHdpdGggbXVsdGlsYXllciByb3NldHRlcyAgIHwgcmV2aWV3ZWQgLSBPSyB3aXRoIG5ldyBkeCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgRVRNUiAgICAgICAgICAgIHwgRW1icnlvbmFsIHR1bW9yICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgdHVtb3IgICAgICAgICAgICAgfCBVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBOb25lIGRvY3VtZW50ZWQgICAgICAgIHwgRVRNUiwgQzE5TUMtYWx0ZXJlZCB8CnwgQlNfUDM5U1FQVFMgICAgICAgICAgICAgICB8IE5BICAgICAgICAgICAgICAgICAgfCA3MzE2LTQ0NyAgfCA1ODgzMDAgICAgIHwgUFRfMDFNWjYyS0cgICAgICAgICAgICAgICB8IFJOQS1TZXEgICAgICAgICAgICAgICB8IFBpbmVvYmxhc3RvbWEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IEVtYnJ5b25hbCB0dW1vciB3aXRoIG11bHRpbGF5ZXIgcm9zZXR0ZXMgfCBQYXRoIHJlcG9ydCBQTkVUL3BpbmVvYmxhc3RvbWE7ICJ0aGVyZSBhcmUgc2NhdHRlcmVkIHRydWUgcm9zZXR0ZXMgKEZsZXhuZXItV2ludGVyc3RlaW5lcikiIHwgcmV2aWV3ZWQgLSBPSyB3aXRoIG5ldyBkeCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgRVRNUiAgICAgICAgICAgIHwgRW1icnlvbmFsIHR1bW9yICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgdHVtb3IgICAgICAgICAgICAgfCBVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBOb25lIGRvY3VtZW50ZWQgICAgICAgIHwgRVRNUiwgQzE5TUMtYWx0ZXJlZCB8CnwgQlNfVEU4UUZGN1QgICAgICAgICAgICAgICB8IE5BICAgICAgICAgICAgICAgICAgfCA3MzE2LTQ0NyAgfCA1ODgwMTIgICAgIHwgUFRfMDFNWjYyS0cgICAgICAgICAgICAgICB8IFdHUyAgICAgICAgICAgICAgICAgICB8IFBpbmVvYmxhc3RvbWEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IEVtYnJ5b25hbCB0dW1vciB3aXRoIG11bHRpbGF5ZXIgcm9zZXR0ZXMgfCBQYXRoIHJlcG9ydCBQTkVUL3BpbmVvYmxhc3RvbWE7ICJ0aGVyZSBhcmUgc2NhdHRlcmVkIHRydWUgcm9zZXR0ZXMgKEZsZXhuZXItV2ludGVyc3RlaW5lcikiIHwgcmV2aWV3ZWQgLSBPSyB3aXRoIG5ldyBkeCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgRVRNUiAgICAgICAgICAgIHwgRW1icnlvbmFsIHR1bW9yICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgdHVtb3IgICAgICAgICAgICAgfCBVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBOb25lIGRvY3VtZW50ZWQgICAgICAgIHwgRVRNUiwgQzE5TUMtYWx0ZXJlZCB8CnwgQlNfTjZOMTQ3QlkgICAgICAgICAgICAgICB8IE5BICAgICAgICAgICAgICAgICAgfCA3MzE2LTIzOCAgfCAyMzIwOTYgICAgIHwgUFRfWDY0OFJWTUsgICAgICAgICAgICAgICB8IFJOQS1TZXEgICAgICAgICAgICAgICB8IEhpZ2gtZ3JhZGUgZ2xpb21hL2FzdHJvY3l0b21hIChXSE8gZ3JhZGUgSUlJL0lWKSB8IEVtYnJ5b25hbCB0dW1vciB3aXRoIG11bHRpbGF5ZXIgcm9zZXR0ZXMgfCBQYXRoIHJlcG9ydCBoYW5kd3JpdHRlbiAiaGlnaCBncmFkZSBnbGlvbWEiOyBmaW5hbCBkeCBpbmZpbHRyYXRpbmcgZ2xpb25ldXJvbmFsIG5lb3BsYXNtICAgIHwgcmV2aWV3ZWQgLSBPSyB3aXRoIG5ldyBkeCAoRVRNUiBvcmlnaW5hbCB0dW1vciA3MzE2LTI5NzUgYW5kIHRoaXMgb25lIGNvbnNpc3RlbnQpICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgRVRNUiAgICAgICAgICAgIHwgRW1icnlvbmFsIHR1bW9yICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgdHVtb3IgICAgICAgICAgICAgfCBVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBOb25lIGRvY3VtZW50ZWQgICAgICAgIHwgRVRNUiwgQzE5TUMtYWx0ZXJlZCB8CnwgQlNfNVAxVE4xMFogICAgICAgICAgICAgICB8IGhlbWlzcGhlcmljICAgICAgICAgfCA3MzE2LTE1OCAgfCA3NDYwNjEgICAgIHwgUFRfOUJaRVRNME0gICAgICAgICAgICAgICB8IFJOQS1TZXEgICAgICAgICAgICAgICB8IFN1cHJhdGVudG9yaWFsIG9yIFNwaW5hbCBDb3JkIFBORVQgICAgICAgICAgICAgICB8IEhpZ2gtZ3JhZGUgZ2xpb21hICAgICAgICAgICAgICAgICAgICAgICAgfCBQYXRoIHJlcG9ydCBQTkVUICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgcmV2aWV3ZWQgLSBPSyB3aXRoIG5ldyBkeCBncmFkZSBJSUktSVYgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgSEdBVCAgICAgICAgICAgIHwgRGlmZnVzZSBhc3Ryb2N5dGljIGFuZCBvbGlnb2RlbmRyb2dsaWFsIHR1bW9yICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgdHVtb3IgICAgICAgICAgICAgfCBmcm9tIFBORVQgdG8gSEdHIGR1ZSB0byBIM0YzQSBtdXRhdGlvbjtVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmcgfCBOb25lIGRvY3VtZW50ZWQgICAgICAgIHwgSEdHLCBIMyBHMzUgICAgICAgICB8CnwgQlNfU1ROSDdZU1ggICAgICAgICAgICAgICB8IGhlbWlzcGhlcmljICAgICAgICAgfCA3MzE2LTE1OCAgfCA3NDYwNTYgICAgIHwgUFRfOUJaRVRNME0gICAgICAgICAgICAgICB8IFdHUyAgICAgICAgICAgICAgICAgICB8IFN1cHJhdGVudG9yaWFsIG9yIFNwaW5hbCBDb3JkIFBORVQgICAgICAgICAgICAgICB8IEhpZ2gtZ3JhZGUgZ2xpb21hICAgICAgICAgICAgICAgICAgICAgICAgfCBQYXRoIHJlcG9ydCBQTkVUICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgcmV2aWV3ZWQgLSBPSyB3aXRoIG5ldyBkeCBncmFkZSBJSUktSVYgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgSEdBVCAgICAgICAgICAgIHwgRGlmZnVzZSBhc3Ryb2N5dGljIGFuZCBvbGlnb2RlbmRyb2dsaWFsIHR1bW9yICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgdHVtb3IgICAgICAgICAgICAgfCBmcm9tIFBORVQgdG8gSEdHIGR1ZSB0byBIM0YzQSBtdXRhdGlvbjtVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmcgfCBOb25lIGRvY3VtZW50ZWQgICAgICAgIHwgSEdHLCBIMyBHMzUgICAgICAgICB8CnwgQlNfVFY1Qjg2WkQgICAgICAgICAgICAgICB8IGhlbWlzcGhlcmljICAgICAgICAgfCA3MzE2LTE1OCAgfCAxNTA1OTMgICAgIHwgUFRfOUJaRVRNME0gICAgICAgICAgICAgICB8IFJOQS1TZXEgICAgICAgICAgICAgICB8IFN1cHJhdGVudG9yaWFsIG9yIFNwaW5hbCBDb3JkIFBORVQgICAgICAgICAgICAgICB8IEhpZ2gtZ3JhZGUgZ2xpb21hICAgICAgICAgICAgICAgICAgICAgICAgfCBQYXRoIHJlcG9ydCBQTkVUICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgcmV2aWV3ZWQgLSBPSyB3aXRoIG5ldyBkeCBncmFkZSBJSUktSVYgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgSEdBVCAgICAgICAgICAgIHwgRGlmZnVzZSBhc3Ryb2N5dGljIGFuZCBvbGlnb2RlbmRyb2dsaWFsIHR1bW9yICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgdHVtb3IgICAgICAgICAgICAgfCBmcm9tIFBORVQgdG8gSEdHIGR1ZSB0byBIM0YzQSBtdXRhdGlvbjtVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmcgfCBOb25lIGRvY3VtZW50ZWQgICAgICAgIHwgSEdHLCBIMyBHMzUgICAgICAgICB8CgpBbmQgdGhlIG5vdGVzOgoKPiAjIyMjIEZldyBub3RlczoKPiAxLiBgUFRfN0UzVjNKRlhgIHNwZWNpbWVucyB3ZXJlIGNvbnNpc3RlbnQgd2l0aCB0aGUgb3JpZ2luYWwgRVBOIGR4LCBzbyBwYXRob2xvZ3kgd291bGQgY2FsbCB0aGlzIGEgcmFyZSBFUE4sIEgzIEsyOCBtdXRhdGVkIHR1bW9yLCByYXRoZXIgdGhhbiBETUcuCj4gMi4gYFBUX0FRV0RRVzI3YCBzcGVjaW1lbiB3YXMgY29uc2lzdGVudCB3aXRoIG1lbmluZ2lvbWEsIGV2ZW4gdGhvdWdoIGl0IGhhcyBhIGhhbGxtYXJrIEVQTiBmdXNpb24sIHNvIHBhdGhvbG9neSB3b3VsZCBhbHNvIGNhbGwgdGhpcyBhIHJhcmUgbWVuaW5naW9tYSB3aXRoIGEgX1lBUDFfIGZ1c2lvbi4KPiAzLiBCZWNhdXNlIDEgaXMgYSByYXJlIHR1bW9yIChtYXliZSBmaXJzdCBzZWVuKSwgdGhlIGxvZ2ljIG9mIHNlYXJjaGluZyBmb3IgYWxsIEgzIEsyOCBtdXRhdGlvbnMgaW4gW0hHRyBzdWJ0eXBpbmddKGh0dHBzOi8vZ2l0aHViLmNvbS9BbGV4c0xlbW9uYWRlL09wZW5QQlRBLWFuYWx5c2lzL2lzc3Vlcy8yNDkpIHdvdWxkIGNvbnZlcnQgdGhpcyBzYW1wbGUgYnkgZGVmYXVsdC4KPiAgNC4gUGF0aG9sb2d5IGNvbmZpcm1lZCB0aGlzIEhHRyBCUkFGIFY2MDBFIG11dGFudCB0dW1vciwgW2BCU19IMVhQVlM5QWBdKGh0dHBzOi8vY2JldGhlbGwuZ2l0aHViLmlvL29wZW4tcGJ0YS1vdXRwdXQvMDktSEdHLXdpdGgtYnJhZi1jbHVzdGVyaW5nLm5iLmh0bWwjaWRlbnRpZnlfc2FtcGxlX3RoYXRfY2x1c3RlcnNfd2l0aF9sZ2F0KSwgdG8gYmUgYSBMR0FUIChQWEEpLiBJIHVwZGF0ZWQgYG1vbGVjdWxhcl9zdWJ0eXBlYCBoZXJlIGJhc2VkIG9uIHdoYXQgaXQgd291bGQgbG9vayBsaWtlLCBidXQgdGhpcyBzaG91bGQgY29tZSB0aHJvdWdoIHZpYSB0aGUgTEdBVCBbc3VidHlwaW5nXShodHRwczovL2dpdGh1Yi5jb20vQWxleHNMZW1vbmFkZS9PcGVuUEJUQS1hbmFseXNpcy9pc3N1ZXMvNjMxKSB0aWNrZXQuIEhvdyBzaG91bGQgd2UgYWRkIHRoaXMgaW5mbz8KPiA1LiBQZXIgW3RoaXMgaXNzdWVdKGh0dHBzOi8vZ2l0aHViLmNvbS9BbGV4c0xlbW9uYWRlL09wZW5QQlRBLWFuYWx5c2lzL2lzc3Vlcy85MDUpLCB3ZSBhcmUgdXBkYXRpbmcgQlNfWUI5OVE2VE4gKFdHUykgYW5kIEJTXzU5NjVTRlBaICh3aGljaCBpcyB0aGUgbWF0Y2hlZCBSTkFzZXEgc2FtcGxlKSBiZWxvbmdpbmcgdG8gc2FtcGxlX2lkPT0gIjczMTYtMjU1NyIgYXMgSDMgSzI4TSBhcyBwZXIgbWFudWFsIHJldmlldyBvZiB0aGUgcGF0aG9sb2d5IHJlcG9ydCwgd2hpY2ggbGlzdHMgdGhlIGludGVncmF0ZWQgZGlhZ25vc2lzIGZvciB0aGlzIHR1bW9yIGFzICJESUZGVVNFIE1JRExJTkUgR0xJT01BLCBIMy1LMjdNIE1VVEFOVCIuIFRoZSBLMjhNIG11dGF0aW9uIGlzIGFsc28gZm91bmQgaW4gTXV0ZWN0MiBjYWxscy4KCiMjIFNldCB1cAoKYGBge3J9CiMgVGhpcyBsb2dpYyBpcyB0aGUgc2FtZSBhcyBhbmFseXNlcy9nZW5lLXNldC1lbnJpY2htZW50LWFuYWx5c2lzLzAyLW1vZGVsLWdzZWEuUm1kCiMgQXNzaWduaW5nIHBhcmFtcyRpc19jaSB0byBydW5uaW5nX2luX2NpIGF2b2lkcyBhIGxvY2tlZCBiaW5kaW5nIGVycm9yCnJ1bm5pbmdfaW5fY2kgPC0gcGFyYW1zJGlzX2NpCgojIEFyZSB3ZSB0ZXN0aW5nPyBJbiBjYXNlIG9mIGEgbm9uIDAvMSBudW1iZXIsIHdlIHJlY2FzdCBhcyBsb2dpY2FsLCBhbmQgdGhlbgojIGVuc3VyZSBsb2dpY2FsLgppZiAocnVubmluZ19pbl9jaSAlaW4lIGMoMCwxKSkgcnVubmluZ19pbl9jaSA8LSBhcy5sb2dpY2FsKHJ1bm5pbmdfaW5fY2kpCmlmICghKGlzLmxvZ2ljYWwocnVubmluZ19pbl9jaSkpKQp7CiAgc3RvcCgiXG5cbkVSUk9SOiBUaGUgcGFyYW1ldGVyIGBpc19jaWAgc2hvdWxkIGJlIEZBTFNFL1RSVUUgKG9yIDAvMSkuIikKfQpgYGAKCmBgYHtyIHdhcm5pbmc9RkFMU0V9CmxpYnJhcnkodGlkeXZlcnNlKQpgYGAKCiMjIyBEaXJlY3RvcnkgYW5kIGZpbGVzCgojIyMjIERpcmVjdG9yaWVzCgpgYGB7cn0Kcm9vdF9kaXIgPC0gcnByb2pyb290OjpmaW5kX3Jvb3QocnByb2pyb290OjpoYXNfZGlyKCIuZ2l0IikpCmRhdGFfZGlyIDwtIGZpbGUucGF0aChyb290X2RpciwgImRhdGEiKQpyZXN1bHRzX2RpciA8LSAicmVzdWx0cyIKYGBgCgojIyMjIElucHV0CgpXaGVuIHdlIHJ1biB0aGlzIGxvY2FsbHksIHdlIHdhbnQgdG8gdGllIGl0IHRvIGEgc3BlY2lmaWMgdmVyc2lvbiBvZiB0aGUgaGlzdG9sb2dpZXMgZmlsZSBfcHJpb3JfIHRvIGZlZWRiYWNrIHdlIHJlY2VpdmVkIGZyb20gcGF0aG9sb2d5IHRoYXQgaXMgcmVjb3JkZWQgb24gWyM2MDldKGh0dHBzOi8vZ2l0aHViLmNvbS9BbGV4c0xlbW9uYWRlL09wZW5QQlRBLWFuYWx5c2lzL2lzc3Vlcy82MDkpLgoKYGBge3J9CmlmIChydW5uaW5nX2luX2NpKSB7CiAgaGlzdG9sb2dpZXNfZmlsZSA8LSBmaWxlLnBhdGgoZGF0YV9kaXIsICJwYnRhLWhpc3RvbG9naWVzLWJhc2UudHN2IikKfSBlbHNlIHsKICBoaXN0b2xvZ2llc19maWxlIDwtIGZpbGUucGF0aChkYXRhX2RpciwgInJlbGVhc2UtdjE4LTIwMjAxMTIzIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAicGJ0YS1oaXN0b2xvZ2llcy1iYXNlLnRzdiIpCn0KYGBgCgpgYGB7cn0KY29tcGlsZWRfcmVzdWx0c19maWxlIDwtIGZpbGUucGF0aChyZXN1bHRzX2RpciwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiY29tcGlsZWRfbW9sZWN1bGFyX3N1YnR5cGVzX3dpdGhfY2xpbmljYWxfZmVlZGJhY2tfYW5kX3JlcG9ydF9pbmZvLnRzdiIpCmZ1c2lvbnNfZmlsZSA8LSBmaWxlLnBhdGgocm9vdF9kaXIsCiAgImFuYWx5c2VzIiwKICAiZnVzaW9uX2ZpbHRlcmluZyIsCiAgInJlc3VsdHMiLAogICJwYnRhLWZ1c2lvbi1wdXRhdGl2ZS1vbmNvZ2VuaWMudHN2IikKYGBgCgojIyMjIE91dHB1dAoKYGBge3J9Cm91dHB1dF9maWxlIDwtIGZpbGUucGF0aChyZXN1bHRzX2RpciwKICAgICAgICAgICAgICAgICAgICAgICAgICJjb21waWxlZF9tb2xlY3VsYXJfc3VidHlwZXNfd2l0aF9jbGluaWNhbF9wYXRob2xvZ3lfZmVlZGJhY2tfYW5kX3JlcG9ydF9pbmZvLnRzdiIpCmBgYAoKIyMgUmVhZCBpbiBkYXRhCgpgYGB7ciBtZXNzYWdlPUZBTFNFfQpoaXN0b2xvZ2llc19kZiA8LSByZWFkX3RzdihoaXN0b2xvZ2llc19maWxlLCBndWVzc19tYXggPSAxMDAwMCkKY29tcGlsZWRfZGYgPC0gcmVhZF90c3YoY29tcGlsZWRfcmVzdWx0c19maWxlLCBndWVzc19tYXggPSAxMDAwMCkKZnVzaW9uc19kZiA8LSByZWFkX3RzdihmdXNpb25zX2ZpbGUsIGd1ZXNzX21heCA9IDEwMDAwKQpgYGAKCiMjIFJldmlzZSBzdWJ0eXBpbmcgY2FsbHMgYmFzZWQgb24gcGF0aG9sb2d5IGZlZWRiYWNrCgojIyMgYFBUXzdFM1YzSkZYYAoKYFBUXzdFM1YzSkZYYCB3YXMgY2xhc3NpZmllZCBpbiBgbW9sZWN1bGFyLXN1YnR5cGluZy1IR0dgIGFzIGBETUcsIEgzIEsyOGAgYmVjYXVzZSB0aGUgZmlyc3Qgc3RlcCBpbiB0aGF0IG1vZHVsZSB3YXMgdG8gaWRlbnRpZnkgYW55IHNhbXBsZXMgaW4gdGhlIGNvaG9ydCB3aXRoICJkZWZpbmluZyBsZXNpb25zOiIgSDMgSzI4IG9yIEgzIEczNSAob3JpZ2luYWwgc3VidHlwaW5nIGlzc3VlOiBbIzI0OV0oaHR0cHM6Ly9naXRodWIuY29tL0FsZXhzTGVtb25hZGUvT3BlblBCVEEtYW5hbHlzaXMvaXNzdWVzLzI0OSkpLgoKYGBge3J9CmNvbXBpbGVkX2RmICU+JQogIGZpbHRlcihLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID09ICJQVF83RTNWM0pGWCIpCmBgYAoKVGhlIHJlbGV2YW50IG5vdGVzIGFib3ZlIGFyZQoKPiAxLiBgUFRfN0UzVjNKRlhgIHNwZWNpbWVucyB3ZXJlIGNvbnNpc3RlbnQgd2l0aCB0aGUgb3JpZ2luYWwgRVBOIGR4LCBzbyBwYXRob2xvZ3kgd291bGQgY2FsbCB0aGlzIGEgcmFyZSBFUE4sIEgzIEsyOCBtdXRhdGVkIHR1bW9yLCByYXRoZXIgdGhhbiBETUcuCj4gMy4gQmVjYXVzZSAxIGlzIGEgcmFyZSB0dW1vciAobWF5YmUgZmlyc3Qgc2VlbiksIHRoZSBsb2dpYyBvZiBzZWFyY2hpbmcgZm9yIGFsbCBIMyBLMjggbXV0YXRpb25zIGluIFtIR0cgc3VidHlwaW5nXShodHRwczovL2dpdGh1Yi5jb20vQWxleHNMZW1vbmFkZS9PcGVuUEJUQS1hbmFseXNpcy9pc3N1ZXMvMjQ5KSB3b3VsZCBjb252ZXJ0IHRoaXMgc2FtcGxlIGJ5IGRlZmF1bHQgLSBob3cgdG8gaGFuZGxlIHRoaXM/CgpTbyB3ZSB3aWxsIHJldmlzZSB0aGUgYG1vbGVjdWxhcl9zdWJ0eXBlYCwgYGludGVncmF0ZWRfZGlhZ25vc2lzYCwgYHNob3J0X2hpc3RvbG9neWAsIGFuZCBgYnJvYWRfaGlzdG9sb2d5YCBhY2NvcmRpbmdseS4KCmBgYHtyfQpjb21waWxlZF9kZiA8LSBjb21waWxlZF9kZiAlPiUKICBtdXRhdGUoCiAgICBpbnRlZ3JhdGVkX2RpYWdub3NpcyA9IGNhc2Vfd2hlbigKICAgICAgS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCA9PSAiUFRfN0UzVjNKRlgiIH4gIkVwZW5keW1vbWEsIEgzIEsyOC1tdXRhbnQiLAogICAgICBUUlVFIH4gaW50ZWdyYXRlZF9kaWFnbm9zaXMKICAgICksCiAgICBzaG9ydF9oaXN0b2xvZ3kgPSBjYXNlX3doZW4oCiAgICAgIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgPT0gIlBUXzdFM1YzSkZYIiB+ICJFcGVuZHltb21hIiwKICAgICAgVFJVRSB+IHNob3J0X2hpc3RvbG9neQogICAgKSwKICAgIGJyb2FkX2hpc3RvbG9neSA9IGNhc2Vfd2hlbigKICAgICAgS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCA9PSAiUFRfN0UzVjNKRlgiIH4gIkVwZW5keW1hbCB0dW1vciIsCiAgICAgIFRSVUUgfiBicm9hZF9oaXN0b2xvZ3kKICAgICksCiAgICBtb2xlY3VsYXJfc3VidHlwZSA9IGNhc2Vfd2hlbigKICAgICAgS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCA9PSAiUFRfN0UzVjNKRlgiIH4gIkVQTiwgSDMgSzI4IiwKICAgICAgVFJVRSB+IG1vbGVjdWxhcl9zdWJ0eXBlCiAgICApLAogICAgTm90ZXMgPSBjYXNlX3doZW4oCiAgICAgIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgPT0gIlBUXzdFM1YzSkZYIiB+ICJVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmciLAogICAgICBUUlVFIH4gTm90ZXMKICAgICkKICApCmBgYAoKIyMjIGBCU19IMVhQVlM5QWAKCmBCU19IMVhQVlM5QWAgaXMgZnJvbSBhIHNhbXBsZSB3aXRoIGEgQlJBRiBWNjAwRSBtdXRhdGlvbiB0aGF0IGlzIEgzIHdpbGR0eXBlLgpUaGlzIHNhbXBsZSB3YXMgb3JpZ2luYWxseSBsYWJlbGVkIGFzIGEgSEdHLgpJbiBsb3ctZGltZW5zaW9uYWwgdHJhbnNjcmlwdG9taWMgc3BhY2UgKGUuZy4sIFVNQVAsIHQtU05FKSwgYEJTX0gxWFBWUzlBYCBjbHVzdGVycyB3aXRoIExHRyBzYW1wbGVzIC0gbW9zdCBsaWtlbHkgZHVlIHRvIGhhcmJvcmluZyBhIEJSQUYgVjYwMEUgbXV0YXRpb24uCihTZWUgYG1vbGVjdWxhci1zdWJ0eXBpbmctSEdHYC4pCgpUaGUgcmVsZXZhbnQgbm90ZSBmcm9tIGFib3ZlOgoKPiAgNC4gUGF0aG9sb2d5IGNvbmZpcm1lZCB0aGlzIEhHRyBCUkFGIFY2MDBFIG11dGFudCB0dW1vciwgYEJTX0gxWFBWUzlBYAp0byBiZSBhIG1hbGlnbmFudCBQWEEuIEBrZ2FvbmthcjYgdXBkYXRlZCBgbW9sZWN1bGFyX3N1YnR5cGVgIGhlcmUgYmFzZWQgb24gd2hhdCBpdCB3b3VsZCBsb29rIGxpa2UsIGJ1dCB0aGlzIHNob3VsZCBjb21lIHRocm91Z2ggdmlhIHRoZSBMR0FUIFtzdWJ0eXBpbmddKGh0dHBzOi8vZ2l0aHViLmNvbS9BbGV4c0xlbW9uYWRlL09wZW5QQlRBLWFuYWx5c2lzL2lzc3Vlcy82MzEpIHRpY2tldC4gCgpUaGUgc3RlcHMgZm9yIExHQVQgc3VidHlwaW5nIGFyZSB0byBjbGFzc2lmeSBMR0cgc2FtcGxlcyBvbiB0aGUgYmFzaXMgb2YgdGhlIHByZXNlbmNlL2Fic2VuY2Ugb2YgX0JSQUZfIGZ1c2lvbnMgYW5kIEJSQUYgVjYwMEUgbXV0YXRpb25zLgoKYGBge3J9CmNvbXBpbGVkX2RmICU+JQogIGZpbHRlcihLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID09ICJCU19IMVhQVlM5QSIpICU+JQogIHNlbGVjdChLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELCBzYW1wbGVfaWQpICU+JQogIGxlZnRfam9pbihjb21waWxlZF9kZikKYGBgCgpXZSBrbm93IGZyb20gYG1vbGVjdWxhci1zdWJ0eXBpbmctSEdHYCB0aGF0IGEgQlJBRiBWNjAwRSBtdXRhdGlvbiBpcyBwcmVzZW50LgpOb3cgd2UgaGF2ZSB0byBjaGVjayBmb3IgdGhlIHByZXNlbmNlIG9mIF9CUkFGXyBmdXNpb25zLgoKYGBge3J9CmZ1c2lvbnNfZGYgJT4lCiAgZmlsdGVyKHN0cl9kZXRlY3QoRnVzaW9uTmFtZSwgIkJSQUYiKSwKICAgICAgICAgU2FtcGxlID09ICJCU19IMVhQVlM5QSIpCmBgYAoKVGhlcmUgYXJlIG5vIF9CUkFGXyBmdXNpb25zIGluIGBCU19IMVhQVlM5QWAsIHNvIHdlIGFyZSBhYmxlIHRvIGNsYXNzaWZ5IHRoaXMgc2FtcGxlIChgNzMxNi0xMTA2YCkgYXMgYExHRywgQlJBRiBWNjAwRWAuCgpgYGB7cn0KY29tcGlsZWRfZGYgPC0gY29tcGlsZWRfZGYgJT4lCiAgbXV0YXRlKAogICAgaW50ZWdyYXRlZF9kaWFnbm9zaXMgPSBjYXNlX3doZW4oCiAgICAgIHNhbXBsZV9pZCA9PSAiNzMxNi0xMTA2IiB+ICJQbGVvbW9ycGhpYyB4YW50aG9hc3Ryb2N5dG9tLCBCUkFGIFY2MDBFIiwKICAgICAgVFJVRSB+IGludGVncmF0ZWRfZGlhZ25vc2lzCiAgICApLAogICAgc2hvcnRfaGlzdG9sb2d5ID0gY2FzZV93aGVuKAogICAgICBzYW1wbGVfaWQgPT0gIjczMTYtMTEwNiIgfiAiTEdBVCIsCiAgICAgIFRSVUUgfiBzaG9ydF9oaXN0b2xvZ3kKICAgICksCiAgICBicm9hZF9oaXN0b2xvZ3kgPSBjYXNlX3doZW4oCiAgICAgIHNhbXBsZV9pZCA9PSAiNzMxNi0xMTA2IiB+ICJMb3ctZ3JhZGUgYXN0cm9jeXRpYyB0dW1vciIsCiAgICAgIFRSVUUgfiBicm9hZF9oaXN0b2xvZ3kKICAgICksCiAgICBtb2xlY3VsYXJfc3VidHlwZSA9IGNhc2Vfd2hlbigKICAgICAgc2FtcGxlX2lkID09ICI3MzE2LTExMDYiIH4gIkxHRywgQlJBRiBWNjAwRSIsCiAgICAgIFRSVUUgfiBtb2xlY3VsYXJfc3VidHlwZQogICAgKSwKICAgIE5vdGVzID0gY2FzZV93aGVuKAogICAgICBzYW1wbGVfaWQgPT0gIjczMTYtMTEwNiIgfiAiVXBkYXRlZCB2aWEgT3BlblBCVEEgc3VidHlwaW5nIGFuZCB2aWEgcGF0aG9sb2d5IHJldmlldyIsCiAgICAgIFRSVUUgfiBOb3RlcwogICAgKQogICkKYGBgCgojIyMgYFBUX0FRV0RRVzI3YAoKPiAyLiBgUFRfQVFXRFFXMjdgIHNwZWNpbWVuIHdhcyBjb25zaXN0ZW50IHdpdGggbWVuaW5naW9tYSwgZXZlbiB0aG91Z2ggaXQgaGFzIGEgaGFsbG1hcmsgRVBOIGZ1c2lvbiwgc28gcGF0aG9sb2d5IHdvdWxkIGFsc28gY2FsbCB0aGlzIGEgcmFyZSBtZW5pbmdpb21hIHdpdGggYSBfWUFQMV8gZnVzaW9uLgoKVGhlIGBtb2xlY3VsYXItc3VidHlwaW5nLUVQTmAgbW9kdWxlIGhhcyBub3QgYmVlbiBjb21wbGV0ZWQgeWV0LCBidXQgdGhlIGxvZ2ljIHRoYXQgaXMgaW4gdGhhdCBtb2R1bGUgbWF5IG1lYW4gdGhhdCB3ZSBuZWVkIHRvIGluY2x1ZGUgcmV2aXNpbmcgdGhlIGxhYmVscyBvZiBgUFRfQVFXRFFXMjdgLgoKYGBge3J9CmNvbXBpbGVkX2RmICU+JQogIGZpbHRlcihLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID09ICJQVF9BUVdEUVcyNyIpCiMgVGhpcyBzYW1wbGUgaXMgbWlzc2luZyBmcm9tIHRoZSBFUE4gdGFibGUsIGJ1dCBpdCBzaG91bGQgYmUgdGhlcmUgLSB3aWxsIGhhdmUgdG8gaW52ZXN0aWdhdGUgYW5kIHVwZGF0ZSB0aGlzIGxhdGVyLgpgYGAKCiMjIyBgUFRfNlEwTlBWUDNgCgpUaGUgc3BlY2ltZW5zIGZvciB0aGlzIHBhdGllbnQsIEJTXzVKTTU3M0pDIGFuZCBCU19FNUg2Q0ZZVCwgd2VyZSBjbGFzc2lmaWVkIGFzIEhHQVQgZHVlIHRvIHRoZSBwcmVzZW5jZSBvZiBhIGhpc3RvbmUgbXV0YXRpb24sIGJ1dCB3aXRoIHRoZSByZW1vdmFsIG9mIExHQVQgZnJvbSB0aGUgSEdBVCBtb2R1bGUsIHRoaXMgc2FtcGxlIHdpbGwgbm8gbG9uZ2VyIHNob3cgdXAgaW4gdHdvIG1vZHVsZXMuCmBgYHtyfQpjb21waWxlZF9kZiAlPiUKICBmaWx0ZXIoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCA9PSAiUFRfNlEwTlBWUDMiKQpgYGAKCiMjIyBBcmUgdGhlcmUgYW55IG90aGVyIGR1cGxpY2F0ZSBzdWJ0eXBlcz8KYGBge3J9CnVuaXF1ZV9zdWJ0eXBlcyA8LSBjb21waWxlZF9kZiAlPiUKICBzZWxlY3QoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCwgc2FtcGxlX2lkLCBtb2xlY3VsYXJfc3VidHlwZSkgJT4lCiAgZGlzdGluY3QoKQoKdW5pcXVlX3N1YnR5cGVzW2R1cGxpY2F0ZWQodW5pcXVlX3N1YnR5cGVzJHNhbXBsZV9pZCksXQojUFRfS1RSSjhURlkgKGZpeGVkIGluIGNsaW5pY2FsIGZlZWRiYWNrKSBhbmQgUFRfNlEwTlBWUDMgKGZpeGVkIGluIEhHRyBtb2R1bGUgcmVtb3ZpbmcgTEdBVCkKYGBgCiMjIyBgUFRfMDBHMDA3RE1gCjczMTYtMjcyIGlzIHN1YnR5cGVkIGFzIEVUTVIgYmVjYXVzZSBhIEMxOU1DIGFsdGVyYXRpb24gd2FzIGZvdW5kIGFuZCBwYXRob2xvZ3kgcmV2aWV3IGNvbmZpcm1zIHRoZSBuZXcgZGlhZ25vc2lzCgpgYGB7cn0KY29tcGlsZWRfZGYgPC0gY29tcGlsZWRfZGYgJT4lCiAgbXV0YXRlKG1vbGVjdWxhcl9zdWJ0eXBlPSBjYXNlX3doZW4oc2FtcGxlX2lkID09ICI3MzE2LTI3MiJ+IkVUTVIsIEMxOU1DLWFsdGVyZWQiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFRSVUUgfiBtb2xlY3VsYXJfc3VidHlwZSksCiAgICAgICAgIHNob3J0X2hpc3RvbG9neT0gY2FzZV93aGVuKHNhbXBsZV9pZCA9PSAiNzMxNi0yNzIifiJFVE1SIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBUUlVFIH4gc2hvcnRfaGlzdG9sb2d5KSwKICAgICAgICAgaW50ZWdyYXRlZF9kaWFnbm9zaXMgPSBjYXNlX3doZW4oc2FtcGxlX2lkID09ICI3MzE2LTI3MiJ+IkVtYnJ5b25hbCB0dW1vciB3aXRoIG11bHRpbGF5ZXIgcm9zZXR0ZXMsIEMxOU1DLWFsdGVyZWQiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFRSVUUgfiBpbnRlZ3JhdGVkX2RpYWdub3NpcyksCiAgICAgICAgIE5vdGVzID0gY2FzZV93aGVuKHNhbXBsZV9pZCA9PSAiNzMxNi0yNzIiIH4gIlVwZGF0ZWQgdmlhIE9wZW5QQlRBIHN1YnR5cGluZyIsCiAgICAgIFRSVUUgfiBOb3RlcwogICAgKQogICkgJT4lCiAgdW5pcXVlKCkKYGBgCgpUaGlzIHNhbXBsZSBoYXMgbXVsdGlwbGUgc3BlY2ltZW5zIHdpdGggZGlmZmVyZW50IGRpYWdub3NlcyBhbmQgc3VidHlwZXMgYW5kIHRoaXMgaXMgYWN0dWFsbHkgZXhwZWN0ZWQsIGFzIHRoZXJlIGFyZSB0d28gZGlmZmVyZW50IGRpYWdub3NlcyBpbiB0aGUgQ0JUTiBkYXRhYmFzZSBhbmQgdGhlIEMxOU1DIGFsdGVyYXRpb24gd2FzIG9ubHkgZm91bmQgaW4gb25lIG9mIHRoZSBzYW1wbGVzLgpgYGB7cn0KY29tcGlsZWRfZGYgJT4lCiAgZmlsdGVyKEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgPT0gIlBUXzAwRzAwN0RNIikKYGBgCgojIyMgYFBUXzVCV1pBME5UYAoKVGhpcyBzYW1wbGUgd2FzIGluc3BlY3RlZCBieSBwYXRob2xvZ3kgYW5kIHNob3VsZCBiZSBhbm5vdGF0ZWQgYXMgRE1HLCBIMyBLMjgsIHNvIGxldCdzIHVwZGF0ZSB0aGF0LgpgYGB7cn0KY29tcGlsZWRfZGYgJT4lCiAgZmlsdGVyKEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgPT0gIlBUXzVCV1pBME5UIikKYGBgCgpgYGB7cn0KY29tcGlsZWRfZGYgPC0gY29tcGlsZWRfZGYgJT4lCiAgbXV0YXRlKAogICAgaW50ZWdyYXRlZF9kaWFnbm9zaXMgPSBjYXNlX3doZW4oCiAgICAgIHNhbXBsZV9pZCA9PSAiNzMxNi0xMTAyIiB+ICJEaWZmdXNlIG1pZGxpbmUgZ2xpb21hLCBIMyBLMjgtbXV0YW50IiwKICAgICAgVFJVRSB+IGludGVncmF0ZWRfZGlhZ25vc2lzCiAgICApLAogICAgc2hvcnRfaGlzdG9sb2d5ID0gY2FzZV93aGVuKAogICAgICBzYW1wbGVfaWQgPT0gIjczMTYtMTEwMiIgfiAiSEdBVCIsCiAgICAgIFRSVUUgfiBzaG9ydF9oaXN0b2xvZ3kKICAgICksCiAgICBicm9hZF9oaXN0b2xvZ3kgPSBjYXNlX3doZW4oCiAgICAgIHNhbXBsZV9pZCA9PSAiNzMxNi0xMTAyIiB+ICJEaWZmdXNlIGFzdHJvY3l0aWMgYW5kIG9saWdvZGVuZHJvZ2xpYWwgdHVtb3IiLAogICAgICBUUlVFIH4gYnJvYWRfaGlzdG9sb2d5CiAgICApLAogICAgbW9sZWN1bGFyX3N1YnR5cGUgPSBjYXNlX3doZW4oCiAgICAgIHNhbXBsZV9pZCA9PSAiNzMxNi0xMTAyIiB+ICJETUcsIEgzIEsyOCIsCiAgICAgIFRSVUUgfiBtb2xlY3VsYXJfc3VidHlwZQogICAgKSwKICAgIE5vdGVzID0gY2FzZV93aGVuKAogICAgICBzYW1wbGVfaWQgPT0gIjczMTYtMTEwMiIgfiAiVXBkYXRlZCB2aWEgT3BlblBCVEEgc3VidHlwaW5nIiwKICAgICAgVFJVRSB+IE5vdGVzCiAgICApCiAgKQpgYGAKCiMjIyBgUFRfODBOVllDQlNgCgpUaGlzIHNhbXBsZSB3YXMgaW5zcGVjdGVkIGJ5IHBhdGhvbG9neSBhbmQgc2hvdWxkIGJlIENOUyBIR05FVC1NTjEsIHNvIHdlIHdpbGwgdXBkYXRlIGhlcmUuCmBgYHtyfQpjb21waWxlZF9kZiAlPiUKICBmaWx0ZXIoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCA9PSAiUFRfODBOVllDQlMiKQpgYGAKYGBge3J9CmNvbXBpbGVkX2RmIDwtIGNvbXBpbGVkX2RmICU+JQogIG11dGF0ZSgKICAgIGludGVncmF0ZWRfZGlhZ25vc2lzID0gY2FzZV93aGVuKAogICAgICBzYW1wbGVfaWQgPT0gIjczMTYtNzY1IiB+ICJDTlMgRW1icnlvbmFsIHR1bW9yLCBIR05FVC1NTjEiLAogICAgICBUUlVFIH4gaW50ZWdyYXRlZF9kaWFnbm9zaXMKICAgICksCiAgICBzaG9ydF9oaXN0b2xvZ3kgPSBjYXNlX3doZW4oCiAgICAgIHNhbXBsZV9pZCA9PSAiNzMxNi03NjUiIH4gIkVtYnJ5b25hbCB0dW1vciIsCiAgICAgIFRSVUUgfiBzaG9ydF9oaXN0b2xvZ3kKICAgICksCiAgICBicm9hZF9oaXN0b2xvZ3kgPSBjYXNlX3doZW4oCiAgICAgIHNhbXBsZV9pZCA9PSAiNzMxNi03NjUiIH4gIkVtYnJ5b25hbCB0dW1vciIsCiAgICAgIFRSVUUgfiBicm9hZF9oaXN0b2xvZ3kKICAgICksCiAgICBtb2xlY3VsYXJfc3VidHlwZSA9IGNhc2Vfd2hlbigKICAgICAgc2FtcGxlX2lkID09ICI3MzE2LTc2NSIgfiAiQ05TIEhHTkVULU1OMSIsCiAgICAgIFRSVUUgfiBtb2xlY3VsYXJfc3VidHlwZQogICAgKSwKICAgIE5vdGVzID0gY2FzZV93aGVuKAogICAgICBzYW1wbGVfaWQgPT0gIjczMTYtNzY1IiB+ICJVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmciLAogICAgICBUUlVFIH4gTm90ZXMKICAgICkKICApCmBgYAoKIyMjIGBQVF85QlpFVE0wTWAKClRoaXMgc2FtcGxlIHdhcyBpbnNwZWN0ZWQgYnkgcGF0aG9sb2d5IGFuZCBzaG91bGQgYmUgSEdHLCBIMyBHMzUsIHNvIHdlIHdpbGwgdXBkYXRlIGhlcmUuCmBgYHtyfQpjb21waWxlZF9kZiAlPiUKICBmaWx0ZXIoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCA9PSAiUFRfOUJaRVRNME0iKQpgYGAKYGBge3J9CmNvbXBpbGVkX2RmIDwtIGNvbXBpbGVkX2RmICU+JQogIG11dGF0ZSgKICAgIGludGVncmF0ZWRfZGlhZ25vc2lzID0gY2FzZV93aGVuKAogICAgICBzYW1wbGVfaWQgPT0gIjczMTYtMTU4IiB+ICJIaWdoLWdyYWRlIGdsaW9tYS9hc3Ryb2N5dG9tYSwgSDMgRzM1LW11dGFudCIsCiAgICAgIFRSVUUgfiBpbnRlZ3JhdGVkX2RpYWdub3NpcwogICAgKSwKICAgIHNob3J0X2hpc3RvbG9neSA9IGNhc2Vfd2hlbigKICAgICAgc2FtcGxlX2lkID09ICI3MzE2LTE1OCIgfiAiSEdBVCIsCiAgICAgIFRSVUUgfiBzaG9ydF9oaXN0b2xvZ3kKICAgICksCiAgICBicm9hZF9oaXN0b2xvZ3kgPSBjYXNlX3doZW4oCiAgICAgIHNhbXBsZV9pZCA9PSAiNzMxNi0xNTgiIH4gIkRpZmZ1c2UgYXN0cm9jeXRpYyBhbmQgb2xpZ29kZW5kcm9nbGlhbCB0dW1vciIsCiAgICAgIFRSVUUgfiBicm9hZF9oaXN0b2xvZ3kKICAgICksCiAgICBtb2xlY3VsYXJfc3VidHlwZSA9IGNhc2Vfd2hlbigKICAgICAgc2FtcGxlX2lkID09ICI3MzE2LTE1OCIgfiAiSEdHLCBIMyBHMzUiLAogICAgICBUUlVFIH4gbW9sZWN1bGFyX3N1YnR5cGUKICAgICksCiAgICBOb3RlcyA9IGNhc2Vfd2hlbigKICAgICAgc2FtcGxlX2lkID09ICI3MzE2LTE1OCIgfiAiVXBkYXRlZCB2aWEgT3BlblBCVEEgc3VidHlwaW5nIiwKICAgICAgVFJVRSB+IE5vdGVzCiAgICApCiAgICAKICApCmBgYAoKIyMjIGBQVF9DMkQ0SlhTMWAKClRoaXMgc2FtcGxlIGhhcyBvbmUgYmlvc3BlY2ltZW4gd2hpY2ggZGlkIG5vdCBoYXZlIHRoZSBIMyB2YXJpYW50IGNhcHR1cmVkIGluIGNvbnNlbnN1cyBjYWxscyAtIHdpbGwgaW5zcGVjdCB0aGlzIGxhdGVyIGFuZCBwb3NzaWJseSB3aWxsIGJlIGZpeGVkIHdpdGggWyM4MTldKGh0dHBzOi8vZ2l0aHViLmNvbS9BbGV4c0xlbW9uYWRlL09wZW5QQlRBLWFuYWx5c2lzL3B1bGwvODU0KS4KYGBge3J9CmNvbXBpbGVkX2RmICU+JQogIGZpbHRlcihLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID09ICJQVF9DMkQ0SlhTMSIpCmBgYAoKIyMjIGBQVF9LVFJKOFRGWWAKClRoaXMgc2FtcGxlIGhhcyBvbmUgYmlvc3BlY2ltZW4gd2hpY2ggZGlkIG5vdCBoYXZlIHRoZSBIMyB2YXJpYW50IGNhcHR1cmVkIGluIGNvbnNlbnN1cyBjYWxscy4gSXQgaGFzIHRoZSB2YXJpYW50IHByZXNlbnQgb25seSBpbiBWYXJEaWN0IGNhbGxzIGFuZCBpbiBJR1YsIGFuZCBleHBlY3QgdGhpcyB3aWxsIGJlIGZpeGVkIHdpdGggWyM4MTldKGh0dHBzOi8vZ2l0aHViLmNvbS9BbGV4c0xlbW9uYWRlL09wZW5QQlRBLWFuYWx5c2lzL3B1bGwvODU0KS4KYGBge3J9CmNvbXBpbGVkX2RmICU+JQogIGZpbHRlcihLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID09ICJQVF9LVFJKOFRGWSIpCmBgYAoKIyMjIGBQVF9YNjQ4UlZNS2AKClRoaXMgc2FtcGxlIHdhcyByZXZpZXdlZCBieSBwYXRob2xvZ3kgYW5kIGNvbmZpcm1lZCB0byBiZSBFVE1SLCBDMTlNQy1hbHRlcmVkLiBXaWxsIGNoYW5nZSBoZXJlLgpgYGB7cn0KY29tcGlsZWRfZGYgJT4lCiAgZmlsdGVyKEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgPT0gIlBUX1g2NDhSVk1LIikKYGBgCmBgYHtyfQpjb21waWxlZF9kZiA8LSBjb21waWxlZF9kZiAlPiUKICBtdXRhdGUoCiAgICBpbnRlZ3JhdGVkX2RpYWdub3NpcyA9IGNhc2Vfd2hlbigKICAgICAgc2FtcGxlX2lkID09ICI3MzE2LTIzOCIgfiAiRW1icnlvbmFsIHR1bW9yIHdpdGggbXVsdGlsYXllciByb3NldHRlcywgQzE5TUMtYWx0ZXJlZCIsCiAgICAgIFRSVUUgfiBpbnRlZ3JhdGVkX2RpYWdub3NpcwogICAgKSwKICAgIHNob3J0X2hpc3RvbG9neSA9IGNhc2Vfd2hlbigKICAgICAgc2FtcGxlX2lkID09ICI3MzE2LTIzOCIgfiAiRVRNUiIsCiAgICAgIFRSVUUgfiBzaG9ydF9oaXN0b2xvZ3kKICAgICksCiAgICBicm9hZF9oaXN0b2xvZ3kgPSBjYXNlX3doZW4oCiAgICAgIHNhbXBsZV9pZCA9PSAiNzMxNi0yMzgiIH4gIkVtYnJ5b25hbCB0dW1vciIsCiAgICAgIFRSVUUgfiBicm9hZF9oaXN0b2xvZ3kKICAgICksCiAgICBtb2xlY3VsYXJfc3VidHlwZSA9IGNhc2Vfd2hlbigKICAgICAgc2FtcGxlX2lkID09ICI3MzE2LTIzOCIgfiAiRVRNUiwgQzE5TUMtYWx0ZXJlZCIsCiAgICAgIFRSVUUgfiBtb2xlY3VsYXJfc3VidHlwZQogICAgKSwKICAgIE5vdGVzID0gY2FzZV93aGVuKAogICAgICBzYW1wbGVfaWQgPT0gIjczMTYtMjM4IiB+ICJVcGRhdGVkIHZpYSBPcGVuUEJUQSBzdWJ0eXBpbmciLAogICAgICBUUlVFIH4gTm90ZXMKICAgICkKICApCmBgYAoKIyMjIGBQVF9YNzFEN0c1U2AKClRoaXMgc2FtcGxlIHdhcyByZXZpZXdlZCBieSBwYXRob2xvZ3kgYW5kIGNvbmZpcm1lZCB0byBiZSBIMyBtdXRhbnQuIFdpbGwgY2hhbmdlIGhlcmUuCmBgYHtyfQpjb21waWxlZF9kZiAlPiUKICBmaWx0ZXIoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCA9PSAiUFRfWDcxRDdHNVMiKQpgYGAKYGBge3J9CmNvbXBpbGVkX2RmIDwtIGNvbXBpbGVkX2RmICU+JQogIG11dGF0ZSgKICAgIGludGVncmF0ZWRfZGlhZ25vc2lzID0gY2FzZV93aGVuKAogICAgICBzYW1wbGVfaWQgPT0gIjczMTYtMTEwNSIgfiAiSGlnaC1ncmFkZSBnbGlvbWEvYXN0cm9jeXRvbWEsIEgzIEczNS1tdXRhbnQiLAogICAgICBUUlVFIH4gaW50ZWdyYXRlZF9kaWFnbm9zaXMKICAgICksCiAgICBzaG9ydF9oaXN0b2xvZ3kgPSBjYXNlX3doZW4oCiAgICAgIHNhbXBsZV9pZCA9PSAiNzMxNi0xMTA1IiB+ICJIR0FUIiwKICAgICAgVFJVRSB+IHNob3J0X2hpc3RvbG9neQogICAgKSwKICAgIGJyb2FkX2hpc3RvbG9neSA9IGNhc2Vfd2hlbigKICAgICAgc2FtcGxlX2lkID09ICI3MzE2LTExMDUiIH4gIkRpZmZ1c2UgYXN0cm9jeXRpYyBhbmQgb2xpZ29kZW5kcm9nbGlhbCB0dW1vciIsCiAgICAgIFRSVUUgfiBicm9hZF9oaXN0b2xvZ3kKICAgICksCiAgICBtb2xlY3VsYXJfc3VidHlwZSA9IGNhc2Vfd2hlbigKICAgICAgc2FtcGxlX2lkID09ICI3MzE2LTExMDUiIH4gIkhHRywgSDMgRzM1IiwKICAgICAgVFJVRSB+IG1vbGVjdWxhcl9zdWJ0eXBlCiAgICApLAogICAgTm90ZXMgPSBjYXNlX3doZW4oc2FtcGxlX2lkID09ICI3MzE2LTExMDUiIH4gIlVwZGF0ZWQgdmlhIE9wZW5QQlRBIHN1YnR5cGluZyIsCiAgICAgIFRSVUUgfiBOb3RlcwogICAgKQogICkKYGBgCgojIyMgYFBUX0EzMjVFWVIyYApUaGlzIHNhbXBsZSB3YXMgcmV2aWV3ZWQgYnkgcGF0aG9sb2d5IGFuZCBjb25maXJtZWQgdG8gYmUgSDMgbXV0YW50LCBhcyBwZXIgbm90ZSA1IGFib3ZlLgoKYGBge3J9CmNvbXBpbGVkX2RmICU+JQogIGZpbHRlcihLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID09ICJQVF9BMzI1RVlSMiIpCmBgYApgYGB7cn0KY29tcGlsZWRfZGYgPC0gY29tcGlsZWRfZGYgJT4lCiAgbXV0YXRlKAogICAgaW50ZWdyYXRlZF9kaWFnbm9zaXMgPSBjYXNlX3doZW4oCiAgICAgIHNhbXBsZV9pZCA9PSAiNzMxNi0yNTU3IiB+ICJEaWZmdXNlIG1pZGxpbmUgZ2xpb21hLCBIMyBLMjgtbXV0YW50IiwKICAgICAgVFJVRSB+IGludGVncmF0ZWRfZGlhZ25vc2lzCiAgICApLAogICAgc2hvcnRfaGlzdG9sb2d5ID0gY2FzZV93aGVuKAogICAgICBzYW1wbGVfaWQgPT0gIjczMTYtMjU1NyIgfiAiSEdBVCIsCiAgICAgIFRSVUUgfiBzaG9ydF9oaXN0b2xvZ3kKICAgICksCiAgICBicm9hZF9oaXN0b2xvZ3kgPSBjYXNlX3doZW4oCiAgICAgIHNhbXBsZV9pZCA9PSAiNzMxNi0yNTU3IiB+ICJEaWZmdXNlIGFzdHJvY3l0aWMgYW5kIG9saWdvZGVuZHJvZ2xpYWwgdHVtb3IiLAogICAgICBUUlVFIH4gYnJvYWRfaGlzdG9sb2d5CiAgICApLAogICAgbW9sZWN1bGFyX3N1YnR5cGUgPSBjYXNlX3doZW4oCiAgICAgIHNhbXBsZV9pZCA9PSAiNzMxNi0yNTU3IiB+ICJETUcsIEgzIEsyOCIsCiAgICAgIFRSVUUgfiBtb2xlY3VsYXJfc3VidHlwZQogICAgKSwKICAgIE5vdGVzID0gY2FzZV93aGVuKAogICAgICBzYW1wbGVfaWQgPT0gIjczMTYtMjU1NyIgfiAiVXBkYXRlZCB2aWEgT3BlblBCVEEgc3VidHlwaW5nIiwKICAgICAgVFJVRSB+IE5vdGVzCiAgICApCiAgKQpgYGAKCgojIyMgQ2hvcmRvbWEgc2FtcGxlcyBwYXRob2xvZ3kgcmV2aWV3IApBcyBkaXNjdXNzZWQgaW4gW3RpY2tldF0oaHR0cHM6Ly9naXRodWIuY29tL0FsZXhzTGVtb25hZGUvT3BlblBCVEEtYW5hbHlzaXMvaXNzdWVzLzYwOCkgd2Ugd2lsbCBhc3NpZ24gc3VidHlwZXMgdG8gY2hvcmRvbWEgc2FtcGxlcyB0aHJvdWdoIHBhdGhvbG9neSByZXZpZXcgb25seSBzaW5jZSBtb2xlY3VsYXIgc3VidHlwZXMgd2VyZSBub3Qgc3VmZmljaWVudC4KCQogc2FtcGxlX2lkIHwgbW9sZWN1bGFyX3N1YnR5cGUKLS0gfCAtLQo3MzE2LTExMDEgfAlDSERNLCBwb29ybHkgZGlmZmVyZW50aWF0ZWQKNzMxNi0yOTM1IHwJQ0hETSwgcG9vcmx5IGRpZmZlcmVudGlhdGVkCjczMTYtMzI5NSB8CUNIRE0sIHBvb3JseSBkaWZmZXJlbnRpYXRlZAo3MzE2LTQwNjIgfAlDSERNLCBwb29ybHkgZGlmZmVyZW50aWF0ZWQKNzMxNi05MjEgfAlDSERNLCBjb252ZW50aW9uYWwKNzMxNi0zNjMyCXwgQ0hETSwgY29udmVudGlvbmFsCgpgYGB7cn0KY2hkbV9wb29ybHlfZGlmZl9zYW1wbGVfaWRzIDwtIGMoIjczMTYtMTEwMSIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICI3MzE2LTI5MzUiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiNzMxNi0zMjk1IiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIjczMTYtNDA2MiIpCmNoZG1fY29udmVudGlvbmFsX3NhbXBsZV9pZHMgPC0gYygiNzMxNi05MjEiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIjczMTYtMzYzMiIpCiAgCmNvbXBpbGVkX2RmICU+JQogIGZpbHRlcihzYW1wbGVfaWQgJWluJSBjKGNoZG1fY29udmVudGlvbmFsX3NhbXBsZV9pZHMsY2hkbV9wb29ybHlfZGlmZl9zYW1wbGVfaWRzKSkgCgpgYGAKCgpgYGB7cn0KCmNvbXBpbGVkX2RmIDwtIGNvbXBpbGVkX2RmICU+JQogICAgbXV0YXRlKG1vbGVjdWxhcl9zdWJ0eXBlID0gY2FzZV93aGVuKAogICAgICBzYW1wbGVfaWQgJWluJSBjaGRtX3Bvb3JseV9kaWZmX3NhbXBsZV9pZHMgfiAiQ0hETSwgcG9vcmx5IGRpZmZlcmVudGlhdGVkIiwKICAgICAgc2FtcGxlX2lkICVpbiUgY2hkbV9jb252ZW50aW9uYWxfc2FtcGxlX2lkcyB+ICJDSERNLCBjb252ZW50aW9uYWwiLAogICAgICBUUlVFIH4gbW9sZWN1bGFyX3N1YnR5cGUpLAogICBoYXJtb25pemVkX2RpYWdub3NpcyA9IGNhc2Vfd2hlbihzdHJfZGV0ZWN0KG1vbGVjdWxhcl9zdWJ0eXBlLCAiQ0hETSIpIH4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RyX3JlcGxhY2UobW9sZWN1bGFyX3N1YnR5cGUsICJDSERNLCAiLCAiQ2hvcmRvbWEsICIpLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgVFJVRSB+IGhhcm1vbml6ZWRfZGlhZ25vc2lzKSwKICAgIE5vdGVzID0gY2FzZV93aGVuKHNhbXBsZV9pZCAlaW4lIGMoY2hkbV9jb252ZW50aW9uYWxfc2FtcGxlX2lkcywKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNoZG1fcG9vcmx5X2RpZmZfc2FtcGxlX2lkcykgfiAiVXBkYXRlZCB2aWEgcGF0aG9sb2d5IHJldmlldyIsCiAgICAgIFRSVUUgfiBOb3RlcwogICAgKQopCgpgYGAKCgoKCiMjI0NoZWNrIGxpc3Qgb2Ygc3VidHlwZXMgbG9vayBhcyBleHBlY3RlZCBhdCB0aGlzIHBvaW50IGluIHRpbWUKYGBge3J9CiMgc29ydCBmaXJzdApsaXN0X3N1YnR5cGVzIDwtIGNvbXBpbGVkX2RmICU+JQogIGZpbHRlcighZ3JlcGwoIlRvIGJlIGNsYXNzaWZpZWQiLCBtb2xlY3VsYXJfc3VidHlwZSkpICU+JQogIHNlbGVjdChpbnRlZ3JhdGVkX2RpYWdub3NpcywgbW9sZWN1bGFyX3N1YnR5cGUpICU+JQogIGRpc3RpbmN0KCkgJT4lCiAgYXJyYW5nZShpbnRlZ3JhdGVkX2RpYWdub3NpcykKbGlzdF9zdWJ0eXBlcwpgYGAKCiMjIyBXcml0ZSByZXZpc2VkIHRhYmxlIHRvIGZpbGUKCmBgYHtyfQojIHNvcnQgZmlyc3QKY29tcGlsZWRfZGYgPC0gY29tcGlsZWRfZGYgJT4lCiAgYXJyYW5nZShLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELCBzYW1wbGVfaWQpICU+JQogIGRpc3RpbmN0KCkgIyB0byByZW1vdmUgZHVwbGljYXRlcyBmcm9tIGFib3ZlCndyaXRlX3Rzdihjb21waWxlZF9kZiwgb3V0cHV0X2ZpbGUpCmBgYAoKIyMgU2Vzc2lvbiBJbmZvCgpgYGB7cn0Kc2Vzc2lvbkluZm8oKQpgYGAK</div>
 
 
 </div>

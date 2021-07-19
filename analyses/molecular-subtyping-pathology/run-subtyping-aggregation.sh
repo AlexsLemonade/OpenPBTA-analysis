@@ -25,17 +25,11 @@ Rscript -e "rmarkdown::render('pathology-subtyping-craniopharyngioma.Rmd', clean
 # Recoding LGAT samples using pathology_free_text_diagnosis
 Rscript -e "rmarkdown::render('pathology_free_text-subtyping-lgat.Rmd', clean = TRUE)"
 
-# Run the second notebook to incorporate clinical review to the compiled subtyping
-Rscript -e "rmarkdown::render('02-incorporate-clinical-feedback.Rmd', clean = TRUE)"
-
-# Run the third notebook that incorporates pathology feedback into final labels
-Rscript -e "rmarkdown::render('03-incorporate-pathology-feedback.Rmd', params=list(is_ci = ${IS_CI}), clean = TRUE)"
+# Glialneuronal tumors
+Rscript -e "rmarkdown::render('pathology-harmonized-diagnosis-glialneuronal-tumors.Rmd', clean = TRUE)"
 
 # Run the meningioma pathology-free-text based subtyping step
 Rscript -e "rmarkdown::render('pathology_free_text-subtyping-meningioma.Rmd', clean = TRUE)"
-
-# Glialneuronal tumors
-Rscript -e "rmarkdown::render('pathology-harmonized-diagnosis-glialneuronal-tumors.Rmd', clean = TRUE)"
 
 # Choroid plexus papilloma
 Rscript -e "rmarkdown::render('pathology-subtyping-choroid-plexus-papilloma.Rmd', clean = TRUE)"
@@ -45,3 +39,13 @@ Rscript -e "rmarkdown::render('pathology_free_text-subtyping-cns-lymphoma.Rmd', 
 
 # Juvenile xanthogranuloma
 Rscript -e "rmarkdown::render('pathology_free_text-subtyping-jxg.Rmd', clean = TRUE)"
+
+# Run the second notebook to compile pathology_free_text_diagnosis subtypes
+Rscript -e "rmarkdown::render('02-compile-subtyping-pathology-free-text.Rmd', clean = TRUE)"
+
+# Run the third notebook to incorporate clinical review to the compiled subtyping
+Rscript -e "rmarkdown::render('03-incorporate-clinical-feedback.Rmd', clean = TRUE)"
+
+# Run the fourth notebook that incorporates pathology feedback into final labels
+Rscript -e "rmarkdown::render('04-incorporate-pathology-feedback.Rmd', params=list(is_ci = ${IS_CI}), clean = TRUE)"
+

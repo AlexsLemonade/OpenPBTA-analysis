@@ -96,7 +96,7 @@ dia_df <- subtype_df %>%
   # Filter to samples with "desmoplastic infantile astrocytoma" in pathology
   # free text
   filter(str_detect(pathology_free_text_dx_lower,
-                    lgat_path_dx_list$exclude_path_free_text[1])) %>%
+                    lgat_path_dx_list$recode_path_free_text[1])) %>%
   # Set harmonized diagnosis
   mutate(harmonized_diagnosis = "Desmoplastic infantile astrocytoma")
 ```
@@ -107,7 +107,7 @@ dia_df <- subtype_df %>%
 glioneuronal_df <- subtype_df %>%
   # Filter to samples with "glioneuronal" in pathology free text
   filter(str_detect(pathology_free_text_dx_lower,
-                    lgat_path_dx_list$exclude_path_free_text[2])) %>%
+                    lgat_path_dx_list$recode_path_free_text[2])) %>%
   mutate(
     harmonized_diagnosis = case_when(
       str_detect(pathology_free_text_dx_lower, 
@@ -117,7 +117,8 @@ glioneuronal_df <- subtype_df %>%
                  "rosette forming glioneuronal tumor") ~ 
         "Rosette-forming glioneuronal tumor",
       TRUE ~ "Glial-neuronal tumor NOS"  # All others
-    )
+    ),
+    Notes = "Updated via pathology_free_text_diagnosis"
   )
 ```
 
