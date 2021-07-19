@@ -4,9 +4,8 @@
 
 ### Description
 
-The goal of this analysis is to leverage the R packages [medulloPackage](https://github.com/d3b-center/medullo-classifier-package) and [MM2S](https://github.com/cran/MM2S) that utilize expression data from RNA-seq or array to classify the medulloblastoma (MB) samples into four subtypes i.e Group3, Group4, SHH, WNT. The input for both classifiers is a log-normalized FPKM matrix with gene symbols as rownames in case of medulloPackage and entrez ids as rownames in case of MM2S.  
-
-We use the polyA selected (n = 1) and rRNA depleted (n = 121) MB samples as input. Because the classifiers do not work on single-sample, we merge the two matrices by common gene symbols and use the merged matrix as input. To see if batch correction of library type as any effect on the classification, we also use a second input matrix that has been batch corrected for library type using the sva package.
+The goal of this analysis is to leverage the R package [medulloPackage](https://github.com/d3b-center/medullo-classifier-package) that utilizes expression data from RNA-seq or array to classify the medulloblastoma (MB) samples into four subtypes i.e Group3, Group4, SHH, WNT. The input for medulloPackage classifier is a log-normalized FPKM matrix with gene symbols as rownames.  
+We use the polyA selected (n = 1) and rRNA depleted (n = 121) MB samples as input. To see if batch correction of library type as any effect on the classification, we also use a second input matrix that has been batch corrected for library type using the sva package.
 
 ### Running the full analysis
 
@@ -35,7 +34,6 @@ Rscript -e "rmarkdown::render('analyses/molecular-subtyping-MB/00-mb-select-path
 ```
 
 This Rmd checks the alignment of `Medulloblastoma` labels across fields:  `pathology_diagnosis`, `integrated_diagnosis`, and `short_histology`.
-It is tied to a specific release (`release-v18-20201123`).
 This creates a terms JSON which is used in the other scripts for subsetting.
 
 3. Output:
@@ -49,8 +47,10 @@ A medulloblastoma terms JSON file:
 
 ```
 # the rna-seq expression files
-data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds
-data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds
+data/gene-expression-rsem-tpm-collapsed.rds
+
+# histologies file
+data/histologies.tsv
 
 # medulloblastoma terms file
 molecular-subtyping-MB/inputs/mb_subtyping_path_dx_strings.json
@@ -58,7 +58,7 @@ molecular-subtyping-MB/inputs/mb_subtyping_path_dx_strings.json
 
 2. Function
 
-This script first subsets the input expression matrices to MB samples only. Next, the poly-A and rRNA depleted input matrices containing only MB samples are merged together using common genes. Using this merged matrix, we then generate two input matrices for molecular subtype classification:
+This script first subsets the input gene expression matrix to MB samples only. Next, it generates two input matrices for molecular subtype classification:
 
 	1. uncorrected log-normalized FPKM matrix and
 	2. batch corrected, log-normalized FPKM matrix.
@@ -92,7 +92,7 @@ results/medulloblastoma-exprs-batch-corrected.rds
 
 2. Function:
 
-This script runs the two classifiers on both uncorrected and batch-corrected input matrices. In order to run MM2S, the script utilizes the R package `org.Hs.eg.db`  to convert gene symbols to Entrez ids.
+This script runs the medulloPackage classifier on both uncorrected and batch-corrected input matrices.
 
 3. Output
 
@@ -100,7 +100,7 @@ This script runs the two classifiers on both uncorrected and batch-corrected inp
 results/mb-classified.rds
 ```
 
-The .rds object contains a list of dataframes with outputs corresponding to the four runs as described above. Each dataframe contains 5 columns: sample (Kids_First_Biospecimen_ID), best.fit (i.e. medulloblastoma subtype assigned to the sample), classifier (MM2S or medullo-classifier), dataset (corrected or uncorrected matrix) and score (in case of MM2S) or p-value (in case of medulloPackage).  
+The .rds object contains a list of dataframes with outputs corresponding to the two runs as described above. Each dataframe contains 5 columns: `sample` (Kids_First_Biospecimen_ID), `best.fit` (i.e. medulloblastoma subtype assigned to the sample), `classifier` (medullo-classifier), `dataset` (corrected or uncorrected matrix) and `p.value` (in case of medulloPackage).  
 
 #### 03-compare-classes.Rmd
 
@@ -135,22 +135,7 @@ The pathology report has subtype information on 43/122 (35.2%) samples. Followin
 | SHH               | 10   |
 | WNT               | 5    |
 
-For each input expression matrix (i.e. uncorrected and batch-corrected), the molecular subtype is determined by taking a consensus of the two classifiers. For cases in which the classifiers do not agree, non-ambiguous subtypes from `pathology_subtype` field is taken and the remaining samples are treated as unclassified.
-
-For each sample_id with multiple RNA samples, the following logic is implemented:
-- IF there are two RNA specimens from the same event (`sample_id`) with the same `tumor_descriptor`, and
-- IF one of the two RNA specimens has a consensus match from the MB classifiers, and
-- IF the RNA specimen with mismatched classifications includes a match to the subtype of the consensus of the other RNA specimen,
-- THEN propagate the subtype to the second RNA specimen.
-
-For the consensus corrected output, 37/43 (86.05%) and for the consensus uncorrected output, 38/43 (88.37%) match with the reported subtype. The following table shows the difference between the two outputs:
-
-BS_V96WVE3Z is correctly predicted by consensus uncorrected output but not by batch-corrected output:
-
-| Consensus Output | Kids_First_Biospecimen_ID | pathology_subtype | MM2S_best_fit | medulloPackage_best_fit | molecular_subtype | match |
-|------------------|---------------------------|-------------------|---------------|-------------------------|-------------------|-------|
-| Uncorrected      | BS_V96WVE3Z               | SHH               | SHH           | SHH                     | SHH               | TRUE  |
-| Corrected        | BS_V96WVE3Z               | SHH               | Group3        | SHH                     | NA                | NA    |
+For each input expression matrix (i.e. uncorrected and batch-corrected), the molecular subtype is determined by using the prediction obtained from `medulloPackage` classifier. 
 
 3. Output
 
