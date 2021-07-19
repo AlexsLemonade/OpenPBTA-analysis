@@ -60,8 +60,8 @@ Input:
 
 - `../../data/histologies.tsv`
 - `../fusion_filtering/results/fusion-putative-oncogenic.tsv`
-- `../independent-samples/results/independent-specimens.wgs.primary.tsv`
-- `../independent-samples/results/independent-specimens.wgs.relapse.tsv`
+- `../independent-samples/results/independent-specimens.rnaseq.primary.tsv`
+- `../independent-samples/results/independent-specimens.rnaseq.relapse.tsv`
 
 Output:
 - putative-oncogene-fusion-annotated-freq.json
