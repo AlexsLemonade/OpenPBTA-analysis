@@ -8,8 +8,8 @@
     - [Update downloaded data that are used in this module](#update-downloaded-data-that-are-used-in-this-module)
     - [Add gene and `cancer_group` annotations](#add-gene-and-cancer_group-annotations)
       - [Implementation of long-format table annotator](#implementation-of-long-format-table-annotator)
-      - [API usage of long-format table annotator](#api-usage-of-long-format-table-annotator)
-      - [CLI usage of long-format table annotator](#cli-usage-of-long-format-table-annotator)
+      - [R API usage of long-format table annotator](#r-api-usage-of-long-format-table-annotator)
+      - [R CLI usage of long-format table annotator](#r-cli-usage-of-long-format-table-annotator)
 
 ### Purpose
 
@@ -19,7 +19,7 @@ This module is suggested by @jharenza and @kgaonkar6 in Slack at <https://openta
 
 | Sub-module name                                               | Implemented function                    | Available interface(s)                                                                                 |
 |---------------------------------------------------------------|-----------------------------------------|--------------------------------------------------------------------------------------------------------|
-| [`annotator`](#implementation-of-long-format-table-annotator) | Add gene and `cancer_group` annotations | [R API](#api-usage-of-long-format-table-annotator), [R CLI](#cli-usage-of-long-format-table-annotator) |
+| [`annotator`](#implementation-of-long-format-table-annotator) | Add gene and `cancer_group` annotations | [R API](#r-api-usage-of-long-format-table-annotator), [R CLI](#r-cli-usage-of-long-format-table-annotator) |
 
 API and CLI usages and descriptions are in the Methods section.
 
@@ -64,7 +64,7 @@ Add the following gene annotations:
 
 The `RMTL` information is obtained from PediatricOpenTargets/OpenPedCan-analysis data release.
 
-Note: only add `Gene_type` to gene-level tables, which can be implemented with the `{{TBD}}` argument in the `{{TBD}}` function. The `Gene_type` information is obtained from `../fusion_filtering/references/genelistreference.txt`, and its sources are described at <https://github.com/d3b-center/annoFuse#prerequisites-for-cohort-level-analysis>.
+Note: only add `Gene_type` to gene-level tables, which can be implemented by leaving `"Gene_type"` out of the `columns_to_add` parameter of the `annotate_long_format_table` function in `annotator-api.R`. The `Gene_type` information is obtained from `../fusion_filtering/references/genelistreference.txt`, and its sources are described at <https://github.com/d3b-center/annoFuse#prerequisites-for-cohort-level-analysis>.
 
 The `OncoKB_cancer_gene` and `OncoKB_oncogene_TSG` information is listed in `annotator/annotation-data/oncokb-cancer-gene-list.tsv`, which is downloaded from <https://www.oncokb.org/cancerGenes>. The last update of the table is on 06/16/2021. To update the table, re-download the updated table from <https://www.oncokb.org/cancerGenes>.
 
@@ -79,6 +79,44 @@ Add the following disease(/`cancer_group`) annotations:
 
 The `EFO` and `MONDO` information is obtained from PediatricOpenTargets/OpenPedCan-analysis data release.
 
-##### API usage of long-format table annotator
+##### R API usage of long-format table annotator
 
-##### CLI usage of long-format table annotator
+Use the long-format table annotator API in an analysis module with the following steps:
+
+1. Change the working directory of the analysis module to be `OpenPedCan-analysis` or a subdirectory of `OpenPedCan-analysis`. This allows the API function `annotate_long_format_table` to locate annotation data files.
+2. `source` the `long-format-table-utils/annotator/annotator-api.R` file.
+3. If the class of the table to be annotated is not `tibble::tbl_df`, convert the table to `tibble::tbl_df` with `tibble::as_tibble`. After conversion, carefully check rownames, colnames, column classes (especially factors), and other properties that may affect the correctness of you code.
+4. If `c("Gene_symbol", "Gene_Ensembl_ID", "Disease")` are not all present in the colnames of the table to be annotated, add new columns or rename existing ones to have all required columns.
+5. Call `annotate_long_format_table` to add annotation columns. Read the docstring of the function for usage.
+6. Rename, select, and reorder the columns of the annotated table for output.
+
+Following is an example usage in the `rna-seq-expression-summary-stats` module `01-tpm-summary-stats.R`.
+
+```text
+> getwd()
+[1] "/home/rstudio/OpenPedCan-analysis/analyses/rna-seq-expression-summary-stats"
+> source('../long-format-table-utils/annotator/annotator-api.R')
+> class(m_tpm_ss_long_tbl)
+[1] "tbl_df"     "tbl"        "data.frame"
+> colnames(m_tpm_ss_long_tbl)
+ [1] "gene_symbol"                          "gene_id"                             
+ [3] "cancer_group"                         "cohort"                              
+ [5] "tpm_mean"                             "tpm_sd"                              
+ [7] "tpm_mean_cancer_group_wise_zscore"    "tpm_mean_gene_wise_zscore"           
+ [9] "tpm_mean_cancer_group_wise_quantiles" "n_samples"                           
+> ann_m_tpm_ss_long_tbl <- m_tpm_ss_long_tbl %>%
++   rename(Gene_symbol = gene_symbol, Gene_Ensembl_ID = gene_id,
++          Disease = cancer_group)
+> ann_m_tpm_ss_long_tbl <- annotate_long_format_table(
++   ann_m_tpm_ss_long_tbl, columns_to_add = c('MONDO', 'RMTL', 'EFO'))
+> m_tpm_ss_long_tbl <- ann_m_tpm_ss_long_tbl %>%
++   rename(gene_symbol = Gene_symbol, gene_id = Gene_Ensembl_ID,
++          cancer_group = Disease) %>%
++   select(gene_symbol, RMTL, gene_id,
++          cancer_group, EFO, MONDO, n_samples, cohort,
++          tpm_mean, tpm_sd,
++          tpm_mean_cancer_group_wise_zscore, tpm_mean_gene_wise_zscore,
++          tpm_mean_cancer_group_wise_quantiles)
+```
+
+##### R CLI usage of long-format table annotator
