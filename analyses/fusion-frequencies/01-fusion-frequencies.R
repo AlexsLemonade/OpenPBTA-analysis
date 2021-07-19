@@ -155,7 +155,7 @@ fusion_df <- fusion_df  %>%
 
 print(alt_id)
 
-if (opt$alt_id == "FusionName,Fusion_Type") {
+if (identical(alt_id, c("FusionName", "Fusion_Type"))) {
   fusion_df <- fusion_df %>%
     mutate( Alt_ID=paste(!!as.name(alt_id),sep="_"))
   keep_cols <- c("FusionName","Fusion_Type","Gene_Symbol", "Gene_Position",
@@ -238,5 +238,4 @@ m_fus_freq_tbl <- m_fus_freq_tbl %>%
          Frequency_in_relapse_tumors) %>%
   unique() %>%
   write_tsv(file.path(results_dir, paste0(output_filename,'.tsv')))
-
 
