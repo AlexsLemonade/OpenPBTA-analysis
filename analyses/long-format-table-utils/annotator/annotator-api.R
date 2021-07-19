@@ -344,7 +344,7 @@ annotate_long_format_table <- function(
 
   if (replace_na_with_empty_string) {
     ann_long_format_table <- dplyr::mutate_all(
-      ann_long_format_table, function(x) replace_na(x, replace = ""))
+      ann_long_format_table, function(x) tidyr::replace_na(x, replace = ""))
   }
 
   # Reorder the columns of the returned table to have the same column order as
