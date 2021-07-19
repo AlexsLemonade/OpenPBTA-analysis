@@ -165,7 +165,7 @@ if (identical(alt_id, c("FusionName", "Fusion_Type"))) {
                  "Reciprocal_exists_either_gene_kinase",
                  "Gene1A_anno","Gene1B_anno","Gene2A_anno","Gene2B_anno")
   
-} else if (opt$alt_id == "Gene_Symbol") {
+} else if (identical(alt_id, "Gene_Symbol")) {
   fusion_df <- fusion_df %>%
     mutate( Alt_ID = Gene_Symbol )
   keep_cols <-c("Gene_Symbol")
@@ -238,4 +238,3 @@ m_fus_freq_tbl <- m_fus_freq_tbl %>%
          Frequency_in_relapse_tumors) %>%
   unique() %>%
   write_tsv(file.path(results_dir, paste0(output_filename,'.tsv')))
-
