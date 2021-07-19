@@ -28,6 +28,9 @@ annotate_long_format_table <- function(
                      "OncoKB_oncogene_TSG", "Gene_full_name",
                      "Protein_RefSeq_ID", "EFO", "MONDO"),
   replace_na_with_empty_string = TRUE) {
+  # Get %>% without loading the whole library
+  `%>%` <- magrittr::`%>%`
+
   # Check input long_format_table class is tibble
   #
   # The function now only supports tibble, because handling data.frame or other
@@ -248,40 +251,33 @@ annotate_long_format_table <- function(
   #
   # %>% is not used, so the user's environment will not be modified by importing
   # the %>% in this file
-  pp_hgsb_oncokb_cgene_oncogene_tsg_df <- dplyr::select(
-    hgsb_oncokb_cgene_oncogene_tsg_df,
-    `Hugo Symbol`, `Is Oncogene`, `Is Tumor Suppressor Gene`)
-  pp_hgsb_oncokb_cgene_oncogene_tsg_df <- dplyr::rename(
-    pp_hgsb_oncokb_cgene_oncogene_tsg_df,
-    Gene_symbol = `Hugo Symbol`,
-    is_onco = `Is Oncogene`,
-    is_tsg = `Is Tumor Suppressor Gene`)
-  pp_hgsb_oncokb_cgene_oncogene_tsg_df <- dplyr::mutate(
-    pp_hgsb_oncokb_cgene_oncogene_tsg_df,
-    OncoKB_cancer_gene = "Y",
-    OncoKB_oncogene_TSG = dplyr::case_when(
-      is_onco == "Yes" & is_tsg == "Yes" ~ "Oncogene,TumorSuppressorGene",
-      is_onco == "Yes" ~ "Oncogene",
-      is_tsg == "Yes" ~ "TumorSuppressorGene",
-      TRUE ~ as.character(NA)))
-  pp_hgsb_oncokb_cgene_oncogene_tsg_df <- dplyr::select(
-    pp_hgsb_oncokb_cgene_oncogene_tsg_df,
-    Gene_symbol, OncoKB_cancer_gene, OncoKB_oncogene_TSG)
+  pp_hgsb_oncokb_cgene_oncogene_tsg_df <- hgsb_oncokb_cgene_oncogene_tsg_df %>%
+    dplyr::select(`Hugo Symbol`, `Is Oncogene`, `Is Tumor Suppressor Gene`) %>%
+    dplyr::rename(
+      Gene_symbol = `Hugo Symbol`, is_onco = `Is Oncogene`,
+      is_tsg = `Is Tumor Suppressor Gene`) %>%
+    dplyr::mutate(
+      OncoKB_cancer_gene = "Y",
+      OncoKB_oncogene_TSG = dplyr::case_when(
+        is_onco == "Yes" & is_tsg == "Yes" ~ "Oncogene,TumorSuppressorGene",
+        is_onco == "Yes" ~ "Oncogene",
+        is_tsg == "Yes" ~ "TumorSuppressorGene",
+        TRUE ~ as.character(NA))) %>%
+    dplyr::select(Gene_symbol, OncoKB_cancer_gene, OncoKB_oncogene_TSG)
 
-  pp_hgsb_gtype_df <- dplyr::group_by(hgsb_gtype_df, Gene_Symbol)
-  pp_hgsb_gtype_df <- dplyr::summarise(
-    pp_hgsb_gtype_df,
-    Gene_type = paste(sort(unique(purrr::discard(type, is.na))),
-                      collapse = ","))
-  pp_hgsb_gtype_df <- dplyr::rename(pp_hgsb_gtype_df, Gene_symbol = Gene_Symbol)
+  pp_hgsb_gtype_df <- hgsb_gtype_df %>%
+    dplyr::group_by(Gene_Symbol) %>%
+    dplyr::summarise(
+      Gene_type = paste(sort(unique(purrr::discard(type, is.na))),
+                        collapse = ",")) %>%
+    dplyr::rename(Gene_symbol = Gene_Symbol)
 
-  pp_ensg_rmtl_df <- dplyr::select(ensg_rmtl_df, ensg_id, rmtl, version)
-  pp_ensg_rmtl_df <- dplyr::filter(
-    pp_ensg_rmtl_df, !is.na(rmtl), !is.na(version))
-  pp_ensg_rmtl_df <- dplyr::mutate(
-    pp_ensg_rmtl_df, RMTL = paste0(rmtl, " (", version, ")"))
-  pp_ensg_rmtl_df <- dplyr::select(pp_ensg_rmtl_df, ensg_id, RMTL)
-  pp_ensg_rmtl_df <- dplyr::rename(pp_ensg_rmtl_df, Gene_Ensembl_ID = ensg_id)
+  pp_ensg_rmtl_df <- ensg_rmtl_df %>%
+    dplyr::select(ensg_id, rmtl, version) %>%
+    dplyr::filter(!is.na(rmtl), !is.na(version)) %>%
+    dplyr::mutate(RMTL = paste0(rmtl, " (", version, ")")) %>%
+    dplyr::select(ensg_id, RMTL) %>%
+    dplyr::rename(Gene_Ensembl_ID = ensg_id)
 
   pp_cgroup_efo_mondo_df <- dplyr::rename(
     cgroup_efo_mondo_df,
