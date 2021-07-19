@@ -16,8 +16,8 @@
 #   "MONDO". Default value is to add all columns. Notes:
 #   - match.arg is **NOT** used for this parameter, because exact matches are
 #     required
-#   - The order of added columns may not be the same as the values of
-#     columns_to_add
+#   - The order of returned annotated table has the same column order as the
+#     input table and added columns in the order of columns_to_add parameter.
 # - replace_na_with_empty_string: TRUE or FALSE on whether to replace NAs with
 #   empty strings for **ALL** columns of the input table. Default value is TRUE.
 #
@@ -47,6 +47,10 @@ annotate_long_format_table <- function(
   } else if (!is.character(colnames(long_format_table))) {
     stop("colnames(long_format_table) is not character. Check data integrity.")
   }
+  # Helper function to convert a character vector to a single string
+  char_vec_to_str <- function(x) {
+    return(paste0("c(\"", paste(x, collapse = "\", \""), "\")"))
+  }
   # Check required columns are in long_format_table walk is like sapply, but it
   # returns input argument invisibly even if there is any other return
   # values
@@ -59,8 +63,8 @@ annotate_long_format_table <- function(
         stop(paste0(
           req_col, " is not in colnames(long_format_table).\n",
           "Add a ", req_col, " column or rename an existing column to ",
-          req_col, ". Required columns are c(\"",
-          paste(required_columns, collapse = "\", \""), "\")."))
+          req_col, ". Required columns are ",
+          char_vec_to_str(required_columns), "."))
       }
     }
   )
@@ -90,11 +94,13 @@ annotate_long_format_table <- function(
       if (!(col_add %in% available_ann_columns)) {
         stop(paste0(
           col_add, " is not available.\n",
-          "Available annotation columns are c(\"",
-          paste(available_ann_columns, collapse = "\", \""), "\")."))
+          "Available annotation columns are ",
+          char_vec_to_str(available_ann_columns), "."))
       }
     }
   )
+  # Keep the order of columns for the returned table
+  ret_tbl_col_order <- c(colnames(long_format_table), columns_to_add)
 
   # Detect the ".git" folder -- this will in the project root directory. Use
   # this as the root directory to ensure proper execution, no matter where it is
@@ -340,5 +346,23 @@ annotate_long_format_table <- function(
     ann_long_format_table <- dplyr::mutate_all(
       ann_long_format_table, function(x) replace_na(x, replace = ""))
   }
+
+  # Reorder the columns of the returned table to have the same column order as
+  # the input table and added columns in the order of columns_to_add parameter
+  #
+  # Assert that input table columns and added columns are the only columns
+  if (!identical(sort(colnames(ann_long_format_table)),
+                 sort(ret_tbl_col_order))) {
+    stop(paste0("annotate_long_format_table function internal error. ",
+                "Submit a GitHub Issue with your error ",
+                "message and input data.\nColumn names are ",
+                char_vec_to_str(colnames(ann_long_format_table)),
+                ", which are different from the expected set of column names",
+                char_vec_to_str(ret_tbl_col_order)))
+  }
+  # Though tidyselect::one_of is superseded in favor of tidyselect::any_of and
+  # tidyselect::all_of, the docker image only has one_of.
+  ann_long_format_table <- dplyr::select(
+    ann_long_format_table, tidyselect::one_of(ret_tbl_col_order))
   return(ann_long_format_table)
 }
