@@ -295,32 +295,19 @@ annotate_long_format_table <- function(
   # print(head(pp_cgroup_efo_mondo_df))
 
 
-  # Annotate input table
+  # Annotate required columns for the input table
   ann_long_format_table <- long_format_table
-
-  ann_long_format_table <- dplyr::left_join(
-    ann_long_format_table, ensg_gname_prt_refseq_df, by = "Gene_Ensembl_ID")
-  if (!("Protein_RefSeq_ID" %in% columns_to_add)) {
-    ann_long_format_table <- dplyr::select(
-      ann_long_format_table, -Protein_RefSeq_ID)
-  }
-  if (!("Gene_full_name" %in% columns_to_add)) {
-    ann_long_format_table <- dplyr::select(
-      ann_long_format_table, -Gene_full_name)
+  if (any(c("Protein_RefSeq_ID", "Gene_full_name") %in% columns_to_add)) {
+    ann_long_format_table <- dplyr::left_join(
+      ann_long_format_table, ensg_gname_prt_refseq_df, by = "Gene_Ensembl_ID")
   }
 
-  ann_long_format_table <- dplyr::left_join(
-    ann_long_format_table, pp_hgsb_oncokb_cgene_oncogene_tsg_df,
-    by = "Gene_symbol")
-  ann_long_format_table <- tidyr::replace_na(
-    ann_long_format_table, list(OncoKB_cancer_gene = "N"))
-  if (!("OncoKB_cancer_gene" %in% columns_to_add)) {
-    ann_long_format_table <- dplyr::select(
-      ann_long_format_table, -OncoKB_cancer_gene)
-  }
-  if (!("OncoKB_oncogene_TSG" %in% columns_to_add)) {
-    ann_long_format_table <- dplyr::select(
-      ann_long_format_table, -OncoKB_oncogene_TSG)
+  if (any(c("OncoKB_cancer_gene", "OncoKB_oncogene_TSG") %in% columns_to_add)) {
+    ann_long_format_table <- dplyr::left_join(
+      ann_long_format_table, pp_hgsb_oncokb_cgene_oncogene_tsg_df,
+      by = "Gene_symbol")
+    ann_long_format_table <- tidyr::replace_na(
+      ann_long_format_table, list(OncoKB_cancer_gene = "N"))
   }
 
   if ("Gene_type" %in% columns_to_add) {
@@ -333,13 +320,9 @@ annotate_long_format_table <- function(
       ann_long_format_table, pp_ensg_rmtl_df, by = "Gene_Ensembl_ID")
   }
 
-  ann_long_format_table <- dplyr::left_join(
-    ann_long_format_table, pp_cgroup_efo_mondo_df, by = "Disease")
-  if (!("EFO" %in% columns_to_add)) {
-    ann_long_format_table <- dplyr::select(ann_long_format_table, -EFO)
-  }
-  if (!("MONDO" %in% columns_to_add)) {
-    ann_long_format_table <- dplyr::select(ann_long_format_table, -MONDO)
+  if (any(c("EFO", "MONDO") %in% columns_to_add)) {
+    ann_long_format_table <- dplyr::left_join(
+      ann_long_format_table, pp_cgroup_efo_mondo_df, by = "Disease")
   }
 
   if (replace_na_with_empty_string) {
@@ -350,15 +333,16 @@ annotate_long_format_table <- function(
   # Reorder the columns of the returned table to have the same column order as
   # the input table and added columns in the order of columns_to_add parameter
   #
-  # Assert that input table columns and added columns are the only columns
-  if (!identical(sort(colnames(ann_long_format_table)),
-                 sort(ret_tbl_col_order))) {
+  # Assert that input table columns and columns_to_add columns are in the
+  # ann_long_format_table
+  if (!all(ret_tbl_col_order %in% colnames(ann_long_format_table))) {
     stop(paste0("annotate_long_format_table function internal error. ",
                 "Submit a GitHub Issue with your error ",
-                "message and input data.\nColumn names are ",
+                "message and input data.\n",
+                "ann_long_format_table column names are ",
                 char_vec_to_str(colnames(ann_long_format_table)),
-                ", which are different from the expected set of column names",
-                char_vec_to_str(ret_tbl_col_order)))
+                ", which do not include all column names to be returned ",
+                char_vec_to_str(ret_tbl_col_order), "."))
   }
   # Though tidyselect::one_of is superseded in favor of tidyselect::any_of and
   # tidyselect::all_of, the docker image only has one_of.
