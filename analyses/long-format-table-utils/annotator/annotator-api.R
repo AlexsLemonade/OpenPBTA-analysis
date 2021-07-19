@@ -220,8 +220,8 @@ annotate_long_format_table <- function(
                 "Check data integrity. Submit a data question GitHub issue."))
   }
   # asert all rmtl NAs have version NAs, vice versa
-  if (!identical(is.na(ensg_hugo_rmtl_df$rmtl),
-                 is.na(ensg_hugo_rmtl_df$version))) {
+  if (!identical(is.na(ensg_rmtl_df$rmtl),
+                 is.na(ensg_rmtl_df$version))) {
     stop(paste0("ensg-hugo-rmtl-v1-mapping.tsv ",
                 "has rmtl column NAs with version column non-NAs, or",
                 "version column NAs with rmtl column non-NAs\n",
