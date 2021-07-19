@@ -53,14 +53,14 @@ Check input long-format tables have the following columns:
 
 Add one or more of the following gene annotations:
 
-| Annotation column name | Source data                                                                                         |
-|------------------------|-----------------------------------------------------------------------------------------------------|
-| `RMTL`                 | `data/ensg-hugo-rmtl-v1-mapping.tsv`                                                                |
-| `Gene_type`            | `analyses/fusion_filtering/references/genelistreference.txt`                                        |
-| `OncoKB_cancer_gene`   | `analyses/long-format-table-utils/annotator/annotation-data/oncokb-cancer-gene-list.tsv`            |
-| `OncoKB_oncogene_TSG`  | `analyses/long-format-table-utils/annotator/annotation-data/oncokb-cancer-gene-list.tsv`            |
-| `Gene_full_name`       | `analyses/long-format-table-utils/annotator/annotation-data/ensg-gene-full-name-refseq-protein.tsv` |
-| `Protein_RefSeq_ID`    | `analyses/long-format-table-utils/annotator/annotation-data/ensg-gene-full-name-refseq-protein.tsv` |
+| Annotation column name | Non-missing value                                                                                                                                                                                                                                                      | Source data                                                                                         |
+|------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| `RMTL`                 | `Relevant Molecular Target (RMTL version 1)` or `Non-Relevant Molecular Target (RMTL version 1)`                                                                                                                                                                       | `data/ensg-hugo-rmtl-v1-mapping.tsv`                                                                |
+| `Gene_type`            | A sorted comma separated list of one or more of the following gene types: `CosmicCensus`, `Kinase`, `Oncogene`, `TranscriptionFactor`, and `TumorSuppressorGene`. Example values: `CosmicCensus`, `CosmicCensus,Kinase`, and `CosmicCensus,Kinase,TumorSuppressorGene` | `analyses/fusion_filtering/references/genelistreference.txt`                                        |
+| `OncoKB_cancer_gene`   | `Y` or `N`                                                                                                                                                                                                                                                             | `analyses/long-format-table-utils/annotator/annotation-data/oncokb-cancer-gene-list.tsv`            |
+| `OncoKB_oncogene_TSG`  | `Oncogene`, or `TumorSuppressorGene`, or `Oncogene,TumorSuppressorGene`                                                                                                                                                                                                | `analyses/long-format-table-utils/annotator/annotation-data/oncokb-cancer-gene-list.tsv`            |
+| `Gene_full_name`       | A single string of gene full name, e.g. `cytochrome c oxidase subunit III` and `ATP synthase F0 subunit 6`                                                                                                                                                             | `analyses/long-format-table-utils/annotator/annotation-data/ensg-gene-full-name-refseq-protein.tsv` |
+| `Protein_RefSeq_ID`    | A sorted comma separated list of one or more protein RefSeq IDs, e.g. `NP_004065.1`, `NP_000053.2,NP_001027466.1`, and `NP_000985.1,NP_001007074.1,NP_001007075.1`                                                                                                     | `analyses/long-format-table-utils/annotator/annotation-data/ensg-gene-full-name-refseq-protein.tsv` |
 
 The `RMTL` information is obtained from PediatricOpenTargets/OpenPedCan-analysis data release.
 
@@ -72,10 +72,10 @@ The `Gene_full_name` and `Protein_RefSeq_ID` information is downloaded from <htt
 
 Add the following disease(/`cancer_group`) annotations:
 
-| Annotation column name | Source data              |
-|------------------------|--------------------------|
-| `EFO`                  | `data/efo-mondo-map.tsv` |
-| `MONDO`                | `data/efo-mondo-map.tsv` |
+| Annotation column name | Non-missing value                                                                         | Source data              |
+|------------------------|-------------------------------------------------------------------------------------------|--------------------------|
+| `EFO`                  | A single string of EFO code, e.g. `EFO_1000069`, `EFO_1002008`, and `EFO_1000177`         | `data/efo-mondo-map.tsv` |
+| `MONDO`                | A single string of MONDO code, e.g. `MONDO_0002787`, `MONDO_0020560`, and `MONDO_0009837` | `data/efo-mondo-map.tsv` |
 
 The `EFO` and `MONDO` information is obtained from PediatricOpenTargets/OpenPedCan-analysis data release.
 
