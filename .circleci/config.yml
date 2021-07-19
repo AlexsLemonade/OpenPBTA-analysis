@@ -220,6 +220,11 @@ jobs:
           name: Visualize chromothripsis by histology
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/chromothripsis/03-plot-chromothripsis-by-histology.Rmd', clean = TRUE)"
 
+      - run:
+          name: Visualize chromothripsis results with breakpoint data
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/chromothripsis/04-plot-chromothripsis-and-breakpoint-data.Rmd', clean = TRUE)"
+
+
          ################################
          #### Add your analysis here ####
          ################################
