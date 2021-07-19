@@ -182,7 +182,7 @@ jobs:
 
       - run:
           name: Process SV file
-          command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/01-process-sv-file.R
+          command: ./scripts/run_in_ci.sh Rscript analyses/chromothripsis/01-process-sv-file.R
 
 #      - run:
 #          name: Oncoprint plotting
@@ -206,7 +206,7 @@ jobs:
 
       - run:
           name: Add Shatterseek
-          command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/02-shatterseek.R
+          command: ./scripts/run_in_ci.sh Rscript analyses/chromothripsis/02-run-shatterseek-and-classify-confidence.R
 
       - run:
           name: Telomerase activity
@@ -215,6 +215,14 @@ jobs:
       - run:
           name: GISTIC Results Comparison
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/compare-gistic/run-compare-gistic.sh
+
+      - run:
+          name: Visualize chromothripsis by histology
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/chromothripsis/03-plot-chromothripsis-by-histology.Rmd', clean = TRUE)"
+
+      - run:
+          name: Visualize chromothripsis results with breakpoint data
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/chromothripsis/04-plot-chromothripsis-and-breakpoint-data.Rmd', clean = TRUE)"
 
 
          ################################

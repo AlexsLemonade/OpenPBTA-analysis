@@ -169,17 +169,13 @@ ggplot(annotated_cn, aes(x = factor(copy_number), y = tp53_score)) +
 
 ```
 
-
-TP53 with copy_number <=1 show higher tp53 inactivation classifier scores, we will save copy_number <=1 calls for TP53 as high confidence losses.
+Majority of TP53 losses have high tp53 inactivation classifier, let's save to file.
 
 ### Save high confidence TP53 loss in file
 
 ```{r}
 annotated_cn %>%
-  # high confidence CNV losses
-  # with high TP53 inactivation score
-  dplyr::filter(copy_number<=1) %>%
-  # remove columns 
+  # remove columns not required in output  
   dplyr::select(-tp53_score,-Kids_First_Biospecimen_ID) %>%
   unique() %>%
   write_tsv( file.path(results_dir,"loss_overlap_domains_tp53.tsv"))
