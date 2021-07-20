@@ -1,12 +1,29 @@
-# This script adds gene and cancer_group annotations to a long-format table
+# This script adds gene and cancer_group annotations to an input long-format
+# table TSV file and outputs an annotated long-format table TSV file
 #
 # This script parses arguments and calls the annotate_long_format_table function
 # in the annotator/annotator-api.R file to add required annotation columns
 #
-# Example usages:
+# EXAMPLE USAGES:
+#
+# - Print help message:
+#
+# Rscript --vanilla analyses/long-format-table-utils/annotator/annotator-cli.R \
+#   -h
+#
+# - Add RMTL, EFO, and MONDO columns
+#   - The `-r` option replaces NAs with empty strings for **ALL** columns of the
+#     input table
+#   - The `-v` option prints extra messages on progress
+#
+# Rscript --vanilla analyses/long-format-table-utils/annotator/annotator-cli.R \
+#   -r -v -c RMTL,EFO,MONDO \
+#   -i long_n_tpm_mean_sd_quantile_group_gene_wise_zscore.tsv \
+#   -o long_n_tpm_mean_sd_quantile_group_gene_wise_zscore_annotated.tsv
 
 
 
+# source annotator-api.R to get the annotate_long_format_table function --------
 # Detect the ".git" folder -- this will in the project root directory. Use
 # this as the root directory to ensure proper execution, no matter where it is
 # called from.
