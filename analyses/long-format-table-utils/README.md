@@ -139,7 +139,6 @@ Use the long-format table annotator CLI in an analysis module with the following
 Following is an example usage in the `rna-seq-expression-summary-stats` module `01-tpm-summary-stats.R`.
 
 ```text
-> m_tpm_ss_long_tbl <- readRDS('../../scratch/m_tpm_ss_long_tbl.rds')
 > getwd()
 [1] "/home/rstudio/OpenPedCan-analysis/analyses/rna-seq-expression-summary-stats"
 > class(m_tpm_ss_long_tbl)
