@@ -49,7 +49,7 @@ tumor_plot <- function(expr_mat_gene, hist_file,
   }
   fname <- paste(gene_name, tumor_cohort_fname, "pan_cancer", analysis_type, sep = "_")
   plot_fname <- paste0(fname, '.png')
-  table_fname <- paste0(fname, '.tsv')
+  table_fname <- paste0(analysis_type, '.tsv')
   
   # data-frame for mapping output filenames with info
   mapping_df <- data.frame(gene = gene_name, 
@@ -87,5 +87,23 @@ tumor_plot <- function(expr_mat_gene, hist_file,
     mutate(mean = round(mean, digits = 2),
            median = round(median, digits = 2),
            sd = round(sd, digits = 2))
-  write.table(x = output_table, file = file.path(results_dir, table_fname), sep = "\t", row.names = F, quote = F)
+  
+  # for now add dummy values for all other columns
+  output_table <- output_table %>%
+    mutate(ENSG_id = NA,
+           cohort = tumor_cohort, 
+           cancer_group = NA,
+           efo_code = NA,
+           mondo_code = NA,	
+           uberon_code = NA,
+           plot_api = NA) %>%
+    dplyr::select(gene, ENSG_id, cohort, cancer_group, 
+                  x_labels, mean, median, sd,
+                  efo_code, mondo_code, uberon_code, plot_api)
+  table_fname <- file.path(results_dir, table_fname)
+  if(!file.exists(table_fname)){
+    write.table(x = output_table, file = table_fname, sep = "\t", row.names = F, quote = F)
+  } else {
+    write.table(x = output_table, file = table_fname, sep = "\t", row.names = F, col.names = F, quote = F, append = TRUE)
+  }
 }

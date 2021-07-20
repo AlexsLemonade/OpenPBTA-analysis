@@ -64,8 +64,8 @@ hist_file <- hist_file %>%
 expr_mat <- expr_mat %>%
   select(hist_file$Kids_First_Biospecimen_ID)
 
-# just do GPC2 as a test, we can remove this later
-expr_mat <- expr_mat[grep('GPC2', rownames(expr_mat)),]
+# just do GPC2 and MYCN as a test, we can remove this later
+expr_mat <- expr_mat[grep('^GPC2$|^MYCN$', rownames(expr_mat)),]
 
 # add gene as a column
 expr_mat <- expr_mat %>% 

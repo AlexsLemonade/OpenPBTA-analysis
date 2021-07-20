@@ -4,20 +4,21 @@
 
 ### Purpose
 
-1. Create `tumor vs normal` and `tumor only` expression plots, with `TPM` on the y-axis, as follows:
+1. Create `tumor vs normal` and `tumors only` expression plots, with `TPM` on the y-axis, as follows:
 
-* cohort + cancer_group tumor only plots: For each `cohort + cancer_group`, plot all tumors.
-* cancer_group tumor only plots: For each `cancer_group`, plot all tumors.
-* cohort + cancer_group tumor vs normal plots: For each cancer_group within a cohort, plot `cohort + cancer_group` vs GTEx subgroups.
+* `cohort + cancer_group tumor only plots`: For each cohort + cancer_group, plot all tumors.
+* `cancer_group tumor only plots`: For each cancer_group, plot all tumors.
+* `cohort + cancer_group tumor vs normal plots`: For each cancer_group within a cohort, plot cohort + cancer_group vs GTEx subgroups.
+* `cancer_group tumor vs normal plots`: For each cancer_group, plot cancer_group vs GTEx subgroups.
 
-2. Export tables (.tsv) of the data per plot with the following fields: `gene`, `mean`, `median`, `sd` and `x-axis-labels`.
+2. Export two tables (.tsv) `cancer_group_level.tsv` and `cohort_cancer_group_level.tsv` with the following fields: `gene`, `ENSG_id`, `cohort`, `cancer_group`, `x_labels`, `mean`, `median`, `sd`, `efo_code`, `mondo_code`, `uberon_code`, `plot_api`.
 
 3. Export metadata files to use in JSON files with the following fields: `gene` (gene name), `plot_type` (either `tumors_only` or `tumor_vs_normal`), `cohort` (`_` separated cohort name), `cancer_group` (only applicable for tumor vs normal plots and `NA` for tumors only plot), `analysis_type` (either `cohort_cancer_group_level` or `cancer_group_level`), `plot_fname` (plot filename) and `table_fname` (table filename).
 
 ### Methods 
 
 1. Filter `cancer_subgroup` or `gtex_subgroup` with number of samples < 5 
-2. Currently only generating outputs for `GPC2` for the initial review
+2. Currently only generating outputs for `GPC2` and `MYCN` for the initial review
 
 ### Module structure
 
@@ -31,14 +32,10 @@
 │   ├── GPC2_PBTA_GMKF_pan_cancer_cancer_group_level.png
 │   ├── GPC2_PBTA_GMKF_pan_cancer_cohort_cancer_group_level.png
 │   └── ...
-├── results # tsv files of data for corresponding expression boxplots
-│   ├── GPC2_GMKF_Neuroblastoma_vs_GTEx_cohort_cancer_group_level.tsv
-│   ├── GPC2_PBTA_Medulloblastoma_vs_GTEx_cohort_cancer_group_level.tsv
-│   ├── GPC2_Ependymoma_vs_GTEx_cancer_group_level.tsv
-│   ├── GPC2_PBTA_GMKF_pan_cancer_cancer_group_level.tsv
-│   ├── GPC2_PBTA_GMKF_pan_cancer_cohort_cancer_group_level.tsv
-│   ├── ...
-│   └── metadata.tsv # mapping of filename and metadata for all comparisons 
+├── results
+│   ├── cancer_group_level.tsv 
+│   ├── cohort_cancer_group_level.tsv
+│   └── metadata.tsv # mapping of filename and metadata for all comparisons 
 ├── run-tumor-gtex-plots.sh # full analysis script
 ├── run-tumor-only-plots.sh # script for tumor only plots
 ├── run-tumor-vs-normal-plots.sh # script for tumor vs gtex plots
@@ -106,9 +103,7 @@ Tumors vs GTEx filename format:
 {gene_name}_{cancer_group_name}_vs_GTEx_{analysis_type}.png
 ``` 
 
-2. `results/*.tsv`: corresponding data for expression boxplots
-
-Same prefix as in `plots/` folder with the `.tsv` extension instead of `.png`
+2. `results/cancer_group_level.tsv` and `results/cohort_cancer_group_level.tsv`: corresponding data for expression boxplots
 
 3. `results/metadata.tsv`: mapping of filename and metadata for all comparisons 
 
