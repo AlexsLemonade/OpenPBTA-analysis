@@ -34,7 +34,7 @@ def read_parameters():
      p.add_argument('ONCOKB', type=str, default=None, help="OPenPedCan Hugo gene symbols to OncoKB categories mapping file (OncoKB_Oncogene-TSG_genes.tsv)\n\n")
      p.add_argument('EFO_MONDO', type=str, default=None, help="OPenPedCan disease to EFO/MONDO mapping file (efo-mondo-map.tsv)\n\n")
      p.add_argument('ENSG_RMTL', type=str, default=None, help="OPenPedCan Ensembl to RMTL mapping file (ensg-hugo-rmtl-v*-mapping.tsv)\n\n")
-     p.add_argument('-v', '--version', action='version', version="classify_reads.py version {} ({})".format(__version__, __date__), help="Print the current 01-cnv-frequencies.py version and exit\n\n")
+     p.add_argument('-v', '--version', action='version', version="classify_reads.py version {} ({})".format(__version__, __date__), help="Print the current 01-snv-frequencies.py version and exit\n\n")
      return p.parse_args()
 
 
@@ -112,13 +112,13 @@ def compute_variant_frequencies(all_tumors_df, primary_tumors_file, relapase_tum
      all_tumors_frequecy_dfs = []
      primary_tumors_frequecy_dfs = []
      relapse_tumors_frequecy_dfs = []
-     for index, row in cancer_group_cohort_df.iterrows():
-          if row["num_samples"] > 5:
+     for row in cancer_group_cohort_df.itertuples(index=False):
+          if row.num_samples > 5:
                for df_name, tumor_df in tumor_dfs.items():
-                    if row["cohort"] == "all_cohorts":
-                         df = tumor_df[(tumor_df["cancer_group"] == row["cancer_group"])]
+                    if row.cohort == "all_cohorts":
+                         df = tumor_df[(tumor_df["cancer_group"] == row.cancer_group)]
                     else:
-                         df = tumor_df[(tumor_df["cancer_group"] == row["cancer_group"]) & (tumor_df["cohort"] == row["cohort"])]
+                         df = tumor_df[(tumor_df["cancer_group"] == row.cancer_group) & (tumor_df["cohort"] == row.cohort)]
                     if df.empty:
                          continue
                     num_samples = df["Kids_First_Biospecimen_ID"].nunique()
@@ -126,15 +126,15 @@ def compute_variant_frequencies(all_tumors_df, primary_tumors_file, relapase_tum
                     df = df.groupby(["ensembl", "status"]).apply(func)
                     df = df.rename_axis(["Gene_Ensembl_ID", "Variant_Type"]).reset_index()
                     df["num_patients"] = num_patients
-                    for i, j in df.iterrows():
+                    for i in df.itertuples():
                          if df_name == "primary_tumors" or df_name == "relapse_tumors":
-                              df.at[i, "Total_Alterations/Patients_in_Dataset"] = "{}/{}".format(j["total_sample_alterations"], num_samples)
-                              df.at[i, "Frequency_in_Overall_Dataset"] = "{:.2f}%".format((j["total_sample_alterations"]/num_samples)*100)
+                              df.at[i.Index, "Total_Alterations/Patients_in_Dataset"] = "{}/{}".format(i.total_sample_alterations, num_samples)
+                              df.at[i.Index, "Frequency_in_Overall_Dataset"] = "{:.2f}%".format((i.total_sample_alterations/num_samples)*100)
                          if df_name == "all_tumors":
-                              df.at[i, "Total_Alterations/Patients_in_Dataset"] = "{}/{}".format(j["total_patient_alterations"], num_patients)
-                              df.at[i, "Frequency_in_Overall_Dataset"] = "{:.2f}%".format((j["total_patient_alterations"]/num_patients)*100)
-                         df.at[i, "Dataset"] = row["cohort"]
-                         df.at[i, "Disease"] = row["cancer_group"]
+                              df.at[i.Index, "Total_Alterations/Patients_in_Dataset"] = "{}/{}".format(i.total_patient_alterations, num_patients)
+                              df.at[i.Index, "Frequency_in_Overall_Dataset"] = "{:.2f}%".format((i.total_patient_alterations/num_patients)*100)
+                         df.at[i.Index, "Dataset"] = row.cohort
+                         df.at[i.Index, "Disease"] = row.cancer_group
                     df = df [["Gene_Symbol", "Gene_Ensembl_ID", "Variant_Type", "Dataset", "Disease", "Total_Alterations/Patients_in_Dataset", "Frequency_in_Overall_Dataset"]]
                     if df_name == "primary_tumors":
                          primary_tumors_frequecy_dfs.append(df)
@@ -173,38 +173,31 @@ def get_annotations(cnv_frequency_df, ensg_gene_name_mapping_file, oncokb_mappin
      cnv_frequency_df.fillna("", inplace=True)
 
      # populate CNV frequency dataframe with full gene names
-     row_index = -1
      ensembl_gene_name_df = pd.read_csv(ensg_gene_name_mapping_file, sep="\t")
-     for ensembl_id in ensembl_gene_name_df["Gene_Ensembl_ID"]:
-          row_index += 1
-          if ensembl_id in list(cnv_frequency_df.Gene_Ensembl_ID):
-               cnv_frequency_df.loc[cnv_frequency_df.Gene_Ensembl_ID == ensembl_id, "Gene_Full_Name"] = ensembl_gene_name_df.at[row_index, "Gene_full_name"]
+     for ensembl_id in ensembl_gene_name_df.itertuples(index=False):
+          if ensembl_id.Gene_Ensembl_ID in list(cnv_frequency_df.Gene_Ensembl_ID):
+               cnv_frequency_df.loc[cnv_frequency_df.Gene_Ensembl_ID == ensembl_id.Gene_Ensembl_ID, "Gene_Full_Name"] = ensembl_gene_name_df.Gene_full_name
 
      # populate CNV frequency dataframe with OncoKB categories
-     row_index = -1
      oncokb_df = pd.read_csv(oncokb_mapping_file, sep="\t")
-     for gene_symbol in oncokb_df["hugo_symbol"]:
-          row_index += 1
-          if gene_symbol in list(cnv_frequency_df.Gene_Symbol):
-               cnv_frequency_df.loc[cnv_frequency_df.Gene_Symbol == gene_symbol, "OncoKB_Category"] = oncokb_df.at[row_index, "oncokb_category"]
+     for gene_symbol in oncokb_df.itertuples(index=False):
+          if gene_symbol.hugo_symbol in list(cnv_frequency_df.Gene_Symbol):
+               cnv_frequency_df.loc[cnv_frequency_df.Gene_Symbol == gene_symbol.hugo_symbol, "OncoKB_Category"] = oncokb_df.oncokb_category
 
      # populate CNV frequency dataframe with EFO and MONDO disease accessions
-     row_index = -1
      efo_mondo_df = pd.read_csv(efo_mondo_mapping_file, sep="\t")
-     for cancer_group in efo_mondo_df["cancer_group"]:
-          row_index += 1
-          if cancer_group in list(cnv_frequency_df.Disease):
-               cnv_frequency_df.loc[cnv_frequency_df.Disease == cancer_group , "EFO_ID"] = efo_mondo_df.at[row_index, "efo_code"]
-               cnv_frequency_df.loc[cnv_frequency_df.Disease == cancer_group , "MONDO_ID"] = efo_mondo_df.at[row_index, "mondo_code"]
+     for cancer_group in efo_mondo_df.itertuples(index=False):
+          if cancer_group.cancer_group in list(cnv_frequency_df.Disease):
+               cnv_frequency_df.loc[cnv_frequency_df.Disease == cancer_group.cancer_group, "EFO_ID"] = efo_mondo_df.efo_code
+               cnv_frequency_df.loc[cnv_frequency_df.Disease == cancer_group.cancer_group , "MONDO_ID"] = efo_mondo_df.mondo_code
 
      # populate CNV frequency dataframe with EFO and MONDO disease accessions
-     row_index = -1
      ensg_rmtl_df = pd.read_csv(rmtl_mapping_file, sep="\t")
      ensg_rmtl_df = ensg_rmtl_df[ensg_rmtl_df.rmtl.isin(["Relevant Molecular Target"])].reset_index()
-     for ensembl_gene in ensg_rmtl_df["ensg_id"]:
-          row_index += 1
-          if ensembl_gene in list(cnv_frequency_df.Gene_Ensembl_ID):
-               cnv_frequency_df.loc[cnv_frequency_df.Gene_Ensembl_ID == ensembl_gene , "RMTL"] = ensg_rmtl_df.at[row_index, "rmtl"]
+     for ensembl_gene in ensg_rmtl_df.itertuples(index=False):
+          if ensembl_gene.ensg_id in list(cnv_frequency_df.Gene_Ensembl_ID):
+               cnv_frequency_df.loc[cnv_frequency_df.Gene_Ensembl_ID == ensembl_gene.ensg_id , "RMTL"] = ensg_rmtl_df.rmtl
+               
      cnv_frequency_df.fillna("", inplace=True)
      return(cnv_frequency_df)
 
