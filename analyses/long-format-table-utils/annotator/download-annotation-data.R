@@ -153,7 +153,7 @@ ensg_hugo_rmtl_df <- dplyr::distinct(
 if (!identical(sum(is.na(ensg_hugo_rmtl_df$ensg_id)), as.integer(0))) {
   stop(paste0("Found NA in ensg-hugo-rmtl-v1-mapping.tsv ensg_id.\n",
               "Check if PedOT release data are downloaded properly.\n",
-              "If data is downloaded properly, submit a GitHub data question."))
+              "If data is downloaded properly, submit a GitHub data issue."))
 }
 
 if (!identical(sum(is.na(ensg_hugo_rmtl_df$gene_symbol)), as.integer(0))) {
