@@ -130,10 +130,13 @@ The `long-format-table-utils/annotator/annotator-cli.R` file provides an R CLI f
 Use the long-format table annotator CLI in an analysis module with the following steps:
 
 1. If `"Gene_symbol", "Gene_Ensembl_ID", "Disease"` are not all present in the column names of the table to be annotated, add new columns or rename existing ones to have all these required columns.
-2. Output the table that needs to be annotated in TSV format.
+2. Output the table that needs to be annotated in TSV format. **NOTE**s on the TSV file:
+   1. The TSV file should use double quotes for field values thatneed escape, e.g. "NA" for string literal "NA" and "\t" for tab
+   2. Only unquoted NA field values are treated as missing values by `annotator-cli.R`
+   3. Leading and trailing white spaces in field values are **NOT** trimmed by `annotator-cli.R`
 3. Change the working directory to be `OpenPedCan-analysis` or a subdirectory of `OpenPedCan-analysis`. This allows the `annotator-cli.R` to locate the `annotator-api.R`.
 4. Run the `annotator-cli.R` script with `Rscript --vanilla path/to/annotator-cli.R` and proper options. The `Rscript` command can be invoked by R `system("Rscript --vanilla path/to/annotator-cli.R -h")` (if the annotator R API is not preferred) or Python (>= 3.5) `import subprocess; subprocess.run("Rscript --vanilla analyses/long-format-table-utils/annotator/annotator-cli.R -h".split())`. For more information about R `system`, <https://stat.ethz.ch/R-manual/R-devel/library/base/html/system.html>. For more information about Python (>= 3.5) `subprocess.run`, <https://docs.python.org/3/library/subprocess.html#subprocess.run>.
-5. Read the annotated table TSV file.
+5. Read the annotated table TSV file. It is recommended to read all fields as character/string types, so the format and the number of significant digits of the double/float can be preserved.
 6. Rename, select, and reorder the columns of the annotated table for output in TSV, or JSON, or JSONL formats.
 
 Following is an example usage in the `rna-seq-expression-summary-stats` module `01-tpm-summary-stats.R`.
@@ -171,7 +174,7 @@ Done.
 > annotated_renamed_m_tpm_ss_long_tbl <- readr::read_tsv(
 +   "../../scratch/annotated_renamed_m_tpm_ss_long_tbl.tsv",
 +   na = character(),
-+   col_types = readr::cols(.default = readr::col_guess()))
++   col_types = readr::cols(.default = readr::col_character()))
 |==================================================================================================| 100%  222 MB
 > m_tpm_ss_long_tbl <- dplyr::rename(
 +   annotated_renamed_m_tpm_ss_long_tbl,
