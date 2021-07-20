@@ -1,22 +1,26 @@
 ---
-title: "Histology distribution of putative onocgene annotated fusions "
+title: "Cancer group distribution of putative onocgene annotated fusions "
 author: "K S Gaonkar for D3B ; Jaclyn Taroni for CCDL"
 output: html_notebook
 params:
   histology:
     label: "Clinical file" 
-    value: data/pbta-histologies.tsv
+    value: data/histologies.tsv
     input: file
   dataPutativeFusion:
     label: "Input putative oncogene fusion dataframe"
-    value: scratch/pbta-fusion-putative-oncogenic-preQC.tsv
+    value: scratch/fusion-putative-oncogenic-preQC.tsv
     input: file
-  countHistology:
-    label: "Integer cutoff of fusion found in more than N histologies"
+  countBroadHistology:
+    label: "Integer cutoff of fusion found in more than N broad histology groups"
+    value: 4
+    input: integer
+  countCancerGroup:
+    label: "Integer cutoff of fusion found in more than N cancer groups"
     value: 4
     input: integer
   outputfolder:
-    label: "results folder for pbta-fusion-putative-oncogenic.tsv files"
+    label: "results folder for fusion-putative-oncogenic.tsv files"
     value: results
     input: string       
   base_run:
@@ -25,7 +29,7 @@ params:
     input: integer
   base_histology:
     label: "Base histology file"
-    value: data/pbta-histologies-base.tsv
+    value: data/histologies-base.tsv
     input: file
      
 ---
@@ -43,20 +47,21 @@ However in v14 and v15 we have gradually we REMOVED the above filtering from put
 
 + CAPZ2-MET is annotated as local-rearrangement. 
 
-This removal of filtering lets us gather fusion calls known in oncogenic genes per histologies but also adds a lot of fusions which @jaclyn-taroni, @jharenza and I would like to discuss here.
+This removal of filtering lets us gather fusion calls known in oncogenic genes per cancer group but also adds a lot of fusions which @jaclyn-taroni, @jharenza and I would like to discuss here.
 
 ### QC filtering proposed
 
-Here I plot some barplots to identify fusions found in more than 4 broad_histologies to remove fusions found to be artefactual because of the multiple diverse histologies it's found in across OpenPBTA dataset. (We have decided more than 4 here because we have seen that some known fusions like EWSR1−−FLI1 is seen is 4 different broad_histologies in our current clinical file)
+Here I plot some barplots to identify fusions found in more than 4 cancer groups - they are just for visualization purposes.
+When actually filtering the fusions, we remove fusions that are found in more 4 *broad_histology* groups - they are found to be artifactual because of the multiple diverse broad histologies in OpenPedCan dataset. (We have decided more than 4 here because we have seen that some known fusions, like EWSR1−−FLI1, is seen is 4 different cancer groups in our current clinical file)
 
 
 dataPutativeFusion file used as input is
 
 + Filtered fusion calls for general cancer specific genes (oncogenic, transcription factor,  kinase, COSMIC and TCGA fusions)
 
-+ Plus non-oncogenic fusion which are called by both callers and found in more than 2 samples in each histology (these non-oncogenic fusions are removed if they fuse to more than 5 partner fusions or found in more than 1 histology.)
++ Plus non-oncogenic fusion which are called by both callers and found in more than 2 samples in each cancer group (these non-oncogenic fusions are removed if they fuse to more than 5 partner fusions or found in more than 1 cancer group.)
 
-This notebook assumes you are in OpenPBTA-analysis project folder structure and have run steps 1:4 of fusion_filtering
+This notebook assumes you are in OpenPedCan-analysis project folder structure and have run steps 1:4 of fusion_filtering
 
 ### Load data
 
@@ -71,27 +76,30 @@ suppressPackageStartupMessages(library("reshape2"))
 suppressPackageStartupMessages(library("qdapRegex"))
 
 ####read putative oncogene fusion files
-fusion_calls<-read_tsv(file.path(root_dir,params$dataPutativeFusion))
+fusion_calls<-read_tsv(file.path(root_dir,params$dataPutativeFusion),guess_max = 100000 )
 
 ####read files from results folder
 outputfolder<-params$outputfolder
 
 #### get histology file
 if ( params$base_run ==0 ){
-clinical<-read_tsv(file.path(root_dir, params$histology), guess_max = 10000) %>%
-  dplyr::select(Kids_First_Biospecimen_ID, Kids_First_Participant_ID, broad_histology)
+clinical<-read_tsv(file.path(root_dir, params$histology), guess_max = 100000) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, Kids_First_Participant_ID, cancer_group, broad_histology)
 } else {
-clinical<-read_tsv(file.path(root_dir, params$base_histology), guess_max = 10000) %>%
-  dplyr::select(Kids_First_Biospecimen_ID, Kids_First_Participant_ID, broad_histology)
+clinical<-read_tsv(file.path(root_dir, params$base_histology), guess_max = 100000) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, Kids_First_Participant_ID, cancer_group, broad_histology)
 }
 
 
-# add broad_histology to fusion
+# add cancer_group to fusion
 fusion_calls<-fusion_calls %>%
   left_join(clinical,by=c("Sample"="Kids_First_Biospecimen_ID","Kids_First_Participant_ID"))
 
-#### get count cutoff for histology
-countHistology<-params$countHistology
+#### get count cutoff for cancer group
+countCancerGroup<-params$countCancerGroup
+
+#### get count cutoff for broad histology
+countBroadHistology<-params$countBroadHistology
 ```
 
 ##### We want to review subset of filtering options for putative-driver-fusions 
@@ -107,7 +115,6 @@ putative_driver_annotated_other_fusions <- fusion_calls %>%
   unique()
 
 
-
 #local rearrangements
 putative_driver_annotated_fusions_local<-fusion_calls %>%
   # local rearrangement/adjacent genes
@@ -116,101 +123,143 @@ putative_driver_annotated_fusions_local<-fusion_calls %>%
 ```
 
 
-```{r function to plot FusionName to N number of histologies }
+```{r function to plot FusionName to N number of cancer groups }
 
-# function to plot fusion found in N histology
+# function to plot fusion found in N cancer group
 # @param standardFusionCalls: standardized fusion calls
-# @param filterN: filter to plot fusions found in more than filterN histologies
+# @param filterN: filter to plot fusions found in more than filterN cancer groups
 # @param plot_title: for plot title per subset of fusion
 
-plotNhist<-function(standardFusionCalls,filterN,plot_title){
-  # get count of number of broad_histology per FusionName
-  plotNhist<-standardFusionCalls %>% dplyr::select(FusionName,broad_histology) %>% unique() %>%
+plotNcg<-function(standardFusionCalls,filterN,plot_title){
+  # get count of number of cancer_group per FusionName
+  plotNcg<-standardFusionCalls %>% dplyr::select(FusionName,cancer_group) %>% unique() %>%
     group_by(FusionName) %>% tally(name="count")
   # get count of number of times fusion is found in dataset 
   # this number helps with identifying how many calls will be reduced from final fusion set
-  plotNhist_total_count<-standardFusionCalls %>% dplyr::select(FusionName) %>% group_by(FusionName) %>%
+  plotNcg_total_count<-standardFusionCalls %>% dplyr::select(FusionName) %>% group_by(FusionName) %>%
     tally(name="totalcount")
   
-  # get x and y variables for plotNhist plot
-  plotNhist<-plotNhist %>% left_join(plotNhist_total_count,by=c("FusionName"))
-  plotNhist$FusionNameTotal<-paste0(plotNhist$FusionName,"(",plotNhist$totalcount,")")
+  # get x and y variables for plotNcg plot
+  plotNcg<-plotNcg %>% left_join(plotNcg_total_count,by=c("FusionName"))
+  plotNcg$FusionNameTotal<-paste0(plotNcg$FusionName,"(",plotNcg$totalcount,")")
   #order FusionNames according to count
-  plotNhist<-plotNhist[order(plotNhist$count,decreasing = TRUE),]
+  plotNcg<-plotNcg[order(plotNcg$count,decreasing = TRUE),]
   if (!is_empty(filterN)){
-    plotNhist<-plotNhist[plotNhist$count>filterN,]
+    plotNcg<-plotNcg[plotNcg$count>filterN,]
   }
   # factor the FusionNames
-  plotNhist$FusionNameTotal<-factor(plotNhist$FusionNameTotal,levels=unique(plotNhist$FusionNameTotal),ordered = TRUE)
+  plotNcg$FusionNameTotal<-factor(plotNcg$FusionNameTotal,levels=unique(plotNcg$FusionNameTotal),ordered = TRUE)
   # plot
-  ggplot(plotNhist)+geom_col(aes(x=plotNhist$FusionNameTotal,y=plotNhist$count))+theme(axis.text.x = element_text(angle=90))+coord_flip()+ylab("count")+xlab("FusionName(Total)")+ggtitle(plot_title)
+  ggplot(plotNcg)+geom_col(aes(x=plotNcg$FusionNameTotal,y=plotNcg$count))+theme(axis.text.x = element_text(angle=90))+coord_flip()+ylab("count")+xlab("FusionName(Total)")+ggtitle(plot_title)
 }
 
 ```
 
 
-### plot "other" reading-frame fusion found in more than N (countHistology) histologies which might indicate false calls
-x axis is number of histologies y axis is the fusion name (total number of calls in putative oncogene list)
+### plot "other" reading-frame fusion found in more than N (countCancerGroup) cancer groups which might indicate false calls
+x axis is number of cancer groups y axis is the fusion name (total number of calls in putative oncogene list)
 ```{r other reading-frame fusion}
 
 # total putative oncogene other fusion
 nrow(putative_driver_annotated_other_fusions)
-plotNhist(putative_driver_annotated_other_fusions,filterN = countHistology,plot_title ="Total putative oncogene other fusion" )
+plotNcg(putative_driver_annotated_other_fusions,filterN = countCancerGroup,plot_title ="Total putative oncogene other fusion" )
 
 ```
 
 
-### plot fusion annotated as local rearrangements found in more than N (countHistology) histologies which might indicate false calls
-x axis is number of histologies y axis is the fusion name (total number of calls in putative oncogene list)
+### plot fusion annotated as local rearrangements found in more than N (countCancerGroup) cancer groups which might indicate false calls
+x axis is number of cancer groups y axis is the fusion name (total number of calls in putative oncogene list)
 
 ```{r local rearrangements fusions}
 
 # total putative oncogene local rearrangement fusion
 nrow(putative_driver_annotated_fusions_local)
-plotNhist(putative_driver_annotated_fusions_local,filterN = countHistology,plot_title ="Total putative oncogene local rearrangement fusion" )
+plotNcg(putative_driver_annotated_fusions_local,filterN = countCancerGroup,plot_title ="Total putative oncogene local rearrangement fusion" )
 
 ```
 
 
-### plot all putative oncogene fusion found in more than N (countHistology) histologies which might indicate false calls
-x axis is number of histologies y axis is the fusion name (total number of calls in putative oncogene list)
+### plot all putative oncogene fusion found in more than N (countCancerGroup) cancer groups which might indicate false calls
+x axis is number of cancer groups y axis is the fusion name (total number of calls in putative oncogene list)
 
 ```{r All putative oncogene fusion }
 # total putative oncogene fusion
 nrow(fusion_calls)
-plotNhist(fusion_calls, filterN = countHistology,plot_title = "Total putative oncogene fusion")
+plotNcg(fusion_calls, filterN = countCancerGroup,plot_title = "Total putative oncogene fusion")
 ```
 
-### get fusions that are found in more than 4 histologies
+### get fusions that are found in more than 4 cancer groups
 
-```{r get fusions that are found in more than 4 histologies }
-# count number of fusions in putative oncogene annotated fused gene are in more than N (countHistology) histologies
-FusionInNhist<-fusion_calls %>% dplyr::select(FusionName,broad_histology) %>% unique() %>% group_by(FusionName) %>% tally(name="count")
-FusionInNhist<-FusionInNhist[FusionInNhist$count>countHistology,]
-FusionInNhist
+```{r get fusions that are found in more than 4 cancer groups}
+# count number of fusions in putative oncogene annotated fused gene are in more than N (countCancerGroup) cancer groups
+FusionInNcg<-fusion_calls %>% dplyr::select(FusionName,cancer_group) %>% unique() %>% group_by(FusionName) %>% tally(name="count")
 
-# plot broad_histologies that have Fusions that are potential false positives and found in multiple histologies
-multiHistFusion<-fusion_calls %>% dplyr::filter(FusionName %in% FusionInNhist$FusionName) %>%
+FusionInNcg<-FusionInNcg[FusionInNcg$count>countCancerGroup,]
+FusionInNcg
+
+# plot cancer groups that have Fusions that are potential false positives and found in multiple cancer groups
+multiCGFusion<-fusion_calls %>% dplyr::filter(FusionName %in% FusionInNcg$FusionName) %>%
   # we want to remove annots column since there is difference in arriba annotation (uniquely has duplication/translocation/deletion values) and StarFusion annotation which will be counted twice since they are not unique
   dplyr::select(-annots) %>% 
   unique() 
 
-ggplot(multiHistFusion,aes(x=multiHistFusion$FusionName,fill=multiHistFusion$broad_histology))+geom_bar()+theme(axis.text.x = element_text(angle=90))+coord_flip()+ylab("count")+xlab("FusionName(Total)")
-
+ggplot(multiCGFusion,aes(x=multiCGFusion$FusionName,fill=multiCGFusion$cancer_group))+geom_bar()+theme(axis.text.x = element_text(angle=90))+coord_flip()+ylab("count")+xlab("FusionName(Total)")
 
 ```
 
-### Filtering fusions found in more than 4 histologies removes 1183 fusions.  
+### Filtering fusions found in more than 4 broad histologies removes 1183 fusions.  
 
-We can assume these fusions to be potential false calls because it is highly unlikely that fusions of biological importance occur in these highly divese histologies. We (Krutika, Jo Lynne and Payal ) also manually reviewed "Total putative oncogene fusion" plots to look for genes that are found in more than 4 histologies and none seemed to interesting/relevant.
+We can assume these fusions to be potential false calls because it is highly unlikely that fusions of biological importance occur in these highly divese cancer groups. We (Krutika, Jo Lynne and Payal ) also manually reviewed "Total putative oncogene fusion" plots to look for genes that are found in more than 4 broad histology and none seemed to interesting/relevant.
 
 ```{r final filtering }
-putative_driver_fusions<-fusion_calls %>% dplyr::filter(!FusionName %in% FusionInNhist$FusionName) %>%
-  # we want to remove annots column since there is difference in arriba annotation (uniquely has duplication/translocation/deletion values) and StarFusion annotation which will be counted twice since they are not unique
-  dplyr::select(-annots,-broad_histology) %>% 
+# count number of fusions in putative oncogene annotated fused gene are in more than N (countBroadHistology) histology group
+FusionInNbh<-fusion_calls %>% dplyr::select(FusionName,broad_histology) %>% unique() %>% group_by(FusionName) %>% tally(name="count")
+
+# select fusions that will be filtered (found in more than 4 broad histology groups)
+FusionInNbh<-FusionInNcg[FusionInNcg$count>countBroadHistology,]
+FusionInNbh
+
+putative_driver_fusions<-fusion_calls %>% dplyr::filter(!FusionName %in% FusionInNbh$FusionName) %>%
+  # we want to aggregate annots column since there is difference in arriba annotation (uniquely has duplication/translocation/deletion values) and StarFusion annotation which will be counted twice since they are not unique
+  # Example for fusion BRAF--ANTXR1 with the same breakpoint the annots per caller are:
+  # Arriba "[\"INTERCHROMOSOMAL[chr7--chr2]\"],translocation"
+  # StarFusion [INTERCHROMOSOMAL[chr7--chr2]] 
+  group_by_at(setdiff(colnames(fusion_calls), 
+                      # remove caller specific columns
+                      c("JunctionReadCount",
+                        "SpanningFragCount",
+                        "Confidence",
+                        "caller","annots"))) %>%
+  summarise(annots=
+              # remove \" from annots in arriba
+              # `paste` so space is not added with `toString`
+              # Example output: [INTERCHROMOSOMAL[chr7--chr2]],  [INTERCHROMOSOMAL[chr7--chr2]], translocation
+              paste(gsub("\"","",annots),collapse = ",")
+  ) %>%
+  # collapse by splitting by the above summarized `annots`
+  # column by "," to get a unique string
+  # Example output: [INTERCHROMOSOMAL[chr7--chr2]], translocation
+  mutate(annots = toString(
+    unique(
+      unlist(
+        str_split(annots,",")
+      )),
+  )
+  )%>%
+  ungroup() %>%
+  dplyr::select(-cancer_group) %>%
   unique() %>%
+  mutate(
+    BreakpointLocation = case_when(
+      # gene1A and gene1B are the same so these are breakpoints within the gene
+      Gene1A == Gene1B & !grepl("/", FusionName) ~ "Intragenic",
+      grepl("/", FusionName) ~ "Intergenic",
+      # the "/" is an annotation for intergenic fusions called by arriba 
+      TRUE ~ "Genic"
+    )
+  ) %>%
   arrange(Sample, FusionName) 
 
-write.table(putative_driver_fusions,file.path(outputfolder,"pbta-fusion-putative-oncogenic.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
+write.table(putative_driver_fusions,file.path(outputfolder,"fusion-putative-oncogenic.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
 
 ```
