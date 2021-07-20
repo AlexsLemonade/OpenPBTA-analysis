@@ -30,10 +30,10 @@ API and CLI usages and descriptions are in the Methods section.
 Run the following command to update downloaded data that are used in this module.
 
 ```bash
-bash update-long-format-table-utils.sh
+bash run-update-long-format-table-utils.sh
 ```
 
-The `update-long-format-table-utils.sh` runs data downloading scripts in sub-modules, e.g. `annotator/run-download-annotation-data.sh`. The data downloading scripts use `git diff --stat` to check for data file changes.
+The `run-update-long-format-table-utils.sh` runs data downloading scripts in sub-modules, e.g. `annotator/run-download-annotation-data.sh`. The data downloading scripts use `git diff --stat` to check for data file changes.
 
 Users could also use `git diff --stat` to check for data file changes.
 
