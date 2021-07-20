@@ -75,6 +75,6 @@ Oncogene annotated fusions do not need to be in both callers to be retained howe
 To scavenge back non-oncogenic fusions that are recurrently found uniquely in a cancer group we kept fusions that were called by both callers and if >2 samples per cancer group called the fusion.
 We removed the non-oncogenic fusions with genes fused more than 5 times in a samples or found in more than 1 cancer group as potential artifact. 
 
-`05-QC_putative_onco_fusion_dustribution.Rmd` : Plots fusions found in multiple (more than 4) cancer groups in scratch/fusion-putative-oncogenic-preQC.tsv from 04-project-specific-filtering.Rmd. For final filtering, fusion calls found in more than 4 broad_histology groups are removed as QC filtering.
+`05-QC_putative_onco_fusion_distribution.Rmd` : Plots fusions found in multiple (more than 4) cancer groups in scratch/fusion-putative-oncogenic-preQC.tsv from 04-project-specific-filtering.Rmd. For final filtering, fusion calls found in more than 4 broad_histology groups are removed as QC filtering.
 
 `06-recurrent-fusions-per-cancer-group.R` : Identifies recurrent fusions and genes that are recurrently observed in fusions. We identified RNA-seq samples that can be used independently for each patient. After the selection of samples we identify which fusions and genes are recurrent (found in >3 participants per cancer group) in our `fusion-putative-oncogenic.tsv` dataset.
