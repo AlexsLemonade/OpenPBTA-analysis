@@ -51,7 +51,7 @@ Check input long-format tables have the following columns:
 | `Gene_Ensembl_ID` | Ensembl ENSG IDs without `.#` versions, e.g. ENSG00000039139, ENSG00000111261, and ENSG00000169710                                                       |
 | `Disease`         | The `cancer_group` in the `histologies.tsv`, e.g. Adamantinomatous Craniopharyngioma, Atypical Teratoid Rhabdoid Tumor, and Low-grade glioma/astrocytoma |
 
-Add one or more of the following gene annotations:
+Add one or more of the following gene annotations, by specifying the `columns_to_add` parameter in the `annotate_long_format_table` function, or by specifying the `-c`/`--columns-to-add` option when running `annotator-cli.R`.
 
 | Annotation column name | Non-missing value                                                                                                                                                                                                                                                      | Source data                                                                                         |
 |------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
@@ -70,7 +70,7 @@ The `OncoKB_cancer_gene` and `OncoKB_oncogene_TSG` information is listed in `ann
 
 The `Gene_full_name` and `Protein_RefSeq_ID` information is downloaded from <https://mygene.info/> using the [mygene package](https://bioconductor.org/packages/release/bioc/html/mygene.html).
 
-Add the following disease(/`cancer_group`) annotations:
+Add one or more of the following disease(/`cancer_group`) annotations, by specifying the `columns_to_add` parameter in the `annotate_long_format_table` function, or by specifying the `-c`/`--columns-to-add` option when running `annotator-cli.R`.
 
 | Annotation column name | Non-missing value                                                                         | Source data              |
 |------------------------|-------------------------------------------------------------------------------------------|--------------------------|
