@@ -88,16 +88,16 @@ Use the long-format table annotator API in an analysis module with the following
 1. Change the working directory of the analysis module to be `OpenPedCan-analysis` or a subdirectory of `OpenPedCan-analysis`. This allows the API function `annotate_long_format_table` to locate annotation data files.
 2. `source` the `long-format-table-utils/annotator/annotator-api.R` file.
 3. If the class of the table to be annotated is not `tibble::tbl_df`, convert the table to `tibble::tbl_df` with `tibble::as_tibble`. After conversion, carefully check rownames, colnames, column classes (especially factors), and other properties that may affect the correctness of you code.
-4. If `c("Gene_symbol", "Gene_Ensembl_ID", "Disease")` are not all present in the colnames of the table to be annotated, add new columns or rename existing ones to have all required columns.
+4. If `c("Gene_symbol", "Gene_Ensembl_ID", "Disease")` are not all present in the colnames of the table to be annotated, add new columns or rename existing ones to have all these required columns.
 5. Call `annotate_long_format_table` to add one or more of the available annotation columns, by specifying the `columns_to_add` parameter in the `annotate_long_format_table` function. Read the documentation comment of the function for usage.
-6. Rename, select, and reorder the columns of the annotated table for output.
+6. Rename, select, and reorder the columns of the annotated table for output in TSV, or JSON, or JSONL formats.
 
 Following is an example usage in the `rna-seq-expression-summary-stats` module `01-tpm-summary-stats.R`.
 
 ```text
 > getwd()
 [1] "/home/rstudio/OpenPedCan-analysis/analyses/rna-seq-expression-summary-stats"
-> source('../long-format-table-utils/annotator/annotator-api.R')
+> source("../long-format-table-utils/annotator/annotator-api.R")
 > class(m_tpm_ss_long_tbl)
 [1] "tbl_df"     "tbl"        "data.frame"
 > colnames(m_tpm_ss_long_tbl)
@@ -106,19 +106,21 @@ Following is an example usage in the `rna-seq-expression-summary-stats` module `
  [5] "tpm_mean"                             "tpm_sd"                              
  [7] "tpm_mean_cancer_group_wise_zscore"    "tpm_mean_gene_wise_zscore"           
  [9] "tpm_mean_cancer_group_wise_quantiles" "n_samples"                           
-> ann_m_tpm_ss_long_tbl <- m_tpm_ss_long_tbl %>%
-+   rename(Gene_symbol = gene_symbol, Gene_Ensembl_ID = gene_id,
-+          Disease = cancer_group)
-> ann_m_tpm_ss_long_tbl <- annotate_long_format_table(
-+   ann_m_tpm_ss_long_tbl, columns_to_add = c('MONDO', 'RMTL', 'EFO'))
-> m_tpm_ss_long_tbl <- ann_m_tpm_ss_long_tbl %>%
-+   rename(gene_symbol = Gene_symbol, gene_id = Gene_Ensembl_ID,
-+          cancer_group = Disease) %>%
-+   select(gene_symbol, RMTL, gene_id,
-+          cancer_group, EFO, MONDO, n_samples, cohort,
-+          tpm_mean, tpm_sd,
-+          tpm_mean_cancer_group_wise_zscore, tpm_mean_gene_wise_zscore,
-+          tpm_mean_cancer_group_wise_quantiles)
+> renamed_m_tpm_ss_long_tbl <- dplyr::rename(
++   m_tpm_ss_long_tbl, Gene_symbol = gene_symbol, Gene_Ensembl_ID = gene_id,
++   Disease = cancer_group)
+> annotated_renamed_m_tpm_ss_long_tbl <- annotate_long_format_table(
++   renamed_m_tpm_ss_long_tbl, columns_to_add = c("MONDO", "RMTL", "EFO"))
+> m_tpm_ss_long_tbl <- dplyr::rename(
++   annotated_renamed_m_tpm_ss_long_tbl,
++   gene_symbol = Gene_symbol, gene_id = Gene_Ensembl_ID,
++   cancer_group = Disease)
+> m_tpm_ss_long_tbl <- dplyr::select(
++   m_tpm_ss_long_tbl, gene_symbol, RMTL, gene_id,
++   cancer_group, EFO, MONDO, n_samples, cohort,
++   tpm_mean, tpm_sd,
++   tpm_mean_cancer_group_wise_zscore, tpm_mean_gene_wise_zscore,
++   tpm_mean_cancer_group_wise_quantiles)
 ```
 
 ##### R CLI usage of long-format table annotator
