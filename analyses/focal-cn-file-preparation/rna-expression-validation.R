@@ -10,7 +10,7 @@
 # Rscript --vanilla rna-expression-validation.R \
 #   --annotated_cnv_file analyses/focal-cn-file-preparation/results/cnvkit_annotated_cn_autosomes.tsv.gz \
 #   --expression_file data/gene-expression-rsem-tpm-collapsed.rds \
-#   --independent_specimens_file data/independent-specimens.rnaseq.primary.tsv \
+#   --independent_specimens_file data/independent-specimens.wgswxspanel.primary.tsv \
 #   --metadata  data/histologies.tsv \
 #   --goi_list analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
 #   --filename_lead "cnvkit_annotated_cn_autosomes"
@@ -116,7 +116,7 @@ source(
 ambiguous_sample_ids <- metadata %>%
   dplyr::filter(
     sample_type == "Tumor",
-    composition == "Solid Tissue"
+    composition == "Solid Tissue" | composition == "Bone Marrow"
   ) %>%
   dplyr::group_by(sample_id) %>%
   dplyr::tally() %>%
@@ -131,7 +131,7 @@ ambiguous_biospecimens <- metadata %>%
 not_tumor_biospecimens <- metadata %>%
   dplyr::filter(
     sample_type != "Tumor",
-    composition != "Solid Tissue"
+    composition != "Solid Tissue" & composition != "Bone Marrow"
   ) %>%
   dplyr::pull(Kids_First_Biospecimen_ID)
 
