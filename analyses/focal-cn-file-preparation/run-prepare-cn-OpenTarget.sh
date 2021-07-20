@@ -27,24 +27,24 @@ gtf_file=${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz
 goi_file=../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt
 independent_specimens_file=${data_dir}/independent-specimens.rnaseq.primary.tsv
 
-# Prep the consensus SEG file data
-Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd', clean = TRUE)"
-
-# Run annotation step for consensus file
-Rscript --vanilla 04-prepare-cn-file.R \
-  --cnv_file ${scratch_dir}/consensus_seg_with_status.tsv \
-  --gtf_file $gtf_file \
-  --metadata $histologies_file \
-  --filename_lead "consensus_seg_annotated_cn" \
-  --seg
+# # Prep the consensus SEG file data
+# Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd', clean = TRUE)"
+# 
+# # Run annotation step for consensus file
+# Rscript --vanilla 04-prepare-cn-file.R \
+#   --cnv_file ${scratch_dir}/consensus_seg_with_status.tsv \
+#   --gtf_file $gtf_file \
+#   --metadata $histologies_file \
+#   --filename_lead "consensus_seg_annotated_cn" \
+#   --seg
 
 
 # if we want to process the CNV data from the original callers
 # (e.g., CNVkit, ControlFreeC)
 if [ "$RUN_ORIGINAL" -gt "0" ]; then
 
-  # Prep the CNVkit data
-  Rscript --vanilla -e "rmarkdown::render('01-add-ploidy-cnvkit.Rmd', clean = TRUE)"
+  # # Prep the CNVkit data
+  # Rscript --vanilla -e "rmarkdown::render('01-add-ploidy-cnvkit.Rmd', clean = TRUE)"
 
   # Run annotation step for CNVkit
   Rscript --vanilla 04-prepare-cn-file.R \
@@ -52,27 +52,37 @@ if [ "$RUN_ORIGINAL" -gt "0" ]; then
     --gtf_file $gtf_file \
     --metadata $histologies_file \
     --filename_lead "cnvkit_annotated_cn" \
-    --seg
+    --seg \
+    --runWXSonly
+  # 
+  # # Run annotation step for ControlFreeC
+  # Rscript --vanilla 04-prepare-cn-file.R \
+  #   --cnv_file ${data_dir}/cnv-controlfreec.tsv.gz \
+  #   --gtf_file $gtf_file \
+  #   --metadata $histologies_file \
+  #   --filename_lead "controlfreec_annotated_cn" \
+  #   --controlfreec \
+  #   --runWXSonly
 
-  # Run annotation step for ControlFreeC
-  Rscript --vanilla 04-prepare-cn-file.R \
-    --cnv_file ${data_dir}/cnv-controlfreec.tsv.gz \
-    --gtf_file $gtf_file \
-    --metadata $histologies_file \
-    --filename_lead "controlfreec_annotated_cn" \
-    --controlfreec
-
-  filenameLead=("cnvkit_annotated_cn" "controlfreec_annotated_cn")
-  for filename in ${filenameLead[@]}; do
-    for chromosome_type in ${chromosomesType[@]}; do
-      Rscript --vanilla rna-expression-validation.R \
-        --annotated_cnv_file results/${filename}_${chromosome_type}.tsv.gz \
-        --expression_file ${data_dir}/gene-expression-rsem-tpm-collapsed.rds \
-        --independent_specimens_file $independent_specimens_file \
-        --metadata $histologies_file \
-        --goi_list $goi_file \
-        --filename_lead ${filename}_${chromosome_type}
-    done
-  done
-
+  # filenameLead=("cnvkit_annotated_cn" "controlfreec_annotated_cn")
+  # chromosomeType=("autosomes" "x_and_y")
+  # runWXSOnly=("wxs" "")
+  
+ #  filenameLead=("cnvkit_annotated_cn")
+ #  chromosomeType=("x_and_y")
+ #  runWXSOnly=("wxs")
+ #  for filename in ${filenameLead[@]}; do
+ #    for chromosome_type in ${chromosomesType[@]}; do
+ #      for run_wxs_only in ${runWXSOnly[@]}; do
+ #        Rscript --vanilla rna-expression-validation.R \
+ #          --annotated_cnv_file results/${filename}_${runWXSOnly}_${chromosome_type}.tsv.gz \
+ #          --expression_file ${data_dir}/gene-expression-rsem-tpm-collapsed.rds \
+ #          --independent_specimens_file $independent_specimens_file \
+ #          --metadata $histologies_file \
+ #          --goi_list $goi_file \
+ #          --filename_lead ${filename}_${runWXSOnly}_${chromosome_type}
+ #      done
+ #    done
+ #  done
+ # 
  fi
