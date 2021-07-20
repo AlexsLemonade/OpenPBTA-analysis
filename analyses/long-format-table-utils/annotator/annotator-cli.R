@@ -84,7 +84,17 @@ option_list <- list(
     default = FALSE,
     help = "Print extra messages on progress")
 )
-option_parser <- optparse::OptionParser(option_list = option_list)
+
+option_parser <- optparse::OptionParser(
+  option_list = option_list,
+  epilogue = paste0(
+    "**NOTE** on the --input-long-format-table-tsv file: 1) the TSV file ",
+    "should use double quotes for field values that need escape, e.g. \"NA\"",
+    " for string literal \"NA\" and \"\\t\" for tab; ",
+    "2) only unquoted NA field values are treated as missing values ",
+    "internally; 3) leading and trailing white spaces in field values are ",
+    "**NOT** trimmed before parsing."))
+
 parsed_opts <- optparse::parse_args(option_parser)
 
 
@@ -95,9 +105,24 @@ columns_to_add <- stringr::str_split(parsed_opts$`columns-to-add`, ",")[[1]]
 if (parsed_opts$verbose) {
   message(paste0("Read ", parsed_opts$`input-long-format-table-tsv`, "..."))
 }
+
+# Non-default parameter values are used to preserve the TSV content
+#
+# - quote = "\"": same as default value, but specify it here to note that double
+#   quotes are used to quote values that need escapes, e.g. "NA", "\t", and "\n"
+# - quoted_na = FALSE: "NA" in TSV content will be treated as a string "NA"
+#   value in the returned tibble
+# - na = c("NA"): Only a plain NA in the TSV content will be treated as a
+#   missing value NA in the returned tibble
+# - trim_ws = FALSE: white-space characters are not trimmed before parsing, e.g.
+#   "\t" will be preserved in the returned tibble
+# - .default = readr::col_character(): read all columns as character, in order
+#   to avoid the types of columns being guessed as logical if too many NAs are
+#   at the beginning of the file
 input_df <- readr::read_tsv(
-  parsed_opts$`input-long-format-table-tsv`, na = character(),
-  col_types = readr::cols(.default = readr::col_guess()))
+  parsed_opts$`input-long-format-table-tsv`,
+  quote = "\"", quoted_na = FALSE, na = c("NA"), trim_ws = FALSE,
+  col_types = readr::cols(.default = readr::col_character()))
 
 if (parsed_opts$verbose) {
   message(paste0("Annotate ", parsed_opts$`input-long-format-table-tsv`, "..."))
@@ -109,7 +134,11 @@ ann_df <- annotate_long_format_table(
 if (parsed_opts$verbose) {
   message(paste0("Output ", parsed_opts$`output-long-format-table-tsv`, "..."))
 }
-readr::write_tsv(ann_df, parsed_opts$`output-long-format-table-tsv`)
+# quote_escape = "double": same as default value, but specify it here to note
+# that double quotes are used to quote values that need escapes, e.g. "NA",
+# "\t", and "\n"
+readr::write_tsv(
+  ann_df, parsed_opts$`output-long-format-table-tsv`, quote_escape = "double")
 
 if (parsed_opts$verbose) {
   message("Done.")
