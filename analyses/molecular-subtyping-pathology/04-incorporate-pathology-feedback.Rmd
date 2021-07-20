@@ -32,7 +32,7 @@ Here, we're copying the table from [#606 (comment)](https://github.com/AlexsLemo
 | BS_E5H6CFYT               | hemispheric         | 7316-2255 | 711134     | PT_6Q0NPVP3               | WGS                   | Ganglioglioma                                    | Diffuse midline glioma                   | Path report ganglioglioma with extensive chondroid metaplasia                               | need to review radiology report; if not diffuse, ganglioglioma, H3 mut - cannot review | pathology report (no slides - from Pitt); email request for radiology - will not receive in the short term | HGAT            | Diffuse astrocytic and oligodendroglial tumor                            | tumor             | Updated via OpenPBTA subtyping                         | None documented        | DMG, H3 K28         |
 | BS_BFDEZK1C               | other               | 7316-1102 | 549714     | PT_5BWZA0NT               | WGS                   | Supratentorial or Spinal Cord PNET               | Diffuse midline glioma                   | No path report available                                                                    | reviewed - OK with new dx                                                              | 3 slides, pathology report                                                                                 | HGAT            | Diffuse astrocytic and oligodendroglial tumor                            | tumor             | Updated via OpenPBTA subtyping                                        | None documented        | DMG, H3 K28         |
 | BS_MB7WN0ZB               | other               | 7316-1102 | 470031     | PT_5BWZA0NT               | RNA-Seq               | Supratentorial or Spinal Cord PNET               | Diffuse midline glioma                   | No path report available                                                                    | reviewed - OK with new dx                                                              | 3 slides, pathology report                                                                                 | HGAT            | Diffuse astrocytic and oligodendroglial tumor                            | tumor             | Updated via OpenPBTA subtyping                                        | None documented        | DMG, H3 K28         |
-| BS_H1XPVS9A               | hemispheric         | 7316-1106 | 549575     | PT_T8V9ES93               | RNA-Seq               | High-grade glioma/astrocytoma (WHO grade III/IV) | <s>High-grade glioma</s> Low-grade glioma       | No path report available                                                                    | reviewed - OK with new dx (PXA/LGG)                                                    | 2 slides, pathology report                                                                                 | HGAT            | <s>Diffuse astrocytic and oligodendroglial tumor</s> Low-grade astrocytic tumor | tumor             | Updated via OpenPBTA subtyping                                        | None documented        | LGG, BRAF V600E          |
+| BS_H1XPVS9A               | hemispheric         | 7316-1106 | 549575     | PT_T8V9ES93               | RNA-Seq               | High-grade glioma/astrocytoma (WHO grade III/IV) | <s>High-grade glioma</s> Low-grade glioma       | No path report available                                                                    | reviewed - new dx: Malignant PXA with BRAF V600E mutation                                                    | 2 slides, pathology report                                                                                 | HGAT            | <s>Diffuse astrocytic and oligodendroglial tumor</s> Low-grade astrocytic tumor | tumor             | Updated via OpenPBTA subtyping                                        | None documented        | LGG, BRAF V600E          |
 | BS_J4E9SW51               | hemispheric         | 7316-1106 | 549708     | PT_T8V9ES93               | WGS                   | High-grade glioma/astrocytoma (WHO grade III/IV) | <s>High-grade glioma</s> Low-grade glioma       | No path report available                                                                    | reviewed - OK with new dx (PXA/LGG)                                                    | 2 slides, pathology report                                                                                 | HGAT            | <s>Diffuse astrocytic and oligodendroglial tumor</s> Low-grade astrocytic tumor | tumor             | Updated via OpenPBTA subtyping                                        | None documented        | LGG, BRAF V600E          |
 | BS_J8VX4D17               | mixed               | 7316-506  | 588299     | PT_7E3V3JFX               | RNA-Seq               | Ependymoma                                       | <s>Diffuse midline glioma</s> Ependymoma        | Path report posterior fossa ependymoma                                                      | reviewed - keep EPN with H3 mut- rare                                                  |                                                                                                            | HGAT            | <s>Diffuse astrocytic and oligodendroglial tumor</s> Ependymal tumor            | tumor             | Updated via OpenPBTA subtyping                                        | None documented        | <s>DMG, H3 K28</s>         |
 | BS_G16NM5WJ               | mixed               | 7316-506  | 588011     | PT_7E3V3JFX               | WGS                   | Ependymoma                                       | <s>Diffuse midline glioma</s> Ependymoma        | Path report posterior fossa ependymoma                                                      | reviewed - keep EPN with H3 mut- rare                                                  |                                                                                                            | HGAT            | <s>Diffuse astrocytic and oligodendroglial tumor</s> Ependymal tumor            | tumor             | Updated via OpenPBTA subtyping                                        | None documented        | <s>DMG, H3 K28</s>         |
@@ -171,13 +171,13 @@ compiled_df <- compiled_df %>%
 
 `BS_H1XPVS9A` is from a sample with a BRAF V600E mutation that is H3 wildtype.
 This sample was originally labeled as a HGG.
-In low-dimensional transcriptomic space (e.g., UMAP, t-SNE), `BS_H1XPVS9A` clusters with LGG samples.
+In low-dimensional transcriptomic space (e.g., UMAP, t-SNE), `BS_H1XPVS9A` clusters with LGG samples - most likely due to harboring a BRAF V600E mutation.
 (See `molecular-subtyping-HGG`.)
 
 The relevant note from above:
 
 >  4. Pathology confirmed this HGG BRAF V600E mutant tumor, `BS_H1XPVS9A`
-to be a LGAT (PXA). I updated `molecular_subtype` here based on what it would look like, but this should come through via the LGAT [subtyping](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/631) ticket. How should we add this info?
+to be a malignant PXA. @kgaonkar6 updated `molecular_subtype` here based on what it would look like, but this should come through via the LGAT [subtyping](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/631) ticket. 
 
 The steps for LGAT subtyping are to classify LGG samples on the basis of the presence/absence of _BRAF_ fusions and BRAF V600E mutations.
 
@@ -203,7 +203,7 @@ There are no _BRAF_ fusions in `BS_H1XPVS9A`, so we are able to classify this sa
 compiled_df <- compiled_df %>%
   mutate(
     integrated_diagnosis = case_when(
-      sample_id == "7316-1106" ~ "Low-grade glioma/astrocytoma, BRAF V600E",
+      sample_id == "7316-1106" ~ "Pleomorphic xanthoastrocytoma, BRAF V600E",
       TRUE ~ integrated_diagnosis
     ),
     short_histology = case_when(
@@ -219,7 +219,7 @@ compiled_df <- compiled_df %>%
       TRUE ~ molecular_subtype
     ),
     Notes = case_when(
-      sample_id == "7316-1106" ~ "Updated via OpenPBTA subtyping",
+      sample_id == "7316-1106" ~ "Updated via OpenPBTA subtyping and via pathology review",
       TRUE ~ Notes
     )
   )
