@@ -133,7 +133,7 @@ annotate_long_format_table <- function(
       # adapted from http://adv-r.had.co.nz/Exceptions-Debugging.html
       err_cond$message <- paste0(
         err_cond$message,
-        "\nTry re-running this script with working directory as ",
+        "\nTry re-running this function with working directory as ",
         "OpenPedCan-analysis or a subdirectory of OpenPedCan-analysis.\n")
       stop(err_cond)
     }
