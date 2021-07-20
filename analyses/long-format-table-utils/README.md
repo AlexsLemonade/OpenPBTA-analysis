@@ -125,7 +125,7 @@ Following is an example usage in the `rna-seq-expression-summary-stats` module `
 
 ##### R CLI usage of long-format table annotator
 
-The `long-format-table-utils/annotator/annotator-cli.R` file provides a CLI for using the API to annotate long-format tables.
+The `long-format-table-utils/annotator/annotator-cli.R` file provides an R CLI for using the API to annotate long-format tables.
 
 Use the long-format table annotator CLI in an analysis module with the following steps:
 
