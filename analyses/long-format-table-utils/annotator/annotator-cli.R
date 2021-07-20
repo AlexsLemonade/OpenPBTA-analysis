@@ -35,6 +35,9 @@ source(file.path(
   root_dir, "analyses", "long-format-table-utils", "annotator",
   "annotator-api.R"))
 
+
+
+# Parse arguments --------------------------------------------------------------
 option_list <- list(
   optparse::make_option(
     c("-r", "--replace-na-with-empty-string"), action = "store_true",
@@ -54,8 +57,15 @@ option_list <- list(
       "[Default value is \"%default\", which is to add all available ",
       "annotation columns]")),
   optparse::make_option(
-    c("-l", "--long-format-table-tsv"), type = "character",
-    help = paste0("Path to the long-format table TSV file to be annotated"))
+    c("-i", "--input-long-format-table-tsv"), type = "character",
+    help = "Path to the input long-format table TSV file to be annotated"),
+  optparse::make_option(
+    c("-o", "--output-long-format-table-tsv"), type = "character",
+    help = "Path to output the annotated long-format table TSV file"),
+  optparse::make_option(
+    c("-v", "--verbose"), action = "store_true",
+    default = FALSE,
+    help = "Print extra messages on progress")
 )
 option_parser <- optparse::OptionParser(option_list = option_list)
 parsed_opts <- optparse::parse_args(option_parser)
