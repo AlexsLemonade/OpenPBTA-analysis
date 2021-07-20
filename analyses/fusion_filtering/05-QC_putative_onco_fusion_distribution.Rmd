@@ -76,7 +76,7 @@ suppressPackageStartupMessages(library("reshape2"))
 suppressPackageStartupMessages(library("qdapRegex"))
 
 ####read putative oncogene fusion files
-fusion_calls<-read_tsv(file.path(root_dir,params$dataPutativeFusion))
+fusion_calls<-read_tsv(file.path(root_dir,params$dataPutativeFusion),guess_max = 100000 )
 
 ####read files from results folder
 outputfolder<-params$outputfolder
@@ -220,9 +220,44 @@ FusionInNbh<-FusionInNcg[FusionInNcg$count>countBroadHistology,]
 FusionInNbh
 
 putative_driver_fusions<-fusion_calls %>% dplyr::filter(!FusionName %in% FusionInNbh$FusionName) %>%
-  # we want to remove annots column since there is difference in arriba annotation (uniquely has duplication/translocation/deletion values) and StarFusion annotation which will be counted twice since they are not unique
-  dplyr::select(-annots,-broad_histology) %>% 
+  # we want to aggregate annots column since there is difference in arriba annotation (uniquely has duplication/translocation/deletion values) and StarFusion annotation which will be counted twice since they are not unique
+  # Example for fusion BRAF--ANTXR1 with the same breakpoint the annots per caller are:
+  # Arriba "[\"INTERCHROMOSOMAL[chr7--chr2]\"],translocation"
+  # StarFusion [INTERCHROMOSOMAL[chr7--chr2]] 
+  group_by_at(setdiff(colnames(fusion_calls), 
+                      # remove caller specific columns
+                      c("JunctionReadCount",
+                        "SpanningFragCount",
+                        "Confidence",
+                        "caller","annots"))) %>%
+  summarise(annots=
+              # remove \" from annots in arriba
+              # `paste` so space is not added with `toString`
+              # Example output: [INTERCHROMOSOMAL[chr7--chr2]],  [INTERCHROMOSOMAL[chr7--chr2]], translocation
+              paste(gsub("\"","",annots),collapse = ",")
+  ) %>%
+  # collapse by splitting by the above summarized `annots`
+  # column by "," to get a unique string
+  # Example output: [INTERCHROMOSOMAL[chr7--chr2]], translocation
+  mutate(annots = toString(
+    unique(
+      unlist(
+        str_split(annots,",")
+      )),
+  )
+  )%>%
+  ungroup() %>%
+  dplyr::select(-cancer_group) %>%
   unique() %>%
+  mutate(
+    BreakpointLocation = case_when(
+      # gene1A and gene1B are the same so these are breakpoints within the gene
+      Gene1A == Gene1B & !grepl("/", FusionName) ~ "Intragenic",
+      grepl("/", FusionName) ~ "Intergenic",
+      # the "/" is an annotation for intergenic fusions called by arriba 
+      TRUE ~ "Genic"
+    )
+  ) %>%
   arrange(Sample, FusionName) 
 
 write.table(putative_driver_fusions,file.path(outputfolder,"fusion-putative-oncogenic.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
