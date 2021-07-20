@@ -167,7 +167,7 @@ if (!identical(length(unique(ensg_hugo_rmtl_df$ensg_id)),
                nrow(ensg_hugo_rmtl_df))) {
   stop(paste0("Found duplicated ensg_id in ensg-hugo-rmtl-v1-mapping.tsv.\n",
               "Check if PedOT release data are downloaded properly.\n",
-              "If data is downloaded properly, submit a GitHub data question."))
+              "If data is downloaded properly, submit a GitHub data issue."))
 }
 
 # Download data from https://mygene.info/ --------------------------------------
