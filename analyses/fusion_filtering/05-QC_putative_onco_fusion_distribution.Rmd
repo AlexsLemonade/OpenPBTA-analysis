@@ -246,6 +246,7 @@ putative_driver_fusions<-fusion_calls %>% dplyr::filter(!FusionName %in% FusionI
       )),
   )
   )%>%
+  ungroup() %>%
   dplyr::select(-cancer_group) %>%
   unique() %>%
   mutate(
