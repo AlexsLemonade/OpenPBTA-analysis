@@ -69,4 +69,31 @@ option_list <- list(
 )
 option_parser <- optparse::OptionParser(option_list = option_list)
 parsed_opts <- optparse::parse_args(option_parser)
-print(parsed_opts)
+
+
+
+# Read, annotate, and output ---------------------------------------------------
+columns_to_add <- stringr::str_split(parsed_opts$`columns-to-add`, ",")[[1]]
+
+if (parsed_opts$verbose) {
+  message(paste0("Read ", parsed_opts$`input-long-format-table-tsv`, "..."))
+}
+input_df <- readr::read_tsv(
+  parsed_opts$`input-long-format-table-tsv`, na = character(),
+  col_types = readr::cols(.default = readr::col_guess()))
+
+if (parsed_opts$verbose) {
+  message(paste0("Annotate ", parsed_opts$`input-long-format-table-tsv`, "..."))
+}
+ann_df <- annotate_long_format_table(
+  long_format_table = input_df, columns_to_add = columns_to_add,
+  replace_na_with_empty_string = parsed_opts$`replace-na-with-empty-string`)
+
+if (parsed_opts$verbose) {
+  message(paste0("Output ", parsed_opts$`output-long-format-table-tsv`, "..."))
+}
+readr::write_tsv(ann_df, parsed_opts$`output-long-format-table-tsv`)
+
+if (parsed_opts$verbose) {
+  message("Done.")
+}
