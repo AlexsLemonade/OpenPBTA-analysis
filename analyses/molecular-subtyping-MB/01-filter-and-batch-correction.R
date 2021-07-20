@@ -36,9 +36,8 @@ terms_file <- file.path("input", "mb_subtyping_path_dx_strings.json")
 # exclude samples for subtyping - see 00-mb-select-pathology-dx
 path_dx_list <- jsonlite::fromJSON(terms_file)
 
-# output files
+# output file
 uncorrected_file <- file.path(output_dir, paste0(output_prefix, ".rds"))
-corrected_file <- file.path(output_dir, paste0(output_prefix, "-batch-corrected.rds"))
 
 # collapsed expression matrix
 exprs_mat <- readRDS(exprs_file)
@@ -51,7 +50,7 @@ clin_mb  <- clin %>%
   # Inclusion on the basis of strings in pathology_diagnosis and
   # if 'Other', then based on pathology_free_text_diagnosis
   filter(pathology_diagnosis %in% path_dx_list$exact_path_dx |
-         (pathology_diagnosis == "Other" & str_detect(str_to_lower(pathology_free_text_diagnosis), paste0(path_dx_list$include_free_text, collapse = "|"))))
+           (pathology_diagnosis == "Other" & str_detect(str_to_lower(pathology_free_text_diagnosis), paste0(path_dx_list$include_free_text, collapse = "|"))))
 
 # Write to TSV for use later
 readr::write_tsv(clin_mb, file.path("input", "subset-mb-clinical.tsv"))
@@ -70,12 +69,14 @@ write_rds(uncorrected_mat, uncorrected_file)
 
 # batch correct if batch_col not null
 if(!is.null(batch_col)){
-  print("Batch correct input matrices...")
 
+  print("Batch correct input matrices...")
+  
   # batch correct using batch_col
   corrected_mat <- ComBat(dat = log2(exprs_mat_mb + 1), 
                           batch = clin_mb_rnaseq[, batch_col])
-
+  
   # save corrected matrix
+  corrected_file <- file.path(output_dir, paste0(output_prefix, "-batch-corrected.rds"))
   write_rds(corrected_mat, corrected_file)
 }

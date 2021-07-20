@@ -47,6 +47,16 @@ subset_clin_file <- file.path("input", "subset-mb-clinical.tsv")
 # read in subset clinical mb file that was created in 01-filter-and-batch-correction.R
 subset_clin <- read.delim(subset_clin_file)
 
+exp_class <- readRDS(params$expected_input)
+obs_class <- readRDS(params$observed_input)
+
+# format ambiguous expected classes 
+exp_class <- exp_class %>%
+  mutate(pathology_subtype = recode(pathology_subtype, 
+                                    "non-WNT" = "SHH, Group3, Group4", 
+                                    "Group 3 or 4" = "Group3, Group4")) %>%
+  mutate(pathology_subtype = gsub(" ", "", pathology_subtype))
+
 # format subset clinical file
 # RNA MB samples
 clin_rna <- subset_clin  %>%
@@ -60,20 +70,9 @@ clin_wgs <- subset_clin  %>%
   dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID) %>%
   dplyr::select(Kids_First_Participant_ID, sample_id, tumor_descriptor, Kids_First_Biospecimen_ID_DNA)
 
-# read expected and observed data
-exp_class <- readRDS(params$expected_input)
-obs_class <- readRDS(params$observed_input)
-
-# format ambiguous expected classes 
-exp_class <- exp_class %>%
-  mutate(pathology_subtype = recode(pathology_subtype, 
-                                    "non-WNT" = "SHH, Group3, Group4", 
-                                    "Group 3 or 4" = "Group3, Group4")) %>%
-  mutate(pathology_subtype = gsub(" ", "", pathology_subtype))
-
 # combine both
 clin_merged <- clin_wgs %>%
-  right_join(clin_rna, by = c('sample_id','Kids_First_Participant_ID','tumor_descriptor'))
+  right_join(clin_rna, by = c('sample_id', 'Kids_First_Participant_ID','tumor_descriptor'))
 ```
 </details>
 
@@ -105,8 +104,6 @@ compute_accuracy <- function(expected_input, observed_input){
   merged_table <- expected_input %>%
     left_join(observed_input, by = c('Kids_First_Biospecimen_ID' = 'sample')) %>%
     mutate(match = str_detect(pathology_subtype, best.fit))
-  
-  # this is required to enable datatable filter
   merged_table$sample_id <- as.factor(merged_table$sample_id)
   
   # compute accuracy
@@ -117,7 +114,7 @@ compute_accuracy <- function(expected_input, observed_input){
     mutate(Accuracy = paste0(round(n/sum(n)*100, 2), '%')) %>%
     filter(match) %>%
     .$Accuracy
-
+  
   # return both as list
   output <- list(merged_table = merged_table, accuracy = accuracy)
   return(output)
@@ -175,69 +172,44 @@ exp_count <- exp_class %>%
 viewDataTable(exp_count)
 ```
 
-#### Classifier output:
+#### Individual classifier and Consensus outputs:
 
 ## {.tabset .tabset-fade}
 
-### medulloPackage (batch-corrected)
+### MM2S
 
 ```{r, echo = TRUE, warning = FALSE, message = FALSE}
 out <- compute_accuracy(expected_input = exp_class, 
-                        observed_input = obs_class$`corrected_mat_medullo-classifier`)
+                        observed_input = obs_class$MM2S)
 
 # accuracy
-medullo_classifier_corrected_acc <- out$accuracy
-print(paste0("Accuracy: ", medullo_classifier_corrected_acc))
+mm2s_accuracy <- out$accuracy
+print(paste0("Accuracy: ", mm2s_accuracy))
 
 # output table
-medullo_classifier_corrected <- out$merged_table
-viewDataTable(medullo_classifier_corrected)
+mm2s_output <- out$merged_table
+viewDataTable(mm2s_output)
 ```
 
-### medulloPackage (uncorrected)
+### medulloPackage
 
 ```{r, echo = TRUE, warning = FALSE, message = FALSE}
 out <- compute_accuracy(expected_input = exp_class, 
-                        observed_input = obs_class$`uncorrected_mat_medullo-classifier`)
+                        observed_input = obs_class$medulloPackage)
 
 # accuracy
-medullo_classifier_uncorrected_acc <- out$accuracy
-print(paste0("Accuracy: ", medullo_classifier_uncorrected_acc))
+medulloPackage_accuracy <- out$accuracy
+print(paste0("Accuracy: ", medulloPackage_accuracy))
 
 # output table
-medullo_classifier_uncorrected <- out$merged_table
-viewDataTable(medullo_classifier_uncorrected)
+medulloPackage_output <- out$merged_table
+viewDataTable(medulloPackage_output)
 ```
 
-### Final output (batch-corrected)
+### Final output (medulloPackage)
 
 ```{r, echo = TRUE, warning = FALSE, message = FALSE}
-out <- create_final_output(classifier_output = medullo_classifier_corrected,
-                           clin = clin_merged)
-
-
-# output table
-classifier_output_html <- out$classifier_output_html
-viewDataTable(classifier_output_html)
-
-# merged output with clinical ids
-classifier_output_tsv <- out$classifier_output_tsv
-classifier_output_tsv <- classifier_output_tsv %>%
-  arrange(Kids_First_Biospecimen_ID_RNA)
-
-classifier_output_tsv <- classifier_output_tsv %>%
-  # adding "MB" to be consistent with other subtyping values
-  dplyr::mutate(molecular_subtype = if_else(!is.na(molecular_subtype),
-                                            paste("MB,",molecular_subtype),
-                                            "MB, To be classified")) %>%
-  write.table(file = file.path(results_dir, 'MB_batchcorrected_molecular_subtype.tsv'),
-            row.names = F, quote = F, sep = "\t")
-```
-
-### Final output (uncorrected)
-
-```{r, echo = TRUE, warning = FALSE, message = FALSE}
-out <- create_final_output(classifier_output = medullo_classifier_uncorrected,
+out <- create_final_output(classifier_output = medulloPackage_output,
                            clin = clin_merged)
 
 
@@ -258,5 +230,3 @@ classifier_output_tsv <- classifier_output_tsv %>%
   write.table(file = file.path(results_dir, 'MB_molecular_subtype.tsv'),
             row.names = F, quote = F, sep = "\t")
 ```
-
-
