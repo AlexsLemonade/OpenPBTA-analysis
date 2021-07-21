@@ -99,7 +99,7 @@ Use the long-format table annotator API in an analysis module with the following
 4. If `c("Gene_symbol", "Gene_Ensembl_ID", "Disease")` are not all present in the colnames of the table to be annotated, add new columns or rename existing ones to have all these required columns.
 5. Check that the annotation columns to be added are not already present in the table that needs to be annotated. If there is any annotation column that needs to be added already exists in the table that needs to be annotated, the `annotate_long_format_table` function will raise an error without annotating the table.
 6. Call `annotate_long_format_table` to add one or more of the available annotation columns, by specifying the `columns_to_add` parameter in the `annotate_long_format_table` function. Read the documentation comment of the function for usage.
-7. Rename, select, and reorder the columns of the annotated table for output in TSV, or JSON, or JSONL formats.
+7. Rename, select, and reorder the columns of the annotated table for output in TSV, or JSON, or JSONL formats. NOTE that the names of the annotation columns will be standardized at a later point, as suggested by @jharenza at <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/56#pullrequestreview-712169979>, so it is recommended to use the annotation column names in this module for the results.
 
 Following is an example usage in the `rna-seq-expression-summary-stats` module `01-tpm-summary-stats.R`.
 
