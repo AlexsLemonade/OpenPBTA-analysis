@@ -109,11 +109,11 @@ Skipped:  0
 Done running run-tests.sh
 ```
 
-To add more tests, create additional `test*R` files under the `annotator/tests` directory, with other `test*R` files as reference.
+To add more tests, create additional `test*R` files under the `annotator/tests` directory, with available `test*R` files as reference.
 
 Notes on the `testthat` unit testing framework:
 
 - `testthat::test_dir("tests")` finds all `test*R` files under the `tests` directory to run, which is used in `annotator/run-tests.sh`.
-- `testthat::test_dir("tests")` also finds and runs all `helper*R` files before running the `test*R` files.
+- `testthat::test_dir("tests")` also finds and runs all `helper*R` files under the `tests` directory before running the `test*R` files.
 - The working directory is `tests` when running the `helper*R` and `test*R` files through `testthat::test_dir("tests")`.
 - In order to import a funciton for testing from an R file without running the whole file, a helper function `import_function` is defined at `tests/helper_import_function.R`, and the `import_function` is also tested in the `tests/test_helper_import_function.R` file.
