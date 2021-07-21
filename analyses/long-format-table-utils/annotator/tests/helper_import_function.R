@@ -8,7 +8,7 @@
 # Returns the imported function
 #
 # NOTES:
-# - Only functions defined by `<-`` or `assign` can be imported
+# - Only functions defined by `<-` or `assign` can be imported
 # - The function returns an error if the function is not found in the file, or
 #   the function is defined multiple times in the file
 # - If the imported function relies on external variables, the variables will
