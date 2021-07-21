@@ -176,27 +176,27 @@ def get_annotations(cnv_frequency_df, ensg_gene_name_mapping_file, oncokb_mappin
      ensembl_gene_name_df = pd.read_csv(ensg_gene_name_mapping_file, sep="\t")
      for ensembl_id in ensembl_gene_name_df.itertuples(index=False):
           if ensembl_id.Gene_Ensembl_ID in list(cnv_frequency_df.Gene_Ensembl_ID):
-               cnv_frequency_df.loc[cnv_frequency_df.Gene_Ensembl_ID == ensembl_id.Gene_Ensembl_ID, "Gene_Full_Name"] = ensembl_gene_name_df.Gene_full_name
+               cnv_frequency_df.loc[cnv_frequency_df.Gene_Ensembl_ID == ensembl_id.Gene_Ensembl_ID, "Gene_Full_Name"] = ensembl_id.Gene_full_name
 
      # populate CNV frequency dataframe with OncoKB categories
      oncokb_df = pd.read_csv(oncokb_mapping_file, sep="\t")
      for gene_symbol in oncokb_df.itertuples(index=False):
           if gene_symbol.hugo_symbol in list(cnv_frequency_df.Gene_Symbol):
-               cnv_frequency_df.loc[cnv_frequency_df.Gene_Symbol == gene_symbol.hugo_symbol, "OncoKB_Category"] = oncokb_df.oncokb_category
+               cnv_frequency_df.loc[cnv_frequency_df.Gene_Symbol == gene_symbol.hugo_symbol, "OncoKB_Category"] = gene_symbol.oncokb_category
 
      # populate CNV frequency dataframe with EFO and MONDO disease accessions
      efo_mondo_df = pd.read_csv(efo_mondo_mapping_file, sep="\t")
      for cancer_group in efo_mondo_df.itertuples(index=False):
           if cancer_group.cancer_group in list(cnv_frequency_df.Disease):
-               cnv_frequency_df.loc[cnv_frequency_df.Disease == cancer_group.cancer_group, "EFO_ID"] = efo_mondo_df.efo_code
-               cnv_frequency_df.loc[cnv_frequency_df.Disease == cancer_group.cancer_group , "MONDO_ID"] = efo_mondo_df.mondo_code
+               cnv_frequency_df.loc[cnv_frequency_df.Disease == cancer_group.cancer_group, "EFO_ID"] = cancer_group.efo_code
+               cnv_frequency_df.loc[cnv_frequency_df.Disease == cancer_group.cancer_group , "MONDO_ID"] = cancer_group.mondo_code
 
      # populate CNV frequency dataframe with EFO and MONDO disease accessions
      ensg_rmtl_df = pd.read_csv(rmtl_mapping_file, sep="\t")
      ensg_rmtl_df = ensg_rmtl_df[ensg_rmtl_df.rmtl.isin(["Relevant Molecular Target"])].reset_index()
      for ensembl_gene in ensg_rmtl_df.itertuples(index=False):
           if ensembl_gene.ensg_id in list(cnv_frequency_df.Gene_Ensembl_ID):
-               cnv_frequency_df.loc[cnv_frequency_df.Gene_Ensembl_ID == ensembl_gene.ensg_id , "RMTL"] = ensg_rmtl_df.rmtl
+               cnv_frequency_df.loc[cnv_frequency_df.Gene_Ensembl_ID == ensembl_gene.ensg_id , "RMTL"] = ensembl_gene.rmtl
                
      cnv_frequency_df.fillna("", inplace=True)
      return(cnv_frequency_df)
