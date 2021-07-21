@@ -330,7 +330,7 @@ cnv_df <- cnv_df %>%
          Hugo_Symbol = gene_symbol) %>%
   select(Hugo_Symbol, Tumor_Sample_Barcode, Variant_Classification) %>%
   # mutate loss and amplification to Del and Amp to fit Maftools format
-  dplyr::mutate(Variant_Classification = dplyr::case_when(Variant_Classification == "loss" ~ "Del",
+  dplyr::mutate(Variant_Classification = dplyr::case_when(Variant_Classification == "deep deletion" ~ "Del",
                                                           Variant_Classification == "amplification" ~ "Amp",
                                                           TRUE ~ as.character(Variant_Classification))) %>%
   # only keep Del and Amp calls
