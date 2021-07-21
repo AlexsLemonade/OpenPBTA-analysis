@@ -4,20 +4,19 @@
 
 
 This analysis is designed to filter artifacts and annotate fusion calls from STARfusion and Arriba fusion callers with the goal of prioritizing oncogenic fusions. 
-We considered all inframe and frameshift fusion calls with a minimum of 1 junction reads and at least one gene partner expressed (FPKM > 1) to be potential true calls. 
+We considered all inframe and frameshift fusion calls with a minimum of 1 junction reads and at least one gene partner expressed (TPM > 1) to be potential true calls. 
 We then removed fusion calls that had many spanning fragment reads compared to junction reads (`spanning fragment read count` minus `junction read count` greater than ten) as potential false positives. 
-We retained fusion calls if the fused genes were detected by both callers, the same fusion was recurrent within a broad_histology (>2 samples), the fusion was specific to the broad_histology. 
+We retained fusion calls if the fused genes were detected by both callers, the same fusion was recurrent within a cancer_group (>2 samples), the fusion was specific to the cancer_group. 
 We removed calls for which one gene was 5' or 3' fused to more than five different other genes within a sample as potential false positives. 
 We annotated putative driver fusions and prioritized fusions when at least one fused gene was a known kinase, oncogene, tumor suppressor, curated transcription factor, on the COSMIC Cancer Gene Census list.
 We also annotated fusions between pairs of genes where the fusion was observed in TCGA.
 If a fusion was annotated as a putative oncogenic fusion, it was retained if it was detected by either caller.
-We also gather counts for recurrent fusions and fused genes found in more than 3 participants per histology and represent them as binary matrices per sample.
+We also gather counts for recurrent fusions and fused genes found in more than 3 participants per cancer group and represent them as binary matrices per sample.
 
 #### Inputs from data download
-* pbta-fusion-starfusion.tsv.gz : aggregated starfusion calls; a column tumor_id with the samples BS ID is added to each sample files
-* pbta-fusion-arriba.tsv.gz : aggregated arriba calls; a column tumor_id with the samples BS ID is added to each sample files ; a column annots is added from running FusionAnnotator
-* pbta-gene-expression-rsem-fpkm.polya.rds : aggregated polya samples fpkm data
-* pbta-gene-expression-rsem-fpkm.stranded.rds : aggregated stranded fpm data
+* fusion-starfusion.tsv.gz : aggregated starfusion calls; a column tumor_id with the samples BS ID is added to each sample files
+* fusion-arriba.tsv.gz : aggregated arriba calls; a column tumor_id with the samples BS ID is added to each sample files ; a column annots is added from running FusionAnnotator
+* gene-expression-rsem-tpm-collapsed.rds
 
 #### Inputs used as reference
 * genelistreference.txt and fusionreference.txt formatted in code [here](https://gist.github.com/kgaonkar6/02b3fbcfeeddfa282a1cdf4803704794): 
@@ -37,41 +36,45 @@ Annotation | File | Source
 
 IGH-@,IGH@ , IGL-@ and IGL@ were also added to reference list as oncogenic genes because StarFusion output contains these gene symbols instead of IGL/IGH as per public databases.
 
-
-* Brain_FPKM_hg38_matrix.txt.zip : GTex brain samples FPKM data
+* gtex_brain_TPM_hg38.rds : GTex brain samples TPM data
+* gtex_adrenal_gland_TPM_hg38.rds : GTex adrenal gland samples TPM data
 The code to generate genelistreference.txt and fusionreference.txt is available here: https://gist.github.com/kgaonkar6/02b3fbcfeeddfa282a1cdf4803704794#file-format_reference_gene_list-r
 
 
 #### Outputs saved to data download
-* pbta-fusion-putative-oncogenic.tsv
-* pbta-fusion-recurrently-fused-genes-byhistology.tsv
-* pbta-fusion-recurrently-fused-genes-bysample.tsv
+* fusion-putative-oncogenic.tsv
+* fusion-recurrent-fusion-bycancergroup.tsv
+* fusion-recurrent-fusion-bysample.tsv
+* fusion-recurrently-fused-genes-bycancergroup.tsv
+* fusion-recurrently-fused-genes-bysample.tsv
 
 ### Run script
-use OPENPBTA_BASE_SUBTYPING=1 to run this module using the pbta-histologies-base.tsv from data folder while running molecular-subtyping modules for release.
+use OPENPBTA_BASE_SUBTYPING=1 to run this module using the histologies-base.tsv from data folder while running molecular-subtyping modules for release.
 ```sh
 OPENPBTA_BASE_SUBTYPING=1 run_fusion_merged.sh 
 ```
 
-OR by default uses pbta-histologies.tsv from data folder
+OR by default uses histologies.tsv from data folder
 ```sh
 bash run_fusion_merged.sh
 ```
 
 
 #### Order of scripts in analysis
+`00-normal-matrix-generation.R` : Based on the specific sample type, this script filter the gene expression file to contain only normal samples with the specific sample type. 
+
 `01-fusion-standardization.R` : Standardizes fusion calls from STARFusion and Arriba
 
-`02-fusion-filtering.R` : Filters artifacts by removing readthroughs and NEIGHBORS from annots column; annots column also contains red flag databases that are used to further filter common/normal occuring fusions; filters all fusions where both genes are expressed FPKM < 1 are removed as non-expressed; requires fusions to have at least 1 JunctionSpanningRead and SpanningFragCount-JunctionReadCount to be <100
+`02-fusion-filtering.R` : Filters artifacts by removing readthroughs and NEIGHBORS from annots column; annots column also contains red flag databases that are used to further filter common/normal occuring fusions; filters all fusions where both genes are expressed TPM < 1 are removed as non-expressed; requires fusions to have at least 1 JunctionSpanningRead and SpanningFragCount-JunctionReadCount to be <100
 
-`03-Calc-zscore-annotate.R` : Calculates z-score for gene fused gene's expression compared to GTeX brain samples and annotates differential expression status
+`03-Calc-zscore-annotate.R` : Calculates z-score for gene fused gene's expression compared to GTeX normal samples. Please **note** that for different cohort, different normal expression files are used and hence the input values for the cohort of interest (--cohortInterest) and the input values for the normal GTEx expression file (--normalExpressionMatrix) need to be in the same order.
 
 `04-project-specific-filtering.Rmd` : Performs project specific filtering. We prioritize the fusions as putative-oncogenic fusions if any fused gene in the fusion is annotated as kinases, oncogenes, tumor suppressors, curated transcription factors or present in COSMIC Cancer Gene Census list. We also annotated fusions if they are present in TCGA fusions list.
-All fusion calls are additionally have columns `reciprocal_exists` to specify if within the Sample a fusion GeneX--GeneY has a reciprocal GeneY--GeneX . `DomainRetainedGene1A` and `DomainRetainedGene1B` are added to identify kinase domain retention for Gene1A (5` Gene) and Gene1B (3` Gene).
-Oncogene annotated fusions do not need to be in both callers to be retained however if these fusions are found in more than 4 histologies we treat them as false calls and remove them.
-To scavenge back non-oncogenic fusions that are recurrently found uniquely in a broad_histology we kept fusions that were called by both callers and if >2 samples per histology called the fusion.
-We removed the non-oncogenic fusions with genes fused more than 5 times in a samples or found in more than 1 histology as potential artifact. 
+All fusion calls have an additional column `reciprocal_exists` to specify if within the Sample a fusion GeneX--GeneY has a reciprocal GeneY--GeneX . `DomainRetainedGene1A` and `DomainRetainedGene1B` are added to identify kinase domain retention for Gene1A (5` Gene) and Gene1B (3` Gene).
+Oncogene annotated fusions do not need to be in both callers to be retained however if these fusions are found in more than 4 broad histologies we treat them as false calls and remove them (this filtering step happen in the next step).
+To scavenge back non-oncogenic fusions that are recurrently found uniquely in a cancer group we kept fusions that were called by both callers and if >2 samples per cancer group called the fusion.
+We removed the non-oncogenic fusions with genes fused more than 5 times in a samples or found in more than 1 cancer group as potential artifact. 
 
-`05-QC_putative_onco_fusion_dustribution.Rmd` : Plots fusions found in multiple (more than 4) histologies in scratch/pbta-fusion-putative-oncogenic-preQC.tsv from 04-project-specific-filtering.Rmd and removes fusion calls found in more than 4 histologies as QC filtering.
+`05-QC_putative_onco_fusion_distribution.Rmd` : Plots fusions found in multiple (more than 4) cancer groups in scratch/fusion-putative-oncogenic-preQC.tsv from 04-project-specific-filtering.Rmd. For final filtering, fusion calls found in more than 4 broad_histology groups are removed as QC filtering.
 
-`06-recurrent-fusions-per-histology.R` : Identifies recurrent fusions and genes that are recurrently observed in fusions. We identified RNA-seq samples that can be used independently for each patient. After the selection of samples we identify which fusions and genes are recurrent (found in >3 participants per histology) in our `pbta-fusion-putative-oncogenic.tsv` dataset.
+`06-recurrent-fusions-per-cancer-group.R` : Identifies recurrent fusions and genes that are recurrently observed in fusions. We identified RNA-seq samples that can be used independently for each patient. After the selection of samples we identify which fusions and genes are recurrent (found in >3 participants per cancer group) in our `fusion-putative-oncogenic.tsv` dataset.
