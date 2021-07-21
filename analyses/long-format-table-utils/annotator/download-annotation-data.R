@@ -44,6 +44,7 @@ collapse_rp_lists <- function(rp_vec_list) {
 
   if (identical(clp_np_rp_str, "")) {
     # no NP_### value for the gene query
+    #
     # dplyr::summarise needs function return value to be character for a
     # character column. NA_character_ is still NA in character class rather than
     # "NA".
@@ -52,16 +53,6 @@ collapse_rp_lists <- function(rp_vec_list) {
     return(clp_np_rp_str)
   }
 }
-# # test cases
-# collapse_rp_lists(list(NULL, NULL, NULL))
-# collapse_rp_lists(list())
-# collapse_rp_lists(list(c("NP_1", "NP_2"), c("NP_1", "NP_3")))
-# collapse_rp_lists(list(c("NX_1", "NA"), c("NP_1", "NP_3")))
-# collapse_rp_lists(list(c("NP_1", "NP_2"), NULL, c("NP_1", "NP_3")))
-# collapse_rp_lists(list(c("NP_3", "NP_2")))
-# collapse_rp_lists(list(c("NP_1", "NP_2"), NULL, c("NP_1", "NP_3", NA),
-#                        c(NA, NA, character(0)), c(NA, character(0)),
-#                        character(0)))
 
 
 
@@ -84,6 +75,7 @@ collapse_name_vec <- function(gn_vec) {
   clp_gn_str <- paste(uniq_rm_na_gn_vec, collapse = ",")
   if (identical(clp_gn_str, "")) {
     # no non-NA name for the gene query
+    #
     # dplyr::summarise needs function return value to be character for a
     # character column. NA_character_ is still NA in character class rather than
     # "NA".
@@ -92,19 +84,6 @@ collapse_name_vec <- function(gn_vec) {
     return(clp_gn_str)
   }
 }
-# # test cases
-# collapse_name_vec(c("a", "b"))
-# collapse_name_vec(c("a", "b", NA))
-# collapse_name_vec(c("a", "a", "a", "b", "d"))
-# collapse_name_vec(c("d", "a", "a", "b", "d"))
-# collapse_name_vec(c(NA, character(0)))
-# is.na(collapse_name_vec(c(NA, character(0))))
-# class(collapse_name_vec(c(NA, character(0))))
-# collapse_name_vec(c(NA, NA, NA, character(0)))
-# collapse_name_vec(character(0))
-# # folloing cases should fail
-# collapse_name_vec(c(1))
-
 
 
 
