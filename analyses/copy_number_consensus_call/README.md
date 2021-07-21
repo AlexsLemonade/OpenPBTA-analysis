@@ -52,11 +52,12 @@ The per-sample pipeline revolves around the use of Snakemake to run analysis for
 3) Create a `config_snakemake.yaml` that contains all of the samples names to run the Snakemake pipeline
 4) Run the Snakemake pipeline to perform analysis **per sample**. 
 5) Filter for any CNVs that are over a certain **SIZE_CUTOFF** (default 3000 bp)
-6) Filter for any **significant** CNVs called by Freec (default pval = 0.01)
-7) Filter out any CNVs that overlap 50% or more with **Immunoglobulin, telomeric, centromeric, seg_dup regions** as found in the file `ref/cnv_excluded.bed`
-8) Merge any CNVs of the same sample and call method if they **overlap or within 10,000 bp** (We consider CNV calls within 10,000 bp the same CNV)
-9) Reformat the columns of the files (So the info are easier to read)
-10) **Call consensus** by comparing CNVs from 2 call methods at a time. 
+6) Filter for any **significant** CNVs called by Freec (default pval = 0.01) 
+7) Filter to keep manta calls that **PASS** all filters 
+8) Filter out any CNVs that overlap 50% or more with **Immunoglobulin, telomeric, centromeric, seg_dup regions** as found in the file `ref/cnv_excluded.bed`
+9) Merge any CNVs of the same sample and call method if they **overlap or within 10,000 bp** (We consider CNV calls within 10,000 bp the same CNV)
+10) Reformat the columns of the files (So the info are easier to read)
+11) **Call consensus** by comparing CNVs from 2 call methods at a time. 
 
 Since there are 3 callers, there were 3 comparisons: `manta-cnvkit`, `manta-freec`, and `cnvkit-freec`. If a CNV from 1 caller **overlaps 50% or more** with at least 1 CNV from another caller, the common region of the overlapping CNV would be the new CONSENSUS CNV.
 

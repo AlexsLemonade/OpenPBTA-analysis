@@ -98,10 +98,10 @@ rule manta_filter:
         ## the first awk also filters out for CNV length
         ## The sort command sorts the first digit of chromosome number numerically
         ## The last pipe is to introduce tab into the file and output file name.        
-        """awk '$6~/DEL/ {{if ($5 > {params.SIZE_CUTOFF}) {{print "chr"$2,$3,$4,$5,"NA","NA","NA",$6}}}}' {input} """
+        """awk '$6~/DEL/ {{if ($5 > {params.SIZE_CUTOFF} && $11 == 'PASS') {{print "chr"$2,$3,$4,$5,"NA","NA","NA",$6}}}}' {input} """
         """ | sort -k1,1 -k2,2n """
         """ | tr [:blank:] '\t' > {output.manta_del} && """
-        """awk '$6~/DUP/ {{if ($5 > {params.SIZE_CUTOFF}) {{print "chr"$2,$3,$4,$5,"NA","NA","NA",$6}}}}' {input} """
+        """awk '$6~/DUP/ {{if ($5 > {params.SIZE_CUTOFF}  && $11 == 'PASS') {{print "chr"$2,$3,$4,$5,"NA","NA","NA",$6}}}}' {input} """
         """ | sort -k1,1 -k2,2n """
         """ | tr [:blank:] '\t' > {output.manta_dup}"""
 
