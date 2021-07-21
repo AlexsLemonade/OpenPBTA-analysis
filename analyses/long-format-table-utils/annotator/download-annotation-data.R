@@ -45,9 +45,10 @@ collapse_rp_lists <- function(rp_vec_list) {
   if (identical(clp_np_rp_str, "")) {
     # no NP_### value for the gene query
     # dplyr::summarise needs function return value to be character for a
-    # character column. as.character(NA) is still NA rather than "NA".
-    return(as.character(NA))
-  } else{
+    # character column. NA_character_ is still NA in character class rather than
+    # "NA".
+    return(NA_character_)
+  } else {
     return(clp_np_rp_str)
   }
 }
@@ -84,8 +85,9 @@ collapse_name_vec <- function(gn_vec) {
   if (identical(clp_gn_str, "")) {
     # no non-NA name for the gene query
     # dplyr::summarise needs function return value to be character for a
-    # character column. as.character(NA) is still NA rather than "NA".
-    return(as.character(NA))
+    # character column. NA_character_ is still NA in character class rather than
+    # "NA".
+    return(NA_character_)
   } else {
     return(clp_gn_str)
   }
