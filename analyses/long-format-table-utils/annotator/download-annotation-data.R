@@ -30,7 +30,7 @@ collapse_rp_lists <- function(rp_vec_list) {
     }
   })
 
-  # combimed vector of unique refseq.protein values
+  # combined vector of unique refseq.protein values
   uniq_c_rm_null_rp_vec <- sort(unique(
     purrr::reduce(rm_null_rp_vec_list, c, .init = character(0))))
   # remove NA
@@ -90,9 +90,9 @@ collapse_name_vec <- function(gn_vec) {
 # Set up directory paths -------------------------------------------------------
 # Adapted from the oncoprint-landscape module.
 #
-# Detect the ".git" folder -- this will in the project root directory. Use this
-# as the root directory to ensure proper execution, no matter where it is called
-# from.
+# Detect the ".git" folder -- this will be in the project root directory. Use
+# this as the root directory to ensure proper execution, no matter where it is
+# called from.
 #
 # This only works if the working directory is OpenPedCan-analysis or a
 # subdirectory of OpenPedCan-analysis
