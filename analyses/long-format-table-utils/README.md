@@ -76,6 +76,11 @@ Add one or more of the following gene and disease (/`cancer_group`) annotations,
 
 Note: only add `Gene_type` to gene-level tables, which can be implemented by leaving `"Gene_type"` out of the `columns_to_add` parameter of the `annotate_long_format_table` function in `annotator-api.R`, or by leaving `"Gene_type"` out of the `-c`/`--columns-to-add` option when running `annotator-cli.R`.
 
+Notes on requiring both `Gene_symbol` and `Gene_Ensembl_ID`:
+
+- Certain annotation files use `Gene_symbol` as key columns, and certain other annotation files use `Gene_Ensembl_ID` as key columns.
+- Some `Gene_symbol`s are mapped to multiple `Gene_Ensembl_ID`s, so adding `Gene_Ensembl_ID`s by mapping `Gene_symbol`s with `data/ensg-hugo-rmtl-v1-mapping.tsv` may implicitly introduce duplicated rows. Therefore, adding `Gene_Ensembl_ID`s by mapping `Gene_symbol`s is left to users with cautions for potentially introducing unwanted duplicates.
+
 The version of PediatricOpenTargets/OpenPedCan-analysis data release is determined by the `download-data.sh` under the `OpenPedCan-analysis` directory.
 
 The version of `analyses/fusion_filtering/references/genelistreference.txt` is tracked by GitHub commits, and the GitHub permalink to the currently used file is <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/7fb11a020a92d06c8685736546e860bfe23da7e2/analyses/fusion_filtering/references/genelistreference.txt>.

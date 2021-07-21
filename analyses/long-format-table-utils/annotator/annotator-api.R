@@ -9,11 +9,14 @@
 #   - Disease: The `cancer_group` in the `histologies.tsv`, e.g.
 #     Adamantinomatous Craniopharyngioma, Atypical Teratoid Rhabdoid Tumor, and
 #     Low-grade glioma/astrocytoma
-#   Note that Gene_symbol and Gene_Ensembl_ID are both required, because certain
-#   annotation files use Gene_symbol as key columns, and certain other
-#   annotation files use Gene_Ensembl_ID as key columns. Users could use
-#   data/ensg-hugo-rmtl-v1-mapping.tsv to add Gene_symbol or Gene_Ensembl_ID
-#   based on the available column.
+#   Notes on requiring both Gene_symbol and Gene_Ensembl_ID:
+#   - Some Gene_symbols are mapped to multiple Gene_Ensembl_IDs, so adding
+#     Gene_Ensembl_IDs by mapping Gene_symbols with
+#     data/ensg-hugo-rmtl-v1-mapping.tsv may implicitly introduce duplicated
+#     rows. Therefore, adding Gene_Ensembl_IDs by mapping Gene_symbols is left
+#     to users with cautions for potentially introducing unwanted duplicates.
+#   - Certain annotation files use Gene_symbol as key columns, and certain other
+#     annotation files use Gene_Ensembl_ID as key columns
 # - columns_to_add: a character vector of unique names of the columns to be
 #   added to the input table. The vector can contain zero or more of the
 #   following column names: "RMTL", "Gene_type", "OncoKB_cancer_gene",
