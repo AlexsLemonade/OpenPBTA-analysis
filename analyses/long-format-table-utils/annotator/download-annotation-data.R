@@ -153,13 +153,13 @@ ensg_hugo_rmtl_df <- dplyr::distinct(
 if (!identical(sum(is.na(ensg_hugo_rmtl_df$ensg_id)), as.integer(0))) {
   stop(paste0("Found NA in ensg-hugo-rmtl-v1-mapping.tsv ensg_id.\n",
               "Check if PedOT release data are downloaded properly.\n",
-              "If data is downloaded properly, submit a GitHub data question."))
+              "If data is downloaded properly, submit a GitHub data issue."))
 }
 
 if (!identical(sum(is.na(ensg_hugo_rmtl_df$gene_symbol)), as.integer(0))) {
   stop(paste0("Found NA in ensg-hugo-rmtl-v1-mapping.tsv gene_symbol.\n",
               "Check if PedOT release data are downloaded properly.\n",
-              "If data is downloaded properly, submit a GitHub data question."))
+              "If data is downloaded properly, submit a GitHub data issue."))
 }
 
 # assert all ensg_id are unique
@@ -167,7 +167,7 @@ if (!identical(length(unique(ensg_hugo_rmtl_df$ensg_id)),
                nrow(ensg_hugo_rmtl_df))) {
   stop(paste0("Found duplicated ensg_id in ensg-hugo-rmtl-v1-mapping.tsv.\n",
               "Check if PedOT release data are downloaded properly.\n",
-              "If data is downloaded properly, submit a GitHub data question."))
+              "If data is downloaded properly, submit a GitHub data issue."))
 }
 
 # Download data from https://mygene.info/ --------------------------------------
