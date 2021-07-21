@@ -10,6 +10,7 @@
       - [Implementation of long-format table annotator](#implementation-of-long-format-table-annotator)
       - [API usage of long-format table annotator](#api-usage-of-long-format-table-annotator)
       - [CLI usage of long-format table annotator](#cli-usage-of-long-format-table-annotator)
+      - [Unit testing for long-format table annotator](#unit-testing-for-long-format-table-annotator)
 
 ### Purpose
 
@@ -84,3 +85,35 @@ The versions of other sources are listed in the [Update downloaded data that are
 ##### API usage of long-format table annotator
 
 ##### CLI usage of long-format table annotator
+
+##### Unit testing for long-format table annotator
+
+The unit testing is implemented using the [`testthat`](https://testthat.r-lib.org/index.html) package version 2.1.1, as suggested by @jharenza and @NHJohnson in the reviews of PR <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/55>.
+
+To run all unit tests, run `bash annotator/run-tests.sh` in the Docker image/container from any working directory. Following is an example run.
+
+```text
+$ bash annotator/run-tests.sh
+✔ |  OK F W S | Context
+✔ |   8       | tests/test_collapse_name_vec.R
+✔ |   7       | tests/test_collapse_rp_lists.R
+✔ |   5       | tests/test_collapse_rp_lists.R
+
+══ Results ══════════════════════════════════════════════════════════════════════════════════════════════════════
+Duration: 0.2 s
+
+OK:       20
+Failed:   0
+Warnings: 0
+Skipped:  0
+Done running run-tests.sh
+```
+
+To add more tests, create additional `test*R` files under the `annotator/tests` directory, with other `test*R` files as reference.
+
+Notes on the `testthat` unit testing framework:
+
+- `testthat::test_dir("tests")` finds all `test*R` files under the `tests` directory to run, which is used in `annotator/run-tests.sh`.
+- `testthat::test_dir("tests")` also finds and runs all `helper*R` files before running the `test*R` files.
+- The working directory is `tests` when running the `helper*R` and `test*R` files through `testthat::test_dir("tests")`.
+- In order to import a funciton for testing from an R file without running the whole file, a helper function `import_function` is defined at `tests/helper_import_function.R`, and the `import_function` is also tested in the `tests/test_helper_import_function.R` file.
