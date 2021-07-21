@@ -97,8 +97,9 @@ Use the long-format table annotator API in an analysis module with the following
 2. `source` the `long-format-table-utils/annotator/annotator-api.R` file.
 3. If the class of the table to be annotated is not `tibble::tbl_df`, convert the table to `tibble::tbl_df` with `tibble::as_tibble`. After conversion, carefully check rownames, colnames, column classes (especially factors), and other properties that may affect the correctness of you code.
 4. If `c("Gene_symbol", "Gene_Ensembl_ID", "Disease")` are not all present in the colnames of the table to be annotated, add new columns or rename existing ones to have all these required columns.
-5. Call `annotate_long_format_table` to add one or more of the available annotation columns, by specifying the `columns_to_add` parameter in the `annotate_long_format_table` function. Read the documentation comment of the function for usage.
-6. Rename, select, and reorder the columns of the annotated table for output in TSV, or JSON, or JSONL formats.
+5. Check that the annotation columns to be added are not already present in the table that needs to be annotated. If there is any annotation column that needs to be added already exists in the table that needs to be annotated, the `annotate_long_format_table` function will raise an error without annotating the table.
+6. Call `annotate_long_format_table` to add one or more of the available annotation columns, by specifying the `columns_to_add` parameter in the `annotate_long_format_table` function. Read the documentation comment of the function for usage.
+7. Rename, select, and reorder the columns of the annotated table for output in TSV, or JSON, or JSONL formats.
 
 Following is an example usage in the `rna-seq-expression-summary-stats` module `01-tpm-summary-stats.R`.
 
@@ -117,8 +118,13 @@ Following is an example usage in the `rna-seq-expression-summary-stats` module `
 > renamed_m_tpm_ss_long_tbl <- dplyr::rename(
 +   m_tpm_ss_long_tbl, Gene_symbol = gene_symbol, Gene_Ensembl_ID = gene_id,
 +   Disease = cancer_group)
+> annotation_columns_to_add <- c("MONDO", "RMTL", "EFO")
+> # Assert all columns to be added are not already present in the
+> # colnames(renamed_m_tpm_ss_long_tbl)
+> stopifnot(
++   all(!annotation_columns_to_add %in% colnames(renamed_m_tpm_ss_long_tbl)))
 > annotated_renamed_m_tpm_ss_long_tbl <- annotate_long_format_table(
-+   renamed_m_tpm_ss_long_tbl, columns_to_add = c("MONDO", "RMTL", "EFO"))
++   renamed_m_tpm_ss_long_tbl, columns_to_add = annotation_columns_to_add)
 > m_tpm_ss_long_tbl <- dplyr::rename(
 +   annotated_renamed_m_tpm_ss_long_tbl,
 +   gene_symbol = Gene_symbol, gene_id = Gene_Ensembl_ID,
