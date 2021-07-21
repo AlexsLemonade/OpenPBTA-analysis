@@ -25,7 +25,7 @@ results_dir=../../analyses/focal-cn-file-preparation/results
 histologies_file=${data_dir}/histologies.tsv
 gtf_file=${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz
 goi_file=../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt
-independent_specimens_file=${data_dir}/independent-specimens.rnaseq.primary.tsv
+independent_specimens_file=${data_dir}/independent-specimens.wgswxspanel.primary.tsv
 
 # # Prep the consensus SEG file data
 # Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd', clean = TRUE)"
@@ -86,3 +86,5 @@ if [ "$RUN_ORIGINAL" -gt "0" ]; then
  #  done
  # 
  fi
+ 
+ 

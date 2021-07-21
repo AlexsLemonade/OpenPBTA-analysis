@@ -1778,21 +1778,6 @@ $(document).ready(function () {
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkcGx5cilcbmBgYCJ9 -->
 <pre class="r"><code>library(dplyr)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RwbHlyJzpcbiAgbWV0aG9kICAgICAgICAgICBmcm9tXG4gIHByaW50LnJvd3dpc2VfZGYgICAgIFxuXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYZHBseXLigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOnN0YXRz4oCZOlxuXG4gICAgZmlsdGVyLCBsYWdcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmJhc2XigJk6XG5cbiAgICBpbnRlcnNlY3QsIHNldGRpZmYsIHNldGVxdWFsLCB1bmlvblxuIn0= -->
-<pre><code>Registered S3 method overwritten by 'dplyr':
-  method           from
-  print.rowwise_df     
-
-Attaching package: ‘dplyr’
-
-The following objects are masked from ‘package:stats’:
-
-    filter, lag
-
-The following objects are masked from ‘package:base’:
-
-    intersect, setdiff, setequal, union</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <div id="read-in-data" class="section level3">
@@ -1832,35 +1817,35 @@ histologies_df &lt;- readr::read_tsv(histologies_file, guess_max = 100000)</code
 <p>This is intended to mirror the information contained in the ControlFreeC output.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWRkX2F1dG9zb21lc19kZiA8LSBhZGRfcGxvaWR5X2RmICU+JVxuICAjIHggYW5kIHkgY2hyb21vc29tZXMgbXVzdCBiZSBoYW5kbGVkIGRpZmZlcmVudGx5XG4gIGRwbHlyOjpmaWx0ZXIoIShjaHJvbSAlaW4lIGMoXFxjaHJYXFwsIFxcY2hyWVxcKSkpICU+JVxuICBkcGx5cjo6bXV0YXRlKHN0YXR1cyA9IGNhc2Vfd2hlbihcbiAgICAjIHdoZW4gdGhlIGNvcHkgbnVtYmVyIGlzIGxlc3MgdGhhbiBpbmZlcnJlZCBwbG9pZHksIG1hcmsgdGhpcyBhcyBhIGxvc3NcbiAgICBjb3B5Lm51bSA8IHR1bW9yX3Bsb2lkeSB+IFxcbG9zc1xcLFxuICAgICMgaWYgY29weSBudW1iZXIgaXMgaGlnaGVyIHRoYW4gcGxvaWR5LCBtYXJrIGFzIGEgZ2FpblxuICAgIGNvcHkubnVtID4gdHVtb3JfcGxvaWR5IH4gXFxnYWluXFwsXG4gICAgY29weS5udW0gPT0gdHVtb3JfcGxvaWR5IH4gXFxuZXV0cmFsXFxcbiAgKSlcblxuIyB0aGlzIGxvZ2ljIGlzIGNvbnNpc3RlbnQgd2l0aCB3aGF0IGlzIG9ic2VydmVkIGluIHRoZSBjb250cm9sZnJlZWMgZmlsZVxuIyBzcGVjaWZpY2FsbHksIGluIHNhbXBsZXMgd2hlcmUgZ2VybWxpbmUgc2V4IGVzdGltYXRlID0gRmVtYWxlLCBYIGNocm9tb3NvbWVzXG4jIGFwcGVhciB0byBiZSB0cmVhdGVkIHRoZSBzYW1lIHdheSBhcyBhdXRvc29tZXNcbmFkZF94eV9kZiA8LSBhZGRfcGxvaWR5X2RmICU+JVxuICBkcGx5cjo6ZmlsdGVyKGNocm9tICVpbiUgYyhcXGNoclhcXCwgXFxjaHJZXFwpKSAlPiUgIFxuICBkcGx5cjo6bXV0YXRlKHN0YXR1cyA9IGNhc2Vfd2hlbihcbiAgICBnZXJtbGluZV9zZXhfZXN0aW1hdGUgPT0gXFxNYWxlXFwgJiBjb3B5Lm51bSA8ICgwLjUgKiB0dW1vcl9wbG9pZHkpIH4gXFxsb3NzXFwsXG4gICAgZ2VybWxpbmVfc2V4X2VzdGltYXRlID09IFxcTWFsZVxcICYgY29weS5udW0gPiAoMC41ICogdHVtb3JfcGxvaWR5KSB+IFxcZ2FpblxcLFxuICAgIGdlcm1saW5lX3NleF9lc3RpbWF0ZSA9PSBcXE1hbGVcXCAmIGNvcHkubnVtID09ICgwLjUgKiB0dW1vcl9wbG9pZHkpIH4gXFxuZXV0cmFsXFwsXG4gICAgIyB0aGVyZSBhcmUgc29tZSBpbnN0YW5jZXMgd2hlcmUgdGhlcmUgYXJlIGNocm9tb3NvbWUgWSBzZWdtZW50cyBhcmUgaW5cbiAgICAjIHNhbXBsZXMgd2hlcmUgdGhlIGdlcm1saW5lX3NleF9lc3RpbWF0ZSBpcyBGZW1hbGVcbiAgICBjaHJvbSA9PSBcXGNocllcXCAmIGdlcm1saW5lX3NleF9lc3RpbWF0ZSA9PSBcXEZlbWFsZVxcICYgY29weS5udW0gPiAwIH4gXFx1bmtub3duXFwsXG4gICAgY2hyb20gPT0gXFxjaHJZXFwgJiBnZXJtbGluZV9zZXhfZXN0aW1hdGUgPT0gXFxGZW1hbGVcXCAmIGNvcHkubnVtID09IDAgfiBcXG5ldXRyYWxcXCxcbiAgICAjIG1pcnJvcmluZyBjb250cm9sZnJlZWMsIFggdHJlYXRlZCBzYW1lIGFzIGF1dG9zb21lc1xuICAgIGNocm9tID09IFxcY2hyWFxcICYgZ2VybWxpbmVfc2V4X2VzdGltYXRlID09IFxcRmVtYWxlXFwgJiBjb3B5Lm51bSA8IHR1bW9yX3Bsb2lkeSB+IFxcbG9zc1xcLFxuICAgIGNocm9tID09IFxcY2hyWFxcICYgZ2VybWxpbmVfc2V4X2VzdGltYXRlID09IFxcRmVtYWxlXFwgJiBjb3B5Lm51bSA+IHR1bW9yX3Bsb2lkeSB+IFxcZ2FpblxcLFxuICAgIGNocm9tID09IFxcY2hyWFxcICYgZ2VybWxpbmVfc2V4X2VzdGltYXRlID09IFxcRmVtYWxlXFwgJiBjb3B5Lm51bSA9PSB0dW1vcl9wbG9pZHkgfiBcXG5ldXRyYWxcXFxuICApKVxuXG5hZGRfc3RhdHVzX2RmIDwtIGRwbHlyOjpiaW5kX3Jvd3MoYWRkX2F1dG9zb21lc19kZiwgYWRkX3h5X2RmKSAlPiVcbiAgZHBseXI6OnNlbGVjdCgtZ2VybWxpbmVfc2V4X2VzdGltYXRlKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWRkX2F1dG9zb21lc19kZiA8LSBhZGRfcGxvaWR5X2RmICU+JVxuICAjIHggYW5kIHkgY2hyb21vc29tZXMgbXVzdCBiZSBoYW5kbGVkIGRpZmZlcmVudGx5XG4gIGRwbHlyOjpmaWx0ZXIoIShjaHJvbSAlaW4lIGMoXCJjaHJYXCIsIFwiY2hyWVwiKSkpICU+JVxuICBkcGx5cjo6bXV0YXRlKHN0YXR1cyA9IGNhc2Vfd2hlbihcbiAgICAjIHdoZW4gdGhlIGNvcHkgbnVtYmVyIGlzIGxlc3MgdGhhbiBpbmZlcnJlZCBwbG9pZHksIG1hcmsgdGhpcyBhcyBhIGxvc3NcbiAgICBjb3B5Lm51bSA8IHR1bW9yX3Bsb2lkeSB+IFwibG9zc1wiLFxuICAgICMgaWYgY29weSBudW1iZXIgaXMgaGlnaGVyIHRoYW4gcGxvaWR5LCBtYXJrIGFzIGEgZ2FpblxuICAgIGNvcHkubnVtID4gdHVtb3JfcGxvaWR5IH4gXCJnYWluXCIsXG4gICAgY29weS5udW0gPT0gdHVtb3JfcGxvaWR5IH4gXCJuZXV0cmFsXCJcbiAgKSlcblxuIyB0aGlzIGxvZ2ljIGlzIGNvbnNpc3RlbnQgd2l0aCB3aGF0IGlzIG9ic2VydmVkIGluIHRoZSBjb250cm9sZnJlZWMgZmlsZVxuIyBzcGVjaWZpY2FsbHksIGluIHNhbXBsZXMgd2hlcmUgZ2VybWxpbmUgc2V4IGVzdGltYXRlID0gRmVtYWxlLCBYIGNocm9tb3NvbWVzXG4jIGFwcGVhciB0byBiZSB0cmVhdGVkIHRoZSBzYW1lIHdheSBhcyBhdXRvc29tZXNcbmFkZF94eV9kZiA8LSBhZGRfcGxvaWR5X2RmICU+JVxuICBkcGx5cjo6ZmlsdGVyKGNocm9tICVpbiUgYyhcImNoclhcIiwgXCJjaHJZXCIpKSAlPiUgIFxuICBkcGx5cjo6bXV0YXRlKHN0YXR1cyA9IGNhc2Vfd2hlbihcbiAgICBnZXJtbGluZV9zZXhfZXN0aW1hdGUgPT0gXCJNYWxlXCIgJiBjb3B5Lm51bSA8ICgwLjUgKiB0dW1vcl9wbG9pZHkpIH4gXCJsb3NzXCIsXG4gICAgZ2VybWxpbmVfc2V4X2VzdGltYXRlID09IFwiTWFsZVwiICYgY29weS5udW0gPiAoMC41ICogdHVtb3JfcGxvaWR5KSB+IFwiZ2FpblwiLFxuICAgIGdlcm1saW5lX3NleF9lc3RpbWF0ZSA9PSBcIk1hbGVcIiAmIGNvcHkubnVtID09ICgwLjUgKiB0dW1vcl9wbG9pZHkpIH4gXCJuZXV0cmFsXCIsXG4gICAgIyB0aGVyZSBhcmUgc29tZSBpbnN0YW5jZXMgd2hlcmUgdGhlcmUgYXJlIGNocm9tb3NvbWUgWSBzZWdtZW50cyBhcmUgaW5cbiAgICAjIHNhbXBsZXMgd2hlcmUgdGhlIGdlcm1saW5lX3NleF9lc3RpbWF0ZSBpcyBGZW1hbGVcbiAgICBjaHJvbSA9PSBcImNocllcIiAmIGdlcm1saW5lX3NleF9lc3RpbWF0ZSA9PSBcIkZlbWFsZVwiICYgY29weS5udW0gPiAwIH4gXCJ1bmtub3duXCIsXG4gICAgY2hyb20gPT0gXCJjaHJZXCIgJiBnZXJtbGluZV9zZXhfZXN0aW1hdGUgPT0gXCJGZW1hbGVcIiAmIGNvcHkubnVtID09IDAgfiBcIm5ldXRyYWxcIixcbiAgICAjIG1pcnJvcmluZyBjb250cm9sZnJlZWMsIFggdHJlYXRlZCBzYW1lIGFzIGF1dG9zb21lc1xuICAgIGNocm9tID09IFwiY2hyWFwiICYgZ2VybWxpbmVfc2V4X2VzdGltYXRlID09IFwiRmVtYWxlXCIgJiBjb3B5Lm51bSA8IHR1bW9yX3Bsb2lkeSB+IFwibG9zc1wiLFxuICAgIGNocm9tID09IFwiY2hyWFwiICYgZ2VybWxpbmVfc2V4X2VzdGltYXRlID09IFwiRmVtYWxlXCIgJiBjb3B5Lm51bSA+IHR1bW9yX3Bsb2lkeSB+IFwiZ2FpblwiLFxuICAgIGNocm9tID09IFwiY2hyWFwiICYgZ2VybWxpbmVfc2V4X2VzdGltYXRlID09IFwiRmVtYWxlXCIgJiBjb3B5Lm51bSA9PSB0dW1vcl9wbG9pZHkgfiBcIm5ldXRyYWxcIlxuICApKVxuXG5hZGRfc3RhdHVzX2RmIDwtIGRwbHlyOjpiaW5kX3Jvd3MoYWRkX2F1dG9zb21lc19kZiwgYWRkX3h5X2RmKSAlPiVcbiAgZHBseXI6OnNlbGVjdCgtZ2VybWxpbmVfc2V4X2VzdGltYXRlKVxuYGBgIn0= -->
 <pre class="r"><code>add_autosomes_df &lt;- add_ploidy_df %&gt;%
   # x and y chromosomes must be handled differently
-  dplyr::filter(!(chrom %in% c(\chrX\, \chrY\))) %&gt;%
+  dplyr::filter(!(chrom %in% c(&quot;chrX&quot;, &quot;chrY&quot;))) %&gt;%
   dplyr::mutate(status = case_when(
     # when the copy number is less than inferred ploidy, mark this as a loss
-    copy.num &lt; tumor_ploidy ~ \loss\,
+    copy.num &lt; tumor_ploidy ~ &quot;loss&quot;,
     # if copy number is higher than ploidy, mark as a gain
-    copy.num &gt; tumor_ploidy ~ \gain\,
-    copy.num == tumor_ploidy ~ \neutral\
+    copy.num &gt; tumor_ploidy ~ &quot;gain&quot;,
+    copy.num == tumor_ploidy ~ &quot;neutral&quot;
   ))
 
 # this logic is consistent with what is observed in the controlfreec file
 # specifically, in samples where germline sex estimate = Female, X chromosomes
 # appear to be treated the same way as autosomes
 add_xy_df &lt;- add_ploidy_df %&gt;%
-  dplyr::filter(chrom %in% c(\chrX\, \chrY\)) %&gt;%  
+  dplyr::filter(chrom %in% c(&quot;chrX&quot;, &quot;chrY&quot;)) %&gt;%  
   dplyr::mutate(status = case_when(
-    germline_sex_estimate == \Male\ &amp; copy.num &lt; (0.5 * tumor_ploidy) ~ \loss\,
-    germline_sex_estimate == \Male\ &amp; copy.num &gt; (0.5 * tumor_ploidy) ~ \gain\,
-    germline_sex_estimate == \Male\ &amp; copy.num == (0.5 * tumor_ploidy) ~ \neutral\,
+    germline_sex_estimate == &quot;Male&quot; &amp; copy.num &lt; (0.5 * tumor_ploidy) ~ &quot;loss&quot;,
+    germline_sex_estimate == &quot;Male&quot; &amp; copy.num &gt; (0.5 * tumor_ploidy) ~ &quot;gain&quot;,
+    germline_sex_estimate == &quot;Male&quot; &amp; copy.num == (0.5 * tumor_ploidy) ~ &quot;neutral&quot;,
     # there are some instances where there are chromosome Y segments are in
     # samples where the germline_sex_estimate is Female
-    chrom == \chrY\ &amp; germline_sex_estimate == \Female\ &amp; copy.num &gt; 0 ~ \unknown\,
-    chrom == \chrY\ &amp; germline_sex_estimate == \Female\ &amp; copy.num == 0 ~ \neutral\,
+    chrom == &quot;chrY&quot; &amp; germline_sex_estimate == &quot;Female&quot; &amp; copy.num &gt; 0 ~ &quot;unknown&quot;,
+    chrom == &quot;chrY&quot; &amp; germline_sex_estimate == &quot;Female&quot; &amp; copy.num == 0 ~ &quot;neutral&quot;,
     # mirroring controlfreec, X treated same as autosomes
-    chrom == \chrX\ &amp; germline_sex_estimate == \Female\ &amp; copy.num &lt; tumor_ploidy ~ \loss\,
-    chrom == \chrX\ &amp; germline_sex_estimate == \Female\ &amp; copy.num &gt; tumor_ploidy ~ \gain\,
-    chrom == \chrX\ &amp; germline_sex_estimate == \Female\ &amp; copy.num == tumor_ploidy ~ \neutral\
+    chrom == &quot;chrX&quot; &amp; germline_sex_estimate == &quot;Female&quot; &amp; copy.num &lt; tumor_ploidy ~ &quot;loss&quot;,
+    chrom == &quot;chrX&quot; &amp; germline_sex_estimate == &quot;Female&quot; &amp; copy.num &gt; tumor_ploidy ~ &quot;gain&quot;,
+    chrom == &quot;chrX&quot; &amp; germline_sex_estimate == &quot;Female&quot; &amp; copy.num == tumor_ploidy ~ &quot;neutral&quot;
   ))
 
 add_status_df &lt;- dplyr::bind_rows(add_autosomes_df, add_xy_df) %&gt;%
@@ -1873,8 +1858,8 @@ add_status_df &lt;- dplyr::bind_rows(add_autosomes_df, add_xy_df) %&gt;%
 <h3>Write to <code>scratch</code></h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxub3V0cHV0X2ZpbGUgPC0gZmlsZS5wYXRoKFxcLi5cXCwgXFwuLlxcLCBcXHNjcmF0Y2hcXCwgXFxjbnZraXRfd2l0aF9zdGF0dXMudHN2XFwpXG5yZWFkcjo6d3JpdGVfdHN2KGFkZF9zdGF0dXNfZGYsIG91dHB1dF9maWxlKVxuYGBgIn0= -->
-<pre class="r"><code>output_file &lt;- file.path(\..\, \..\, \scratch\, \cnvkit_with_status.tsv\)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxub3V0cHV0X2ZpbGUgPC0gZmlsZS5wYXRoKFwiLi5cIiwgXCIuLlwiLCBcInNjcmF0Y2hcIiwgXCJjbnZraXRfd2l0aF9zdGF0dXMudHN2XCIpXG5yZWFkcjo6d3JpdGVfdHN2KGFkZF9zdGF0dXNfZGYsIG91dHB1dF9maWxlKVxuYGBgIn0= -->
+<pre class="r"><code>output_file &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;scratch&quot;, &quot;cnvkit_with_status.tsv&quot;)
 readr::write_tsv(add_status_df, output_file)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
