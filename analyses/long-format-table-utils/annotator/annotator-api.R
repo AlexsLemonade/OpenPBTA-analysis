@@ -200,6 +200,34 @@ annotate_long_format_table <- function(
     )
     return(ann_tibble)
   }
+  # Helper function to check the type of join_by_column value in ann_tbl_l
+  # element
+  #
+  # Args:
+  # - join_by_column: a singele character value of the column to be joined by
+  #
+  # Returns NULL, as the function only checks whether the input join_by_column
+  # is valid or not
+  check_join_by_column <- function(join_by_column) {
+    # Check join_by_column is valid
+    if (is.null(join_by_column)) {
+      stop(paste0("annotate_long_format_table function internal error. ",
+                  "Submit a GitHub Issue with your error ",
+                  "message and input data.\n",
+                  "join_by_column cannot be NULL."))
+    }
+    if (!(is.character(join_by_column) &&
+          identical(length(join_by_column), as.integer(1)) &&
+          is.null(names(join_by_column)))) {
+      stop(paste0("annotate_long_format_table function internal error. ",
+                  "Submit a GitHub Issue with the full error traceback",
+                  "message and input data.\n",
+                  "join_by_column for must be a single character value ",
+                  "that has no name attribute."))
+    }
+    return(NULL)
+  }
+
   # Helper function to initialize ann_tbl_l element, by adding file_path,
   # join_by_column, and read table
   #
@@ -210,24 +238,7 @@ annotate_long_format_table <- function(
   # Returns a list(file_path = file_path, join_by_column = join_by_column,
   # tibble = tibble_that_is_read_in)
   init_ann_tbl_l_element <- function(file_path, join_by_column) {
-    # Check join_by_column is valid
-    if (is.null(join_by_column)) {
-      stop(paste0("annotate_long_format_table function internal error. ",
-                  "Submit a GitHub Issue with your error ",
-                  "message and input data.\n",
-                  "join_by_column for ",
-                  file_path, " cannot be NULL."))
-    }
-    if (!(is.character(join_by_column) &&
-          identical(length(join_by_column), as.integer(1)) &&
-          is.null(names(join_by_column)))) {
-      stop(paste0("annotate_long_format_table function internal error. ",
-                  "Submit a GitHub Issue with the full error traceback",
-                  "message and input data.\n",
-                  "join_by_column for ", file_path,
-                  " must be a single character value ",
-                  "that has no name attribute."))
-    }
+    check_join_by_column(join_by_column)
 
     ann_tbl_l_element <- list(
       file_path = file_path, join_by_column = join_by_column)
@@ -351,7 +362,37 @@ annotate_long_format_table <- function(
   ann_long_format_table <- purrr::reduce(
     ann_tbl_l,
     function(x, y) {
-      res_tibble <- dplyr::left_join(x$tibble, y$tibble, by = y$join_by_column)
+      # If one or more columns in y$tibble are already in x$tibble, remove them
+      # before joining. The y$join_by_column should exist in both x$tibble and
+      # y$tibble, so it should not be in y_cols_not_in_x, hence
+      # rm_cmn_col_y_tibble will not have duplicated columns.
+      #
+      # The type of y$join_by_column is checked above, but check here again in
+      # case it is modified by prior procedures
+      check_join_by_column(y$join_by_column)
+
+      y_cols_not_in_x <- colnames(y$tibble)[
+        !colnames(y$tibble) %in% colnames(x$tibble)]
+
+      if (!(is.character(colnames(x$tibble)) &&
+            is.character(colnames(y$tibble)) &&
+            (y$join_by_column %in% colnames(y$tibble)) &&
+            (y$join_by_column %in% colnames(x$tibble)) &&
+            (y_cols_not_in_x %in% colnames(y$tibble)) &&
+            (!y_cols_not_in_x %in% colnames(x$tibble)) &&
+            (!y$join_by_column %in% y_cols_not_in_x))) {
+        stop(paste0("annotate_long_format_table function internal error. ",
+                    "Submit a GitHub Issue with the full error traceback",
+                    "message and input data.\n",
+                    "join_by_column issue for ", y$file_path,
+                    ". Inspect the joining part in ",
+                    "annotate_long_format_table."))
+      }
+      rm_cmn_col_y_tibble <- y$tibble[, c(y$join_by_column, y_cols_not_in_x)]
+
+      res_tibble <- dplyr::left_join(
+        x$tibble, rm_cmn_col_y_tibble, by = y$join_by_column)
+
       return(list(tibble = res_tibble))
     },
     .init = list(tibble = long_format_table),
