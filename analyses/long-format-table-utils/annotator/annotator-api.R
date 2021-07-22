@@ -159,187 +159,206 @@ annotate_long_format_table <- function(
     }
   )
 
-  # Read annotation data and remove duplicated rows
-  # Gene ENSG ID -> gene full name and protein refseq ID
-  ensg_gname_prt_refseq_df <- dplyr::distinct(readr::read_tsv(
-    file.path(root_dir, "analyses", "long-format-table-utils", "annotator",
-              "annotation-data", "ensg-gene-full-name-refseq-protein.tsv"),
-    col_types = readr::cols(.default = readr::col_guess()),
-    guess_max = 100000))
-  # Gene hugo symbol -> OncoKB cancer gene and oncogene/TSG
-  hgsb_oncokb_cgene_oncogene_tsg_df <- dplyr::distinct(readr::read_tsv(
-    file.path(root_dir, "analyses", "long-format-table-utils", "annotator",
-              "annotation-data", "oncokb-cancer-gene-list.tsv"),
-    col_types = readr::cols(.default = readr::col_guess()),
-    guess_max = 100000))
-  # Gene hugo symbol -> gene type
-  hgsb_gtype_df <- dplyr::distinct(readr::read_tsv(
-    file.path(root_dir, "analyses", "fusion_filtering", "references",
-              "genelistreference.txt"),
-    col_types = readr::cols(.default = readr::col_guess()),
-    guess_max = 100000))
-  # Gene ENSG ID -> RMTL
-  ensg_rmtl_df <- dplyr::distinct(readr::read_tsv(
-    file.path(root_dir, "data", "ensg-hugo-rmtl-v1-mapping.tsv"),
-    col_types = readr::cols(.default = readr::col_guess()),
-    guess_max = 100000))
-  # cancer_group -> EFO and MONDO
-  cgroup_efo_mondo_df <- dplyr::distinct(readr::read_tsv(
-    file.path(root_dir, "data", "efo-mondo-map.tsv"),
-    col_types = readr::cols(.default = readr::col_guess()),
-    guess_max = 100000))
-
-
-  # Check no NA or duplicate in the key columns of annotation data tables
+  # List of required annotation table file paths, join_by columns, and tables
   #
-  # For an annotation table, NA or duplicate should not exist in the key
-  # column that is used to join_by for adding annotations to the input table
-
-  # assert no NA in gene symbols
-  if (!identical(sum(is.na(dplyr::pull(ensg_gname_prt_refseq_df,
-                                       Gene_Ensembl_ID))),
-                 as.integer(0))) {
-    stop(paste0("analyses/long-format-table-utils/annotator/annotation-data/",
-                "ensg-gene-full-name-refseq-protein.tsv ",
-                "has NAs in the Gene_Ensembl_ID column.\n",
-                "Check data integrity. Submit a data question GitHub issue."))
-  }
-  # assert all symbols are unique
-  if (!identical(nrow(ensg_gname_prt_refseq_df),
-                 length(unique(dplyr::pull(ensg_gname_prt_refseq_df,
-                                           Gene_Ensembl_ID))))) {
-    stop(paste0("analyses/long-format-table-utils/annotator/annotation-data/",
-                "ensg-gene-full-name-refseq-protein.tsv ",
-                "has duplicates in the Gene_Ensembl_ID column.\n",
-                "Check data integrity. Submit a data question GitHub issue."))
-  }
-
-  # assert no NA in gene symbols
-  if (!identical(sum(is.na(dplyr::pull(hgsb_oncokb_cgene_oncogene_tsg_df,
-                                       `Hugo Symbol`))),
-                 as.integer(0))) {
-    stop(paste0("analyses/long-format-table-utils/annotator/annotation-data/",
-                "oncokb-cancer-gene-list.tsv ",
-                "has NAs in the `Hugo Symbol` column.\n",
-                "Check data integrity. Submit a data question GitHub issue."))
-  }
-  # assert all symbols are unique
-  if (!identical(nrow(hgsb_oncokb_cgene_oncogene_tsg_df),
-                 length(unique(dplyr::pull(hgsb_oncokb_cgene_oncogene_tsg_df,
-                                           `Hugo Symbol`))))) {
-    stop(paste0("analyses/long-format-table-utils/annotator/annotation-data/",
-                "oncokb-cancer-gene-list.tsv ",
-                "has duplicates in the `Hugo Symbol` column.\n",
-                "Check data integrity. Submit a data question GitHub issue."))
-  }
-
-  # assert no NA in hgsb_gtype_df
-  if (!identical(sum(is.na(hgsb_gtype_df)), as.integer(0))) {
-    stop(paste0("analyses/fusion_filtering/references/genelistreference.txt ",
-                "has NAs in the table.\n",
-                "Check data integrity. Submit a data question GitHub issue."))
-  }
-
-  # assert all ensg_ids and gene_symbols are not NA
-  if (!identical(sum(is.na(ensg_rmtl_df$ensg_id)), as.integer(0))) {
-    stop(paste0("ensg-hugo-rmtl-v1-mapping.tsv ",
-                "has NAs in the ensg_id column.\n",
-                "Check data integrity. Submit a data question GitHub issue."))
-  }
-  # assert all ensg_id are unique
-  if (!identical(length(unique(ensg_rmtl_df$ensg_id)), nrow(ensg_rmtl_df))) {
-    stop(paste0("ensg-hugo-rmtl-v1-mapping.tsv ",
-                "has duplicates in the ensg_id column.\n",
-                "Check data integrity. Submit a data question GitHub issue."))
-  }
-  # asert all rmtl NAs have version NAs, vice versa
-  if (!identical(is.na(ensg_rmtl_df$rmtl),
-                 is.na(ensg_rmtl_df$version))) {
-    stop(paste0("ensg-hugo-rmtl-v1-mapping.tsv ",
-                "has rmtl column NAs with version column non-NAs, or",
-                "version column NAs with rmtl column non-NAs\n",
-                "Check data integrity. Submit a data question GitHub issue."))
-  }
-
-  # assert all cancer_groups are not NA
-  if (!identical(sum(is.na(cgroup_efo_mondo_df$cancer_group)), as.integer(0))) {
-    stop(paste0("efo-mondo-map.tsv has NAs in the cancer_group column.\n",
-                "Check data integrity. Submit a data question GitHub issue."))
-  }
-  # assert all cancer_groups are unique.
-  if (!identical(length(unique(cgroup_efo_mondo_df$cancer_group)),
-                 nrow(cgroup_efo_mondo_df))) {
-    stop(
-      paste0("efo-mondo-map.tsv has duplicates in the cancer_group column.\n",
-             "Check data integrity. Submit a data question GitHub issue."))
-  }
-
-
-  # Process annotation data for joining input table
+  # Each element of ann_tbl_l is a list(file_path = file_path, join_by_column =
+  # join_by_column, tibble = tibble). The tibble value is the table that is read
+  # in, after the list of paths is created. The tibble value may be further
+  # processed before annotating the input long_format_table.
   #
-  # pp in variable names means preprocessed
-  pp_hgsb_oncokb_cgene_oncogene_tsg_df <- hgsb_oncokb_cgene_oncogene_tsg_df %>%
-    dplyr::select(`Hugo Symbol`, `Is Oncogene`, `Is Tumor Suppressor Gene`) %>%
-    dplyr::rename(
-      Gene_symbol = `Hugo Symbol`, is_onco = `Is Oncogene`,
-      is_tsg = `Is Tumor Suppressor Gene`) %>%
-    dplyr::mutate(
-      OncoKB_cancer_gene = "Y",
-      OncoKB_oncogene_TSG = dplyr::case_when(
-        is_onco == "Yes" & is_tsg == "Yes" ~ "Oncogene,TumorSuppressorGene",
-        is_onco == "Yes" ~ "Oncogene",
-        is_tsg == "Yes" ~ "TumorSuppressorGene",
-        TRUE ~ as.character(NA))) %>%
-    dplyr::select(Gene_symbol, OncoKB_cancer_gene, OncoKB_oncogene_TSG)
+  # NOTE: join_by_column must be a length 1 character vector that has no name
+  # attribute, which is passed to left_join(long_format_table, annotation_table,
+  # by = join_by_column). If the annotation table join_by_column has a different
+  # name, rename it to be the same as the one in long_format_table.
+  #
+  # NA or duplicate should not exist in the join_by_column.
+  #
+  # Steps:
+  # - Initialize a list that contains annotation table path, join_by_column, and
+  #   the annotation tibble that is read in. The join_by_column have to be
+  #   there, so proper checks can be performed in a functional way.
+  # - Process annotation table, and the processed table should have the
+  #   join_by_column. Again, the join_by_column should exist in both
+  #   long_format_table and annotation_table tables.
 
-  pp_hgsb_gtype_df <- hgsb_gtype_df %>%
-    dplyr::group_by(Gene_Symbol) %>%
-    dplyr::summarise(
-      Gene_type = paste(sort(unique(purrr::discard(type, is.na))),
-                        collapse = ",")) %>%
-    dplyr::rename(Gene_symbol = Gene_Symbol)
+  # annotation table list
+  ann_tbl_l <- list()
 
-  pp_ensg_rmtl_df <- ensg_rmtl_df %>%
-    dplyr::select(ensg_id, rmtl, version) %>%
-    dplyr::filter(!is.na(rmtl), !is.na(version)) %>%
-    dplyr::mutate(RMTL = paste0(rmtl, " (", version, ")")) %>%
-    dplyr::select(ensg_id, RMTL) %>%
-    dplyr::rename(Gene_Ensembl_ID = ensg_id)
+  # Helper function to read all columns as characters, as no
+  # non-character/string operation is needed, and remove duplicated rows
+  #
+  # Args:
+  # - file_path: a sinigle character path to the annotation table
+  #
+  # Returns a tibble that is read in from the path
+  rmrdup_all_char_col_read_tsv <- function(file_path) {
+    ann_tibble <- dplyr::distinct(
+      readr::read_tsv(
+        file_path,
+        col_types = readr::cols(.default = readr::col_character())
+      )
+    )
+    return(ann_tibble)
+  }
+  # Helper function to initialize ann_tbl_l element, by adding file_path,
+  # join_by_column, and read table
+  #
+  # Args:
+  # - file_path: a sinigle character path to the annotation table
+  # - join_by_column: a singele character value of the column to be joined by
+  #
+  # Returns a list(file_path = file_path, join_by_column = join_by_column,
+  # tibble = tibble_that_is_read_in)
+  init_ann_tbl_l_element <- function(file_path, join_by_column) {
+    # Check join_by_column is valid
+    if (is.null(join_by_column)) {
+      stop(paste0("annotate_long_format_table function internal error. ",
+                  "Submit a GitHub Issue with your error ",
+                  "message and input data.\n",
+                  "join_by_column for ",
+                  file_path, " cannot be NULL."))
+    }
+    if (!(is.character(join_by_column) &&
+          identical(length(join_by_column), as.integer(1)) &&
+          is.null(names(join_by_column)))) {
+      stop(paste0("annotate_long_format_table function internal error. ",
+                  "Submit a GitHub Issue with the full error traceback",
+                  "message and input data.\n",
+                  "join_by_column for ", file_path,
+                  " must be a single character value ",
+                  "that has no name attribute."))
+    }
 
-  pp_cgroup_efo_mondo_df <- dplyr::rename(
-    cgroup_efo_mondo_df,
-    Disease = cancer_group, EFO = efo_code, MONDO = mondo_code)
+    ann_tbl_l_element <- list(
+      file_path = file_path, join_by_column = join_by_column)
 
+    ann_tbl_l_element$tibble <- rmrdup_all_char_col_read_tsv(
+      ann_tbl_l_element$file_path)
 
-  # Annotate required columns for the input table
-  ann_long_format_table <- long_format_table
+    return(ann_tbl_l_element)
+  }
+
+  # Only add required annotation tables
   if (any(c("Protein_RefSeq_ID", "Gene_full_name") %in% columns_to_add)) {
-    ann_long_format_table <- dplyr::left_join(
-      ann_long_format_table, ensg_gname_prt_refseq_df, by = "Gene_Ensembl_ID")
+    ann_tbl_l$mygene_info <- init_ann_tbl_l_element(
+      file_path = file.path(
+        root_dir, "analyses", "long-format-table-utils", "annotator",
+        "annotation-data", "ensg-gene-full-name-refseq-protein.tsv"),
+      join_by_column = "Gene_Ensembl_ID")
   }
 
   if (any(c("OncoKB_cancer_gene", "OncoKB_oncogene_TSG") %in% columns_to_add)) {
-    ann_long_format_table <- dplyr::left_join(
-      ann_long_format_table, pp_hgsb_oncokb_cgene_oncogene_tsg_df,
-      by = "Gene_symbol")
-    ann_long_format_table <- tidyr::replace_na(
-      ann_long_format_table, list(OncoKB_cancer_gene = "N"))
+    ann_tbl_l$onkokb <- init_ann_tbl_l_element(
+      file_path = file.path(
+        root_dir, "analyses", "long-format-table-utils", "annotator",
+        "annotation-data", "oncokb-cancer-gene-list.tsv"),
+      join_by_column = "Gene_symbol")
+    # Process for joining
+    ann_tbl_l$onkokb$tibble <- ann_tbl_l$onkokb$tibble %>%
+      dplyr::select(
+        `Hugo Symbol`, `Is Oncogene`, `Is Tumor Suppressor Gene`) %>%
+      dplyr::rename(
+        Gene_symbol = `Hugo Symbol`, is_onco = `Is Oncogene`,
+        is_tsg = `Is Tumor Suppressor Gene`) %>%
+      dplyr::mutate(
+        OncoKB_cancer_gene = "Y",
+        OncoKB_oncogene_TSG = dplyr::case_when(
+          is_onco == "Yes" & is_tsg == "Yes" ~ "Oncogene,TumorSuppressorGene",
+          is_onco == "Yes" ~ "Oncogene",
+          is_tsg == "Yes" ~ "TumorSuppressorGene",
+          TRUE ~ as.character(NA))) %>%
+      dplyr::select(Gene_symbol, OncoKB_cancer_gene, OncoKB_oncogene_TSG)
   }
 
   if ("Gene_type" %in% columns_to_add) {
-    ann_long_format_table <- dplyr::left_join(
-      ann_long_format_table, pp_hgsb_gtype_df, by = "Gene_symbol")
+    ann_tbl_l$gene_type <- init_ann_tbl_l_element(
+      file_path = file.path(
+        root_dir, "analyses", "fusion_filtering", "references",
+        "genelistreference.txt"),
+      join_by_column = "Gene_symbol"
+    )
+    # Process for joining
+    ann_tbl_l$gene_type$tibble <- ann_tbl_l$gene_type$tibble %>%
+      dplyr::group_by(Gene_Symbol) %>%
+      dplyr::summarise(
+        Gene_type = paste(sort(unique(purrr::discard(type, is.na))),
+                          collapse = ","))  %>%
+      dplyr::rename(Gene_symbol = Gene_Symbol)
   }
 
   if ("RMTL" %in% columns_to_add) {
-    ann_long_format_table <- dplyr::left_join(
-      ann_long_format_table, pp_ensg_rmtl_df, by = "Gene_Ensembl_ID")
+    ann_tbl_l$fda_rmtl <- init_ann_tbl_l_element(
+      file_path = file.path(root_dir, "data", "ensg-hugo-rmtl-v1-mapping.tsv"),
+      join_by_column = "Gene_Ensembl_ID")
+    # Asert all rmtl NAs have version NAs, vice versa
+    if (!identical(is.na(ann_tbl_l$fda_rmtl$tibble$rmtl),
+                  is.na(ann_tbl_l$fda_rmtl$tibble$version))) {
+      stop(paste0("ensg-hugo-rmtl-v1-mapping.tsv ",
+                  "has rmtl column NAs with version column non-NAs, or",
+                  "version column NAs with rmtl column non-NAs\n",
+                  "Check data integrity. Submit a data question GitHub issue."))
+    }
+    # Process for joining
+    ann_tbl_l$fda_rmtl$tibble <- ann_tbl_l$fda_rmtl$tibble %>%
+      dplyr::select(ensg_id, rmtl, version) %>%
+      dplyr::filter(!is.na(rmtl), !is.na(version)) %>%
+      dplyr::mutate(RMTL = paste0(rmtl, " (", version, ")")) %>%
+      dplyr::select(ensg_id, RMTL) %>%
+      dplyr::rename(Gene_Ensembl_ID = ensg_id)
   }
 
   if (any(c("EFO", "MONDO") %in% columns_to_add)) {
-    ann_long_format_table <- dplyr::left_join(
-      ann_long_format_table, pp_cgroup_efo_mondo_df, by = "Disease")
+    ann_tbl_l$cgroup_ontology = init_ann_tbl_l_element(
+      file_path = file.path(root_dir, "data", "efo-mondo-map.tsv"),
+      join_by_column = "Disease")
+    # Process for joining
+    ann_tbl_l$cgroup_ontology$tibble <- dplyr::rename(
+      ann_tbl_l$cgroup_ontology$tibble,
+      Disease = cancer_group, EFO = efo_code, MONDO = mondo_code)
   }
+
+
+  # Check no NA or duplicate in the join_by_column of annotation data tables
+  purrr::walk(
+    ann_tbl_l,
+    function(xl) {
+      # assert no NA in xl$join_by_column
+      if (!identical(sum(is.na(xl$tibble[, xl$join_by_column])),
+                     as.integer(0))) {
+        stop(paste0(xl$file_path, "has NA(s) in the ",
+                    xl$join_by_column, " column.\n",
+                    "Check data integrity. Submit a data question ",
+                    "GitHub issue."))
+      }
+      # assert no duplicate in xl$join_by_column
+      if (!identical(nrow(xl$tibble),
+                     nrow(dplyr::distinct(xl$tibble[, xl$join_by_column])))) {
+        stop(paste0(xl$file_path, "has duplicate(s) in the ",
+                    xl$join_by_column, " column.\n",
+                    "Check data integrity. Submit a data question ",
+                    "GitHub issue."))
+      }
+    }
+  )
+
+
+  # Annotate required columns for the input table
+  #
+  # .dir = "forward", so:
+  # - x starts with .init value
+  # - y is always the next element in the ann_tbl_l
+  # - the function return value will be the next x
+  ann_long_format_table <- purrr::reduce(
+    ann_tbl_l,
+    function(x, y) {
+      res_tibble <- dplyr::left_join(x$tibble, y$tibble, by = y$join_by_column)
+      return(list(tibble = res_tibble))
+    },
+    .init = list(tibble = long_format_table),
+    .dir = "forward")$tibble
+  # The OncoKB_cancer_gene values are Y or N only
+  ann_long_format_table <- tidyr::replace_na(
+    ann_long_format_table, list(OncoKB_cancer_gene = "N"))
 
   if (replace_na_with_empty_string) {
     ann_long_format_table <- dplyr::mutate_all(
@@ -361,7 +380,7 @@ annotate_long_format_table <- function(
                 char_vec_to_str(ret_tbl_col_order), "."))
   }
   # Though tidyselect::one_of is superseded in favor of tidyselect::any_of and
-  # tidyselect::all_of, the docker image only has one_of.
+  # tidyselect::all_of, the docker image only has one_of
   ann_long_format_table <- dplyr::select(
     ann_long_format_table, tidyselect::one_of(ret_tbl_col_order))
   return(ann_long_format_table)
