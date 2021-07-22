@@ -1,0 +1,213 @@
+---
+title: "De novo mutational signature extraction from WGS data"
+author: "S. Spielman"
+date: "2021"
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+params:
+  is_ci: 0
+---
+
+
+<br><br><br><br>
+
+#### Packages and paths
+
+
+```{r}
+# Load libraries
+library(sigfit)
+`%>%` <- dplyr::`%>%`
+
+# Path to input data
+path_to_input_rds <- file.path("..", "..", "scratch", "mutational-signatures", "extraction")
+
+# Path to consine similarity GOF plots
+path_to_cosine <- file.path("plots", "denovo", "extraction")
+
+# Result path
+path_to_results <- "results"
+if (!dir.exists(path_to_results)) {
+  dir.create(path_to_results, recursive = TRUE)
+}
+
+# De novo signatures and exposures list (condensed from sigfit output) file
+de_novo_signatures_file <- file.path(path_to_results, "de_novo_signatures.RDS")
+de_novo_exposures_file <- file.path(path_to_results, "de_novo_exposures.RDS")
+
+# Load cosmic data from sigfit
+data("cosmic_signatures_v3")
+cosmic_names <- row.names(cosmic_signatures_v3)
+```
+
+<br><br>
+First, we need to extract the signatures and exposures from the *de novo* extraction RDS files. We save each into a list `de_novo_signatures` and `de_novo_extractions` separately, and write each list to file. 
+
+```{r parse_signatures}
+# Collect the de novo extracted signatures and exposures into a single list each. This takes _a few minutes_ to parse.
+# If running in CI, read in lists directly from RDS files. Otherwise, parse to create and save lists.
+
+if (params$is_ci == 1) {
+  de_novo_signatures <- readr::read_rds(de_novo_signatures_file)
+  de_novo_exposures <- readr::read_rds(de_novo_exposures_file)
+} else {
+ 
+  de_novo_signatures <- list()
+  de_novo_exposures <- list()
+  for (this_model in c("poisson" , "multinomial"))
+  {
+    for (this_seed in 1:5){
+  
+      this_name <- glue::glue("seed_{this_seed}_model_{this_model}")
+      filename <- file.path(path_to_input_rds, 
+                            glue::glue("{this_name}.RDS"))
+      #cat(filename)
+      if (file.exists(filename)) {
+        fit <- readr::read_rds(filename)
+        for (k in 2:5){
+          sig_name <- glue::glue("{k}_{this_name}")
+          de_novo_signatures[[ sig_name ]] <- sigfit::retrieve_pars(fit[[k]], par = "signatures") 
+          de_novo_exposures[[ sig_name ]] <- sigfit::retrieve_pars(fit[[k]], par = "exposures") 
+        }
+      }
+    }
+    
+  }
+  # We save these lists to result files
+  readr::write_rds(de_novo_signatures, de_novo_signatures_file)
+  readr::write_rds(de_novo_exposures, de_novo_exposures_file)
+}
+```
+
+<br><br>
+
+Goodness-of-fit analysis was implicitly performed by `sigfit` during inference using cosine similarity. Associated elbow plots are in `plots/extraction/`, names for the model and seed. The red-colored dot in these plots represented the selected *k* for the given seed and inference model. Notably, there substantial sensitivity to starting conditions, both seed and model. **Plots below are shown with `poisson` on top, `multinomial` on bottom**
+
+```{r gof_plots_function}
+show_gof_plots <- function(seed)
+{
+    seed_plots <- c( file.path(path_to_cosine, glue::glue("seed_{seed}_model_poisson.png")),
+                     file.path(path_to_cosine, glue::glue("seed_{seed}_model_multinomial.png"))
+                   )
+    knitr::include_graphics(seed_plots)  
+}
+```
+
+**Seed 1**
+```{r gof_seed1, out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+show_gof_plots(1)
+```
+<br><br>
+**Seed 2**
+```{r gof_seed2, out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+show_gof_plots(2)
+```
+**Seed 3**
+```{r gof_seed3, out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+show_gof_plots(3)
+```
+**Seed 4**
+```{r gof_seed4, out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+show_gof_plots(4)
+```
+**Seed 5**
+```{r gof_seed5, out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+show_gof_plots(5)
+```
+
+
+
+<br><br><br>
+  This tibble collects info from the above images:
+  
+```{r gof_k}
+gof <- tibble::tribble(
+  ~model,     ~seed,      ~best_k,
+  #-----------------
+  "poisson",1,3,
+  "multinomial",1,3,
+  "poisson",2,4,
+  "multinomial",2,3,
+  "poisson",3,4,
+  "multinomial",3,3,
+  "poisson",4,3,
+  "multinomial",4,3,  
+  "poisson",5,3,
+  "multinomial",5,3  
+)
+```
+
+
+
+<br><br>
+  Now, we can determine which signatures were extracted and map back to COSMIC names using cosine similarity to determine matching signatures:
+  
+```{r determine_sigs}
+
+# Will find the COSMIC equivalent using cosine similarity
+map_match <- function(x) {
+  sort( # Can sort since we just want to see cosmic matches
+    as.numeric( # none of this "optimal assigment ==> 1" business
+      # match_signatures is a sigfit function for cosine similarity
+      match_signatures(x, cosmic_signatures_v3)
+    )
+  )
+}
+
+purrr::map(de_novo_signatures, map_match) -> cosmic_matches
+```
+
+<br><br>
+  Now, we create a table of results for which COSMIC SBS signatures were extracted. **Full results for each combination of k, model, and random seed:**
+```{r sigs_full}
+tibble::tibble(
+  name = names(cosmic_matches), 
+  cosmic_sig_index = unname(cosmic_matches[1:length(cosmic_matches)])
+) %>%
+  tidyr::unnest(cosmic_sig_index) %>%
+  dplyr::mutate(cosmic_sig = cosmic_names[cosmic_sig_index]) -> unnested_sigs
+
+unnested_sigs %>%
+  dplyr::group_by(name) %>%
+  dplyr::summarize(cosmic_sigs = toString(cosmic_sig)) %>%
+  dplyr::mutate(cosmic_sigs = stringr::str_replace_all(cosmic_sigs, "SBS", "")) %>%
+  dplyr::mutate(seed  = stringr::str_extract(name, "_\\d_"),
+                seed  = stringr::str_replace_all(seed, "_", ""),
+                k     = stringr::str_extract(name, "^\\d"), 
+                model = stringr::str_extract(name, "[a-z]+$")) %>%
+  dplyr::select(-name) -> full_sigs
+
+full_sigs %>%
+  tidyr::spread(seed, cosmic_sigs) %>%
+  knitr::kable() 
+```
+
+<br><br> 
+  Although not very robust to starting conditions, the results are robust to the inference model, so we will just look at `poisson` going forward. **Now, here's the table specifically for the results whose k was selected by cosine similarity goodness-of-fit**, among *k in [2:5]* for each the given random seed, using 3000 iterations:
+
+```{r sigs_selected}
+gof %>%
+  dplyr::rename(k = best_k) %>%
+  dplyr::mutate(k = as.character(k), seed = as.character(seed)) %>%
+  dplyr::left_join(full_sigs) %>%
+  dplyr::filter(model == "poisson") %>%
+  dplyr::select(-model) %>% 
+  dplyr::distinct() %>%
+  knitr::kable()
+```
+
+<br><br><br>
+
+Clearly, this analysis is extremely sensitive to starting conditions. Even so, we see a few repeated SBS signatures coming up:
+
+
++ **[SBS14](https://cancer.sanger.ac.uk/signatures/sbs/sbs14/)** "is one of seven mutational signatures associated with defective DNA mismatch repair and microsatellite instability (MSI) and is often found in the same samples as other MSI associated signatures: SBS6, SBS15, SBS20, SBS21, SBS26 and SBS44."
++ **[SBS15](https://cancer.sanger.ac.uk/signatures/sbs/sbs15/)** "is one of seven mutational signatures associated with defective DNA mismatch repair and microsatellite instability (MSI) and is often found in the same samples as other MSI associated signatures: SBS6, SBS14, SBS20, SBS21, SBS26 and SBS44."
++ [SBS23](https://cancer.sanger.ac.uk/signatures/sbs/sbs23/) has unknown aetiology.
++ [SBS40](https://cancer.sanger.ac.uk/signatures/sbs/sbs40/) is correlated with age (not of clear relevance to pediatric tumors).
++ [SBS42](https://cancer.sanger.ac.uk/signatures/sbs/sbs42/) is correlated with occupational exposure to haloalkanes (seems unlikely to be relevant for pediatric tumors?).
+
+
+**The two bolded** signatures are commonly associated with one another due to putative shared mechanisms of "defective DNA mismatch repair and microsatellite instability (MSI)."

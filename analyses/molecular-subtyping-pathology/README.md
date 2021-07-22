@@ -19,10 +19,21 @@ The objective of this module is three-fold:
    * [`molecular-subtyping-embryonal`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-embryonal)
    * [`molecular-subtyping-chordoma`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-chordoma)
 
-2. Incorporate clinical reviewed subtypes for PNOC003 samples:
+2. Aggregate pathology_free_text_diganosis from results 
+   * [Choroid plexus papilloma subtypes](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-pathology/results/choroid_plexus_papilloma_subtypes.tsv)
+   * [CNS Lymphoma subtypes](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-pathology/results/cns-lymphoma-subtypes.tsv)
+   * [Meningioma subtypes](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-pathology/results/meningioma_subtypes.tsv) 
+   * [Juvenile Xanthograniloma subtypes](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-pathology/results/juvenile-xanthogranuloma-subtypes.tsv)
+   * [Adamantinomatous craniopharyngioma subtype](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-pathology/results/cranio_adam_subtypes.tsv)
+   * [Neuronal and mixed neuronal-glial tumors subtypes](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-pathology/results/glialneuronal_tumor_subtypes.tsv)
+   * [LGAT subtypes update](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-pathology/results/lgat-pathology-free-text-subtypes.tsv)
+   
+
+
+3. Incorporate clinical reviewed subtypes for PNOC003 samples:
 In the original [issue](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/751) added by @jharenza we have the clinically reviewed subtypes for PNOC003 samples. We check if any subtype is different between the results from `molecular-subtyping-HGG` and this file and update to the clinically reviewed subtype. Subtypes for 3 WXS samples and 3 RNA-Seq from PT_NK8A49X5, PT_QA9WJ679 and PT_WGVEF96B were updated.  
 
-3. Incorporate feedback from CHOP pathologists Maria Rita Santi and Angela Viaene. 
+4. Incorporate feedback from CHOP pathologists Maria Rita Santi and Angela Viaene. 
 Specifically, there are instances where the final `integrated_diagnosis` calls from pathology will deviate from the logic included in molecular subtyping modules based on additional information outside the scope of the repository (e.g., pathology reports, slides, etc.). 
 The goal is to make sure that the _final calls_ are recorded in an aggregated table (see point 1 above) and documented in this repository.
 
@@ -43,6 +54,8 @@ bash run-subtyping-aggregation.sh
 
 `01-compile-subtyping-results.Rmd` aggregates results from the modules listed above into a single table (`results/compiled_molecular_subtypes.tsv`).
 
-`02-incorporate-clinical-feedback.Rmd` incorporate clincally reviewed subtypes for PNOC003 samples and update to the clinically reviewed subtype if they are different from the subtype from `molecular-subtyping-HGG`
+`02-compile-subtyping-pathology-free-text.Rmd` aggregates results from subtypes indetified from pathology_free_text_diagnosis terms into the compiled molecular and reported subtypes (`results/compiled_molecular_subtypes_and_report_info.tsv`)
 
-`03-incorporate-pathology-feedback.Rmd` incorporates pathology feedback for specific samples when the labels for those samples either need to be updated as a result of molecular subtyping OR molecular abberations data could not idenitify subtypes OR pathology review deviates from the logic in upstream molecular subtyping modules. The output is an updated version of the table from `01-compile-subtyping-results.Rmd` (`results/compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv`).
+`03-incorporate-clinical-feedback.Rmd` incorporate clincally reviewed subtypes for PNOC003 samples and update to the clinically reviewed subtype if they are different from the subtype from `molecular-subtyping-HGG`
+
+`04-incorporate-pathology-feedback.Rmd` incorporates pathology feedback for specific samples when the labels for those samples either need to be updated as a result of molecular subtyping OR molecular abberations data could not idenitify subtypes OR pathology review deviates from the logic in upstream molecular subtyping modules. The output is an updated version of the table from `01-compile-subtyping-results.Rmd` (`results/compiled_molecular_subtypes_with_clinical_pathology_feedback_and_report_info.tsv.tsv`).
