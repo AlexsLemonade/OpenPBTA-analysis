@@ -273,9 +273,6 @@ annotate_long_format_table <- function(
   # Process annotation data for joining input table
   #
   # pp in variable names means preprocessed
-  #
-  # %>% is not used, so the user's environment will not be modified by importing
-  # the %>% in this file
   pp_hgsb_oncokb_cgene_oncogene_tsg_df <- hgsb_oncokb_cgene_oncogene_tsg_df %>%
     dplyr::select(`Hugo Symbol`, `Is Oncogene`, `Is Tumor Suppressor Gene`) %>%
     dplyr::rename(
@@ -307,13 +304,6 @@ annotate_long_format_table <- function(
   pp_cgroup_efo_mondo_df <- dplyr::rename(
     cgroup_efo_mondo_df,
     Disease = cancer_group, EFO = efo_code, MONDO = mondo_code)
-
-  # # Code for checking data
-  # print(head(ensg_gname_prt_refseq_df))
-  # print(head(pp_hgsb_oncokb_cgene_oncogene_tsg_df))
-  # print(head(pp_hgsb_gtype_df))
-  # print(head(pp_ensg_rmtl_df))
-  # print(head(pp_cgroup_efo_mondo_df))
 
 
   # Annotate required columns for the input table
