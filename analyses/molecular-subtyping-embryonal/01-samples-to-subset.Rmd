@@ -166,7 +166,7 @@ First, we will create an object filtered to include only samples with exact matc
 ```{r}
 pnet_df <- embryonal_df %>%
   # Filter for exact match of the defined pathology diagnosis term in `path_dx_list$include_path_dx`
-  filter(pathology_diagnosis %in% path_dx_list$include_path_dx)
+  filter(str_detect(pathology_diagnosis,paste(path_dx_list$include_path_dx, collapse = "|")))
 ```
 
 Now we will create an objected filtered to include any sample with "Other" in the `pathology_diagnosis` column of the metadata, and with the `free_text_dx_terms` in the `pathology_free_text_diagnosis` column.

@@ -1,31 +1,32 @@
 Kids_First_Participant_ID	sample_id	Kids_First_Biospecimen_ID_DNA	Kids_First_Biospecimen_ID_RNA	age_at_diagnosis_yrs	germline_sex_estimate	pathology_diagnosis	pathology_free_text_diagnosis	LIN28A	TTYH1_fusions	chr19_amplification	FOXR2	FOXR2_fusions	MN1_fusions	CIC_fusions
-PT_00G007DM	7316-272	BS_K07KNTFY	BS_QWNBZ9RJ	1	Male	Embryonal Tumor with Multilayered Rosettes (ETMR)	embryonal tumor with abundant neuropil and true rosettes (pnet)	2.1897722760012357	TTYH1--DPRX/RNU6-698P	Yes	-0.11863207824104496	None	None	None
-PT_01MZ62KG	7316-447	BS_TE8QFF7T	BS_P39SQPTS	1	Male	Pineoblastoma	pineoblastoma	7.295615974613903	TTYH1--MIR512-2/MIR1323	Yes	-0.11863207824104496	None	None	None
-PT_0PT33SCF	7316-1100	BS_KBPBCWA0	BS_09R7GDA7	3	Female	Supratentorial or Spinal Cord PNET	pnet, maturing treatment induced	-0.19816762063161866	None	No	-0.11863207824104496	None	None	None
-PT_0T2EWNYR	7316-1981	BS_AHT9PKVE	BS_7BW0YRPY	0	Female	Other	embryonal tumor, nos, congenital type	-0.19816762063161866	None	No	-0.07000740061910675	None	None	None
-PT_218SX3G4	7316-529	NA	BS_6T4JGBGY	1	NA	Supratentorial or Spinal Cord PNET	pnet	-0.05285692766740256	None	NA	-0.11863207824104496	None	None	None
-PT_38FS37DP	7316-2686	BS_JX1PK0VW	BS_DBEX7AG2	2	Female	Supratentorial or Spinal Cord PNET	supratentorial pnet (diagnosis was later adjusted to ewing sarcoma of the dura)	-0.15563745545940663	None	No	-0.11863207824104496	None	None	None
-PT_5BWZA0NT	7316-1102	BS_BFDEZK1C	BS_MB7WN0ZB	12	Female	Supratentorial or Spinal Cord PNET	spnet	-0.19816762063161866	None	No	-0.07000740061910675	None	None	None
+PT_00G007DM	7316-2577	BS_AQMKA8NC	BS_FEPRNEXX	1	Male	Embryonal Tumor with Multilayered Rosettes (ETMR);Other	ependymoblastoma	-0.1768681754790916	None	No	-0.07009343176288803	None	None	None
+PT_00G007DM	7316-272	BS_K07KNTFY	BS_QWNBZ9RJ	1	Male	Embryonal Tumor with Multilayered Rosettes (ETMR)	embryonal tumor with abundant neuropil and true rosettes (pnet)	2.188519266107686	TTYH1--DPRX/RNU6-698P	Yes	-0.11869356872650459	None	None	None
+PT_01MZ62KG	7316-447	BS_TE8QFF7T	BS_P39SQPTS	1	Male	Pineoblastoma	pineoblastoma	7.29181260319567	TTYH1--MIR512-2/MIR1323	Yes	-0.11869356872650459	None	None	None
+PT_0PT33SCF	7316-1100	BS_KBPBCWA0	BS_09R7GDA7	3	Female	Supratentorial or Spinal Cord PNET	pnet, maturing treatment induced	-0.1982278580089859	None	No	-0.11869356872650459	None	None	None
+PT_0T2EWNYR	7316-1981	BS_AHT9PKVE	BS_7BW0YRPY	0	Female	Other	embryonal tumor, nos, congenital type	-0.1982278580089859	None	No	-0.07009343176288803	None	None	None
+PT_218SX3G4	7316-529	NA	BS_6T4JGBGY	1	NA	Supratentorial or Spinal Cord PNET	pnet	-0.05298974752522483	None	NA	-0.11869356872650459	None	None	None
+PT_38FS37DP	7316-2686	BS_JX1PK0VW	BS_DBEX7AG2	2	Female	Supratentorial or Spinal Cord PNET	supratentorial pnet (diagnosis was later adjusted to ewing sarcoma of the dura)	-0.1557189365926145	None	No	-0.11869356872650459	None	None	None
+PT_5BWZA0NT	7316-1102	BS_BFDEZK1C	BS_MB7WN0ZB	12	Female	Supratentorial or Spinal Cord PNET	spnet	-0.1982278580089859	None	No	-0.07009343176288803	None	None	None
 PT_7PXN3B4J	7316-784	NA	BS_685DACMS	1	NA	Supratentorial or Spinal Cord PNET	primitive  neuroectodermal tumor (pnet)	7.483365283248606	TTYH1--DPRX/RNU6-698P	NA	-0.1930387747220581	None	None	None
-PT_80NVYCBS	7316-765	NA	BS_KSKZ9J7J	15	NA	Ependymoma	NA	-0.19816762063161866	None	NA	-0.11863207824104496	None	MN1--AC008667.1, MN1--CXXC5, MN1--PSD2	None
-PT_8VRZRZ7R	7316-536	NA	BS_8QB4S4VA	9	NA	Supratentorial or Spinal Cord PNET	high grade malignant tumor with glial differentiation	-0.19816762063161866	None	NA	-0.11863207824104496	None	None	None
+PT_80NVYCBS	7316-765	NA	BS_KSKZ9J7J	15	NA	Ependymoma	NA	-0.1982278580089859	None	NA	-0.11869356872650459	None	MN1--AC008667.1, MN1--CXXC5, MN1--PSD2	None
+PT_8VRZRZ7R	7316-536	NA	BS_8QB4S4VA	9	NA	Supratentorial or Spinal Cord PNET	high grade malignant tumor with glial differentiation	-0.1982278580089859	None	NA	-0.11869356872650459	None	None	None
 PT_8VRZRZ7R	7316-536	NA	BS_QKT3TJVK	9	NA	Supratentorial or Spinal Cord PNET	high grade malignant tumor with glial differentiation	-0.13530361828743212	None	NA	-0.1930387747220581	None	None	None
-PT_98QMQZY7	7316-464	BS_JC8YV5V9	BS_6NRTJSYK	5	Female	Supratentorial or Spinal Cord PNET	pnet - pineoblastoma with calcification	0.3817705145907986	None	No	-0.11863207824104496	None	None	None
-PT_9BZETM0M	7316-158	BS_STNH7YSX	BS_5P1TN10Z	17	Male	Supratentorial or Spinal Cord PNET	pnet with glial and neuronal differentiation and subarachnoid growth	-0.19816762063161866	None	No	-0.11863207824104496	None	None	None
-PT_9BZETM0M	7316-158	BS_STNH7YSX	BS_TV5B86ZD	17	Male	Supratentorial or Spinal Cord PNET	pnet with glial and neuronal differentiation and subarachnoid growth	-0.19816762063161866	None	No	-0.11863207824104496	None	None	None
-PT_9CSZBV2P	7316-1473	NA	BS_YBJBSRHV	13	NA	Supratentorial or Spinal Cord PNET	pnet	-0.19816762063161866	None	NA	10.222957934332246	ZC4H2--AL627224.1/FOXR2, ZC4H2--FOXR2	None	None
-PT_C73C5BBZ	7316-2658	NA	BS_0HW7W7SD	0	Female	Other	medullooepithelioma	3.9061422745301857	None	NA	-0.11863207824104496	None	None	None
-PT_CMB6TASJ	7316-505	BS_B73JK7T1	BS_SXCZ3CXN	1	Female	Supratentorial or Spinal Cord PNET	residual primitive neuroectodermal tumor (pnet), who grade iv	-0.19816762063161866	None	No	-0.11863207824104496	None	None	None
-PT_DQT78GS5	7316-3326	BS_69VS8PS1	BS_37GTVG4N	3	Female	Embryonal Tumor with Multilayered Rosettes (ETMR)	embryonal tumor with multilayer rosettes, ros (who grade iv)	7.955828290408955	TTYH1--MIR512-2/MIR1323, TTYH1--MIR515-2/MIR519C	Yes	-0.07000740061910675	None	None	None
-PT_FF0MSK4D	7316-2987	BS_KJQXZ8GK	BS_D0RDN4K5	16	Female	Supratentorial or Spinal Cord PNET	pnet iv	0.10199954431580201	None	No	-0.11863207824104496	None	None	None
-PT_FMK5VFYW	7316-950	BS_80X7AVCP	BS_FBJ5Q54N	0	Female	Supratentorial or Spinal Cord PNET	spnet	-0.19816762063161866	None	No	-0.11863207824104496	None	None	None
-PT_MRTHX2AQ	7316-23	NA	BS_TD1ZEQ7R	2	NA	Neuroblastoma	neuroblastoma	-0.19816762063161866	None	NA	-0.11863207824104496	None	None	None
+PT_98QMQZY7	7316-464	BS_JC8YV5V9	BS_6NRTJSYK	5	Female	Supratentorial or Spinal Cord PNET	pnet - pineoblastoma with calcification	0.3814205989557186	None	No	-0.11869356872650459	None	None	None
+PT_9BZETM0M	7316-158	BS_STNH7YSX	BS_5P1TN10Z	17	Male	Supratentorial or Spinal Cord PNET	pnet with glial and neuronal differentiation and subarachnoid growth	-0.1982278580089859	None	No	-0.11869356872650459	None	None	None
+PT_9BZETM0M	7316-158	BS_STNH7YSX	BS_TV5B86ZD	17	Male	Supratentorial or Spinal Cord PNET	pnet with glial and neuronal differentiation and subarachnoid growth	-0.1982278580089859	None	No	-0.11869356872650459	None	None	None
+PT_9CSZBV2P	7316-1473	NA	BS_YBJBSRHV	13	NA	Supratentorial or Spinal Cord PNET	pnet	-0.1982278580089859	None	NA	10.217677089407577	ZC4H2--AL627224.1/FOXR2, ZC4H2--FOXR2	None	None
+PT_C73C5BBZ	7316-2658	NA	BS_0HW7W7SD	0	Female	Other	medullooepithelioma	3.904031940310873	None	NA	-0.11869356872650459	None	None	None
+PT_CMB6TASJ	7316-505	BS_B73JK7T1	BS_SXCZ3CXN	1	Female	Supratentorial or Spinal Cord PNET	residual primitive neuroectodermal tumor (pnet), who grade iv	-0.1982278580089859	None	No	-0.11869356872650459	None	None	None
+PT_DQT78GS5	7316-3326	BS_69VS8PS1	BS_37GTVG4N	3	Female	Embryonal Tumor with Multilayered Rosettes (ETMR)	embryonal tumor with multilayer rosettes, ros (who grade iv)	7.951695143896199	TTYH1--MIR512-2/MIR1323, TTYH1--MIR515-2/MIR519C	Yes	-0.07009343176288803	None	None	None
+PT_FF0MSK4D	7316-2987	BS_KJQXZ8GK	BS_D0RDN4K5	16	Female	Supratentorial or Spinal Cord PNET	pnet iv	0.10178937387474479	None	No	-0.11869356872650459	None	None	None
+PT_FMK5VFYW	7316-950	BS_80X7AVCP	BS_FBJ5Q54N	0	Female	Supratentorial or Spinal Cord PNET	spnet	-0.1982278580089859	None	No	-0.11869356872650459	None	None	None
+PT_MRTHX2AQ	7316-23	NA	BS_TD1ZEQ7R	2	NA	Neuroblastoma	neuroblastoma	-0.1982278580089859	None	NA	-0.11869356872650459	None	None	None
 PT_NBY8PZR9	7316-871	BS_Z9NCH2XA	NA	4	Male	Supratentorial or Spinal Cord PNET	supratentorial pnet	NA	NA	No	NA	NA	NA	NA
-PT_NESAQHB1	7316-3689	BS_6TMPZKSZ	BS_QT3NZ2YZ	1	Male	Supratentorial or Spinal Cord PNET	cns embryonal tumor, nos (who grade iv)	-0.17679726363939083	None	No	14.896820579830269	RLIM--AL627224.1/FOXR2	None	None
-PT_NESAQHB1	7316-3844	BS_KJTW1RBN	BS_QHS3V0GP	1	Male	Supratentorial or Spinal Cord PNET	treated recurrent / residual cns embryonal tumor, nos	-0.19816762063161866	None	No	14.364323114503712	RLIM--AL627224.1/FOXR2	None	None
+PT_NESAQHB1	7316-3689	BS_6TMPZKSZ	BS_QT3NZ2YZ	1	Male	Supratentorial or Spinal Cord PNET	cns embryonal tumor, nos (who grade iv)	-0.1768681754790916	None	No	14.889180857236171	RLIM--AL627224.1/FOXR2	None	None
+PT_NESAQHB1	7316-3844	BS_KJTW1RBN	BS_QHS3V0GP	1	Male	Supratentorial or Spinal Cord PNET	treated recurrent / residual cns embryonal tumor, nos	-0.1982278580089859	None	No	14.35695214100972	RLIM--AL627224.1/FOXR2	None	None
 PT_VBG3Z18B	7316-512	NA	BS_ZQKGJD70	7	NA	Supratentorial or Spinal Cord PNET	supratentorial pnet with neuronal differentiation who gr 4	-0.08584915662483301	None	NA	-0.1930387747220581	None	None	None
 PT_VJBVXB08	7316-155	BS_TF6H437Q	BS_ZQ76ZBEX	2	Female	Supratentorial or Spinal Cord PNET	multifocal cerebral neuroblastoma with schererssecondary structures and prominent calcification ia	-0.11865743950733483	None	No	-0.1930387747220581	None	None	None
-PT_WE1CHTWK	7316-87	BS_4DY83R02	BS_1HQ76V6D	1	Male	Supratentorial or Spinal Cord PNET	supratentorial pnet	-0.15563745545940663	None	No	-0.021861791649262313	None	None	None
+PT_WE1CHTWK	7316-87	BS_4DY83R02	BS_1HQ76V6D	1	Male	Supratentorial or Spinal Cord PNET	supratentorial pnet	-0.1557189365926145	None	No	-0.021972121667549315	None	None	None
 PT_WE1CHTWK	7316-87	BS_4DY83R02	BS_JGA9BP3A	1	Male	Supratentorial or Spinal Cord PNET	supratentorial pnet	-0.13530361828743212	None	No	-0.1930387747220581	None	None	None
-PT_X648RVMK	7316-238	NA	BS_N6N147BY	4	NA	High-grade glioma/astrocytoma (WHO grade III/IV)	high-grade glioma	8.129848998475389	TTYH1--DPRX/RNU6-698P	NA	-0.021861791649262313	None	None	None
-PT_X71D7G5S	7316-1105	BS_P8WN8XEQ	BS_C6ZZ3FY5	14	Male	Supratentorial or Spinal Cord PNET	recurrent/residual pnet	-0.19816762063161866	None	No	-0.11863207824104496	None	None	None
+PT_X648RVMK	7316-238	NA	BS_N6N147BY	4	NA	High-grade glioma/astrocytoma (WHO grade III/IV)	high-grade glioma	8.12562892887126	TTYH1--DPRX/RNU6-698P	NA	-0.021972121667549315	None	None	None
+PT_X71D7G5S	7316-1105	BS_P8WN8XEQ	BS_C6ZZ3FY5	14	Male	Supratentorial or Spinal Cord PNET	recurrent/residual pnet	-0.1982278580089859	None	No	-0.11869356872650459	None	None	None
