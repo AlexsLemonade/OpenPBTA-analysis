@@ -113,6 +113,11 @@ parsed_opts <- optparse::parse_args(option_parser)
 
 # Read, annotate, and output ---------------------------------------------------
 columns_to_add <- stringr::str_split(parsed_opts$`columns-to-add`, ",")[[1]]
+if (identical(columns_to_add, "")) {
+  # If no annotation column to add, run the following code with columns_to_add =
+  # character(0)
+  columns_to_add <- character(0)
+}
 
 if (parsed_opts$verbose) {
   message(paste0("Read ", parsed_opts$`input-long-format-table-tsv`, "..."))
