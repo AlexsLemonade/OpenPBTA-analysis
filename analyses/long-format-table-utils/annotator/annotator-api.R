@@ -30,6 +30,11 @@
 #   empty strings for **ALL** columns of the input table. Default value is TRUE.
 #
 # Returns a tibble with additonal annotation columns
+#
+# Note on how to add new annotation columns:
+# - Add new column names to the columns_to_add parameter
+# - Add new column names to the available_ann_columns variable
+# - Implement annotation procedures to add new columns
 annotate_long_format_table <- function(
   long_format_table,
   columns_to_add = c("RMTL", "Gene_type", "OncoKB_cancer_gene",
