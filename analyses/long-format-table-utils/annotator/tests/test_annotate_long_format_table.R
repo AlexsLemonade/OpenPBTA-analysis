@@ -8,14 +8,23 @@ context("tests/test_annotate_long_format_table.R")
 annotate_long_format_table <- import_function(
   "../annotator-api.R", "annotate_long_format_table")
 
+# Add [] after reading to be compatible with readr >= 1.3.1, otherwise the tests
+# will fail on readr >= 1.3.1 as found by @NHJohnson at
+# <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/56
+#  #issuecomment-885188592>
+#
+# readr 1.3.1 returns spec_tbl_df subclass, which becomes tbl_df after any
+# subsetting
+#
+# Ref: https://www.tidyverse.org/blog/2018/12/readr-1-3-1/#tibble-subclass
 long_format_tibble <- readr::read_tsv(
   "test_data/test_long_format_table.tsv",
-  col_types = readr::cols(.default = readr::col_character()))
+  col_types = readr::cols(.default = readr::col_character()))[]
 
 inspected_annotated_long_format_tibble <- readr::read_tsv(
   "test_data/inspected_annotated_test_long_format_table.tsv",
   col_types = readr::cols(.default = readr::col_character()),
-  na = c("NA"), quoted_na = FALSE, trim_ws = FALSE)
+  na = c("NA"), quoted_na = FALSE, trim_ws = FALSE)[]
 
 # Test cases
 #
@@ -33,10 +42,10 @@ testthat::expect_equal(
     columns_to_add = c("RMTL", "Gene_type", "OncoKB_cancer_gene",
                        "OncoKB_oncogene_TSG", "Gene_full_name",
                        "Protein_RefSeq_ID", "EFO", "MONDO")),
-    inspected_annotated_long_format_tibble[,
-      c("Gene_symbol", "Gene_Ensembl_ID", "Disease", "cohort", "tpm_mean", "RMTL",
-        "Gene_type", "OncoKB_cancer_gene", "OncoKB_oncogene_TSG", "Gene_full_name",
-        "Protein_RefSeq_ID", "EFO", "MONDO")])
+  inspected_annotated_long_format_tibble[,
+    c("Gene_symbol", "Gene_Ensembl_ID", "Disease", "cohort", "tpm_mean", "RMTL",
+      "Gene_type", "OncoKB_cancer_gene", "OncoKB_oncogene_TSG",
+      "Gene_full_name", "Protein_RefSeq_ID", "EFO", "MONDO")])
 
 testthat::expect_equal(
   annotate_long_format_table(
@@ -167,12 +176,23 @@ testthat::expect_error(
     columns_to_add = c(TRUE)))
 
 # No error on requiring non-existing annotation columns
+#
+# Relocate to last, so the order is expected. Adapted from
+# https://stackoverflow.com/a/43902237/4638182. The dplyr::relocate is not
+# available in the Docker image
+#
+# The behavior of testthat::expect_equal changed at some point. The Docker
+# image/container version does not check column order, whereas the latest
+# version checks.
 testthat::expect_equal(
   annotate_long_format_table(
     dplyr::select(
       inspected_annotated_long_format_tibble, -EFO, -OncoKB_cancer_gene),
     columns_to_add = c("EFO", "OncoKB_cancer_gene")),
-  inspected_annotated_long_format_tibble)
+  dplyr::select(
+    inspected_annotated_long_format_tibble,
+    -EFO, -OncoKB_cancer_gene,
+    EFO, OncoKB_cancer_gene))
 
 testthat::expect_equal(
   annotate_long_format_table(
@@ -180,9 +200,10 @@ testthat::expect_equal(
       inspected_annotated_long_format_tibble,
       -EFO, -OncoKB_cancer_gene, -OncoKB_oncogene_TSG),
     columns_to_add = c("EFO", "OncoKB_cancer_gene")),
-    dplyr::select(
-      inspected_annotated_long_format_tibble,
-      -OncoKB_oncogene_TSG))
+  dplyr::select(
+    inspected_annotated_long_format_tibble,
+    -OncoKB_oncogene_TSG, -EFO, -OncoKB_cancer_gene,
+    EFO, OncoKB_cancer_gene))
 
 testthat::expect_equal(
   annotate_long_format_table(
@@ -190,9 +211,10 @@ testthat::expect_equal(
       inspected_annotated_long_format_tibble,
       -MONDO, -OncoKB_cancer_gene, -Protein_RefSeq_ID, -RMTL),
     columns_to_add = c("MONDO", "OncoKB_cancer_gene", "Protein_RefSeq_ID")),
-    dplyr::select(
-      inspected_annotated_long_format_tibble,
-      -RMTL))
+  dplyr::select(
+    inspected_annotated_long_format_tibble,
+    -RMTL, -MONDO, -OncoKB_cancer_gene, -Protein_RefSeq_ID,
+    MONDO, OncoKB_cancer_gene, Protein_RefSeq_ID))
 
 testthat::expect_equal(
   annotate_long_format_table(
@@ -200,6 +222,7 @@ testthat::expect_equal(
       inspected_annotated_long_format_tibble,
       -EFO, -OncoKB_oncogene_TSG, -Gene_full_name, -RMTL),
     columns_to_add = c("EFO", "OncoKB_oncogene_TSG", "Gene_full_name")),
-    dplyr::select(
-      inspected_annotated_long_format_tibble,
-      -RMTL))
+  dplyr::select(
+    inspected_annotated_long_format_tibble,
+    -RMTL, -EFO, -OncoKB_oncogene_TSG, -Gene_full_name,
+    EFO, OncoKB_oncogene_TSG, Gene_full_name))
