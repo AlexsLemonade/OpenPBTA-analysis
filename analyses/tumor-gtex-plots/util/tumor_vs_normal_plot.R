@@ -83,8 +83,7 @@ tumor_vs_normal_plot <- function(expr_mat_gene, hist_file,
       fname <- paste(gene_name, cancer_group_name_fname, "vs_GTEx", analysis_type, sep = "_")
     }
     plot_fname <- paste0(fname, '.png')
-    # table_fname <- paste0(fname, '.tsv')
-    table_fname <- paste0(analysis_type, '.tsv')
+    table_fname <- paste0('tumor_normal_gtex_plots_', analysis_type, '.tsv')
     
     # data-frame for mapping output filenames with info
     mapping_df <- data.frame(gene = gene_name, 

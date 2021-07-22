@@ -49,7 +49,7 @@ tumor_plot <- function(expr_mat_gene, hist_file,
   }
   fname <- paste(gene_name, tumor_cohort_fname, "pan_cancer", analysis_type, sep = "_")
   plot_fname <- paste0(fname, '.png')
-  table_fname <- paste0(analysis_type, '.tsv')
+  table_fname <- paste0('pan_cancer_plots_', analysis_type, '.tsv')
   
   # data-frame for mapping output filenames with info
   mapping_df <- data.frame(gene = gene_name, 
@@ -92,7 +92,7 @@ tumor_plot <- function(expr_mat_gene, hist_file,
   output_table <- output_table %>%
     mutate(ENSG_id = NA,
            cohort = tumor_cohort, 
-           cancer_group = NA,
+           cancer_group = x_labels,
            efo_code = NA,
            mondo_code = NA,	
            uberon_code = NA,

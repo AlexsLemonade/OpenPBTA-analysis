@@ -11,7 +11,7 @@
 * `cohort + cancer_group tumor vs normal plots`: For each cancer_group within a cohort, plot cohort + cancer_group vs GTEx subgroups.
 * `cancer_group tumor vs normal plots`: For each cancer_group, plot cancer_group vs GTEx subgroups.
 
-2. Export two tables (.tsv) `cancer_group_level.tsv` and `cohort_cancer_group_level.tsv` with the following fields: `gene`, `ENSG_id`, `cohort`, `cancer_group`, `x_labels`, `mean`, `median`, `sd`, `efo_code`, `mondo_code`, `uberon_code`, `plot_api`.
+2. Export two tables (.tsv) `cancer_group_level.tsv` and `cohort_cancer_group_level.tsv` per comparison type i.e. `tumor_normal_gtex_plots_` and `pan_cancer_plots_` with the following fields: `gene`, `ENSG_id`, `cohort`, `cancer_group`, `x_labels`, `mean`, `median`, `sd`, `efo_code`, `mondo_code`, `uberon_code`, `plot_api`.
 
 3. Export metadata files to use in JSON files with the following fields: `gene` (gene name), `plot_type` (either `tumors_only` or `tumor_vs_normal`), `cohort` (`_` separated cohort name), `cancer_group` (only applicable for tumor vs normal plots and `NA` for tumors only plot), `analysis_type` (either `cohort_cancer_group_level` or `cancer_group_level`), `plot_fname` (plot filename) and `table_fname` (table filename).
 
@@ -33,8 +33,10 @@
 │   ├── GPC2_PBTA_GMKF_pan_cancer_cohort_cancer_group_level.png
 │   └── ...
 ├── results
-│   ├── cancer_group_level.tsv 
-│   ├── cohort_cancer_group_level.tsv
+│   ├── pan_cancer_plots_cancer_group_level.tsv
+│   ├── pan_cancer_plots_cohort_cancer_group_level.tsv
+│   ├── tumor_normal_gtex_plots_cancer_group_level.tsv
+│   ├── tumor_normal_gtex_plots_cohort_cancer_group_level.tsv
 │   └── metadata.tsv # mapping of filename and metadata for all comparisons 
 ├── run-tumor-gtex-plots.sh # full analysis script
 ├── run-tumor-only-plots.sh # script for tumor only plots
@@ -103,9 +105,11 @@ Tumors vs GTEx filename format:
 {gene_name}_{cancer_group_name}_vs_GTEx_{analysis_type}.png
 ``` 
 
-2. `results/cancer_group_level.tsv` and `results/cohort_cancer_group_level.tsv`: corresponding data for expression boxplots
+2. `results/pan_cancer_plots_cancer_group_level.tsv` and `results/pan_cancer_plots_cohort_cancer_group_level.tsv`: corresponding data for pan-cancer expression boxplots
 
-3. `results/metadata.tsv`: mapping of filename and metadata for all comparisons 
+3. `results/tumor_normal_gtex_plots_cancer_group_level.tsv` and `results/tumor_normal_gtex_plots_cohort_cancer_group_level.tsv`: corresponding data for tumor-vs-normal expression boxplots
+
+4. `results/metadata.tsv`: mapping of filename and metadata for all comparisons 
 
 ### Running the analysis
 
