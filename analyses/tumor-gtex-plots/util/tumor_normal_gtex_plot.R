@@ -3,7 +3,7 @@ suppressPackageStartupMessages(library(tidyr))
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(ggplot2))
 
-tumor_vs_normal_plot <- function(expr_mat_gene, hist_file, 
+tumor_normal_gtex_plot <- function(expr_mat_gene, hist_file, 
                                  analysis_type = c("cohort_cancer_group_level", "cancer_group_level"), 
                                  plots_dir, results_dir, plot_width, plot_height, mapping_file){
   
@@ -59,12 +59,17 @@ tumor_vs_normal_plot <- function(expr_mat_gene, hist_file,
     
     # create unique title and filenames
     gene_name <- unique(expr_mat_gene_subset$gene)
-    cohorts <- paste0(unique(expr_mat_gene_subset$cohort), collapse = ", ")
+    # cohorts <- paste0(unique(expr_mat_gene_subset$cohort), collapse = ", ")
     tumor_cohort <- expr_mat_gene_subset %>%
       filter(sample_type == "Tumor") %>%
       .$cohort %>% 
       unique() %>%
       paste0(collapse = ", ")
+    if(analysis_type == "cohort_cancer_group_level"){
+      cohort_name <- tumor_cohort
+    } else {
+      cohort_name <- "all_cohorts"
+    }
     cancer_group_name <- expr_mat_gene_subset %>%
       filter(sample_type == "Tumor") %>%
       .$cancer_group %>%
@@ -87,9 +92,9 @@ tumor_vs_normal_plot <- function(expr_mat_gene, hist_file,
     
     # data-frame for mapping output filenames with info
     mapping_df <- data.frame(gene = gene_name, 
-                             plot_type = "tumor_vs_normal", 
-                             cohort = cohorts,
-                             cancer_group = cohort_cancer_groups[i],
+                             plot_type = "tumor_normal_gtex", 
+                             cohort = cohort_name,
+                             cancer_group = gsub(" [(].*|[,].*", "", cohort_cancer_groups[i]),
                              analysis_type = analysis_type, 
                              plot_fname = plot_fname,
                              table_fname = table_fname)
@@ -124,22 +129,17 @@ tumor_vs_normal_plot <- function(expr_mat_gene, hist_file,
     
     # for now add dummy values for all other columns
     output_table <- output_table %>%
-      mutate(ENSG_id = NA,
-             cohort = cohorts, 
-             cancer_group = cohort_cancer_groups[i],
-             efo_code = NA,
-             mondo_code = NA,	
-             uberon_code = NA,
+      mutate(cohort = cohort_name, 
+             cancer_group = gsub(" [(].*|[,].*", "", cohort_cancer_groups[i]),
              plot_api = NA) %>%
-      dplyr::select(gene, ENSG_id, cohort, cancer_group, 
+      dplyr::select(gene, cohort, cancer_group, 
                     x_labels, mean, median, sd,
-                    efo_code, mondo_code, uberon_code, plot_api)
+                    plot_api)
     table_fname <- file.path(results_dir, table_fname)
     if(!file.exists(table_fname)){
       write.table(x = output_table, file = table_fname, sep = "\t", row.names = F, quote = F)
     } else {
       write.table(x = output_table, file = table_fname, sep = "\t", row.names = F, col.names = F, quote = F, append = TRUE)
     }
-    # write.table(x = output_table, file = file.path(results_dir, table_fname), sep = "\t", row.names = F, quote = F)
   }
 }

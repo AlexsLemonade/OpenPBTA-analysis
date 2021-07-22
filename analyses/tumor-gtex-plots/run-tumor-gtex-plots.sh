@@ -1,5 +1,5 @@
-# run tumor only analysis
-bash run-tumor-only-plots.sh
+# run pan-cancer analysis
+bash run-pan-cancer-plots.sh
 
 # run tumor vs normal analysis
-bash run-tumor-vs-normal-plots.sh
+bash run-tumor-normal-gtex-plots.sh

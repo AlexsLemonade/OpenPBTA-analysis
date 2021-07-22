@@ -45,8 +45,8 @@ dir.create(results_dir, showWarnings = F, recursive = T)
 
 # source functions
 source(file.path(analyses_dir, 'util', 'pubTheme.R'))
-source(file.path(analyses_dir, 'util', 'tumor_plot.R'))
-source(file.path(analyses_dir, 'util', 'tumor_vs_normal_plot.R'))
+source(file.path(analyses_dir, 'util', 'pan_cancer_plot.R'))
+source(file.path(analyses_dir, 'util', 'tumor_normal_gtex_plot.R'))
 
 # read input data
 expr_mat <- readRDS(expr_mat)
@@ -74,15 +74,15 @@ expr_mat <- expr_mat %>%
 # if tumor_vs_normal is TRUE, call tumor_vs_normal_plot else call tumor_plot
 # apply function over each gene to generate boxplot and output table
 if(tumor_vs_normal){
-  print("Tumor vs Normal")
-  plyr::d_ply(.data = expr_mat, .variables = "gene", .fun = function(x) tumor_vs_normal_plot(expr_mat_gene = x,
+  print("Tumor-Normal-GTEx plots")
+  plyr::d_ply(.data = expr_mat, .variables = "gene", .fun = function(x) tumor_normal_gtex_plot(expr_mat_gene = x,
                                                                                              hist_file, analysis_type,
                                                                                              plots_dir, results_dir,
                                                                                              plot_width, plot_height,
                                                                                              mapping_file))
 } else {
-  print("Tumors only")
-  plyr::d_ply(.data = expr_mat, .variables = "gene", .fun = function(x) tumor_plot(expr_mat_gene = x,
+  print("Pan-cancer plots")
+  plyr::d_ply(.data = expr_mat, .variables = "gene", .fun = function(x) pan_cancer_plot(expr_mat_gene = x,
                                                                                    hist_file, analysis_type,
                                                                                    plots_dir, results_dir,
                                                                                    plot_width, plot_height,

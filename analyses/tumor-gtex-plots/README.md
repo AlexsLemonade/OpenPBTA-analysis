@@ -4,16 +4,16 @@
 
 ### Purpose
 
-1. Create `tumor vs normal` and `tumors only` expression plots, with `TPM` on the y-axis, as follows:
+1. Create `tumor-normal-gtex` and `pan-cancer` expression plots, with `TPM` on the y-axis, as follows:
 
-* `cohort + cancer_group tumor only plots`: For each cohort + cancer_group, plot all tumors.
-* `cancer_group tumor only plots`: For each cancer_group, plot all tumors.
-* `cohort + cancer_group tumor vs normal plots`: For each cancer_group within a cohort, plot cohort + cancer_group vs GTEx subgroups.
-* `cancer_group tumor vs normal plots`: For each cancer_group, plot cancer_group vs GTEx subgroups.
+* `cohort + cancer_group pan-cancer plots`: For each cohort + cancer_group, plot all tumors.
+* `cancer_group pan-cancer plots`: For each cancer_group, plot all tumors.
+* `cohort + cancer_group tumor-normal-gtex plots`: For each cancer_group within a cohort, plot cohort + cancer_group vs GTEx subgroups.
+* `cancer_group tumor-normal-gtex plots`: For each cancer_group, plot cancer_group vs GTEx subgroups.
 
-2. Export two tables (.tsv) `cancer_group_level.tsv` and `cohort_cancer_group_level.tsv` per comparison type i.e. `tumor_normal_gtex_plots_` and `pan_cancer_plots_` with the following fields: `gene`, `ENSG_id`, `cohort`, `cancer_group`, `x_labels`, `mean`, `median`, `sd`, `efo_code`, `mondo_code`, `uberon_code`, `plot_api`.
+2. Export two tables (.tsv) `cancer_group_level.tsv` and `cohort_cancer_group_level.tsv` per comparison type i.e. `tumor_normal_gtex_plots_` and `pan_cancer_plots_` with the following fields: `gene`, `cohort`, `cancer_group`, `x_labels`, `mean`, `median`, `sd`, `plot_api`.
 
-3. Export metadata files to use in JSON files with the following fields: `gene` (gene name), `plot_type` (either `tumors_only` or `tumor_vs_normal`), `cohort` (`_` separated cohort name), `cancer_group` (only applicable for tumor vs normal plots and `NA` for tumors only plot), `analysis_type` (either `cohort_cancer_group_level` or `cancer_group_level`), `plot_fname` (plot filename) and `table_fname` (table filename).
+3. Export metadata files to use in JSON files with the following fields: `gene` (gene name), `plot_type` (either `pan_cancer` or `tumor_normal_gtex`), `cohort` (tumor cohort name for tumor-normal-gtex plots and `all_cohorts` for pan-cancer plots) for , `cancer_group` (only applicable for tumor-normal-gtex plots and `NA` for tumors only plot), `analysis_type` (either `cohort_cancer_group_level` or `cancer_group_level`), `plot_fname` (plot filename) and `table_fname` (table filename).
 
 ### Methods 
 
@@ -39,12 +39,12 @@
 │   ├── tumor_normal_gtex_plots_cohort_cancer_group_level.tsv
 │   └── metadata.tsv # mapping of filename and metadata for all comparisons 
 ├── run-tumor-gtex-plots.sh # full analysis script
-├── run-tumor-only-plots.sh # script for tumor only plots
-├── run-tumor-vs-normal-plots.sh # script for tumor vs gtex plots
+├── run-pan-cancer-plots.sh # script for pan-cancer plots
+├── run-tumor-normal-gtex-plots.sh # script for tumor vs gtex plots
 └── util
     ├── pubTheme.R # publication quality ggplot2 theme
-    ├── tumor_plot.R # function for tumor only plot
-    └── tumor_vs_normal_plot.R # function for tumor vs normal plot
+    ├── pan_cancer_plot.R # function for pan-cancer plot
+    └── tumor_normal_gtex_plot.R # function for tumor-normal-gtex plot
 ```
 
 ### Analysis scripts
@@ -107,18 +107,18 @@ Tumors vs GTEx filename format:
 
 2. `results/pan_cancer_plots_cancer_group_level.tsv` and `results/pan_cancer_plots_cohort_cancer_group_level.tsv`: corresponding data for pan-cancer expression boxplots
 
-3. `results/tumor_normal_gtex_plots_cancer_group_level.tsv` and `results/tumor_normal_gtex_plots_cohort_cancer_group_level.tsv`: corresponding data for tumor-vs-normal expression boxplots
+3. `results/tumor_normal_gtex_plots_cancer_group_level.tsv` and `results/tumor_normal_gtex_plots_cohort_cancer_group_level.tsv`: corresponding data for tumor-normal-gtex expression boxplots
 
 4. `results/metadata.tsv`: mapping of filename and metadata for all comparisons 
 
 ### Running the analysis
 
 ```
-# tumor only plots
-bash run-tumor-only-plots.sh
+# pan-cancer plots
+bash run-pan-cancer-plots.sh
 
-# tumor vs normal plots
-bash run-tumor-vs-normal-plots.sh
+# tumor-normal-gtex plots
+bash run-tumor-normal-gtex-plots.sh
 
 # running both scripts
 bash run-tumor-gtex-plots.sh

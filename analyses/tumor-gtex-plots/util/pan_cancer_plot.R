@@ -3,7 +3,7 @@ suppressPackageStartupMessages(library(tidyr))
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(ggplot2))
 
-tumor_plot <- function(expr_mat_gene, hist_file, 
+pan_cancer_plot <- function(expr_mat_gene, hist_file, 
                        analysis_type = c("cohort_cancer_group_level", "cancer_group_level"), 
                        plots_dir, results_dir, plot_width, plot_height, mapping_file){
   
@@ -53,8 +53,8 @@ tumor_plot <- function(expr_mat_gene, hist_file,
   
   # data-frame for mapping output filenames with info
   mapping_df <- data.frame(gene = gene_name, 
-                           plot_type = "tumors_only", 
-                           cohort = tumor_cohort,
+                           plot_type = "pan_cancer", 
+                           cohort = "all_cohorts",
                            cancer_group = NA,
                            analysis_type = analysis_type, 
                            plot_fname = plot_fname,
@@ -90,16 +90,11 @@ tumor_plot <- function(expr_mat_gene, hist_file,
   
   # for now add dummy values for all other columns
   output_table <- output_table %>%
-    mutate(ENSG_id = NA,
-           cohort = tumor_cohort, 
-           cancer_group = x_labels,
-           efo_code = NA,
-           mondo_code = NA,	
-           uberon_code = NA,
+    mutate(cohort = "all_cohorts", 
+           cancer_group = gsub(" [(].*|[,].*", "", x_labels),
            plot_api = NA) %>%
-    dplyr::select(gene, ENSG_id, cohort, cancer_group, 
-                  x_labels, mean, median, sd,
-                  efo_code, mondo_code, uberon_code, plot_api)
+    dplyr::select(gene, cohort, cancer_group, 
+                  x_labels, mean, median, sd, plot_api)
   table_fname <- file.path(results_dir, table_fname)
   if(!file.exists(table_fname)){
     write.table(x = output_table, file = table_fname, sep = "\t", row.names = F, quote = F)
