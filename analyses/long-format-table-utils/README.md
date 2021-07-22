@@ -34,9 +34,9 @@ Run the following command to update downloaded data that are used in this module
 bash run-update-long-format-table-utils.sh
 ```
 
-The `run-update-long-format-table-utils.sh` runs data downloading scripts in sub-modules, e.g. `annotator/run-download-annotation-data.sh`. The data downloading scripts use `git diff --stat` to check for data file changes.
+The `run-update-long-format-table-utils.sh` runs data downloading scripts in sub-modules, e.g. `annotator/run-download-annotation-data.sh`.
 
-Users could also use `git diff --stat` to check for data file changes.
+Users could use `git diff --stat` to check for data file changes.
 
 Following is the table of data files that need to be updated by the maintainer of this module.
 
