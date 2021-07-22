@@ -233,3 +233,6 @@ Notes on the `testthat` unit testing framework:
 - `testthat::test_dir("tests")` also finds and runs all `helper*R` files under the `tests` directory before running the `test*R` files.
 - The working directory is `tests` when running the `helper*R` and `test*R` files through `testthat::test_dir("tests")`.
 - In order to import a funciton for testing from an R file without running the whole file, a helper function `import_function` is defined at `tests/helper_import_function.R`, and the `import_function` is also tested in the `tests/test_helper_import_function.R` file.
+- Even though the `testthat` 2.1.1 documentation of the `filter` parameter of `test_dir` function says that "Matching is performed on the file name after it's stripped of "test-" and ".R", the R code uses the following. Therefore, naming test files with `test_some_test_file.R` can be found by the `test_dir` function.
+  - `"^test.*\\.[rR]$"` for finding test files in `find_test_scripts`
+  - `sub("^test-?", "", test_names)`, `sub("\\.[rR]$", "", test_names)`, and `grepl(filter, test_names, ...)` for filtering test files in `testthat:::filter_test_scripts`.
