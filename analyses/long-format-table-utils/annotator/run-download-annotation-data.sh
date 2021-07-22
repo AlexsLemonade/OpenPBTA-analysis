@@ -17,6 +17,4 @@ mkdir -p 'annotation-data'
 
 Rscript --vanilla 'download-annotation-data.R'
 
-git diff --stat 'annotation-data'
-
 echo 'Done running run-download-annotation-data.sh'
