@@ -118,7 +118,7 @@ annotate_long_format_table <- function(
   # Keep the order of columns for the returned table
   ret_tbl_col_order <- c(colnames(long_format_table), columns_to_add)
 
-  # Detect the ".git" folder -- this will in the project root directory. Use
+  # Detect the ".git" folder -- this will be in the project root directory. Use
   # this as the root directory to ensure proper execution, no matter where it is
   # called from.
   #
@@ -127,10 +127,22 @@ annotate_long_format_table <- function(
   #
   # root_dir is the absolute path of OpenPedCan-analysis
   #
-  # Adapted from the oncoprint-landscape module.
+  # Adapted from the oncoprint-landscape module
+  #
+  # rprojroot::has_file(".git/index") returns a rprojroot::root_criterion, and
+  # main git working tree, created by git clone and git init, has the .git/index
+  # file
+  #
+  # rprojroot::has_file(".git") returns a rprojroot::root_criterion, and linked
+  # git working tree, created by git worktree add, has the .git file
+  #
+  # "Root criteria can be combined with the | operator. The result is a
+  # composite root criterion that requires either of the original criteria to
+  # match." -- help("root_criterion", "rprojroot") rprojroot_1.3-2
   tryCatch(
     {
-      root_dir <- rprojroot::find_root(rprojroot::has_file(".git/index"))
+      root_dir <- rprojroot::find_root(
+        rprojroot::has_file(".git/index") | rprojroot::has_file(".git"))
     },
     error = function(err_cond) {
       # adapted from http://adv-r.had.co.nz/Exceptions-Debugging.html
