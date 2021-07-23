@@ -1,5 +1,5 @@
 # release notes
-## curremt release
+## current release
 - release date: 2021-07-23
 - status: available
 - changes:
