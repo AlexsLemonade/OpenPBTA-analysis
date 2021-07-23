@@ -1775,27 +1775,67 @@ $(document).ready(function () {
 <p>This notebook adds ploidy information to the CNVkit results and adds a status column that defines gain and loss broadly.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkcGx5cilcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoibGlicmFyeShkcGx5cikifQ== -->
 <pre class="r"><code>library(dplyr)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiXG5BdHRhY2hpbmcgcGFja2FnZTogJ2RwbHlyJ1xuIn0= -->
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSAncGFja2FnZTpzdGF0cyc6XG5cbiAgICBmaWx0ZXIsIGxhZ1xuIn0= -->
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSAncGFja2FnZTpiYXNlJzpcblxuICAgIGludGVyc2VjdCwgc2V0ZGlmZiwgc2V0ZXF1YWwsIHVuaW9uXG4ifQ== -->
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <div id="read-in-data" class="section level3">
 <h3>Read in data</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY252a2l0X2ZpbGUgPC0gZmlsZS5wYXRoKFwiLi5cIiwgXCIuLlwiLCBcImRhdGFcIiwgXCJjbnYtY252a2l0LnNlZy5nelwiKVxuY252a2l0X2RmIDwtIHJlYWRyOjpyZWFkX3RzdihjbnZraXRfZmlsZSlcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbImNudmtpdF9maWxlIDwtIGZpbGUucGF0aChcIi4uXCIsIFwiLi5cIiwgXCJkYXRhXCIsIFwiY252LWNudmtpdC5zZWcuZ3pcIikiLCJjbnZraXRfZGYgPC0gcmVhZHI6OnJlYWRfdHN2KGNudmtpdF9maWxlKSJdfQ== -->
 <pre class="r"><code>cnvkit_file &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;data&quot;, &quot;cnv-cnvkit.seg.gz&quot;)
 cnvkit_df &lt;- readr::read_tsv(cnvkit_file)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBJRCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgY2hyb20gPSBjb2xfY2hhcmFjdGVyKCksXG4gIGxvYy5zdGFydCA9IGNvbF9kb3VibGUoKSxcbiAgbG9jLmVuZCA9IGNvbF9kb3VibGUoKSxcbiAgbnVtLm1hcmsgPSBjb2xfZG91YmxlKCksXG4gIHNlZy5tZWFuID0gY29sX2RvdWJsZSgpLFxuICBjb3B5Lm51bSA9IGNvbF9kb3VibGUoKVxuKVxuIn0= -->
+<pre><code>Parsed with column specification:
+cols(
+  ID = col_character(),
+  chrom = col_character(),
+  loc.start = col_double(),
+  loc.end = col_double(),
+  num.mark = col_double(),
+  seg.mean = col_double(),
+  copy.num = col_double()
+)</code></pre>
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlzdG9sb2dpZXNfZmlsZSA8LSBmaWxlLnBhdGgoXCIuLlwiLCBcIi4uXCIsIFwiZGF0YVwiLCBcImhpc3RvbG9naWVzLnRzdlwiKVxuaGlzdG9sb2dpZXNfZGYgPC0gcmVhZHI6OnJlYWRfdHN2KGhpc3RvbG9naWVzX2ZpbGUsIGd1ZXNzX21heCA9IDEwMDAwMClcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbImhpc3RvbG9naWVzX2ZpbGUgPC0gZmlsZS5wYXRoKFwiLi5cIiwgXCIuLlwiLCBcImRhdGFcIiwgXCJoaXN0b2xvZ2llcy50c3ZcIikiLCJoaXN0b2xvZ2llc19kZiA8LSByZWFkcjo6cmVhZF90c3YoaGlzdG9sb2dpZXNfZmlsZSwgZ3Vlc3NfbWF4ID0gMTAwMDAwKSJdfQ== -->
 <pre class="r"><code>histologies_file &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;data&quot;, &quot;histologies.tsv&quot;)
 histologies_df &lt;- readr::read_tsv(histologies_file, guess_max = 100000)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgT1NfZGF5cyA9IGNvbF9kb3VibGUoKSxcbiAgYWdlX2xhc3RfdXBkYXRlX2RheXMgPSBjb2xfZG91YmxlKCksXG4gIG5vcm1hbF9mcmFjdGlvbiA9IGNvbF9kb3VibGUoKSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBjb2xfZG91YmxlKCksXG4gIHR1bW9yX3Bsb2lkeSA9IGNvbF9kb3VibGUoKVxuKVxuIn0= -->
+<pre><code>Parsed with column specification:
+cols(
+  .default = col_character(),
+  OS_days = col_double(),
+  age_last_update_days = col_double(),
+  normal_fraction = col_double(),
+  tumor_fraction = col_double(),
+  tumor_ploidy = col_double()
+)</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
+<pre><code>See spec(...) for full column specifications.</code></pre>
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -1803,7 +1843,7 @@ histologies_df &lt;- readr::read_tsv(histologies_file, guess_max = 100000)</code
 <h3>Add inferred ploidy information to CNVkit results</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWRkX3Bsb2lkeV9kZiA8LSBoaXN0b2xvZ2llc19kZiAlPiVcbiAgZHBseXI6OnNlbGVjdChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lELCB0dW1vcl9wbG9pZHksIGdlcm1saW5lX3NleF9lc3RpbWF0ZSkgJT4lXG4gIGRwbHlyOjppbm5lcl9qb2luKGNudmtpdF9kZiwgYnkgPSBjKFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiID0gXCJJRFwiKSkgJT4lXG4gIGRwbHlyOjpzZWxlY3QoLXR1bW9yX3Bsb2lkeSwgLWdlcm1saW5lX3NleF9lc3RpbWF0ZSwgZXZlcnl0aGluZygpKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYWRkX3Bsb2lkeV9kZiA8LSBoaXN0b2xvZ2llc19kZiAlPiVcbiAgZHBseXI6OnNlbGVjdChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lELCB0dW1vcl9wbG9pZHksIGdlcm1saW5lX3NleF9lc3RpbWF0ZSkgJT4lXG4gIGRwbHlyOjppbm5lcl9qb2luKGNudmtpdF9kZiwgYnkgPSBjKFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiID0gXCJJRFwiKSkgJT4lXG4gIGRwbHlyOjpzZWxlY3QoLXR1bW9yX3Bsb2lkeSwgLWdlcm1saW5lX3NleF9lc3RpbWF0ZSwgZXZlcnl0aGluZygpKSJ9 -->
 <pre class="r"><code>add_ploidy_df &lt;- histologies_df %&gt;%
   dplyr::select(Kids_First_Biospecimen_ID, tumor_ploidy, germline_sex_estimate) %&gt;%
   dplyr::inner_join(cnvkit_df, by = c(&quot;Kids_First_Biospecimen_ID&quot; = &quot;ID&quot;)) %&gt;%
@@ -1817,7 +1857,7 @@ histologies_df &lt;- readr::read_tsv(histologies_file, guess_max = 100000)</code
 <p>This is intended to mirror the information contained in the ControlFreeC output.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWRkX2F1dG9zb21lc19kZiA8LSBhZGRfcGxvaWR5X2RmICU+JVxuICAjIHggYW5kIHkgY2hyb21vc29tZXMgbXVzdCBiZSBoYW5kbGVkIGRpZmZlcmVudGx5XG4gIGRwbHlyOjpmaWx0ZXIoIShjaHJvbSAlaW4lIGMoXCJjaHJYXCIsIFwiY2hyWVwiKSkpICU+JVxuICBkcGx5cjo6bXV0YXRlKHN0YXR1cyA9IGNhc2Vfd2hlbihcbiAgICAjIHdoZW4gdGhlIGNvcHkgbnVtYmVyIGlzIGxlc3MgdGhhbiBpbmZlcnJlZCBwbG9pZHksIG1hcmsgdGhpcyBhcyBhIGxvc3NcbiAgICBjb3B5Lm51bSA8IHR1bW9yX3Bsb2lkeSB+IFwibG9zc1wiLFxuICAgICMgaWYgY29weSBudW1iZXIgaXMgaGlnaGVyIHRoYW4gcGxvaWR5LCBtYXJrIGFzIGEgZ2FpblxuICAgIGNvcHkubnVtID4gdHVtb3JfcGxvaWR5IH4gXCJnYWluXCIsXG4gICAgY29weS5udW0gPT0gdHVtb3JfcGxvaWR5IH4gXCJuZXV0cmFsXCJcbiAgKSlcblxuIyB0aGlzIGxvZ2ljIGlzIGNvbnNpc3RlbnQgd2l0aCB3aGF0IGlzIG9ic2VydmVkIGluIHRoZSBjb250cm9sZnJlZWMgZmlsZVxuIyBzcGVjaWZpY2FsbHksIGluIHNhbXBsZXMgd2hlcmUgZ2VybWxpbmUgc2V4IGVzdGltYXRlID0gRmVtYWxlLCBYIGNocm9tb3NvbWVzXG4jIGFwcGVhciB0byBiZSB0cmVhdGVkIHRoZSBzYW1lIHdheSBhcyBhdXRvc29tZXNcbmFkZF94eV9kZiA8LSBhZGRfcGxvaWR5X2RmICU+JVxuICBkcGx5cjo6ZmlsdGVyKGNocm9tICVpbiUgYyhcImNoclhcIiwgXCJjaHJZXCIpKSAlPiUgIFxuICBkcGx5cjo6bXV0YXRlKHN0YXR1cyA9IGNhc2Vfd2hlbihcbiAgICBnZXJtbGluZV9zZXhfZXN0aW1hdGUgPT0gXCJNYWxlXCIgJiBjb3B5Lm51bSA8ICgwLjUgKiB0dW1vcl9wbG9pZHkpIH4gXCJsb3NzXCIsXG4gICAgZ2VybWxpbmVfc2V4X2VzdGltYXRlID09IFwiTWFsZVwiICYgY29weS5udW0gPiAoMC41ICogdHVtb3JfcGxvaWR5KSB+IFwiZ2FpblwiLFxuICAgIGdlcm1saW5lX3NleF9lc3RpbWF0ZSA9PSBcIk1hbGVcIiAmIGNvcHkubnVtID09ICgwLjUgKiB0dW1vcl9wbG9pZHkpIH4gXCJuZXV0cmFsXCIsXG4gICAgIyB0aGVyZSBhcmUgc29tZSBpbnN0YW5jZXMgd2hlcmUgdGhlcmUgYXJlIGNocm9tb3NvbWUgWSBzZWdtZW50cyBhcmUgaW5cbiAgICAjIHNhbXBsZXMgd2hlcmUgdGhlIGdlcm1saW5lX3NleF9lc3RpbWF0ZSBpcyBGZW1hbGVcbiAgICBjaHJvbSA9PSBcImNocllcIiAmIGdlcm1saW5lX3NleF9lc3RpbWF0ZSA9PSBcIkZlbWFsZVwiICYgY29weS5udW0gPiAwIH4gXCJ1bmtub3duXCIsXG4gICAgY2hyb20gPT0gXCJjaHJZXCIgJiBnZXJtbGluZV9zZXhfZXN0aW1hdGUgPT0gXCJGZW1hbGVcIiAmIGNvcHkubnVtID09IDAgfiBcIm5ldXRyYWxcIixcbiAgICAjIG1pcnJvcmluZyBjb250cm9sZnJlZWMsIFggdHJlYXRlZCBzYW1lIGFzIGF1dG9zb21lc1xuICAgIGNocm9tID09IFwiY2hyWFwiICYgZ2VybWxpbmVfc2V4X2VzdGltYXRlID09IFwiRmVtYWxlXCIgJiBjb3B5Lm51bSA8IHR1bW9yX3Bsb2lkeSB+IFwibG9zc1wiLFxuICAgIGNocm9tID09IFwiY2hyWFwiICYgZ2VybWxpbmVfc2V4X2VzdGltYXRlID09IFwiRmVtYWxlXCIgJiBjb3B5Lm51bSA+IHR1bW9yX3Bsb2lkeSB+IFwiZ2FpblwiLFxuICAgIGNocm9tID09IFwiY2hyWFwiICYgZ2VybWxpbmVfc2V4X2VzdGltYXRlID09IFwiRmVtYWxlXCIgJiBjb3B5Lm51bSA9PSB0dW1vcl9wbG9pZHkgfiBcIm5ldXRyYWxcIlxuICApKVxuXG5hZGRfc3RhdHVzX2RmIDwtIGRwbHlyOjpiaW5kX3Jvd3MoYWRkX2F1dG9zb21lc19kZiwgYWRkX3h5X2RmKSAlPiVcbiAgZHBseXI6OnNlbGVjdCgtZ2VybWxpbmVfc2V4X2VzdGltYXRlKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbImFkZF9hdXRvc29tZXNfZGYgPC0gYWRkX3Bsb2lkeV9kZiAlPiVcbiAgIyB4IGFuZCB5IGNocm9tb3NvbWVzIG11c3QgYmUgaGFuZGxlZCBkaWZmZXJlbnRseVxuICBkcGx5cjo6ZmlsdGVyKCEoY2hyb20gJWluJSBjKFwiY2hyWFwiLCBcImNocllcIikpKSAlPiVcbiAgZHBseXI6Om11dGF0ZShzdGF0dXMgPSBjYXNlX3doZW4oXG4gICAgIyB3aGVuIHRoZSBjb3B5IG51bWJlciBpcyBsZXNzIHRoYW4gaW5mZXJyZWQgcGxvaWR5LCBtYXJrIHRoaXMgYXMgYSBsb3NzXG4gICAgY29weS5udW0gPCB0dW1vcl9wbG9pZHkgfiBcImxvc3NcIixcbiAgICAjIGlmIGNvcHkgbnVtYmVyIGlzIGhpZ2hlciB0aGFuIHBsb2lkeSwgbWFyayBhcyBhIGdhaW5cbiAgICBjb3B5Lm51bSA+IHR1bW9yX3Bsb2lkeSB+IFwiZ2FpblwiLFxuICAgIGNvcHkubnVtID09IHR1bW9yX3Bsb2lkeSB+IFwibmV1dHJhbFwiXG4gICkpIiwiIiwiIyB0aGlzIGxvZ2ljIGlzIGNvbnNpc3RlbnQgd2l0aCB3aGF0IGlzIG9ic2VydmVkIGluIHRoZSBjb250cm9sZnJlZWMgZmlsZSIsIiMgc3BlY2lmaWNhbGx5LCBpbiBzYW1wbGVzIHdoZXJlIGdlcm1saW5lIHNleCBlc3RpbWF0ZSA9IEZlbWFsZSwgWCBjaHJvbW9zb21lcyIsIiMgYXBwZWFyIHRvIGJlIHRyZWF0ZWQgdGhlIHNhbWUgd2F5IGFzIGF1dG9zb21lcyIsImFkZF94eV9kZiA8LSBhZGRfcGxvaWR5X2RmICU+JVxuICBkcGx5cjo6ZmlsdGVyKGNocm9tICVpbiUgYyhcImNoclhcIiwgXCJjaHJZXCIpKSAlPiUgIFxuICBkcGx5cjo6bXV0YXRlKHN0YXR1cyA9IGNhc2Vfd2hlbihcbiAgICBnZXJtbGluZV9zZXhfZXN0aW1hdGUgPT0gXCJNYWxlXCIgJiBjb3B5Lm51bSA8ICgwLjUgKiB0dW1vcl9wbG9pZHkpIH4gXCJsb3NzXCIsXG4gICAgZ2VybWxpbmVfc2V4X2VzdGltYXRlID09IFwiTWFsZVwiICYgY29weS5udW0gPiAoMC41ICogdHVtb3JfcGxvaWR5KSB+IFwiZ2FpblwiLFxuICAgIGdlcm1saW5lX3NleF9lc3RpbWF0ZSA9PSBcIk1hbGVcIiAmIGNvcHkubnVtID09ICgwLjUgKiB0dW1vcl9wbG9pZHkpIH4gXCJuZXV0cmFsXCIsXG4gICAgIyB0aGVyZSBhcmUgc29tZSBpbnN0YW5jZXMgd2hlcmUgdGhlcmUgYXJlIGNocm9tb3NvbWUgWSBzZWdtZW50cyBhcmUgaW5cbiAgICAjIHNhbXBsZXMgd2hlcmUgdGhlIGdlcm1saW5lX3NleF9lc3RpbWF0ZSBpcyBGZW1hbGVcbiAgICBjaHJvbSA9PSBcImNocllcIiAmIGdlcm1saW5lX3NleF9lc3RpbWF0ZSA9PSBcIkZlbWFsZVwiICYgY29weS5udW0gPiAwIH4gXCJ1bmtub3duXCIsXG4gICAgY2hyb20gPT0gXCJjaHJZXCIgJiBnZXJtbGluZV9zZXhfZXN0aW1hdGUgPT0gXCJGZW1hbGVcIiAmIGNvcHkubnVtID09IDAgfiBcIm5ldXRyYWxcIixcbiAgICAjIG1pcnJvcmluZyBjb250cm9sZnJlZWMsIFggdHJlYXRlZCBzYW1lIGFzIGF1dG9zb21lc1xuICAgIGNocm9tID09IFwiY2hyWFwiICYgZ2VybWxpbmVfc2V4X2VzdGltYXRlID09IFwiRmVtYWxlXCIgJiBjb3B5Lm51bSA8IHR1bW9yX3Bsb2lkeSB+IFwibG9zc1wiLFxuICAgIGNocm9tID09IFwiY2hyWFwiICYgZ2VybWxpbmVfc2V4X2VzdGltYXRlID09IFwiRmVtYWxlXCIgJiBjb3B5Lm51bSA+IHR1bW9yX3Bsb2lkeSB+IFwiZ2FpblwiLFxuICAgIGNocm9tID09IFwiY2hyWFwiICYgZ2VybWxpbmVfc2V4X2VzdGltYXRlID09IFwiRmVtYWxlXCIgJiBjb3B5Lm51bSA9PSB0dW1vcl9wbG9pZHkgfiBcIm5ldXRyYWxcIlxuICApKSIsIiIsImFkZF9zdGF0dXNfZGYgPC0gZHBseXI6OmJpbmRfcm93cyhhZGRfYXV0b3NvbWVzX2RmLCBhZGRfeHlfZGYpICU+JVxuICBkcGx5cjo6c2VsZWN0KC1nZXJtbGluZV9zZXhfZXN0aW1hdGUpIl19 -->
 <pre class="r"><code>add_autosomes_df &lt;- add_ploidy_df %&gt;%
   # x and y chromosomes must be handled differently
   dplyr::filter(!(chrom %in% c(&quot;chrX&quot;, &quot;chrY&quot;))) %&gt;%
@@ -1858,7 +1898,7 @@ add_status_df &lt;- dplyr::bind_rows(add_autosomes_df, add_xy_df) %&gt;%
 <h3>Write to <code>scratch</code></h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxub3V0cHV0X2ZpbGUgPC0gZmlsZS5wYXRoKFwiLi5cIiwgXCIuLlwiLCBcInNjcmF0Y2hcIiwgXCJjbnZraXRfd2l0aF9zdGF0dXMudHN2XCIpXG5yZWFkcjo6d3JpdGVfdHN2KGFkZF9zdGF0dXNfZGYsIG91dHB1dF9maWxlKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIm91dHB1dF9maWxlIDwtIGZpbGUucGF0aChcIi4uXCIsIFwiLi5cIiwgXCJzY3JhdGNoXCIsIFwiY252a2l0X3dpdGhfc3RhdHVzLnRzdlwiKSIsInJlYWRyOjp3cml0ZV90c3YoYWRkX3N0YXR1c19kZiwgb3V0cHV0X2ZpbGUpIl19 -->
 <pre class="r"><code>output_file &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;scratch&quot;, &quot;cnvkit_with_status.tsv&quot;)
 readr::write_tsv(add_status_df, output_file)</code></pre>
 <!-- rnb-source-end -->

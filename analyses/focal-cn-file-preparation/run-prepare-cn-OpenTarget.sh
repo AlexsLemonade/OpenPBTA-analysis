@@ -76,7 +76,7 @@ if [ "$RUN_ORIGINAL" -gt "0" ]; then
           --goi_list $goi_file \
           --runWXSonly \
           --filename_lead ${filename}_${runWXSOnly}_${chromosome_type}
-      done
+     
     done
   done
 
