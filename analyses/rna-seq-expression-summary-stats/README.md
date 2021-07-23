@@ -2,6 +2,19 @@
 
 **Module authors:** Yuanchao Zhang ([@logstar](https://github.com/logstar))
 
+- [Calculate TPM summary statistics for each cancer group and cohort](#calculate-tpm-summary-statistics-for-each-cancer-group-and-cohort)
+  - [Purpose](#purpose)
+  - [Methods](#methods)
+  - [Results](#results)
+    - [`all-cohorts`(/`PedOT`) summary statistics tables](#all-cohortspedot-summary-statistics-tables)
+    - [`each-cohort` summary statistics tables](#each-cohort-summary-statistics-tables)
+    - [Long summary statistics tables](#long-summary-statistics-tables)
+  - [Usage](#usage)
+  - [Module structure](#module-structure)
+  - [Analysis scripts](#analysis-scripts)
+    - [01-tpm-summary-stats.R](#01-tpm-summary-statsr)
+      - [Unit testing](#unit-testing)
+
 ### Purpose
 
 For each cancer group and cohort, calculate TPM means, standard deviations, z-scores, and ranks.
@@ -58,7 +71,6 @@ The `NA`/`NaN`s in result tables are represented with blank string `''`s.
 The following wide tables are generated using the methods described above. Rows are genes. Columns are `sample_group`s, except that the first two columns are gene symbol and gene Ensembl ID.
 
 In `all-cohorts` result tables, a `sample_group` is a string that concatenates a `cancer_group` and `___all_cohorts`, e.g. `Meningioma___all_cohorts`, `Neuroblastoma___all_cohorts`, and `Diffuse midline glioma___all_cohorts`.
-
 
 If one gene symbol matches to multiple Ensembl IDs, the value of the Ensembl ID column is a comma separated list of all Ensembl IDs, e.g. `ENSG00000206952,ENSG00000281910`. In `inpiut/ens_symbol.tsv`, `SNORA50A` is mapped to both `ENSG00000206952` and `ENSG00000281910`.
 
@@ -215,3 +227,37 @@ Output:
 - `long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv`
 - `long_n_tpm_mean_sd_quantile_group_wise_zscore.json`
 - `long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv`
+
+##### Unit testing
+
+The unit testing is implemented using the [`testthat`](https://testthat.r-lib.org/index.html) package version 2.1.1, as suggested by @jharenza and @NHJohnson in the reviews of PR <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/55>.
+
+To run all unit tests, run `bash run-tests.sh` in the Docker image/container from any working directory. Following is an example run.
+
+```text
+$ bash analyses/rna-seq-expression-summary-stats/run-tests.sh
+✔ |  OK F W S | Context
+✔ |  15       | tests/test_format_cohort_sample_counts.R [0.3 s]
+✔ |  21       | tests/test_helper_import_function.R
+
+══ Results ═════════════════
+Duration: 0.4 s
+
+OK:       36
+Failed:   0
+Warnings: 0
+Skipped:  0
+Done running run-tests.sh
+```
+
+To add more tests, create additional `test*R` files under the `tests` directory, with available `test*R` files as reference.
+
+Notes on the `testthat` unit testing framework:
+
+- `testthat::test_dir("tests")` finds all `test*R` files under the `tests` directory to run, which is used in `run-tests.sh`.
+- `testthat::test_dir("tests")` also finds and runs all `helper*R` files under the `tests` directory before running the `test*R` files.
+- The working directory is `tests` when running the `helper*R` and `test*R` files through `testthat::test_dir("tests")`.
+- In order to import a funciton for testing from an R file without running the whole file, a helper function `import_function` is defined at `tests/helper_import_function.R`, and the `import_function` is also tested in the `tests/test_helper_import_function.R` file.
+- Even though the `testthat` 2.1.1 documentation of the `filter` parameter of `test_dir` function says that "Matching is performed on the file name after it's stripped of "test-" and ".R", the R code uses the following. Therefore, naming test files with `test_some_test_file.R` can be found by the `test_dir` function.
+  - `"^test.*\\.[rR]$"` for finding test files in `find_test_scripts`
+  - `sub("^test-?", "", test_names)`, `sub("\\.[rR]$", "", test_names)`, and `grepl(filter, test_names, ...)` for filtering test files in `testthat:::filter_test_scripts`.
