@@ -6,6 +6,20 @@ multi_defined <- function() {
   return(2)
 }
 
+multi_defined_multi_ways1 <- function() {
+  return(1)
+}
+
+assign("multi_defined_multi_ways1", function() { return(1) })
+
+`<-`(multi_defined_multi_ways2, function() { return(1) })
+
+assign("multi_defined_multi_ways2", function() { return(1) })
+
+single_lhs_ld_rhs_defined_ret1 <- function() {
+  return(1)
+}
+
 
 assign("single_assign_defined_ret2", function() { return(2) })
 

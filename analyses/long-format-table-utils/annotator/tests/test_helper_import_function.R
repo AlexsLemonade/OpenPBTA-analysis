@@ -73,6 +73,12 @@ expect_error(import_function("test_data/test_import_function_empty.R", "foo"))
 expect_error(import_function(
   "test_data/test_import_function_non_empty.R", "multi_defined"))
 
+expect_error(import_function(
+  "test_data/test_import_function_non_empty.R", "multi_defined_multi_ways1"))
+
+expect_error(import_function(
+  "test_data/test_import_function_non_empty.R", "multi_defined_multi_ways2"))
+
 # Error on importing functions that is nested in other expressions
 expect_error(import_function(
   "test_data/test_import_function_non_empty.R",
