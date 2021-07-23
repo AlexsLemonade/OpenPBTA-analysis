@@ -218,4 +218,33 @@ Common updates:
 
 The `stopifnot()` statements are assertions for the input data, so the output would be expected. If any assertion fails, additional code needs to be added mainly to remove NAs and handle duplicates in the data, so that the assertion pases.
 
-The commented test cases below function definitions can be used to test if the function works as expected.
+The unit testing is implemented using the [`testthat`](https://testthat.r-lib.org/index.html) package version 2.1.1, as suggested by @jharenza and @NHJohnson in the reviews of PR <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/55>.
+
+To run all unit tests, run `bash run-tests.sh` in the Docker image/container from any working directory. Following is an example run.
+
+```text
+$ bash run-tests.sh
+✔ |  OK F W S | Context
+✔ |  19       | tests/test_collapse_rp_lists.R
+
+══ Results ═════════════════════════════════════════════════════════════════════════════════════════════════════
+Duration: 0.1 s
+
+OK:       19
+Failed:   0
+Warnings: 0
+Skipped:  0
+Done running run-tests.sh
+```
+
+To add more tests, create additional `test*R` files under the `annotator/tests` directory, with available `test*R` files as reference.
+
+Notes on the `testthat` unit testing framework:
+
+- `testthat::test_dir("tests")` finds all `test*R` files under the `tests` directory to run, which is used in `annotator/run-tests.sh`.
+- `testthat::test_dir("tests")` also finds and runs all `helper*R` files under the `tests` directory before running the `test*R` files.
+- The working directory is `tests` when running the `helper*R` and `test*R` files through `testthat::test_dir("tests")`.
+- In order to import a funciton for testing from an R file without running the whole file, a helper function `import_function` is defined at `tests/helper_import_function.R`, and the `import_function` is also tested in the `tests/test_helper_import_function.R` file.
+- Even though the `testthat` 2.1.1 documentation of the `filter` parameter of `test_dir` function says that "Matching is performed on the file name after it's stripped of "test-" and ".R", the R code uses the following. Therefore, naming test files with `test_some_test_file.R` can be found by the `test_dir` function.
+  - `"^test.*\\.[rR]$"` for finding test files in `find_test_scripts`
+  - `sub("^test-?", "", test_names)`, `sub("\\.[rR]$", "", test_names)`, and `grepl(filter, test_names, ...)` for filtering test files in `testthat:::filter_test_scripts`.
