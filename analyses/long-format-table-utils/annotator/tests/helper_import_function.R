@@ -44,7 +44,15 @@ import_function <- function(source_code_R_file, function_name) {
     stop(paste0(function_name, " is found multiple times in ",
                 source_code_R_file, "."))
   }
-
-  # only evaluate the function() {} part
-  return(eval(function_def_exprs[[1]][[3]]))
+  # Only evaluate the function() {} part
+  imported_function <- eval(
+    function_def_exprs[[1]][[3]],
+    envir = parent.frame(n = 1))
+  # Put the imported function in the same environment as the import_function
+  # being called
+  #
+  # Adapted from @Joshua Ulrich's answer at
+  # https://stackoverflow.com/a/17732388/4638182
+  environment(imported_function) <- parent.frame(n = 1)
+  return(imported_function)
 }

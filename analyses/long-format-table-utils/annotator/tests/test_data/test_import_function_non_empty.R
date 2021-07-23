@@ -68,3 +68,7 @@ single_lhs_ld_rhs_defined_ret5 <- function(
   nested_single_ld_lhs_rhs_defined_ret5 <- function() { return(5) }
   return(nested_single_ld_lhs_rhs_defined_ret5())
 }
+
+single_lhs_ld_rhs_defined_ret6 <- function() {
+  return(single_lhs_ld_rhs_defined_ret5() + 1)
+}

@@ -66,6 +66,24 @@ expect_equal(
     "single_lhs_ld_rhs_defined_ret5")(),
   5)
 
+# single_lhs_ld_rhs_defined_ret6 is defined to call
+# single_lhs_ld_rhs_defined_ret5
+#
+# which is not defined here yet
+expect_error(
+  import_function(
+    "test_data/test_import_function_non_empty.R",
+    "single_lhs_ld_rhs_defined_ret6")())
+# Import single_lhs_ld_rhs_defined_ret5
+single_lhs_ld_rhs_defined_ret5 <- import_function(
+    "test_data/test_import_function_non_empty.R",
+    "single_lhs_ld_rhs_defined_ret5")
+expect_equal(
+  import_function(
+    "test_data/test_import_function_non_empty.R",
+    "single_lhs_ld_rhs_defined_ret6")(),
+  6)
+
 # Error on importing from empty file
 expect_error(import_function("test_data/test_import_function_empty.R", "foo"))
 
