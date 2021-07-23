@@ -36,7 +36,8 @@ annotator_cli_output_path <- file.path(
 # Helper function to run annotator CLI
 run_cli_get_tibble <- function(columns_to_add,
                                input_table_path,
-                               output_table_path) {
+                               output_table_path,
+                               remove_input_table = FALSE) {
   run_command <- function(cmd_str) {
     # ignore.stderr = TRUE avoids printing when testing
     #
@@ -64,6 +65,15 @@ run_cli_get_tibble <- function(columns_to_add,
       "-r -c ", columns_to_add_opt_val,
       " -i ", input_table_path,
       " -o ", output_table_path))
+  }
+
+  if (remove_input_table) {
+    # Input table may not exist, which is to test fail
+    #
+    # clean up, so other tests will not be affected
+    if (file.exists(input_table_path)) {
+      file.remove(input_table_path)
+    }
   }
 
   # the file may not be created due to CLI call failure
@@ -186,7 +196,8 @@ testthat::expect_warning(
   run_cli_get_tibble(
     columns_to_add = NULL,
     input_table_path = req_col_missing_tbl_path,
-    output_table_path = annotator_cli_output_path))
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE))
 
 
 readr::write_tsv(
@@ -197,7 +208,8 @@ testthat::expect_warning(
   run_cli_get_tibble(
     columns_to_add = NULL,
     input_table_path = req_col_missing_tbl_path,
-    output_table_path = annotator_cli_output_path))
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE))
 
 
 readr::write_tsv(
@@ -208,7 +220,8 @@ testthat::expect_warning(
   run_cli_get_tibble(
     columns_to_add = NULL,
     input_table_path = req_col_missing_tbl_path,
-    output_table_path = annotator_cli_output_path))
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE))
 
 
 readr::write_tsv(
@@ -219,7 +232,8 @@ testthat::expect_warning(
   run_cli_get_tibble(
     columns_to_add = NULL,
     input_table_path = req_col_missing_tbl_path,
-    output_table_path = annotator_cli_output_path))
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE))
 
 
 readr::write_tsv(
@@ -230,7 +244,8 @@ testthat::expect_warning(
   run_cli_get_tibble(
     columns_to_add = NULL,
     input_table_path = req_col_missing_tbl_path,
-    output_table_path = annotator_cli_output_path))
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE))
 
 
 readr::write_tsv(
@@ -241,7 +256,8 @@ testthat::expect_warning(
   run_cli_get_tibble(
     columns_to_add = NULL,
     input_table_path = req_col_missing_tbl_path,
-    output_table_path = annotator_cli_output_path))
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE))
 
 
 # Error on requiring existing annotation columns
@@ -256,7 +272,8 @@ testthat::expect_warning(
   run_cli_get_tibble(
     columns_to_add = NULL,
     input_table_path = ann_col_exist_tbl_path,
-    output_table_path = annotator_cli_output_path))
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE))
 
 readr::write_tsv(
   inspected_annotated_long_format_tibble,
@@ -266,7 +283,8 @@ testthat::expect_warning(
   run_cli_get_tibble(
     columns_to_add = NULL,
     input_table_path = ann_col_exist_tbl_path,
-    output_table_path = annotator_cli_output_path))
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE))
 
 
 readr::write_tsv(
@@ -277,7 +295,8 @@ testthat::expect_warning(
   run_cli_get_tibble(
     columns_to_add = c("EFO", "MONDO"),
     input_table_path = ann_col_exist_tbl_path,
-    output_table_path = annotator_cli_output_path))
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE))
 
 
 # Error on duplicated annotation columns
@@ -322,7 +341,8 @@ testthat::expect_equal(
   run_cli_get_tibble(
     columns_to_add = c("EFO", "OncoKB_cancer_gene"),
     input_table_path = req_non_existing_ann_tbl_path,
-    output_table_path = annotator_cli_output_path),
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE),
   dplyr::select(
     inspected_annotated_long_format_tibble,
     -EFO, -OncoKB_cancer_gene,
@@ -339,7 +359,8 @@ testthat::expect_equal(
   run_cli_get_tibble(
     columns_to_add = c("EFO", "OncoKB_cancer_gene"),
     input_table_path = req_non_existing_ann_tbl_path,
-    output_table_path = annotator_cli_output_path),
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE),
   dplyr::select(
     inspected_annotated_long_format_tibble,
     -OncoKB_oncogene_TSG, -EFO, -OncoKB_cancer_gene,
@@ -356,7 +377,8 @@ testthat::expect_equal(
   run_cli_get_tibble(
     columns_to_add = c("MONDO", "OncoKB_cancer_gene", "Protein_RefSeq_ID"),
     input_table_path = req_non_existing_ann_tbl_path,
-    output_table_path = annotator_cli_output_path),
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE),
   dplyr::select(
     inspected_annotated_long_format_tibble,
     -RMTL, -MONDO, -OncoKB_cancer_gene, -Protein_RefSeq_ID,
@@ -373,7 +395,8 @@ testthat::expect_equal(
   run_cli_get_tibble(
     columns_to_add = c("EFO", "OncoKB_oncogene_TSG", "Gene_full_name"),
     input_table_path = req_non_existing_ann_tbl_path,
-    output_table_path = annotator_cli_output_path),
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE),
   dplyr::select(
     inspected_annotated_long_format_tibble,
     -RMTL, -EFO, -OncoKB_oncogene_TSG, -Gene_full_name,
@@ -391,7 +414,8 @@ testthat::expect_equal(
     columns_to_add = c("EFO", "OncoKB_oncogene_TSG", "Gene_full_name",
                        "Gene_type"),
     input_table_path = req_non_existing_ann_tbl_path,
-    output_table_path = annotator_cli_output_path),
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE),
   dplyr::select(
     inspected_annotated_long_format_tibble,
     -RMTL, -EFO, -OncoKB_oncogene_TSG, -Gene_full_name, -Gene_type,
