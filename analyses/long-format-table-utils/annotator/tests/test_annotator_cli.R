@@ -2,7 +2,7 @@
 # file is executed by test_dir
 #
 # testthat package is loaded, if this file is executed by test_dir
-context("test_annotator_cli.R")
+context("tests/test_annotator_cli.R")
 
 
 working_input_tsv_path <- "test_data/test_long_format_table.tsv"
