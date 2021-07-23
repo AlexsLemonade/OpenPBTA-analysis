@@ -420,3 +420,17 @@ testthat::expect_equal(
     inspected_annotated_long_format_tibble,
     -RMTL, -EFO, -OncoKB_oncogene_TSG, -Gene_full_name, -Gene_type,
     EFO, OncoKB_oncogene_TSG, Gene_full_name, Gene_type))
+
+# Error on non-existing input file
+testthat::expect_warning(
+  run_cli_get_tibble(
+    columns_to_add = c("EFO"),
+    input_table_path = "non_existing_FILE.tsv",
+    output_table_path = annotator_cli_output_path))
+
+# Error on non-existing output dir
+testthat::expect_warning(
+  run_cli_get_tibble(
+    columns_to_add = c("EFO"),
+    input_table_path = working_input_tsv_path,
+    output_table_path = "non_existing_DIR/test.tsv"))
