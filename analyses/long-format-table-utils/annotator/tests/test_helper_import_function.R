@@ -7,11 +7,11 @@ context("tests/test_collapse_rp_lists.R")
 #
 # testthat::test_dir("tests") runs all `helper*R` files under the `tests`
 # directory before running the `test*R` files
-expect_error(import_function("test_data/test_import_function_empty.R", "foo"))
 
-expect_error(import_function(
-  "test_data/test_import_function_non_empty.R", "multi_defined"))
-
+# Test cases
+#
+# Standard use case: import a function that is defined only once and is not
+# nested in other expressions
 expect_equal(
   import_function(
     "test_data/test_import_function_non_empty.R",
@@ -29,3 +29,72 @@ expect_equal(
     "test_data/test_import_function_non_empty.R",
     "single_ld_lhs_rhs_defined_ret3")(),
   3)
+
+expect_equal(
+  import_function(
+    "test_data/test_import_function_non_empty.R",
+    "single_assign_defined_ret2")(),
+  2)
+
+expect_equal(
+  import_function(
+    "test_data/test_import_function_non_empty.R",
+    "single_lhs_ld_rhs_defined_ret2")(),
+  2)
+
+expect_equal(
+  import_function(
+    "test_data/test_import_function_non_empty.R",
+    "single_lhs_ld_rhs_defined_ret3")(),
+  3)
+
+expect_equal(
+  import_function(
+    "test_data/test_import_function_non_empty.R",
+    "single_lhs_ld_rhs_defined_ret4")(),
+  4)
+
+expect_equal(
+  import_function(
+    "test_data/test_import_function_non_empty.R",
+    "single_lhs_ld_rhs_defined_ret5")(),
+  5)
+
+expect_equal(
+  import_function(
+    "test_data/test_import_function_non_empty.R",
+    "single_lhs_ld_rhs_defined_ret5")(),
+  5)
+
+# Error on importing from empty file
+expect_error(import_function("test_data/test_import_function_empty.R", "foo"))
+
+# Error on importing functions defined multiple times
+expect_error(import_function(
+  "test_data/test_import_function_non_empty.R", "multi_defined"))
+
+# Error on importing functions that is nested in other expressions
+expect_error(import_function(
+  "test_data/test_import_function_non_empty.R",
+  "nested_single_lhs_ld_rhs_defined_ret1"))
+
+expect_error(import_function(
+  "test_data/test_import_function_non_empty.R",
+  "nested_single_lhs_ld_rhs_defined_ret2"))
+
+expect_error(import_function(
+  "test_data/test_import_function_non_empty.R",
+  "nested_single_lhs_ld_rhs_defined_ret3"))
+
+expect_error(import_function(
+  "test_data/test_import_function_non_empty.R",
+  "nested_assign_defined_ret3"))
+
+
+expect_error(import_function(
+  "test_data/test_import_function_non_empty.R",
+  "nested_single_ld_lhs_rhs_defined_ret4"))
+
+expect_error(import_function(
+  "test_data/test_import_function_non_empty.R",
+  "nested_single_ld_lhs_rhs_defined_ret5"))
