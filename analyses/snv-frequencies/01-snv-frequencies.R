@@ -257,15 +257,6 @@ get_cohort_set_value <- function(cohort_vec) {
     return('all_cohorts')
   }
 }
-# # test cases
-# get_cohort_set_value(c('a'))
-# get_cohort_set_value(c('a', 'b'))
-# get_cohort_set_value(c('a', 'b', 'c'))
-# # following cases should fail
-# get_cohort_set_value(character(0))
-# get_cohort_set_value(numeric(0))
-# get_cohort_set_value(c(1))
-# get_cohort_set_value(c(1, 2))
 
 
 
