@@ -331,16 +331,6 @@ format_cohort_sample_counts <- function(cohort_vec) {
 
   return(paste(cohort_df$cohort_n_samples, collapse = '&'))
 }
-# # test case
-# format_cohort_sample_counts(c('b', 'a', 'a', 'c', 'c'))
-# format_cohort_sample_counts(c('a', 'a', 'b'))
-# format_cohort_sample_counts(c('a', 'a'))
-# format_cohort_sample_counts(c('a'))
-# format_cohort_sample_counts(character(0))
-# # following cases should fail
-# format_cohort_sample_counts(c('a', NA))
-# format_cohort_sample_counts(c(NA))
-# format_cohort_sample_counts(c(NaN))
 
 
 
