@@ -183,12 +183,12 @@ Read the script. `01-snv-frequencies.R` contains the following sections:
 - Read data. This section reads all input data.
 - Subset tumor samples and used columns in MAF table. This section subsets MAF table.
 - Subset independent samples in histology table. This section subsets histology table and creates primary and relapse independent sample histology tables.
-- Add additional annotations. This section adds Gene_full_name and Protein_RefSeq_ID to the MAF table.
+- Add additional annotations. This section adds Gene_full_name and Protein_RefSeq_ID to the MAF table. Note that annotations will be added in the upcoming `analyses/long-format-table-utils/annotator/annotator-api.R`, which is under review at PR <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/56>.
 - Compute mutation frequencies. This section:
   - computes mutation frequencies for 1) each cancer_group and each cohort and 2) each cancer_group and all cohorts
   - add each-cohot and all-cohort PedcBio URLs
   - creates gene-level and variant-level mutation frqeuency tables
-- Add annotations to the output table. This section adds various annotations to the mutation frequency tables.
+- Add annotations to the output table. This section adds various annotations to the mutation frequency tables. Note that annotations will be added in the upcoming `analyses/long-format-table-utils/annotator/annotator-api.R`, which is under review at PR <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/56>.
 - Output tsv and JSON. This section outputs mutation frequency tables in tsv and JSON formats.
 
 Common updates:
@@ -197,11 +197,13 @@ Common updates:
   - Load gene HUGO symbol (/gene Ensembl ENSG ID) annotation table in the Read data section. Make sure the HUGO symbol (/gene Ensembl ENSG ID) column has no NA or duplicate.
   - Add annotations to the mutation frequency tables in the Add annotations to the output table section. Replace `NA`s with `''`.
   - Reorder new columns before output.
+  - Note that annotations will be added in the upcoming `analyses/long-format-table-utils/annotator/annotator-api.R`, which is under review at PR <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/56>.
 - Add new variant annotations:
   - Load variant_ID annotation table in the Read data section. Make sure the variant_ID column has no NA or duplicate.
   - Add annotations to the MAF table in the Add additional annotations section. Replace `NA`s with `''`.
   - Retain the new annotation columns in the `get_cg_ch_var_level_mut_freq_tbl()` and `get_cg_ch_gene_level_mut_freq_tbl()` functions.
   - Reorder new columns before output.
+  - Note that annotations will be added in the upcoming `analyses/long-format-table-utils/annotator/annotator-api.R`, which is under review at PR <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/56>.
 - Change the notation for all_cohorts:
   - Change `'all_cohorts'` to other values in the `get_cohort_set_value()` function.
 - Change the format of PedcBio URLs:
