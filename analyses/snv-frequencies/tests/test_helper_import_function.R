@@ -2,7 +2,7 @@
 # file is executed by test_dir
 #
 # testthat package is loaded, if this file is executed by test_dir
-context("tests/test_collapse_rp_lists.R")
+context("tests/test_helper_import_function.R")
 # import_function is defined in tests/helper_import_function.R and tested here
 #
 # testthat::test_dir("tests") runs all `helper*R` files under the `tests`
