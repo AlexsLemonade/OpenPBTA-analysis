@@ -4,6 +4,7 @@ library(tidyverse)
 
 # Function definitions ----------------------------------------------------
 # Format numbers to percentage characters
+#
 # Adapted from @Richie Cotton's answer at
 # https://stackoverflow.com/a/7146270/4638182
 num_to_pct_chr <- function(x, digits = 2, format = "f", ...) {
@@ -22,18 +23,6 @@ num_to_pct_chr <- function(x, digits = 2, format = "f", ...) {
   rfx <- replace(fx, fx == 'NaN%', '')
   return(rfx)
 }
-# # test cases
-# num_to_pct_chr(numeric(0))
-# num_to_pct_chr(c(1, -1.1, 0, 0.1, 0/0))
-# num_to_pct_chr(c(1, -1.1, 0, 0.1, NaN))
-# # following cases should fail
-# num_to_pct_chr(character(0))
-# num_to_pct_chr(c())
-# num_to_pct_chr(NULL)
-# num_to_pct_chr(c(1, -1.1, 0, 0.1, 1/0))
-# num_to_pct_chr(c(1, -1.1, 0, 0.1, -1/0))
-# num_to_pct_chr(c(1, -1.1, 0, 0.1, NA))
-# num_to_pct_chr(c(1, -1.1, 0, 0.1, NA, 0.1/0))
 
 
 
