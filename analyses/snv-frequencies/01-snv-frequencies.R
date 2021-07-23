@@ -271,6 +271,20 @@ get_cohort_set_value <- function(cohort_vec) {
 # Note: the conversion procedure is by convention discussed at
 # https://github.com/PediatricOpenTargets/ticket-tracker/issues/93
 # #issuecomment-877397386
+#
+# Convertion rules:
+# 1. cancer_group
+#   i. retain alphanum, -, _
+#   ii. other chars to _
+#   iii. to lower acse
+# 2. cohort_set
+#   - if length 1:
+#     i. retain alphanum, -, _
+#     ii. other chars to _
+#     iii. to lower acse
+#     iiii. concatente to cancer_group by "_"
+#   - if length > 1: drop
+# 3. prepend ped_opentargets_2021_
 get_pcb_pot_csi <- function(ss_cancer_group, cohort_set) {
   stopifnot(!is.null(ss_cancer_group))
   stopifnot(is.character(ss_cancer_group))
@@ -303,17 +317,6 @@ get_pcb_pot_csi <- function(ss_cancer_group, cohort_set) {
 
   return(case_set_id)
 }
-# # test cases
-# get_pcb_pot_csi(c('High-grade glioma/astrocytoma'), c('PBTA', 'GMKF'))
-# get_pcb_pot_csi(c('High-grade glioma/astrocytoma'), c('GMKF'))
-# get_pcb_pot_csi(c('Medulloblastoma'), c('PBTA'))
-# # following cases should fail
-# get_pcb_pot_csi(character(0), character(0))
-# get_pcb_pot_csi(c(), c())
-# get_pcb_pot_csi(c('Medulloblastoma', 'High-grade glioma/astrocytoma'),
-#                 c('PBTA'))
-# get_pcb_pot_csi(character(0), c('PBTA'))
-# get_pcb_pot_csi(c('Medulloblastoma'), character(0))
 
 
 
