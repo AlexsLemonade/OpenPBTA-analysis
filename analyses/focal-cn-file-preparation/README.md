@@ -48,7 +48,6 @@ See the notebook for more information. This notebook also prepares lists of copy
   Any segment that is copy neutral is filtered out of this table. In addition, [any segments with copy number > (2 * ploidy) are marked as amplifications](https://github.com/AlexsLemonade/OpenPedCan-analysis/blob/e2058dd43d9b1dd41b609e0c3429c72f79ff3be6/analyses/focal-cn-file-preparation/03-prepare-cn-file.R#L275) in the `status` column.
   When running this script, we have added one parameter "--runWXSonly" so that we can choose to run the annoataion on relevant WXS samples only. To distinguish from a complete run, the outputs will have "_wxs_" in them. E.g., when running with "--runWXSonly" for cnvkit file, we will get the output as 'cnvkit_annotated_cn_wxs_autosomes.tsv.gz'.
   
-focal-cn-preparation-v7-p2
 * `05-define-most-focal-cn-units.Rmd` - This notebook defines the _most focal_ recurrent copy number units by removing focal changes that are within entire chromosome arm losses and gains.
 _Most focal_ here meaning if a chromosome arm is not clearly defined as a gain or loss (and is callable) we look to define the cytoband level status.
 Similarly, if a cytoband is not clearly defined as a gain or loss (and is callable) we then look to define the gene level status.
