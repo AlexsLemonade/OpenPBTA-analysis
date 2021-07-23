@@ -50,22 +50,6 @@ collapse_rp_lists <- function(xl) {
   c_np_fxv <- paste(np_fxv, collapse = ',')
   return(c_np_fxv)
 }
-# # test cases
-# collapse_rp_lists(list(NULL, NULL, NULL))
-# collapse_rp_lists(list())
-# collapse_rp_lists(list(c('NP_1', 'NP_2'), c('NP_1', 'NP_3')))
-# collapse_rp_lists(list(c('NP_1', 'NP_2'), NULL, c('NP_1', 'NP_3')))
-# collapse_rp_lists(list(c('NP_1', 'NP_2')))
-#
-# tmp <- as_tibble(
-#   mg_qres_list$response[, c('query', 'notfound',
-#                             'name', 'refseq.protein')]) %>%
-#   replace_na(list(notfound = FALSE)) %>%
-#   filter(!notfound) %>%
-#   filter(query %in% c('ENSG00000229425', 'ENSG00000171988')) %>%
-#   group_by(query) %>%
-#   summarise(name = paste(unique(name), collapse = ', '),
-#             refseq_protein = collapse_rp_lists(refseq.protein))
 
 
 
@@ -760,11 +744,6 @@ gsb_gtype_df <- read_tsv('../fusion_filtering/references/genelistreference.txt',
                          col_types = cols(.default = col_guess()))
 # assert no NA in gsb_gtype_df
 stopifnot(identical(sum(is.na(gsb_gtype_df)), as.integer(0)))
-# gsb_gtype_df %>%
-#   group_by(Gene_Symbol) %>%
-#   summarise(n_uniq_types = length(unique(type)),
-#             types = paste(sort(unique(type)), collapse = ',')) %>%
-#   filter(n_uniq_types > 1)
 
 # pcb = PedcBioPortal
 # pot = Pediatric Open Targets
@@ -1005,10 +984,6 @@ ann_gsb_gtype_df <- gsb_gtype_df %>%
 # column
 #
 # Only add gene type column to gene-level table
-# var_level_mut_freq_tbl <- var_level_mut_freq_tbl %>%
-#   left_join(ann_gsb_gtype_df, by = 'Gene_symbol') %>%
-#   replace_na(list(Gene_type = ''))
-# stopifnot(identical(sum(is.na(var_level_mut_freq_tbl)), as.integer(0)))
 
 gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
   left_join(ann_gsb_gtype_df, by = 'Gene_symbol') %>%
