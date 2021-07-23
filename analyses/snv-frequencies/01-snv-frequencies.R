@@ -107,6 +107,14 @@ get_opr_mut_freq_tbl <- function(maf_df, var_group_col,
   stopifnot(is.character(var_group_col))
   stopifnot(identical(length(var_group_col), as.integer(1)))
   stopifnot(identical(sum(is.na(var_group_col)), as.integer(0)))
+  stopifnot(var_group_col %in% colnames(maf_df))
+  stopifnot('Kids_First_Biospecimen_ID' %in% colnames(maf_df))
+  stopifnot('Kids_First_Biospecimen_ID' %in% colnames(overall_histology_df))
+  stopifnot('Kids_First_Biospecimen_ID' %in% colnames(primary_histology_df))
+  stopifnot('Kids_First_Biospecimen_ID' %in% colnames(relapse_histology_df))
+  stopifnot('Kids_First_Participant_ID' %in% colnames(overall_histology_df))
+  stopifnot('Kids_First_Participant_ID' %in% colnames(primary_histology_df))
+  stopifnot('Kids_First_Participant_ID' %in% colnames(relapse_histology_df))
   # asser no NAs in Kids_First_Biospecimen_ID or var_group_col
   stopifnot(identical(
     sum(is.na(select_at(maf_df,
@@ -114,15 +122,21 @@ get_opr_mut_freq_tbl <- function(maf_df, var_group_col,
     as.integer(0)
   ))
   stopifnot(identical(
-    sum(is.na(overall_histology_df$Kids_First_Biospecimen_ID)),
-    as.integer(0)
-  ))
-    stopifnot(identical(
-    sum(is.na(primary_histology_df$Kids_First_Biospecimen_ID)),
+    sum(is.na(select(overall_histology_df,
+                     Kids_First_Biospecimen_ID,
+                     Kids_First_Participant_ID))),
     as.integer(0)
   ))
   stopifnot(identical(
-    sum(is.na(relapse_histology_df$Kids_First_Biospecimen_ID)),
+    sum(is.na(select(primary_histology_df,
+                     Kids_First_Biospecimen_ID,
+                     Kids_First_Participant_ID))),
+    as.integer(0)
+  ))
+  stopifnot(identical(
+    sum(is.na(select(relapse_histology_df,
+                     Kids_First_Biospecimen_ID,
+                     Kids_First_Participant_ID))),
     as.integer(0)
   ))
   # assert all samples in maf_df are in overall_histology_df
