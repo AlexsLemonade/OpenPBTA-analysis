@@ -8,17 +8,22 @@
 # Returns the imported function
 #
 # NOTES:
-# - Only functions defined by `<-` or `assign` can be imported
-# - The function returns an error if the function is not found in the file, or
-#   the function is defined multiple times in the file
+# - Only functions that are not nested in other expressions can be imported,
+#   e.g. functions nested in other functions cannot be imported
+# - Only functions defined by `<-` or `assign` can be imported, e.g. unnamed
+#   functioins cannot be imported
+# - The import_function raises an error if the imported function is not found in
+#   the file, or the imported function is defined multiple times in the
+#   source_code_R_file
 # - If the imported function relies on external variables, the variables will
-#   not be immediately available after this function completes. Users could
+#   not be immediately available after this import_function returns. Users could
 #   import dependency functions and define dependency variables at a later
 #   point.
 #
 # Adapted from @MrFlick's answer at https://stackoverflow.com/a/29132294/4638182
 import_function <- function(source_code_R_file, function_name) {
   src_exprs <- parse(source_code_R_file)
+
   function_def_exprs <- purrr::keep(
     src_exprs,
     function(x) {
@@ -32,12 +37,14 @@ import_function <- function(source_code_R_file, function_name) {
       return(FALSE)
     }
   )
+
   if (identical(length(function_def_exprs), as.integer(0))) {
     stop(paste0(function_name, " is not found in ", source_code_R_file, "."))
   } else if (!identical(length(function_def_exprs), as.integer(1))) {
     stop(paste0(function_name, " is found multiple times in ",
                 source_code_R_file, "."))
   }
+
   # only evaluate the function() {} part
   return(eval(function_def_exprs[[1]][[3]]))
 }
