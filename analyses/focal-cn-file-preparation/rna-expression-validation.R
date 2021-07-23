@@ -10,7 +10,7 @@
 # Rscript --vanilla rna-expression-validation.R \
 #   --annotated_cnv_file analyses/focal-cn-file-preparation/results/cnvkit_annotated_cn_autosomes.tsv.gz \
 #   --expression_file data/gene-expression-rsem-tpm-collapsed.rds \
-#   --independent_specimens_file data/independent-specimens.wgswxspanel.primary.tsv \
+#   --independent_specimens_file data/independent-specimens.wgswxs.primary.tsv \
 #   --metadata  data/histologies.tsv \
 #   --goi_list analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt \
 #   --filename_lead "cnvkit_annotated_cn_autosomes"
