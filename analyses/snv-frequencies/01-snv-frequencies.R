@@ -358,34 +358,6 @@ get_pcb_pot_plot_url <- function(gene_symbol_vec, ss_case_set_id, plot_type) {
 
   return(plot_url_vec)
 }
-# # test cases
-# get_pcb_pot_plot_url(c('BRAF', 'CTNNB1'),
-#                      'ped_opentargets_2021_high-grade_glioma_astrocytoma',
-#                      'oncoprint')
-# get_pcb_pot_plot_url(c('BRAF', 'CTNNB1'),
-#                      'ped_opentargets_2021_pbta_medulloblastoma',
-#                      'oncoprint')
-# get_pcb_pot_plot_url(
-#   c('BRAF'),
-#   'ped_opentargets_2021_pbta_high-grade_glioma_astrocytoma',
-#   'mutations')
-# get_pcb_pot_plot_url(character(0),
-#                      'ped_opentargets_2021_pbta_medulloblastoma',
-#                      'mutations')
-# # following cases should fail
-# get_pcb_pot_plot_url(c('CTNNB1'),
-#                      'ped_opentargets_2021_pbta_medulloblastoma',
-#                      c('mutation', 'oncoprint'))
-# get_pcb_pot_plot_url(character(0), character(0),
-#                      'mutations')
-# get_pcb_pot_plot_url(c('CTNNB1', 'CTNNB1'),
-#                      c('ped_opentargets_2021_pbta_medulloblastoma',
-#                        'ped_opentargets_2021_pbta_medulloblastoma'),
-#                      'oncoprint')
-# get_pcb_pot_plot_url(c('CTNNB1', 'CTNNB1'),
-#                      character(0),
-#                      'oncoprint')
-# get_pcb_pot_plot_url(c(), c(), 'oncoprint')
 
 
 
