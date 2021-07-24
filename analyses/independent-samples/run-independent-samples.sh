@@ -24,7 +24,7 @@ else
 fi
 
 independent_DNA_each="results/independent-specimens.wgswxspanel.primary-plus.eachcohort.tsv"
-independent_DNA_all="results/independent-specimens.wgswxspanel.primary-plus.allcohorts.tsv"
+independent_DNA_all="results/independent-specimens.wgswxspanel.primary-plus.tsv"
 
 Rscript 01-generate-independent-specimens.R \
   -f $HISTOLOGY_FILE \
