@@ -44,15 +44,45 @@ import_function <- function(source_code_R_file, function_name) {
     stop(paste0(function_name, " is found multiple times in ",
                 source_code_R_file, "."))
   }
+  # envir = parent.frame() makes the environment(imported_function) to be the
+  # same as the import function being called. Even though the eval documentation
+  # says the default envir parameter is parent.frame(), leaving envir =
+  # parent.frame() in the eval call will surprisingly make the
+  # environment(imported_function) to be the same as the environment of the
+  # import_function call. Maybe this is caused by the place where parent.frame()
+  # is evaluated? If specified, parent.frame() is evaluated in the calling
+  # function; if not specified, parent.frame() is evaluated in the eval call
+  # environment?
+
+  # Examples executed in terminal R, in order to avoid RStudio customizations.
+  # > print(environment())
+  # <environment: R_GlobalEnv>
+  # >
+  # > foo <- function() {
+  # +   print(parent.frame())
+  # +   print(environment())
+  # +   return(eval(quote(function() { return(2) })))
+  # + }
+  # >
+  # > bar <- foo()
+  # <environment: R_GlobalEnv>
+  # <environment: 0x5645ead67670>
+  # > print(environment(bar))
+  # <environment: 0x5645ead67670>
+  # >
+  # > baz <- function() {
+  # +   print(parent.frame())
+  # +   print(environment())
+  # +   return(eval(quote(function() { return(2) }),
+  # +               envir = parent.frame()))
+  # + }
+  # >
+  # > qux <- baz()
+  # <environment: R_GlobalEnv>
+  # <environment: 0x5645ead5fec0>
+  # > print(environment(qux))
+  # <environment: R_GlobalEnv>
+
   # Only evaluate the function() {} part
-  imported_function <- eval(
-    function_def_exprs[[1]][[3]],
-    envir = parent.frame(n = 1))
-  # Put the imported function in the same environment as the import_function
-  # being called
-  #
-  # Adapted from @Joshua Ulrich's answer at
-  # https://stackoverflow.com/a/17732388/4638182
-  environment(imported_function) <- parent.frame(n = 1)
-  return(imported_function)
+  return(eval(function_def_exprs[[1]][[3]], envir = parent.frame()))
 }
