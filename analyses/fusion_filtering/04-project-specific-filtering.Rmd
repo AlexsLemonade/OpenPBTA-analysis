@@ -5,7 +5,7 @@ output: html_notebook
 params:
   histology:
     label: "Clinical file" 
-    value: data/histologies.tsv
+    value: data/v7/histologies.tsv
     input: file
   group:
     label: "Grouping variable"
@@ -13,7 +13,7 @@ params:
     input: string
   dataRNA:
     label: "Input filtered fusion dataframe"
-    value: scratch/standardFusionExp_QC_expression_GTExComparison_annotated.RDS
+    value: scratch/standardFusionExp_QC_expression_filtered_annotated.RDS
     input: file    
   numCaller:
     label: "Least Number of callers to have called fusion"
