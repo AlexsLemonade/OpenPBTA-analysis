@@ -46,7 +46,8 @@ See the notebook for more information. This notebook also prepares lists of copy
   | biospecimen_id | status | copy_number | ploidy | ensembl | gene_symbol | cytoband |
   |----------------|--------|-------------|--------|---------|-------------|---------|
   Any segment that is copy neutral is filtered out of this table. In addition, [any segments with copy number > (2 * ploidy) are marked as amplifications](https://github.com/AlexsLemonade/OpenPedCan-analysis/blob/e2058dd43d9b1dd41b609e0c3429c72f79ff3be6/analyses/focal-cn-file-preparation/03-prepare-cn-file.R#L275) in the `status` column.
-
+  When running this script, we have added one parameter "--runWXSonly" so that we can choose to run the annoataion on relevant WXS samples only. To distinguish from a complete run, the outputs will have "_wxs_" in them. E.g., when running with "--runWXSonly" for cnvkit file, we will get the output as 'cnvkit_annotated_cn_wxs_autosomes.tsv.gz'.
+  
 * `05-define-most-focal-cn-units.Rmd` - This notebook defines the _most focal_ recurrent copy number units by removing focal changes that are within entire chromosome arm losses and gains.
 _Most focal_ here meaning if a chromosome arm is not clearly defined as a gain or loss (and is callable) we look to define the cytoband level status.
 Similarly, if a cytoband is not clearly defined as a gain or loss (and is callable) we then look to define the gene level status.
@@ -73,6 +74,8 @@ _Note: The shell script's default behavior is to produce these plots using the a
 results
 ├── cnvkit_annotated_cn_autosomes.tsv.gz
 ├── cnvkit_annotated_cn_x_and_y.tsv.gz
+├── cnvkit_annotated_cn_wxs_autosomes.tsv.gz (optional)
+├── cnvkit_annotated_cn_wxs_x_and_y.tsv.gz (optional)
 ├── consensus_seg_annotated_cn_autosomes.tsv.gz
 ├── consensus_seg_annotated_cn_x_and_y.tsv.gz
 ├── consensus_seg_most_focal_cn_status.tsv.gz
@@ -80,6 +83,8 @@ results
 ├── consensus_seg_with_ucsc_cytoband_status.tsv.gz
 ├── controlfreec_annotated_cn_autosomes.tsv.gz
 └── controlfreec_annotated_cn_x_and_y.tsv.gz
+├── controlfreec_annotated_cn_wxs_autosomes.tsv.gz (optional)
+└── controlfreec_annotated_cn_wxs_x_and_y.tsv.gz (optional)
 ```
 
 ### Folder Structure
@@ -172,6 +177,8 @@ focal-cn-file-preparation
 ├── results
 │   ├── cnvkit_annotated_cn_autosomes.tsv.gz
 │   ├── cnvkit_annotated_cn_x_and_y.tsv.gz
+│   ├── cnvkit_annotated_cn_wxs_autosomes.tsv.gz (optional)
+│   ├── cnvkit_annotated_cn_wxs_x_and_y.tsv.gz (optional)
 │   ├── consensus_seg_annotated_cn_autosomes.tsv.gz
 │   ├── consensus_seg_annotated_cn_x_and_y.tsv.gz
 │   ├── consensus_seg_most_focal_cn_status.tsv.gz
