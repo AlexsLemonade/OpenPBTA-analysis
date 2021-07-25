@@ -25,6 +25,21 @@ inspected_annotated_long_format_tibble <- readr::read_tsv(
   col_types = readr::cols(.default = readr::col_character()),
   na = c("NA"), quoted_na = FALSE, trim_ws = FALSE)[]
 
+# esana means empty string as NA. This table is used to test the -r option
+inspected_annotated_long_format_tibble_esana <- readr::read_tsv(
+  "test_data/inspected_annotated_test_long_format_table.tsv",
+  col_types = readr::cols(.default = readr::col_character()),
+  na = c("", "NA"), quoted_na = FALSE, trim_ws = FALSE)[]
+
+testthat::expect_gt(
+  sum(is.na(inspected_annotated_long_format_tibble_esana)), 0)
+
+testthat::expect_equal(
+  sum(is.na(inspected_annotated_long_format_tibble)), 0)
+
+testthat::expect_equal(
+  sum(is.na(long_format_tibble)), 0)
+
 # to save intermediate files
 scratch_dir <- "test_scratch"
 annotator_cli_path <- file.path("..", "annotator-cli.R")
@@ -37,7 +52,9 @@ annotator_cli_output_path <- file.path(
 run_cli_get_tibble <- function(columns_to_add,
                                input_table_path,
                                output_table_path,
-                               remove_input_table = FALSE) {
+                               remove_input_table = FALSE,
+                               replace_na_with_empty_string = TRUE,
+                               read_output_as_a_string = FALSE) {
   run_command <- function(cmd_str) {
     # ignore.stderr = TRUE avoids printing when testing
     #
@@ -51,18 +68,23 @@ run_cli_get_tibble <- function(columns_to_add,
     out <- system(cmd_str, ignore.stderr = TRUE, intern = TRUE)
     return(out)
   }
+  cmd_pfx <- "Rscript --vanilla ../annotator-cli.R "
+  if (replace_na_with_empty_string) {
+    cmd_pfx <- paste0(cmd_pfx, "-r ")
+  }
+
   if (is.null(columns_to_add)) {
     # run without -c
     run_command(paste0(
-      "Rscript --vanilla ../annotator-cli.R -r ",
+      cmd_pfx,
       " -i ", input_table_path,
       " -o ", output_table_path))
   } else {
     columns_to_add_opt_val <- paste0(
       "'", paste(columns_to_add, collapse = ","), "'")
     run_command(paste0(
-      "Rscript --vanilla ../annotator-cli.R ",
-      "-r -c ", columns_to_add_opt_val,
+      cmd_pfx,
+      "-c ", columns_to_add_opt_val,
       " -i ", input_table_path,
       " -o ", output_table_path))
   }
@@ -78,14 +100,18 @@ run_cli_get_tibble <- function(columns_to_add,
 
   # the file may not be created due to CLI call failure
   if (file.exists(output_table_path)) {
-    ann_tibble <- readr::read_tsv(
-      output_table_path,
-      col_types = readr::cols(.default = readr::col_character()),
-      na = c("NA"), quoted_na = FALSE, trim_ws = FALSE)[]
+    if (read_output_as_a_string) {
+      cli_res <- readr::read_file(output_table_path)
+    } else {
+      cli_res <- readr::read_tsv(
+        output_table_path,
+        col_types = readr::cols(.default = readr::col_character()),
+        na = c("NA"), quoted_na = FALSE, trim_ws = FALSE)[]
+    }
 
     # clean up, so other tests will not be affected
     file.remove(output_table_path)
-    return(ann_tibble)
+    return(cli_res)
   } else {
     return(NULL)
   }
@@ -100,6 +126,61 @@ testthat::expect_equal(
     input_table_path = working_input_tsv_path,
     output_table_path = annotator_cli_output_path),
   inspected_annotated_long_format_tibble)
+
+# The -r/--replace-na-with-empty-string does not need to be tested for column
+# type conversions. The CLI write_tsv output table is the same even if a
+# non-character column is converted to a character column before write_tsv,
+# because "Values are only quoted if they contain a comma, quote or newline" (--
+# help("write_tsv", "readr") 1.3.1).
+#
+# run_cli_get_tibble only reads "" as "" for character columns
+testthat::expect_equal(
+  run_cli_get_tibble(
+    columns_to_add = NULL,
+    input_table_path = working_input_tsv_path,
+    output_table_path = annotator_cli_output_path,
+    replace_na_with_empty_string = FALSE),
+  inspected_annotated_long_format_tibble_esana)
+
+testthat::expect_true(
+  stringr::str_detect(
+    run_cli_get_tibble(
+      columns_to_add = NULL,
+      input_table_path = working_input_tsv_path,
+      output_table_path = annotator_cli_output_path,
+      replace_na_with_empty_string = FALSE,
+      read_output_as_a_string = TRUE),
+    "\tNA\t"))
+
+testthat::expect_false(
+  stringr::str_detect(
+    run_cli_get_tibble(
+      columns_to_add = NULL,
+      input_table_path = working_input_tsv_path,
+      output_table_path = annotator_cli_output_path,
+      replace_na_with_empty_string = TRUE,
+      read_output_as_a_string = TRUE),
+    "\tNA\t"))
+
+testthat::expect_true(
+  stringr::str_detect(
+    run_cli_get_tibble(
+      columns_to_add = NULL,
+      input_table_path = working_input_tsv_path,
+      output_table_path = annotator_cli_output_path,
+      replace_na_with_empty_string = TRUE,
+      read_output_as_a_string = TRUE),
+    "\t\t"))
+
+testthat::expect_false(
+  stringr::str_detect(
+    run_cli_get_tibble(
+      columns_to_add = NULL,
+      input_table_path = working_input_tsv_path,
+      output_table_path = annotator_cli_output_path,
+      replace_na_with_empty_string = FALSE,
+      read_output_as_a_string = TRUE),
+    "\t\t"))
 
 # Test annotation order
 testthat::expect_equal(
