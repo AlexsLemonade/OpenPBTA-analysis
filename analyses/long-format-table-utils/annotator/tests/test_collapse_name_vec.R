@@ -3,7 +3,11 @@
 #
 # testthat package is loaded, if this file is executed by testthat::test_dir
 context("tests/test_collapse_name_vec.R")
-
+# import_function is defined in tests/helper_import_function.R and tested in
+# annotator/tests/test_helper_import_function.R
+#
+# testthat::test_dir("tests") runs all `helper*R` files under the `tests`
+# directory before running the `test*R` files
 collapse_name_vec <- import_function(
   "../download-annotation-data.R", "collapse_name_vec")
 

@@ -88,8 +88,6 @@ collapse_name_vec <- function(gn_vec) {
 
 
 # Set up directory paths -------------------------------------------------------
-# Adapted from the oncoprint-landscape module.
-#
 # Detect the ".git" folder -- this will be in the project root directory. Use
 # this as the root directory to ensure proper execution, no matter where it is
 # called from.
@@ -98,15 +96,29 @@ collapse_name_vec <- function(gn_vec) {
 # subdirectory of OpenPedCan-analysis
 #
 # root_dir is the absolute path of OpenPedCan-analysis
+#
+# Adapted from the oncoprint-landscape module
+#
+# rprojroot::has_file(".git/index") returns a rprojroot::root_criterion, and
+# main git working tree, created by git clone and git init, has the .git/index
+# file
+#
+# rprojroot::has_file(".git") returns a rprojroot::root_criterion, and linked
+# git working tree, created by git worktree add, has the .git file
+#
+# "Root criteria can be combined with the | operator. The result is a
+# composite root criterion that requires either of the original criteria to
+# match." -- help("root_criterion", "rprojroot") rprojroot_1.3-2
 tryCatch(
   {
-    root_dir <- rprojroot::find_root(rprojroot::has_file(".git/index"))
+    root_dir <- rprojroot::find_root(
+      rprojroot::has_file(".git/index") | rprojroot::has_file(".git"))
   },
   error = function(err_cond) {
     # adapted from http://adv-r.had.co.nz/Exceptions-Debugging.html
     err_cond$message <- paste0(
       err_cond$message,
-      "\nTry re-running this script with working directory as ",
+      "\nTry re-running this function with working directory as ",
       "OpenPedCan-analysis or a subdirectory of OpenPedCan-analysis.\n")
     stop(err_cond)
   }
