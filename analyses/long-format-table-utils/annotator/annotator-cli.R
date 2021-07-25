@@ -72,7 +72,8 @@ option_list <- list(
     c("-r", "--replace-na-with-empty-string"), action = "store_true",
     default = FALSE,
     help = paste0(
-      "Replace NAs with empty strings for **ALL** columns of the input table")),
+      "Replace NAs with empty strings for **ALL COLUMNS THAT HAVE NA** ",
+      "in the output table")),
   optparse::make_option(
     c("-c", "--columns-to-add"), type = "character",
     default = paste0(

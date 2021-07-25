@@ -26,12 +26,13 @@
 #     required
 #   - The order of returned annotated table has the same column order as the
 #     input table and added columns in the order of columns_to_add parameter.
-# - replace_na_with_empty_string: TRUE or FALSE on whether to replace NAs with
-#   empty strings for **ALL** columns of the input table. Default value is TRUE.
+# - replace_na_with_empty_string: TRUE or FALSE on whether NAs should be
+#   replaced with empty strings for **ALL COLUMNS THAT HAVE NA** in the output
+#   table. Default value is TRUE.
 #
 # Returns a tibble with additonal annotation columns
 #
-# Note on how to add new annotation columns:
+# Note on how to add new annotation columns for maintainers:
 # - Add new column names to the columns_to_add parameter
 # - Add new column names to the available_ann_columns variable
 # - Implement annotation procedures to add new columns
@@ -402,8 +403,14 @@ annotate_long_format_table <- function(
     ann_long_format_table, list(OncoKB_cancer_gene = "N"))
 
   if (replace_na_with_empty_string) {
-    ann_long_format_table <- dplyr::mutate_all(
-      ann_long_format_table, function(x) tidyr::replace_na(x, replace = ""))
+    # Only replace NA with empty string in columns that have NA in them. This
+    # will not change the value types of the columns that have no NA, so the
+    # output JSON/JSONL table will be backward compatible with the ones that
+    # were generated without using the annotator API.
+    ann_long_format_table <- dplyr::mutate_if(
+      ann_long_format_table,
+      function(x) sum(is.na(x)) > 0,
+      function(x) tidyr::replace_na(x, replace = ""))
   }
 
   # Reorder the columns of the returned table to have the same column order as
