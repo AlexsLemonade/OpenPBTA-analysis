@@ -27,7 +27,7 @@ gtf_file=${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz
 goi_file=../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt
 independent_specimens_file=${data_dir}/independent-specimens.wgswxs.primary.tsv
 
-# # Prep the consensus SEG file data
+# Prep the consensus SEG file data
 Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd', clean = TRUE)"
 
 # Run annotation step for consensus file
@@ -52,8 +52,7 @@ if [ "$RUN_ORIGINAL" -gt "0" ]; then
     --gtf_file $gtf_file \
     --metadata $histologies_file \
     --filename_lead "cnvkit_annotated_cn" \
-    --seg \
-    --runWXSonly
+    --seg
 
   # Run annotation step for ControlFreeC
   Rscript --vanilla 04-prepare-cn-file.R \
@@ -61,25 +60,19 @@ if [ "$RUN_ORIGINAL" -gt "0" ]; then
     --gtf_file $gtf_file \
     --metadata $histologies_file \
     --filename_lead "controlfreec_annotated_cn" \
-    --controlfreec \
-    --runWXSonly
+    --controlfreec
 
-  filenameLead=("cnvkit_annotated_cn" "controlfreec_annotated_cn" "cnvkit_annotated_cn_wxs" "controlfreec_annotated_cn_wxs")
-  chromosomeType=("autosomes" "x_and_y")
+  filenameLead=("cnvkit_annotated_cn" "controlfreec_annotated_cn")
   for filename in ${filenameLead[@]}; do
     for chromosome_type in ${chromosomesType[@]}; do
-        Rscript --vanilla rna-expression-validation.R \
-          --annotated_cnv_file results/${filename}_${chromosome_type}.tsv.gz \
-          --expression_file ${data_dir}/gene-expression-rsem-tpm-collapsed.rds \
-          --independent_specimens_file $independent_specimens_file \
-          --metadata $histologies_file \
-          --goi_list $goi_file \
-          --runWXSonly \
-          --filename_lead ${filename}_${chromosome_type}
-     
+      Rscript --vanilla rna-expression-validation.R \
+        --annotated_cnv_file results/${filename}_${chromosome_type}.tsv.gz \
+        --expression_file ${data_dir}/gene-expression-rsem-tpm-collapsed.rds \
+        --independent_specimens_file $independent_specimens_file \
+        --metadata $histologies_file \
+        --goi_list $goi_file \
+        --filename_lead ${filename}_${chromosome_type}
     done
   done
 
  fi
- 
- 

@@ -54,19 +54,11 @@ option_list <- list(
     default = NULL,
     help = "file path to tsv file that contains list of driver genes"
   ),
-   optparse::make_option(
+  optparse::make_option(
     c("--filename_lead"),
     type = "character",
     default = "annotated_expression",
     help = "used in file names"
-  ),
-  optparse::make_option(
-    c("--runWXSonly"),
-    type = "logical",
-    action = "store_true",
-    default = FALSE,
-    help = "flag used to indicate if the annotation was only ran on biospecimens
-            with experiemntal_strategy of WXS"
   )
 )
 
@@ -91,13 +83,7 @@ if (!dir.exists(plots_dir)) {
   dir.create(plots_dir)
 }
 
-# Read in data from tsv file (produced in `04-prepare-cn-file.R`)
-annotated_cnv_file <-opt$annotated_cnv_file
-if(runWXSonly){
-  if(!grepl("_wxs_", annotated_cnv_file)){
-    Stop("Running for wxs only - no need to run for complete file. Skipping to next.")
-  }
-}
+# Read in data from tsv file (produced in `03-prepare-cn-file.R`)
 cn_df <- readr::read_tsv(opt$annotated_cnv_file)
 
 # Read in RNA-seq expression data
