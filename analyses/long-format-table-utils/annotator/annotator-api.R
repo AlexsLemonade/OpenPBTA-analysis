@@ -300,7 +300,7 @@ annotate_long_format_table <- function(
 
   if ("RMTL" %in% columns_to_add) {
     ann_tbl_l$fda_rmtl <- init_ann_tbl_l_element(
-      file_path = file.path(root_dir, "data", "ensg-hugo-rmtl-v1-mapping.tsv"),
+      file_path = file.path(root_dir, "data", "ensg-hugo-rmtl-mapping.tsv"),
       join_by_column = "Gene_Ensembl_ID")
     # Asert all rmtl NAs have version NAs, vice versa
     if (!identical(is.na(ann_tbl_l$fda_rmtl$tibble$rmtl),
