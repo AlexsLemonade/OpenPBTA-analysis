@@ -44,16 +44,16 @@ independent_specimens_file=${data_dir}/independent-specimens.wgswxs.primary.tsv
 if [ "$RUN_ORIGINAL" -gt "0" ]; then
 
 # Prep the CNVkit data
-# Rscript --vanilla -e "rmarkdown::render('01-add-ploidy-cnvkit.Rmd', clean = TRUE)"
-# 
-# # Run annotation step for CNVkit
-# Rscript --vanilla 04-prepare-cn-file.R \
-# --cnv_file ${scratch_dir}/cnvkit_with_status.tsv \
-# --gtf_file $gtf_file \
-# --metadata $histologies_file \
-# --filename_lead "cnvkit_annotated_cn" \
-# --seg \
-# --runWXSonly
+Rscript --vanilla -e "rmarkdown::render('01-add-ploidy-cnvkit.Rmd', clean = TRUE)"
+
+# Run annotation step for CNVkit
+Rscript --vanilla 04-prepare-cn-file.R \
+--cnv_file ${scratch_dir}/cnvkit_with_status.tsv \
+--gtf_file $gtf_file \
+--metadata $histologies_file \
+--filename_lead "cnvkit_annotated_cn" \
+--seg \
+--runWXSonly
 
 # Run annotation step for ControlFreeC
 Rscript --vanilla 04-prepare-cn-file.R \
