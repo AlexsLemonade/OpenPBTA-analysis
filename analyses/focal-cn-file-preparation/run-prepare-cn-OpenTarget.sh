@@ -74,7 +74,6 @@ Rscript --vanilla 04-prepare-cn-file.R \
 #         --independent_specimens_file $independent_specimens_file \
 #         --metadata $histologies_file \
 #         --goi_list $goi_file \
-#         --runWXSonly \
 #         --filename_lead ${filename}_${chromosome_type}
 #   done
 # done
