@@ -1814,7 +1814,7 @@ tp53_status &lt;- read_tsv(file.path(
   &quot;results&quot;,
   &quot;tp53_altered_status.tsv&quot;))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBzYW1wbGVfaWQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfRE5BID0gY29sX2NoYXJhY3RlcigpLFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX1JOQSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgY2FuY2VyX3ByZWRpc3Bvc2l0aW9ucyA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgdHA1M19zY29yZSA9IGNvbF9kb3VibGUoKSxcbiAgU05WX2luZGVsX2NvdW50cyA9IGNvbF9kb3VibGUoKSxcbiAgQ05WX2xvc3NfY291bnRzID0gY29sX2RvdWJsZSgpLFxuICBTVl9jb3VudHMgPSBjb2xfZG91YmxlKCksXG4gIEhHVlNwX1Nob3J0ID0gY29sX2NoYXJhY3RlcigpLFxuICBDTlZfbG9zc19ldmlkZW5jZSA9IGNvbF9kb3VibGUoKSxcbiAgU1ZfdHlwZSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgaG90c3BvdCA9IGNvbF9kb3VibGUoKSxcbiAgYWN0aXZhdGluZyA9IGNvbF9kb3VibGUoKSxcbiAgdHA1M19hbHRlcmVkID0gY29sX2NoYXJhY3RlcigpXG4pXG4ifQ== -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBzYW1wbGVfaWQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfRE5BID0gY29sX2NoYXJhY3RlcigpLFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX1JOQSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgY2FuY2VyX3ByZWRpc3Bvc2l0aW9ucyA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgdHA1M19zY29yZSA9IGNvbF9kb3VibGUoKSxcbiAgU05WX2luZGVsX2NvdW50cyA9IGNvbF9kb3VibGUoKSxcbiAgQ05WX2xvc3NfY291bnRzID0gY29sX2RvdWJsZSgpLFxuICBTVl9jb3VudHMgPSBjb2xfZG91YmxlKCksXG4gIEZ1c2lvbl9jb3VudHMgPSBjb2xfZG91YmxlKCksXG4gIEhHVlNwX1Nob3J0ID0gY29sX2NoYXJhY3RlcigpLFxuICBDTlZfbG9zc19ldmlkZW5jZSA9IGNvbF9kb3VibGUoKSxcbiAgU1ZfdHlwZSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgRnVzaW9uX2V2aWRlbmNlID0gY29sX2NoYXJhY3RlcigpLFxuICBob3RzcG90ID0gY29sX2RvdWJsZSgpLFxuICBhY3RpdmF0aW5nID0gY29sX2RvdWJsZSgpLFxuICB0cDUzX2FsdGVyZWQgPSBjb2xfY2hhcmFjdGVyKClcbilcbiJ9 -->
 <pre><code>Parsed with column specification:
 cols(
   sample_id = col_character(),
@@ -1825,9 +1825,11 @@ cols(
   SNV_indel_counts = col_double(),
   CNV_loss_counts = col_double(),
   SV_counts = col_double(),
+  Fusion_counts = col_double(),
   HGVSp_Short = col_character(),
   CNV_loss_evidence = col_double(),
   SV_type = col_character(),
+  Fusion_evidence = col_character(),
   hotspot = col_double(),
   activating = col_double(),
   tp53_altered = col_character()
