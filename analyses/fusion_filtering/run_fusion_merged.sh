@@ -49,10 +49,12 @@ normal_expression_brain="${references_path}/gtex_brain_TPM_hg38.rds"
 if [[ RUN_FOR_SUBTYPING -eq "0" ]]
 then
    histologies_file="${data_path}/histologies.tsv" 
-   independent_samples_file="${data_path}/independent-specimens.wgswxspanel.primary-plus.tsv"
+   independent_RNA_primary="../independent-samples/results/independent-specimens.rnaseq.primary.tsv"
+   independent_RNA_relapse="../independent-samples/results/independent-specimens.rnaseq.relapse.tsv"
 else 
    histologies_file="${data_path}/histologies-base.tsv"  
-   independent_samples_file="../independent-samples/results/independent-specimens.wgswxspanel.primary-plus.tsv" 
+   independent_RNA_primary="../independent-samples/results/independent-specimens.rnaseq.primary.tsv"
+   independent_RNA_relapse="../independent-samples/results/independent-specimens.rnaseq.relapse.tsv"
 fi
 
 
@@ -76,8 +78,8 @@ putative_oncogenic_fusion="${results_path}/fusion-putative-oncogenic.tsv"
 Rscript 01-fusion-standardization.R --fusionfile $arriba_file \
                                     --caller "arriba" \
                                     --outputFile $standard_arriba_file
-                                    
-                                    
+
+
 # Run Fusion standardization for starfusion caller
 Rscript 01-fusion-standardization.R --fusionfile $starfusion_file \
                                     --caller "starfusion" \
@@ -110,10 +112,11 @@ Rscript -e "rmarkdown::render('04-project-specific-filtering.Rmd',params=list(ba
 # QC filter putative oncogene found in more than 4 histologies
 Rscript -e "rmarkdown::render('05-QC_putative_onco_fusion_distribution.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
-# # Recurrent fusion/fused genes
-# Rscript 06-recurrent-fusions-per-cancer-group.R --standardFusionCalls $putative_oncogenic_fusion \
-#                                                 --clinicalFile $histologies_file \
-#                                                 --cohortInterest "PBTA,GMKF" \
-#                                                 --outputfolder $results_path \
-#                                                 --independentSpecimensFile $independent_samples_file
+# Recurrent fusion/fused genes
+Rscript 06-recurrent-fusions-per-cancer-group.R --standardFusionCalls $putative_oncogenic_fusion \
+                                                --clinicalFile $histologies_file \
+                                                --cohortInterest "PBTA,GMKF,TARGET" \
+                                                --outputfolder $results_path \
+                                                --independentPrimary $independent_RNA_primary \
+                                                --independentRelapse $independent_RNA_relapse
 
