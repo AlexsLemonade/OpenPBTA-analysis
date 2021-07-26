@@ -357,7 +357,8 @@ htl_df <- readr::read_tsv(
     gtex_group = col_character(),
     gtex_subgroup = col_character(),
     EFS_days = col_number()
-  )
+  ),
+  guess_max = 100000
 )
 # assert read count matrix column names match metadata sample IDs
 stopifnot(all(colnames(tpm_df) %in% htl_df$Kids_First_Biospecimen_ID))
