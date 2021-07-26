@@ -396,7 +396,7 @@ stopifnot(all(rna_htl_df$Kids_First_Biospecimen_ID %in% colnames(tpm_df)))
 
 
 # gene symbol to ENSG id table
-gid_gsb_tbl <- read_tsv('../../data/ensg-hugo-rmtl-v1-mapping.tsv',
+gid_gsb_tbl <- read_tsv('../../data/ensg-hugo-rmtl-mapping.tsv',
                         col_types = cols(.default = col_guess()),
                         guess_max = 10000) %>%
   rename(gene_id = ensg_id) %>%
