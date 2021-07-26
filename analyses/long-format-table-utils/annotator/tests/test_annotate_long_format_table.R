@@ -26,6 +26,34 @@ inspected_annotated_long_format_tibble <- readr::read_tsv(
   col_types = readr::cols(.default = readr::col_character()),
   na = c("NA"), quoted_na = FALSE, trim_ws = FALSE)[]
 
+# nac means non all character. These tables can be used to test whether column
+# types are changed.
+long_format_tibble_nac <- readr::read_tsv(
+  "test_data/test_long_format_table.tsv",
+  col_types = readr::cols(
+    .default = readr::col_character(),
+    tpm_mean = readr::col_double()))[]
+
+inspected_annotated_long_format_tibble_nac <- readr::read_tsv(
+  "test_data/inspected_annotated_test_long_format_table.tsv",
+  col_types = readr::cols(
+    .default = readr::col_character(),
+    tpm_mean = readr::col_double()),
+  na = c("NA"), quoted_na = FALSE, trim_ws = FALSE)[]
+
+testthat::expect_equal(
+  sum(is.na(long_format_tibble_nac)), 0)
+
+testthat::expect_equal(
+  sum(is.na(inspected_annotated_long_format_tibble_nac)), 0)
+
+testthat::expect_equal(
+  sum(is.na(inspected_annotated_long_format_tibble)), 0)
+
+testthat::expect_equal(
+  sum(is.na(long_format_tibble)), 0)
+
+
 # Test cases
 #
 # Add package prefix for auto completion purpose only
@@ -34,6 +62,51 @@ inspected_annotated_long_format_tibble <- readr::read_tsv(
 testthat::expect_equal(
   annotate_long_format_table(long_format_tibble),
   inspected_annotated_long_format_tibble)
+
+# Test replacing NAs with empty strings for **ALL COLUMNS THAT HAVE NA** in the
+# output table
+#
+# tpm_mean has no NA, so its type should not be changed
+testthat::expect_equal(
+  annotate_long_format_table(long_format_tibble_nac),
+  inspected_annotated_long_format_tibble_nac)
+
+testthat::expect_false(
+  is.character(long_format_tibble_nac$tpm_mean))
+
+testthat::expect_false(
+  is.character(annotate_long_format_table(long_format_tibble_nac)$tpm_mean))
+
+testthat::expect_false(
+  is.character(annotate_long_format_table(
+    long_format_tibble_nac,
+    replace_na_with_empty_string = FALSE)$tpm_mean))
+
+long_format_tibble_nac_tmna <- long_format_tibble_nac
+long_format_tibble_nac_tmna[2, "tpm_mean"] <- NA
+testthat::expect_true(
+  is.character(
+    annotate_long_format_table(long_format_tibble_nac_tmna)$tpm_mean))
+
+testthat::expect_false(
+  is.character(
+    annotate_long_format_table(
+      long_format_tibble_nac_tmna,
+      replace_na_with_empty_string = FALSE)$tpm_mean))
+
+testthat::expect_gt(
+  sum(is.na(
+    annotate_long_format_table(
+      long_format_tibble_nac_tmna,
+      replace_na_with_empty_string = FALSE))),
+  0)
+
+testthat::expect_equal(
+  sum(is.na(
+    annotate_long_format_table(
+      long_format_tibble_nac_tmna,
+      replace_na_with_empty_string = TRUE))),
+  0)
 
 # Test annotation order
 testthat::expect_equal(
