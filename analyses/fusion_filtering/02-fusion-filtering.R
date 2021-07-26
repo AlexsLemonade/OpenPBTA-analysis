@@ -183,7 +183,6 @@ expressionMatrix<-readRDS(expressionMatrix)
 matched_samples <- read.delim(clinicalFile, header = TRUE, sep = "\t", stringsAsFactors = FALSE) %>%
   filter(cohort %in% cohortInterest) %>%
   filter(experimental_strategy == "RNA-Seq") %>%
-  filter(sample_type == "Tumor") %>%
   tibble::column_to_rownames("Kids_First_Biospecimen_ID")
 # filter the expression to only the ones that are in the cohort and sample type of interest
 expressionMatrix <- expressionMatrix %>%
