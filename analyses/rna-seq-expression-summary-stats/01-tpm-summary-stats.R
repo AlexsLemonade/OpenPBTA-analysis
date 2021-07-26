@@ -489,20 +489,6 @@ nf_all_cohorts_tpm_ss_out_dfs <- get_expression_summary_stats_out_dfs(
   nf_all_cohorts_tpm_df, nf_all_cohorts_rna_htl_df$sample_group,
   gsb_gids_df)
 
-write_tsv(nf_all_cohorts_tpm_ss_out_dfs$mean_df,
-          'results/cancer_group_all_cohort_mean_tpm.tsv')
-write_tsv(nf_all_cohorts_tpm_ss_out_dfs$sd_df,
-          'results/cancer_group_all_cohort_standard_deviation_tpm.tsv')
-write_tsv(
-  nf_all_cohorts_tpm_ss_out_dfs$group_wise_zscore_df,
-  'results/cancer_group_all_cohort_mean_tpm_cancer_group_wise_z_scores.tsv')
-write_tsv(
-  nf_all_cohorts_tpm_ss_out_dfs$quant_df,
-  'results/cancer_group_all_cohort_mean_tpm_cancer_group_wise_quantiles.tsv')
-write_tsv(
-  nf_all_cohorts_tpm_ss_out_dfs$gene_wise_zscore_df,
-  'results/cancer_group_all_cohort_mean_tpm_gene_wise_z_scores.tsv')
-
 
 
 # Summary statistics of each cohort --------------------------------------------
@@ -551,26 +537,6 @@ stopifnot(identical(
 nf_ind_cohort_tpm_ss_out_dfs <- get_expression_summary_stats_out_dfs(
   nf_ind_cohort_tpm_df, nf_ind_cohort_rna_htl_df$sample_group,
   gsb_gids_df)
-
-write_tsv(nf_ind_cohort_tpm_ss_out_dfs$mean_df,
-          'results/cancer_group_individual_cohort_mean_tpm.tsv')
-write_tsv(nf_ind_cohort_tpm_ss_out_dfs$sd_df,
-          'results/cancer_group_individual_cohort_standard_deviation_tpm.tsv')
-write_tsv(
-  nf_ind_cohort_tpm_ss_out_dfs$group_wise_zscore_df,
-  file.path('results',
-            paste0('cancer_group_individual_cohort',
-                   '_mean_tpm_cancer_group_wise_z_scores.tsv')))
-write_tsv(
-  nf_ind_cohort_tpm_ss_out_dfs$quant_df,
-  file.path('results',
-            paste0('cancer_group_individual_cohort',
-                   '_mean_tpm_cancer_group_wise_quantiles.tsv')))
-write_tsv(
-  nf_ind_cohort_tpm_ss_out_dfs$gene_wise_zscore_df,
-  file.path('results',
-            paste0('cancer_group_individual_cohort',
-                   '_mean_tpm_gene_wise_z_scores.tsv')))
 
 
 
