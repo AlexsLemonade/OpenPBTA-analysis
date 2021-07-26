@@ -204,7 +204,6 @@ Input:
 - `../../data/gene-expression-rsem-tpm-collapsed.rds`
 - `../../data/histologies.tsv`
 - `../../data/ensg-hugo-rmtl-v1-mapping.tsv`
-- `../../data/efo-mondo-map.tsv`
 - `../independent-samples/results/independent-specimens.rnaseq.primary.eachcohort.tsv`
 
 Output:
