@@ -617,8 +617,7 @@ m_tpm_ss_long_tbl <- m_tpm_ss_long_tbl %>%
          Disease = cancer_group)
 
 m_tpm_ss_long_tbl <- annotate_long_format_table(
-  m_tpm_ss_long_tbl, columns_to_add = c('MONDO', 'RMTL', 'EFO'),
-  replace_na_with_empty_string = FALSE)
+  m_tpm_ss_long_tbl, columns_to_add = c('MONDO', 'RMTL', 'EFO'))
 
 m_tpm_ss_long_tbl <- m_tpm_ss_long_tbl %>%
   rename(gene_symbol = Gene_symbol, gene_id = Gene_Ensembl_ID,
@@ -628,9 +627,6 @@ m_tpm_ss_long_tbl <- m_tpm_ss_long_tbl %>%
          tpm_mean, tpm_sd,
          tpm_mean_cancer_group_wise_zscore, tpm_mean_gene_wise_zscore,
          tpm_mean_cancer_group_wise_quantiles)
-# Replace NA with '' in columns that have NA
-m_tpm_ss_long_tbl <- m_tpm_ss_long_tbl %>%
-  mutate_if(function(x) sum(is.na(x)) > 0, function(x) replace_na(x, ''))
 
 stopifnot(identical(sum(is.na(m_tpm_ss_long_tbl)), as.integer(0)))
 
