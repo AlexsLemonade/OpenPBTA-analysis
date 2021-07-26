@@ -5,7 +5,7 @@ output: html_notebook
 params:
   histology:
     label: "Clinical file" 
-    value: data/v7/histologies.tsv
+    value: data/histologies.tsv
     input: file
   dataPutativeFusion:
     label: "Input putative oncogene fusion dataframe"
