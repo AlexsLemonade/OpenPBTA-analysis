@@ -586,10 +586,8 @@ m_tpm_ss_long_tbl <- annotate_long_format_table(
   m_tpm_ss_long_tbl, columns_to_add = c('MONDO', 'RMTL', 'EFO'))
 
 m_tpm_ss_long_tbl <- m_tpm_ss_long_tbl %>%
-  rename(gene_symbol = Gene_symbol, gene_id = Gene_Ensembl_ID,
-         cancer_group = Disease) %>%
-  select(gene_symbol, RMTL, gene_id,
-         cancer_group, EFO, MONDO, n_samples, cohort,
+  select(Gene_symbol, RMTL, Gene_Ensembl_ID,
+         Disease, EFO, MONDO, n_samples, cohort,
          tpm_mean, tpm_sd,
          tpm_mean_cancer_group_wise_zscore, tpm_mean_gene_wise_zscore,
          tpm_mean_cancer_group_wise_quantiles)
