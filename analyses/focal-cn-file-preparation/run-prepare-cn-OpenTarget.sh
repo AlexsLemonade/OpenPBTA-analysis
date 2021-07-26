@@ -27,16 +27,16 @@ gtf_file=${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz
 goi_file=../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt
 independent_specimens_file=${data_dir}/independent-specimens.wgswxs.primary.tsv
 
-# # # Prep the consensus SEG file data
-# Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd', clean = TRUE)"
-# 
-# # Run annotation step for consensus file
-# Rscript --vanilla 04-prepare-cn-file.R \
-# --cnv_file ${scratch_dir}/consensus_seg_with_status.tsv \
-# --gtf_file $gtf_file \
-# --metadata $histologies_file \
-# --filename_lead "consensus_seg_annotated_cn" \
-# --seg
+# Prep the consensus SEG file data
+Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd', clean = TRUE)"
+
+# Run annotation step for consensus file
+Rscript --vanilla 04-prepare-cn-file.R \
+--cnv_file ${scratch_dir}/consensus_seg_with_status.tsv \
+--gtf_file $gtf_file \
+--metadata $histologies_file \
+--filename_lead "consensus_seg_annotated_cn" \
+--seg
 
 
 # if we want to process the CNV data from the original callers
