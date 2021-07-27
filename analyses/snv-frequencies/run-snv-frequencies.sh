@@ -48,8 +48,8 @@ Rscript --vanilla '01-snv-frequencies.R'
 echo 'Convert JSON files to JSONL files...'
 
 jq --compact-output '.[]' \
-  results/var-level-snv-consensus-annotated-mut-freq.json \
-  > results/var-level-snv-consensus-annotated-mut-freq.jsonl
+  results/variant-level-snv-consensus-annotated-mut-freq.json \
+  > results/variant-level-snv-consensus-annotated-mut-freq.jsonl
 
 jq --compact-output '.[]' \
   results/gene-level-snv-consensus-annotated-mut-freq.json \
@@ -57,7 +57,7 @@ jq --compact-output '.[]' \
 
 echo 'Remove JSON files...'
 
-rm results/var-level-snv-consensus-annotated-mut-freq.json
+rm results/variant-level-snv-consensus-annotated-mut-freq.json
 rm results/gene-level-snv-consensus-annotated-mut-freq.json
 
 # --no-name option stops the filename and timestamp from being stored in the
@@ -65,7 +65,7 @@ rm results/gene-level-snv-consensus-annotated-mut-freq.json
 
 echo 'gzip JSONL files...'
 
-gzip --no-name results/var-level-snv-consensus-annotated-mut-freq.jsonl
+gzip --no-name results/variant-level-snv-consensus-annotated-mut-freq.jsonl
 gzip --no-name results/gene-level-snv-consensus-annotated-mut-freq.jsonl
 
 echo 'Done running run-snv-frequencies.sh'

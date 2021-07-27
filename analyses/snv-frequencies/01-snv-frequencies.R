@@ -1019,11 +1019,11 @@ gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
 
 write_tsv(
   var_level_mut_freq_tbl,
-  file.path(tables_dir, 'var-level-snv-consensus-annotated-mut-freq.tsv'))
+  file.path(tables_dir, 'variant-level-snv-consensus-annotated-mut-freq.tsv'))
 
 jsonlite::write_json(
   var_level_mut_freq_tbl,
-  file.path(tables_dir, 'var-level-snv-consensus-annotated-mut-freq.json'))
+  file.path(tables_dir, 'variant-level-snv-consensus-annotated-mut-freq.json'))
 
 write_tsv(
   gene_level_mut_freq_tbl,
