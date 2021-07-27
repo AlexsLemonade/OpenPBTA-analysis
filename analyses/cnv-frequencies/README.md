@@ -9,12 +9,10 @@ Adapted from [fusion-frequencies](https://github.com/PediatricOpenTargets/OpenPe
 Adapted by Eric Wafula ([@ewafula](https://github.com/ewafula)) 
 
 ### Purpose
-Uses `consensus_seg_annotated_cn_autosomes.tsv.gz` and `consensus_seg_annotated_cn_x_and_y.tsv.gz` consensus CNV calls and variant types (`amplification`, `deep deletion`, `gain`, `loss`, and `neutral`) to determine `Ensembl` gene-level mutation frequencies for each cancer type in an overall cohort dateset and in the independent primary/relapse cohort subsets of the data.
-
+Uses `consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz` and `consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz` consensus CNV calls and variant types (`amplification`, `deep deletion`, `gain`, `loss`, and `neutral`) to determine `Ensembl` gene-level mutation frequencies for each cancer type in an overall cohort dateset and in the independent primary/relapse cohort subsets of the data.
 
 #### Additional annotation
-
-Additional disease and  gene annotations include `EFO`, `MONDO`, and `HUGO` identifiers, and full gene names obtained from [mygene.info](http://mygene.info/about).
+Additional disease and gene annotations include `gene full names` `RMTL designations`, `OncoKB categories`, and `EFO and MONDO identifiers` integrated to the CNV frequencies table using the [long-format-table-utils analysis module)](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/long-format-table-utils).
 
 Each `cancer_group` and `cohort`(s) combination is considered a `cancer_group_cohort`. `cancer_group_cohort` with `n_samples` >= 5, compute `Frequency_in_overall_dataset`, `Frequency_in_primary_tumors`, and `Frequency_in_relapse_tumors` as following:
 
@@ -39,14 +37,12 @@ Merge the CNV frequency tables of all `cancer_group_cohort`s.
 
 ### Results
 
-Results are generated using PediatricOpenTargets/OpenPedCan-analysis data release v6.
+Results are generated using PediatricOpenTargets/OpenPedCan-analysis data release v7.
 
-The merged fusion frequency table of all `cancer_group_cohort`s is output in TSV and JSONL formats.
+The merged CNV frequency table of all `cancer_group_cohort`s is output in TSV and JSONL formats.
 
-- `consensus_seg_annotated_cn_autosomes_freq.tsv.gz`
-- `consensus_seg_annotated_cn_autosomes_freq.jsonl.gz`
-- `consensus_seg_annotated_cn_x_and_y_freq.tsv.gz`
-- `consensus_seg_annotated_cn_x_and_y_freq.jsonl.gz`
+- `gene-level-cnv-consensus-annotated-mut-freq.tsv.gz`
+- `gene-level-cnv-consensus-annotated-mut-freq.jsonl.gz`
 
 ### Analysis scripts
 
@@ -55,7 +51,6 @@ This is a bash script wrapper for setting input file paths for the main anlysis 
 
 Adapted from [snv-callers analysis module](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/analyses/snv-callers/run_caller_consensus_analysis.sh)
 **Module author:** Candace Savonen ([@cansavvy](https://github.com/cansavvy))
-
 
 Usage:
 ```bash
@@ -66,11 +61,9 @@ bash run-cnv-frequencies-analysis.sh
 ### `01-cnv-frequencies.py`
 Python functions to create copy number variation (CNV) cancer type and study gene-level frequencies for OPenPedCan analyses modules
 
-
 Usage:
 ```bash
-python3 analysis/cnv-frequencies/01-cnv-frequencies.py HISTOLOGY_FILE CNV_FILE \
-                                PRIMARY_TUMORS RELAPSE_TUMORS ENSG_NAME ONCOKB EFO_MONDO ENSG_RMTL
+python3 analysis/cnv-frequencies/01-cnv-frequencies.py HISTOLOGY_FILE CNV_FILE PRIMARY_TUMORS RELAPSE_TUMORS
 ```
 
 Parameter Options:
@@ -79,26 +72,14 @@ positional arguments:
   HISTOLOGY_FILE  OPenPedCan histology file (histologies.tsv)
                   
   CNV_FILE        OPenPedCan CNV consensus file 
-                  (consensus_seg_annotated_cn_autosomes.tsv or
-                  consensus_seg_annotated_cn_x_and_y.tsv)
+                  (consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz
+                  and consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz)
                   
   PRIMARY_TUMORS  OPenPedCan independent primary tumor samples file 
-                  (independent-specimens.wgs.primary.tsv)
+                  (independent-specimens.wgs.primary.eachcohort.tsv)
                   
   RELAPSE_TUMORS  OPenPedCan independent relapse tumor samples file 
-                  (independent-specimens.wgs.relapse.tsv)
-
-  ENSG_NAME       OPenPedCan Ensembl to gene full name mapping file 
-                  (ensg-gene-full-name-refseq-protein.tsv)
-
-  ONCOKB          OPenPedCan disease to EFO/MONDO mapping file 
-                  (efo-mondo-map.tsv)
-                  
-  EFO_MONDO       OPenPedCan Hugo gene symbols to OnckKB categories mapping file
-                  (OncoKB_Oncogene-TSG_genes.tsv)
-                  
-  ENSG_RMTL       OPenPedCan Ensembl to RMTL mapping file 
-                  (ensg-hugo-rmtl-v*-mapping.tsv)
+                  (independent-specimens.wgs.relapse.eachcohort.tsv)
                   
 optional arguments:
   -h, --help      show this help message and exit
@@ -106,19 +87,13 @@ optional arguments:
 ```
 
 Input:
-
 - `data/histologies.tsv`
-- `data/consensus_seg_annotated_cn_autosomes.tsv.gz`
-- `data/consensus_seg_annotated_cn_x_and_y.tsv.gz`
+- `data/consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz`
+- `data/consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz`
 - `analyses/independent-samples/results/independent-specimens.wgs.primary.eachcohort.tsv`
 - `analyses/independent-samples/results/independent-specimens.wgs.relapse.eachcohort.tsv`
-- `analyses/cnv-frequencies/input/ensg-gene-full-name-refseq-protein.tsv`
-- `analyses/cnv-frequencies/input/OncoKB_Oncogene-TSG_genes.tsv`
-- `data/efo-mondo-map.tsv`
-- `data/ensg-hugo-rmtl-v1-mapping.tsv`
 
 Output:
-- `analysis/cnv-frequencies/results/consensus_seg_annotated_cn_autosomes_freq.tsv.gz`
-- `analysis/cnv-frequencies/results/consensus_seg_annotated_cn_autosomes_freq.jsonl.gz`
-- `analysis/cnv-frequencies/results/consensus_seg_annotated_cn_x_and_y_freq.tsv.gz`
-- `analysis/cnv-frequencies/results/consensus_seg_annotated_cn_x_and_y_freq.jsonl.gz`
+- `analysis/cnv-frequencies/results/gene-level-cnv-consensus-annotated-mut-freq.tsv.gz`
+- `analysis/cnv-frequencies/results/gene-level-cnv-consensus-annotated-mut-freq.jsonl.gz`
+
