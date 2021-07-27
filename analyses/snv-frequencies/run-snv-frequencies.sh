@@ -45,6 +45,8 @@ Rscript --vanilla '01-snv-frequencies.R'
 #
 # - https://stackoverflow.com/a/48711608/4638182
 # - https://stackoverflow.com/a/66709708/4638182
+echo 'Convert JSON files to JSONL files...'
+
 jq --compact-output '.[]' \
   results/var-level-snv-consensus-annotated-mut-freq.json \
   > results/var-level-snv-consensus-annotated-mut-freq.jsonl
@@ -53,11 +55,17 @@ jq --compact-output '.[]' \
   results/gene-level-snv-consensus-annotated-mut-freq.json \
   > results/gene-level-snv-consensus-annotated-mut-freq.jsonl
 
+echo 'Remove JSON files...'
+
+rm results/var-level-snv-consensus-annotated-mut-freq.json
+rm results/gene-level-snv-consensus-annotated-mut-freq.json
 
 # --no-name option stops the filename and timestamp from being stored in the
 # output file. So rerun will have the same file.
-gzip --no-name results/var-level-snv-consensus-annotated-mut-freq.json
-gzip --no-name results/var-level-snv-consensus-annotated-mut-freq.jsonl
 
-gzip --no-name results/gene-level-snv-consensus-annotated-mut-freq.json
+echo 'gzip JSONL files...'
+
+gzip --no-name results/var-level-snv-consensus-annotated-mut-freq.jsonl
 gzip --no-name results/gene-level-snv-consensus-annotated-mut-freq.jsonl
+
+echo 'Done running run-snv-frequencies.sh'
