@@ -12,7 +12,7 @@
 #   Notes on requiring both Gene_symbol and Gene_Ensembl_ID:
 #   - Some Gene_symbols are mapped to multiple Gene_Ensembl_IDs, so adding
 #     Gene_Ensembl_IDs by mapping Gene_symbols with
-#     data/ensg-hugo-rmtl-v1-mapping.tsv may implicitly introduce duplicated
+#     data/ensg-hugo-rmtl-mapping.tsv may implicitly introduce duplicated
 #     rows. Therefore, adding Gene_Ensembl_IDs by mapping Gene_symbols is left
 #     to users with cautions for potentially introducing unwanted duplicates.
 #   - Certain annotation files use Gene_symbol as key columns, and certain other
@@ -300,12 +300,12 @@ annotate_long_format_table <- function(
 
   if ("RMTL" %in% columns_to_add) {
     ann_tbl_l$fda_rmtl <- init_ann_tbl_l_element(
-      file_path = file.path(root_dir, "data", "ensg-hugo-rmtl-v1-mapping.tsv"),
+      file_path = file.path(root_dir, "data", "ensg-hugo-rmtl-mapping.tsv"),
       join_by_column = "Gene_Ensembl_ID")
     # Asert all rmtl NAs have version NAs, vice versa
     if (!identical(is.na(ann_tbl_l$fda_rmtl$tibble$rmtl),
                   is.na(ann_tbl_l$fda_rmtl$tibble$version))) {
-      stop(paste0("ensg-hugo-rmtl-v1-mapping.tsv ",
+      stop(paste0("ensg-hugo-rmtl-mapping.tsv ",
                   "has rmtl column NAs with version column non-NAs, or",
                   "version column NAs with rmtl column non-NAs\n",
                   "Check data integrity. Submit a data question GitHub issue."))
