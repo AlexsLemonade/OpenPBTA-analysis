@@ -214,6 +214,111 @@ testthat::expect_error(
   annotate_long_format_table(
     dplyr::select(long_format_tibble, -Gene_Ensembl_ID, -Disease)))
 
+testthat::expect_error(
+  annotate_long_format_table(
+    dplyr::select(long_format_tibble, -Gene_symbol, -Disease),
+    columns_to_add = c("Gene_type")))
+
+testthat::expect_error(
+  annotate_long_format_table(
+    dplyr::select(long_format_tibble, -Disease),
+    columns_to_add = c("EFO")))
+
+testthat::expect_error(
+  annotate_long_format_table(
+    dplyr::select(long_format_tibble, -Gene_Ensembl_ID),
+    columns_to_add = c("Gene_full_name")))
+
+# No error if all required columns are provided
+testthat::expect_equal(
+  annotate_long_format_table(
+    dplyr::select(long_format_tibble, -Gene_Ensembl_ID, -Disease),
+    columns_to_add = c("Gene_type")),
+  dplyr::select(
+    inspected_annotated_long_format_tibble,
+    -Gene_Ensembl_ID, -Disease,
+    -OncoKB_cancer_gene, -OncoKB_oncogene_TSG, -RMTL, -Gene_full_name,
+    -Protein_RefSeq_ID, -EFO, -MONDO))
+
+testthat::expect_equal(
+  annotate_long_format_table(
+    dplyr::select(long_format_tibble, -Gene_Ensembl_ID, -Gene_symbol),
+    columns_to_add = c("EFO")),
+  dplyr::select(
+    inspected_annotated_long_format_tibble,
+    -Gene_Ensembl_ID, -Gene_symbol,
+    -Gene_type, -OncoKB_cancer_gene, -OncoKB_oncogene_TSG, -RMTL,
+    -Gene_full_name, -Protein_RefSeq_ID, -MONDO))
+
+testthat::expect_equal(
+  annotate_long_format_table(
+    dplyr::select(long_format_tibble, -Gene_Ensembl_ID, -Gene_symbol),
+    columns_to_add = c("EFO")),
+  dplyr::select(
+    inspected_annotated_long_format_tibble,
+    -Gene_Ensembl_ID, -Gene_symbol,
+    -Gene_type, -OncoKB_cancer_gene, -OncoKB_oncogene_TSG, -RMTL,
+    -Gene_full_name, -Protein_RefSeq_ID, -MONDO))
+
+testthat::expect_equal(
+  annotate_long_format_table(
+    dplyr::select(long_format_tibble, -Disease, -Gene_symbol),
+    columns_to_add = c("Gene_full_name", "RMTL")),
+  dplyr::select(
+    inspected_annotated_long_format_tibble,
+    -Disease, -Gene_symbol,
+    -Gene_type, -OncoKB_cancer_gene, -OncoKB_oncogene_TSG,
+    -Protein_RefSeq_ID, -EFO, -MONDO,
+    -Gene_full_name, -RMTL,
+    Gene_full_name, RMTL))
+
+# Error on non-character required columns
+testthat::expect_error(
+  annotate_long_format_table(
+    dplyr::mutate(long_format_tibble, Gene_symbol = as.factor(Gene_symbol)),
+    columns_to_add = c("Gene_type")))
+
+testthat::expect_error(
+  annotate_long_format_table(
+    dplyr::mutate(long_format_tibble, Disease = as.factor(Disease)),
+    columns_to_add = c("EFO")))
+
+testthat::expect_error(
+  annotate_long_format_table(
+    dplyr::mutate(
+      long_format_tibble,
+      Gene_Ensembl_ID = as.factor(Gene_Ensembl_ID)),
+    columns_to_add = c("Gene_full_name")))
+
+# OK if join_by column is character
+testthat::expect_equal(
+  annotate_long_format_table(
+    dplyr::mutate(
+      long_format_tibble,
+      Gene_Ensembl_ID = as.factor(Gene_Ensembl_ID)),
+    columns_to_add = c("Gene_type")),
+  dplyr::mutate(
+    dplyr::select(
+      inspected_annotated_long_format_tibble,
+      -OncoKB_cancer_gene, -OncoKB_oncogene_TSG, -RMTL, -Gene_full_name,
+      -Protein_RefSeq_ID, -EFO, -MONDO),
+    Gene_Ensembl_ID = as.factor(Gene_Ensembl_ID)))
+
+testthat::expect_equal(
+  annotate_long_format_table(
+    dplyr::mutate(
+      long_format_tibble,
+      Gene_Ensembl_ID = as.factor(Gene_Ensembl_ID),
+      Gene_symbol = as.factor(Gene_symbol)),
+    columns_to_add = c("EFO")),
+  dplyr::mutate(
+    dplyr::select(
+      inspected_annotated_long_format_tibble,
+      -Gene_type, -OncoKB_cancer_gene, -OncoKB_oncogene_TSG, -RMTL,
+      -Gene_full_name, -Protein_RefSeq_ID, -MONDO),
+    Gene_Ensembl_ID = as.factor(Gene_Ensembl_ID),
+    Gene_symbol = as.factor(Gene_symbol)))
+
 
 # Error on requiring existing annotation columns
 testthat::expect_error(

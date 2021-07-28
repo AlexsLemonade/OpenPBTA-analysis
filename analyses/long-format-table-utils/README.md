@@ -53,13 +53,13 @@ Note on using MyGene instead of biomaRt: MyGene has more `Gene_Ensembl_ID`s that
 
 ##### Implementation of long-format table annotator
 
-Check input long-format tables have the following columns:
+Check input long-format tables have required columns for adding annotation columns.
 
-| Column name       | Description                                                                                                                                              |
-|-------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `Gene_symbol`     | HUGO symbols, e.g. PHLPP1, TM6SF1, and DNAH5.                                                                                                            |
-| `Gene_Ensembl_ID` | Ensembl ENSG IDs without `.#` versions, e.g. ENSG00000039139, ENSG00000111261, and ENSG00000169710                                                       |
-| `Disease`         | The `cancer_group` in the `histologies.tsv`, e.g. Adamantinomatous Craniopharyngioma, Atypical Teratoid Rhabdoid Tumor, and Low-grade glioma/astrocytoma |
+| Column name       | Required for adding which annotation columns             | Description                                                                                                                                              |
+|-------------------|----------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Gene_symbol`     | `Gene_type`, `OncoKB_cancer_gene`, `OncoKB_oncogene_TSG` | HUGO symbols, e.g. PHLPP1, TM6SF1, and DNAH5.                                                                                                            |
+| `Gene_Ensembl_ID` | `RMTL`, `Gene_full_name`, `Protein_RefSeq_ID`            | Ensembl ENSG IDs without `.#` versions, e.g. ENSG00000039139, ENSG00000111261, and ENSG00000169710                                                       |
+| `Disease`         | `EFO`, `MONDO`                                           | The `cancer_group` in the `histologies.tsv`, e.g. Adamantinomatous Craniopharyngioma, Atypical Teratoid Rhabdoid Tumor, and Low-grade glioma/astrocytoma |
 
 Add one or more of the following gene and disease (/`cancer_group`) annotations, by specifying the `columns_to_add` parameter in the `annotate_long_format_table` function, or by specifying the `-c`/`--columns-to-add` option when running `annotator-cli.R`.
 
@@ -76,7 +76,7 @@ Add one or more of the following gene and disease (/`cancer_group`) annotations,
 
 Note: only add `Gene_type` to gene-level tables, which can be implemented by leaving `"Gene_type"` out of the `columns_to_add` parameter of the `annotate_long_format_table` function in `annotator-api.R`, or by leaving `"Gene_type"` out of the `-c`/`--columns-to-add` option when running `annotator-cli.R`.
 
-Notes on requiring both `Gene_symbol` and `Gene_Ensembl_ID`:
+Notes on requiring `Gene_symbol` and `Gene_Ensembl_ID`:
 
 - Certain annotation files use `Gene_symbol` as key columns, and certain other annotation files use `Gene_Ensembl_ID` as key columns.
 - Some `Gene_symbol`s are mapped to multiple `Gene_Ensembl_ID`s, so adding `Gene_Ensembl_ID`s by mapping `Gene_symbol`s with `data/ensg-hugo-rmtl-v1-mapping.tsv` may implicitly introduce duplicated rows. Therefore, adding `Gene_Ensembl_ID`s by mapping `Gene_symbol`s is left to users with cautions for potentially introducing unwanted duplicates.
@@ -96,7 +96,7 @@ Use the long-format table annotator API in an analysis module with the following
 1. Change the working directory of the analysis module to be `OpenPedCan-analysis` or a subdirectory of `OpenPedCan-analysis`. This allows the API function `annotate_long_format_table` to locate annotation data files.
 2. `source` the `long-format-table-utils/annotator/annotator-api.R` file.
 3. If the class of the table to be annotated is not `tibble::tbl_df`, convert the table to `tibble::tbl_df` with `tibble::as_tibble`. After conversion, carefully check rownames, colnames, column classes (especially factors), and other properties that may affect the correctness of you code.
-4. If `c("Gene_symbol", "Gene_Ensembl_ID", "Disease")` are not all present in the colnames of the table to be annotated, add new columns or rename existing ones to have all these required columns.
+4. If required columns are not all present in the table to be annotated, add new columns or rename existing ones to have all these required columns.
 5. Check that the annotation columns to be added are not already present in the table that needs to be annotated. If there is any annotation column that needs to be added already exists in the table that needs to be annotated, the `annotate_long_format_table` function will raise an error without annotating the table.
 6. Call `annotate_long_format_table` to add one or more of the available annotation columns, by specifying the `columns_to_add` parameter in the `annotate_long_format_table` function. Read the documentation comment of the function for usage.
 7. Rename, select, and reorder the columns of the annotated table for output in TSV, or JSON, or JSONL formats. NOTE that the names of the annotation columns will be standardized at a later point, as suggested by @jharenza at <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/56#pullrequestreview-712169979>, so it is recommended to use the annotation column names in this module for the results.
@@ -110,25 +110,29 @@ Following is an example usage in the `rna-seq-expression-summary-stats` module `
 > class(m_tpm_ss_long_tbl)
 [1] "tbl_df"     "tbl"        "data.frame"
 > colnames(m_tpm_ss_long_tbl)
- [1] "gene_symbol"                          "gene_id"                             
- [3] "cancer_group"                         "cohort"                              
- [5] "tpm_mean"                             "tpm_sd"                              
- [7] "tpm_mean_cancer_group_wise_zscore"    "tpm_mean_gene_wise_zscore"           
- [9] "tpm_mean_cancer_group_wise_quantiles" "n_samples"                           
+ [1] "gene_symbol"                          "gene_id"
+ [3] "cancer_group"                         "cohort"
+ [5] "tpm_mean"                             "tpm_sd"
+ [7] "tpm_mean_cancer_group_wise_zscore"    "tpm_mean_gene_wise_zscore"
+ [9] "tpm_mean_cancer_group_wise_quantiles" "n_samples"
+>
+> # Gene_Ensembl_ID column is required for adding RMTL column
+> # Disease column is required for adding EFO and MONDO columns
 > renamed_m_tpm_ss_long_tbl <- dplyr::rename(
-+   m_tpm_ss_long_tbl, Gene_symbol = gene_symbol, Gene_Ensembl_ID = gene_id,
-+   Disease = cancer_group)
++   m_tpm_ss_long_tbl, Gene_Ensembl_ID = gene_id, Disease = cancer_group)
+>
 > annotation_columns_to_add <- c("MONDO", "RMTL", "EFO")
 > # Assert all columns to be added are not already present in the
 > # colnames(renamed_m_tpm_ss_long_tbl)
 > stopifnot(
 +   all(!annotation_columns_to_add %in% colnames(renamed_m_tpm_ss_long_tbl)))
+>
 > annotated_renamed_m_tpm_ss_long_tbl <- annotate_long_format_table(
 +   renamed_m_tpm_ss_long_tbl, columns_to_add = annotation_columns_to_add)
+>
 > m_tpm_ss_long_tbl <- dplyr::rename(
 +   annotated_renamed_m_tpm_ss_long_tbl,
-+   gene_symbol = Gene_symbol, gene_id = Gene_Ensembl_ID,
-+   cancer_group = Disease)
++   gene_id = Gene_Ensembl_ID, cancer_group = Disease)
 > m_tpm_ss_long_tbl <- dplyr::select(
 +   m_tpm_ss_long_tbl, gene_symbol, RMTL, gene_id,
 +   cancer_group, EFO, MONDO, n_samples, cohort,
@@ -143,7 +147,7 @@ The `long-format-table-utils/annotator/annotator-cli.R` file provides an R CLI f
 
 Use the long-format table annotator CLI in an analysis module with the following steps:
 
-1. If `"Gene_symbol", "Gene_Ensembl_ID", "Disease"` are not all present in the column names of the table to be annotated, add new columns or rename existing ones to have all these required columns.
+1. If required columns are not all present in the the table to be annotated, add new columns or rename existing ones to have all these required columns.
 2. Output the table that needs to be annotated in TSV format. **NOTE**s on the TSV file:
    1. The TSV file should use double quotes for field values thatneed escape, e.g. "NA" for string literal "NA" and "\t" for tab
    2. Only unquoted NA field values are treated as missing values by `annotator-cli.R`
@@ -161,20 +165,21 @@ Following is an example usage in the `rna-seq-expression-summary-stats` module `
 > class(m_tpm_ss_long_tbl)
 [1] "tbl_df"     "tbl"        "data.frame"
 > colnames(m_tpm_ss_long_tbl)
- [1] "gene_symbol"                          "gene_id"                             
- [3] "cancer_group"                         "cohort"                              
- [5] "tpm_mean"                             "tpm_sd"                              
- [7] "tpm_mean_cancer_group_wise_zscore"    "tpm_mean_gene_wise_zscore"           
- [9] "tpm_mean_cancer_group_wise_quantiles" "n_samples"                           
-> 
+ [1] "gene_symbol"                          "gene_id"
+ [3] "cancer_group"                         "cohort"
+ [5] "tpm_mean"                             "tpm_sd"
+ [7] "tpm_mean_cancer_group_wise_zscore"    "tpm_mean_gene_wise_zscore"
+ [9] "tpm_mean_cancer_group_wise_quantiles" "n_samples"
+>
+> # Gene_Ensembl_ID column is required for adding RMTL column
+> # Disease column is required for adding EFO and MONDO columns
 > renamed_m_tpm_ss_long_tbl <- dplyr::rename(
-+   m_tpm_ss_long_tbl, Gene_symbol = gene_symbol, Gene_Ensembl_ID = gene_id,
-+   Disease = cancer_group)
-> 
++   m_tpm_ss_long_tbl, Gene_Ensembl_ID = gene_id, Disease = cancer_group)
+>
 > readr::write_tsv(
 +   renamed_m_tpm_ss_long_tbl,
 +   "../../scratch/renamed_m_tpm_ss_long_tbl.tsv")
-> 
+>
 > system(paste(
 +   "Rscript --vanilla ../long-format-table-utils/annotator/annotator-cli.R",
 +   "-r -v -c MONDO,RMTL,EFO",
@@ -184,16 +189,15 @@ Read ../../scratch/renamed_m_tpm_ss_long_tbl.tsv...
 Annotate ../../scratch/renamed_m_tpm_ss_long_tbl.tsv...
 Output ../../scratch/annotated_renamed_m_tpm_ss_long_tbl.tsv...
 Done.
-> 
+>
 > annotated_renamed_m_tpm_ss_long_tbl <- readr::read_tsv(
 +   "../../scratch/annotated_renamed_m_tpm_ss_long_tbl.tsv",
 +   na = character(),
 +   col_types = readr::cols(.default = readr::col_character()))
-|==================================================================================================| 100%  222 MB
+|=================================================================================================| 100%  226 MB
 > m_tpm_ss_long_tbl <- dplyr::rename(
 +   annotated_renamed_m_tpm_ss_long_tbl,
-+   gene_symbol = Gene_symbol, gene_id = Gene_Ensembl_ID,
-+   cancer_group = Disease)
++   gene_id = Gene_Ensembl_ID,  cancer_group = Disease)
 > m_tpm_ss_long_tbl <- dplyr::select(
 +   m_tpm_ss_long_tbl, gene_symbol, RMTL, gene_id,
 +   cancer_group, EFO, MONDO, n_samples, cohort,
@@ -211,14 +215,16 @@ To run all unit tests, run `bash annotator/run-tests.sh` in the Docker image/con
 ```text
 $ bash annotator/run-tests.sh
 ✔ |  OK F W S | Context
+✔ |  55       | tests/test_annotate_long_format_table.R [22.4 s]
+✔ |  45       | tests/test_annotator_cli.R [49.6 s]
 ✔ |   8       | tests/test_collapse_name_vec.R
 ✔ |   7       | tests/test_collapse_rp_lists.R
-✔ |   5       | tests/test_collapse_rp_lists.R
+✔ |  21       | tests/test_helper_import_function.R
 
-══ Results ══════════════════════════════════════════════════════════════════════════════════════════════════════
-Duration: 0.2 s
+══ Results ═════════════════════
+Duration: 72.2 s
 
-OK:       20
+OK:       136
 Failed:   0
 Warnings: 0
 Skipped:  0

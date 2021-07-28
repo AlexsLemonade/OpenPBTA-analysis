@@ -1,22 +1,25 @@
 # Add gene and cancer_group annotations to a long-format table
 #
 # Args:
-# - long_format_table: A tibble that contains the following columns as
-#   character:
-#   - Gene_symbol: HUGO symbols, e.g. PHLPP1, TM6SF1, and DNAH5
+# - long_format_table: A tibble that has zero or more of the following character
+#   columns that are required for adding their corresponding annotation columns:
+#   - Gene_symbol: HUGO symbols, e.g. PHLPP1, TM6SF1, and DNAH5. The Gene_symbol
+#     column is required for adding the following annotation columns:
+#     - Gene_type
+#     - OncoKB_cancer_gene
+#     - OncoKB_oncogene_TSG
 #   - Gene_Ensembl_ID: Ensembl ENSG IDs without `.#` versions, e.g.
-#     ENSG00000039139, ENSG00000111261, and ENSG00000169710
+#     ENSG00000039139, ENSG00000111261, and ENSG00000169710. The Gene_Ensembl_ID
+#     column is required for adding the following annotation columns:
+#     - RMTL
+#     - Gene_full_name
+#     - Protein_RefSeq_ID
 #   - Disease: The `cancer_group` in the `histologies.tsv`, e.g.
 #     Adamantinomatous Craniopharyngioma, Atypical Teratoid Rhabdoid Tumor, and
-#     Low-grade glioma/astrocytoma
-#   Notes on requiring both Gene_symbol and Gene_Ensembl_ID:
-#   - Some Gene_symbols are mapped to multiple Gene_Ensembl_IDs, so adding
-#     Gene_Ensembl_IDs by mapping Gene_symbols with
-#     data/ensg-hugo-rmtl-mapping.tsv may implicitly introduce duplicated
-#     rows. Therefore, adding Gene_Ensembl_IDs by mapping Gene_symbols is left
-#     to users with cautions for potentially introducing unwanted duplicates.
-#   - Certain annotation files use Gene_symbol as key columns, and certain other
-#     annotation files use Gene_Ensembl_ID as key columns
+#     Low-grade glioma/astrocytoma. The Disease column is required for adding
+#     the following annotation columns:
+#     - EFO
+#     - MONDO
 # - columns_to_add: a character vector of unique names of the columns to be
 #   added to the input table. The vector can contain zero or more of the
 #   following column names: "RMTL", "Gene_type", "OncoKB_cancer_gene",
@@ -32,7 +35,16 @@
 #
 # Returns a tibble with additonal annotation columns
 #
-# Note on how to add new annotation columns for maintainers:
+# Notes on requiring Gene_symbol and Gene_Ensembl_ID:
+# - Some Gene_symbols are mapped to multiple Gene_Ensembl_IDs, so adding
+#   Gene_Ensembl_IDs by mapping Gene_symbols with
+#   data/ensg-hugo-rmtl-mapping.tsv may implicitly introduce duplicated rows.
+#   Therefore, adding Gene_Ensembl_IDs by mapping Gene_symbols is left to users
+#   with cautions for potentially introducing unwanted duplicates.
+# - Certain annotation files use Gene_symbol as key columns, and certain other
+#   annotation files use Gene_Ensembl_ID as key columns
+#
+# Notes on how to add new annotation columns for maintainers:
 # - Add new column names to the columns_to_add parameter
 # - Add new column names to the available_ann_columns variable
 # - Implement annotation procedures to add new columns
@@ -64,27 +76,6 @@ annotate_long_format_table <- function(
   } else if (!is.character(colnames(long_format_table))) {
     stop("colnames(long_format_table) is not character. Check data integrity.")
   }
-  # Helper function to convert a character vector to a single string
-  char_vec_to_str <- function(x) {
-    return(paste0("c(\"", paste(x, collapse = "\", \""), "\")"))
-  }
-  # Check required columns are in long_format_table walk is like sapply, but it
-  # returns input argument invisibly even if there is any other return
-  # values
-  # Ref: https://purrr.tidyverse.org/reference/index.html
-  required_columns <- c("Gene_symbol", "Gene_Ensembl_ID", "Disease")
-  purrr::walk(
-    required_columns,
-    function(req_col) {
-      if (!(req_col %in% colnames(long_format_table))) {
-        stop(paste0(
-          req_col, " is not in colnames(long_format_table).\n",
-          "Add a ", req_col, " column or rename an existing column to ",
-          req_col, ". Required columns are ",
-          char_vec_to_str(required_columns), "."))
-      }
-    }
-  )
   # The columns_to_add must match exactly, so match.arg is not used.
   if (is.null(columns_to_add)) {
     stop(paste0("columns_to_add cannot be NULL. ",
@@ -105,8 +96,18 @@ annotate_long_format_table <- function(
   available_ann_columns <- c("RMTL", "Gene_type", "OncoKB_cancer_gene",
                              "OncoKB_oncogene_TSG", "Gene_full_name",
                              "Protein_RefSeq_ID", "EFO", "MONDO")
+  # Helper function to convert a character vector to a single string
+  char_vec_to_str <- function(x) {
+    return(paste0("c(\"", paste(x, collapse = "\", \""), "\")"))
+  }
   # Assert columns_to_add columns are available and not already in the input
   # long_format_table
+  #
+  # walk is like sapply, but it returns input argument invisibly even if there
+  # is any other return values
+  #
+  # Ref:
+  # https://purrr.tidyverse.org/reference/index.html
   purrr::walk(
     columns_to_add,
     function(col_add) {
@@ -329,6 +330,26 @@ annotate_long_format_table <- function(
       Disease = cancer_group, EFO = efo_code, MONDO = mondo_code)
   }
 
+  # Check required columns are in long_format_table
+  required_columns <- purrr::map_chr(ann_tbl_l, function(x) x$join_by_column)
+  purrr::walk(
+    required_columns,
+    function(req_col) {
+      if (!(req_col %in% colnames(long_format_table))) {
+        stop(paste0(
+          req_col, " is not in colnames(long_format_table).\n",
+          "Add a ", req_col, " column or rename an existing column to ",
+          req_col, ". Required columns are ",
+          char_vec_to_str(required_columns), " to add ",
+          char_vec_to_str(columns_to_add), " annotation columns."))
+      }
+      if (!is.character(long_format_table[[req_col]])) {
+        stop(paste0(
+          req_col, " is not a character column in the long_format_table.\n",
+          "Convert the", req_col, " column to character."))
+      }
+    }
+  )
 
   # Check no NA or duplicate in the join_by_column of annotation data tables
   purrr::walk(
