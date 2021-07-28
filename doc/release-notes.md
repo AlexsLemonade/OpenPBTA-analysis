@@ -4,11 +4,13 @@
 - release data: 2021-07-26
 - status: availale
 - changes:
- - Update copy_number_consensus_call with manta calls with FILTER==PASS [1113](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1113)
+ - Update copy_number_consensus_call with manta calls with FILTER==PASS [#1113](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1113)
     - pbta-cnv-consensus.seg.gz
- - Update focal-cn-file-preparation with deep deletion status and with updated pbta-cnv-consensus.seg.gz above [1099](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1099)
+ - Update focal-cn-file-preparation with deep deletion status and with updated pbta-cnv-consensus.seg.gz above [#1099](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1099)
     - consensus_seg_annotated_cn_autosomes.tsv.gz
     - consensus_seg_annotated_cn_x_and_y.tsv.gz
+ - Add medulloblastoma subtypes being extracted from pathology reports[#746](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/746)
+    - pbta-mb-pathology-subtypes.tsv
  - Add cnv and indel hostspots from MSKCC and TERT promoters [932](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/932) 
     - pbta-snv-scavenged-hotspots.maf.tsv.gz
  - Update histology information 
