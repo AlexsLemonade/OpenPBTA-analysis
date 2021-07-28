@@ -9,12 +9,12 @@
  - Update focal-cn-file-preparation with deep deletion status and with updated pbta-cnv-consensus.seg.gz above [#1099](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1099)
     - consensus_seg_annotated_cn_autosomes.tsv.gz
     - consensus_seg_annotated_cn_x_and_y.tsv.gz
- - Add medulloblastoma subtypes being extracted from pathology reports[#746](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/746)
+ - Add medulloblastoma subtypes being extracted from pathology reports [#746](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/746)
     - pbta-mb-pathology-subtypes.tsv
- - Add cnv and indel hostspots from MSKCC and TERT promoters [932](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/932) 
+ - Add cnv and indel hostspots from MSKCC and TERT promoters [#932](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/932) 
     - pbta-snv-scavenged-hotspots.maf.tsv.gz
  - Update histology information 
-   - latest pathology diagnosis for 7316-2686 [1032](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1032)
+   - latest pathology diagnosis for 7316-2686 [#1032](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1032)
    - BS_0TCRV9AC as sample_type == Normal
 - folder structure
 ```
