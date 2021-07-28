@@ -21,7 +21,7 @@
 #
 # caller	: Caller used for the input merged fusion calls [STARfusion| Arriba]
 #
-# outputfile	: Output file is a standardized fusion call set with standard
+# outputFile	: Output file is a standardized fusion call set with standard
 # column headers used in the filtering scripts. Column order:
 # 1:  'LeftBreakpoint
 # 2:  'RightBreakpoint'
@@ -44,7 +44,7 @@ option_list <- list(
               help="Merged fusion calls from [STARfusion | Arriba]"),
   make_option(c("-c", "--caller"), type="character",
               help="Caller type [STARfusion|| Arriba]"),
-  make_option(c("-o","--outputfile"),type="character",
+  make_option(c("-o","--outputFile"),type="character",
               help="Standardized fusion calls from [STARfusion | Arriba] (.TSV)")
 )
 
@@ -54,13 +54,12 @@ inputfile <- opt$fusionfile
 caller <- opt$caller
 # Converting caller ID to call Uppercase for error handling
 caller<-toupper(caller)
-outputfile <- opt$outputfile
+outputFile <- opt$outputFile
 
 fusion_calls <- read.delim(inputfile,stringsAsFactors=FALSE)
 # To have a general column with unique IDs associated with each sample
 fusion_calls$Sample <- fusion_calls$tumor_id
 fusion_calls$Caller <- caller
-
 
 
 standard_fusion <- function(fusion_calls=fusion_calls,caller=caller) {
@@ -131,4 +130,4 @@ standard_fusion <- function(fusion_calls=fusion_calls,caller=caller) {
 # Standardized fusion calls ready for filtering
 output <- standard_fusion(fusion_calls = fusion_calls , caller = caller)
 
-write.table(output , file=outputfile , sep="\t" , row.names = FALSE , col.names = TRUE,quote=FALSE)
+write.table(output , file=outputFile , sep="\t" , row.names = FALSE , col.names = TRUE,quote=FALSE)

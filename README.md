@@ -143,8 +143,9 @@ We will update the default release number whenever we produce a new release.
 
 ### Data Access via CAVATICA
 
-For any user registered on CAVATICA, the OpenPBTA data can be accessed from the CAVATICA public project below:
+For any user registered on CAVATICA, the OpenPBTA and OpenTargets data can be accessed from the CAVATICA public project below:
 - [OpenPBTA Open Access](https://cavatica.sbgenomics.com/u/cavatica/openpbta/)
+- [OpenTargets Open Access](https://cavatica.sbgenomics.com/u/cavatica/opentarget)
 
 The release folder structure in CAVATICA mirrors that on AWS.
 Users downloading via CAVATICA should place the data files within the `data/release*` folder and then create symlinks to those files within `/data`.

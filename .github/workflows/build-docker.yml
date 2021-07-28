@@ -19,6 +19,7 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v1 
         with:
+          registry: pgc-images.sbgenomics.com
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
       - name: Build

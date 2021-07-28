@@ -5,19 +5,15 @@ output: html_notebook
 params:
   histology:
     label: "Clinical file" 
-    value: data/pbta-histologies.tsv
+    value: data/histologies.tsv
     input: file
   group:
     label: "Grouping variable"
-    value: broad_histology
+    value: cancer_group
     input: string
-  dataStranded:
+  dataRNA:
     label: "Input filtered fusion dataframe"
-    value: scratch/standardFusionStrandedExp_QC_expression_GTExComparison_annotated.RDS
-    input: file
-  dataPolya:
-    label: "Input filtered fusion dataframe"
-    value: scratch/standardFusionPolyaExp_QC_expression_GTExComparison_annotated.RDS
+    value: scratch/standardFusionExp_QC_expression_filtered_annotated.RDS
     input: file    
   numCaller:
     label: "Least Number of callers to have called fusion"
@@ -45,7 +41,7 @@ params:
     input: integer
   base_histology:
     label: "Base histology file"
-    value: data/pbta-histologies-base.tsv
+    value: data/histologies.tsv
     input: file
 ---
 
@@ -62,7 +58,7 @@ Putative Driver:
 Filtering for general cancer specific genes
 Fusions with genes in either onco
 
-This notebook assumes you are in OpenPBTA-analysis project folder structure.
+This notebook assumes you are in OpenPedCan-analysis project folder structure.
 
 
 ```{r}
@@ -76,18 +72,12 @@ suppressPackageStartupMessages(library("reshape2"))
 suppressPackageStartupMessages(library("qdapRegex"))
 
 #read filtFusion files
-strandedQCGeneFiltered_filtFusion<-readRDS(file.path(root_dir, params$dataStranded))
-polyaQCGeneFiltered_filtFusion<-readRDS(file.path(root_dir, params$dataPolya))
+QCGeneFiltered_filtFusion<-readRDS(file.path(root_dir, params$dataRNA))
 
 # results folder
 outputfolder<-params$outputfolder
-QCGeneFiltered_filtFusion<-rbind(strandedQCGeneFiltered_filtFusion,polyaQCGeneFiltered_filtFusion)
 
 write.table(QCGeneFiltered_filtFusion, file.path(outputfolder, "FilteredFusion.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
-
-# remove strandedQCGeneFiltered_filtFusion and polyaQCGeneFiltered_filtFusion
-rm(strandedQCGeneFiltered_filtFusion)
-rm(polyaQCGeneFiltered_filtFusion)
 
 # subset for recurrent fusion detection and multifused genes QC
 fusion_calls<-QCGeneFiltered_filtFusion %>% mutate(FusionName=rm_between(.data$FusionName,"(",")",extract = F))
@@ -116,7 +106,7 @@ numGroup<-params$numGroup
 # Max number of times gene can be fused per sample
 limitMultiFused<-params$limitMultiFused
 
-print("Raw calls from STARfusion and Arriba for PBTA")
+print("Raw calls from STARfusion and Arriba for OpenTargets")
 table(fusion_calls$Caller)
 ```
 
@@ -249,7 +239,7 @@ sample.count <- fusion_calls %>%
 
 ```
 
-#### Keep recurrent non-oncogenic fusions specific to a broad_histology
+#### Keep recurrent non-oncogenic fusions specific to a cancer_group
 
 ```{r}
 #filter QCGeneFiltered_filtFusion to keep recurrent fusions from above sample.count and fusion_calls.summary
@@ -260,7 +250,7 @@ QCGeneFiltered_recFusion<-fusion_calls %>%
 ```
 
 
-### Remove non-oncogenic fusions found in multiple histologies
+### Remove non-oncogenic fusions found in multiple cancer groups
 
 ```{r}
 # remove fusions that are in > numGroup
@@ -324,6 +314,6 @@ putative_driver_fusions<-rbind(QCGeneFiltered_recFusionUniq,putative_driver_anno
   unique() %>% dplyr::select (-group) %>%
   as.data.frame()
 
-write.table(putative_driver_fusions,file.path(root_dir,"scratch","pbta-fusion-putative-oncogenic-preQC.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
+write.table(putative_driver_fusions,file.path(root_dir,"scratch","fusion-putative-oncogenic-preQC.tsv"),sep="\t",quote=FALSE,row.names = FALSE)
 
 ```
