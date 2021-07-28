@@ -87,6 +87,9 @@ cp $FULL_DIRECTORY/pbta-mend* $SUBSET_DIRECTORY
 # fusion summary files
 cp $FULL_DIRECTORY/fusion_summary* $SUBSET_DIRECTORY
 
+# MB pathology subtypes
+cp $FULL_DIRECTORY/pbta-mb-pathology-subtypes.tsv $SUBSET_DIRECTORY
+
 # if the md5sum.txt file already exists, get rid of it
 cd $SUBSET_DIRECTORY
 rm -f md5sum.txt
