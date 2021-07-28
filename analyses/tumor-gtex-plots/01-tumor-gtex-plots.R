@@ -10,6 +10,8 @@ option_list <- list(
               help = "collapsed TPM expression data: HUGO gene symbol x Sample identifiers (.rds)"),
   make_option(c("--hist_file"), type = "character",
               help = "histologies file (.tsv)"),
+  make_option(c("--map_file"), type = "character",
+              help = "gene symbol-ensembl id mapping file"),
   make_option(c("--cohort_list"), type = "character",
               help = "comma separated list of cohorts"),
   make_option(c("--tumor_vs_normal"), type = "logical",
@@ -20,19 +22,20 @@ option_list <- list(
               help = "width in pixels"),
   make_option(c("--plot_height"), type = "character",
               help = "height in pixels"),
-  make_option(c("--mapping_file"), type = "character",
+  make_option(c("--meta_file"), type = "character",
               help = "filename for writing out file names and other info")
 )
 # parse parameters
 opt <- parse_args(OptionParser(option_list = option_list))
 expr_mat <- opt$expr_mat
 hist_file <- opt$hist_file
+map_file <- opt$map_file
 cohort_list <- opt$cohort_list
 tumor_vs_normal <- opt$tumor_vs_normal
 analysis_type <- opt$analysis_type
 plot_width <- as.numeric(opt$plot_width)
 plot_height <- as.numeric(opt$plot_height)
-mapping_file <- opt$mapping_file
+meta_file <- opt$meta_file
 
 # root directory
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
@@ -51,6 +54,7 @@ source(file.path(analyses_dir, 'util', 'tumor_normal_gtex_plot.R'))
 # read input data
 expr_mat <- readRDS(expr_mat)
 hist_file <- data.table::fread(hist_file)
+map_file <- data.table::fread(map_file)
 cohort_list <- trimws(unlist(strsplit(cohort_list,",")))
 
 # filter histologies to cohort_list
@@ -76,16 +80,20 @@ expr_mat <- expr_mat %>%
 if(tumor_vs_normal){
   print("Tumor-Normal-GTEx plots")
   plyr::d_ply(.data = expr_mat, .variables = "gene", .fun = function(x) tumor_normal_gtex_plot(expr_mat_gene = x,
-                                                                                             hist_file, analysis_type,
-                                                                                             plots_dir, results_dir,
-                                                                                             plot_width, plot_height,
-                                                                                             mapping_file))
+                                                                                               hist_file, 
+                                                                                               map_file, 
+                                                                                               analysis_type,
+                                                                                               plots_dir, results_dir,
+                                                                                               plot_width, plot_height,
+                                                                                               meta_file))
 } else {
   print("Pan-cancer plots")
   plyr::d_ply(.data = expr_mat, .variables = "gene", .fun = function(x) pan_cancer_plot(expr_mat_gene = x,
-                                                                                   hist_file, analysis_type,
-                                                                                   plots_dir, results_dir,
-                                                                                   plot_width, plot_height,
-                                                                                   mapping_file))
+                                                                                        hist_file, 
+                                                                                        map_file,
+                                                                                        analysis_type,
+                                                                                        plots_dir, results_dir,
+                                                                                        plot_width, plot_height,
+                                                                                        meta_file))
 }
 

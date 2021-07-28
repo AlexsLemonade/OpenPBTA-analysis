@@ -3,9 +3,9 @@ suppressPackageStartupMessages(library(tidyr))
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(ggplot2))
 
-pan_cancer_plot <- function(expr_mat_gene, hist_file, 
+pan_cancer_plot <- function(expr_mat_gene, hist_file, map_file,
                        analysis_type = c("cohort_cancer_group_level", "cancer_group_level"), 
-                       plots_dir, results_dir, plot_width, plot_height, mapping_file){
+                       plots_dir, results_dir, plot_width, plot_height, meta_file){
   
   # subset histology to minimal columns
   hist_file <- hist_file %>%
@@ -51,19 +51,19 @@ pan_cancer_plot <- function(expr_mat_gene, hist_file,
   plot_fname <- paste0(fname, '.png')
   table_fname <- paste0('pan_cancer_plots_', analysis_type, '.tsv')
   
-  # data-frame for mapping output filenames with info
-  mapping_df <- data.frame(gene = gene_name, 
+  # data-frame for metadata output 
+  meta_df <- data.frame(Gene_symbol = gene_name, 
                            plot_type = "pan_cancer", 
-                           cohort = "all_cohorts",
-                           cancer_group = NA,
+                           Dataset = "all_cohorts",
+                           Disease = NA,
                            analysis_type = analysis_type, 
                            plot_fname = plot_fname,
                            table_fname = table_fname)
-  mapping_file <- file.path(results_dir, 'metadata.tsv')
-  if(!file.exists(mapping_file)){
-    write.table(x = mapping_df, file = mapping_file, sep = "\t", row.names = F, quote = F)
+  meta_file <- file.path(results_dir, 'metadata.tsv')
+  if(!file.exists(meta_file)){
+    write.table(x = meta_df, file = meta_file, sep = "\t", row.names = F, quote = F)
   } else {
-    write.table(x = mapping_df, file = mapping_file, sep = "\t", row.names = F, col.names = F, quote = F, append = TRUE)
+    write.table(x = meta_df, file = meta_file, sep = "\t", row.names = F, col.names = F, quote = F, append = TRUE)
   }
 
   # boxplot
@@ -90,10 +90,12 @@ pan_cancer_plot <- function(expr_mat_gene, hist_file,
   
   # for now add dummy values for all other columns
   output_table <- output_table %>%
-    mutate(cohort = "all_cohorts", 
-           cancer_group = gsub(" [(].*|[,].*", "", x_labels),
+    dplyr::rename(Gene_symbol = gene) %>%
+    mutate(Dataset = "all_cohorts", 
+           Disease = gsub(" [(].*|[,].*", "", x_labels),
            plot_api = NA) %>%
-    dplyr::select(gene, cohort, cancer_group, 
+    inner_join(map_file, by = c("Gene_symbol" = "gene_symbol")) %>%
+    dplyr::select(Gene_symbol, ensg_id, Dataset, Disease, 
                   x_labels, mean, median, sd, plot_api)
   table_fname <- file.path(results_dir, table_fname)
   if(!file.exists(table_fname)){

@@ -37,7 +37,7 @@
 │   ├── pan_cancer_plots_cohort_cancer_group_level.tsv
 │   ├── tumor_normal_gtex_plots_cancer_group_level.tsv
 │   ├── tumor_normal_gtex_plots_cohort_cancer_group_level.tsv
-│   └── metadata.tsv # mapping of filename and metadata for all comparisons 
+│   └── metadata.tsv # metadata file for all comparisons 
 ├── run-tumor-gtex-plots.sh # full analysis script
 ├── run-pan-cancer-plots.sh # script for pan-cancer plots
 ├── run-tumor-normal-gtex-plots.sh # script for tumor vs gtex plots
@@ -63,6 +63,9 @@ Options:
 	--hist_file=HIST_FILE
 		histologies file (.tsv)
 
+	--map_file=MAP_FILE
+		gene symbol-ensembl id mapping file
+
 	--cohort_list=COHORT_LIST
 		comma separated list of cohorts
 
@@ -78,7 +81,7 @@ Options:
 	--plot_height=PLOT_HEIGHT
 		height in pixels
 
-	--mapping_file=MAPPING_FILE
+	--meta_file=META_FILE
 		filename for writing out file names and other info
 ```
 
@@ -109,7 +112,7 @@ Tumors vs GTEx filename format:
 
 3. `results/tumor_normal_gtex_plots_cancer_group_level.tsv` and `results/tumor_normal_gtex_plots_cohort_cancer_group_level.tsv`: corresponding data for tumor-normal-gtex expression boxplots
 
-4. `results/metadata.tsv`: mapping of filename and metadata for all comparisons 
+4. `results/metadata.tsv`: metadata file for all comparisons 
 
 ### Running the analysis
 
