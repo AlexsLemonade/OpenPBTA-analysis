@@ -44,6 +44,13 @@ lgat_metadata_file <- file.path("lgat-subset", "lgat_metadata.tsv")
 bsid_to_include <- read_tsv(lgat_metadata_file) %>%
   pull(Kids_First_Biospecimen_ID)
 
+# File from 00-LGAT-select-pathology-dx that is used for the pathology diagnosis
+# that will used to recode subtype
+path_dx_list <- jsonlite::fromJSON(
+  file.path(subset_dir, 
+            "lgat_subtyping_path_dx_strings.json")
+)
+
 # clinical file
 lgat_manifest <- read_tsv(file.path(root_dir, 
                                     "data",
@@ -51,25 +58,31 @@ lgat_manifest <- read_tsv(file.path(root_dir,
                           guess_max = 10000) %>%
   filter(Kids_First_Biospecimen_ID %in% bsid_to_include) %>%
   # select columns for interest
-  select(Kids_First_Biospecimen_ID,
+  dplyr::select(Kids_First_Biospecimen_ID,
          Kids_First_Participant_ID,
          sample_id,
          experimental_strategy,
-         cancer_predispositions)
+         cancer_predispositions,
+         pathology_diagnosis,
+         pathology_free_text_diagnosis)
 
 lgat_dna <- lgat_manifest %>%
   filter(experimental_strategy != "RNA-Seq") %>%
-  select( -experimental_strategy, -cancer_predispositions)
+  dplyr::select( -experimental_strategy, -cancer_predispositions)
 
 lgat_rna <- lgat_manifest %>%
   filter(experimental_strategy == "RNA-Seq") %>%
-  select( -experimental_strategy, -cancer_predispositions)
+  dplyr::select( -experimental_strategy, -cancer_predispositions)
 
 all_lgat_matched <- full_join(lgat_dna, lgat_rna,
                          by = c("Kids_First_Participant_ID",
-                                "sample_id"),
+                                "sample_id",
+                                "pathology_free_text_diagnosis",
+                                "pathology_diagnosis"),
                          suffix = c("_DNA", "_RNA")) %>%
-  select(starts_with("Kids_First"), sample_id)
+  dplyr::select(starts_with("Kids_First"), sample_id,
+                pathology_free_text_diagnosis,
+                pathology_diagnosis)
 
 # SNV based annotation
 lgat_snv <- read_tsv(file.path(subset_dir,"LGAT_snv_subset.tsv")) 
@@ -77,7 +90,7 @@ lgat_snv <- read_tsv(file.path(subset_dir,"LGAT_snv_subset.tsv"))
 # CNV based annotation
 lgat_cnv <- read_tsv(file.path(subset_dir,"LGAT_cnv_subset.tsv")) %>%
   # To-do add to CNV subset script
-  rename(Kids_First_Biospecimen_ID=lgat_wgs_biospecimen_ids)
+  dplyr::rename(Kids_First_Biospecimen_ID=lgat_wgs_biospecimen_ids)
 
 # Fusion base annotation
 lgat_fus <- read_tsv(file.path(subset_dir,"LGAT_fusion_subset.tsv")) 
@@ -91,7 +104,7 @@ This subtype is characterized by germline NF1 variants. We do not have germline 
 nf1_snv <- lgat_snv %>%
   filter(NF1_mut=="Yes") %>%
   mutate(molecular_subtype = "NF1-somatic") %>%
-  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+  dplyr::select("Kids_First_Biospecimen_ID","molecular_subtype") 
 
 nf1_germline <- lgat_manifest %>% 
   # to keep non-RNA files only since we will match the RNA 
@@ -101,7 +114,7 @@ nf1_germline <- lgat_manifest %>%
   filter(cancer_predispositions %in% c("NF-1",
                                        "NF-1,Other inherited conditions NOS")) %>%
   mutate(molecular_subtype = "NF1-germline") %>%
-  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+  dplyr::select("Kids_First_Biospecimen_ID","molecular_subtype") 
 
 nf1_biospecimen <- bind_rows(nf1_snv,
                              nf1_germline) %>%
@@ -120,7 +133,7 @@ This subtype contains KIAA1549-BRAF fusion
 kiaabraf_biospecimen <- lgat_fus %>%
   filter(KIAA_BRAF_fus=="Yes") %>%
   mutate(molecular_subtype = "KIAA1549-BRAF") %>%
-  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+  dplyr::select("Kids_First_Biospecimen_ID","molecular_subtype") 
 
 ```
 
@@ -132,7 +145,7 @@ This subtype contains BRAF V600E or V599 SNV or non-canonical BRAF SNV/indel ove
 brafV600_biospecimen <- lgat_snv %>%
   filter(BRAF_V600E_mut=="Yes") %>%
   mutate(molecular_subtype = "BRAF V600E") %>%
-  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+  dplyr::select("Kids_First_Biospecimen_ID","molecular_subtype") 
 
 ```
 
@@ -146,12 +159,12 @@ OR contains KRAS, NRAS, HRAS, MAP2K1, MAP2K2, MAP2K1, ARAF SNV or indel
 otherMAPK_fus_biospecimen <- lgat_fus %>%
   filter(MAPK_fus=="Yes") %>%
   mutate(molecular_subtype = "other MAPK") %>%
-  select("Kids_First_Biospecimen_ID","molecular_subtype")
+  dplyr::select("Kids_First_Biospecimen_ID","molecular_subtype")
 
 otherMAPK_snv_biospecimen <- lgat_snv %>%
   filter(MAPK_mut=="Yes") %>%
   mutate(molecular_subtype = "other MAPK") %>%
-  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+  dplyr::select("Kids_First_Biospecimen_ID","molecular_subtype") 
 
 
 ```
@@ -167,12 +180,12 @@ OR harbors a PDGFRA SNV or fusion
 rtk_fus_biospecimen <- lgat_fus %>%
   filter(RTK_fus=="Yes") %>%
   mutate(molecular_subtype = "RTK") %>%
-  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+  dplyr::select("Kids_First_Biospecimen_ID","molecular_subtype") 
 
 rtk_snv_biospecimen <- lgat_snv %>%
   filter(RTK_mut=="Yes") %>%
   mutate(molecular_subtype = "RTK") %>%
-  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+  dplyr::select("Kids_First_Biospecimen_ID","molecular_subtype") 
 
 
 
@@ -188,17 +201,17 @@ OR harbors FGFR1 or FGFR2 fusions
 fgfr_fus_biospecimen <- lgat_fus %>%
   filter(FGFR_fus=="Yes") %>%
   mutate(molecular_subtype = "FGFR") %>%
-  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+  dplyr::select("Kids_First_Biospecimen_ID","molecular_subtype") 
 
 fgfr_snv_biospecimen <- lgat_snv %>%
   filter(FGFR_mut=="Yes") %>%
   mutate(molecular_subtype = "FGFR") %>%
-  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+  dplyr::select("Kids_First_Biospecimen_ID","molecular_subtype") 
 
 fgfr_cnv_biospecimen <- lgat_cnv %>%
   filter(FGFR_DUP_TANDEM=="Yes" |  FGFR_DUP == "Yes") %>%
   mutate(molecular_subtype = "FGFR") %>%
-  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+  dplyr::select("Kids_First_Biospecimen_ID","molecular_subtype") 
 
 ```
 
@@ -209,7 +222,7 @@ This subtype harbors an IDH R132 mutation
 idh_biospecimen <- lgat_snv %>%
   filter(IDH_mut=="Yes") %>%
   mutate(molecular_subtype = "IDH") %>%
-  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+  dplyr::select("Kids_First_Biospecimen_ID","molecular_subtype") 
 
 ```
 
@@ -220,7 +233,7 @@ This subtype harbors an H3F3A K28M or G35R/V mutation
 h3_biospecimen <- lgat_snv %>%
   filter(H3.1_mut =="Yes"| H3.2_mut =="Yes" |H3.3_mut =="Yes") %>%
   mutate(molecular_subtype = "H3") %>%
-  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+  dplyr::select("Kids_First_Biospecimen_ID","molecular_subtype") 
 
 ```
  
@@ -231,7 +244,7 @@ This subtype harbors either a MYB-QKI fusion or other MYB or MYBL1 fusion
 myb_biospecimen <- lgat_fus %>%
   filter(MYB_fus=="Yes") %>%
   mutate(molecular_subtype = "MYB/MYBL1") %>%
-  select("Kids_First_Biospecimen_ID","molecular_subtype")
+  dplyr::select("Kids_First_Biospecimen_ID","molecular_subtype")
 ```
 
 ### LGG, CDKN2A/B
@@ -243,7 +256,7 @@ This is a secondary co-occurring alteration with prognostic significance.
 cdkn_biospecimen <- lgat_cnv %>%
   filter(CDKN2A_DEL=="Yes"| CDKN2B_DEL == "Yes") %>%
   mutate(molecular_subtype = "CDKN2A/B") %>%
-  select("Kids_First_Biospecimen_ID","molecular_subtype") 
+  dplyr::select("Kids_First_Biospecimen_ID","molecular_subtype") 
 ```
 
 ### Compile
@@ -259,7 +272,7 @@ all_dna_subtype <- bind_rows(nf1_biospecimen,
                          h3_biospecimen,
                          cdkn_biospecimen
 ) %>%
-  rename(Kids_First_Biospecimen_ID_DNA=Kids_First_Biospecimen_ID) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID_DNA=Kids_First_Biospecimen_ID) %>%
   # add Kids_First_Biospecimen_ID_RNA to dna subtypes dataframe
   left_join(all_lgat_matched,by="Kids_First_Biospecimen_ID_DNA") 
 
@@ -268,7 +281,7 @@ all_rna_subtype <- bind_rows(kiaabraf_biospecimen,
                              rtk_fus_biospecimen,
                              fgfr_fus_biospecimen,
                              myb_biospecimen) %>%
-  rename(Kids_First_Biospecimen_ID_RNA=Kids_First_Biospecimen_ID) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID_RNA=Kids_First_Biospecimen_ID) %>%
   # add Kids_First_Biospecimen_ID_DNA to rna subtypes dataframe
   left_join(all_lgat_matched,by="Kids_First_Biospecimen_ID_RNA")
 
@@ -277,11 +290,18 @@ all_subtype <- bind_rows(all_rna_subtype,
                          all_dna_subtype) %>%
   full_join(all_lgat_matched, by=c("Kids_First_Biospecimen_ID_RNA","Kids_First_Biospecimen_ID_DNA",
                                    "sample_id",
+                                   "pathology_free_text_diagnosis",
+                                   "pathology_diagnosis",
                                    "Kids_First_Participant_ID")) %>%
   # lets group because there are some instances where LGAT DNA/RNA have multiple subtypes
-  group_by(sample_id,Kids_First_Participant_ID,Kids_First_Biospecimen_ID_RNA,Kids_First_Biospecimen_ID_DNA) %>%
+  group_by(sample_id,Kids_First_Participant_ID,
+           Kids_First_Biospecimen_ID_RNA,
+           Kids_First_Biospecimen_ID_DNA,
+           pathology_free_text_diagnosis,
+           pathology_diagnosis) %>%
   # merging them here with summarise
   summarise(molecular_subtype= toString(molecular_subtype)) %>%
+  ungroup() %>% 
   # formatting molecular_subtype columns
   dplyr::mutate(molecular_subtype = case_when(
     # molecular_subtype is NA and we didn't find any canonical
@@ -293,9 +313,20 @@ all_subtype <- bind_rows(all_rna_subtype,
     # OR don't have RNA to check for LGG variant or fusion
     # so status will be To be classified
     molecular_subtype=="NA" & (is.na(Kids_First_Biospecimen_ID_DNA) |
-                                  is.na(Kids_First_Biospecimen_ID_RNA))  ~ "LGG, To be classified",
+                                 is.na(Kids_First_Biospecimen_ID_RNA))  ~ "LGG, To be classified",
     # when molecular_subtype is not NA 
     TRUE ~ stringr::str_c("LGG, ", molecular_subtype))) %>%
+  # recode if glialneuronal tumors
+  dplyr::mutate(molecular_subtype = case_when(
+    str_detect(pathology_free_text_diagnosis, 
+               paste(path_dx_list$recode_path_free_text,collapse = "|")) &
+      pathology_diagnosis == "Low-grade glioma/astrocytoma (WHO grade I/II)" ~ 
+      gsub("LGG,","GNT,",molecular_subtype),
+    pathology_diagnosis == "Ganglioglioma" ~
+      gsub("LGG,|GNT,","GNG,",molecular_subtype),
+    TRUE ~ molecular_subtype)) %>%
+  dplyr::select(-pathology_free_text_diagnosis,
+                -pathology_diagnosis) %>%
   unique() %>%
   dplyr::arrange(sample_id) %>%
   write_tsv(file.path(resultDir,"lgat_subtyping.tsv"))
