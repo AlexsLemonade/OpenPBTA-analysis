@@ -59,6 +59,8 @@ get_biospecimen_ids <- function(filename, id_mapping_df) {
     # not contain MAF version information
     if (grepl("consensus", filename)) {
       snv_file <- data.table::fread(filename, data.table = FALSE)
+    } else if (grepl("hotspots", filename)){ 
+      snv_file <- data.table::fread(filename, data.table = FALSE)
     } else {
       snv_file <- data.table::fread(filename,
                                     skip = 1,  # skip version string
