@@ -2,7 +2,7 @@
 
 
 """
-01-snv-frequencies.py
+01-cnv-frequencies.py
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Functions to create copy number variation (CNV) cancer type and study gene-level frequencies for OPenPedCan analyses modules 
 """
@@ -31,7 +31,7 @@ def read_parameters():
      p.add_argument('CNV_FILE', type=str, default=None, help="OPenPedCan CNV consensus file (consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz and consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz)\n\n")
      p.add_argument('PRIMARY_TUMORS', type=str, default=None, help="OPenPedCan independent primary tumor samples file (independent-specimens.wgs.primary.eachcohort.tsv)\n\n")
      p.add_argument('RELAPSE_TUMORS', type=str, default=None, help="OPenPedCan independent relapse tumor samples file (independent-specimens.wgs.relapse.eachcohort.tsv)\n\n")
-     p.add_argument('-v', '--version', action='version', version="classify_reads.py version {} ({})".format(__version__, __date__), help="Print the current 01-snv-frequencies.py version and exit\n\n")
+     p.add_argument('-v', '--version', action='version', version="classify_reads.py version {} ({})".format(__version__, __date__), help="Print the current 01-cnv-frequencies.py version and exit\n\n")
      return p.parse_args()
 
 
