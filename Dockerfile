@@ -402,17 +402,16 @@ RUN ./install_bioc.r \
 RUN ./install_bioc.r \
     RUVSeq
 
-<<<<<<< HEAD
 # Packages for RNA-seq expression boxplots (tumor-gtex-plots)
 RUN ./install_bioc.r \
     tidyr \
     dplyr \
     ggplot2
-=======
+
 # Package for querying gene IDs and symbols
 RUN ./install_bioc.r \
     mygene
->>>>>>> origin/dev
+
 
 # Even though apt-get section at top, add installation here to avoid re-RUN
 # previous steps in docker build.
