@@ -11,7 +11,7 @@
 # This script is intended to be run via the command line.
 # This example assumes it is being run from the root of the repository.
 #
-# Rscript --vanilla analyses/focal-cn-file-preparation/03-prepare-cn-file.R \
+# Rscript --vanilla analyses/focal-cn-file-preparation/04-prepare-cn-file.R \
 #   --cnv_file data/cnv-controlfreec.tsv.gz \
 #   --gtf_file data/gencode.v27.primary_assembly.annotation.gtf.gz \
 #   --metadata data/histologies.tsv \
@@ -44,49 +44,55 @@ process_annotate_overlaps <- function(cnv_df,
   #   A data.frame with the following columns:
   #     biospecimen_id, status, copy_number, ploidy, ensembl, gene_symbol,
   #     cytoband
-
-  # Make CNV data.frame a GRanges object
-  cnv_gr <- cnv_df %>%
-    GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE,
-                                            starts.in.df.are.0based = FALSE)
-
-  # Create a data.frame with the overlaps between the CNV file and hg38 genome
-  # annotations
-  overlaps <- IRanges::mergeByOverlaps(cnv_gr, tx_exons)
-
-  # Create a data.frame with selected columns from the `autosome_overlaps`
-  # object
-  annotated_cn <- data.frame(
-    biospecimen_id = overlaps$Kids_First_Biospecimen_ID,
-    status = overlaps$status,
-    copy_number = overlaps$copy_number,
-    ploidy = overlaps$tumor_ploidy,
-    ensembl = unlist(overlaps$gene_id),
-    stringsAsFactors = FALSE
-  ) %>%
-    dplyr::distinct() %>%
-    # Discard the gene version information in order to get gene symbols and
-    # cytoband mappings
-    dplyr::mutate(ensembl = gsub("\\..*", "", ensembl))
-
-  annotated_cn <- annotated_cn %>%
-    dplyr::mutate(
-      gene_symbol = AnnotationDbi::mapIds(org.Hs.eg.db::org.Hs.eg.db,
-                                          keys = ensembl,
-                                          column = "SYMBOL",
-                                          keytype = "ENSEMBL"),
-      cytoband = AnnotationDbi::mapIds(org.Hs.eg.db::org.Hs.eg.db,
-                                       keys = ensembl,
-                                       column = "MAP",
-                                       keytype = "ENSEMBL")
-    )
-
-  # drop rows that have NA values for the gene symbol
-  if (filt_na_symbol) {
-    annotated_cn <- annotated_cn %>%
-      dplyr::filter(!is.na(gene_symbol))
-  }
-
+  
+  # run annotation for each biospecimen to deal with the RAM issue
+  sample_list<-cnv_df$Kids_First_Biospecimen_ID %>% unique()
+  annotated_cn_list <- lapply(sample_list, function(x){
+    cnv_df_each <- cnv_df %>% dplyr::filter(Kids_First_Biospecimen_ID == x)
+    # make it into GRanges 
+    cnv_gr <- cnv_df_each %>%
+      GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE,
+                                              starts.in.df.are.0based = FALSE)
+    
+    # Create a data.frame with the overlaps between the CNV file and hg38 genome
+    # annotations
+    overlaps <- IRanges::mergeByOverlaps(cnv_gr, txdb_exons)
+    
+    # Create a data.frame with selected columns from the `autosome_overlaps`
+    # object
+    annotated_cn_each <- data.frame(
+      biospecimen_id = overlaps$Kids_First_Biospecimen_ID,
+      status = overlaps$status,
+      copy_number = overlaps$copy_number,
+      ploidy = overlaps$tumor_ploidy,
+      ensembl = unlist(overlaps$gene_id),
+      stringsAsFactors = FALSE
+    ) %>%
+      dplyr::distinct() %>%
+      # Discard the gene version information in order to get gene symbols and
+      # cytoband mappings
+      dplyr::mutate(ensembl = gsub("\\..*", "", ensembl))
+    
+    annotated_cn_each <- annotated_cn_each %>%
+      dplyr::mutate(
+        gene_symbol = AnnotationDbi::mapIds(org.Hs.eg.db::org.Hs.eg.db,
+                                            keys = ensembl,
+                                            column = "SYMBOL",
+                                            keytype = "ENSEMBL"),
+        cytoband = AnnotationDbi::mapIds(org.Hs.eg.db::org.Hs.eg.db,
+                                         keys = ensembl,
+                                         column = "MAP",
+                                         keytype = "ENSEMBL")
+      )
+    
+    # drop rows that have NA values for the gene symbol
+    if (filt_na_symbol) {
+      annotated_cn_each <- annotated_cn_each %>%
+        dplyr::filter(!is.na(gene_symbol))
+    }
+    return(annotated_cn_each)
+  })
+  annotated_cn <- do.call(rbind, annotated_cn_list)
   return(annotated_cn)
 }
 
@@ -132,6 +138,14 @@ option_list <- list(
     default = FALSE,
     help = "flag used to indicate if the CNV file was original a SEG file that
             has been prepped by a notebook to include ploidy information"
+  ),
+  optparse::make_option(
+    c("--runWXSonly"),
+    type = "logical",
+    action = "store_true",
+    default = FALSE,
+    help = "flag used to indicate if the annotation was only ran on biospecimens
+            with experiemntal_strategy of WXS"
   ),
   optparse::make_option(
     c("--xy"),
@@ -200,6 +214,16 @@ if (opt$controlfreec) {
 
 histologies_df <- readr::read_tsv(opt$metadata, guess_max = 100000)
 
+#### Subset the CNV files to contain only WXS specimens when runWXSonly parameter is set to TRUE
+
+if (opt$runWXSonly){
+  # find WXS specimens based on histology file
+  WXS_samples <- histologies_df %>% dplyr::filter(experimental_strategy == "WXS") %>% 
+    dplyr::pull(Kids_First_Biospecimen_ID) %>% unique()
+  # subset the cnv_df 
+  cnv_df <- cnv_df %>% dplyr::filter(Kids_First_Biospecimen_ID %in% WXS_samples)
+}
+
 #### Annotation file -----------------------------------------------------------
 
 # this is the output of GenomicFeatures::makeTxDbFromGFF
@@ -248,7 +272,12 @@ autosome_annotated_cn <- process_annotate_overlaps(cnv_df = cnv_no_xy,
   ))
 
 # Output file name
-autosome_output_file <- paste0(opt$filename_lead, "_autosomes.tsv.gz")
+if (opt$runWXSonly){
+  autosome_output_file <- paste0(opt$filename_lead, "_wxs_autosomes.tsv.gz")
+}else{
+  autosome_output_file <- paste0(opt$filename_lead, "_autosomes.tsv.gz")
+}
+
 
 # Save final data.frame to a tsv file
 readr::write_tsv(autosome_annotated_cn,
@@ -262,7 +291,7 @@ if (xy_flag) {
   # and file size
   cnv_sex_chrom <- cnv_df %>%
     dplyr::filter(chr %in% c("chrX", "chrY"))
-
+  
   # Merge and annotated no X&Y
   sex_chrom_annotated_cn <- process_annotate_overlaps(cnv_df = cnv_sex_chrom,
                                                       txdb_exons = tx_exons) %>%
@@ -271,8 +300,8 @@ if (xy_flag) {
       copy_number == 0  ~ "deep deletion",
       TRUE ~ as.character(status)
     ))
-
-
+  
+  
   # Add germline sex estimate into this data.frame
   sex_chrom_annotated_cn <- sex_chrom_annotated_cn %>%
     dplyr::inner_join(dplyr::select(histologies_df,
@@ -280,10 +309,14 @@ if (xy_flag) {
                                     germline_sex_estimate),
                       by = c("biospecimen_id" = "Kids_First_Biospecimen_ID")) %>%
     dplyr::select(-germline_sex_estimate, dplyr::everything())
-
+  
   # Output file name
-  sex_chrom_output_file <- paste0(opt$filename_lead, "_x_and_y.tsv.gz")
-
+  if (opt$runWXSonly){
+    sex_chrom_output_file <- paste0(opt$filename_lead, "_wxs_x_and_y.tsv.gz")
+  }else{
+    sex_chrom_output_file <- paste0(opt$filename_lead, "_x_and_y.tsv.gz")
+  }
+  
   # Save final data.frame to a tsv file
   readr::write_tsv(sex_chrom_annotated_cn,
                    file.path(results_dir, sex_chrom_output_file))
