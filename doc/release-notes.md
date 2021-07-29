@@ -1,10 +1,37 @@
 # release notes
-## curremt release
+## current release
+- release date: 2021-07-23
+- status: available
+- changes:
+   - Updated EFO/MONDO mapping file per [ticket 88](https://github.com/PediatricOpenTargets/ticket-tracker/issues/88)
+   - Added GTEX UBERON mapping files for subgroup and group per [ticket 85](https://github.com/PediatricOpenTargets/ticket-tracker/issues/85)
+     - Collapsed `Cerebellum hemisphere` and `Cerebellum` to `Cerebellum` since GTEX has the same UBERON code listed for both per [ticket 106](https://github.com/PediatricOpenTargets/ticket-tracker/issues/106)
+     - Renamed `Whole Blood` to `Blood` per John Maris's suggestion to alphabetize and [ticket 106](https://github.com/PediatricOpenTargets/ticket-tracker/issues/106). 
+       - Note: v8 gtex lists "whole blood" subgroup and "whole blood" group as UBERON_0013756, which is mapped to venous blood and "Whole blood" maps to UBERON_0000178. 
+       - After inquiry at GTEx, we were told they are equivalent terms as seen in [this link](https://www.ebi.ac.uk/ols/ontologies/uberon/terms?iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_0013756)
+    - Updated `ensg-hugo-rmtl-v1-mapping.tsv` with minor updates according to [ticket 125](https://github.com/PediatricOpenTargets/ticket-tracker/issues/125) and changed filename to `ensg-hugo-rmtl-mapping.tsv`
+    - Histology file updates:
+      - Collapsed `Cerebellum hemisphere` and `Cerebellum` to `Cerebellum` since GTEX has the same UBERON code listed for both per [ticket 106](https://github.com/PediatricOpenTargets/ticket-tracker/issues/106)
+      - Renamed `Whole Blood` to `Blood` per John Maris's suggestion to alphabetize and [ticket 106](https://github.com/PediatricOpenTargets/ticket-tracker/issues/106). 
+      - Added inferred strandedness to RNA-Seq samples per [ticket 104](https://github.com/PediatricOpenTargets/ticket-tracker/issues/104)
+      - Added `broad_tumor_descriptor` to designate grouped `Diagnosis` and `Relapse` samples used in SNV, CNV, Fusion tables as well as for grouping on pedcbio per [ticket 109](https://github.com/PediatricOpenTargets/ticket-tracker/issues/109)
+      - Added ploidy information for TARGET AML and NBL WXS samples per [ticket 121](https://github.com/PediatricOpenTargets/ticket-tracker/issues/121)
+      - Collapsed TARGET ids containing suffixes to match the BAM file sample IDs from GDC and match the RDS processed files per [comment here](https://github.com/d3b-center/D3b-codes/pull/41#issuecomment-885809293)
+    - Added TARGET NBL and AML WXS, PBTA WXS CNV calls to `cnv-cnvkit.seg.gz` and `cnv-controlfreec.tsv.gz` per [ticket 80](https://github.com/PediatricOpenTargets/ticket-tracker/issues/80) 
+    - Added `consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz` (removed WGS only file `consensus_seg_annotated_cn_autosomes.tsv.gz`) and `consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz` (removed WGS only file `consensus_seg_annotated_cn_x_and_y.tsv.gz`) containing consensus WGS and CNVkit WXS data per [ticket 102](https://github.com/PediatricOpenTargets/ticket-tracker/issues/102)
+    - Updated RNA-Seq files to include TARGET RNA (N = 1329) samples:
+      - fusion-arriba.tsv.gz
+      - fusion-starfusion.tsv.gz
+      - fusion-putative-oncogenic.tsv
+      - gene-counts-rsem-expected_count-collapsed.rds
+      - gene-expression-rsem-tpm-collapsed.rds
+
+## archived release
 - release date: 2021-06-29
 - status: available
 - changes:
    - Within `histologies.tsv`:
-     - Updated `cancer_group` logic to fix `Anaplastic` typo, remove benign tumors, and condense meningiomas [ticket48](https://github.com/PediatricOpenTargets/ticket-tracker/issues/48)
+     - Updated `cancer_group` logic to make updates as per [ticket48](https://github.com/PediatricOpenTargets/ticket-tracker/issues/48)
      - combine CBTN+PNOC into `cohort == PBTA` [ticket79](https://github.com/PediatricOpenTargets/ticket-tracker/issues/79)
      - GMKF tumor ploidy was added [ticket46](https://github.com/PediatricOpenTargets/ticket-tracker/issues/46)
      - harmonized tumor_descriptor per [ticket61](https://github.com/PediatricOpenTargets/ticket-tracker/issues/61) 

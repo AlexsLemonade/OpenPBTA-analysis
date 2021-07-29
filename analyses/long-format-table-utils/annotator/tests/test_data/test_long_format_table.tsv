@@ -1,0 +1,7 @@
+Gene_symbol	Gene_Ensembl_ID	Disease	cohort	tpm_mean
+TBC1D24	ENSG00000162065	Schwannoma	all_cohorts	1.515
+BRAF	ENSG00000157764	Neurofibroma/Plexiform	PBTA	3.588
+BRAF	ENSG00000157764	Neuroblastoma	GMKF	32.1902392344498
+MYCN	ENSG00000134323	Neuroblastoma	all_cohorts	43.3005263157895
+MYCN	ENSG00000134323	Medulloblastoma	all_cohorts	21.2189523809524
+MYCN	ENSG00000134323	Meningioma	all_cohorts	0.183571428571429
