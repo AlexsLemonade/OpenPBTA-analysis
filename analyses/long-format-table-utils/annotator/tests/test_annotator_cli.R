@@ -340,6 +340,100 @@ testthat::expect_warning(
     output_table_path = annotator_cli_output_path,
     remove_input_table = TRUE))
 
+readr::write_tsv(
+  dplyr::select(long_format_tibble, -Gene_symbol),
+  req_col_missing_tbl_path)
+
+testthat::expect_warning(
+  run_cli_get_tibble(
+    columns_to_add = c("Gene_type"),
+    input_table_path = req_col_missing_tbl_path,
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE))
+
+readr::write_tsv(
+  dplyr::select(long_format_tibble, -Disease),
+  req_col_missing_tbl_path)
+
+testthat::expect_warning(
+  run_cli_get_tibble(
+    columns_to_add = c("EFO"),
+    input_table_path = req_col_missing_tbl_path,
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE))
+
+readr::write_tsv(
+  dplyr::select(long_format_tibble, -Gene_Ensembl_ID),
+  req_col_missing_tbl_path)
+
+testthat::expect_warning(
+  run_cli_get_tibble(
+    columns_to_add = c("Gene_full_name"),
+    input_table_path = req_col_missing_tbl_path,
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE))
+
+readr::write_tsv(
+  dplyr::select(long_format_tibble, -Gene_Ensembl_ID),
+  req_col_missing_tbl_path)
+
+testthat::expect_warning(
+  run_cli_get_tibble(
+    columns_to_add = c("RMTL", "Gene_full_name"),
+    input_table_path = req_col_missing_tbl_path,
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE))
+
+# No error if all required columns are provided
+readr::write_tsv(
+  dplyr::select(long_format_tibble, -Gene_Ensembl_ID, -Disease),
+  req_col_missing_tbl_path)
+
+testthat::expect_equal(
+  run_cli_get_tibble(
+    columns_to_add = c("Gene_type"),
+    input_table_path = req_col_missing_tbl_path,
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE),
+  dplyr::select(
+    inspected_annotated_long_format_tibble,
+    -Gene_Ensembl_ID, -Disease,
+    -OncoKB_cancer_gene, -OncoKB_oncogene_TSG, -RMTL, -Gene_full_name,
+    -Protein_RefSeq_ID, -EFO, -MONDO))
+
+readr::write_tsv(
+  dplyr::select(long_format_tibble, -Gene_Ensembl_ID, -Gene_symbol),
+  req_col_missing_tbl_path)
+
+testthat::expect_equal(
+  run_cli_get_tibble(
+    columns_to_add = c("EFO"),
+    input_table_path = req_col_missing_tbl_path,
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE),
+  dplyr::select(
+    inspected_annotated_long_format_tibble,
+    -Gene_Ensembl_ID, -Gene_symbol,
+    -Gene_type, -OncoKB_cancer_gene, -OncoKB_oncogene_TSG, -RMTL,
+    -Gene_full_name, -Protein_RefSeq_ID, -MONDO))
+
+readr::write_tsv(
+  dplyr::select(long_format_tibble, -Disease, -Gene_symbol),
+  req_col_missing_tbl_path)
+
+testthat::expect_equal(
+  run_cli_get_tibble(
+    columns_to_add = c("Gene_full_name", "RMTL"),
+    input_table_path = req_col_missing_tbl_path,
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE),
+  dplyr::select(
+    inspected_annotated_long_format_tibble,
+    -Disease, -Gene_symbol,
+    -Gene_type, -OncoKB_cancer_gene, -OncoKB_oncogene_TSG,
+    -Protein_RefSeq_ID, -EFO, -MONDO,
+    -Gene_full_name, -RMTL,
+    Gene_full_name, RMTL))
 
 # Error on requiring existing annotation columns
 ann_col_exist_tbl_path <- file.path(
