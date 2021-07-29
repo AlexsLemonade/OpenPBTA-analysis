@@ -46,6 +46,9 @@ results_dir <- file.path(module_dir, "results")
 # Source function to gather counts and frequency calculation per cohort and cancer_group
 source(file.path(module_dir,"utils","freq_counts.R"))
 
+# Source function to add annotation based on Gene_Symbol, Gene_Ensembl_ID and cancer_group
+source(file.path(root_dir,"analyses","long-format-table-utils","annotator","annotator-api.R"))
+
 # Create results folder if it doesn't exist
 if (!dir.exists(results_dir)) {
   dir.create(results_dir)
@@ -74,6 +77,18 @@ primary_indp_sdf <- read_tsv(primary_independence_list,
 relapse_indp_sdf <- read_tsv(relapse_independence_list,
   col_types = cols(
     .default = col_guess()))
+
+ensg_hugo_rmtl_df <- read_tsv(file.path(data_dir,'ensg-hugo-rmtl-mapping.tsv'),
+                              col_types = cols(.default = col_guess())) %>%
+  distinct()
+# assert all ensg_ids and gene_symbols are not NA
+stopifnot(identical(sum(is.na(ensg_hugo_rmtl_df$ensg_id)), as.integer(0)))
+stopifnot(identical(sum(is.na(ensg_hugo_rmtl_df$gene_symbol)), as.integer(0)))
+# assert all ensg_id are unique
+# result SNV table is left joined by ensg_id
+stopifnot(identical(length(unique(ensg_hugo_rmtl_df$ensg_id)),
+                    nrow(ensg_hugo_rmtl_df)))
+
 
 # Subset independent samples in histology table --------------------------------
 message('Prepare data...')
@@ -224,10 +239,41 @@ m_fus_freq_tbl <- m_fus_freq_tbl %>%
   mutate(Dataset = if_else(str_detect(Dataset, '&'),
                            true = 'all_cohorts', false = Dataset))
 
-stopifnot(identical(sum(is.na(m_fus_freq_tbl)), as.integer(0)))
+### Adding annotation ###
+
+# asert all rmtl NAs have version NAs, vice versa
+stopifnot(identical(is.na(ensg_hugo_rmtl_df$rmtl),
+                    is.na(ensg_hugo_rmtl_df$version)))
+head(ensg_hugo_rmtl_df)
+
+ann_ensg_hugo_rmtl_df <- ensg_hugo_rmtl_df %>%
+  # select ensg_id and gene_symbol only
+  select(ensg_id, gene_symbol) %>%
+  dplyr::rename(Gene_Ensembl_ID = ensg_id,
+         Gene_Symbol=gene_symbol) 
 
 m_fus_freq_tbl <- m_fus_freq_tbl %>%
-  select(keep_cols, Disease, Dataset,
+  left_join(ann_ensg_hugo_rmtl_df, by = "Gene_Symbol") %>%
+  replace_na(list(Gene_Ensembl_ID = ''))
+stopifnot(identical(sum(is.na(m_fus_freq_tbl)), as.integer(0)))
+
+
+annotation_columns_to_add <- c("Gene_full_name", "MONDO", "RMTL", "EFO")
+# Assert all columns to be added are not already present in the
+# colnames(m_fus_freq_tbl)
+stopifnot(
+   all(!annotation_columns_to_add %in% colnames(m_fus_freq_tbl)))
+
+annotated_renamed_m_tpm_ss_long_tbl <- annotate_long_format_table(
+   m_fus_freq_tbl, columns_to_add = annotation_columns_to_add)
+
+
+stopifnot(identical(sum(is.na(m_fus_freq_tbl)), as.integer(0)))
+
+colnames(annotated_renamed_m_tpm_ss_long_tbl)
+
+annotated_renamed_m_tpm_ss_long_tbl %>%
+  select(keep_cols, Disease, MONDO, RMTL, EFO,Dataset,
          Total_alterations_Over_Patients_in_dataset,
          Frequency_in_overall_dataset,
          Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset,
