@@ -14,7 +14,7 @@ Each gene invloved in the fusion is annotated by a Gene_Position, for example:
  - In an intergenic fusion where one or both breakpoint are outside the gene body, if the 3` breakpoint is within GeneE the Gene_Position of GeneE will be Gene1A and the 5` breakpoint is within GeneY and GeneZ, Gene Y will be denoted as Gene_Position `Gene1B` and GeneZ will be denoted as `Gene2B`.   
 
 
-#### Additional annotation
+#### Frequency annotation
 
 Each `cancer_group` and `cohort`(s) combination is considered a `cancer_group_cohort`. `cancer_group_cohort` with `n_samples` >= 5, compute `Frequency_in_overall_dataset`, `Frequency_in_primary_tumors`, and `Frequency_in_relapse_tumors` as following:
 
@@ -37,6 +37,9 @@ Format the SNV mutation frequency table according to the latest spreadsheet that
 
 Merge the fusion frequency tables of all `cancer_group_cohort`s.
 
+#### Additional annotation
+
+[long-format-table-utils](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/long-format-table-utils) provides the annotation for columns  EFO, MONDO, RMTL and Gene_full_name.
 
 ### Analysis scripts
 
@@ -58,8 +61,12 @@ Input:
 - `../independent-samples/results/independent-specimens.rnaseq.primary.eachcohort.tsv`
 - `../independent-samples/results/independent-specimens.rnaseq.relapse.eachcohort.tsv`
 
-Results
-
-- `results/putative-oncogene-fusion-freq.tsv`
-- `results/putative-oncogene-fused-gene-freq.tsv`
-
+```
+results/
+├── putative-oncogene-fused-gene-freq.json.gz
+├── putative-oncogene-fused-gene-freq.jsonl.gz
+├── putative-oncogene-fused-gene-freq.tsv.gz
+├── putative-oncogene-fusion-freq.json.gz
+├── putative-oncogene-fusion-freq.jsonl.gz
+└── putative-oncogene-fusion-freq.tsv.gz
+```
