@@ -10,7 +10,7 @@ jobs:
 
       - run:
           name: Data Download
-          command: OPENPBTA_URL=https://open-pbta.s3.amazonaws.com/data OPENPBTA_RELEASE=testing ./scripts/run_in_ci.sh bash download-data.sh
+          command: OPENPBTA_URL=https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data OPENPBTA_RELEASE=testing ./scripts/run_in_ci.sh bash download-data.sh
 
       - run:
           name: List Data Directory Contents
