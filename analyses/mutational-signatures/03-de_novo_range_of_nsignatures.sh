@@ -12,13 +12,26 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 # In CI we'll run an abbreviated version of the de novo signatures extraction
 QUICK_MUTSIGS=${QUICK_MUTSIGS:-0}
 
-scratch_dir=../../scratch/mutational-signatures
-denovo_plot_dir=plots/denovo/gof
-denovo_results_dir=${scratch_dir}/gof
+# Which analysis are we running?
+ANALYSIS=${ANALYSIS:-1}  # Expect 0 for GOF and 1 for Extraction
 
-# Directories to hold the goodness-of-fit plots and results
-mkdir -p $denovo_plot_dir
-mkdir -p $denovo_results_dir
+
+scratch_dir=../../scratch/mutational-signatures
+
+# For initial GOF analysis to figure out how many k
+gof_plot_dir=plots/denovo/gof
+gof_result_dir=${scratch_dir}/gof
+
+# For extraction once a limited range of k is assessed with GOF
+extraction_plot_dir=plots/denovo/extraction
+extraction_result_dir=${scratch_dir}/extraction
+
+
+# Directories to hold all plots and results
+mkdir -p $gof_plot_dir
+mkdir -p $gof_result_dir
+mkdir -p $extraction_plot_dir
+mkdir -p $extraction_result_dir
 
 # The MAF file we'll use is going to WGS samples only
 maf_file=${scratch_dir}/pbta-snv-consensus-wgs.tsv.gz
@@ -36,23 +49,40 @@ then
     --num_iterations 10 \
     --seed 42 
 else
-  for model in multinomial poisson; do
-    for seed in {1..5}; do
+  # GOF
+  if [[ $ANALYSIS -eq "0" ]] 
+  then
+    FLOOR=2
+    CEIL=8
+    ITER=1000
+    plot_dir=${gof_plot_dir}
+    result_dir=${gof_result_dir}
+  fi
+  # Extraction
+  if [[ $ANALYSIS -eq "1" ]] 
+  then
+    FLOOR=2
+    CEIL=5
+    ITER=3000
+    plot_dir=${extraction_plot_dir}
+    result_dir=${extraction_result_dir}
+  fi  
 
+  # Run sigfit with params
+  for model in poisson multinomial; do
+    for seed in {1..5}; do
        # De novo signatures extraction
        Rscript --vanilla \
          scripts/de_novo_signature_extraction.R \
          --maf_file ${maf_file} \
-         --nsignatures_floor 2 \
-         --nsignatures_ceiling 8 \
-         --num_iterations 1000 \
+         --nsignatures_floor ${FLOOR} \
+         --nsignatures_ceiling ${CEIL} \
+         --num_iterations ${ITER} \
          --model ${model} \
          --seed ${seed} \
-         --plot_output "${denovo_plot_dir}/gof_seed_${seed}_model_${model}.pdf" \
-         --output_file "${denovo_results_dir}/gof_seed_${seed}_model_${model}.RDS"
-      
-
+         --plot_output "${plot_dir}/seed_${seed}_model_${model}.png" \
+         --output_file "${result_dir}/seed_${seed}_model_${model}.RDS"   
     done
   done
-
-fi
+fi  
+  

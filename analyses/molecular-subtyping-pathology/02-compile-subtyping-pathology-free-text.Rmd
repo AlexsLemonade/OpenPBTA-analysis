@@ -1,0 +1,168 @@
+---
+title: "Update subtypes using pathology-free-text-diagnosis"
+output: html_notebook
+---
+
+The samples in the files below have molecular-subtyping results which are already part of the compile file `analyses/molecular-subtyping-pathology/results/compiled_molecular_subtypes.ts` so we will be updating the values for these samples using outputs from the pathology-free-text-diagnosis terms.
+
+File | Logic to include as results | Previous subtype | Description ticket 
+-- | -- | -- | -- 
+analyses/molecular-subtyping-pathology/results/lgat-pathology-free-text-subtypes.tsv #1060  | Update existing values | LGAT | #1000 
+analyses/molecular-subtyping-pathology/results/cranio_adam_subtypes.tsv #823  | Update existing values | CRANIO | #994
+analyses/molecular-subtyping-pathology/results/glialneuronal_tumor_subtypes.tsv  | Update existing values | LGAT | #1017 
+
+The following subtypes can be directly added to `analyses/molecular-subtyping-pathology/results/compiled_molecular_subtypes.tsv` as well since these subtypes don't have molecular-subtyping results
+ 
+File | Logic to include as results |  Description ticket 
+ -- | -- | -- 
+analyses/molecular-subtyping-pathology/results/cns-lymphoma-subtypes.tsv | Append | #1057  
+analyses/molecular-subtyping-pathology/results/juvenile-xanthogranuloma-subtypes.tsv | Append | #1056 
+analyses/molecular-subtyping-pathology/results/choroid_plexus_papilloma_subtypes.tsv  | Append | #1065
+
+## Set Up
+
+### Libraries
+
+```{r}
+# Pipes
+library(magrittr)
+library(tidyverse)
+```
+
+### Input
+
+```{r}
+data_dir <- file.path("..", "..", "data")
+results_dir <- file.path("results")
+histologies_file <- file.path(data_dir, "pbta-histologies-base.tsv")
+compiled_subtypes_file <- file.path(results_dir, "compiled_molecular_subtypes.tsv")
+meningioma_subtypes_file <- file.path(results_dir, "meningioma_subtypes.tsv")
+lgat_recode_file <- file.path(results_dir, "lgat-pathology-free-text-subtypes.tsv")
+glialnueronal_recode_file <- file.path(results_dir, "glialneuronal_tumor_subtypes.tsv")
+cranio_adam_recode_file <- file.path(results_dir, "cranio_adam_subtypes.tsv")
+cns_lymphoma_subtypes_file <- file.path(results_dir, "cns-lymphoma-subtypes.tsv")
+jxg_subtypes_file <- file.path(results_dir, "juvenile-xanthogranuloma-subtypes.tsv")
+choroid_plexus_papilloma_subtypes_file <- file.path(results_dir, "choroid_plexus_papilloma_subtypes.tsv")
+```
+
+### Output
+
+```{r}
+results_dir <- "results"
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+output_file <- file.path(results_dir, "compiled_molecular_subtypes_and_report_info.tsv")
+
+```
+
+## Read in data
+
+```{r}
+# clinical pbta histology
+clinical <- readr::read_tsv(file.path(data_dir,
+                                "pbta-histologies-base.tsv")) 
+compiled_subtypes_df <- readr::read_tsv(compiled_subtypes_file) %>%  
+  # ids to match
+  left_join(clinical[,c("Kids_First_Participant_ID",
+                        "Kids_First_Biospecimen_ID",
+                        # need tumor_descriptor to match to clinical review
+                        "tumor_descriptor")],by=c("Kids_First_Biospecimen_ID",
+                                       "Kids_First_Participant_ID")) 
+
+lgat_recode_df <- readr::read_tsv(lgat_recode_file)
+meningioma_subtypes_df <- readr::read_tsv(meningioma_subtypes_file)
+glialnueronal_recode_df <- readr::read_tsv(glialnueronal_recode_file)
+cranio_adam_recode_df <- readr::read_tsv(cranio_adam_recode_file)
+cns_lymphoma_subtypes_df <- readr::read_tsv(cns_lymphoma_subtypes_file) 
+jxg_subtypes_df <- readr::read_tsv(jxg_subtypes_file)
+choroid_plexus_papilloma_subtypes_df <- readr::read_tsv(choroid_plexus_papilloma_subtypes_file)
+
+```
+
+## Update subtypes
+
+### Add meningioma subtypes
+```{r}
+compiled_subtypes_df <- compiled_subtypes_df %>%
+  # add
+  bind_rows(meningioma_subtypes_df)
+
+
+```
+
+
+### Recoded LGAT integrated_diagnosis 
+```{r}
+compiled_subtypes_df <- compiled_subtypes_df %>% 
+  # remove old data
+  dplyr::filter(!Kids_First_Biospecimen_ID %in% lgat_recode_df$Kids_First_Biospecimen_ID) %>%
+  # replace 
+  bind_rows(lgat_recode_df) 
+
+
+```
+
+### Neuronal and mixed neuronal-glial tumors updates in broad_histology, short_histology and harmonized_diagnosis
+```{r}
+
+compiled_subtypes_df <- compiled_subtypes_df %>% 
+  # remove old data
+  dplyr::filter(!Kids_First_Biospecimen_ID %in% glialnueronal_recode_df$Kids_First_Biospecimen_ID) %>%
+  # replace 
+  bind_rows(glialnueronal_recode_df)  %>%
+  select(-pathology_diagnosis,-pathology_free_text_diagnosis)
+
+```
+
+### Recoding adamantinomatous craniopharyngiomas
+```{r}
+
+compiled_subtypes_df <- compiled_subtypes_df %>% 
+  # remove old data
+  dplyr::filter(!Kids_First_Biospecimen_ID %in% cranio_adam_recode_df$Kids_First_Biospecimen_ID) %>%
+  # replace 
+  bind_rows(cranio_adam_recode_df) 
+
+```
+
+## Append new subtypes from pathology-free-text-diagnosis
+
+### CNS lymphoma harmonized_diagnosis update
+```{r}
+
+compiled_subtypes_df <- compiled_subtypes_df %>% 
+  # append
+  bind_rows(cns_lymphoma_subtypes_df) 
+
+```
+
+### Juvenile xanthogranuloma harmonized_diagnosis update
+```{r}
+
+compiled_subtypes_df <- compiled_subtypes_df %>% 
+  # append
+  bind_rows(jxg_subtypes_df) 
+
+```
+
+
+### Atypical choroid plexus papilloma harmonized_diagnosis update
+```{r}
+
+compiled_subtypes_df <- compiled_subtypes_df %>% 
+  # append
+  bind_rows(choroid_plexus_papilloma_subtypes_df) %>%
+  select(-pathology_diagnosis,-pathology_free_text_diagnosis)
+
+```
+
+
+## Save to file
+```{r}
+compiled_subtypes_df %>% 
+  arrange(Kids_First_Biospecimen_ID)%>%
+  write_tsv(output_file)
+
+```
+
