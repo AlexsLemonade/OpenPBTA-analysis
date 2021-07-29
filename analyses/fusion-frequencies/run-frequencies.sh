@@ -20,6 +20,10 @@ Rscript 01-fusion-frequencies.R --fusion_file ../fusion_filtering/results/fusion
 	--relapse_independence_list ../independent-samples/results/independent-specimens.rnaseq.relapse.eachcohort.tsv \
 	--output_filename "putative-oncogene-fusion-freq"
 
+jq --compact-output '.[]' \
+  results/putative-oncogene-fusion-freq.json \
+  > results/putative-oncogene-fusion-freq.jsonl
+
 # gather frequencies at Fused Gene level
 Rscript 01-fusion-frequencies.R --fusion_file ../fusion_filtering/results/fusion-putative-oncogenic.tsv \
         --alt_id "Gene_Symbol" \
@@ -27,4 +31,9 @@ Rscript 01-fusion-frequencies.R --fusion_file ../fusion_filtering/results/fusion
         --primary_independence_list ../independent-samples/results/independent-specimens.rnaseq.primary.eachcohort.tsv \
         --relapse_independence_list ../independent-samples/results/independent-specimens.rnaseq.relapse.eachcohort.tsv \
         --output_filename "putative-oncogene-fused-gene-freq"
-        
+
+jq --compact-output '.[]' \
+  results/putative-oncogene-fused-gene-freq.json \
+  > results/putative-oncogene-fused-gene-freq.jsonl
+
+gzip results/putative-oncogene*        

@@ -244,7 +244,6 @@ m_fus_freq_tbl <- m_fus_freq_tbl %>%
 # asert all rmtl NAs have version NAs, vice versa
 stopifnot(identical(is.na(ensg_hugo_rmtl_df$rmtl),
                     is.na(ensg_hugo_rmtl_df$version)))
-head(ensg_hugo_rmtl_df)
 
 ann_ensg_hugo_rmtl_df <- ensg_hugo_rmtl_df %>%
   # select ensg_id and gene_symbol only
@@ -264,15 +263,14 @@ annotation_columns_to_add <- c("Gene_full_name", "MONDO", "RMTL", "EFO")
 stopifnot(
    all(!annotation_columns_to_add %in% colnames(m_fus_freq_tbl)))
 
-annotated_renamed_m_tpm_ss_long_tbl <- annotate_long_format_table(
+annotated_m_fus_freq_tbl <- annotate_long_format_table(
    m_fus_freq_tbl, columns_to_add = annotation_columns_to_add)
 
 
 stopifnot(identical(sum(is.na(m_fus_freq_tbl)), as.integer(0)))
 
-colnames(annotated_renamed_m_tpm_ss_long_tbl)
-
-annotated_renamed_m_tpm_ss_long_tbl %>%
+# write to tsv
+annotated_m_fus_freq_tbl %>%
   select(keep_cols, Disease, MONDO, RMTL, EFO,Dataset,
          Total_alterations_Over_Patients_in_dataset,
          Frequency_in_overall_dataset,
@@ -281,3 +279,9 @@ annotated_renamed_m_tpm_ss_long_tbl %>%
          Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
          Frequency_in_relapse_tumors) %>%
   write_tsv(file.path(results_dir, paste0(output_filename,'.tsv')))
+
+# write to json
+jsonlite::write_json(
+  annotated_m_fus_freq_tbl,
+  file.path(results_dir, paste0(output_filename,'.json')))
+
