@@ -11,7 +11,7 @@
 * `cohort + cancer_group tumor-normal-gtex plots`: For each cancer_group within a cohort, plot cohort + cancer_group vs GTEx subgroups.
 * `cancer_group tumor-normal-gtex plots`: For each cancer_group, plot cancer_group vs GTEx subgroups.
 
-2. Export two tables (.tsv) `cancer_group_level.tsv` and `cohort_cancer_group_level.tsv` per comparison type i.e. `tumor_normal_gtex_plots_` and `pan_cancer_plots_` with the following fields: `gene`, `cohort`, `cancer_group`, `x_labels`, `mean`, `median`, `sd`, `plot_api`.
+2. Export two tables (.tsv) `cancer_group_level.tsv` and `cohort_cancer_group_level.tsv` per comparison type i.e. `tumor_normal_gtex_plots_` and `pan_cancer_plots_` with the following fields: `Gene_symbol`, `Gene_Ensembl_ID`, `Dataset`, `Disease`, `x_labels`, `mean`, `median`, `sd`, `plot_api`. Add `MONDO`, `RMTL` and	`EFO` using `long-format-table-utils/annotator/annotator-cli.R`.
 
 3. Export metadata files to use in JSON files with the following fields: `gene` (gene name), `plot_type` (either `pan_cancer` or `tumor_normal_gtex`), `cohort` (tumor cohort name for tumor-normal-gtex plots and `all_cohorts` for pan-cancer plots) for , `cancer_group` (only applicable for tumor-normal-gtex plots and `NA` for tumors only plot), `analysis_type` (either `cohort_cancer_group_level` or `cancer_group_level`), `plot_fname` (plot filename) and `table_fname` (table filename).
 
@@ -41,6 +41,7 @@
 ├── run-tumor-gtex-plots.sh # full analysis script
 ├── run-pan-cancer-plots.sh # script for pan-cancer plots
 ├── run-tumor-normal-gtex-plots.sh # script for tumor vs gtex plots
+├── run-annotator.sh # script to annotate tsv files with MONDO, RMTL, EFO fields
 └── util
     ├── pubTheme.R # publication quality ggplot2 theme
     ├── pan_cancer_plot.R # function for pan-cancer plot
