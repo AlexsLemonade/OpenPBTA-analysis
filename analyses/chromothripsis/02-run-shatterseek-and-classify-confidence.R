@@ -96,7 +96,7 @@ mergeCNsegments <- function(cnv_df) {
   # does not match the previous row (starting at second row)
   cnv_df$index <- 0
   index_counter <- 1
-   for (row_iter in 2:nrow(cnv_df)) {
+  for (row_iter in 2:nrow(cnv_df)) {
     index_counter <- compare_adjacent_segs(cnv_df[row_iter, ], cnv_df[row_iter-1, ])
     cnv_df[row_iter, "index"] <- index_counter
   }
