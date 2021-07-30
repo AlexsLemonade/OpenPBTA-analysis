@@ -96,15 +96,17 @@ mergeCNsegments <- function(cnv_df) {
   # does not match the previous row (starting at second row)
   cnv_df$index <- 0
   index_counter <- 1
-  for (row_iter in 2:nrow(cnv_df)) {
-    index_counter <- compare_adjacent_segs(cnv_df[row_iter, ], cnv_df[row_iter-1, ])
-    cnv_df[row_iter, "index"] <- index_counter
-  }
+  if (nrow(cnv_df) >=2) {
+   for (row_iter in 2:nrow(cnv_df)) {
+     index_counter <- compare_adjacent_segs(cnv_df[row_iter, ], cnv_df[row_iter-1, ])
+     cnv_df[row_iter, "index"] <- index_counter
+   }
   
   # Separately update index for first row (check whether first row matches second row)
   cnv_df[1, "index"] <- ifelse(compare_adjacent_segs(cnv_df[1,], cnv_df[2,]), 1, 0)
     # Set index to 1 if row 1 matches row 2
     # Set index to 0 if row 1 doesn't match row 2
+  }
   
   # Merge rows by selecting minimum loc.start and maximum loc.end for each index value
   # Reorder rows by chromosome and start position
