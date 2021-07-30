@@ -129,11 +129,10 @@ The merged variant-level and gene-level SNV mutation frequency tables of all `ca
 - `results/gene-level-snv-consensus-annotated-mut-freq.jsonl.gz`
 - `results/gene-level-snv-consensus-annotated-mut-freq.tsv`
 
-- `results/var-level-snv-consensus-annotated-mut-freq.json.gz`
-- `results/var-level-snv-consensus-annotated-mut-freq.jsonl.gz`
-- `results/var-level-snv-consensus-annotated-mut-freq.tsv`
+- `results/variant-level-snv-consensus-annotated-mut-freq.jsonl.gz`
+- `results/variant-level-snv-consensus-annotated-mut-freq.tsv.gz`
 
-**Note:** When reading `{var,gene}-level-snv-consensus-annotated-mut-freq.tsv` using `readr::read_tsv`, you can specify `na = character(0)` to avoid converting blank string entries to `NA`s, as suggested by @jharenza at <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/45#pullrequestreview-697753423>. This can be useful when converting `{var,gene}-level-snv-consensus-annotated-mut-freq.tsv` to JSON, because the PediatricOpenTargets/OpenPedCan-analysis project favors empty string (`''`) as missing value over `NA`/`NaN`/`NULL`.
+**Note:** When reading `{variant,gene}-level-snv-consensus-annotated-mut-freq.tsv` using `readr::read_tsv`, you can specify `na = character(0)` to avoid converting blank string entries to `NA`s, as suggested by @jharenza at <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/45#pullrequestreview-697753423>. This can be useful when converting `{variant,gene}-level-snv-consensus-annotated-mut-freq.tsv` to JSON, because the PediatricOpenTargets/OpenPedCan-analysis project favors empty string (`''`) as missing value over `NA`/`NaN`/`NULL`.
 
 ### Usage
 
@@ -170,9 +169,8 @@ Output:
 - `results/gene-level-snv-consensus-annotated-mut-freq.json`
 - `results/gene-level-snv-consensus-annotated-mut-freq.jsonl`
 - `results/gene-level-snv-consensus-annotated-mut-freq.tsv`
-- `results/var-level-snv-consensus-annotated-mut-freq.json`
-- `results/var-level-snv-consensus-annotated-mut-freq.jsonl`
-- `results/var-level-snv-consensus-annotated-mut-freq.tsv`
+- `results/variant-level-snv-consensus-annotated-mut-freq.json`
+- `results/variant-level-snv-consensus-annotated-mut-freq.tsv`
 
 ### Guide on how to update `01-snv-frequencies.R`
 
