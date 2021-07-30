@@ -357,7 +357,8 @@ htl_df <- readr::read_tsv(
     gtex_group = col_character(),
     gtex_subgroup = col_character(),
     EFS_days = col_number()
-  )
+  ),
+  guess_max = 100000
 )
 # assert read count matrix column names match metadata sample IDs
 stopifnot(all(colnames(tpm_df) %in% htl_df$Kids_First_Biospecimen_ID))
@@ -396,7 +397,7 @@ stopifnot(all(rna_htl_df$Kids_First_Biospecimen_ID %in% colnames(tpm_df)))
 
 
 # gene symbol to ENSG id table
-gid_gsb_tbl <- read_tsv('../../data/ensg-hugo-rmtl-v1-mapping.tsv',
+gid_gsb_tbl <- read_tsv('../../data/ensg-hugo-rmtl-mapping.tsv',
                         col_types = cols(.default = col_guess()),
                         guess_max = 10000) %>%
   rename(gene_id = ensg_id) %>%
@@ -489,20 +490,6 @@ nf_all_cohorts_tpm_ss_out_dfs <- get_expression_summary_stats_out_dfs(
   nf_all_cohorts_tpm_df, nf_all_cohorts_rna_htl_df$sample_group,
   gsb_gids_df)
 
-write_tsv(nf_all_cohorts_tpm_ss_out_dfs$mean_df,
-          'results/cancer_group_all_cohort_mean_tpm.tsv')
-write_tsv(nf_all_cohorts_tpm_ss_out_dfs$sd_df,
-          'results/cancer_group_all_cohort_standard_deviation_tpm.tsv')
-write_tsv(
-  nf_all_cohorts_tpm_ss_out_dfs$group_wise_zscore_df,
-  'results/cancer_group_all_cohort_mean_tpm_cancer_group_wise_z_scores.tsv')
-write_tsv(
-  nf_all_cohorts_tpm_ss_out_dfs$quant_df,
-  'results/cancer_group_all_cohort_mean_tpm_cancer_group_wise_quantiles.tsv')
-write_tsv(
-  nf_all_cohorts_tpm_ss_out_dfs$gene_wise_zscore_df,
-  'results/cancer_group_all_cohort_mean_tpm_gene_wise_z_scores.tsv')
-
 
 
 # Summary statistics of each cohort --------------------------------------------
@@ -552,26 +539,6 @@ nf_ind_cohort_tpm_ss_out_dfs <- get_expression_summary_stats_out_dfs(
   nf_ind_cohort_tpm_df, nf_ind_cohort_rna_htl_df$sample_group,
   gsb_gids_df)
 
-write_tsv(nf_ind_cohort_tpm_ss_out_dfs$mean_df,
-          'results/cancer_group_individual_cohort_mean_tpm.tsv')
-write_tsv(nf_ind_cohort_tpm_ss_out_dfs$sd_df,
-          'results/cancer_group_individual_cohort_standard_deviation_tpm.tsv')
-write_tsv(
-  nf_ind_cohort_tpm_ss_out_dfs$group_wise_zscore_df,
-  file.path('results',
-            paste0('cancer_group_individual_cohort',
-                   '_mean_tpm_cancer_group_wise_z_scores.tsv')))
-write_tsv(
-  nf_ind_cohort_tpm_ss_out_dfs$quant_df,
-  file.path('results',
-            paste0('cancer_group_individual_cohort',
-                   '_mean_tpm_cancer_group_wise_quantiles.tsv')))
-write_tsv(
-  nf_ind_cohort_tpm_ss_out_dfs$gene_wise_zscore_df,
-  file.path('results',
-            paste0('cancer_group_individual_cohort',
-                   '_mean_tpm_gene_wise_z_scores.tsv')))
-
 
 
 # Generate combined long table -------------------------------------------------
@@ -617,20 +584,14 @@ m_tpm_ss_long_tbl <- m_tpm_ss_long_tbl %>%
          Disease = cancer_group)
 
 m_tpm_ss_long_tbl <- annotate_long_format_table(
-  m_tpm_ss_long_tbl, columns_to_add = c('MONDO', 'RMTL', 'EFO'),
-  replace_na_with_empty_string = FALSE)
+  m_tpm_ss_long_tbl, columns_to_add = c('MONDO', 'RMTL', 'EFO'))
 
 m_tpm_ss_long_tbl <- m_tpm_ss_long_tbl %>%
-  rename(gene_symbol = Gene_symbol, gene_id = Gene_Ensembl_ID,
-         cancer_group = Disease) %>%
-  select(gene_symbol, RMTL, gene_id,
-         cancer_group, EFO, MONDO, n_samples, cohort,
+  select(Gene_symbol, RMTL, Gene_Ensembl_ID,
+         Disease, EFO, MONDO, n_samples, cohort,
          tpm_mean, tpm_sd,
          tpm_mean_cancer_group_wise_zscore, tpm_mean_gene_wise_zscore,
          tpm_mean_cancer_group_wise_quantiles)
-# Replace NA with '' in columns that have NA
-m_tpm_ss_long_tbl <- m_tpm_ss_long_tbl %>%
-  mutate_if(function(x) sum(is.na(x)) > 0, function(x) replace_na(x, ''))
 
 stopifnot(identical(sum(is.na(m_tpm_ss_long_tbl)), as.integer(0)))
 

@@ -47,6 +47,8 @@ Rscript --vanilla '01-tpm-summary-stats.R'
 #
 # - https://stackoverflow.com/a/48711608/4638182
 # - https://stackoverflow.com/a/66709708/4638182
+echo 'Convert JSON files to JSONL files...'
+
 jq --compact-output '.[]' \
   results/long_n_tpm_mean_sd_quantile_group_wise_zscore.json \
   > results/long_n_tpm_mean_sd_quantile_group_wise_zscore.jsonl
@@ -55,13 +57,18 @@ jq --compact-output '.[]' \
   results/long_n_tpm_mean_sd_quantile_gene_wise_zscore.json \
   > results/long_n_tpm_mean_sd_quantile_gene_wise_zscore.jsonl
 
+echo 'Remove JSON files...'
+
+rm results/long_n_tpm_mean_sd_quantile_group_wise_zscore.json
+rm results/long_n_tpm_mean_sd_quantile_gene_wise_zscore.json
+
 # The --no-name option stops the filename and timestamp from being stored in the
 # output file. So rerun will have the same file.
+echo 'gzip TSV and JSONL files...'
 gzip --no-name results/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv
 gzip --no-name results/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv
 
-gzip --no-name results/long_n_tpm_mean_sd_quantile_gene_wise_zscore.json
-gzip --no-name results/long_n_tpm_mean_sd_quantile_group_wise_zscore.json
-
 gzip --no-name results/long_n_tpm_mean_sd_quantile_group_wise_zscore.jsonl
 gzip --no-name results/long_n_tpm_mean_sd_quantile_gene_wise_zscore.jsonl
+
+echo 'Done running run-rna-seq-expression-summary-stats.sh.'
