@@ -531,8 +531,6 @@ get_cg_ch_var_level_mut_freq_tbl <- function(maf_df, overall_histology_df,
            Frequency_in_relapse_tumors, HotSpot) %>%
     mutate_all(function(x) replace_na(x, replace = ''))
 
-  output_var_df <- add_cg_ch_pedcbio_pedot_plot_urls(
-    output_var_df, ss_cancer_group, ss_cohorts, valid_url_case_set_ids)
   stopifnot(identical(sum(is.na(output_var_df)), as.integer(0)))
 
   return(output_var_df)
@@ -1000,8 +998,7 @@ var_level_mut_freq_tbl <- var_level_mut_freq_tbl %>%
          Frequency_in_primary_tumors,
          Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
          Frequency_in_relapse_tumors,
-         HotSpot, OncoKB_cancer_gene, OncoKB_oncogene_TSG,
-         PedcBio_PedOT_oncoprint_plot_URL, PedcBio_PedOT_mutations_plot_URL) %>%
+         HotSpot, OncoKB_cancer_gene, OncoKB_oncogene_TSG) %>%
   rename(Variant_ID_hg38 = Variant_ID)
 
 gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
