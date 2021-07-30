@@ -697,7 +697,7 @@ stopifnot(identical(length(unique(efo_mondo_cg_df$cancer_group)),
                     nrow(efo_mondo_cg_df)))
 
 # ensg hugo rmtl mappings
-ensg_hugo_rmtl_df <- read_tsv('../../data/ensg-hugo-rmtl-v1-mapping.tsv',
+ensg_hugo_rmtl_df <- read_tsv('../../data/ensg-hugo-rmtl-mapping.tsv',
                               col_types = cols(.default = col_guess())) %>%
   distinct()
 # assert all ensg_ids and gene_symbols are not NA
