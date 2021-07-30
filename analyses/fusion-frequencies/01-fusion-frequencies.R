@@ -271,7 +271,7 @@ stopifnot(identical(sum(is.na(m_fus_freq_tbl)), as.integer(0)))
 
 # write to tsv
 annotated_m_fus_freq_tbl %>%
-  select(keep_cols, Disease, MONDO, RMTL, EFO,Dataset,
+  select(keep_cols, Gene_Ensembl_ID, Disease, MONDO, RMTL, EFO,Dataset,
          Total_alterations_Over_Patients_in_dataset,
          Frequency_in_overall_dataset,
          Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset,
