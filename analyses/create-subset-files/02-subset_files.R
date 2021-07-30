@@ -69,7 +69,7 @@ subset_files <- function(filename, biospecimen_ids, output_directory) {
   # filtering strategy depends on the file type, mostly because how the sample
   # IDs change based on the file type -- that's why this logic is required
   if (grepl("pbta-snv", filename)) {
-    if (grepl("consensus-mutation", filename)) {
+    if (grepl("consensus-mutation|hotspots", filename)) {
       snv_file <- data.table::fread(filename, data.table = FALSE)
       snv_file %>%
         dplyr::filter(Tumor_Sample_Barcode %in% biospecimen_ids) %>%
