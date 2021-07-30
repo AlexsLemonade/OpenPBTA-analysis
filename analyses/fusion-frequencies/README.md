@@ -9,9 +9,9 @@ Adapted by Krutika Gaonkar ([@kgaonkar6](https://github.com/kgaonkar6))
 Uses `fusion-putative-oncogenic.tsv` and a `Alt_ID` for each `FusionName` and `Fusion_Type` concatenated by "_" OR Fused Gene to count occurence in  each cancer_group in a given dataset, primary or relapse cohorts.
 
 Each gene invloved in the fusion is annotated by a Gene_Position, for example:
- - In a genic fusion where both breakpoints are within gene body the Gene_Position `Gene1A` will be the 5` gene and Gene1B will be 3` gene
- - In an intergenic fusion where one or both breakpoint are outside the gene body, if the 5` breakpoint is a region between GeneX and GeneY  the Gene_Position of GeneX will be Gene1A, for GeneY will be Gene2A and their 3` breakpoint is within GeneE will be denoted as Gene_Position `Gene1B`.
- - In an intergenic fusion where one or both breakpoint are outside the gene body, if the 3` breakpoint is within GeneE the Gene_Position of GeneE will be Gene1A and the 5` breakpoint is within GeneY and GeneZ, Gene Y will be denoted as Gene_Position `Gene1B` and GeneZ will be denoted as `Gene2B`.   
+ - In a genic fusion where both breakpoints are within gene body the Gene_Position `Gene1A` will be the 5' gene and Gene1B will be 3' gene
+ - In an intergenic fusion where one or both breakpoint are outside the gene body, if the 5' breakpoint is a region between GeneX and GeneY  the Gene_Position of GeneX will be Gene1A, for GeneY will be Gene2A and their 3' breakpoint is within GeneE will be denoted as Gene_Position `Gene1B`.
+ - In an intergenic fusion where one or both breakpoint are outside the gene body, if the 3' breakpoint is within GeneE the Gene_Position of GeneE will be Gene1A and the 5' breakpoint is within GeneY and GeneZ, Gene Y will be denoted as Gene_Position `Gene1B` and GeneZ will be denoted as `Gene2B`.   
 
 
 #### Frequency annotation
