@@ -125,7 +125,6 @@ Results are generated using PediatricOpenTargets/OpenPedCan-analysis data releas
 
 The merged variant-level and gene-level SNV mutation frequency tables of all `cancer_group_cohort`s is output in TSV, JSON, and JSONL formats.
 
-- `results/gene-level-snv-consensus-annotated-mut-freq.json.gz`
 - `results/gene-level-snv-consensus-annotated-mut-freq.jsonl.gz`
 - `results/gene-level-snv-consensus-annotated-mut-freq.tsv`
 
@@ -158,8 +157,8 @@ Input:
 - `../../data/snv-consensus-plus-hotspots.maf.tsv.gz`
 - `../../data/efo-mondo-map.tsv`
 - `../../data/ensg-hugo-rmtl-v1-mapping.tsv`
-- `../independent-samples/results/independent-specimens.wgs.primary.tsv`
-- `../independent-samples/results/independent-specimens.wgs.relapse.tsv`
+- `../independent-samples/results/independent-specimens.wgswxspanel.primary.eachcohort.tsv`
+- `../independent-samples/results/independent-specimens.wgswxspanel.relapse.eachcohort.tsv`
 - `../fusion_filtering/references/genelistreference.txt`
 - `input/oncokb_cancer_gene_list.tsv`
 - `input/ped_opentargets_2021_pedcbio_case_set_ids.json`
@@ -167,7 +166,6 @@ Input:
 Output:
 
 - `results/gene-level-snv-consensus-annotated-mut-freq.json`
-- `results/gene-level-snv-consensus-annotated-mut-freq.jsonl`
 - `results/gene-level-snv-consensus-annotated-mut-freq.tsv`
 - `results/variant-level-snv-consensus-annotated-mut-freq.json`
 - `results/variant-level-snv-consensus-annotated-mut-freq.tsv`
@@ -221,14 +219,19 @@ The unit testing is implemented using the [`testthat`](https://testthat.r-lib.or
 To run all unit tests, run `bash run-tests.sh` in the Docker image/container from any working directory. Following is an example run.
 
 ```text
-$ bash run-tests.sh
+$ bash analyses/snv-frequencies/run-tests.sh
 ✔ |  OK F W S | Context
-✔ |  19       | tests/test_collapse_rp_lists.R
+✔ |  23       | tests/test_get_cohort_set_value.R
+✔ |  31       | tests/test_get_opr_mut_freq_tbl.R [0.8 s]
+✔ |  33       | tests/test_get_pcb_pot_csi.R
+✔ |  42       | tests/test_get_pcb_pot_plot_url.R
+✔ |  21       | tests/test_helper_import_function.R
+✔ |  12       | tests/test_num_to_pct_chr.R
 
-══ Results ═════════════════════════════════════════════════════════════════════════════════════════════════════
-Duration: 0.1 s
+══ Results ═════════════════════════════
+Duration: 1.0 s
 
-OK:       19
+OK:       162
 Failed:   0
 Warnings: 0
 Skipped:  0
