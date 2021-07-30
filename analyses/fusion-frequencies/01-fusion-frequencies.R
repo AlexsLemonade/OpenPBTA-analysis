@@ -279,7 +279,7 @@ annotated_m_fus_freq_tbl %>%
          Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
          Frequency_in_relapse_tumors) %>%
   unique() %>%
-  rename(Gene_symbol = Gene_Symbol) %>%
+  dplyr::rename(Gene_symbol = Gene_Symbol) %>%
   write_tsv(file.path(results_dir, paste0(output_filename,'.tsv')))
 
 # write to json

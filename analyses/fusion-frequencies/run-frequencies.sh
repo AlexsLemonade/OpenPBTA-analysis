@@ -25,6 +25,7 @@ jq --compact-output '.[]' \
   > results/putative-oncogene-fusion-freq.jsonl
 
 rm results/putative-oncogene-fusion-freq.json
+
 # gather frequencies at Fused Gene level
 Rscript 01-fusion-frequencies.R --fusion_file ../fusion_filtering/results/fusion-putative-oncogenic.tsv \
         --alt_id "Gene_Symbol" \
