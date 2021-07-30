@@ -37,4 +37,5 @@ jq --compact-output '.[]' \
   results/putative-oncogene-fused-gene-freq.json \
   > results/putative-oncogene-fused-gene-freq.jsonl
 
+rm results/putative-oncogene-fused-gene-freq.json
 gzip results/putative-oncogene*        
