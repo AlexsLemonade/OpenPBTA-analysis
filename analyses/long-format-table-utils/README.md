@@ -83,7 +83,7 @@ Note: only add `Gene_type` to gene-level tables, which can be implemented by lea
 Notes on requiring `Gene_symbol` and `Gene_Ensembl_ID`:
 
 - Certain annotation files use `Gene_symbol` as key columns, and certain other annotation files use `Gene_Ensembl_ID` as key columns.
-- Some `Gene_symbol`s are mapped to multiple `Gene_Ensembl_ID`s, so adding `Gene_Ensembl_ID`s by mapping `Gene_symbol`s with `data/ensg-hugo-rmtl-v1-mapping.tsv` may implicitly introduce duplicated rows. Therefore, adding `Gene_Ensembl_ID`s by mapping `Gene_symbol`s is left to users with cautions for potentially introducing unwanted duplicates.
+- Some `Gene_symbol`s are mapped to multiple `Gene_Ensembl_ID`s, so adding `Gene_Ensembl_ID`s by mapping `Gene_symbol`s with `data/ensg-hugo-rmtl-mapping.tsv` may implicitly introduce duplicated rows. Therefore, adding `Gene_Ensembl_ID`s by mapping `Gene_symbol`s is left to users with cautions for potentially introducing unwanted duplicates.
 
 Notes on annotation data versions:
 
