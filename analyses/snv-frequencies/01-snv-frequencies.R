@@ -756,6 +756,9 @@ tumor_kfbids <- htl_df %>%
 # If a sample has only synonymous variants, it will still be counted in the
 # total numbers, but it will not be counted in any mutated number of
 # non-synonymous mutation.
+#
+# Remove rows that have NA in columns that are used as the grouping column when
+# computing frequencies using get_opr_mut_freq_tbl
 maf_df <- maf_df %>%
   filter(Variant_Classification %in% c("Frame_Shift_Del",
                                        "Frame_Shift_Ins",
@@ -775,6 +778,8 @@ maf_df <- maf_df %>%
                                        "Translation_Start_Site")) %>%
   filter(Tumor_Sample_Barcode %in% tumor_kfbids) %>%
   mutate(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>%
+  filter(!is.na(Chromosome), !is.na(Start_Position), !is.na(Reference_Allele),
+         !is.na(Tumor_Seq_Allele2), !is.na(Gene)) %>%
   mutate(Variant_ID = paste(Chromosome, Start_Position, Reference_Allele,
                             Tumor_Seq_Allele2, sep = '_')) %>%
   select(Kids_First_Biospecimen_ID, Variant_ID,
