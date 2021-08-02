@@ -308,7 +308,9 @@ The most recent version of the project Docker image, which is pushed to Docker H
 docker pull pgc-images.sbgenomics.com/d3b-bixu/open-pedcan:latest
 ```
 
-Development using the project Docker image is highly recommended. An analysis that is developed using the project Docker image can be efficiently rerun by another developer or the original developer (after a long time since it is developed), without dependency or numerical issues. This would significantly facilitate the following tasks that are constantly performed by all developers of the OpenPedCan-analysis project.
+Development should utilize the project Docker image. 
+An analysis that is developed using the project Docker image can be efficiently rerun by another developer or the original developer (after a long time since it is developed), without dependency or numerical issues. 
+This will significantly facilitate the following tasks that are constantly performed by all developers of the OpenPedCan-analysis project.
 
 - Review another developer's pull request, including code and results. For more information about pull request and review, see [the guideline for how to contribute to the OpenPedCan-analysis repository](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/CONTRIBUTING.md#contribution-guidelines-for-the-openpbta-analysis).
 - Update the results of an analysis module that is developed by another developer. For example, rerun the same analysis module with new data.
