@@ -171,3 +171,7 @@ Participants in this project should review pull requests, which can be done usin
 
 Before a repository maintainer merges a pull request, there must be at least one affirmative review.
 If there is any unaddressed criticism or disapproval, a repository maintainer will determine how to proceed and may wait for additional feedback.
+
+## Merging approved pull requests
+
+If a pull request is approved, do **not** merge it immediately. Instead, wait for other developers to coordinate with you on when to merge the pull request and whether the pull request should [be updated with the latest dev branch](#updating-your-out-of-date-branch). The coordination can reduce the workload of developers for checking whether the dev branch updates by merging other pull requests will affect their own pull requests.
