@@ -185,6 +185,27 @@ Participants in this project should review pull requests, which can be done usin
 Before a repository maintainer merges a pull request, there must be at least one affirmative review.
 If there is any unaddressed criticism or disapproval, a repository maintainer will determine how to proceed and may wait for additional feedback.
 
+## GitHub labels for issues and pull requests
+
+[GitHub labels](https://docs.github.com/en/issues/using-labels-and-milestones-to-track-work/managing-labels) are used to classify issues and pull requests, so all developers can communicate commonly used messages through labels without leaving or checking comments.
+
+Commonly used **issue** labels:
+
+- `blocked`: the labeled issue is blocked by other issues, pull requests, etc.
+- `enhancement`: the labeled issue is an enhancement of an existing analysis.
+- `low priority`: The labeled issue has lower priority than issues without the label.
+- `question`: the labeled issue is a question.
+- `pedcbioportal`: the labeled issue is related to PedcBioPortal.
+- `harmonization`: the labeled issue is related to data harmonization.
+
+Commonly used **pull request** labels:
+
+- `merge next`: the labeled pull request should be merged next. Pull requests without the `merge next` label should **not** be merged.
+- `ready for review`: the labeled pull request is ready for review.
+- `work in progress`: the labeled pull request is a work in progress, so the code, documentation, and results are subject to changes.
+- `low priority`: the labeled pull request has lower priority than pull requests without the label.
+- `don't merge`: the labeled pull request should not be merged.
+
 ## Merging approved pull requests
 
 If a pull request is approved, do **not** merge it immediately. Instead, wait for other developers to coordinate with you on when to merge the pull request and whether the pull request should [be updated with the latest dev branch](#updating-your-out-of-date-branch). The coordination can reduce the workload of developers for checking whether the dev branch updates by merging other pull requests will affect their own pull requests.
