@@ -153,7 +153,7 @@ It is important to note that, for authorship, these should be substantial intell
 
 ## Peer review
 
-All pull requests will undergo peer review. The review intends to ensure that a pull request conforms to the following basic quirements.
+All pull requests will undergo peer review. The review intends to ensure that a pull request conforms to the following basic requirements.
 
 - The code is correct.
 - The results can be reproduced in a reasonable amount of time.
