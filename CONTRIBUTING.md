@@ -2,9 +2,18 @@
 
 ## Issues
 
-The best place to initially engage with the project is likely to be via creation of new issues or participation in existing issues.
-We use issues to address difficulties interacting with the data, limitations of the current data processing approaches, or other roadblocks.
-We also use issues for discussion of analyses.
+The best place to initially engage with the project is likely to be via creation of new issues or participation in existing issues at <https://github.com/PediatricOpenTargets/ticket-tracker>.
+The OpenPedCan-analysis currently does not have a GitHub Issues tab, because it is a fork repository from the [`AlexsLemonade/OpenPBTA-analysis` repository](https://github.com/AlexsLemonade/OpenPBTA-analysis).
+
+All developers and participants can submit issues for the following purposes:
+
+- Propose a new analysis module.
+- Update an existing analysis module.
+- Address limitations of the current data processing approaches.
+- Address difficulties interacting with the data.
+- Address other roadblocks.
+- Discuss analyses.
+
 Participants who wish to perform an analysis of the data as part of this effort should either identify an existing, planned analysis that they wish to tackle or propose a new one.
 
 ## Pull requests
@@ -52,6 +61,9 @@ An ideal pull request is small enough for reviewers to review the code in detail
 Implementing an analysis will often require more than one notebook or script to be added to the repository.
 It is best to submit _multiple pull requests_ for these analyses rather than a single, large pull request when an analysis is completed.
 This facilitates scientific discussion and reduces the burden on reviewers (see [Peer review](#peer-review)).
+
+The recommended size of a pull request is less than 400 lnes of code.
+If your pull request contains more than 400 lines of code, it is recommended to break the pull request into multiple smaller stacked pull requests, which could be implemented with the instructions in the [Creating stacked pull requests](creating-stacked-pull-requests) section.
 
 As the author of a pull request, consider what reviewers who have not been working on the analysis need to know to perform an effective review. 
 We've put together a [pull request template](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/.github/PULL_REQUEST_TEMPLATE.md) to help.
