@@ -166,7 +166,7 @@ Participants in this project should review pull requests, which can be done usin
 
 - Note the type of review you performed: did you look over the source code, did you look over the documentation, did you run the source code, did you look at and interpret the results or a combination of these?
 - Suggest modifications or, potentially, directly suggest, _but do not commit changes to_, the pull request, so that the pull request conforms to the aforementioned basic requirements.
-- Explain in **details** why the suggested modifications are **necessary**, and how the modifications should be implemented specifically, so that the developers are able to follow the suggestions without misunderstanding.
+- Explain in **detail** why the suggested modifications are **necessary**, and how the modifications should be implemented specifically, so that the developers are able to follow the suggestions without misunderstanding.
 - If the suggested modifications are extensive refactoring or re-designing without any change on the code behaviors, results or run-time, consider submitting a new issue for the refactoring or re-designing, and discussing the priority and specific implementations in the new issue, after the pull request under review is merged, so that the pull request under review will not be kept open for lengthy discussions and commits on extensive refactoring or re-designing that are out of the scope of the original pull request addressed issue.
 
 Before a repository maintainer merges a pull request, there must be at least one affirmative review.
