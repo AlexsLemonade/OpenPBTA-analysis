@@ -27,6 +27,7 @@ Then, [check out the new branch](https://gist.github.com/markSci5/5916003) (e.g.
 Commit and push your changes to this branch. 
 You will then be able to file a pull request from this branch: https://help.github.com/en/articles/creating-a-pull-request-from-a-fork
 4. Once your pull request is approved and merged by the project maintainers, it's time to keep the `dev` branch of your fork up-to-date with the `dev` branch of this repository by following this process: https://help.github.com/en/articles/syncing-a-fork.
+5. Once your pull request is merged by the project maintainer, please go to the repo, find the branch that the PR is based on, and delete the branch from the repo. 
 Here's a typical series of steps for performing that:
 
 ```
