@@ -41,6 +41,11 @@ pan_cancer_plot <- function(expr_mat_gene, hist_file, map_file,
   # create unique title and filenames
   gene_name <- unique(expr_mat_gene$gene)
   tumor_cohort <- paste0(unique(expr_mat_gene$cohort), collapse = ", ")
+  if(analysis_type == "cohort_cancer_group_level"){
+    cohort_name <- tumor_cohort
+  } else {
+    cohort_name <- "all_cohorts"
+  }
   tumor_cohort_fname <- paste0(unique(expr_mat_gene$cohort), collapse = "_")
   if(analysis_type == "cohort_cancer_group_level"){
     title <- paste(gene_name, "Gene Expression across cohorts", sep = "\n")
@@ -54,7 +59,7 @@ pan_cancer_plot <- function(expr_mat_gene, hist_file, map_file,
   # data-frame for metadata output 
   meta_df <- data.frame(Gene_symbol = gene_name, 
                            plot_type = "pan_cancer", 
-                           Dataset = "all_cohorts",
+                           Dataset = cohort_name,
                            Disease = NA,
                            analysis_type = analysis_type, 
                            plot_fname = plot_fname,
@@ -91,7 +96,7 @@ pan_cancer_plot <- function(expr_mat_gene, hist_file, map_file,
   # for now add dummy values for all other columns
   output_table <- output_table %>%
     dplyr::rename(Gene_symbol = gene) %>%
-    mutate(Dataset = "all_cohorts", 
+    mutate(Dataset = cohort_name, 
            Disease = gsub(" [(].*|[,].*", "", x_labels),
            plot_api = NA) %>%
     inner_join(map_file, by = c("Gene_symbol" = "gene_symbol")) %>%

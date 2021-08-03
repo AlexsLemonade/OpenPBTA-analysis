@@ -60,7 +60,7 @@ cohort_list <- trimws(unlist(strsplit(cohort_list,",")))
 # filter histologies to cohort_list
 hist_file <- hist_file %>%
   filter(experimental_strategy == "RNA-Seq",
-         sample_type == "Normal" | !is.na(cancer_group),
+         cohort == "GTEx" | !is.na(cancer_group), # this filter is needed because TARGET has many normal samples
          Kids_First_Biospecimen_ID %in% colnames(expr_mat),
          cohort %in% cohort_list) 
 
