@@ -61,7 +61,7 @@ clin_mb_rnaseq <- clin_mb %>%
 
 # Select only the mb biospecimens in expression mat
 exprs_mat_mb <- exprs_mat %>%
-  dplyr::select(dplyr::matches(clin_mb_rnaseq$Kids_First_Biospecimen_ID))
+  dplyr::select(clin_mb_rnaseq$Kids_First_Biospecimen_ID)
 
 # save uncorrected matrix
 uncorrected_mat <- log2(exprs_mat_mb + 1)
