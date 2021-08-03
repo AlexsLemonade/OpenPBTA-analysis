@@ -2,6 +2,19 @@
 
 **Module authors:** Yuanchao Zhang ([@logstar](https://github.com/logstar))
 
+- [Calculate TPM summary statistics for each cancer group and cohort](#calculate-tpm-summary-statistics-for-each-cancer-group-and-cohort)
+  - [Purpose](#purpose)
+  - [Methods](#methods)
+  - [Results](#results)
+    - [`all-cohorts` sample metadata table](#all-cohorts-sample-metadata-table)
+    - [`each-cohort` sample metadata table](#each-cohort-sample-metadata-table)
+    - [Long summary statistics tables](#long-summary-statistics-tables)
+  - [Usage](#usage)
+  - [Module structure](#module-structure)
+  - [Analysis scripts](#analysis-scripts)
+    - [01-tpm-summary-stats.R](#01-tpm-summary-statsr)
+      - [Unit testing](#unit-testing)
+
 ### Purpose
 
 For each cancer group and cohort, calculate TPM means, standard deviations, z-scores, and ranks.
@@ -13,7 +26,7 @@ Select independent RNA-seq samples using `independent-specimens.rnaseq.primary.e
 Group all samples with one of the following two methods:
 
 - Each `sample_group` includes all samples in one `cancer_group` and one `cohort`. Call this grouping method `each-cohort`.
-- Each `sample_group` includes all samples in one `cancer_group` and all `cohort`(s). Call this grouping method `all-cohorts` (or `PedOT`).
+- Each `sample_group` includes all samples in one `cancer_group` and all `cohort`(s). Call this grouping method `all-cohorts`.
 
 For each grouping method, compute summary statistics as following:
 
@@ -30,9 +43,7 @@ Denote the (`n_genes`, `n_sample_groups`) `mean_TPM_vector` combined matrix as `
 
 Generate z-scores across all `sample_groups` as `z_score_matrix = (mean_TPM_matrix - rowMeans(mean_TPM_matrix)) / rowSD(mean_TPM_matrix)`. Call these z-scores as `mean_tpm_gene_wise_z_scores` in the filenames.
 
-Call aforementioned (`n_genes`, `n_sample_groups`) tables as wide tables.
-
-Generate long summary statistic tables for converting to JSON format, with each row as a tab-delimited record of the following columns, as suggested by @jharenza and @taylordm at <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/27#issuecomment-868035006>.
+Generate long summary statistic tables for converting to [JSON Lines (JSONL)](<https://jsonlines.org/>) format, with each row as a tab-delimited record of the following columns, as suggested by @jharenza and @taylordm at <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/27#issuecomment-868035006>.
 
 - `gene_symbol`
 - `RMTL`
@@ -49,47 +60,26 @@ Generate long summary statistic tables for converting to JSON format, with each 
 
 Output the long summary statistic tables in TSV and JSON formats using `readr::write_tsv()` and `jsonlite::write_json()` respectively.
 
+Convert JSON files to JSONL format with [`jq`](<https://stedolan.github.io/jq/>).
+
 ### Results
 
-The `NA`/`NaN`s in result tables are represented with blank string `''`s.
+The results are generated using v7 data release and independent sample lists.
 
-#### `all-cohorts`(/`PedOT`) summary statistics tables
+The `NA`/`NaN`s in result tables are replaced with blank string `''`s.
 
-The following wide tables are generated using the methods described above. Rows are genes. Columns are `sample_group`s, except that the first two columns are gene symbol and gene Ensembl ID.
+#### `all-cohorts` sample metadata table
 
-In `all-cohorts` result tables, a `sample_group` is a string that concatenates a `cancer_group` and `___all_cohorts`, e.g. `Meningioma___all_cohorts`, `Neuroblastoma___all_cohorts`, and `Diffuse midline glioma___all_cohorts`.
-
-
-If one gene symbol matches to multiple Ensembl IDs, the value of the Ensembl ID column is a comma separated list of all Ensembl IDs, e.g. `ENSG00000206952,ENSG00000281910`. In `inpiut/ens_symbol.tsv`, `SNORA50A` is mapped to both `ENSG00000206952` and `ENSG00000281910`.
-
-- `results/cancer_group_all_cohort_mean_tpm.tsv`
-- `results/cancer_group_all_cohort_standard_deviation_tpm.tsv`
-- `results/cancer_group_all_cohort_mean_tpm_cancer_group_wise_z_scores.tsv`
-- `results/cancer_group_all_cohort_mean_tpm_cancer_group_wise_quantiles.tsv`
-- `results/cancer_group_all_cohort_mean_tpm_gene_wise_z_scores.tsv`
-
-The samples used in each `sample_group` are listed in `results/cancer_group_all_cohort_sample_metadata.tsv`. The columns are as following:
+The samples used in each `all-cohorts` `sample_group` are listed in `results/cancer_group_all_cohort_sample_metadata.tsv`. The columns are as following:
 
 - `sample_group`
 - included one or more `cohort`s in the `sample_group`
 - the number of samples in the `sample_group`
 - the comma separated list of `Kids_First_Biospecimen_ID`s of the samples in the `sample_group`
 
-#### `each-cohort` summary statistics tables
+#### `each-cohort` sample metadata table
 
-The following wide tables are generated using the methods described above. Rows are genes. Columns are `sample_group`s, except that the first two columns are gene symbol and gene Ensembl ID.
-
-In `each-cohort` result tables, a `sample_group` is a string that concatenates a `cancer_group` and a `cohort` by `___`, e.g. `Meningioma___PBTA`, `Neuroblastoma___GMKF`, and `Diffuse midline glioma___PBTA`.
-
-If one gene symbol matches to multiple Ensembl IDs, the value of the Ensembl ID column is a comma separated list of all Ensembl IDs, e.g. `ENSG00000206952,ENSG00000281910`. In `inpiut/ens_symbol.tsv`, `SNORA50A` is mapped to both `ENSG00000206952` and `ENSG00000281910`.
-
-- `results/cancer_group_individual_cohort_mean_tpm.tsv`
-- `results/cancer_group_individual_cohort_standard_deviation_tpm.tsv`
-- `results/cancer_group_individual_cohort_mean_tpm_cancer_group_wise_z_scores.tsv`
-- `results/cancer_group_individual_cohort_mean_tpm_cancer_group_wise_quantiles.tsv`
-- `results/cancer_group_individual_cohort_mean_tpm_gene_wise_z_scores.tsv`
-
-The samples used in each `sample_group` are listed in `results/cancer_group_individual_cohort_sample_metadata.tsv`. The columns are as following:
+The samples used in each `each-cohort` `sample_group` are listed in `results/cancer_group_individual_cohort_sample_metadata.tsv`. The columns are as following:
 
 - `sample_group`
 - the number of samples in the `sample_group`
@@ -97,7 +87,7 @@ The samples used in each `sample_group` are listed in `results/cancer_group_indi
 
 #### Long summary statistics tables
 
-The following long tables are generated using the wide tables in TSV and JSON formats.
+The following long tables are generated using the computed summary statistics in TSV and JSONL formats.
 
 - `results/long_n_tpm_mean_sd_quantile_gene_wise_zscore.json.gz`
 - `results/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz`
@@ -119,28 +109,24 @@ Each row of the long table is a tab-delimited record of the following columns, a
 - `tpm_mean_cancer_group_wise_zscore`/`tpm_mean_gene_wise_zscore`
 - `tpm_mean_cancer_group_wise_quantiles`
 
-If the record is generated using the `all-cohorts`(/`PedOT`) grouping method, the `cohort` column takes the value of `all_cohorts`.
+If the record is generated using the `all-cohorts` grouping method, the `cohort` column takes the value of `all_cohorts`.
 
-Different from the wide tables, the `gene_id` does not contain comma-separated ENSG IDs. If one gene symbol matches to multiple Ensembl IDs, each Ensembl gene ID will become one row in the long table. For example:
+If one gene symbol matches to multiple Ensembl gene IDs, each mapped Ensembl gene ID will become one row in the long table. For example:
 
-- Wide table:
+- Gene symbol CDR1 is mapped to the following two Ensemble gene IDs, ENSG00000184258 and ENSG00000281508.
 
-```text
-# cancer_group_individual_cohort_mean_tpm.tsv
-gene_symbol    gene_id    Adamantimomatous craniopharyngioma___PBTA    Atypical meningioma___PBTA    Atypical Teratoid Rhabdoid Tumor___PBTA
-CDR1    ENSG00000184258,ENSG00000281508    111.1765    31.932000000000002    332.2896153846154
-```
-
-- Long table:
+- Long table rows:
 
 ```text
-# long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz
-CDR1    ENSG00000184258    Adamantimomatous craniopharyngioma    PBTA    111.1765    181.70448082054318    0.11408800038186823    Highest expressed 25%    20
-CDR1    ENSG00000281508    Adamantimomatous craniopharyngioma    PBTA    111.1765    181.70448082054318    0.11408800038186823    Highest expressed 25%    20
-CDR1    ENSG00000184258    Atypical meningioma    PBTA    31.932000000000002    50.10366423725914    0.016467672549703015    Highest expressed 25%    5
-CDR1    ENSG00000281508    Atypical meningioma    PBTA    31.932000000000002    50.10366423725914    0.016467672549703015    Highest expressed 25%    5
-CDR1    ENSG00000184258    Atypical Teratoid Rhabdoid Tumor    PBTA    332.2896153846154    1075.378786603049    0.37106139758788453    Highest expressed 25%    26
-CDR1    ENSG00000281508    Atypical Teratoid Rhabdoid Tumor    PBTA    332.2896153846154    1075.378786603049    0.37106139758788453    Highest expressed 25%    26
+$ gunzip -c results/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz | grep -P '^CDR1\t.*(Atypical Teratoid Rhabdoid Tumor|Meningioma)' 
+CDR1            ENSG00000184258 Atypical Teratoid Rhabdoid Tumor        EFO_1002008     MONDO_0020560   24      all_cohorts     356.4175        1117.43530723843        0.402923612719455  Highest expressed 25%
+CDR1            ENSG00000281508 Atypical Teratoid Rhabdoid Tumor        EFO_1002008     MONDO_0020560   24      all_cohorts     356.4175        1117.43530723843        0.402923612719455  Highest expressed 25%
+CDR1            ENSG00000184258 Meningioma      EFO_0003851     MONDO_0016642   14      all_cohorts     63.1678571428571        177.200539857598        0.0494325433009981      Highest expressed 25%
+CDR1            ENSG00000281508 Meningioma      EFO_0003851     MONDO_0016642   14      all_cohorts     63.1678571428571        177.200539857598        0.0494325433009981      Highest expressed 25%
+CDR1            ENSG00000184258 Atypical Teratoid Rhabdoid Tumor        EFO_1002008     MONDO_0020560   24      PBTA    356.4175        1117.43530723843        0.402923612719455       Highest expressed 25%
+CDR1            ENSG00000281508 Atypical Teratoid Rhabdoid Tumor        EFO_1002008     MONDO_0020560   24      PBTA    356.4175        1117.43530723843        0.402923612719455       Highest expressed 25%
+CDR1            ENSG00000184258 Meningioma      EFO_0003851     MONDO_0016642   14      PBTA    63.1678571428571        177.200539857598        0.0494325433009981      Highest expressed 25%
+CDR1            ENSG00000281508 Meningioma      EFO_0003851     MONDO_0016642   14      PBTA    63.1678571428571        177.200539857598        0.0494325433009981      Highest expressed 25%
 ```
 
 ### Usage
@@ -156,25 +142,21 @@ CDR1    ENSG00000281508    Atypical Teratoid Rhabdoid Tumor    PBTA    332.28961
 ├── 01-tpm-summary-stats.R
 ├── README.md
 ├── results
-│   ├── cancer_group_all_cohort_mean_tpm.tsv
-│   ├── cancer_group_all_cohort_mean_tpm_cancer_group_wise_quantiles.tsv
-│   ├── cancer_group_all_cohort_mean_tpm_cancer_group_wise_z_scores.tsv
-│   ├── cancer_group_all_cohort_mean_tpm_gene_wise_z_scores.tsv
-│   ├── cancer_group_all_cohort_sample_metadata.tsv
-│   ├── cancer_group_all_cohort_standard_deviation_tpm.tsv
-│   ├── cancer_group_individual_cohort_mean_tpm.tsv
-│   ├── cancer_group_individual_cohort_mean_tpm_cancer_group_wise_quantiles.tsv
-│   ├── cancer_group_individual_cohort_mean_tpm_cancer_group_wise_z_scores.tsv
-│   ├── cancer_group_individual_cohort_mean_tpm_gene_wise_z_scores.tsv
-│   ├── cancer_group_individual_cohort_sample_metadata.tsv
-│   ├── cancer_group_individual_cohort_standard_deviation_tpm.tsv
-│   ├── long_n_tpm_mean_sd_quantile_gene_wise_zscore.json.gz
-│   ├── long_n_tpm_mean_sd_quantile_gene_wise_zscore.jsonl.gz
-│   ├── long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz
-│   ├── long_n_tpm_mean_sd_quantile_group_wise_zscore.json.gz
-│   ├── long_n_tpm_mean_sd_quantile_group_wise_zscore.jsonl.gz
-│   └── long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz
-└── run-rna-seq-expression-summary-stats.sh
+│   ├── cancer_group_all_cohort_sample_metadata.tsv
+│   ├── cancer_group_individual_cohort_sample_metadata.tsv
+│   ├── long_n_tpm_mean_sd_quantile_gene_wise_zscore.jsonl.gz
+│   ├── long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz
+│   ├── long_n_tpm_mean_sd_quantile_group_wise_zscore.jsonl.gz
+│   └── long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz
+├── run-rna-seq-expression-summary-stats.sh
+├── run-tests.sh
+└── tests
+    ├── helper_import_function.R
+    ├── test_data
+    │   ├── test_import_function_empty.R
+    │   └── test_import_function_non_empty.R
+    ├── test_format_cohort_sample_counts.R
+    └── test_helper_import_function.R
 ```
 
 ### Analysis scripts
@@ -191,27 +173,48 @@ Input:
 
 - `../../data/gene-expression-rsem-tpm-collapsed.rds`
 - `../../data/histologies.tsv`
-- `../../data/ensg-hugo-rmtl-v1-mapping.tsv`
-- `../../data/efo-mondo-map.tsv`
+- `../../data/ensg-hugo-rmtl-mapping.tsv`
 - `../independent-samples/results/independent-specimens.rnaseq.primary.eachcohort.tsv`
 
 Output:
 
 - `results/cancer_group_all_cohort_sample_metadata.tsv`
-- `results/cancer_group_all_cohort_mean_tpm.tsv`
-- `results/cancer_group_all_cohort_standard_deviation_tpm.tsv`
-- `results/cancer_group_all_cohort_mean_tpm_cancer_group_wise_z_scores.tsv`
-- `results/cancer_group_all_cohort_mean_tpm_cancer_group_wise_quantiles.tsv`
-- `results/cancer_group_all_cohort_mean_tpm_gene_wise_z_scores.tsv`
-
 - `results/cancer_group_individual_cohort_sample_metadata.tsv`
-- `results/cancer_group_individual_cohort_mean_tpm.tsv`
-- `results/cancer_group_individual_cohort_standard_deviation_tpm.tsv`
-- `results/cancer_group_individual_cohort_mean_tpm_cancer_group_wise_z_scores.tsv`
-- `results/cancer_group_individual_cohort_mean_tpm_cancer_group_wise_quantiles.tsv`
-- `results/cancer_group_individual_cohort_mean_tpm_gene_wise_z_scores.tsv`
-
 - `long_n_tpm_mean_sd_quantile_gene_wise_zscore.json`
 - `long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv`
 - `long_n_tpm_mean_sd_quantile_group_wise_zscore.json`
 - `long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv`
+
+##### Unit testing
+
+The unit testing is implemented using the [`testthat`](https://testthat.r-lib.org/index.html) package version 2.1.1, as suggested by @jharenza and @NHJohnson in the reviews of PR <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/55>.
+
+To run all unit tests, run `bash run-tests.sh` in the Docker image/container from any working directory. Following is an example run.
+
+```text
+$ bash analyses/rna-seq-expression-summary-stats/run-tests.sh
+✔ |  OK F W S | Context
+✔ |  15       | tests/test_format_cohort_sample_counts.R [0.3 s]
+✔ |  21       | tests/test_helper_import_function.R
+
+══ Results ═════════════════
+Duration: 0.4 s
+
+OK:       36
+Failed:   0
+Warnings: 0
+Skipped:  0
+Done running run-tests.sh
+```
+
+To add more tests, create additional `test*R` files under the `tests` directory, with available `test*R` files as reference.
+
+Notes on the `testthat` unit testing framework:
+
+- `testthat::test_dir("tests")` finds all `test*R` files under the `tests` directory to run, which is used in `run-tests.sh`.
+- `testthat::test_dir("tests")` also finds and runs all `helper*R` files under the `tests` directory before running the `test*R` files.
+- The working directory is `tests` when running the `helper*R` and `test*R` files through `testthat::test_dir("tests")`.
+- In order to import a funciton for testing from an R file without running the whole file, a helper function `import_function` is defined at `tests/helper_import_function.R`, and the `import_function` is also tested in the `tests/test_helper_import_function.R` file.
+- Even though the `testthat` 2.1.1 documentation of the `filter` parameter of `test_dir` function says that "Matching is performed on the file name after it's stripped of "test-" and ".R", the R code uses the following. Therefore, naming test files with `test_some_test_file.R` can be found by the `test_dir` function.
+  - `"^test.*\\.[rR]$"` for finding test files in `find_test_scripts`
+  - `sub("^test-?", "", test_names)`, `sub("\\.[rR]$", "", test_names)`, and `grepl(filter, test_names, ...)` for filtering test files in `testthat:::filter_test_scripts`.

@@ -1,5 +1,6 @@
 library(tidyverse)
-
+# This imports the annotate_long_format_table function
+source('../long-format-table-utils/annotator/annotator-api.R')
 
 
 # Function definitions ----------------------------------------------------
@@ -26,18 +27,86 @@ num_to_pct_chr <- function(x, digits = 2, format = "f", ...) {
 
 
 
-# Collapse a list of refseq.protein character vectors from
-# mygene.info query results
-collapse_rp_lists <- function(xl) {
-  fxl <- discard(xl, is.null)
-  # assert all characters
-  sapply(fxl, function(x) {
-    stopifnot(is.character(x))
+# Copied from long-format-table-utils/annotator/download-annotation-data.R, in
+# order to handle MAF ENSG IDs that are not in ensg-hugo-rmtl-mapping.tsv
+#
+# Collapse a list of refseq.protein character vectors from mygene.info query
+# results
+#
+# Args:
+# - rp_vec_list: list of refseq.protein character vectors from mygene.info query
+#   results
+#
+# Returns a single character value of a comma-separated refseq.protein value or
+# NA
+collapse_rp_lists <- function(rp_vec_list) {
+  # remove list elements that are NULL
+  rm_null_rp_vec_list <- purrr::discard(rp_vec_list, is.null)
+  # assert non-null list elements are all characters
+  lapply(rm_null_rp_vec_list, function(x) {
+    if (!is.character(x)) {
+      stop(paste0("mygene query returns non-character refseq.protein.\n",
+                  "Check query results. Revise download-annotation-data.R ",
+                  "to handle non-character values."))
+    }
   })
-  fxv <- unique(reduce(fxl, c, .init = character(0)))
-  np_fxv <- fxv[str_detect(fxv, '^NP_')]
-  c_np_fxv <- paste(np_fxv, collapse = ',')
-  return(c_np_fxv)
+
+  # combined vector of unique refseq.protein values
+  uniq_c_rm_null_rp_vec <- sort(unique(
+    purrr::reduce(rm_null_rp_vec_list, c, .init = character(0))))
+  # remove NA
+  rm_na_uniq_c_rm_null_rp_vec <- purrr::discard(
+    uniq_c_rm_null_rp_vec, is.na)
+  # keep only NP_### refseq.protein values
+  np_rp_vec <- purrr::keep(
+    rm_na_uniq_c_rm_null_rp_vec, function(x) stringr::str_detect(x, "^NP_"))
+
+  clp_np_rp_str <- paste(np_rp_vec, collapse = ",")
+
+  if (identical(clp_np_rp_str, "")) {
+    # no NP_### value for the gene query
+    #
+    # dplyr::summarise needs function return value to be character for a
+    # character column. NA_character_ is still NA in character class rather than
+    # "NA".
+    return(NA_character_)
+  } else {
+    return(clp_np_rp_str)
+  }
+}
+
+
+
+# Copied from long-format-table-utils/annotator/download-annotation-data.R, in
+# order to handle MAF ENSG IDs that are not in ensg-hugo-rmtl-mapping.tsv
+#
+# Collapse a name character vector from mygene.info query results
+#
+# Args:
+# - gn_vec: character vector of name values from mygene.info query results
+#
+# Returns a single character value of a comma-separated name value or NA
+collapse_name_vec <- function(gn_vec) {
+  # assert non-null list elements are all characters
+  if (!is.character(gn_vec)) {
+    stop(paste0("mygene query returns non-character refseq.protein.\n",
+                "Check query results. Revise download-annotation-data.R ",
+                "to handle non-character values."))
+  }
+  # remove NAs
+  uniq_rm_na_gn_vec <- sort(unique(purrr::discard(gn_vec, is.na)))
+
+  clp_gn_str <- paste(uniq_rm_na_gn_vec, collapse = ",")
+  if (identical(clp_gn_str, "")) {
+    # no non-NA name for the gene query
+    #
+    # dplyr::summarise needs function return value to be character for a
+    # character column. NA_character_ is still NA in character class rather than
+    # "NA".
+    return(NA_character_)
+  } else {
+    return(clp_gn_str)
+  }
 }
 
 
@@ -430,14 +499,12 @@ add_cg_ch_pedcbio_pedot_plot_urls <- function(mut_freq_tbl,
 #   Kids_First_Biospecimen_ID,
 #   Variant_ID,
 #   Hugo_Symbol,
-#   Gene_full_name,
 #   dbSNP_RS,
 #   IMPACT,
 #   SIFT,
 #   PolyPhen,
 #   Variant_Classification,
 #   Variant_Type,
-#   Protein_RefSeq_ID,
 #   Gene,
 #   ENSP,
 #   HGVSp_Short,
@@ -501,14 +568,12 @@ get_cg_ch_var_level_mut_freq_tbl <- function(maf_df, overall_histology_df,
   output_var_df <- ss_maf_df %>%
     group_by(Variant_ID) %>%
     summarise(Gene_symbol = unique(Hugo_Symbol),
-              Gene_full_name = unique(Gene_full_name),
               dbSNP_ID = unique(dbSNP_RS),
               VEP_impact = unique(IMPACT),
               SIFT_impact = unique(SIFT),
               PolyPhen_impact = unique(PolyPhen),
               Variant_classification = unique(Variant_Classification),
               Variant_type = unique(Variant_Type),
-              Protein_RefSeq_ID = unique(Protein_RefSeq_ID),
               Gene_Ensembl_ID = unique(Gene),
               Protein_Ensembl_ID = paste(
                 discard(unique(ENSP), is.na), collapse = ','),
@@ -521,8 +586,7 @@ get_cg_ch_var_level_mut_freq_tbl <- function(maf_df, overall_histology_df,
     arrange(desc(as.numeric(Total_mutations))) %>%
     select(Gene_symbol, Dataset, Disease, Variant_ID, dbSNP_ID,
            VEP_impact, SIFT_impact, PolyPhen_impact, Variant_classification,
-           Variant_type, Gene_full_name, Protein_RefSeq_ID,
-           Gene_Ensembl_ID, Protein_Ensembl_ID, Protein_change,
+           Variant_type, Gene_Ensembl_ID, Protein_Ensembl_ID, Protein_change,
            Total_mutations_Over_Patients_in_dataset,
            Frequency_in_overall_dataset,
            Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset,
@@ -531,8 +595,6 @@ get_cg_ch_var_level_mut_freq_tbl <- function(maf_df, overall_histology_df,
            Frequency_in_relapse_tumors, HotSpot) %>%
     mutate_all(function(x) replace_na(x, replace = ''))
 
-  output_var_df <- add_cg_ch_pedcbio_pedot_plot_urls(
-    output_var_df, ss_cancer_group, ss_cohorts, valid_url_case_set_ids)
   stopifnot(identical(sum(is.na(output_var_df)), as.integer(0)))
 
   return(output_var_df)
@@ -546,8 +608,6 @@ get_cg_ch_var_level_mut_freq_tbl <- function(maf_df, overall_histology_df,
 # - maf_df: a MAF tibble. Must contain the following fields:
 #   Kids_First_Biospecimen_ID,
 #   Hugo_Symbol,
-#   Gene_full_name,
-#   Protein_RefSeq_ID,
 #   Gene,
 #   ENSP.
 # - overall_histology_df: the histology tibble that contains all samples. Must
@@ -610,8 +670,6 @@ get_cg_ch_gene_level_mut_freq_tbl <- function(maf_df, overall_histology_df,
   output_var_df <- ss_maf_df %>%
     group_by(Gene) %>%
     summarise(Gene_symbol = unique(Hugo_Symbol),
-              Gene_full_name = unique(Gene_full_name),
-              Protein_RefSeq_ID = unique(Protein_RefSeq_ID),
               Protein_Ensembl_ID = paste(
                 discard(unique(ENSP), is.na), collapse = ',')) %>%
     left_join(ss_mut_freq_df, by = 'Gene') %>%
@@ -619,8 +677,7 @@ get_cg_ch_gene_level_mut_freq_tbl <- function(maf_df, overall_histology_df,
     mutate(Disease = ss_cancer_group,
            Dataset = get_cohort_set_value(ss_cohorts)) %>%
     arrange(desc(as.numeric(Total_mutations))) %>%
-    select(Gene_symbol, Dataset, Disease, Gene_full_name, Protein_RefSeq_ID,
-           Gene_Ensembl_ID, Protein_Ensembl_ID,
+    select(Gene_symbol, Dataset, Disease, Gene_Ensembl_ID, Protein_Ensembl_ID,
            Total_mutations_Over_Patients_in_dataset,
            Frequency_in_overall_dataset,
            Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset,
@@ -682,38 +739,6 @@ relapse_indp_sdf <- read_tsv(
   col_types = cols(
     .default = col_guess()))
 
-# efo cancer_group mappings
-efo_mondo_cg_df <- read_tsv('../../data/efo-mondo-map.tsv',
-                            col_types = cols(.default = col_guess())) %>%
-  distinct()
-# efo_mondo_cg_df$cancer_group[
-#   !efo_mondo_cg_df$cancer_group %in% htl_df$cancer_group]
-
-# assert all cancer_groups are not NA
-stopifnot(identical(sum(is.na(efo_mondo_cg_df$cancer_group)), as.integer(0)))
-# assert all cancer_groups are unique.
-# result SNV table is left joined by cancer_groups
-stopifnot(identical(length(unique(efo_mondo_cg_df$cancer_group)),
-                    nrow(efo_mondo_cg_df)))
-
-# ensg hugo rmtl mappings
-ensg_hugo_rmtl_df <- read_tsv('../../data/ensg-hugo-rmtl-v1-mapping.tsv',
-                              col_types = cols(.default = col_guess())) %>%
-  distinct()
-# assert all ensg_ids and gene_symbols are not NA
-stopifnot(identical(sum(is.na(ensg_hugo_rmtl_df$ensg_id)), as.integer(0)))
-stopifnot(identical(sum(is.na(ensg_hugo_rmtl_df$gene_symbol)), as.integer(0)))
-# assert all ensg_id are unique
-# result SNV table is left joined by ensg_id
-stopifnot(identical(length(unique(ensg_hugo_rmtl_df$ensg_id)),
-                    nrow(ensg_hugo_rmtl_df)))
-
-# gene symbol and gene type mapping
-gsb_gtype_df <- read_tsv('../fusion_filtering/references/genelistreference.txt',
-                         col_types = cols(.default = col_guess()))
-# assert no NA in gsb_gtype_df
-stopifnot(identical(sum(is.na(gsb_gtype_df)), as.integer(0)))
-
 # pcb = PedcBioPortal
 # pot = Pediatric Open Targets
 pcb_pot_case_set_list <- jsonlite::read_json(
@@ -734,15 +759,6 @@ pcb_pot_case_set_id_vec <- vapply(
 stopifnot(identical(length(pcb_pot_case_set_id_vec),
                     length(unique(pcb_pot_case_set_id_vec))))
 
-# gene symbol to OncoKB cancer gene, oncogene and tumor suppressor gene mappings
-oncokb_cancer_gene_df <- read_tsv('input/oncokb_cancer_gene_list.tsv',
-                                  col_types = cols(.default = col_guess()))
-# assert no NA in gene symbols
-stopifnot(identical(sum(is.na(select(oncokb_cancer_gene_df, `Hugo Symbol`))),
-                    as.integer(0)))
-# assert all symbols are unique
-stopifnot(identical(nrow(oncokb_cancer_gene_df),
-                    length(unique(oncokb_cancer_gene_df$`Hugo Symbol`))))
 
 
 # Subset tumor samples and used columns in MAF table ---------------------------
@@ -758,6 +774,9 @@ tumor_kfbids <- htl_df %>%
 # If a sample has only synonymous variants, it will still be counted in the
 # total numbers, but it will not be counted in any mutated number of
 # non-synonymous mutation.
+#
+# Remove rows that have NA in columns that are used as the grouping column when
+# computing frequencies using get_opr_mut_freq_tbl
 maf_df <- maf_df %>%
   filter(Variant_Classification %in% c("Frame_Shift_Del",
                                        "Frame_Shift_Ins",
@@ -777,6 +796,8 @@ maf_df <- maf_df %>%
                                        "Translation_Start_Site")) %>%
   filter(Tumor_Sample_Barcode %in% tumor_kfbids) %>%
   mutate(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>%
+  filter(!is.na(Chromosome), !is.na(Start_Position), !is.na(Reference_Allele),
+         !is.na(Tumor_Seq_Allele2), !is.na(Gene)) %>%
   mutate(Variant_ID = paste(Chromosome, Start_Position, Reference_Allele,
                             Tumor_Seq_Allele2, sep = '_')) %>%
   select(Kids_First_Biospecimen_ID, Variant_ID,
@@ -813,32 +834,6 @@ td_htl_dfs <- list(
 
   overall_htl_df = maf_sample_htl_df
 )
-
-
-
-# Add additional annotations ---------------------------------------------------
-message('Retrieve Gene_full_name and Protein_RefSeq_ID from mygene.info...')
-maf_ens_gids <- unique(maf_df$Gene)
-maf_ens_gids <- maf_ens_gids[!is.na(maf_ens_gids)]
-
-mg_qres_list <- mygene::queryMany(
-  maf_ens_gids, scopes = 'ensembl.gene', fields = c('refseq', 'name'),
-  species = 'human', returnall = TRUE, return.as = 'DataFrame')
-
-mg_qres_df <- as_tibble(
-  mg_qres_list$response[, c('query', 'notfound', 'name', 'refseq.protein')]) %>%
-  replace_na(list(notfound = FALSE)) %>%
-  filter(!notfound) %>%
-  group_by(query) %>%
-  summarise(name = paste(unique(name), collapse = ', '),
-            refseq_protein = collapse_rp_lists(refseq.protein)) %>%
-  rename(Gene = query, Gene_full_name = name,
-         Protein_RefSeq_ID = refseq_protein)
-
-# add additional fields to MAF df
-# mg_qres_df$Gene values are unique, because they are the group_by column
-maf_df <- maf_df %>%
-  left_join(mg_qres_df, by = 'Gene')
 
 
 
@@ -903,91 +898,77 @@ stopifnot(identical(
 
 
 # Add annotations to the output table ------------------------------------------
-# Add EFO and MONDO
-ann_efo_mondo_cg_df <- efo_mondo_cg_df %>%
-  rename(Disease = cancer_group, EFO = efo_code, MONDO = mondo_code)
+# Use annotator to add annotations
+var_level_mut_freq_tbl <- annotate_long_format_table(
+  var_level_mut_freq_tbl,
+  columns_to_add = c(
+    'EFO', 'MONDO',
+    'RMTL', 'OncoKB_cancer_gene', 'OncoKB_oncogene_TSG'))
 
-# unieuqness of efo_mondo_cg_df$cancer_group is asserted after reading
-var_level_mut_freq_tbl <- var_level_mut_freq_tbl %>%
-  left_join(ann_efo_mondo_cg_df, by = 'Disease') %>%
-  replace_na(list(EFO = '', MONDO = ''))
-stopifnot(identical(sum(is.na(var_level_mut_freq_tbl)), as.integer(0)))
+gene_level_mut_freq_tbl <- annotate_long_format_table(
+  gene_level_mut_freq_tbl,
+  columns_to_add = c(
+    'EFO', 'MONDO',
+    'RMTL', 'Gene_type', 'OncoKB_cancer_gene', 'OncoKB_oncogene_TSG'))
 
-gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
-  left_join(ann_efo_mondo_cg_df, by = 'Disease') %>%
-  replace_na(list(EFO = '', MONDO = ''))
-stopifnot(identical(sum(is.na(gene_level_mut_freq_tbl)), as.integer(0)))
-
-
-# Add RMTL
-# asert all rmtl NAs have version NAs, vice versa
-stopifnot(identical(is.na(ensg_hugo_rmtl_df$rmtl),
-                    is.na(ensg_hugo_rmtl_df$version)))
-ann_ensg_hugo_rmtl_df <- ensg_hugo_rmtl_df %>%
-  select(ensg_id, rmtl, version) %>%
-  filter(!is.na(rmtl), !is.na(version)) %>%
-  mutate(RMTL = paste0(rmtl, ' (', version, ')')) %>%
-  select(ensg_id, RMTL) %>%
-  rename(Gene_Ensembl_ID = ensg_id)
-
-# unieuqness of ensg_hugo_rmtl_df$ensg_id is asserted after reading
-var_level_mut_freq_tbl <- var_level_mut_freq_tbl %>%
-  left_join(ann_ensg_hugo_rmtl_df, by = 'Gene_Ensembl_ID') %>%
-  replace_na(list(RMTL = ''))
-stopifnot(identical(sum(is.na(var_level_mut_freq_tbl)), as.integer(0)))
-
-gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
-  left_join(ann_ensg_hugo_rmtl_df, by = 'Gene_Ensembl_ID') %>%
-  replace_na(list(RMTL = ''))
-stopifnot(identical(sum(is.na(gene_level_mut_freq_tbl)), as.integer(0)))
-
-
-# Add gene type
-ann_gsb_gtype_df <- gsb_gtype_df %>%
-  group_by(Gene_Symbol) %>%
-  summarise(Gene_type = paste(sort(unique(discard(type, is.na))),
-                              collapse = ',')) %>%
-  rename(Gene_symbol = Gene_Symbol)
-
-# ann_gsb_gtype_df$Gene_type values are unique, because they are the group_by
-# column
+# Protein_RefSeq_ID and Gene_full_name need to be added directly using
+# mygene.info, because annotator only have Protein_RefSeq_ID and Gene_full_name
+# for ENSG IDs that are in ensg-hugo-rmtl-mapping.tsv.
+# snv-consensus-plus-hotspots.maf.tsv.gz has ENSG IDs that are not in
+# ensg-hugo-rmtl-mapping.tsv, e.g. ENSG00000284770 and ENSG00000285053.
 #
-# Only add gene type column to gene-level table
+# The following code is adapted from
+# long-format-table-utils/annotator/download-annotation-data.R, in order to
+# handle MAF ENSG IDs that are not in ensg-hugo-rmtl-mapping.tsv
+message('Retrieve Gene_full_name and Protein_RefSeq_ID from mygene.info...')
+query_ens_gids <- unique(
+  c(var_level_mut_freq_tbl$Gene_Ensembl_ID,
+    gene_level_mut_freq_tbl$Gene_Ensembl_ID))
+stopifnot(identical(sum(is.na(query_ens_gids)), as.integer(0)))
 
-gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
-  left_join(ann_gsb_gtype_df, by = 'Gene_symbol') %>%
-  replace_na(list(Gene_type = ''))
-stopifnot(identical(sum(is.na(gene_level_mut_freq_tbl)), as.integer(0)))
+mg_qres_list <- mygene::queryMany(
+  query_ens_gids, scopes = "ensembl.gene", fields = c("refseq", "name"),
+  species = "human", returnall = TRUE, return.as = "DataFrame")
 
-# Add OncoKB cancer gene and oncogene/TSG (tumor suppressor gene)
-# all genes in input/oncokb_cancer_gene_list.tsv are OncoKB cancer genes
-oncokb_cancer_gene_ann_df <- oncokb_cancer_gene_df %>%
-  select(`Hugo Symbol`, `Is Oncogene`, `Is Tumor Suppressor Gene`) %>%
-  rename(Gene_symbol = `Hugo Symbol`,
-         is_onco = `Is Oncogene`,
-         is_tsg = `Is Tumor Suppressor Gene`) %>%
-  mutate(OncoKB_cancer_gene = 'Y',
-         OncoKB_oncogene_TSG = case_when(
-           is_onco == 'Yes' & is_tsg == 'Yes' ~ 'Oncogene,TumorSuppressorGene',
-           is_onco == 'Yes' ~ 'Oncogene',
-           is_tsg == 'Yes' ~ 'TumorSuppressorGene',
-           TRUE ~ '')) %>%
-  select(Gene_symbol, OncoKB_cancer_gene, OncoKB_oncogene_TSG)
-# unieuqness of oncokb_cancer_gene_df$`Hugo Symbol` is asserted after reading
-var_level_mut_freq_tbl <- var_level_mut_freq_tbl %>%
-  left_join(oncokb_cancer_gene_ann_df, by = 'Gene_symbol') %>%
-  replace_na(list(OncoKB_cancer_gene = 'N', OncoKB_oncogene_TSG = ''))
-stopifnot(identical(sum(is.na(var_level_mut_freq_tbl)), as.integer(0)))
+found_mg_qres_df <- tibble::as_tibble(
+  mg_qres_list$response[, c("query", "notfound", "name", "refseq.protein")]) %>%
+  tidyr::replace_na(list(notfound = FALSE)) %>%
+  dplyr::filter(!notfound)
 
-gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
-  left_join(oncokb_cancer_gene_ann_df, by = 'Gene_symbol') %>%
-  replace_na(list(OncoKB_cancer_gene = 'N', OncoKB_oncogene_TSG = ''))
-stopifnot(identical(sum(is.na(gene_level_mut_freq_tbl)), as.integer(0)))
+# remove rows that have both NA name and NULL refseq.protein
+rm_bnn_found_mg_qres_df <- found_mg_qres_df %>%
+  dplyr::filter(!(is.na(name) & purrr::map_lgl(refseq.protein, is.null)))
 
+# collapses name and refseq.protein for output
+ann_rm_bnn_found_mg_qres_df <- rm_bnn_found_mg_qres_df %>%
+  dplyr::group_by(query) %>%
+  dplyr::summarise(name = collapse_name_vec(name),
+                   refseq_protein = collapse_rp_lists(refseq.protein)) %>%
+  dplyr::rename(Gene_Ensembl_ID = query, Gene_full_name = name,
+                Protein_RefSeq_ID = refseq_protein)
+
+var_level_mut_freq_tbl <- left_join(
+  var_level_mut_freq_tbl,
+  ann_rm_bnn_found_mg_qres_df,
+  by = 'Gene_Ensembl_ID') %>%
+  dplyr::mutate_if(
+      function(x) sum(is.na(x)) > 0,
+      function(x) tidyr::replace_na(x, replace = ""))
+
+gene_level_mut_freq_tbl <- left_join(
+  gene_level_mut_freq_tbl,
+  ann_rm_bnn_found_mg_qres_df,
+  by = 'Gene_Ensembl_ID')  %>%
+  dplyr::mutate_if(
+      function(x) sum(is.na(x)) > 0,
+      function(x) tidyr::replace_na(x, replace = ""))
 
 
 
 # Output tsv and JSON -----------------------------------------------------
+# Assert output tables have no NA
+stopifnot(identical(sum(is.na(var_level_mut_freq_tbl)), as.integer(0)))
+stopifnot(identical(sum(is.na(gene_level_mut_freq_tbl)), as.integer(0)))
 # reorder for output
 var_level_mut_freq_tbl <- var_level_mut_freq_tbl %>%
   select(Gene_symbol, RMTL, Dataset, Disease, EFO, MONDO, Variant_ID, dbSNP_ID,
@@ -1000,8 +981,7 @@ var_level_mut_freq_tbl <- var_level_mut_freq_tbl %>%
          Frequency_in_primary_tumors,
          Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
          Frequency_in_relapse_tumors,
-         HotSpot, OncoKB_cancer_gene, OncoKB_oncogene_TSG,
-         PedcBio_PedOT_oncoprint_plot_URL, PedcBio_PedOT_mutations_plot_URL) %>%
+         HotSpot, OncoKB_cancer_gene, OncoKB_oncogene_TSG) %>%
   rename(Variant_ID_hg38 = Variant_ID)
 
 gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
