@@ -286,8 +286,9 @@ Files that are intermediate, which means that they are useful within an analysis
 
 We build our project Docker image from a versioned [`tidyverse`](https://hub.docker.com/r/rocker/tidyverse) image from the [Rocker Project](https://www.rocker-project.org/) (v3.6.0).
 
-To add dependencies that are required for your analysis to the project Docker image, you must alter the project [`Dockerfile`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/Dockerfile).
-
+To add dependencies that are required for your analysis to the project Docker image, you must alter the project [`Dockerfile`](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/Dockerfile).
+The `Dockerfile` can be directly edited to install dependencies, if you are developing using a branch on the [PediatricOpenTargets/OpenPedCan-analysis](https://github.com/PediatricOpenTargets/OpenPedCan-analysis) repository.
+If you are developing using a branch on your fork of the PediatricOpenTargets/OpenPedCan-analysis repository, create a branch on the PediatricOpenTargets/OpenPedCan-analysis repository to edit the `Dockerfile` to install dependencies, e.g. <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/36>, so [the GitHub action for checking docker image build](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/.github/workflows/build-docker.yml) can run with the Docker Hub credentials saved in the PediatricOpenTargets/OpenPedCan-analysis repository.
 
 * R packages installed on this image will be installed from an [MRAN snapshot](https://mran.microsoft.com/documents/rro/reproducibility#reproducibility) corresponding to the last day that R 3.6.0 was the most recent release ([ref](https://hub.docker.com/r/rocker/tidyverse)).
   * Installing most packages, from CRAN or Bioconductor, should be done  with our `install_bioc.R` script, which will ensure that the proper MRAN snapshot is used. `BiocManager::install()` should *not* be used, as it will not install from MRAN.
@@ -297,9 +298,10 @@ To add dependencies that are required for your analysis to the project Docker im
   * When adding a new package, make sure that all dependencies are also added; every package should appear with a specified version **both** in the `Dockerfile` and `requirements.txt`.
 * Other software can be installed with `apt-get`, but this should *never* be used for R packages.
 
-If you need assistance adding a dependency to the Dockerfile, [file a new issue on this repository](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/new) to request help.
+If you need assistance adding a dependency to the Dockerfile, [file a new issue on this repository](https://github.com/PediatricOpenTargets/ticket-tracker/issues/new) to request help.
 
 #### Development in the Project Docker Container
+
 If you are new user download Docker from [here](https://docs.docker.com/get-docker/)
 
 The most recent version of the project Docker image, which is pushed to Docker Hub after a pull request gets merged into the master branch, can be obtained via the command line with:
@@ -307,6 +309,14 @@ The most recent version of the project Docker image, which is pushed to Docker H
 ```
 docker pull pgc-images.sbgenomics.com/d3b-bixu/open-pedcan:latest
 ```
+
+Development should utilize the project Docker image. 
+An analysis that is developed using the project Docker image can be efficiently rerun by another developer or the original developer (after a long time since it is developed), without dependency or numerical issues. 
+This will significantly facilitate the following tasks that are constantly performed by all developers of the OpenPedCan-analysis project.
+
+- Review another developer's pull request, including code and results. For more information about pull request and review, see [the guideline for how to contribute to the OpenPedCan-analysis repository](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/dev/CONTRIBUTING.md#contribution-guidelines-for-the-openpbta-analysis).
+- Update the results of an analysis module that is developed by another developer. For example, rerun the same analysis module with new data.
+- Update the code of an analysis module that is developed by another developer. For example, add a new feature to a module, or refactor a module.
 
 **If you are a Mac or Windows user, the default limit for memory available to Docker is 2 GB.
 You will likely need to increase this limit for local development.**
