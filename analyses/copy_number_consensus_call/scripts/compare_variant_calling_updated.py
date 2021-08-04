@@ -146,10 +146,10 @@ def generate_consensus(list1_name,list1,list2_name,list2):
                         coverage_list1 += (end - start + 1) / (end_list1 - start_list1 + 1)
 
                         ## For list2's CNV
-                        ## If the overlapping covers >= 50% of its length,
+                        ## If any overlap exists,
                         ## then we add in the start, end coordinate, total overlap length, and total len to different lists
                         ## This is done to account for 1 CNV from list1 overlapping with MULTIPLE CNVs from list2
-                        if (end - start +1) / (end_list2 - start_list2 + 1) >= 0.5:
+                        if (end - start +1) / (end_list2 - start_list2 + 1) >= 0:
 
                             ## Add the overlapping length to a list of overlap length
                             list2_overlap_len += (end - start + 1)
@@ -178,7 +178,9 @@ def generate_consensus(list1_name,list1,list2_name,list2):
                     coverage_list2 = 0
 
                 ## Check to see if the overlap is >= 50% RECIPROCALLY
-                if coverage_list1 >= 0.5 and coverage_list2 >= 0.5:
+                ## OR a CNV in list2 completely overlaps more than 90% of CNV in list1
+                ## OR a CNV in list1 completely overlaps more than 90% of CNV in list2
+                if (coverage_list1 >= 0.5 and coverage_list2 >= 0.5) or (coverage_list1 >=0.9 and coverage_list2 >0 ) or (coverage_list1>0 and coverage_list2 >=0.9):
                     ## if it is 50% reciprocally, we chose from the list2 starts and ends
                     ## we take out the smallest start and biggest end
                     ## This maximize the CNV length from list2

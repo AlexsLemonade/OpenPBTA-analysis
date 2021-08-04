@@ -24,7 +24,7 @@ sample_id	Kids_First_Biospecimen_ID	Kids_First_Participant_ID	MYCN_focal_status	
 7316-913	BS_FJEZ3ASV	PT_4347ZBEX	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-913	BS_PKZ1HWNB	PT_4347ZBEX	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-388	BS_823V5X6Z	PT_4XB3YTJM	neutral	gain	neutral	neutral	neutral	neutral	neutral	neutral	neutral
-7316-1936	BS_QG6V29H7	PT_59D00MBQ	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
+7316-1936	BS_QG6V29H7	PT_59D00MBQ	neutral	gain	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-1937	BS_3E5C1PN1	PT_59D00MBQ	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-3769	BS_WJB33V17	PT_59FJRPVX	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-1102	BS_BFDEZK1C	PT_5BWZA0NT	neutral	gain	neutral	neutral	neutral	gain	gain	neutral	neutral
@@ -91,8 +91,8 @@ sample_id	Kids_First_Biospecimen_ID	Kids_First_Participant_ID	MYCN_focal_status	
 7316-2660	BS_00TRPEQX	PT_MDWPRDBT	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-2751	BS_1M63B97V	PT_MDWPRDBT	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-895	BS_BQWMQM2Y	PT_MDWPRDBT	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
-7316-3227	BS_CBMAWSAR	PT_MNSEJCDM	neutral	neutral	neutral	gain	neutral	gain	gain	neutral	neutral
-7316-3227	BS_ZSH09N84	PT_MNSEJCDM	neutral	neutral	neutral	neutral	neutral	gain	gain	neutral	neutral
+7316-3227	BS_CBMAWSAR	PT_MNSEJCDM	gain	neutral	neutral	gain	neutral	gain	gain	neutral	neutral
+7316-3227	BS_ZSH09N84	PT_MNSEJCDM	gain	neutral	neutral	neutral	neutral	gain	gain	neutral	neutral
 7316-3229	BS_Y74XAFJX	PT_MNSEJCDM	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-2274	BS_HJ95JNFN	PT_MSQ6GSVP	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-1099	BS_EPM623G4	PT_N3205P0D	neutral	neutral	loss	neutral	neutral	gain	gain	neutral	neutral
@@ -122,7 +122,7 @@ sample_id	Kids_First_Biospecimen_ID	Kids_First_Participant_ID	MYCN_focal_status	
 7316-2176	BS_KSHETTQC	PT_VAJN5QP8	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-2176	BS_M659G06J	PT_VAJN5QP8	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-2756	BS_TRGECFNP	PT_VCD0W8HG	neutral	neutral	loss	neutral	neutral	neutral	neutral	neutral	neutral
-7316-3225	BS_Q6GVRAWK	PT_VPEMAQBN	neutral	neutral	neutral	gain	neutral	neutral	neutral	neutral	neutral
+7316-3225	BS_Q6GVRAWK	PT_VPEMAQBN	gain	neutral	neutral	gain	neutral	neutral	neutral	neutral	neutral
 7316-3235	BS_VXDGXQKZ	PT_VPEMAQBN	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-2189	BS_02YBZSBY	PT_VTM2STE3	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-2189	BS_ERFMPQN3	PT_VTM2STE3	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
@@ -130,7 +130,7 @@ sample_id	Kids_First_Biospecimen_ID	Kids_First_Participant_ID	MYCN_focal_status	
 7316-3219	BS_TQ0J7WJQ	PT_WGVEF96B	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-343	BS_C19DFVR5	PT_X5TQR8V2	neutral	gain	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-1105	BS_P8WN8XEQ	PT_X71D7G5S	neutral	gain	neutral	neutral	neutral	neutral	neutral	neutral	neutral
-7316-195	BS_XMP9XNR9	PT_Y5KY6KN9	neutral	neutral	gain	loss	neutral	neutral	neutral	neutral	neutral
+7316-195	BS_XMP9XNR9	PT_Y5KY6KN9	neutral	neutral	loss, gain	loss	neutral	neutral	neutral	neutral	neutral
 7316-195	BS_AYPBAHJ6	PT_Y5KY6KN9	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-195	BS_JGKRN7NA	PT_Y5KY6KN9	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral	neutral
 7316-3122	BS_FKQ7F6D1	PT_Y660CKCB	neutral	neutral	loss	neutral	neutral	neutral	neutral	neutral	neutral
