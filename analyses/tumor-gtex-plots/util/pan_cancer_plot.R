@@ -19,6 +19,10 @@ pan_cancer_plot <- function(expr_mat_gene, hist_file, map_file,
   expr_mat_gene <- expr_mat_gene %>%
     inner_join(hist_file, by = "Kids_First_Biospecimen_ID")
   
+  # get gene name and tumor cohorts
+  gene_name <- unique(expr_mat_gene$gene)
+  tumor_cohort <- paste0(unique(expr_mat_gene$cohort), collapse = ", ")
+  
   # format x-axis labels and filter to n >= 5
   if(analysis_type == "cohort_cancer_group_level"){
     expr_mat_gene <- expr_mat_gene %>%
@@ -26,12 +30,20 @@ pan_cancer_plot <- function(expr_mat_gene, hist_file, map_file,
       mutate(n_samples = n()) %>%
       filter(n_samples >= 5) %>%
       mutate(x_labels = paste0(cancer_group, ", ", cohort,  " (N = ", n_samples, ")"))
+    
+    # cohort name and title
+    cohort_name <- tumor_cohort
+    title <- paste(gene_name, "Gene Expression across cohorts", sep = "\n")
   } else if(analysis_type == "cancer_group_level") {
     expr_mat_gene <- expr_mat_gene %>%
       group_by(cancer_group) %>%
       mutate(n_samples = n()) %>%
       filter(n_samples >= 5) %>%
       mutate(x_labels = paste0(cancer_group, " (N = ", n_samples, ")"))
+    
+    # cohort name and title
+    cohort_name <- "all_cohorts"
+    title <- paste(gene_name, "Gene Expression across cancers", sep = "\n")
   }
   
   # reorder by median tpm
@@ -39,19 +51,7 @@ pan_cancer_plot <- function(expr_mat_gene, hist_file, map_file,
   expr_mat_gene$x_labels <- factor(expr_mat_gene$x_labels, levels = fcts)
   
   # create unique title and filenames
-  gene_name <- unique(expr_mat_gene$gene)
-  tumor_cohort <- paste0(unique(expr_mat_gene$cohort), collapse = ", ")
-  if(analysis_type == "cohort_cancer_group_level"){
-    cohort_name <- tumor_cohort
-  } else {
-    cohort_name <- "all_cohorts"
-  }
   tumor_cohort_fname <- paste0(unique(expr_mat_gene$cohort), collapse = "_")
-  if(analysis_type == "cohort_cancer_group_level"){
-    title <- paste(gene_name, "Gene Expression across cohorts", sep = "\n")
-  } else {
-    title <- paste(gene_name, "Gene Expression across cancers", sep = "\n")
-  }
   fname <- paste(gene_name, tumor_cohort_fname, "pan_cancer", analysis_type, sep = "_")
   plot_fname <- paste0(fname, '.png')
   table_fname <- paste0('pan_cancer_plots_', analysis_type, '.tsv')
@@ -85,7 +85,7 @@ pan_cancer_plot <- function(expr_mat_gene, hist_file, map_file,
   
   # output table of gene, median and sd
   output_table <- expr_mat_gene %>%
-    group_by(gene, x_labels) %>%
+    group_by(gene, cohort, x_labels) %>%
     summarise(mean = mean(tpm),
               median = median(tpm),
               sd = sqrt(var(tpm))) %>%
@@ -93,16 +93,21 @@ pan_cancer_plot <- function(expr_mat_gene, hist_file, map_file,
            median = round(median, digits = 2),
            sd = round(sd, digits = 2))
   
+  # replace cohort with "all_cohorts" for cancer_group_level
+  if(analysis_type == "cancer_group_level"){
+    output_table <- output_table %>%
+      mutate(cohort = "all_cohorts")
+  }
+  
   # for now add dummy values for all other columns
   output_table <- output_table %>%
-    dplyr::rename(Gene_symbol = gene) %>%
-    mutate(Dataset = cohort_name, 
-           Disease = gsub(" [(].*|[,].*", "", x_labels),
-           plot_api = NA) %>%
+    dplyr::rename(Gene_symbol = gene,
+                  Dataset = cohort) %>%
+    mutate(Disease = gsub(" [(].*|[,].*", "", x_labels)) %>%
     inner_join(map_file, by = c("Gene_symbol" = "gene_symbol")) %>%
     dplyr::rename(Gene_Ensembl_ID = ensg_id) %>%
     dplyr::select(Gene_symbol, Gene_Ensembl_ID, Dataset, Disease, 
-                  x_labels, mean, median, sd, plot_api)
+                  x_labels, mean, median, sd)
   table_fname <- file.path(results_dir, table_fname)
   if(!file.exists(table_fname)){
     write.table(x = output_table, file = table_fname, sep = "\t", row.names = F, quote = F)

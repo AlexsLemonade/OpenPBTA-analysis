@@ -131,13 +131,11 @@ tumor_normal_gtex_plot <- function(expr_mat_gene, hist_file, map_file,
     output_table <- output_table %>%
       dplyr::rename(Gene_symbol = gene) %>%
       mutate(Dataset = cohort_name, 
-             Disease = gsub(" [(].*|[,].*", "", cohort_cancer_groups[i]),
-             plot_api = NA) %>%
+             Disease = gsub(" [(].*|[,].*", "", cohort_cancer_groups[i])) %>%
       inner_join(map_file, by = c("Gene_symbol" = "gene_symbol")) %>%
       dplyr::rename(Gene_Ensembl_ID = ensg_id) %>%
       dplyr::select(Gene_symbol, Gene_Ensembl_ID, Dataset, Disease, 
-                    x_labels, mean, median, sd,
-                    plot_api)
+                    x_labels, mean, median, sd)
     table_fname <- file.path(results_dir, table_fname)
     if(!file.exists(table_fname)){
       write.table(x = output_table, file = table_fname, sep = "\t", row.names = F, quote = F)
