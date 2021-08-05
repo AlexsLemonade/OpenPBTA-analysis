@@ -180,8 +180,7 @@ histology<- histology %>%
                                          cancer_group == "Non-germinomatous germ cell tumor;Teratoma" ~ "Teratoma",
                                          cancer_group %in% c("Meningothelial meningioma", "Clear cell meningioma") ~ "Meningioma",
                                          cancer_group == "Embryonal Tumor with Multilayered Rosettes" ~ "Embryonal tumor with multilayer rosettes",
-                                         # TODO update after typo is fixed for the term below	
-                                         cancer_group == "Adamantimomatous craniopharyngioma" ~ "Craniopharyngioma",
+                                         cancer_group == "Adamantinomatous craniopharyngioma" ~ "Craniopharyngioma",
                                          sample_id == "7316-2577" ~ "Embryonal tumor with multilayer rosettes",
                                          cancer_group %in% c("Benign tumor","Dysplasia/Gliosis","Other") ~ NA_character_,
                                          TRUE ~ as.character(cancer_group))
