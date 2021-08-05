@@ -4,9 +4,9 @@
 
 ### Description
 
-The goal of this analysis is to leverage the R packages [medulloPackage](https://github.com/d3b-center/medullo-classifier-package) and [MM2S](https://github.com/cran/MM2S) that utilize expression data from RNA-seq or array to classify the medulloblastoma (MB) samples into four subtypes i.e Group3, Group4, SHH, WNT. The input for both classifiers is a log-normalized FPKM matrix with gene symbols as rownames in case of medulloPackage and entrez ids as rownames in case of MM2S.  
+The goal of this analysis is to leverage the R packages [medulloPackage](https://github.com/d3b-center/medullo-classifier-package) and [MM2S](https://github.com/cran/MM2S) that utilize expression data from RNA-seq or array to classify the medulloblastoma (MB) samples into four subtypes i.e Group3, Group4, SHH, WNT. The input is a log-normalized TPM matrix with gene symbols as rownames in case of medulloPackage and entrez ids as rownames in case of MM2S.  
 
-We use the polyA selected (n = 1) and rRNA depleted (n = 121) MB samples as input. Because the classifiers do not work on single-sample, we merge the two matrices by common gene symbols and use the merged matrix as input. To see if batch correction of library type as any effect on the classification, we also use a second input matrix that has been batch corrected for library type using the sva package.
+The analysis uses a combined matrix of polyA selected (n = 1) and rRNA depleted (n = 121) MB samples as input.
 
 ### Running the full analysis
 
@@ -23,7 +23,7 @@ bash run-molecular-subtyping-mb.sh
 1. Inputs
 
 ```
-pbta-histologies.tsv
+data/histologies.tsv
 ```
 
 2. Function
@@ -35,7 +35,6 @@ Rscript -e "rmarkdown::render('analyses/molecular-subtyping-MB/00-mb-select-path
 ```
 
 This Rmd checks the alignment of `Medulloblastoma` labels across fields:  `pathology_diagnosis`, `integrated_diagnosis`, and `short_histology`.
-It is tied to a specific release (`release-v18-20201123`).
 This creates a terms JSON which is used in the other scripts for subsetting.
 
 3. Output:
@@ -49,8 +48,10 @@ A medulloblastoma terms JSON file:
 
 ```
 # the rna-seq expression files
-data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds
-data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds
+data/gene-expression-rsem-tpm-collapsed.rds
+
+# histologies file
+data/histologies.tsv
 
 # medulloblastoma terms file
 molecular-subtyping-MB/inputs/mb_subtyping_path_dx_strings.json
@@ -58,12 +59,9 @@ molecular-subtyping-MB/inputs/mb_subtyping_path_dx_strings.json
 
 2. Function
 
-This script first subsets the input expression matrices to MB samples only. Next, the poly-A and rRNA depleted input matrices containing only MB samples are merged together using common genes. Using this merged matrix, we then generate two input matrices for molecular subtype classification:
+This script first subsets the input expression matrix to MB samples only and generates a log-normalized FPKM matrix.
 
-	1. uncorrected log-normalized FPKM matrix and
-	2. batch corrected, log-normalized FPKM matrix.
-
-The batch correction uses the column from the clinical file that matches the value of `--batch_col` as the batch variable and computes a batch correction using the R package sva.
+In case batch-correction of the input matrix is required, we need to set `--batch_col` with the column in the clinical file corresponding to the batch variable. For this analysis, we don't need to batch correct the input matrix, so we will be setting `--batch_col` to `NULL`.
 
 3. Output:
 
@@ -71,11 +69,8 @@ The batch correction uses the column from the clinical file that matches the val
 # subset clinical file to medulloblastoma biospecimens only
 input/subset-mb-clinical.tsv
 
-# uncorrected matrix
+# log-normalized matrix with medulloblastoma biospecimens only
 results/medulloblastoma-exprs.rds
-
-# batch corrected matrix
-results/medulloblastoma-exprs-batch-corrected.rds
 ```
 
 #### 02-classify-mb.R
@@ -83,11 +78,8 @@ results/medulloblastoma-exprs-batch-corrected.rds
 1. Input
 
 ```
-# uncorrected matrix
+# log-normalized matrix with medulloblastoma biospecimens only
 results/medulloblastoma-exprs.rds
-
-# batch corrected matrix
-results/medulloblastoma-exprs-batch-corrected.rds
 ```
 
 2. Function:
@@ -100,7 +92,7 @@ This script runs the two classifiers on both uncorrected and batch-corrected inp
 results/mb-classified.rds
 ```
 
-The .rds object contains a list of dataframes with outputs corresponding to the four runs as described above. Each dataframe contains 5 columns: sample (Kids_First_Biospecimen_ID), best.fit (i.e. medulloblastoma subtype assigned to the sample), classifier (MM2S or medullo-classifier), dataset (corrected or uncorrected matrix) and score (in case of MM2S) or p-value (in case of medulloPackage).  
+The .rds object contains a list of dataframes with outputs corresponding to the twp classifier runs. Each dataframe contains 5 columns: sample (Kids_First_Biospecimen_ID), best.fit (i.e. medulloblastoma subtype assigned to the sample), classifier (MM2S or medulloPackage), dataset (corrected or uncorrected matrix) and score (in case of MM2S) or p-value (in case of medulloPackage).  
 
 #### 03-compare-classes.Rmd
 
@@ -121,7 +113,7 @@ TODO: `input/openPBTA-mb-pathology-subtypes.rds` doesn't have much information s
 
 2. Function:
 
-This notebook summarizes the performance of the two classifiers on batch corrected and uncorrected expression matrix obtained after running 01-classify-mb.R.
+This notebook summarizes the performance of the two classifiers on the input expression matrix obtained after running 02-classify-mb.R.
 
 The observed subtypes obtained from each classifier are compared to the expected subtypes in the pathology report in order to determine the classifier accuracy. % Accuracy is calculated by matching observed and expected subtypes only where expected subtype information is available. In case of ambiguous subtypes, a match is determined only if the observed subtype matches with any one of the expected subtypes.
 
@@ -135,23 +127,6 @@ The pathology report has subtype information on 43/122 (35.2%) samples. Followin
 | SHH               | 10   |
 | WNT               | 5    |
 
-For each input expression matrix (i.e. uncorrected and batch-corrected), the molecular subtype is determined by taking a consensus of the two classifiers. For cases in which the classifiers do not agree, non-ambiguous subtypes from `pathology_subtype` field is taken and the remaining samples are treated as unclassified.
-
-For each sample_id with multiple RNA samples, the following logic is implemented:
-- IF there are two RNA specimens from the same event (`sample_id`) with the same `tumor_descriptor`, and
-- IF one of the two RNA specimens has a consensus match from the MB classifiers, and
-- IF the RNA specimen with mismatched classifications includes a match to the subtype of the consensus of the other RNA specimen,
-- THEN propagate the subtype to the second RNA specimen.
-
-For the consensus corrected output, 37/43 (86.05%) and for the consensus uncorrected output, 38/43 (88.37%) match with the reported subtype. The following table shows the difference between the two outputs:
-
-BS_V96WVE3Z is correctly predicted by consensus uncorrected output but not by batch-corrected output:
-
-| Consensus Output | Kids_First_Biospecimen_ID | pathology_subtype | MM2S_best_fit | medulloPackage_best_fit | molecular_subtype | match |
-|------------------|---------------------------|-------------------|---------------|-------------------------|-------------------|-------|
-| Uncorrected      | BS_V96WVE3Z               | SHH               | SHH           | SHH                     | SHH               | TRUE  |
-| Corrected        | BS_V96WVE3Z               | SHH               | Group3        | SHH                     | NA                | NA    |
-
 3. Output
 
 The markdown produces one html notebook and a tab-delimited file containing RNA and DNA identifiers mapped to the consensus molecular subtype obtained for each input matrix.
@@ -161,9 +136,9 @@ The markdown produces one html notebook and a tab-delimited file containing RNA 
 02-compare-classes.html
 
 # tsv files containing RNA and DNA identifiers mapped to molecular_subtype
-# uncorrected input consensus output
 results/MB_molecular_subtype.tsv
-
-# batch corrected input consensus output
-results/MB_batchcorrected_molecular_subtype.tsv
 ```
+
+#### Accuracy and Final output
+
+For our dataset, medulloPackage is able to classify the input samples with 95.35% accuracy whereas MM2S shows an accuracy of 83.72%. Comparing the accuracy of the two classifiers, the molecular subtype is determined by using the prediction obtained from `medulloPackage` classifier. 

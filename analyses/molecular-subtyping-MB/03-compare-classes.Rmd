@@ -45,13 +45,13 @@ subset_clin_file <- file.path("input", "subset-mb-clinical.tsv")
 <details><summary>Read input</summary>
 ```{r read_data, echo = TRUE}
 # read in subset clinical mb file that was created in 01-filter-and-batch-correction.R
-subset.clin <- read.delim(subset_clin_file)
+subset_clin <- read.delim(subset_clin_file)
 
-exp.class <- readRDS(params$expected_input)
-obs.class <- readRDS(params$observed_input)
+exp_class <- readRDS(params$expected_input)
+obs_class <- readRDS(params$observed_input)
 
 # format ambiguous expected classes 
-exp.class <- exp.class %>%
+exp_class <- exp_class %>%
   mutate(pathology_subtype = recode(pathology_subtype, 
                                     "non-WNT" = "SHH, Group3, Group4", 
                                     "Group 3 or 4" = "Group3, Group4")) %>%
@@ -59,20 +59,20 @@ exp.class <- exp.class %>%
 
 # format subset clinical file
 # RNA MB samples
-clin.rna <- subset.clin  %>%
+clin_rna <- subset_clin  %>%
   filter(experimental_strategy == "RNA-Seq")  %>%
   dplyr::rename(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID) %>%
   dplyr::select(Kids_First_Participant_ID, sample_id, tumor_descriptor, Kids_First_Biospecimen_ID_RNA)
 
 # DNA MB samples
-clin.wgs <- subset.clin  %>%
+clin_wgs <- subset_clin  %>%
   filter(experimental_strategy == "WGS")  %>%
   dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID) %>%
   dplyr::select(Kids_First_Participant_ID, sample_id, tumor_descriptor, Kids_First_Biospecimen_ID_DNA)
 
 # combine both
-clin.merged <- clin.wgs %>%
-  right_join(clin.rna, by = c('sample_id','Kids_First_Participant_ID','tumor_descriptor'))
+clin_merged <- clin_wgs %>%
+  right_join(clin_rna, by = c('sample_id', 'Kids_First_Participant_ID','tumor_descriptor'))
 ```
 </details>
 
@@ -99,130 +99,61 @@ viewDataTable <- function(dat){
 <details><summary>Merge expected and observed class + compute accuracy </summary>
 ```{r compute_accuracy, echo = TRUE}
 # function for merging expected and observed subtypes and returning accuracy
-compute.accuracy <- function(expected.input, observed.input){
+compute_accuracy <- function(expected_input, observed_input){
   # merge expected and observed subtypes
-  merged.table <- expected.input %>%
-    left_join(observed.input, by = c('Kids_First_Biospecimen_ID' = 'sample')) %>%
+  merged_table <- expected_input %>%
+    left_join(observed_input, by = c('Kids_First_Biospecimen_ID' = 'sample')) %>%
     mutate(match = str_detect(pathology_subtype, best.fit))
-  merged.table$sample_id <- as.factor(merged.table$sample_id)
+  merged_table$sample_id <- as.factor(merged_table$sample_id)
   
   # compute accuracy
-  accuracy <- merged.table %>%
+  accuracy <- merged_table %>%
     filter(!is.na(pathology_subtype)) %>%
     group_by(match) %>%
     dplyr::summarise(n = n()) %>%
     mutate(Accuracy = paste0(round(n/sum(n)*100, 2), '%')) %>%
     filter(match) %>%
     .$Accuracy
-
+  
   # return both as list
-  output <- list(merged.table = merged.table, accuracy = accuracy)
+  output <- list(merged_table = merged_table, accuracy = accuracy)
   return(output)
 }
 ```
 </details>
 
-<details><summary>MB subtype propagation</summary>
-```{r subtype_prop, echo = TRUE}
-# function to propagate molecular subtype
-prop.mb.subtype <- function(mat){
-  # do this only for sample ids with multiple RNA ids
-  if(nrow(mat) > 1){
-    # A (rna id with predicted subtype)
-    rna.id.with.molsubtype <- mat %>%
-      filter(!is.na(molecular_subtype))
-    
-    # B (rna id without predicted subtype)
-    rna.id.without.molsubtype <- mat %>%
-      filter(is.na(molecular_subtype))
-    
-    # if A has a consensus molecular_subtype match and B has molecular_subtype as NA
-    if(nrow(rna.id.with.molsubtype) == 1 & nrow(rna.id.without.molsubtype) == 1){
-      # propagate consensus subtype of A if it matches to either prediction in B
-      if(grepl(rna.id.with.molsubtype$molecular_subtype, rna.id.without.molsubtype$MM2S_best_fit) | 
-         grepl(rna.id.with.molsubtype$molecular_subtype, rna.id.without.molsubtype$medulloPackage_best_fit)){
-        rna.id.without.molsubtype <- rna.id.without.molsubtype %>%
-          mutate(molecular_subtype = rna.id.with.molsubtype$molecular_subtype)
-      }
-    }
-    
-    # combine both rows
-    mat <- rbind(rna.id.with.molsubtype, rna.id.without.molsubtype)
-  } 
-  return(mat)
-}
-```
-</details>
-
-<details><summary>Create consensus output + compute accuracy </summary>
-```{r consensus_table, echo = TRUE}
-# function for merging outputs from both classifiers
-calc.consensus <- function(mm2s, medullo.classifier, clin){
-  # create df with common cols
-  mm2s <- mm2s %>%
-    dplyr::rename(MM2S_best_fit = best.fit) %>%
-    dplyr::select(Kids_First_Biospecimen_ID, sample_id, 
-                  pathology_subtype, MM2S_best_fit)
-  medullo.classifier <- medullo.classifier %>%
-    dplyr::rename(medulloPackage_best_fit = best.fit) %>%
-    dplyr::select(Kids_First_Biospecimen_ID, sample_id, 
-                  pathology_subtype, medulloPackage_best_fit)
-  
-  # join both
-  consensus.mat <- mm2s %>%
-    inner_join(medullo.classifier, 
-               by = c('Kids_First_Biospecimen_ID', 'sample_id',
-                      'pathology_subtype'))
-  
-  # create consensus molecular subtype if both classifiers agree 
-  # match consensus molecular subtype to the pathology report
-  consensus.mat  <- consensus.mat %>%
-    mutate(molecular_subtype = ifelse(MM2S_best_fit == medulloPackage_best_fit, MM2S_best_fit, NA)) %>%
-    mutate(match = str_detect(pathology_subtype, molecular_subtype))
-  
-  # compute % accuracy
-  consensus.accuracy <- consensus.mat %>%
-    filter(!is.na(pathology_subtype)) %>%
-    group_by(match) %>%
-    dplyr::summarise(n = n()) %>%
-    mutate(Accuracy = paste0(round(n/sum(n)*100, 2), '%')) %>%
-    filter(match) %>%
-    .$Accuracy
+<details><summary>Create final output </summary>
+```{r final_table, echo = TRUE}
+# function for creating output for html and tsv files
+create_final_output <- function(classifier_output, clin){
+  # use molecular_subtype instead of best.fit (i.e. medulloPackage prediction column)
+  classifier_output <- classifier_output %>%
+    dplyr::rename(molecular_subtype = best.fit,
+                  Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID) %>%
+    dplyr::select(Kids_First_Biospecimen_ID_RNA, sample_id,
+                  pathology_subtype, molecular_subtype, match)
   
   # merge with clinical data
-  consensus.mat.out <- clin.merged %>%
-    inner_join(consensus.mat %>% 
-                 mutate(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID), 
-               by = c('sample_id', 'Kids_First_Biospecimen_ID_RNA'))
+  classifier_output <- clin %>%
+    inner_join(classifier_output, by = c('sample_id', 'Kids_First_Biospecimen_ID_RNA'))
   
-  # resolve discrepancy with multiple sample ids
-  # apply prop.mb.subtype function on same event (`sample_id`) with the same `tumor_descriptor`
-  consensus.mat.out <- plyr::ddply(consensus.mat.out, 
-                                   .variables = c("sample_id", "tumor_descriptor"), 
-                                   .fun = function(x) prop.mb.subtype(mat = x))
-  consensus.mat.out$sample_id <- as.factor(consensus.mat.out$sample_id)
-  
-  # add non-ambiguous molecular subtype reported from pathology report where there is no consensus 
-  consensus.mat.out = consensus.mat.out %>%
-    mutate(molecular_subtype = ifelse(MM2S_best_fit == medulloPackage_best_fit, MM2S_best_fit,
-                                      ifelse(pathology_subtype %in% c("SHH", "Group3", "Group4", "WNT"), pathology_subtype, NA)))
+  # required for datatable filter
+  classifier_output$sample_id <- as.factor(classifier_output$sample_id)
   
   # subset columns for html output
-  consensus.mat.html <- consensus.mat.out %>%
+  classifier_output_html <- classifier_output %>%
     mutate(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA) %>%
-    dplyr::select(Kids_First_Biospecimen_ID, sample_id, pathology_subtype, 
-                  MM2S_best_fit, medulloPackage_best_fit, molecular_subtype, match) %>%
+    dplyr::select(Kids_First_Biospecimen_ID, sample_id, pathology_subtype, molecular_subtype, match) %>%
     arrange(Kids_First_Biospecimen_ID)
   
   # subset columns for tsv output
-  consensus.mat.tsv <- consensus.mat.out %>%
+  classifier_output_tsv <- classifier_output %>%
     dplyr::select(Kids_First_Participant_ID, sample_id, Kids_First_Biospecimen_ID_DNA,
                   Kids_First_Biospecimen_ID_RNA, molecular_subtype)
   
   # return as list
-  output <- list(consensus.mat = consensus.mat.html, 
-                 consensus.mat.out = consensus.mat.tsv, 
-                 consensus.accuracy = consensus.accuracy)
+  output <- list(classifier_output_html = classifier_output_html,
+                 classifier_output_tsv = classifier_output_tsv)
   return(output)
 }
 ```
@@ -232,183 +163,70 @@ calc.consensus <- function(mm2s, medullo.classifier, clin){
 
 * % Accuracy is currently being calculated by matching observed and expected subtypes where expected subtype info is available. In case of ambiguous subtypes, we treat it as a match if the observed subtype matches with any one of the expected subtypes.
 
-* Consensus tabs: For cases in which both classifiers agree, molecular subtype reflects the consensus prediction. For cases in which there is no consensus prediction, but we have a non-ambiguous pathology subtype, the molecular subtype reflects the pathology subtype.
-
-
-* Propagation of molecular subtypes: 
-
-  * IF there are two RNA specimens from the same event (`sample_id`) with the same `tumor_descriptor`, and 
-  * IF one of the two RNA specimens has a consensus match from the MB classifiers, and 
-  * IF the RNA specimen with mismatched classifications includes a match to the subtype of the consensus of the other RNA specimen, 
-  * THEN propagate the subtype to the second RNA specimen.
-
 * Pathology report has subtype information on 43/122 (35.2%) samples. Following is the breakdown of pathology identified subtypes: 
 
 ```{r, echo=FALSE}
-exp.count <- exp.class %>% 
+exp_count <- exp_class %>% 
   group_by(pathology_subtype) %>% 
   tally()
-viewDataTable(exp.count)
+viewDataTable(exp_count)
 ```
 
 #### Individual classifier and Consensus outputs:
 
 ## {.tabset .tabset-fade}
 
-### MM2S (batch-corrected)
+### MM2S
 
 ```{r, echo = TRUE, warning = FALSE, message = FALSE}
-out <- compute.accuracy(expected.input = exp.class, 
-                        observed.input = obs.class$corrected_mat_MM2S)
+out <- compute_accuracy(expected_input = exp_class, 
+                        observed_input = obs_class$MM2S)
 
 # accuracy
-mm2s.corrected.acc <- out$accuracy
-print(paste0("Accuracy: ", mm2s.corrected.acc))
+mm2s_accuracy <- out$accuracy
+print(paste0("Accuracy: ", mm2s_accuracy))
 
 # output table
-mm2s.corrected <- out$merged.table
-viewDataTable(mm2s.corrected)
+mm2s_output <- out$merged_table
+viewDataTable(mm2s_output)
 ```
 
-### MM2S (uncorrected)
+### medulloPackage
 
 ```{r, echo = TRUE, warning = FALSE, message = FALSE}
-out <- compute.accuracy(expected.input = exp.class, 
-                        observed.input = obs.class$uncorrected_mat_MM2S)
+out <- compute_accuracy(expected_input = exp_class, 
+                        observed_input = obs_class$medulloPackage)
 
 # accuracy
-mm2s.uncorrected.acc <- out$accuracy
-print(paste0("Accuracy: ", mm2s.uncorrected.acc))
+medulloPackage_accuracy <- out$accuracy
+print(paste0("Accuracy: ", medulloPackage_accuracy))
 
 # output table
-mm2s.uncorrected <- out$merged.table
-viewDataTable(mm2s.uncorrected)
+medulloPackage_output <- out$merged_table
+viewDataTable(medulloPackage_output)
 ```
 
-### medulloPackage (batch-corrected)
+### Final output (medulloPackage)
 
 ```{r, echo = TRUE, warning = FALSE, message = FALSE}
-out <- compute.accuracy(expected.input = exp.class, 
-                        observed.input = obs.class$`corrected_mat_medullo-classifier`)
+out <- create_final_output(classifier_output = medulloPackage_output,
+                           clin = clin_merged)
 
-# accuracy
-medullo.classifier.corrected.acc <- out$accuracy
-print(paste0("Accuracy: ", medullo.classifier.corrected.acc))
 
 # output table
-medullo.classifier.corrected <- out$merged.table
-viewDataTable(medullo.classifier.corrected)
-```
+classifier_output_html <- out$classifier_output_html
+viewDataTable(classifier_output_html)
 
-### medulloPackage (uncorrected)
-
-```{r, echo = TRUE, warning = FALSE, message = FALSE}
-out <- compute.accuracy(expected.input = exp.class, 
-                        observed.input = obs.class$`uncorrected_mat_medullo-classifier`)
-
-# accuracy
-medullo.classifier.uncorrected.acc <- out$accuracy
-print(paste0("Accuracy: ", medullo.classifier.uncorrected.acc))
-
-# output table
-medullo.classifier.uncorrected <- out$merged.table
-viewDataTable(medullo.classifier.uncorrected)
-```
-
-### Consensus (batch-corrected)
-
-```{r, echo = TRUE, warning = FALSE, message = FALSE}
-out <- calc.consensus(mm2s = mm2s.corrected, 
-                      medullo.classifier = medullo.classifier.corrected,
-                      clin = clin.merged)
-
-# accuracy
-consensus.corrected.acc <- out$consensus.accuracy
-print(paste0("Accuracy: ", consensus.corrected.acc))
-
-# output table
-consensus.corrected <- out$consensus.mat
-viewDataTable(consensus.corrected)
-
-# merged output with clinical ids 
-consensus.corrected.out <- out$consensus.mat.out
-consensus.corrected.out <- consensus.corrected.out %>%
+# merged output with clinical ids
+classifier_output_tsv <- out$classifier_output_tsv
+classifier_output_tsv <- classifier_output_tsv %>%
   arrange(Kids_First_Biospecimen_ID_RNA)
 
-consensus.corrected.out <- consensus.corrected.out %>%
+classifier_output_tsv <- classifier_output_tsv %>%
   # adding "MB" to be consistent with other subtyping values
   dplyr::mutate(molecular_subtype = if_else(!is.na(molecular_subtype),
                                             paste("MB,",molecular_subtype),
                                             "MB, To be classified")) %>%
-  write.table(
-            file = file.path(results_dir, 'MB_batchcorrected_molecular_subtype.tsv'), 
+  write.table(file = file.path(results_dir, 'MB_molecular_subtype.tsv'),
             row.names = F, quote = F, sep = "\t")
-```
-
-### Consensus (uncorrected)
-
-```{r, echo = TRUE, warning = FALSE, message = FALSE}
-out <- calc.consensus(mm2s = mm2s.uncorrected, 
-                      medullo.classifier = medullo.classifier.uncorrected,
-                      clin = clin.merged)
-
-# accuracy
-consensus.uncorrected.acc <- out$consensus.accuracy
-print(paste0("Accuracy: ", consensus.uncorrected.acc))
-
-# output table
-consensus.uncorrected <- out$consensus.mat
-viewDataTable(consensus.uncorrected)
-
-# merged output with clinical ids 
-consensus.uncorrected.out <- out$consensus.mat.out
-consensus.uncorrected.out <- consensus.uncorrected.out %>%
-  arrange(Kids_First_Biospecimen_ID_RNA)
-
-consensus.uncorrected.out <- consensus.uncorrected.out %>%
-  # adding "MB" to be consistent with other subtyping values
-  dplyr::mutate(molecular_subtype = if_else(!is.na(molecular_subtype),
-                                            paste("MB,",molecular_subtype),
-                                            "MB, To be classified")) %>%
-  write.table(file = file.path(results_dir, 'MB_molecular_subtype.tsv'), 
-            row.names = F, quote = F, sep = "\t")
-```
-
-### Consensus comparison
-
-```{r, echo = TRUE, warning = FALSE, message = FALSE}
-# count of matches with pathology (corrected consensus)
-consensus.corrected.match <- consensus.corrected %>%
-  group_by(match) %>% 
-  tally()
-print(consensus.corrected.match)
-
-# count of matches with pathology (uncorrected consensus)
-consensus.uncorrected.match <- consensus.uncorrected %>%
-  group_by(match) %>% 
-  tally()
-print(consensus.uncorrected.match)
-
-# matches between the two consensus outputs
-matches <- intersect(consensus.corrected %>%
-                       filter(match == TRUE) %>%
-                       .$Kids_First_Biospecimen_ID, 
-                     consensus.uncorrected %>%
-                       filter(match == TRUE) %>%
-                       .$Kids_First_Biospecimen_ID)
-print(length(matches))
-
-# what's the difference?
-consensus.corrected.matches <- consensus.corrected %>%
-  filter(match) %>%
-  .$Kids_First_Biospecimen_ID 
-consensus.uncorrected.matches <- consensus.uncorrected %>%
-  filter(match) %>%
-  .$Kids_First_Biospecimen_ID 
-
-# match in consensus corrected but not consensus uncorrected
-print(setdiff(consensus.corrected.matches, consensus.uncorrected.matches))
-
-# match in consensus uncorrected but not consensus corrected
-print(setdiff(consensus.uncorrected.matches, consensus.corrected.matches))
 ```
