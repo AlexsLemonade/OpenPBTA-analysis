@@ -59,9 +59,7 @@ Variant_Classification %in% c('Frame_Shift_Del',
 
 #### Generate variant-level and gene-level non-synonymous mutation frequencies
 
-Add `Gene_full_name` and `Protein_RefSeq_ID` columns to each variant with annotations obtained from [mygene.info](http://mygene.info/about).
-
-For vairant-level analysis, create a `Variant_ID` for each variant by concatenating `Chromosome`, `Start_Position`, `Reference_Allele`, and `Tumor_Seq_Allele2` with `'_'`.
+For vairant-level analysis, create a `Variant_ID` for each variant by concatenating non-NA `Chromosome`, `Start_Position`, `Reference_Allele`, and `Tumor_Seq_Allele2` with `'_'`.
 
 For each `cancer_group`, get each cohort and all cohorts. Call each `cancer_group` and `cohort`(s) combination as a `cancer_group_cohort`. For example,
 
@@ -95,19 +93,19 @@ Merge the SNV mutation frequency tables of all `cancer_group_cohort`s.
 
 #### Add annotations
 
-Add the following columns to variant-level and gene-level tables:
+Add the following annotation columns to variant-level and gene-level tables using `long-format-table-utils/annotator`. For more details about the annotation columns, see `long-format-table-utils` `README.md`.
 
-- EFO
-- MONDO
-- RMTL
-- OncoKB cancer gene
-- OncoKB oncogene/TSG (tumor suppresor gene)
-- PedcBioPortal oncoprint plot URL
-- PedcBioPortal lollipop plot URL columns
+- `Gene_full_name`
+- `Protein_RefSeq_ID`
+- `EFO`
+- `MONDO`
+- `RMTL`
+- `OncoKB_cancer_gene`
+- `OncoKB_oncogene_TSG`
 
-The EFO, MONDO, and RMTL information is obtained from PediatricOpenTargets/OpenPedCan-analysis data release.
+Note: `Protein_RefSeq_ID` and `Gene_full_name` are still added directly using the [R mygene package](https://www.bioconductor.org/packages/release/bioc/html/mygene.html), and relevant code is adapted from `long-format-table-utils/annotator/annotator-api.R`, because annotator only have `Protein_RefSeq_ID` and `Gene_full_name` for `Gene_Ensembl_ID`s that are in `ensg-hugo-rmtl-mapping.tsv`. `snv-consensus-plus-hotspots.maf.tsv.gz` has ENSG IDs that are not in `ensg-hugo-rmtl-mapping.tsv`, e.g. ENSG00000284770 and ENSG00000285053. See <https://github.com/PediatricOpenTargets/ticket-tracker/issues/146> for more details. Protein_RefSeq_ID and Gene_full_name may be added through annotator at a later point, after the missing gene symbol and ENSG ID mapping issue is resolved.
 
-The OncoKB cancer gene and oncogene/TSG is listed in `input/oncokb_cancer_gene_list.tsv`, which is downloaded from <https://www.oncokb.org/cancerGenes>. The last update of the table is on 06/16/2021. To update the table, re-download the updated table from <https://www.oncokb.org/cancerGenes>.
+Add `Gene_type`, `PedcBio_PedOT_oncoprint_plot_URL` and `PedcBio_PedOT_mutations_plot_URL` annotation columns to gene-level tables.
 
 The PedcBioPortal `case_set_id`s in the URLs are obtained from [the `sample-lists` PedcBioPortal web API](https://pedcbioportal.kidsfirstdrc.org/api/swagger-ui.html#/Sample_Lists), with the following command:
 
@@ -117,23 +115,19 @@ curl -X GET "https://pedcbioportal.kidsfirstdrc.org/api/studies/ped_opentargets_
 
 To update the `case_set_id`s, rerun the `curl` command with your own PedcBioPortal web API access token. The token can be requested and downloaded at <https://pedcbioportal.kidsfirstdrc.org/webAPI>. More information about the access token is at <https://docs.cbioportal.org/2.2-authorization-and-authentication/authenticating-users-via-tokens#using-data-access-tokens>.
 
-Add a `Gene_type` column to gene-level tables. The `Gene_type` information is obtained from `../fusion_filtering/references/genelistreference.txt`, and its sources are described at <https://github.com/d3b-center/annoFuse#prerequisites-for-cohort-level-analysis>.
-
 ### Results
 
-Results are generated using PediatricOpenTargets/OpenPedCan-analysis data release v6.
+Results are generated using PediatricOpenTargets/OpenPedCan-analysis data release v7.
 
-The merged variant-level and gene-level SNV mutation frequency tables of all `cancer_group_cohort`s is output in TSV, JSON, and JSONL formats.
+The merged variant-level and gene-level SNV mutation frequency tables of all `cancer_group_cohort`s is output in TSV and JSONL formats.
 
-- `results/gene-level-snv-consensus-annotated-mut-freq.json.gz`
 - `results/gene-level-snv-consensus-annotated-mut-freq.jsonl.gz`
 - `results/gene-level-snv-consensus-annotated-mut-freq.tsv`
 
-- `results/var-level-snv-consensus-annotated-mut-freq.json.gz`
-- `results/var-level-snv-consensus-annotated-mut-freq.jsonl.gz`
-- `results/var-level-snv-consensus-annotated-mut-freq.tsv`
+- `results/variant-level-snv-consensus-annotated-mut-freq.jsonl.gz`
+- `results/variant-level-snv-consensus-annotated-mut-freq.tsv.gz`
 
-**Note:** When reading `{var,gene}-level-snv-consensus-annotated-mut-freq.tsv` using `readr::read_tsv`, you can specify `na = character(0)` to avoid converting blank string entries to `NA`s, as suggested by @jharenza at <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/45#pullrequestreview-697753423>. This can be useful when converting `{var,gene}-level-snv-consensus-annotated-mut-freq.tsv` to JSON, because the PediatricOpenTargets/OpenPedCan-analysis project favors empty string (`''`) as missing value over `NA`/`NaN`/`NULL`.
+**Note:** When reading `{variant,gene}-level-snv-consensus-annotated-mut-freq.tsv` using `readr::read_tsv`, you can specify `na = character(0)` to avoid converting blank string entries to `NA`s, as suggested by @jharenza at <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/45#pullrequestreview-697753423>. This can be useful when converting `{variant,gene}-level-snv-consensus-annotated-mut-freq.tsv` to JSON, because the PediatricOpenTargets/OpenPedCan-analysis project favors empty string (`''`) as missing value over `NA`/`NaN`/`NULL`.
 
 ### Usage
 
@@ -157,22 +151,16 @@ Input:
 
 - `../../data/histologies.tsv`
 - `../../data/snv-consensus-plus-hotspots.maf.tsv.gz`
-- `../../data/efo-mondo-map.tsv`
-- `../../data/ensg-hugo-rmtl-v1-mapping.tsv`
-- `../independent-samples/results/independent-specimens.wgs.primary.tsv`
-- `../independent-samples/results/independent-specimens.wgs.relapse.tsv`
-- `../fusion_filtering/references/genelistreference.txt`
-- `input/oncokb_cancer_gene_list.tsv`
+- `../independent-samples/results/independent-specimens.wgswxspanel.primary.eachcohort.tsv`
+- `../independent-samples/results/independent-specimens.wgswxspanel.relapse.eachcohort.tsv`
 - `input/ped_opentargets_2021_pedcbio_case_set_ids.json`
 
 Output:
 
 - `results/gene-level-snv-consensus-annotated-mut-freq.json`
-- `results/gene-level-snv-consensus-annotated-mut-freq.jsonl`
 - `results/gene-level-snv-consensus-annotated-mut-freq.tsv`
-- `results/var-level-snv-consensus-annotated-mut-freq.json`
-- `results/var-level-snv-consensus-annotated-mut-freq.jsonl`
-- `results/var-level-snv-consensus-annotated-mut-freq.tsv`
+- `results/variant-level-snv-consensus-annotated-mut-freq.json`
+- `results/variant-level-snv-consensus-annotated-mut-freq.tsv`
 
 ### Guide on how to update `01-snv-frequencies.R`
 
@@ -183,37 +171,35 @@ Read the script. `01-snv-frequencies.R` contains the following sections:
 - Read data. This section reads all input data.
 - Subset tumor samples and used columns in MAF table. This section subsets MAF table.
 - Subset independent samples in histology table. This section subsets histology table and creates primary and relapse independent sample histology tables.
-- Add additional annotations. This section adds Gene_full_name and Protein_RefSeq_ID to the MAF table. Note that annotations will be added in the upcoming `analyses/long-format-table-utils/annotator/annotator-api.R`, which is under review at PR <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/56>.
 - Compute mutation frequencies. This section:
   - computes mutation frequencies for 1) each cancer_group and each cohort and 2) each cancer_group and all cohorts
   - add each-cohot and all-cohort PedcBio URLs
   - creates gene-level and variant-level mutation frqeuency tables
-- Add annotations to the output table. This section adds various annotations to the mutation frequency tables. Note that annotations will be added in the upcoming `analyses/long-format-table-utils/annotator/annotator-api.R`, which is under review at PR <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/56>.
-- Output tsv and JSON. This section outputs mutation frequency tables in tsv and JSON formats.
+- Add annotations to the output table. This section adds various annotations to the mutation frequency tables.
+- Output TSV and JSON. This section outputs mutation frequency tables in TSV and JSON formats.
 
 Common updates:
 
-- Add new gene annotations:
-  - Load gene HUGO symbol (/gene Ensembl ENSG ID) annotation table in the Read data section. Make sure the HUGO symbol (/gene Ensembl ENSG ID) column has no NA or duplicate.
-  - Add annotations to the mutation frequency tables in the Add annotations to the output table section. Replace `NA`s with `''`.
+- Add a new annotation column:
+  - If the annotation is available in the `long-format-table-utils/annotator`:
+    - Add new annotation column names in the `columns_to_add` parameter of `annotate_long_format_table` calls.
+  - If the annotation is not available in the  the `long-format-table-utils/annotator`:
+    - Load the annotation table in the Read data section. Make sure the `join_by` column has no NA or duplicate.
+    - Add annotations to the result table by `dplyr::left_join`. Replace `NA`s with `''`.
   - Reorder new columns before output.
-  - Note that annotations will be added in the upcoming `analyses/long-format-table-utils/annotator/annotator-api.R`, which is under review at PR <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/56>.
-- Add new variant annotations:
-  - Load variant_ID annotation table in the Read data section. Make sure the variant_ID column has no NA or duplicate.
-  - Add annotations to the MAF table in the Add additional annotations section. Replace `NA`s with `''`.
-  - Retain the new annotation columns in the `get_cg_ch_var_level_mut_freq_tbl()` and `get_cg_ch_gene_level_mut_freq_tbl()` functions.
-  - Reorder new columns before output.
-  - Note that annotations will be added in the upcoming `analyses/long-format-table-utils/annotator/annotator-api.R`, which is under review at PR <https://github.com/PediatricOpenTargets/OpenPedCan-analysis/pull/56>.
 - Change the notation for all_cohorts:
   - Change `'all_cohorts'` to other values in the `get_cohort_set_value()` function.
+  - Change `tests/test_get_cohort_set_value.R`
 - Change the format of PedcBio URLs:
   - Change the `get_pcb_pot_csi()` and `get_pcb_pot_ploAt_url()` functions.
+  - Change `tests/test_get_pcb_pot_csi.R` and `tests/test_get_pcb_pot_plot_url.R`.
   - If `case_set_id`s are no longer used for linking PedcBio, the whole worflow needs to be redesigned.
 - Add new PedcBio URLs:
   - Change the `add_cg_ch_pedcbio_pedot_plot_urls()` function.
   - Retain the new URL columns in the `get_cg_ch_var_level_mut_freq_tbl()` and `get_cg_ch_gene_level_mut_freq_tbl()` functions.
 - Add new mutation frequency columns:
   - Change the `get_opr_mut_freq_tbl()` function.
+  - Change `tests/test_get_opr_mut_freq_tbl.R`.
   - Retain the new mutation frequency columns in the `get_cg_ch_var_level_mut_freq_tbl()` and `get_cg_ch_gene_level_mut_freq_tbl()` functions.
 
 The `stopifnot()` statements are assertions for the input data, so the output would be expected. If any assertion fails, additional code needs to be added mainly to remove NAs and handle duplicates in the data, so that the assertion pases.
@@ -223,14 +209,19 @@ The unit testing is implemented using the [`testthat`](https://testthat.r-lib.or
 To run all unit tests, run `bash run-tests.sh` in the Docker image/container from any working directory. Following is an example run.
 
 ```text
-$ bash run-tests.sh
+$ bash analyses/snv-frequencies/run-tests.sh
 ✔ |  OK F W S | Context
-✔ |  19       | tests/test_collapse_rp_lists.R
+✔ |  23       | tests/test_get_cohort_set_value.R
+✔ |  31       | tests/test_get_opr_mut_freq_tbl.R [0.8 s]
+✔ |  33       | tests/test_get_pcb_pot_csi.R
+✔ |  42       | tests/test_get_pcb_pot_plot_url.R
+✔ |  21       | tests/test_helper_import_function.R
+✔ |  12       | tests/test_num_to_pct_chr.R
 
-══ Results ═════════════════════════════════════════════════════════════════════════════════════════════════════
-Duration: 0.1 s
+══ Results ═════════════════════════════
+Duration: 1.0 s
 
-OK:       19
+OK:       162
 Failed:   0
 Warnings: 0
 Skipped:  0

@@ -139,18 +139,18 @@ if (!dir.exists(output_data_dir)) {
 # Read input data --------------------------------------------------------------
 # ensg hugo rmtl mappings
 ensg_hugo_rmtl_df <- dplyr::distinct(
-  readr::read_tsv(file.path(input_data_dir, "ensg-hugo-rmtl-v1-mapping.tsv"),
+  readr::read_tsv(file.path(input_data_dir, "ensg-hugo-rmtl-mapping.tsv"),
                   col_types = readr::cols(.default = readr::col_guess())))
 
 # assert all ensg_ids and gene_symbols are not NA
 if (!identical(sum(is.na(ensg_hugo_rmtl_df$ensg_id)), as.integer(0))) {
-  stop(paste0("Found NA in ensg-hugo-rmtl-v1-mapping.tsv ensg_id.\n",
+  stop(paste0("Found NA in ensg-hugo-rmtl-mapping.tsv ensg_id.\n",
               "Check if PedOT release data are downloaded properly.\n",
               "If data is downloaded properly, submit a GitHub data issue."))
 }
 
 if (!identical(sum(is.na(ensg_hugo_rmtl_df$gene_symbol)), as.integer(0))) {
-  stop(paste0("Found NA in ensg-hugo-rmtl-v1-mapping.tsv gene_symbol.\n",
+  stop(paste0("Found NA in ensg-hugo-rmtl-mapping.tsv gene_symbol.\n",
               "Check if PedOT release data are downloaded properly.\n",
               "If data is downloaded properly, submit a GitHub data issue."))
 }
@@ -158,7 +158,7 @@ if (!identical(sum(is.na(ensg_hugo_rmtl_df$gene_symbol)), as.integer(0))) {
 # assert all ensg_id are unique
 if (!identical(length(unique(ensg_hugo_rmtl_df$ensg_id)),
                nrow(ensg_hugo_rmtl_df))) {
-  stop(paste0("Found duplicated ensg_id in ensg-hugo-rmtl-v1-mapping.tsv.\n",
+  stop(paste0("Found duplicated ensg_id in ensg-hugo-rmtl-mapping.tsv.\n",
               "Check if PedOT release data are downloaded properly.\n",
               "If data is downloaded properly, submit a GitHub data issue."))
 }

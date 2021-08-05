@@ -1,0 +1,7 @@
+Gene_symbol	Gene_Ensembl_ID	Disease	cohort	GTEx_tissue_group	tpm_mean	GTEx_tissue_subgroup
+TBC1D24	ENSG00000162065	Schwannoma	all_cohorts	Blood	1.515	Blood
+BRAF	ENSG00000157764	Neurofibroma/Plexiform	PBTA	Adipose	3.588	Adipose - Visceral (Omentum)
+BRAF	ENSG00000157764	Neuroblastoma	GMKF	Brain	32.1902392344498	Brain - Frontal Cortex (BA9)
+MYCN	ENSG00000134323	Neuroblastoma	all_cohorts	Pancreas	43.3005263157895	Pancreas
+MYCN	ENSG00000134323	Medulloblastoma	all_cohorts	Blood	21.2189523809524	Blood
+MYCN	ENSG00000134323	Meningioma	all_cohorts	Cells	0.183571428571429	Cells - Cultured fibroblasts

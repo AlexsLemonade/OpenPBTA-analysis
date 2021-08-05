@@ -6,6 +6,10 @@ context("tests/test_annotator_cli.R")
 
 
 working_input_tsv_path <- "test_data/test_long_format_table.tsv"
+# v7 adds:
+# - GTEx_tissue_group -> GTEx_tissue_group_UBERON
+# - GTEx_tissue_subgroup -> GTEx_tissue_subgroup_UBERON
+v7_working_input_tsv_path <- "test_data/v7_test_long_format_table.tsv"
 
 # Add [] after reading to be compatible with readr >= 1.3.1, otherwise the tests
 # will fail on readr >= 1.3.1 as found by @NHJohnson at
@@ -24,6 +28,20 @@ inspected_annotated_long_format_tibble <- readr::read_tsv(
   "test_data/inspected_annotated_test_long_format_table.tsv",
   col_types = readr::cols(.default = readr::col_character()),
   na = c("NA"), quoted_na = FALSE, trim_ws = FALSE)[]
+
+v7_long_format_tibble <- readr::read_tsv(
+  v7_working_input_tsv_path,
+  col_types = readr::cols(.default = readr::col_character()))[]
+
+v7_inspected_annotated_long_format_tibble <- readr::read_tsv(
+  "test_data/v7_inspected_annotated_test_long_format_table.tsv",
+  col_types = readr::cols(.default = readr::col_character()),
+  na = c("NA"), quoted_na = FALSE, trim_ws = FALSE)[]
+
+v7_all_ann_columns <- c(
+  "RMTL", "Gene_type", "OncoKB_cancer_gene", "OncoKB_oncogene_TSG",
+  "Gene_full_name", "Protein_RefSeq_ID", "EFO", "MONDO",
+  "GTEx_tissue_group_UBERON", "GTEx_tissue_subgroup_UBERON")
 
 # esana means empty string as NA. This table is used to test the -r option
 inspected_annotated_long_format_tibble_esana <- readr::read_tsv(
@@ -46,8 +64,6 @@ annotator_cli_path <- file.path("..", "annotator-cli.R")
 annotator_cli_output_path <- file.path(
   scratch_dir, "annotated_test_long_format_table.tsv")
 
-# Test cases
-#
 # Helper function to run annotator CLI
 run_cli_get_tibble <- function(columns_to_add,
                                input_table_path,
@@ -117,6 +133,8 @@ run_cli_get_tibble <- function(columns_to_add,
   }
 }
 
+# Test cases
+#
 # Add package prefix for auto completion purpose only
 #
 # Test standard usecase
@@ -126,6 +144,13 @@ testthat::expect_equal(
     input_table_path = working_input_tsv_path,
     output_table_path = annotator_cli_output_path),
   inspected_annotated_long_format_tibble)
+
+testthat::expect_equal(
+  run_cli_get_tibble(
+    columns_to_add = v7_all_ann_columns,
+    input_table_path = v7_working_input_tsv_path,
+    output_table_path = annotator_cli_output_path),
+  v7_inspected_annotated_long_format_tibble)
 
 # The -r/--replace-na-with-empty-string does not need to be tested for column
 # type conversions. The CLI write_tsv output table is the same even if a
@@ -231,6 +256,38 @@ testthat::expect_equal(
     c("Gene_symbol", "Gene_Ensembl_ID", "Disease", "cohort", "tpm_mean",
       "OncoKB_oncogene_TSG", "OncoKB_cancer_gene", "MONDO")])
 
+testthat::expect_equal(
+  run_cli_get_tibble(
+    columns_to_add = c(
+      "GTEx_tissue_group_UBERON", "OncoKB_cancer_gene", "MONDO"),
+    input_table_path = v7_working_input_tsv_path,
+    output_table_path = annotator_cli_output_path),
+  v7_inspected_annotated_long_format_tibble[,
+    c(colnames(v7_long_format_tibble),
+      "GTEx_tissue_group_UBERON", "OncoKB_cancer_gene", "MONDO")])
+
+testthat::expect_equal(
+  run_cli_get_tibble(
+    columns_to_add = c(
+      "OncoKB_oncogene_TSG", "GTEx_tissue_subgroup_UBERON", "MONDO"),
+    input_table_path = v7_working_input_tsv_path,
+    output_table_path = annotator_cli_output_path),
+  v7_inspected_annotated_long_format_tibble[,
+    c(colnames(v7_long_format_tibble),
+      "OncoKB_oncogene_TSG", "GTEx_tissue_subgroup_UBERON", "MONDO")])
+
+testthat::expect_equal(
+  run_cli_get_tibble(
+    columns_to_add = c(
+      "OncoKB_oncogene_TSG", "OncoKB_cancer_gene",
+      "GTEx_tissue_subgroup_UBERON"),
+    input_table_path = v7_working_input_tsv_path,
+    output_table_path = annotator_cli_output_path),
+  v7_inspected_annotated_long_format_tibble[,
+    c(colnames(v7_long_format_tibble),
+      "OncoKB_oncogene_TSG", "OncoKB_cancer_gene",
+      "GTEx_tissue_subgroup_UBERON")])
+
 # Return same table if no annotation to add
 testthat::expect_equal(
   run_cli_get_tibble(
@@ -238,6 +295,13 @@ testthat::expect_equal(
     input_table_path = working_input_tsv_path,
     output_table_path = annotator_cli_output_path),
   long_format_tibble)
+
+testthat::expect_equal(
+  run_cli_get_tibble(
+    columns_to_add = "",
+    input_table_path = v7_working_input_tsv_path,
+    output_table_path = annotator_cli_output_path),
+  v7_long_format_tibble)
 
 # Error on duplicated annotation columns
 testthat::expect_warning(
@@ -250,6 +314,13 @@ testthat::expect_warning(
   run_cli_get_tibble(
     columns_to_add = c("OncoKB_oncogene_TSG", "MONDO", "MONDO"),
     input_table_path = working_input_tsv_path,
+    output_table_path = annotator_cli_output_path))
+
+testthat::expect_warning(
+  run_cli_get_tibble(
+    columns_to_add = c(
+      "GTEx_tissue_subgroup_UBERON", "MONDO", "GTEx_tissue_subgroup_UBERON"),
+    input_table_path = v7_working_input_tsv_path,
     output_table_path = annotator_cli_output_path))
 
 # Error on non-available annotation columns
@@ -384,6 +455,50 @@ testthat::expect_warning(
     output_table_path = annotator_cli_output_path,
     remove_input_table = TRUE))
 
+readr::write_tsv(
+  long_format_tibble,
+  req_col_missing_tbl_path)
+
+testthat::expect_warning(
+  run_cli_get_tibble(
+    columns_to_add = c("GTEx_tissue_subgroup_UBERON"),
+    input_table_path = req_col_missing_tbl_path,
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE))
+
+readr::write_tsv(
+  long_format_tibble,
+  req_col_missing_tbl_path)
+
+testthat::expect_warning(
+  run_cli_get_tibble(
+    columns_to_add = c("GTEx_tissue_group_UBERON"),
+    input_table_path = req_col_missing_tbl_path,
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE))
+
+readr::write_tsv(
+  dplyr::select(v7_long_format_tibble, -GTEx_tissue_group),
+  req_col_missing_tbl_path)
+
+testthat::expect_warning(
+  run_cli_get_tibble(
+    columns_to_add = c("RMTL", "GTEx_tissue_group_UBERON"),
+    input_table_path = req_col_missing_tbl_path,
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE))
+
+readr::write_tsv(
+  dplyr::select(v7_long_format_tibble, -GTEx_tissue_subgroup),
+  req_col_missing_tbl_path)
+
+testthat::expect_warning(
+  run_cli_get_tibble(
+    columns_to_add = c("GTEx_tissue_subgroup_UBERON", "Gene_full_name"),
+    input_table_path = req_col_missing_tbl_path,
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE))
+
 # No error if all required columns are provided
 readr::write_tsv(
   dplyr::select(long_format_tibble, -Gene_Ensembl_ID, -Disease),
@@ -435,6 +550,25 @@ testthat::expect_equal(
     -Gene_full_name, -RMTL,
     Gene_full_name, RMTL))
 
+readr::write_tsv(
+  dplyr::select(v7_long_format_tibble, -GTEx_tissue_subgroup, -Gene_symbol),
+  req_col_missing_tbl_path)
+
+testthat::expect_equal(
+  run_cli_get_tibble(
+    columns_to_add = c("Gene_full_name", "GTEx_tissue_group_UBERON"),
+    input_table_path = req_col_missing_tbl_path,
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE),
+  dplyr::select(
+    v7_inspected_annotated_long_format_tibble,
+    -GTEx_tissue_subgroup, -Gene_symbol,
+    -Gene_type, -OncoKB_cancer_gene, -OncoKB_oncogene_TSG,
+    -Protein_RefSeq_ID, -EFO, -MONDO,
+    -Gene_full_name, -RMTL, -GTEx_tissue_group_UBERON,
+    -GTEx_tissue_subgroup_UBERON,
+    Gene_full_name, GTEx_tissue_group_UBERON))
+
 # Error on requiring existing annotation columns
 ann_col_exist_tbl_path <- file.path(
   scratch_dir, "test_ann_col_exist_long_format_table.tsv")
@@ -473,6 +607,18 @@ testthat::expect_warning(
     output_table_path = annotator_cli_output_path,
     remove_input_table = TRUE))
 
+readr::write_tsv(
+  dplyr::select(
+    v7_inspected_annotated_long_format_tibble, -GTEx_tissue_subgroup_UBERON),
+  ann_col_exist_tbl_path)
+
+testthat::expect_warning(
+  run_cli_get_tibble(
+    columns_to_add = c(
+      "GTEx_tissue_subgroup_UBERON", "GTEx_tissue_group_UBERON"),
+    input_table_path = ann_col_exist_tbl_path,
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE))
 
 # Error on duplicated annotation columns
 testthat::expect_warning(
@@ -595,6 +741,25 @@ testthat::expect_equal(
     inspected_annotated_long_format_tibble,
     -RMTL, -EFO, -OncoKB_oncogene_TSG, -Gene_full_name, -Gene_type,
     EFO, OncoKB_oncogene_TSG, Gene_full_name, Gene_type))
+
+readr::write_tsv(
+  dplyr::select(
+    v7_inspected_annotated_long_format_tibble,
+    -GTEx_tissue_group_UBERON, -OncoKB_oncogene_TSG, -Gene_full_name, -RMTL),
+  req_non_existing_ann_tbl_path)
+
+testthat::expect_equal(
+  run_cli_get_tibble(
+    columns_to_add = c(
+      "GTEx_tissue_group_UBERON", "OncoKB_oncogene_TSG", "Gene_full_name",
+      "RMTL"),
+    input_table_path = req_non_existing_ann_tbl_path,
+    output_table_path = annotator_cli_output_path,
+    remove_input_table = TRUE),
+  dplyr::select(
+    v7_inspected_annotated_long_format_tibble,
+    -RMTL, -GTEx_tissue_group_UBERON, -OncoKB_oncogene_TSG, -Gene_full_name,
+    GTEx_tissue_group_UBERON, OncoKB_oncogene_TSG, Gene_full_name, RMTL))
 
 # Error on non-existing input file
 testthat::expect_warning(
