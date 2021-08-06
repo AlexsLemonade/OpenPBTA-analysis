@@ -1,11 +1,14 @@
 ---
 title: "Select pathology diagnoses for inclusion"
-output: 
+author: "Candace Savonen for ALSF CCDL"
+date: "2021"
+output:
+  html_document:
+    toc: yes
+    df_print: paged
   html_notebook:
-    toc: TRUE
-    toc_float: TRUE
-author: Candace Savonen for ALSF CCDL
-date: 2021
+    toc: yes
+    toc_float: yes
 ---
 
 ## Background
@@ -31,8 +34,8 @@ library(tidyverse)
 This is tied to a specific release. 
 
 ```{r}
-data_dir <- file.path("..", "..", "data", "release-v18-20201123")
-histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
+data_dir <- file.path("..", "..", "data")
+histologies_file <- file.path(data_dir, "histologies.tsv")
 ```
 
 We're going to save the pathology diagnosis information we'll use to generate the subset files in a directory `input`.

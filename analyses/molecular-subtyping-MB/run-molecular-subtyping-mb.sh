@@ -21,15 +21,14 @@ cd "$script_directory" || exit
 if [ "$SUBSET" -gt "0" ]; then
   # filter to MB samples and/or batch correct
   Rscript --vanilla 01-filter-and-batch-correction.R \
-  --batch_col RNA_library \
   --output_prefix medulloblastoma-exprs \
   --output_dir input
 fi
 
 # classify MB subtypes
 Rscript --vanilla 02-classify-mb.R \
---corrected_mat input/medulloblastoma-exprs-batch-corrected.rds \
---uncorrected_mat input/medulloblastoma-exprs.rds \
+--exprs_mat input/medulloblastoma-exprs.rds \
+--data_type 'uncorrected' \
 --output_prefix mb-classified
 
 # summarize output from both classifiers and expected classification

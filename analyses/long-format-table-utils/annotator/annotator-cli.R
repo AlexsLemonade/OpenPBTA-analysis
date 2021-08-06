@@ -12,8 +12,8 @@
 #   -h
 #
 # - Add RMTL, EFO, and MONDO columns
-#   - The `-r` option replaces NAs with empty strings for **ALL** columns of the
-#     input table
+#   - The `-r` option replaces NAs with empty strings for **ALL COLUMNS THAT
+#     HAVE NA** in the output table
 #   - The `-v` option prints extra messages on progress
 #
 # Rscript --vanilla analyses/long-format-table-utils/annotator/annotator-cli.R \
@@ -83,9 +83,9 @@ option_list <- list(
       "A comma-separated list of unique annotation columns to be added, ",
       "e.g. \"EFO,MONDO\" and \"RMTL,Gene_type,OncoKB_cancer_gene\". ",
       "Available columns are: RMTL, Gene_type, OncoKB_cancer_gene, ",
-      "OncoKB_oncogene_TSG, Gene_full_name, Protein_RefSeq_ID, EFO, MONDO. ",
-      "[Default value is \"%default\", which is to add all available ",
-      "annotation columns]")),
+      "OncoKB_oncogene_TSG, Gene_full_name, Protein_RefSeq_ID, EFO, MONDO,",
+      "GTEx_tissue_group_UBERON, GTEx_tissue_subgroup_UBERON. ",
+      "[Default value is \"%default\"]")),
   optparse::make_option(
     c("-i", "--input-long-format-table-tsv"), type = "character",
     help = "Path to the input long-format table TSV file to be annotated"),
