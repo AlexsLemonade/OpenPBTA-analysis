@@ -5,7 +5,9 @@
 - status: availale
 - changes:
  - Update copy_number_consensus_call with manta calls with FILTER==PASS [#1113](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1113)
+ - Update reciprocal overlap rules for consensus CNV [#1125](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1125)
     - pbta-cnv-consensus.seg.gz
+    - pbta-cnv-consensus-gistic.zip
  - Update focal-cn-file-preparation with deep deletion status and with updated pbta-cnv-consensus.seg.gz above [#1099](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1099)
     - consensus_seg_annotated_cn_autosomes.tsv.gz
     - consensus_seg_annotated_cn_x_and_y.tsv.gz
