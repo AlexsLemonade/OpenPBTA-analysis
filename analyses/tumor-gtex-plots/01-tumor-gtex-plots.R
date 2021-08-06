@@ -69,7 +69,7 @@ expr_mat <- expr_mat %>%
   select(hist_file$Kids_First_Biospecimen_ID)
 
 # just do GPC2 and MYCN as a test, we can remove this later
-expr_mat <- expr_mat[grep('^GPC2$|^MYCN$', rownames(expr_mat)),]
+# expr_mat <- expr_mat[grep('^GPC2$|^MYCN$', rownames(expr_mat)),]
 
 # add gene as a column
 expr_mat <- expr_mat %>% 
@@ -77,23 +77,30 @@ expr_mat <- expr_mat %>%
 
 # if tumor_vs_normal is TRUE, call tumor_vs_normal_plot else call tumor_plot
 # apply function over each gene to generate boxplot and output table
+# for-loop performs MUCH faster than plyr::d_ply or other apply functions with large datasets
 if(tumor_vs_normal){
   print("Tumor-Normal-GTEx plots")
-  plyr::d_ply(.data = expr_mat, .variables = "gene", .fun = function(x) tumor_normal_gtex_plot(expr_mat_gene = x,
-                                                                                               hist_file, 
-                                                                                               map_file, 
-                                                                                               analysis_type,
-                                                                                               plots_dir, results_dir,
-                                                                                               plot_width, plot_height,
-                                                                                               meta_file))
+  for(i in 1:nrow(expr_mat)){
+    x <- expr_mat[i,]
+    tumor_normal_gtex_plot(expr_mat_gene = x,
+                           hist_file, 
+                           map_file, 
+                           analysis_type,
+                           plots_dir, results_dir,
+                           plot_width, plot_height,
+                           meta_file)
+  }
 } else {
   print("Pan-cancer plots")
-  plyr::d_ply(.data = expr_mat, .variables = "gene", .fun = function(x) pan_cancer_plot(expr_mat_gene = x,
-                                                                                        hist_file, 
-                                                                                        map_file,
-                                                                                        analysis_type,
-                                                                                        plots_dir, results_dir,
-                                                                                        plot_width, plot_height,
-                                                                                        meta_file))
+  for(i in 1:nrow(expr_mat)){
+    x <- expr_mat[i,]
+    pan_cancer_plot(expr_mat_gene = x,
+                    hist_file, 
+                    map_file,
+                    analysis_type,
+                    plots_dir, results_dir,
+                    plot_width, plot_height,
+                    meta_file)
+  }
 }
 
