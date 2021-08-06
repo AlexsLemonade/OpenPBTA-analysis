@@ -18,6 +18,7 @@
  - Update histology information 
    - latest pathology diagnosis for 7316-2686 [#1032](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1032)
    - BS_0TCRV9AC as sample_type == Normal
+   - Add `cancer_group` for plot labeling per [#917](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/917)
 - folder structure
 ```
 data
