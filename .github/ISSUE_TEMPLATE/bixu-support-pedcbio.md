@@ -1,8 +1,7 @@
-
 ---
-name: Bix Dev General Support Ticket 
-about: Use this template to describe your issues with existing tools/workflows. Intended for community support
-title: 'Bix Dev Support:'
+name: Bix Dev PedcbioPortal Support Ticket 
+about: Use this template to describe your issues related to pedcbio portal updates for your project
+title: 'Bix Dev PedcbioPortal Support:'
 labels: bix-dev, pedcbioportal support
 assignees: migbro, bix-dev
 
@@ -16,7 +15,7 @@ assignees: migbro, bix-dev
 
 #### [Required] How would you most generally describe your issue? 
 - [ ] Upddate data for project in pedcbio portal
-- [ ] Pedcbio portal data questions
+- [ ] Questions related to data on pedcbio portal 
 
 #### [Required] Please provide any links, files, or descriptions we might find helpful
 <!--
