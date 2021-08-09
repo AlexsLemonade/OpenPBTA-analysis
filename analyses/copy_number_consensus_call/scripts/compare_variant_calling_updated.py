@@ -10,8 +10,9 @@
 # and finally cnvkit - freec
 # We'll end up with 3 output files.
 
-# The principle for finding consensus CNVs is that if any two CNVs overlap at least 50% reciprocally, we will
-# take the common section of those overlapping CNVs as the new consensus CNV.
+# The principle for finding consensus CNVs is that if any two CNVs overlap at least 50% reciprocally
+# OR a CNV overlaps 90% or more of a CNV region in another caller 
+# we will take the common section of those overlapping CNVs as the new consensus CNV.
 
 ################# Output format ###############
 
@@ -178,10 +179,12 @@ def generate_consensus(list1_name,list1,list2_name,list2):
                     coverage_list2 = 0
 
                 ## Check to see if the overlap is >= 50% RECIPROCALLY
-                ## OR a CNV in list2 completely overlaps more than 90% of CNV in list1
-                ## OR a CNV in list1 completely overlaps more than 90% of CNV in list2
+                ## OR a CNV in list2 overlaps more than 90% of CNV in list1
+                ## OR a CNV in list1 overlaps more than 90% of CNV in list2
                 if (coverage_list1 >= 0.5 and coverage_list2 >= 0.5) or (coverage_list1 >=0.9 and coverage_list2 >0 ) or (coverage_list1>0 and coverage_list2 >=0.9):
-                    ## if it is 50% reciprocally, we chose from the list2 starts and ends
+                    ## if it is 50% reciprocally
+                    ## OR a CNV overlaps 90% or more of CNV region in another caller 
+                    ## we chose from the list2 starts and ends
                     ## we take out the smallest start and biggest end
                     ## This maximize the CNV length from list2
                     fin_start_list2 = min(list2_start_list)
