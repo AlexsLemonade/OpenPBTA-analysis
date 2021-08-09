@@ -52,7 +52,7 @@ args = parser.parse_args()
 
 
 ## Pandas load/read files in
-histologies = pd.read_csv(args.histologies, sep="\t")
+histologies = pd.read_csv(args.histologies, sep="\t",dtype=str )
 merged_manta = pd.read_csv(args.manta, delimiter='\t', dtype=str   )
 merged_cnvkit = pd.read_csv(args.cnvkit, delimiter='\t', dtype=str )
 merged_freec = pd.read_csv(args.freec, delimiter='\t', dtype=str )
@@ -66,15 +66,16 @@ cnvkit_samples = set(merged_cnvkit[CNVKIT_ID_HEADER])
 freec_samples = set(merged_freec[FREEC_ID_HEADER])
 
 # Filtering for WGS samples 
-WGS_all_samples = set(histologies[histologies["experimental_strategy"] == "WGS"][["Kids_First_Biospecimen_ID"]])
-
+WGS_all_samples = set(histologies[(histologies["experimental_strategy"] == "WGS") & (histologies["sample_type"] == "Tumor")]['Kids_First_Biospecimen_ID'])
+print(len(WGS_all_samples))
 
 ## Merged and take the unique samples. Any method without a certain sample will get an empty file
 ## for of that sample.
 all_samples = sorted(manta_samples | cnvkit_samples | freec_samples) # set union
 
 ## Intersect WGS DNA samples with all_samples to run cnv consensus
-WGS_all_samples_to_run <- WGS_all_samples.intersection(all_samples)
+WGS_all_samples_to_run = WGS_all_samples.intersection(all_samples)
+print(len(WGS_all_samples_to_run))
 
 ## Define and create assumed directories
 scratch_d = args.scratch
@@ -124,7 +125,7 @@ for sample in WGS_all_samples_to_run:
 ## Make the Snakemake config file. Write all of the sample names into the config file
 with open(args.snake, 'w') as file:
     file.write('samples:' + '\n')
-    for sample in all_samples:
+    for sample in WGS_all_samples_to_run:
         file.write('  ' + str(sample) + ':' + '\n')
 
     ## Define the extension for the config file
