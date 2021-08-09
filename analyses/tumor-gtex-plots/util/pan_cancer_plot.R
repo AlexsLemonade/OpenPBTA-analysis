@@ -4,8 +4,8 @@ suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(ggplot2))
 
 pan_cancer_plot <- function(expr_mat_gene, hist_file, map_file,
-                       analysis_type = c("cohort_cancer_group_level", "cancer_group_level"), 
-                       plots_dir, results_dir, plot_width, plot_height, meta_file){
+                            analysis_type = c("cohort_cancer_group_level", "cancer_group_level"), 
+                            plots_dir, results_dir, plot_width, plot_height, meta_file){
   
   # subset histology to minimal columns
   hist_file <- hist_file %>%
@@ -58,19 +58,19 @@ pan_cancer_plot <- function(expr_mat_gene, hist_file, map_file,
   
   # data-frame for metadata output 
   meta_df <- data.frame(Gene_symbol = gene_name, 
-                           plot_type = "pan_cancer", 
-                           Dataset = cohort_name,
-                           Disease = NA,
-                           analysis_type = analysis_type, 
-                           plot_fname = plot_fname,
-                           table_fname = table_fname)
+                        plot_type = "pan_cancer", 
+                        Dataset = cohort_name,
+                        Disease = NA,
+                        analysis_type = analysis_type, 
+                        plot_fname = plot_fname,
+                        table_fname = table_fname)
   meta_file <- file.path(results_dir, 'metadata.tsv')
   if(!file.exists(meta_file)){
     write.table(x = meta_df, file = meta_file, sep = "\t", row.names = F, quote = F)
   } else {
     write.table(x = meta_df, file = meta_file, sep = "\t", row.names = F, col.names = F, quote = F, append = TRUE)
   }
-
+  
   # boxplot
   cols <- c("Tumor" = "grey80")
   output_plot <- ggplot(expr_mat_gene, aes(x = x_labels, y = tpm, fill = sample_type)) +
