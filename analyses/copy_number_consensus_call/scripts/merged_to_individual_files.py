@@ -45,11 +45,14 @@ parser.add_argument('--cnvsize', default=3000,
                     help='cnv cutoff size in base pairs')
 parser.add_argument('--freecp', default=0.01,
                     help='p-value cutoff for freec')
+parser.add_argument('--histologies', required = True,
+                    help = 'path to the histology file')
 
 args = parser.parse_args()
 
 
 ## Pandas load/read files in
+histologies = pd.read_csv(args.histologies, sep="\t")
 merged_manta = pd.read_csv(args.manta, delimiter='\t', dtype=str   )
 merged_cnvkit = pd.read_csv(args.cnvkit, delimiter='\t', dtype=str )
 merged_freec = pd.read_csv(args.freec, delimiter='\t', dtype=str )
@@ -62,10 +65,16 @@ manta_samples = set(merged_manta[MANTA_ID_HEADER])
 cnvkit_samples = set(merged_cnvkit[CNVKIT_ID_HEADER])
 freec_samples = set(merged_freec[FREEC_ID_HEADER])
 
+# Filtering for WGS samples 
+WGS_all_samples = set(histologies[histologies["experimental_strategy"] == "WGS"][["Kids_First_Biospecimen_ID"]])
+
 
 ## Merged and take the unique samples. Any method without a certain sample will get an empty file
 ## for of that sample.
 all_samples = sorted(manta_samples | cnvkit_samples | freec_samples) # set union
+
+## Intersect WGS DNA samples with all_samples to run cnv consensus
+WGS_all_samples_to_run <- WGS_all_samples.intersection(all_samples)
 
 ## Define and create assumed directories
 scratch_d = args.scratch
@@ -85,7 +94,7 @@ bad_calls = []
 
 ## Loop through each sample, search for that sample in each of the three dataframes,
 ## and create a file of the sample in each directory
-for sample in all_samples:
+for sample in WGS_all_samples_to_run:
 
     ## Pull out the CNVs with that sample name
     manta_export = merged_manta.loc[merged_manta[MANTA_ID_HEADER] == sample]
