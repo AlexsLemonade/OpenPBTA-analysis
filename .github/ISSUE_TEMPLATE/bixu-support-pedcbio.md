@@ -10,7 +10,7 @@ assignees: migbro, bix-dev
 <!--Hi there! Please take a moment to fill out the template below.-->
 # 🆘
 
-#### [Required] Before completing the questionnaire below, please describe your issue in a couple of sentences
+#### Please describe your issue in a couple of sentences and provide a link to the relevant pedcbio project of interest, if it already exists
 
 
 #### [Required] How would you most generally describe your issue? 
