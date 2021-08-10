@@ -24,7 +24,7 @@
 
 ```
 ├── 01-tumor-gtex-plots.R # script to call all functions and run analysis
-├── 02-annotate-and-zip.R # script to annotate files with MONDO, RMTL, EFO fields, convert to JSONL and gzip
+├── 02-chunkwise-annotate-and-zip.R # script to annotate files with MONDO, RMTL, EFO fields, convert to JSONL and gzip
 ├── README.md 
 ├── plots # png files of expression boxplots (possible examples)
 │   ├── GPC2_GMKF_Neuroblastoma_vs_GTEx_cohort_cancer_group_level.png
@@ -46,7 +46,7 @@
 ├── run-pan-cancer-plots.sh # script for pan-cancer plots
 ├── run-tumor-gtex-plots.sh # full analysis script
 ├── run-tumor-normal-gtex-plots.sh # script for tumor vs gtex plots
-├── run-annotator.sh # script to call 02-annotate-and-zip.R
+├── run-annotator.sh # script to call 02-chunkwise-annotate-and-zip.R
 └── util
     ├── pubTheme.R # publication quality ggplot2 theme
     ├── pan_cancer_plot.R # function for pan-cancer plot
@@ -120,12 +120,12 @@ Tumors vs GTEx filename format:
 
 4. `results/metadata.tsv`: metadata file for all comparisons 
 
-#### 02-annotate-and-zip.R
+#### 02-chunkwise-annotate-and-zip.R
 
 ##### Input parameters:
 
 ```
-Rscript 02-annotate-and-zip.R --help
+Rscript 02-chunkwise-annotate-and-zip.R --help
 
 Options:
 	--input_file=INPUT_FILE
