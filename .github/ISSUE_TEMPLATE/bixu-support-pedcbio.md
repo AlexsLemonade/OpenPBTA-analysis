@@ -17,7 +17,7 @@ assignees: migbro, bix-dev
 - [ ] Update data for project in pedcbio portal
 - [ ] Questions related to data on pedcbio portal 
 
-#### [Required] Please provide any links, files, or descriptions we might find helpful
+#### If an update to a project, provide links to the input files that should be used and descriptions we might find helpful. If new `case_set_ids` need to be added, please provide instructions below.
 <!--
 Should ideally correspond to a data release folder in s3
 -->
