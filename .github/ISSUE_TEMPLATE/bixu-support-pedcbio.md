@@ -14,7 +14,7 @@ assignees: migbro, bix-dev
 
 
 #### [Required] How would you most generally describe your issue? 
-- [ ] Upddate data for project in pedcbio portal
+- [ ] Update data for project in pedcbio portal
 - [ ] Questions related to data on pedcbio portal 
 
 #### [Required] Please provide any links, files, or descriptions we might find helpful
