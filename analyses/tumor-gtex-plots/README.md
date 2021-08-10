@@ -135,7 +135,7 @@ Options:
 ##### Inputs:
 
 This script takes the output `.tsv` files from `01-tumor-gtex-plots.R`, annotates using the 
-`long-format-table-utils/annotator/annotator-cli.R` script, converts to JSONL and gzips the output.
+`long-format-table-utils/annotator/annotator-cli.R` script, reads back annotated data (.tsv) into chunks of 1 million rows, converts to JSON and then JSONL, followed by combining all JSONL files and gzipping the final JSONL file. 
 
 ##### Outputs:
 
