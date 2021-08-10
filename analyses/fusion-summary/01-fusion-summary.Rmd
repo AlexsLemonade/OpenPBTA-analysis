@@ -73,12 +73,12 @@ annotDir <- file.path("..", "..", "analyses", "fusion_filtering", "references")
 annot <- read_tsv(file.path(annotDir, "genelistreference.txt"))
 #' The putative oncogenic fusion file is what we'll use to check for the #' presence or absence of the fusions.
 putativeOncogenicDF <- 
-  read_tsv(file.path(fusDir, "pbta-fusion-putative-oncogenic.tsv"))
+  read_tsv(file.path(fusDir, "fusion-putative-oncogenic.tsv"))
 #' However, some biospecimens are not represented in this filtered, prioritized
 #' file but *are* present in the original files -- this will cause them to be
 #' "missing" in the final files for consumption which could mislead analysts.
-arribaDF <- read_tsv(file.path(dataDir, "pbta-fusion-arriba.tsv.gz"))
-starfusionDF <- read_tsv(file.path(dataDir, "pbta-fusion-starfusion.tsv.gz"))
+arribaDF <- read_tsv(file.path(dataDir, "fusion-arriba.tsv.gz"))
+starfusionDF <- read_tsv(file.path(dataDir, "fusion-starfusion.tsv.gz"))
 ```
 
 ### Output
