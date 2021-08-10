@@ -22,7 +22,7 @@ assignees: migbro, bix-dev
 Should ideally correspond to a data release folder in s3
 -->
 
-#### [Required] Provide the manifest that will be used to select samples
+#### Provide the manifest (or a link to a manifest) that will be used to select samples
 
 
 ### Ticket will be considered resolved either by a successful PR with updated release if applicable, or a simple denial of the request backed by a good reason
