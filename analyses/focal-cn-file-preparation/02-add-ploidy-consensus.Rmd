@@ -46,14 +46,14 @@ if(!dir.exists(output_dir)) {
 ```
 
 ```{r}
-# TODO: the consensus SEG file is not currently in the data download -- when it
-# gets included we will have to change the file path here
-consensus_seg_file <- file.path("..", "copy_number_consensus_call", "results", 
-                                "pbta-cnv-consensus.seg.gz")
 if ( params$base_run ==0 ){
-histologies_file <- file.path("..", "..", "data", "pbta-histologies.tsv")
+  histologies_file <- file.path("..", "..", "data", "pbta-histologies.tsv")
+  consensus_seg_file <- file.path("..", "..", "data", 
+                                  "pbta-cnv-consensus.seg.gz")
 } else {
-histologies_file <- file.path("..", "..", "data", "pbta-histologies-base.tsv")
+  histologies_file <- file.path("..", "..", "data", "pbta-histologies-base.tsv")
+  consensus_seg_file <- file.path("..", "copy_number_consensus_call", "results", 
+                                  "pbta-cnv-consensus.seg.gz")
 }
 
 consensus_seg_df <- read_tsv(consensus_seg_file)
@@ -224,4 +224,3 @@ temp_gain <- purrr::imap(bed_gain_list,
 ```{r}
 sessionInfo()
 ```
-
