@@ -18,7 +18,6 @@
 ### Methods 
 
 1. Filter `cancer_subgroup` or `gtex_subgroup` with number of samples < 5 
-2. Currently only generating outputs for `GPC2` and `MYCN` for the initial review
 
 ### Module structure
 
@@ -158,6 +157,10 @@ bash annotator.sh
 # running both scripts
 bash run-tumor-gtex-plots.sh
 ```
+
+### Final output
+
+The final plots as `.png` and tables as `.tsv` and `.jsonl.gz` files have been uploaded to `s3://kf-openaccess-us-east-1-prd-pbta/open-targets/analyses/tumor-gtex-plots/`
 
 
 
