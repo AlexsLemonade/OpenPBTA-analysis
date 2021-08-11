@@ -8,11 +8,20 @@ The purpose of this module is to map from those ranges to gene identifiers for c
 ### Running this analysis
 *This analysis requires at least ~24 GB of RAM to run to completion*
 
-To run this analysis _only on consensus SEG file_, use the following (from the root directory of the repository):
+To run this analysis _only on consensus SEG file_, 
+
+use OPENPBTA_BASE_SUBTYPING=1 to run this module using the pbta-histologies-base.tsv from data folder and relative path to `copy_number_consensus_call/results/pbta-cnv-consensus.seg.gz` while running molecular-subtyping modules for release.
+
+```
+OPENPBTA_BASE_SUBTYPING=1 bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
+```
+
+Or by default runs analyses using pbta-histologies.tsv and downloaded files from data release:
 
 ```
 bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
 ```
+
 **Note**: The `run-bedtools.snakemake` script is implemented in `run-prepare-cn.sh` to run the bedtools coverage steps between the UCSC cytoband file and the samples in the copy number files produced in `02-add-ploidy-consensus.Rmd`.
 This script currently takes a while to run, and therefore slows down the processing speed of the main shell script `run-prepare-cn.sh`.
 
