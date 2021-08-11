@@ -26,6 +26,23 @@ inspected_annotated_long_format_tibble <- readr::read_tsv(
   col_types = readr::cols(.default = readr::col_character()),
   na = c("NA"), quoted_na = FALSE, trim_ws = FALSE)[]
 
+# v7 adds:
+# - GTEx_tissue_group -> GTEx_tissue_group_UBERON
+# - GTEx_tissue_subgroup -> GTEx_tissue_subgroup_UBERON
+v7_long_format_tibble <- readr::read_tsv(
+  "test_data/v7_test_long_format_table.tsv",
+  col_types = readr::cols(.default = readr::col_character()))[]
+
+v7_inspected_annotated_long_format_tibble <- readr::read_tsv(
+  "test_data/v7_inspected_annotated_test_long_format_table.tsv",
+  col_types = readr::cols(.default = readr::col_character()),
+  na = c("NA"), quoted_na = FALSE, trim_ws = FALSE)[]
+
+v7_all_ann_columns <- c(
+  "RMTL", "Gene_type", "OncoKB_cancer_gene", "OncoKB_oncogene_TSG",
+  "Gene_full_name", "Protein_RefSeq_ID", "EFO", "MONDO",
+  "GTEx_tissue_group_UBERON", "GTEx_tissue_subgroup_UBERON")
+
 # nac means non all character. These tables can be used to test whether column
 # types are changed.
 long_format_tibble_nac <- readr::read_tsv(
@@ -62,6 +79,10 @@ testthat::expect_equal(
 testthat::expect_equal(
   annotate_long_format_table(long_format_tibble),
   inspected_annotated_long_format_tibble)
+
+testthat::expect_equal(
+  annotate_long_format_table(v7_long_format_tibble, v7_all_ann_columns),
+  v7_inspected_annotated_long_format_tibble)
 
 # Test replacing NAs with empty strings for **ALL COLUMNS THAT HAVE NA** in the
 # output table
@@ -116,7 +137,7 @@ testthat::expect_equal(
                        "OncoKB_oncogene_TSG", "Gene_full_name",
                        "Protein_RefSeq_ID", "EFO", "MONDO")),
   inspected_annotated_long_format_tibble[,
-    c("Gene_symbol", "Gene_Ensembl_ID", "Disease", "cohort", "tpm_mean", "RMTL",
+    c(colnames(long_format_tibble), "RMTL",
       "Gene_type", "OncoKB_cancer_gene", "OncoKB_oncogene_TSG",
       "Gene_full_name", "Protein_RefSeq_ID", "EFO", "MONDO")])
 
@@ -124,14 +145,14 @@ testthat::expect_equal(
   annotate_long_format_table(
     long_format_tibble, columns_to_add = c("MONDO", "RMTL", "EFO")),
   inspected_annotated_long_format_tibble[,
-    c("Gene_symbol", "Gene_Ensembl_ID", "Disease", "cohort", "tpm_mean",
+    c(colnames(long_format_tibble),
       "MONDO", "RMTL", "EFO")])
 
 testthat::expect_equal(
   annotate_long_format_table(
     long_format_tibble, columns_to_add = c("RMTL", "EFO", "MONDO")),
   inspected_annotated_long_format_tibble[,
-    c("Gene_symbol", "Gene_Ensembl_ID", "Disease", "cohort", "tpm_mean",
+    c(colnames(long_format_tibble),
       "RMTL", "EFO", "MONDO")])
 
 testthat::expect_equal(
@@ -139,7 +160,7 @@ testthat::expect_equal(
     long_format_tibble,
     columns_to_add = c("RMTL", "Protein_RefSeq_ID", "Gene_full_name")),
   inspected_annotated_long_format_tibble[,
-    c("Gene_symbol", "Gene_Ensembl_ID", "Disease", "cohort", "tpm_mean",
+    c(colnames(long_format_tibble),
       "RMTL", "Protein_RefSeq_ID", "Gene_full_name")])
 
 testthat::expect_equal(
@@ -147,14 +168,48 @@ testthat::expect_equal(
     long_format_tibble,
     columns_to_add = c("OncoKB_oncogene_TSG", "OncoKB_cancer_gene", "MONDO")),
   inspected_annotated_long_format_tibble[,
-    c("Gene_symbol", "Gene_Ensembl_ID", "Disease", "cohort", "tpm_mean",
+    c(colnames(long_format_tibble),
       "OncoKB_oncogene_TSG", "OncoKB_cancer_gene", "MONDO")])
+
+testthat::expect_equal(
+  annotate_long_format_table(
+    v7_long_format_tibble,
+    columns_to_add = c(
+      "GTEx_tissue_group_UBERON", "OncoKB_cancer_gene", "MONDO")),
+  v7_inspected_annotated_long_format_tibble[,
+    c(colnames(v7_long_format_tibble),
+      "GTEx_tissue_group_UBERON", "OncoKB_cancer_gene", "MONDO")])
+
+testthat::expect_equal(
+  annotate_long_format_table(
+    v7_long_format_tibble,
+    columns_to_add = c(
+      "OncoKB_oncogene_TSG", "GTEx_tissue_subgroup_UBERON", "MONDO")),
+  v7_inspected_annotated_long_format_tibble[,
+    c(colnames(v7_long_format_tibble),
+      "OncoKB_oncogene_TSG", "GTEx_tissue_subgroup_UBERON", "MONDO")])
+
+testthat::expect_equal(
+  annotate_long_format_table(
+    v7_long_format_tibble,
+    columns_to_add = c(
+      "OncoKB_oncogene_TSG", "OncoKB_cancer_gene",
+      "GTEx_tissue_subgroup_UBERON")),
+  v7_inspected_annotated_long_format_tibble[,
+    c(colnames(v7_long_format_tibble),
+      "OncoKB_oncogene_TSG", "OncoKB_cancer_gene",
+      "GTEx_tissue_subgroup_UBERON")])
 
 # Return same table if no annotation to add
 testthat::expect_equal(
   annotate_long_format_table(
     long_format_tibble, columns_to_add = character(0)),
   long_format_tibble)
+
+testthat::expect_equal(
+  annotate_long_format_table(
+    v7_long_format_tibble, columns_to_add = character(0)),
+  v7_long_format_tibble)
 
 # Error on duplicated annotation columns
 testthat::expect_error(annotate_long_format_table(
@@ -164,6 +219,11 @@ testthat::expect_error(annotate_long_format_table(
 testthat::expect_error(annotate_long_format_table(
     long_format_tibble,
     columns_to_add = c("OncoKB_oncogene_TSG", "MONDO", "MONDO")))
+
+testthat::expect_error(annotate_long_format_table(
+    v7_long_format_tibble,
+    columns_to_add = c(
+      "GTEx_tissue_subgroup_UBERON", "GTEx_tissue_subgroup_UBERON", "MONDO")))
 
 # Error on non-available annotation columns
 testthat::expect_error(annotate_long_format_table(
@@ -229,6 +289,26 @@ testthat::expect_error(
     dplyr::select(long_format_tibble, -Gene_Ensembl_ID),
     columns_to_add = c("Gene_full_name")))
 
+testthat::expect_error(
+  annotate_long_format_table(
+    long_format_tibble,
+    columns_to_add = c("GTEx_tissue_subgroup_UBERON")))
+
+testthat::expect_error(
+  annotate_long_format_table(
+    long_format_tibble,
+    columns_to_add = c("GTEx_tissue_group_UBERON")))
+
+testthat::expect_error(
+  annotate_long_format_table(
+    dplyr::select(v7_long_format_tibble, -GTEx_tissue_group),
+    columns_to_add = c("GTEx_tissue_group_UBERON")))
+
+testthat::expect_error(
+  annotate_long_format_table(
+    dplyr::select(v7_long_format_tibble, -GTEx_tissue_subgroup),
+    columns_to_add = c("GTEx_tissue_subgroup_UBERON")))
+
 # No error if all required columns are provided
 testthat::expect_equal(
   annotate_long_format_table(
@@ -271,6 +351,19 @@ testthat::expect_equal(
     -Protein_RefSeq_ID, -EFO, -MONDO,
     -Gene_full_name, -RMTL,
     Gene_full_name, RMTL))
+
+testthat::expect_equal(
+  annotate_long_format_table(
+    dplyr::select(v7_long_format_tibble, -GTEx_tissue_subgroup, -Gene_symbol),
+    columns_to_add = c("Gene_full_name", "GTEx_tissue_group_UBERON")),
+  dplyr::select(
+    v7_inspected_annotated_long_format_tibble,
+    -GTEx_tissue_subgroup, -Gene_symbol,
+    -Gene_type, -OncoKB_cancer_gene, -OncoKB_oncogene_TSG,
+    -Protein_RefSeq_ID, -EFO, -MONDO,
+    -Gene_full_name, -RMTL, -GTEx_tissue_group_UBERON,
+    -GTEx_tissue_subgroup_UBERON,
+    Gene_full_name, GTEx_tissue_group_UBERON))
 
 # Error on non-character required columns
 testthat::expect_error(
@@ -329,6 +422,13 @@ testthat::expect_error(
   annotate_long_format_table(
     dplyr::select(inspected_annotated_long_format_tibble, -EFO),
     columns_to_add = c("EFO", "MONDO")))
+
+testthat::expect_error(
+  annotate_long_format_table(
+    dplyr::select(
+      v7_inspected_annotated_long_format_tibble, -GTEx_tissue_subgroup_UBERON),
+    columns_to_add = c(
+      "GTEx_tissue_subgroup_UBERON", "GTEx_tissue_group_UBERON")))
 
 # Error on duplicated annotation columns
 testthat::expect_error(
@@ -404,3 +504,15 @@ testthat::expect_equal(
     inspected_annotated_long_format_tibble,
     -RMTL, -EFO, -OncoKB_oncogene_TSG, -Gene_full_name,
     EFO, OncoKB_oncogene_TSG, Gene_full_name))
+
+testthat::expect_equal(
+  annotate_long_format_table(
+    dplyr::select(
+      v7_inspected_annotated_long_format_tibble,
+      -GTEx_tissue_group_UBERON, -OncoKB_oncogene_TSG, -Gene_full_name, -RMTL),
+    columns_to_add = c(
+      "GTEx_tissue_group_UBERON", "OncoKB_oncogene_TSG", "Gene_full_name")),
+  dplyr::select(
+    v7_inspected_annotated_long_format_tibble,
+    -RMTL, -GTEx_tissue_group_UBERON, -OncoKB_oncogene_TSG, -Gene_full_name,
+    GTEx_tissue_group_UBERON, OncoKB_oncogene_TSG, Gene_full_name))

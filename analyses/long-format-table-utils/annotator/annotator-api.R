@@ -20,15 +20,28 @@
 #     the following annotation columns:
 #     - EFO
 #     - MONDO
+#   - GTEx_tissue_group: The `gtex_group` in the `histologies.tsv`, e.g.
+#     Adipose, Kidney, and Thyroid. The GTEx_tissue_group column is required for
+#     adding the following annotation column:
+#     - GTEx_tissue_group_UBERON
+#   - GTEx_tissue_subgroup: The `gtex_subgroup` in the `histologies.tsv`, e.g.
+#     Adipose - Subcutaneous, Kidney - Cortex, and Thyroid. The
+#     GTEx_tissue_subgroup column is required for adding the following
+#     annotation column:
+#     - GTEx_tissue_subgroup_UBERON
 # - columns_to_add: a character vector of unique names of the columns to be
 #   added to the input table. The vector can contain zero or more of the
 #   following column names: "RMTL", "Gene_type", "OncoKB_cancer_gene",
+#   "OncoKB_oncogene_TSG", "Gene_full_name", "Protein_RefSeq_ID", "EFO",
+#   "MONDO", "GTEx_tissue_group_UBERON", "GTEx_tissue_subgroup_UBERON". Default
+#   value is to add "RMTL", "Gene_type", "OncoKB_cancer_gene",
 #   "OncoKB_oncogene_TSG", "Gene_full_name", "Protein_RefSeq_ID", "EFO", and
-#   "MONDO". Default value is to add all columns. Notes:
-#   - match.arg is **NOT** used for this parameter, because exact matches are
-#     required
-#   - The order of returned annotated table has the same column order as the
-#     input table and added columns in the order of columns_to_add parameter.
+#   "MONDO".
+#   - Notes:
+#     - match.arg is **NOT** used for this parameter, because exact matches are
+#       required
+#     - The order of returned annotated table has the same column order as the
+#       input table and added columns in the order of columns_to_add parameter
 # - replace_na_with_empty_string: TRUE or FALSE on whether NAs should be
 #   replaced with empty strings for **ALL COLUMNS THAT HAVE NA** in the output
 #   table. Default value is TRUE.
@@ -45,9 +58,16 @@
 #   annotation files use Gene_Ensembl_ID as key columns
 #
 # Notes on how to add new annotation columns for maintainers:
-# - Add new column names to the columns_to_add parameter
+# - Update this documentation comment for the long_format_table and
+#   columns_to_add parameters
+# - For backward compatibility, do not change the default parameter value of
+#   columns_to_add
 # - Add new column names to the available_ann_columns variable
-# - Implement annotation procedures to add new columns
+# - Implement annotation procedures to add new columns by adding additional
+#   ann_tbl_l elements
+# - Update annotator-cli.R help message for -c/--columns-to-add
+# - Add new tests to tests/test_annotate_long_format_table.R and
+#   tests/test_annotator_cli.R for new annotation columns
 annotate_long_format_table <- function(
   long_format_table,
   columns_to_add = c("RMTL", "Gene_type", "OncoKB_cancer_gene",
@@ -95,7 +115,9 @@ annotate_long_format_table <- function(
   }
   available_ann_columns <- c("RMTL", "Gene_type", "OncoKB_cancer_gene",
                              "OncoKB_oncogene_TSG", "Gene_full_name",
-                             "Protein_RefSeq_ID", "EFO", "MONDO")
+                             "Protein_RefSeq_ID", "EFO", "MONDO",
+                             "GTEx_tissue_group_UBERON",
+                             "GTEx_tissue_subgroup_UBERON")
   # Helper function to convert a character vector to a single string
   char_vec_to_str <- function(x) {
     return(paste0("c(\"", paste(x, collapse = "\", \""), "\")"))
@@ -266,7 +288,7 @@ annotate_long_format_table <- function(
         root_dir, "analyses", "long-format-table-utils", "annotator",
         "annotation-data", "oncokb-cancer-gene-list.tsv"),
       join_by_column = "Gene_symbol")
-    # Process for joining
+    # Process tibble for joining
     ann_tbl_l$onkokb$tibble <- ann_tbl_l$onkokb$tibble %>%
       dplyr::select(
         `Hugo Symbol`, `Is Oncogene`, `Is Tumor Suppressor Gene`) %>%
@@ -290,7 +312,7 @@ annotate_long_format_table <- function(
         "genelistreference.txt"),
       join_by_column = "Gene_symbol"
     )
-    # Process for joining
+    # Process tibble for joining
     ann_tbl_l$gene_type$tibble <- ann_tbl_l$gene_type$tibble %>%
       dplyr::group_by(Gene_Symbol) %>%
       dplyr::summarise(
@@ -311,7 +333,7 @@ annotate_long_format_table <- function(
                   "version column NAs with rmtl column non-NAs\n",
                   "Check data integrity. Submit a data question GitHub issue."))
     }
-    # Process for joining
+    # Process tibble for joining
     ann_tbl_l$fda_rmtl$tibble <- ann_tbl_l$fda_rmtl$tibble %>%
       dplyr::select(ensg_id, rmtl, version) %>%
       dplyr::filter(!is.na(rmtl), !is.na(version)) %>%
@@ -324,10 +346,31 @@ annotate_long_format_table <- function(
     ann_tbl_l$cgroup_ontology = init_ann_tbl_l_element(
       file_path = file.path(root_dir, "data", "efo-mondo-map.tsv"),
       join_by_column = "Disease")
-    # Process for joining
+    # Process tibble for joining
     ann_tbl_l$cgroup_ontology$tibble <- dplyr::rename(
       ann_tbl_l$cgroup_ontology$tibble,
       Disease = cancer_group, EFO = efo_code, MONDO = mondo_code)
+  }
+
+  if ("GTEx_tissue_group_UBERON" %in% columns_to_add) {
+    ann_tbl_l$gtex_group_ontology = init_ann_tbl_l_element(
+      file_path = file.path(root_dir, "data", "uberon-map-gtex-group.tsv"),
+      join_by_column = "GTEx_tissue_group")
+    # Process tibble for joining
+    ann_tbl_l$gtex_group_ontology$tibble <- dplyr::rename(
+      ann_tbl_l$gtex_group_ontology$tibble,
+      GTEx_tissue_group = gtex_group, GTEx_tissue_group_UBERON = uberon_code)
+  }
+
+  if ("GTEx_tissue_subgroup_UBERON" %in% columns_to_add) {
+    ann_tbl_l$gtex_subgroup_ontology = init_ann_tbl_l_element(
+      file_path = file.path(root_dir, "data", "uberon-map-gtex-subgroup.tsv"),
+      join_by_column = "GTEx_tissue_subgroup")
+    # Process tibble for joining
+    ann_tbl_l$gtex_subgroup_ontology$tibble <- dplyr::rename(
+      ann_tbl_l$gtex_subgroup_ontology$tibble,
+      GTEx_tissue_subgroup = gtex_subgroup,
+      GTEx_tissue_subgroup_UBERON = uberon_code)
   }
 
   # Check required columns are in long_format_table
@@ -419,6 +462,7 @@ annotate_long_format_table <- function(
     },
     .init = list(tibble = long_format_table),
     .dir = "forward")$tibble
+
   # The OncoKB_cancer_gene values are Y or N only
   ann_long_format_table <- tidyr::replace_na(
     ann_long_format_table, list(OncoKB_cancer_gene = "N"))
@@ -448,6 +492,7 @@ annotate_long_format_table <- function(
                 ", which do not include all column names to be returned ",
                 char_vec_to_str(ret_tbl_col_order), "."))
   }
+
   # Though tidyselect::one_of is superseded in favor of tidyselect::any_of and
   # tidyselect::all_of, the docker image only has one_of
   ann_long_format_table <- dplyr::select(
