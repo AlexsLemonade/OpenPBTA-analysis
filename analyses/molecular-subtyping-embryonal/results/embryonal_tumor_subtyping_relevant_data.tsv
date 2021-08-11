@@ -1,11 +1,11 @@
 Kids_First_Participant_ID	sample_id	Kids_First_Biospecimen_ID_DNA	Kids_First_Biospecimen_ID_RNA	age_at_diagnosis_yrs	germline_sex_estimate	pathology_diagnosis	pathology_free_text_diagnosis	LIN28A	TTYH1_fusions	chr19_amplification	FOXR2	FOXR2_fusions	MN1_fusions	CIC_fusions
 PT_00G007DM	7316-2577	BS_AQMKA8NC	BS_FEPRNEXX	1	Male	Embryonal Tumor with Multilayered Rosettes (ETMR);Other	ependymoblastoma	-0.1768681754790916	None	No	-0.07009343176288803	None	None	None
 PT_00G007DM	7316-272	BS_K07KNTFY	BS_QWNBZ9RJ	1	Male	Embryonal Tumor with Multilayered Rosettes (ETMR)	embryonal tumor with abundant neuropil and true rosettes (pnet)	2.188519266107686	TTYH1--DPRX/RNU6-698P	Yes	-0.11869356872650459	None	None	None
+PT_00G007DM	7316-272	BS_K07KNTFY	BS_QWNBZ9RJ	1	Male	Embryonal Tumor with Multilayered Rosettes (ETMR)	embryonal tumor with abundant neuropil and true rosettes (pnet)	2.188519266107686	TTYH1--DPRX/RNU6-698P	Yes	-0.11869356872650459	None	None	None
 PT_01MZ62KG	7316-447	BS_TE8QFF7T	BS_P39SQPTS	1	Male	Pineoblastoma	pineoblastoma	7.29181260319567	TTYH1--MIR512-2/MIR1323	Yes	-0.11869356872650459	None	None	None
 PT_0PT33SCF	7316-1100	BS_KBPBCWA0	BS_09R7GDA7	3	Female	Supratentorial or Spinal Cord PNET	pnet, maturing treatment induced	-0.1982278580089859	None	No	-0.11869356872650459	None	None	None
 PT_0T2EWNYR	7316-1981	BS_AHT9PKVE	BS_7BW0YRPY	0	Female	Other	embryonal tumor, nos, congenital type	-0.1982278580089859	None	No	-0.07009343176288803	None	None	None
 PT_218SX3G4	7316-529	NA	BS_6T4JGBGY	1	NA	Supratentorial or Spinal Cord PNET	pnet	-0.05298974752522483	None	NA	-0.11869356872650459	None	None	None
-PT_38FS37DP	7316-2686	BS_JX1PK0VW	BS_DBEX7AG2	2	Female	Supratentorial or Spinal Cord PNET	supratentorial pnet (diagnosis was later adjusted to ewing sarcoma of the dura)	-0.1557189365926145	None	No	-0.11869356872650459	None	None	None
 PT_5BWZA0NT	7316-1102	BS_BFDEZK1C	BS_MB7WN0ZB	12	Female	Supratentorial or Spinal Cord PNET	spnet	-0.1982278580089859	None	No	-0.07009343176288803	None	None	None
 PT_7PXN3B4J	7316-784	NA	BS_685DACMS	1	NA	Supratentorial or Spinal Cord PNET	primitive  neuroectodermal tumor (pnet)	7.483365283248606	TTYH1--DPRX/RNU6-698P	NA	-0.1930387747220581	None	None	None
 PT_80NVYCBS	7316-765	NA	BS_KSKZ9J7J	15	NA	Ependymoma	NA	-0.1982278580089859	None	NA	-0.11869356872650459	None	MN1--AC008667.1, MN1--CXXC5, MN1--PSD2	None

@@ -1774,10 +1774,25 @@ $(document).ready(function () {
 <h3>Setup</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShcInRpZHl2ZXJzZVwiKVxuXG5yb290X2RpciA8LSBycHJvanJvb3Q6OmZpbmRfcm9vdChycHJvanJvb3Q6Omhhc19kaXIoXCIuZ2l0XCIpKVxuXG4jIGdldCBzdWJzZXQgZm9sZGVyXG5zdWJzZXRfZGlyIDwtIGZpbGUucGF0aChcbiAgcm9vdF9kaXIsXG4gIFwiYW5hbHlzZXNcIixcbiAgXCJtb2xlY3VsYXItc3VidHlwaW5nLUxHQVRcIixcbiAgXCJsZ2F0LXN1YnNldFwiXG4pXG5cbiMgcmVzdWx0IERpclxucmVzdWx0RGlyIDwtIGZpbGUucGF0aChcbiAgcm9vdF9kaXIsXG4gIFwiYW5hbHlzZXNcIixcbiAgXCJtb2xlY3VsYXItc3VidHlwaW5nLUxHQVRcIixcbiAgXCJyZXN1bHRzXCJcbilcblxuYGBgIn0= -->
-<pre class="r"><code>library(&quot;tidyverse&quot;)
-
-root_dir &lt;- rprojroot::find_root(rprojroot::has_dir(&quot;.git&quot;))
+<!-- rnb-source-begin eyJkYXRhIjoibGlicmFyeShcInRpZHl2ZXJzZVwiKSJ9 -->
+<pre class="r"><code>library(&quot;tidyverse&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIEF0dGFjaGluZyBwYWNrYWdlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlIDEuMi4xIOKUgOKUgFxuIn0= -->
+<pre><code>── Attaching packages ────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pyUIGdncGxvdDIgMy4yLjAgICAgIOKclCBwdXJyciAgIDAuMy4yXG7inJQgdGliYmxlICAyLjEuMyAgICAg4pyUIGRwbHlyICAgMC44LjNcbuKclCB0aWR5ciAgIDAuOC4zICAgICDinJQgc3RyaW5nciAxLjQuMFxu4pyUIHJlYWRyICAgMS4zLjEgICAgIOKclCBmb3JjYXRzIDAuNC4wXG4ifQ== -->
+<pre><code>✔ ggplot2 3.2.0     ✔ purrr   0.3.2
+✔ tibble  2.1.3     ✔ dplyr   0.8.3
+✔ tidyr   0.8.3     ✔ stringr 1.4.0
+✔ readr   1.3.1     ✔ forcats 0.4.0</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIENvbmZsaWN0cyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlX2NvbmZsaWN0cygpIOKUgOKUgFxu4pyWIGRwbHlyOjpmaWx0ZXIoKSBtYXNrcyBzdGF0czo6ZmlsdGVyKClcbuKcliBkcGx5cjo6bGFnKCkgICAgbWFza3Mgc3RhdHM6OmxhZygpXG4ifQ== -->
+<pre><code>── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjpbInJvb3RfZGlyIDwtIHJwcm9qcm9vdDo6ZmluZF9yb290KHJwcm9qcm9vdDo6aGFzX2RpcihcIi5naXRcIikpIiwiIiwiIyBnZXQgc3Vic2V0IGZvbGRlciIsInN1YnNldF9kaXIgPC0gZmlsZS5wYXRoKFxuICByb290X2RpcixcbiAgXCJhbmFseXNlc1wiLFxuICBcIm1vbGVjdWxhci1zdWJ0eXBpbmctTEdBVFwiLFxuICBcImxnYXQtc3Vic2V0XCJcbikiLCIiLCIjIHJlc3VsdCBEaXIiLCJyZXN1bHREaXIgPC0gZmlsZS5wYXRoKFxuICByb290X2RpcixcbiAgXCJhbmFseXNlc1wiLFxuICBcIm1vbGVjdWxhci1zdWJ0eXBpbmctTEdBVFwiLFxuICBcInJlc3VsdHNcIlxuKSJdfQ== -->
+<pre class="r"><code>root_dir &lt;- rprojroot::find_root(rprojroot::has_dir(&quot;.git&quot;))
 
 # get subset folder
 subset_dir &lt;- file.path(
@@ -1793,8 +1808,7 @@ resultDir &lt;- file.path(
   &quot;analyses&quot;,
   &quot;molecular-subtyping-LGAT&quot;,
   &quot;results&quot;
-)
-</code></pre>
+)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -1803,30 +1817,32 @@ resultDir &lt;- file.path(
 <h3>Input</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUaGVzZSB3aWxsIG9ubHkgYmUgc2FtcGxlcyB0aGF0IGhhdmUgZ29uZSB0aHJvdWdoIHRoZSBpbmNsdXNpb24vZXhjbHVzaW9uXG4jIGNyaXRlcmlhIHRoYXQgYXJlIGVuZm9yY2VkIGluIDAxLXN1YnNldC1maWxlcy1mb3ItTEdBVC5SbWRcbmxnYXRfbWV0YWRhdGFfZmlsZSA8LSBmaWxlLnBhdGgoXCJsZ2F0LXN1YnNldFwiLCBcImxnYXRfbWV0YWRhdGEudHN2XCIpXG5ic2lkX3RvX2luY2x1ZGUgPC0gcmVhZF90c3YobGdhdF9tZXRhZGF0YV9maWxlKSAlPiVcbiAgcHVsbChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVGhlc2Ugd2lsbCBvbmx5IGJlIHNhbXBsZXMgdGhhdCBoYXZlIGdvbmUgdGhyb3VnaCB0aGUgaW5jbHVzaW9uL2V4Y2x1c2lvbiIsIiMgY3JpdGVyaWEgdGhhdCBhcmUgZW5mb3JjZWQgaW4gMDEtc3Vic2V0LWZpbGVzLWZvci1MR0FULlJtZCIsImxnYXRfbWV0YWRhdGFfZmlsZSA8LSBmaWxlLnBhdGgoXCJsZ2F0LXN1YnNldFwiLCBcImxnYXRfbWV0YWRhdGEudHN2XCIpIiwiYnNpZF90b19pbmNsdWRlIDwtIHJlYWRfdHN2KGxnYXRfbWV0YWRhdGFfZmlsZSkgJT4lXG4gIHB1bGwoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkiXX0= -->
 <pre class="r"><code># These will only be samples that have gone through the inclusion/exclusion
 # criteria that are enforced in 01-subset-files-for-LGAT.Rmd
 lgat_metadata_file &lt;- file.path(&quot;lgat-subset&quot;, &quot;lgat_metadata.tsv&quot;)
 bsid_to_include &lt;- read_tsv(lgat_metadata_file) %&gt;%
   pull(Kids_First_Biospecimen_ID)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgYWxpcXVvdF9pZCA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBpbnRlZ3JhdGVkX2RpYWdub3NpcyA9IFx1MDAxYlszM21jb2xfbG9naWNhbCgpXHUwMDFiWzM5bSxcbiAgTm90ZXMgPSBcdTAwMWJbMzNtY29sX2xvZ2ljYWwoKVx1MDAxYlszOW0sXG4gIE9TX2RheXMgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgYWdlX2xhc3RfdXBkYXRlX2RheXMgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgbW9sZWN1bGFyX3N1YnR5cGUgPSBcdTAwMWJbMzNtY29sX2xvZ2ljYWwoKVx1MDAxYlszOW0sXG4gIG5vcm1hbF9mcmFjdGlvbiA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICB0dW1vcl9mcmFjdGlvbiA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICB0dW1vcl9wbG9pZHkgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgYWxpcXVvdF9pZCA9IGNvbF9kb3VibGUoKSxcbiAgaW50ZWdyYXRlZF9kaWFnbm9zaXMgPSBjb2xfbG9naWNhbCgpLFxuICBOb3RlcyA9IGNvbF9sb2dpY2FsKCksXG4gIE9TX2RheXMgPSBjb2xfZG91YmxlKCksXG4gIGFnZV9sYXN0X3VwZGF0ZV9kYXlzID0gY29sX2RvdWJsZSgpLFxuICBtb2xlY3VsYXJfc3VidHlwZSA9IGNvbF9sb2dpY2FsKCksXG4gIG5vcm1hbF9mcmFjdGlvbiA9IGNvbF9kb3VibGUoKSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBjb2xfZG91YmxlKCksXG4gIHR1bW9yX3Bsb2lkeSA9IGNvbF9kb3VibGUoKVxuKVxuIn0= -->
 <pre><code>Parsed with column specification:
 cols(
   .default = col_character(),
-  aliquot_id = [32mcol_double()[39m,
-  integrated_diagnosis = [33mcol_logical()[39m,
-  Notes = [33mcol_logical()[39m,
-  OS_days = [32mcol_double()[39m,
-  age_last_update_days = [32mcol_double()[39m,
-  molecular_subtype = [33mcol_logical()[39m,
-  normal_fraction = [32mcol_double()[39m,
-  tumor_fraction = [32mcol_double()[39m,
-  tumor_ploidy = [32mcol_double()[39m
-)
-See spec(...) for full column specifications.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBGaWxlIGZyb20gMDAtTEdBVC1zZWxlY3QtcGF0aG9sb2d5LWR4IHRoYXQgaXMgdXNlZCBmb3IgdGhlIHBhdGhvbG9neSBkaWFnbm9zaXNcbiMgdGhhdCB3aWxsIHVzZWQgdG8gcmVjb2RlIHN1YnR5cGVcbnBhdGhfZHhfbGlzdCA8LSBqc29ubGl0ZTo6ZnJvbUpTT04oXG4gIGZpbGUucGF0aChzdWJzZXRfZGlyLCBcbiAgICAgICAgICAgIFwibGdhdF9zdWJ0eXBpbmdfcGF0aF9keF9zdHJpbmdzLmpzb25cIilcbilcblxuIyBjbGluaWNhbCBmaWxlXG5sZ2F0X21hbmlmZXN0IDwtIHJlYWRfdHN2KGZpbGUucGF0aChyb290X2RpciwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcImRhdGFcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwicGJ0YS1oaXN0b2xvZ2llcy1iYXNlLnRzdlwiKSwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgIGd1ZXNzX21heCA9IDEwMDAwKSAlPiVcbiAgZmlsdGVyKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSBic2lkX3RvX2luY2x1ZGUpICU+JVxuICAjIHNlbGVjdCBjb2x1bW5zIGZvciBpbnRlcmVzdFxuICBkcGx5cjo6c2VsZWN0KEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQsXG4gICAgICAgICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELFxuICAgICAgICAgc2FtcGxlX2lkLFxuICAgICAgICAgZXhwZXJpbWVudGFsX3N0cmF0ZWd5LFxuICAgICAgICAgY2FuY2VyX3ByZWRpc3Bvc2l0aW9ucyxcbiAgICAgICAgIHBhdGhvbG9neV9kaWFnbm9zaXMsXG4gICAgICAgICBwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3NpcylcbmBgYCJ9 -->
+  aliquot_id = col_double(),
+  integrated_diagnosis = col_logical(),
+  Notes = col_logical(),
+  OS_days = col_double(),
+  age_last_update_days = col_double(),
+  molecular_subtype = col_logical(),
+  normal_fraction = col_double(),
+  tumor_fraction = col_double(),
+  tumor_ploidy = col_double()
+)</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
+<pre><code>See spec(...) for full column specifications.</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgRmlsZSBmcm9tIDAwLUxHQVQtc2VsZWN0LXBhdGhvbG9neS1keCB0aGF0IGlzIHVzZWQgZm9yIHRoZSBwYXRob2xvZ3kgZGlhZ25vc2lzIiwiIyB0aGF0IHdpbGwgdXNlZCB0byByZWNvZGUgc3VidHlwZSIsInBhdGhfZHhfbGlzdCA8LSBqc29ubGl0ZTo6ZnJvbUpTT04oXG4gIGZpbGUucGF0aChzdWJzZXRfZGlyLCBcbiAgICAgICAgICAgIFwibGdhdF9zdWJ0eXBpbmdfcGF0aF9keF9zdHJpbmdzLmpzb25cIilcbikiLCIiLCIjIGNsaW5pY2FsIGZpbGUiLCJsZ2F0X21hbmlmZXN0IDwtIHJlYWRfdHN2KGZpbGUucGF0aChyb290X2RpciwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcImRhdGFcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwicGJ0YS1oaXN0b2xvZ2llcy1iYXNlLnRzdlwiKSwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgIGd1ZXNzX21heCA9IDEwMDAwKSAlPiVcbiAgZmlsdGVyKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgJWluJSBic2lkX3RvX2luY2x1ZGUpICU+JVxuICAjIHNlbGVjdCBjb2x1bW5zIGZvciBpbnRlcmVzdFxuICBkcGx5cjo6c2VsZWN0KEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQsXG4gICAgICAgICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELFxuICAgICAgICAgc2FtcGxlX2lkLFxuICAgICAgICAgZXhwZXJpbWVudGFsX3N0cmF0ZWd5LFxuICAgICAgICAgY2FuY2VyX3ByZWRpc3Bvc2l0aW9ucyxcbiAgICAgICAgIHBhdGhvbG9neV9kaWFnbm9zaXMsXG4gICAgICAgICBwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3NpcykiXX0= -->
 <pre class="r"><code># File from 00-LGAT-select-pathology-dx that is used for the pathology diagnosis
 # that will used to recode subtype
 path_dx_list &lt;- jsonlite::fromJSON(
@@ -1849,22 +1865,22 @@ lgat_manifest &lt;- read_tsv(file.path(root_dir,
          pathology_diagnosis,
          pathology_free_text_diagnosis)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgaW50ZWdyYXRlZF9kaWFnbm9zaXMgPSBcdTAwMWJbMzNtY29sX2xvZ2ljYWwoKVx1MDAxYlszOW0sXG4gIE5vdGVzID0gXHUwMDFiWzMzbWNvbF9sb2dpY2FsKClcdTAwMWJbMzltLFxuICBPU19kYXlzID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIGFnZV9sYXN0X3VwZGF0ZV9kYXlzID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIG1vbGVjdWxhcl9zdWJ0eXBlID0gXHUwMDFiWzMzbWNvbF9sb2dpY2FsKClcdTAwMWJbMzltLFxuICBub3JtYWxfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfcGxvaWR5ID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW1cbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuIn0= -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgaW50ZWdyYXRlZF9kaWFnbm9zaXMgPSBjb2xfbG9naWNhbCgpLFxuICBOb3RlcyA9IGNvbF9sb2dpY2FsKCksXG4gIE9TX2RheXMgPSBjb2xfZG91YmxlKCksXG4gIGFnZV9sYXN0X3VwZGF0ZV9kYXlzID0gY29sX2RvdWJsZSgpLFxuICBtb2xlY3VsYXJfc3VidHlwZSA9IGNvbF9sb2dpY2FsKCksXG4gIG5vcm1hbF9mcmFjdGlvbiA9IGNvbF9kb3VibGUoKSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBjb2xfZG91YmxlKCksXG4gIHR1bW9yX3Bsb2lkeSA9IGNvbF9kb3VibGUoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
 <pre><code>Parsed with column specification:
 cols(
   .default = col_character(),
-  integrated_diagnosis = [33mcol_logical()[39m,
-  Notes = [33mcol_logical()[39m,
-  OS_days = [32mcol_double()[39m,
-  age_last_update_days = [32mcol_double()[39m,
-  molecular_subtype = [33mcol_logical()[39m,
-  normal_fraction = [32mcol_double()[39m,
-  tumor_fraction = [32mcol_double()[39m,
-  tumor_ploidy = [32mcol_double()[39m
+  integrated_diagnosis = col_logical(),
+  Notes = col_logical(),
+  OS_days = col_double(),
+  age_last_update_days = col_double(),
+  molecular_subtype = col_logical(),
+  normal_fraction = col_double(),
+  tumor_fraction = col_double(),
+  tumor_ploidy = col_double()
 )
 See spec(...) for full column specifications.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGdhdF9kbmEgPC0gbGdhdF9tYW5pZmVzdCAlPiVcbiAgZmlsdGVyKGV4cGVyaW1lbnRhbF9zdHJhdGVneSAhPSBcIlJOQS1TZXFcIikgJT4lXG4gIGRwbHlyOjpzZWxlY3QoIC1leHBlcmltZW50YWxfc3RyYXRlZ3ksIC1jYW5jZXJfcHJlZGlzcG9zaXRpb25zKVxuXG5sZ2F0X3JuYSA8LSBsZ2F0X21hbmlmZXN0ICU+JVxuICBmaWx0ZXIoZXhwZXJpbWVudGFsX3N0cmF0ZWd5ID09IFwiUk5BLVNlcVwiKSAlPiVcbiAgZHBseXI6OnNlbGVjdCggLWV4cGVyaW1lbnRhbF9zdHJhdGVneSwgLWNhbmNlcl9wcmVkaXNwb3NpdGlvbnMpXG5cbmFsbF9sZ2F0X21hdGNoZWQgPC0gZnVsbF9qb2luKGxnYXRfZG5hLCBsZ2F0X3JuYSxcbiAgICAgICAgICAgICAgICAgICAgICAgICBieSA9IGMoXCJLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwic2FtcGxlX2lkXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwicGF0aG9sb2d5X2ZyZWVfdGV4dF9kaWFnbm9zaXNcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJwYXRob2xvZ3lfZGlhZ25vc2lzXCIpLFxuICAgICAgICAgICAgICAgICAgICAgICAgIHN1ZmZpeCA9IGMoXCJfRE5BXCIsIFwiX1JOQVwiKSkgJT4lXG4gIGRwbHlyOjpzZWxlY3Qoc3RhcnRzX3dpdGgoXCJLaWRzX0ZpcnN0XCIpLCBzYW1wbGVfaWQsXG4gICAgICAgICAgICAgICAgcGF0aG9sb2d5X2ZyZWVfdGV4dF9kaWFnbm9zaXMsXG4gICAgICAgICAgICAgICAgcGF0aG9sb2d5X2RpYWdub3NpcylcblxuIyBTTlYgYmFzZWQgYW5ub3RhdGlvblxubGdhdF9zbnYgPC0gcmVhZF90c3YoZmlsZS5wYXRoKHN1YnNldF9kaXIsXCJMR0FUX3Nudl9zdWJzZXQudHN2XCIpKSBcbmBgYCJ9 -->
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjpbImxnYXRfZG5hIDwtIGxnYXRfbWFuaWZlc3QgJT4lXG4gIGZpbHRlcihleHBlcmltZW50YWxfc3RyYXRlZ3kgIT0gXCJSTkEtU2VxXCIpICU+JVxuICBkcGx5cjo6c2VsZWN0KCAtZXhwZXJpbWVudGFsX3N0cmF0ZWd5LCAtY2FuY2VyX3ByZWRpc3Bvc2l0aW9ucykiLCIiLCJsZ2F0X3JuYSA8LSBsZ2F0X21hbmlmZXN0ICU+JVxuICBmaWx0ZXIoZXhwZXJpbWVudGFsX3N0cmF0ZWd5ID09IFwiUk5BLVNlcVwiKSAlPiVcbiAgZHBseXI6OnNlbGVjdCggLWV4cGVyaW1lbnRhbF9zdHJhdGVneSwgLWNhbmNlcl9wcmVkaXNwb3NpdGlvbnMpIiwiIiwiYWxsX2xnYXRfbWF0Y2hlZCA8LSBmdWxsX2pvaW4obGdhdF9kbmEsIGxnYXRfcm5hLFxuICAgICAgICAgICAgICAgICAgICAgICAgIGJ5ID0gYyhcIktpZHNfRmlyc3RfUGFydGljaXBhbnRfSURcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJzYW1wbGVfaWRcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3Npc1wiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcInBhdGhvbG9neV9kaWFnbm9zaXNcIiksXG4gICAgICAgICAgICAgICAgICAgICAgICAgc3VmZml4ID0gYyhcIl9ETkFcIiwgXCJfUk5BXCIpKSAlPiVcbiAgZHBseXI6OnNlbGVjdChzdGFydHNfd2l0aChcIktpZHNfRmlyc3RcIiksIHNhbXBsZV9pZCxcbiAgICAgICAgICAgICAgICBwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3NpcyxcbiAgICAgICAgICAgICAgICBwYXRob2xvZ3lfZGlhZ25vc2lzKSIsIiIsIiMgU05WIGJhc2VkIGFubm90YXRpb24iLCJsZ2F0X3NudiA8LSByZWFkX3RzdihmaWxlLnBhdGgoc3Vic2V0X2RpcixcIkxHQVRfc252X3N1YnNldC50c3ZcIikpICJdfQ== -->
 <pre class="r"><code>lgat_dna &lt;- lgat_manifest %&gt;%
   filter(experimental_strategy != &quot;RNA-Seq&quot;) %&gt;%
   dplyr::select( -experimental_strategy, -cancer_predispositions)
@@ -1886,54 +1902,54 @@ all_lgat_matched &lt;- full_join(lgat_dna, lgat_rna,
 # SNV based annotation
 lgat_snv &lt;- read_tsv(file.path(subset_dir,&quot;LGAT_snv_subset.tsv&quot;)) </code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIHNhbXBsZV9pZCA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBCUkFGX1Y2MDBFX211dCA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBGR0ZSX211dCA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBJREhfbXV0ID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIEgzLjFfbXV0ID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIEgzLjJfbXV0ID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIEgzLjNfbXV0ID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIE1BUEtfbXV0ID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIFJUS19tdXQgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgTkYxX211dCA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltXG4pXG4ifQ== -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBzYW1wbGVfaWQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIEJSQUZfVjYwMEVfbXV0ID0gY29sX2NoYXJhY3RlcigpLFxuICBGR0ZSX211dCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgSURIX211dCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgSDMuMV9tdXQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIEgzLjJfbXV0ID0gY29sX2NoYXJhY3RlcigpLFxuICBIMy4zX211dCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgTUFQS19tdXQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIFJUS19tdXQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIE5GMV9tdXQgPSBjb2xfY2hhcmFjdGVyKClcbilcbiJ9 -->
 <pre><code>Parsed with column specification:
 cols(
-  Kids_First_Biospecimen_ID = [31mcol_character()[39m,
-  sample_id = [31mcol_character()[39m,
-  BRAF_V600E_mut = [31mcol_character()[39m,
-  FGFR_mut = [31mcol_character()[39m,
-  IDH_mut = [31mcol_character()[39m,
-  H3.1_mut = [31mcol_character()[39m,
-  H3.2_mut = [31mcol_character()[39m,
-  H3.3_mut = [31mcol_character()[39m,
-  MAPK_mut = [31mcol_character()[39m,
-  RTK_mut = [31mcol_character()[39m,
-  NF1_mut = [31mcol_character()[39m
+  Kids_First_Biospecimen_ID = col_character(),
+  sample_id = col_character(),
+  BRAF_V600E_mut = col_character(),
+  FGFR_mut = col_character(),
+  IDH_mut = col_character(),
+  H3.1_mut = col_character(),
+  H3.2_mut = col_character(),
+  H3.3_mut = col_character(),
+  MAPK_mut = col_character(),
+  RTK_mut = col_character(),
+  NF1_mut = col_character()
 )</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBDTlYgYmFzZWQgYW5ub3RhdGlvblxubGdhdF9jbnYgPC0gcmVhZF90c3YoZmlsZS5wYXRoKHN1YnNldF9kaXIsXCJMR0FUX2Nudl9zdWJzZXQudHN2XCIpKSAlPiVcbiAgIyBUby1kbyBhZGQgdG8gQ05WIHN1YnNldCBzY3JpcHRcbiAgZHBseXI6OnJlbmFtZShLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEPWxnYXRfd2dzX2Jpb3NwZWNpbWVuX2lkcylcbmBgYCJ9 -->
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgQ05WIGJhc2VkIGFubm90YXRpb24iLCJsZ2F0X2NudiA8LSByZWFkX3RzdihmaWxlLnBhdGgoc3Vic2V0X2RpcixcIkxHQVRfY252X3N1YnNldC50c3ZcIikpICU+JVxuICAjIFRvLWRvIGFkZCB0byBDTlYgc3Vic2V0IHNjcmlwdFxuICBkcGx5cjo6cmVuYW1lKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQ9bGdhdF93Z3NfYmlvc3BlY2ltZW5faWRzKSJdfQ== -->
 <pre class="r"><code># CNV based annotation
 lgat_cnv &lt;- read_tsv(file.path(subset_dir,&quot;LGAT_cnv_subset.tsv&quot;)) %&gt;%
   # To-do add to CNV subset script
   dplyr::rename(Kids_First_Biospecimen_ID=lgat_wgs_biospecimen_ids)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBsZ2F0X3dnc19iaW9zcGVjaW1lbl9pZHMgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgRkdGUl9EVVBfVEFOREVNID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIEZHRlJfRFVQID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIENES04yQV9ERUwgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgQ0RLTjJCX0RFTCA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltXG4pXG4ifQ== -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBsZ2F0X3dnc19iaW9zcGVjaW1lbl9pZHMgPSBjb2xfY2hhcmFjdGVyKCksXG4gIEZHRlJfRFVQX1RBTkRFTSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgRkdGUl9EVVAgPSBjb2xfY2hhcmFjdGVyKCksXG4gIENES04yQV9ERUwgPSBjb2xfY2hhcmFjdGVyKCksXG4gIENES04yQl9ERUwgPSBjb2xfY2hhcmFjdGVyKClcbilcbiJ9 -->
 <pre><code>Parsed with column specification:
 cols(
-  lgat_wgs_biospecimen_ids = [31mcol_character()[39m,
-  FGFR_DUP_TANDEM = [31mcol_character()[39m,
-  FGFR_DUP = [31mcol_character()[39m,
-  CDKN2A_DEL = [31mcol_character()[39m,
-  CDKN2B_DEL = [31mcol_character()[39m
+  lgat_wgs_biospecimen_ids = col_character(),
+  FGFR_DUP_TANDEM = col_character(),
+  FGFR_DUP = col_character(),
+  CDKN2A_DEL = col_character(),
+  CDKN2B_DEL = col_character()
 )</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBGdXNpb24gYmFzZSBhbm5vdGF0aW9uXG5sZ2F0X2Z1cyA8LSByZWFkX3RzdihmaWxlLnBhdGgoc3Vic2V0X2RpcixcIkxHQVRfZnVzaW9uX3N1YnNldC50c3ZcIikpIFxuYGBgIn0= -->
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgRnVzaW9uIGJhc2UgYW5ub3RhdGlvbiIsImxnYXRfZnVzIDwtIHJlYWRfdHN2KGZpbGUucGF0aChzdWJzZXRfZGlyLFwiTEdBVF9mdXNpb25fc3Vic2V0LnRzdlwiKSkgIl19 -->
 <pre class="r"><code># Fusion base annotation
 lgat_fus &lt;- read_tsv(file.path(subset_dir,&quot;LGAT_fusion_subset.tsv&quot;)) </code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIHNhbXBsZV9pZCA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBLSUFBX0JSQUZfZnVzID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIE1BUEtfZnVzID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIFJUS19mdXMgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgRkdGUl9mdXMgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgTVlCX2Z1cyA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltXG4pXG4ifQ== -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBzYW1wbGVfaWQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIEtJQUFfQlJBRl9mdXMgPSBjb2xfY2hhcmFjdGVyKCksXG4gIE1BUEtfZnVzID0gY29sX2NoYXJhY3RlcigpLFxuICBSVEtfZnVzID0gY29sX2NoYXJhY3RlcigpLFxuICBGR0ZSX2Z1cyA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgTVlCX2Z1cyA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuIn0= -->
 <pre><code>Parsed with column specification:
 cols(
-  Kids_First_Biospecimen_ID = [31mcol_character()[39m,
-  sample_id = [31mcol_character()[39m,
-  KIAA_BRAF_fus = [31mcol_character()[39m,
-  MAPK_fus = [31mcol_character()[39m,
-  RTK_fus = [31mcol_character()[39m,
-  FGFR_fus = [31mcol_character()[39m,
-  MYB_fus = [31mcol_character()[39m
+  Kids_First_Biospecimen_ID = col_character(),
+  sample_id = col_character(),
+  KIAA_BRAF_fus = col_character(),
+  MAPK_fus = col_character(),
+  RTK_fus = col_character(),
+  FGFR_fus = col_character(),
+  MYB_fus = col_character()
 )</code></pre>
-<!-- rnb-output-end -->
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -1942,7 +1958,7 @@ cols(
 <p>This subtype is characterized by germline NF1 variants. We do not have germline data within OpenPBTA, but we do have information about cancer predispositions. This group can be annotated if NF-1 is present within the cancer_predispositions field of the pbta-histologies.tsv file. We should also annotate somatic loss of NF1 via either missense, nonsense mutation or copy loss.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmYxX3NudiA8LSBsZ2F0X3NudiAlPiVcbiAgZmlsdGVyKE5GMV9tdXQ9PVwiWWVzXCIpICU+JVxuICBtdXRhdGUobW9sZWN1bGFyX3N1YnR5cGUgPSBcIk5GMS1zb21hdGljXCIpICU+JVxuICBkcGx5cjo6c2VsZWN0KFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLFwibW9sZWN1bGFyX3N1YnR5cGVcIikgXG5cbm5mMV9nZXJtbGluZSA8LSBsZ2F0X21hbmlmZXN0ICU+JSBcbiAgIyB0byBrZWVwIG5vbi1STkEgZmlsZXMgb25seSBzaW5jZSB3ZSB3aWxsIG1hdGNoIHRoZSBSTkEgXG4gICMgYXMgS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9STkEgY29sdW1uIGF0IGEgbGF0ZXIgc3RlcFxuICBmaWx0ZXIoZXhwZXJpbWVudGFsX3N0cmF0ZWd5ICE9IFwiUk5BLVNlcVwiKSAlPiVcbiAgIyBrZWVwaW5nIFwiTkYxIGFuZCBORjJcIiBpbiBjYW5jZXJfcHJlZGlzcG9zaXRpb25cbiAgZmlsdGVyKGNhbmNlcl9wcmVkaXNwb3NpdGlvbnMgJWluJSBjKFwiTkYtMVwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJORi0xLE90aGVyIGluaGVyaXRlZCBjb25kaXRpb25zIE5PU1wiKSkgJT4lXG4gIG11dGF0ZShtb2xlY3VsYXJfc3VidHlwZSA9IFwiTkYxLWdlcm1saW5lXCIpICU+JVxuICBkcGx5cjo6c2VsZWN0KFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLFwibW9sZWN1bGFyX3N1YnR5cGVcIikgXG5cbm5mMV9iaW9zcGVjaW1lbiA8LSBiaW5kX3Jvd3MobmYxX3NudixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbmYxX2dlcm1saW5lKSAlPiVcbiAgdW5pcXVlKClcbiAgXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbIm5mMV9zbnYgPC0gbGdhdF9zbnYgJT4lXG4gIGZpbHRlcihORjFfbXV0PT1cIlllc1wiKSAlPiVcbiAgbXV0YXRlKG1vbGVjdWxhcl9zdWJ0eXBlID0gXCJORjEtc29tYXRpY1wiKSAlPiVcbiAgZHBseXI6OnNlbGVjdChcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIixcIm1vbGVjdWxhcl9zdWJ0eXBlXCIpICIsIiIsIm5mMV9nZXJtbGluZSA8LSBsZ2F0X21hbmlmZXN0ICU+JSBcbiAgIyB0byBrZWVwIG5vbi1STkEgZmlsZXMgb25seSBzaW5jZSB3ZSB3aWxsIG1hdGNoIHRoZSBSTkEgXG4gICMgYXMgS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9STkEgY29sdW1uIGF0IGEgbGF0ZXIgc3RlcFxuICBmaWx0ZXIoZXhwZXJpbWVudGFsX3N0cmF0ZWd5ICE9IFwiUk5BLVNlcVwiKSAlPiVcbiAgIyBrZWVwaW5nIFwiTkYxIGFuZCBORjJcIiBpbiBjYW5jZXJfcHJlZGlzcG9zaXRpb25cbiAgZmlsdGVyKGNhbmNlcl9wcmVkaXNwb3NpdGlvbnMgJWluJSBjKFwiTkYtMVwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJORi0xLE90aGVyIGluaGVyaXRlZCBjb25kaXRpb25zIE5PU1wiKSkgJT4lXG4gIG11dGF0ZShtb2xlY3VsYXJfc3VidHlwZSA9IFwiTkYxLWdlcm1saW5lXCIpICU+JVxuICBkcGx5cjo6c2VsZWN0KFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLFwibW9sZWN1bGFyX3N1YnR5cGVcIikgIiwiIiwibmYxX2Jpb3NwZWNpbWVuIDwtIGJpbmRfcm93cyhuZjFfc252LFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICBuZjFfZ2VybWxpbmUpICU+JVxuICB1bmlxdWUoKSJdfQ== -->
 <pre class="r"><code>nf1_snv &lt;- lgat_snv %&gt;%
   filter(NF1_mut==&quot;Yes&quot;) %&gt;%
   mutate(molecular_subtype = &quot;NF1-somatic&quot;) %&gt;%
@@ -1960,8 +1976,7 @@ nf1_germline &lt;- lgat_manifest %&gt;%
 
 nf1_biospecimen &lt;- bind_rows(nf1_snv,
                              nf1_germline) %&gt;%
-  unique()
-  </code></pre>
+  unique()</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -1971,12 +1986,11 @@ nf1_biospecimen &lt;- bind_rows(nf1_snv,
 <p>This subtype contains KIAA1549-BRAF fusion</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxua2lhYWJyYWZfYmlvc3BlY2ltZW4gPC0gbGdhdF9mdXMgJT4lXG4gIGZpbHRlcihLSUFBX0JSQUZfZnVzPT1cIlllc1wiKSAlPiVcbiAgbXV0YXRlKG1vbGVjdWxhcl9zdWJ0eXBlID0gXCJLSUFBMTU0OS1CUkFGXCIpICU+JVxuICBkcGx5cjo6c2VsZWN0KFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLFwibW9sZWN1bGFyX3N1YnR5cGVcIikgXG5cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoia2lhYWJyYWZfYmlvc3BlY2ltZW4gPC0gbGdhdF9mdXMgJT4lXG4gIGZpbHRlcihLSUFBX0JSQUZfZnVzPT1cIlllc1wiKSAlPiVcbiAgbXV0YXRlKG1vbGVjdWxhcl9zdWJ0eXBlID0gXCJLSUFBMTU0OS1CUkFGXCIpICU+JVxuICBkcGx5cjo6c2VsZWN0KFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLFwibW9sZWN1bGFyX3N1YnR5cGVcIikgIn0= -->
 <pre class="r"><code>kiaabraf_biospecimen &lt;- lgat_fus %&gt;%
   filter(KIAA_BRAF_fus==&quot;Yes&quot;) %&gt;%
   mutate(molecular_subtype = &quot;KIAA1549-BRAF&quot;) %&gt;%
-  dplyr::select(&quot;Kids_First_Biospecimen_ID&quot;,&quot;molecular_subtype&quot;) 
-</code></pre>
+  dplyr::select(&quot;Kids_First_Biospecimen_ID&quot;,&quot;molecular_subtype&quot;) </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -1986,13 +2000,11 @@ nf1_biospecimen &lt;- bind_rows(nf1_snv,
 <p>This subtype contains BRAF V600E or V599 SNV or non-canonical BRAF SNV/indel overlapping kinase domain</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5icmFmVjYwMF9iaW9zcGVjaW1lbiA8LSBsZ2F0X3NudiAlPiVcbiAgZmlsdGVyKEJSQUZfVjYwMEVfbXV0PT1cIlllc1wiKSAlPiVcbiAgbXV0YXRlKG1vbGVjdWxhcl9zdWJ0eXBlID0gXCJCUkFGIFY2MDBFXCIpICU+JVxuICBkcGx5cjo6c2VsZWN0KFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLFwibW9sZWN1bGFyX3N1YnR5cGVcIikgXG5cbmBgYCJ9 -->
-<pre class="r"><code>
-brafV600_biospecimen &lt;- lgat_snv %&gt;%
+<!-- rnb-source-begin eyJkYXRhIjoiYnJhZlY2MDBfYmlvc3BlY2ltZW4gPC0gbGdhdF9zbnYgJT4lXG4gIGZpbHRlcihCUkFGX1Y2MDBFX211dD09XCJZZXNcIikgJT4lXG4gIG11dGF0ZShtb2xlY3VsYXJfc3VidHlwZSA9IFwiQlJBRiBWNjAwRVwiKSAlPiVcbiAgZHBseXI6OnNlbGVjdChcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIixcIm1vbGVjdWxhcl9zdWJ0eXBlXCIpICJ9 -->
+<pre class="r"><code>brafV600_biospecimen &lt;- lgat_snv %&gt;%
   filter(BRAF_V600E_mut==&quot;Yes&quot;) %&gt;%
   mutate(molecular_subtype = &quot;BRAF V600E&quot;) %&gt;%
-  dplyr::select(&quot;Kids_First_Biospecimen_ID&quot;,&quot;molecular_subtype&quot;) 
-</code></pre>
+  dplyr::select(&quot;Kids_First_Biospecimen_ID&quot;,&quot;molecular_subtype&quot;) </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2002,9 +2014,8 @@ brafV600_biospecimen &lt;- lgat_snv %&gt;%
 <p>This subtype contains non-canonical BRAF fusion other than KIAA1549-BRAF OR contains RAF1 fusion OR contains KRAS, NRAS, HRAS, MAP2K1, MAP2K2, MAP2K1, ARAF SNV or indel</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5vdGhlck1BUEtfZnVzX2Jpb3NwZWNpbWVuIDwtIGxnYXRfZnVzICU+JVxuICBmaWx0ZXIoTUFQS19mdXM9PVwiWWVzXCIpICU+JVxuICBtdXRhdGUobW9sZWN1bGFyX3N1YnR5cGUgPSBcIm90aGVyIE1BUEtcIikgJT4lXG4gIGRwbHlyOjpzZWxlY3QoXCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEXCIsXCJtb2xlY3VsYXJfc3VidHlwZVwiKVxuXG5vdGhlck1BUEtfc252X2Jpb3NwZWNpbWVuIDwtIGxnYXRfc252ICU+JVxuICBmaWx0ZXIoTUFQS19tdXQ9PVwiWWVzXCIpICU+JVxuICBtdXRhdGUobW9sZWN1bGFyX3N1YnR5cGUgPSBcIm90aGVyIE1BUEtcIikgJT4lXG4gIGRwbHlyOjpzZWxlY3QoXCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEXCIsXCJtb2xlY3VsYXJfc3VidHlwZVwiKSBcblxuXG5gYGAifQ== -->
-<pre class="r"><code>
-otherMAPK_fus_biospecimen &lt;- lgat_fus %&gt;%
+<!-- rnb-source-begin eyJkYXRhIjpbIm90aGVyTUFQS19mdXNfYmlvc3BlY2ltZW4gPC0gbGdhdF9mdXMgJT4lXG4gIGZpbHRlcihNQVBLX2Z1cz09XCJZZXNcIikgJT4lXG4gIG11dGF0ZShtb2xlY3VsYXJfc3VidHlwZSA9IFwib3RoZXIgTUFQS1wiKSAlPiVcbiAgZHBseXI6OnNlbGVjdChcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIixcIm1vbGVjdWxhcl9zdWJ0eXBlXCIpIiwiIiwib3RoZXJNQVBLX3Nudl9iaW9zcGVjaW1lbiA8LSBsZ2F0X3NudiAlPiVcbiAgZmlsdGVyKE1BUEtfbXV0PT1cIlllc1wiKSAlPiVcbiAgbXV0YXRlKG1vbGVjdWxhcl9zdWJ0eXBlID0gXCJvdGhlciBNQVBLXCIpICU+JVxuICBkcGx5cjo6c2VsZWN0KFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLFwibW9sZWN1bGFyX3N1YnR5cGVcIikgIl19 -->
+<pre class="r"><code>otherMAPK_fus_biospecimen &lt;- lgat_fus %&gt;%
   filter(MAPK_fus==&quot;Yes&quot;) %&gt;%
   mutate(molecular_subtype = &quot;other MAPK&quot;) %&gt;%
   dplyr::select(&quot;Kids_First_Biospecimen_ID&quot;,&quot;molecular_subtype&quot;)
@@ -2012,8 +2023,7 @@ otherMAPK_fus_biospecimen &lt;- lgat_fus %&gt;%
 otherMAPK_snv_biospecimen &lt;- lgat_snv %&gt;%
   filter(MAPK_mut==&quot;Yes&quot;) %&gt;%
   mutate(molecular_subtype = &quot;other MAPK&quot;) %&gt;%
-  dplyr::select(&quot;Kids_First_Biospecimen_ID&quot;,&quot;molecular_subtype&quot;) 
-</code></pre>
+  dplyr::select(&quot;Kids_First_Biospecimen_ID&quot;,&quot;molecular_subtype&quot;) </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2023,9 +2033,8 @@ otherMAPK_snv_biospecimen &lt;- lgat_snv %&gt;%
 <p>This subtype harbors a fusion in ALK, ROS1, NTRK1, NTRK2, or NTRK3 or OR harbors a MET SNV **or OR harbors a KIT SNV or OR harbors a PDGFRA SNV or fusion</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5ydGtfZnVzX2Jpb3NwZWNpbWVuIDwtIGxnYXRfZnVzICU+JVxuICBmaWx0ZXIoUlRLX2Z1cz09XCJZZXNcIikgJT4lXG4gIG11dGF0ZShtb2xlY3VsYXJfc3VidHlwZSA9IFwiUlRLXCIpICU+JVxuICBkcGx5cjo6c2VsZWN0KFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLFwibW9sZWN1bGFyX3N1YnR5cGVcIikgXG5cbnJ0a19zbnZfYmlvc3BlY2ltZW4gPC0gbGdhdF9zbnYgJT4lXG4gIGZpbHRlcihSVEtfbXV0PT1cIlllc1wiKSAlPiVcbiAgbXV0YXRlKG1vbGVjdWxhcl9zdWJ0eXBlID0gXCJSVEtcIikgJT4lXG4gIGRwbHlyOjpzZWxlY3QoXCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEXCIsXCJtb2xlY3VsYXJfc3VidHlwZVwiKSBcblxuXG5cbmBgYCJ9 -->
-<pre class="r"><code>
-rtk_fus_biospecimen &lt;- lgat_fus %&gt;%
+<!-- rnb-source-begin eyJkYXRhIjpbInJ0a19mdXNfYmlvc3BlY2ltZW4gPC0gbGdhdF9mdXMgJT4lXG4gIGZpbHRlcihSVEtfZnVzPT1cIlllc1wiKSAlPiVcbiAgbXV0YXRlKG1vbGVjdWxhcl9zdWJ0eXBlID0gXCJSVEtcIikgJT4lXG4gIGRwbHlyOjpzZWxlY3QoXCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEXCIsXCJtb2xlY3VsYXJfc3VidHlwZVwiKSAiLCIiLCJydGtfc252X2Jpb3NwZWNpbWVuIDwtIGxnYXRfc252ICU+JVxuICBmaWx0ZXIoUlRLX211dD09XCJZZXNcIikgJT4lXG4gIG11dGF0ZShtb2xlY3VsYXJfc3VidHlwZSA9IFwiUlRLXCIpICU+JVxuICBkcGx5cjo6c2VsZWN0KFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLFwibW9sZWN1bGFyX3N1YnR5cGVcIikgIl19 -->
+<pre class="r"><code>rtk_fus_biospecimen &lt;- lgat_fus %&gt;%
   filter(RTK_fus==&quot;Yes&quot;) %&gt;%
   mutate(molecular_subtype = &quot;RTK&quot;) %&gt;%
   dplyr::select(&quot;Kids_First_Biospecimen_ID&quot;,&quot;molecular_subtype&quot;) 
@@ -2033,8 +2042,7 @@ rtk_fus_biospecimen &lt;- lgat_fus %&gt;%
 rtk_snv_biospecimen &lt;- lgat_snv %&gt;%
   filter(RTK_mut==&quot;Yes&quot;) %&gt;%
   mutate(molecular_subtype = &quot;RTK&quot;) %&gt;%
-  dplyr::select(&quot;Kids_First_Biospecimen_ID&quot;,&quot;molecular_subtype&quot;) 
-</code></pre>
+  dplyr::select(&quot;Kids_First_Biospecimen_ID&quot;,&quot;molecular_subtype&quot;) </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2044,7 +2052,7 @@ rtk_snv_biospecimen &lt;- lgat_snv %&gt;%
 <p>This subtype harbors FGFR1 p.N546K, p.K656E, p.N577, or p. K687 hotspot mutations or OR harbors FGFR1 TKD (tyrosine kinase domain tandem duplication) or OR harbors FGFR1-TACC1 fusion **or OR harbors FGFR1 or FGFR2 fusions</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmdmcl9mdXNfYmlvc3BlY2ltZW4gPC0gbGdhdF9mdXMgJT4lXG4gIGZpbHRlcihGR0ZSX2Z1cz09XCJZZXNcIikgJT4lXG4gIG11dGF0ZShtb2xlY3VsYXJfc3VidHlwZSA9IFwiRkdGUlwiKSAlPiVcbiAgZHBseXI6OnNlbGVjdChcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIixcIm1vbGVjdWxhcl9zdWJ0eXBlXCIpIFxuXG5mZ2ZyX3Nudl9iaW9zcGVjaW1lbiA8LSBsZ2F0X3NudiAlPiVcbiAgZmlsdGVyKEZHRlJfbXV0PT1cIlllc1wiKSAlPiVcbiAgbXV0YXRlKG1vbGVjdWxhcl9zdWJ0eXBlID0gXCJGR0ZSXCIpICU+JVxuICBkcGx5cjo6c2VsZWN0KFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLFwibW9sZWN1bGFyX3N1YnR5cGVcIikgXG5cbmZnZnJfY252X2Jpb3NwZWNpbWVuIDwtIGxnYXRfY252ICU+JVxuICBmaWx0ZXIoRkdGUl9EVVBfVEFOREVNPT1cIlllc1wiIHwgIEZHRlJfRFVQID09IFwiWWVzXCIpICU+JVxuICBtdXRhdGUobW9sZWN1bGFyX3N1YnR5cGUgPSBcIkZHRlJcIikgJT4lXG4gIGRwbHlyOjpzZWxlY3QoXCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEXCIsXCJtb2xlY3VsYXJfc3VidHlwZVwiKSBcblxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbImZnZnJfZnVzX2Jpb3NwZWNpbWVuIDwtIGxnYXRfZnVzICU+JVxuICBmaWx0ZXIoRkdGUl9mdXM9PVwiWWVzXCIpICU+JVxuICBtdXRhdGUobW9sZWN1bGFyX3N1YnR5cGUgPSBcIkZHRlJcIikgJT4lXG4gIGRwbHlyOjpzZWxlY3QoXCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEXCIsXCJtb2xlY3VsYXJfc3VidHlwZVwiKSAiLCIiLCJmZ2ZyX3Nudl9iaW9zcGVjaW1lbiA8LSBsZ2F0X3NudiAlPiVcbiAgZmlsdGVyKEZHRlJfbXV0PT1cIlllc1wiKSAlPiVcbiAgbXV0YXRlKG1vbGVjdWxhcl9zdWJ0eXBlID0gXCJGR0ZSXCIpICU+JVxuICBkcGx5cjo6c2VsZWN0KFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLFwibW9sZWN1bGFyX3N1YnR5cGVcIikgIiwiIiwiZmdmcl9jbnZfYmlvc3BlY2ltZW4gPC0gbGdhdF9jbnYgJT4lXG4gIGZpbHRlcihGR0ZSX0RVUF9UQU5ERU09PVwiWWVzXCIgfCAgRkdGUl9EVVAgPT0gXCJZZXNcIikgJT4lXG4gIG11dGF0ZShtb2xlY3VsYXJfc3VidHlwZSA9IFwiRkdGUlwiKSAlPiVcbiAgZHBseXI6OnNlbGVjdChcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIixcIm1vbGVjdWxhcl9zdWJ0eXBlXCIpICJdfQ== -->
 <pre class="r"><code>fgfr_fus_biospecimen &lt;- lgat_fus %&gt;%
   filter(FGFR_fus==&quot;Yes&quot;) %&gt;%
   mutate(molecular_subtype = &quot;FGFR&quot;) %&gt;%
@@ -2058,8 +2066,7 @@ fgfr_snv_biospecimen &lt;- lgat_snv %&gt;%
 fgfr_cnv_biospecimen &lt;- lgat_cnv %&gt;%
   filter(FGFR_DUP_TANDEM==&quot;Yes&quot; |  FGFR_DUP == &quot;Yes&quot;) %&gt;%
   mutate(molecular_subtype = &quot;FGFR&quot;) %&gt;%
-  dplyr::select(&quot;Kids_First_Biospecimen_ID&quot;,&quot;molecular_subtype&quot;) 
-</code></pre>
+  dplyr::select(&quot;Kids_First_Biospecimen_ID&quot;,&quot;molecular_subtype&quot;) </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2069,12 +2076,11 @@ fgfr_cnv_biospecimen &lt;- lgat_cnv %&gt;%
 <p>This subtype harbors an IDH R132 mutation</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWRoX2Jpb3NwZWNpbWVuIDwtIGxnYXRfc252ICU+JVxuICBmaWx0ZXIoSURIX211dD09XCJZZXNcIikgJT4lXG4gIG11dGF0ZShtb2xlY3VsYXJfc3VidHlwZSA9IFwiSURIXCIpICU+JVxuICBkcGx5cjo6c2VsZWN0KFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLFwibW9sZWN1bGFyX3N1YnR5cGVcIikgXG5cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiaWRoX2Jpb3NwZWNpbWVuIDwtIGxnYXRfc252ICU+JVxuICBmaWx0ZXIoSURIX211dD09XCJZZXNcIikgJT4lXG4gIG11dGF0ZShtb2xlY3VsYXJfc3VidHlwZSA9IFwiSURIXCIpICU+JVxuICBkcGx5cjo6c2VsZWN0KFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLFwibW9sZWN1bGFyX3N1YnR5cGVcIikgIn0= -->
 <pre class="r"><code>idh_biospecimen &lt;- lgat_snv %&gt;%
   filter(IDH_mut==&quot;Yes&quot;) %&gt;%
   mutate(molecular_subtype = &quot;IDH&quot;) %&gt;%
-  dplyr::select(&quot;Kids_First_Biospecimen_ID&quot;,&quot;molecular_subtype&quot;) 
-</code></pre>
+  dplyr::select(&quot;Kids_First_Biospecimen_ID&quot;,&quot;molecular_subtype&quot;) </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2084,12 +2090,11 @@ fgfr_cnv_biospecimen &lt;- lgat_cnv %&gt;%
 <p>This subtype harbors an H3F3A K28M or G35R/V mutation</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaDNfYmlvc3BlY2ltZW4gPC0gbGdhdF9zbnYgJT4lXG4gIGZpbHRlcihIMy4xX211dCA9PVwiWWVzXCJ8IEgzLjJfbXV0ID09XCJZZXNcIiB8SDMuM19tdXQgPT1cIlllc1wiKSAlPiVcbiAgbXV0YXRlKG1vbGVjdWxhcl9zdWJ0eXBlID0gXCJIM1wiKSAlPiVcbiAgZHBseXI6OnNlbGVjdChcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIixcIm1vbGVjdWxhcl9zdWJ0eXBlXCIpIFxuXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiaDNfYmlvc3BlY2ltZW4gPC0gbGdhdF9zbnYgJT4lXG4gIGZpbHRlcihIMy4xX211dCA9PVwiWWVzXCJ8IEgzLjJfbXV0ID09XCJZZXNcIiB8SDMuM19tdXQgPT1cIlllc1wiKSAlPiVcbiAgbXV0YXRlKG1vbGVjdWxhcl9zdWJ0eXBlID0gXCJIM1wiKSAlPiVcbiAgZHBseXI6OnNlbGVjdChcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIixcIm1vbGVjdWxhcl9zdWJ0eXBlXCIpICJ9 -->
 <pre class="r"><code>h3_biospecimen &lt;- lgat_snv %&gt;%
   filter(H3.1_mut ==&quot;Yes&quot;| H3.2_mut ==&quot;Yes&quot; |H3.3_mut ==&quot;Yes&quot;) %&gt;%
   mutate(molecular_subtype = &quot;H3&quot;) %&gt;%
-  dplyr::select(&quot;Kids_First_Biospecimen_ID&quot;,&quot;molecular_subtype&quot;) 
-</code></pre>
+  dplyr::select(&quot;Kids_First_Biospecimen_ID&quot;,&quot;molecular_subtype&quot;) </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2099,7 +2104,7 @@ fgfr_cnv_biospecimen &lt;- lgat_cnv %&gt;%
 <p>This subtype harbors either a MYB-QKI fusion or other MYB or MYBL1 fusion</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubXliX2Jpb3NwZWNpbWVuIDwtIGxnYXRfZnVzICU+JVxuICBmaWx0ZXIoTVlCX2Z1cz09XCJZZXNcIikgJT4lXG4gIG11dGF0ZShtb2xlY3VsYXJfc3VidHlwZSA9IFwiTVlCL01ZQkwxXCIpICU+JVxuICBkcGx5cjo6c2VsZWN0KFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLFwibW9sZWN1bGFyX3N1YnR5cGVcIilcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoibXliX2Jpb3NwZWNpbWVuIDwtIGxnYXRfZnVzICU+JVxuICBmaWx0ZXIoTVlCX2Z1cz09XCJZZXNcIikgJT4lXG4gIG11dGF0ZShtb2xlY3VsYXJfc3VidHlwZSA9IFwiTVlCL01ZQkwxXCIpICU+JVxuICBkcGx5cjo6c2VsZWN0KFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLFwibW9sZWN1bGFyX3N1YnR5cGVcIikifQ== -->
 <pre class="r"><code>myb_biospecimen &lt;- lgat_fus %&gt;%
   filter(MYB_fus==&quot;Yes&quot;) %&gt;%
   mutate(molecular_subtype = &quot;MYB/MYBL1&quot;) %&gt;%
@@ -2113,9 +2118,8 @@ fgfr_cnv_biospecimen &lt;- lgat_cnv %&gt;%
 <p>This subtype harbors focal CDKN2A and/or CDKN2B deletion This is a secondary co-occurring alteration with prognostic significance.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5jZGtuX2Jpb3NwZWNpbWVuIDwtIGxnYXRfY252ICU+JVxuICBmaWx0ZXIoQ0RLTjJBX0RFTD09XCJZZXNcInwgQ0RLTjJCX0RFTCA9PSBcIlllc1wiKSAlPiVcbiAgbXV0YXRlKG1vbGVjdWxhcl9zdWJ0eXBlID0gXCJDREtOMkEvQlwiKSAlPiVcbiAgZHBseXI6OnNlbGVjdChcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIixcIm1vbGVjdWxhcl9zdWJ0eXBlXCIpIFxuYGBgIn0= -->
-<pre class="r"><code>
-cdkn_biospecimen &lt;- lgat_cnv %&gt;%
+<!-- rnb-source-begin eyJkYXRhIjoiY2Rrbl9iaW9zcGVjaW1lbiA8LSBsZ2F0X2NudiAlPiVcbiAgZmlsdGVyKENES04yQV9ERUw9PVwiWWVzXCJ8IENES04yQl9ERUwgPT0gXCJZZXNcIikgJT4lXG4gIG11dGF0ZShtb2xlY3VsYXJfc3VidHlwZSA9IFwiQ0RLTjJBL0JcIikgJT4lXG4gIGRwbHlyOjpzZWxlY3QoXCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEXCIsXCJtb2xlY3VsYXJfc3VidHlwZVwiKSAifQ== -->
+<pre class="r"><code>cdkn_biospecimen &lt;- lgat_cnv %&gt;%
   filter(CDKN2A_DEL==&quot;Yes&quot;| CDKN2B_DEL == &quot;Yes&quot;) %&gt;%
   mutate(molecular_subtype = &quot;CDKN2A/B&quot;) %&gt;%
   dplyr::select(&quot;Kids_First_Biospecimen_ID&quot;,&quot;molecular_subtype&quot;) </code></pre>
@@ -2127,9 +2131,8 @@ cdkn_biospecimen &lt;- lgat_cnv %&gt;%
 <h3>Compile</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5hbGxfZG5hX3N1YnR5cGUgPC0gYmluZF9yb3dzKG5mMV9iaW9zcGVjaW1lbixcbiAgICAgICAgICAgICAgICAgICAgICAgICBicmFmVjYwMF9iaW9zcGVjaW1lbixcbiAgICAgICAgICAgICAgICAgICAgICAgICBvdGhlck1BUEtfc252X2Jpb3NwZWNpbWVuLFxuICAgICAgICAgICAgICAgICAgICAgICAgIHJ0a19zbnZfYmlvc3BlY2ltZW4sXG4gICAgICAgICAgICAgICAgICAgICAgICAgZmdmcl9jbnZfYmlvc3BlY2ltZW4sXG4gICAgICAgICAgICAgICAgICAgICAgICAgZmdmcl9zbnZfYmlvc3BlY2ltZW4sXG4gICAgICAgICAgICAgICAgICAgICAgICAgaWRoX2Jpb3NwZWNpbWVuLFxuICAgICAgICAgICAgICAgICAgICAgICAgIGgzX2Jpb3NwZWNpbWVuLFxuICAgICAgICAgICAgICAgICAgICAgICAgIGNka25fYmlvc3BlY2ltZW5cbikgJT4lXG4gIGRwbHlyOjpyZW5hbWUoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkE9S2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkgJT4lXG4gICMgYWRkIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfUk5BIHRvIGRuYSBzdWJ0eXBlcyBkYXRhZnJhbWVcbiAgbGVmdF9qb2luKGFsbF9sZ2F0X21hdGNoZWQsYnk9XCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQVwiKSBcblxuYWxsX3JuYV9zdWJ0eXBlIDwtIGJpbmRfcm93cyhraWFhYnJhZl9iaW9zcGVjaW1lbixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgb3RoZXJNQVBLX2Z1c19iaW9zcGVjaW1lbixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcnRrX2Z1c19iaW9zcGVjaW1lbixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZmdmcl9mdXNfYmlvc3BlY2ltZW4sXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgIG15Yl9iaW9zcGVjaW1lbikgJT4lXG4gIGRwbHlyOjpyZW5hbWUoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9STkE9S2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkgJT4lXG4gICMgYWRkIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfRE5BIHRvIHJuYSBzdWJ0eXBlcyBkYXRhZnJhbWVcbiAgbGVmdF9qb2luKGFsbF9sZ2F0X21hdGNoZWQsYnk9XCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX1JOQVwiKVxuXG4gIFxuYWxsX3N1YnR5cGUgPC0gYmluZF9yb3dzKGFsbF9ybmFfc3VidHlwZSxcbiAgICAgICAgICAgICAgICAgICAgICAgICBhbGxfZG5hX3N1YnR5cGUpICU+JVxuICBmdWxsX2pvaW4oYWxsX2xnYXRfbWF0Y2hlZCwgYnk9YyhcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfUk5BXCIsXCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQVwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcInNhbXBsZV9pZFwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcInBhdGhvbG9neV9mcmVlX3RleHRfZGlhZ25vc2lzXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwicGF0aG9sb2d5X2RpYWdub3Npc1wiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIktpZHNfRmlyc3RfUGFydGljaXBhbnRfSURcIikpICU+JVxuICAjIGxldHMgZ3JvdXAgYmVjYXVzZSB0aGVyZSBhcmUgc29tZSBpbnN0YW5jZXMgd2hlcmUgTEdBVCBETkEvUk5BIGhhdmUgbXVsdGlwbGUgc3VidHlwZXNcbiAgZ3JvdXBfYnkoc2FtcGxlX2lkLEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsXG4gICAgICAgICAgIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfUk5BLFxuICAgICAgICAgICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQSxcbiAgICAgICAgICAgcGF0aG9sb2d5X2ZyZWVfdGV4dF9kaWFnbm9zaXMsXG4gICAgICAgICAgIHBhdGhvbG9neV9kaWFnbm9zaXMpICU+JVxuICAjIG1lcmdpbmcgdGhlbSBoZXJlIHdpdGggc3VtbWFyaXNlXG4gIHN1bW1hcmlzZShtb2xlY3VsYXJfc3VidHlwZT0gdG9TdHJpbmcobW9sZWN1bGFyX3N1YnR5cGUpKSAlPiVcbiAgdW5ncm91cCgpICU+JSBcbiAgIyBmb3JtYXR0aW5nIG1vbGVjdWxhcl9zdWJ0eXBlIGNvbHVtbnNcbiAgZHBseXI6Om11dGF0ZShtb2xlY3VsYXJfc3VidHlwZSA9IGNhc2Vfd2hlbihcbiAgICAjIG1vbGVjdWxhcl9zdWJ0eXBlIGlzIE5BIGFuZCB3ZSBkaWRuJ3QgZmluZCBhbnkgY2Fub25pY2FsXG4gICAgIyBMR0cgdmFyaWFudCBpbiB0aGUgRE5BIGFuZCBubyBSTkEgYWJiZXJhdGlvbnMgaW4gUk5BIHNhbXBsZVxuICAgICMgc3VidHlwZSBzaG91bGQgYmUgV1RcbiAgICAobW9sZWN1bGFyX3N1YnR5cGU9PVwiTkFcIiAmICFpcy5uYShLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQSkgJlxuICAgICAgICFpcy5uYShLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX1JOQSkpIH4gXCJMR0csIHdpbGR0eXBlXCIsXG4gICAgIyBtb2xlY3VsYXJfc3VidHlwZSBpcyBOQSBhbmQgd2UgZG8gbm90IGhhdmUgYSBETkEgc2FtcGxlXG4gICAgIyBPUiBkb24ndCBoYXZlIFJOQSB0byBjaGVjayBmb3IgTEdHIHZhcmlhbnQgb3IgZnVzaW9uXG4gICAgIyBzbyBzdGF0dXMgd2lsbCBiZSBUbyBiZSBjbGFzc2lmaWVkXG4gICAgbW9sZWN1bGFyX3N1YnR5cGU9PVwiTkFcIiAmIChpcy5uYShLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQSkgfFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaXMubmEoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9STkEpKSAgfiBcIkxHRywgVG8gYmUgY2xhc3NpZmllZFwiLFxuICAgICMgd2hlbiBtb2xlY3VsYXJfc3VidHlwZSBpcyBub3QgTkEgXG4gICAgVFJVRSB+IHN0cmluZ3I6OnN0cl9jKFwiTEdHLCBcIiwgbW9sZWN1bGFyX3N1YnR5cGUpKSkgJT4lXG4gICMgcmVjb2RlIGlmIGdsaWFsbmV1cm9uYWwgdHVtb3JzXG4gIGRwbHlyOjptdXRhdGUobW9sZWN1bGFyX3N1YnR5cGUgPSBjYXNlX3doZW4oXG4gICAgc3RyX2RldGVjdChwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3NpcywgXG4gICAgICAgICAgICAgICBwYXN0ZShwYXRoX2R4X2xpc3QkcmVjb2RlX3BhdGhfZnJlZV90ZXh0LGNvbGxhcHNlID0gXCJ8XCIpKSAmXG4gICAgICBwYXRob2xvZ3lfZGlhZ25vc2lzID09IFwiTG93LWdyYWRlIGdsaW9tYS9hc3Ryb2N5dG9tYSAoV0hPIGdyYWRlIEkvSUkpXCIgfiBcbiAgICAgIGdzdWIoXCJMR0csXCIsXCJHTlQsXCIsbW9sZWN1bGFyX3N1YnR5cGUpLFxuICAgIHBhdGhvbG9neV9kaWFnbm9zaXMgPT0gXCJHYW5nbGlvZ2xpb21hXCIgflxuICAgICAgZ3N1YihcIkxHRyx8R05ULFwiLFwiR05HLFwiLG1vbGVjdWxhcl9zdWJ0eXBlKSxcbiAgICBUUlVFIH4gbW9sZWN1bGFyX3N1YnR5cGUpKSAlPiVcbiAgZHBseXI6OnNlbGVjdCgtcGF0aG9sb2d5X2ZyZWVfdGV4dF9kaWFnbm9zaXMsXG4gICAgICAgICAgICAgICAgLXBhdGhvbG9neV9kaWFnbm9zaXMpICU+JVxuICB1bmlxdWUoKSAlPiVcbiAgZHBseXI6OmFycmFuZ2Uoc2FtcGxlX2lkKSAlPiVcbiAgd3JpdGVfdHN2KGZpbGUucGF0aChyZXN1bHREaXIsXCJsZ2F0X3N1YnR5cGluZy50c3ZcIikpXG5cbmBgYCJ9 -->
-<pre class="r"><code>
-all_dna_subtype &lt;- bind_rows(nf1_biospecimen,
+<!-- rnb-source-begin eyJkYXRhIjpbImFsbF9kbmFfc3VidHlwZSA8LSBiaW5kX3Jvd3MobmYxX2Jpb3NwZWNpbWVuLFxuICAgICAgICAgICAgICAgICAgICAgICAgIGJyYWZWNjAwX2Jpb3NwZWNpbWVuLFxuICAgICAgICAgICAgICAgICAgICAgICAgIG90aGVyTUFQS19zbnZfYmlvc3BlY2ltZW4sXG4gICAgICAgICAgICAgICAgICAgICAgICAgcnRrX3Nudl9iaW9zcGVjaW1lbixcbiAgICAgICAgICAgICAgICAgICAgICAgICBmZ2ZyX2Nudl9iaW9zcGVjaW1lbixcbiAgICAgICAgICAgICAgICAgICAgICAgICBmZ2ZyX3Nudl9iaW9zcGVjaW1lbixcbiAgICAgICAgICAgICAgICAgICAgICAgICBpZGhfYmlvc3BlY2ltZW4sXG4gICAgICAgICAgICAgICAgICAgICAgICAgaDNfYmlvc3BlY2ltZW4sXG4gICAgICAgICAgICAgICAgICAgICAgICAgY2Rrbl9iaW9zcGVjaW1lblxuKSAlPiVcbiAgZHBseXI6OnJlbmFtZShLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQT1LaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKSAlPiVcbiAgIyBhZGQgS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9STkEgdG8gZG5hIHN1YnR5cGVzIGRhdGFmcmFtZVxuICBsZWZ0X2pvaW4oYWxsX2xnYXRfbWF0Y2hlZCxieT1cIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfRE5BXCIpICIsIiIsImFsbF9ybmFfc3VidHlwZSA8LSBiaW5kX3Jvd3Moa2lhYWJyYWZfYmlvc3BlY2ltZW4sXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgIG90aGVyTUFQS19mdXNfYmlvc3BlY2ltZW4sXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJ0a19mdXNfYmlvc3BlY2ltZW4sXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZnZnJfZnVzX2Jpb3NwZWNpbWVuLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICBteWJfYmlvc3BlY2ltZW4pICU+JVxuICBkcGx5cjo6cmVuYW1lKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfUk5BPUtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpICU+JVxuICAjIGFkZCBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQSB0byBybmEgc3VidHlwZXMgZGF0YWZyYW1lXG4gIGxlZnRfam9pbihhbGxfbGdhdF9tYXRjaGVkLGJ5PVwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9STkFcIikiLCIiLCIgICIsImFsbF9zdWJ0eXBlIDwtIGJpbmRfcm93cyhhbGxfcm5hX3N1YnR5cGUsXG4gICAgICAgICAgICAgICAgICAgICAgICAgYWxsX2RuYV9zdWJ0eXBlKSAlPiVcbiAgZnVsbF9qb2luKGFsbF9sZ2F0X21hdGNoZWQsIGJ5PWMoXCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX1JOQVwiLFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkFcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJzYW1wbGVfaWRcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJwYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3Npc1wiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcInBhdGhvbG9neV9kaWFnbm9zaXNcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEXCIpKSAlPiVcbiAgIyBsZXRzIGdyb3VwIGJlY2F1c2UgdGhlcmUgYXJlIHNvbWUgaW5zdGFuY2VzIHdoZXJlIExHQVQgRE5BL1JOQSBoYXZlIG11bHRpcGxlIHN1YnR5cGVzXG4gIGdyb3VwX2J5KHNhbXBsZV9pZCxLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELFxuICAgICAgICAgICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX1JOQSxcbiAgICAgICAgICAgS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkEsXG4gICAgICAgICAgIHBhdGhvbG9neV9mcmVlX3RleHRfZGlhZ25vc2lzLFxuICAgICAgICAgICBwYXRob2xvZ3lfZGlhZ25vc2lzKSAlPiVcbiAgIyBtZXJnaW5nIHRoZW0gaGVyZSB3aXRoIHN1bW1hcmlzZVxuICBzdW1tYXJpc2UobW9sZWN1bGFyX3N1YnR5cGU9IHRvU3RyaW5nKG1vbGVjdWxhcl9zdWJ0eXBlKSkgJT4lXG4gIHVuZ3JvdXAoKSAlPiUgXG4gICMgZm9ybWF0dGluZyBtb2xlY3VsYXJfc3VidHlwZSBjb2x1bW5zXG4gIGRwbHlyOjptdXRhdGUobW9sZWN1bGFyX3N1YnR5cGUgPSBjYXNlX3doZW4oXG4gICAgIyBtb2xlY3VsYXJfc3VidHlwZSBpcyBOQSBhbmQgd2UgZGlkbid0IGZpbmQgYW55IGNhbm9uaWNhbFxuICAgICMgTEdHIHZhcmlhbnQgaW4gdGhlIEROQSBhbmQgbm8gUk5BIGFiYmVyYXRpb25zIGluIFJOQSBzYW1wbGVcbiAgICAjIHN1YnR5cGUgc2hvdWxkIGJlIFdUXG4gICAgKG1vbGVjdWxhcl9zdWJ0eXBlPT1cIk5BXCIgJiAhaXMubmEoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkEpICZcbiAgICAgICAhaXMubmEoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9STkEpKSB+IFwiTEdHLCB3aWxkdHlwZVwiLFxuICAgICMgbW9sZWN1bGFyX3N1YnR5cGUgaXMgTkEgYW5kIHdlIGRvIG5vdCBoYXZlIGEgRE5BIHNhbXBsZVxuICAgICMgT1IgZG9uJ3QgaGF2ZSBSTkEgdG8gY2hlY2sgZm9yIExHRyB2YXJpYW50IG9yIGZ1c2lvblxuICAgICMgc28gc3RhdHVzIHdpbGwgYmUgVG8gYmUgY2xhc3NpZmllZFxuICAgIG1vbGVjdWxhcl9zdWJ0eXBlPT1cIk5BXCIgJiAoaXMubmEoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkEpIHxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlzLm5hKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfUk5BKSkgIH4gXCJMR0csIFRvIGJlIGNsYXNzaWZpZWRcIixcbiAgICAjIHdoZW4gbW9sZWN1bGFyX3N1YnR5cGUgaXMgbm90IE5BIFxuICAgIFRSVUUgfiBzdHJpbmdyOjpzdHJfYyhcIkxHRywgXCIsIG1vbGVjdWxhcl9zdWJ0eXBlKSkpICU+JVxuICAjIHJlY29kZSBpZiBnbGlhbG5ldXJvbmFsIHR1bW9yc1xuICBkcGx5cjo6bXV0YXRlKG1vbGVjdWxhcl9zdWJ0eXBlID0gY2FzZV93aGVuKFxuICAgIHN0cl9kZXRlY3QocGF0aG9sb2d5X2ZyZWVfdGV4dF9kaWFnbm9zaXMsIFxuICAgICAgICAgICAgICAgcGFzdGUocGF0aF9keF9saXN0JHJlY29kZV9wYXRoX2ZyZWVfdGV4dCxjb2xsYXBzZSA9IFwifFwiKSkgJlxuICAgICAgcGF0aG9sb2d5X2RpYWdub3NpcyA9PSBcIkxvdy1ncmFkZSBnbGlvbWEvYXN0cm9jeXRvbWEgKFdITyBncmFkZSBJL0lJKVwiIH4gXG4gICAgICBnc3ViKFwiTEdHLFwiLFwiR05ULFwiLG1vbGVjdWxhcl9zdWJ0eXBlKSxcbiAgICBwYXRob2xvZ3lfZGlhZ25vc2lzID09IFwiR2FuZ2xpb2dsaW9tYVwiIH5cbiAgICAgIGdzdWIoXCJMR0csfEdOVCxcIixcIkdORyxcIixtb2xlY3VsYXJfc3VidHlwZSksXG4gICAgVFJVRSB+IG1vbGVjdWxhcl9zdWJ0eXBlKSkgJT4lXG4gIGRwbHlyOjpzZWxlY3QoLXBhdGhvbG9neV9mcmVlX3RleHRfZGlhZ25vc2lzLFxuICAgICAgICAgICAgICAgIC1wYXRob2xvZ3lfZGlhZ25vc2lzKSAlPiVcbiAgdW5pcXVlKCkgJT4lXG4gIGRwbHlyOjphcnJhbmdlKHNhbXBsZV9pZCkgJT4lXG4gIHdyaXRlX3RzdihmaWxlLnBhdGgocmVzdWx0RGlyLFwibGdhdF9zdWJ0eXBpbmcudHN2XCIpKSJdfQ== -->
+<pre class="r"><code>all_dna_subtype &lt;- bind_rows(nf1_biospecimen,
                          brafV600_biospecimen,
                          otherMAPK_snv_biospecimen,
                          rtk_snv_biospecimen,
@@ -2196,17 +2199,16 @@ all_subtype &lt;- bind_rows(all_rna_subtype,
                 -pathology_diagnosis) %&gt;%
   unique() %&gt;%
   dplyr::arrange(sample_id) %&gt;%
-  write_tsv(file.path(resultDir,&quot;lgat_subtyping.tsv&quot;))
-</code></pre>
+  write_tsv(file.path(resultDir,&quot;lgat_subtyping.tsv&quot;))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoic2Vzc2lvbkluZm8oKSJ9 -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgICBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgICBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgICBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcbiBbMV0gbWFncml0dHJfMS41ICAgIGZvcmNhdHNfMC40LjAgICBzdHJpbmdyXzEuNC4wICAgZHBseXJfMC44LjMgICAgIHB1cnJyXzAuMy4yICAgICByZWFkcl8xLjMuMSAgICAgdGlkeXJfMC44LjMgICAgXG4gWzhdIHRpYmJsZV8yLjEuMyAgICBnZ3Bsb3QyXzMuMi4wICAgdGlkeXZlcnNlXzEuMi4xXG5cbmxvYWRlZCB2aWEgYSBuYW1lc3BhY2UgKGFuZCBub3QgYXR0YWNoZWQpOlxuIFsxXSBSY3BwXzEuMC4xICAgICAgIGNlbGxyYW5nZXJfMS4xLjAgcGlsbGFyXzEuNC4yICAgICBjb21waWxlcl8zLjYuMCAgIGJhc2U2NGVuY18wLjEtMyAgdG9vbHNfMy42LjAgICAgICB6ZWFsbG90XzAuMS4wICAgXG4gWzhdIGRpZ2VzdF8wLjYuMjAgICAgbHVicmlkYXRlXzEuNy40ICBqc29ubGl0ZV8xLjYgICAgIGV2YWx1YXRlXzAuMTQgICAgbmxtZV8zLjEtMTQwICAgICBndGFibGVfMC4zLjAgICAgIGxhdHRpY2VfMC4yMC0zOCBcblsxNV0gcGtnY29uZmlnXzIuMC4yICBybGFuZ18wLjQuMCAgICAgIGNsaV8xLjEuMCAgICAgICAgcnN0dWRpb2FwaV8wLjEwICB5YW1sXzIuMi4wICAgICAgIGhhdmVuXzIuMS4xICAgICAgeGZ1bl8wLjggICAgICAgIFxuWzIyXSB3aXRocl8yLjEuMiAgICAgIHhtbDJfMS4yLjAgICAgICAgaHR0cl8xLjQuMCAgICAgICBrbml0cl8xLjIzICAgICAgIHZjdHJzXzAuMS4wICAgICAgaG1zXzAuNC4yICAgICAgICBnZW5lcmljc18wLjAuMiAgXG5bMjldIHJwcm9qcm9vdF8xLjMtMiAgZ3JpZF8zLjYuMCAgICAgICB0aWR5c2VsZWN0XzAuMi41IGdsdWVfMS4zLjEgICAgICAgUjZfMi40LjAgICAgICAgICBmYW5zaV8wLjQuMCAgICAgIHJlYWR4bF8xLjMuMSAgICBcblszNl0gcm1hcmtkb3duXzEuMTMgICBtb2RlbHJfMC4xLjQgICAgIGJhY2twb3J0c18xLjEuNCAgc2NhbGVzXzEuMC4wICAgICBodG1sdG9vbHNfMC4zLjYgIHJ2ZXN0XzAuMy40ICAgICAgYXNzZXJ0dGhhdF8wLjIuMVxuWzQzXSBjb2xvcnNwYWNlXzEuNC0xIHV0ZjhfMS4xLjQgICAgICAgc3RyaW5naV8xLjQuMyAgICBsYXp5ZXZhbF8wLjIuMiAgIG11bnNlbGxfMC41LjAgICAgYnJvb21fMC41LjIgICAgICBjcmF5b25fMS4zLjQgICAgXG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgIFxuIFszXSBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgIFxuWzExXSBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcblsxXSBmb3JjYXRzXzAuNC4wICAgc3RyaW5ncl8xLjQuMCAgIGRwbHlyXzAuOC4zICAgICBwdXJycl8wLjMuMiAgICBcbls1XSByZWFkcl8xLjMuMSAgICAgdGlkeXJfMC44LjMgICAgIHRpYmJsZV8yLjEuMyAgICBnZ3Bsb3QyXzMuMi4wICBcbls5XSB0aWR5dmVyc2VfMS4yLjFcblxubG9hZGVkIHZpYSBhIG5hbWVzcGFjZSAoYW5kIG5vdCBhdHRhY2hlZCk6XG4gWzFdIFJjcHBfMS4wLjEgICAgICAgY2VsbHJhbmdlcl8xLjEuMCBwaWxsYXJfMS40LjIgICAgIGNvbXBpbGVyXzMuNi4wICBcbiBbNV0gYmFzZTY0ZW5jXzAuMS0zICB0b29sc18zLjYuMCAgICAgIGRpZ2VzdF8wLjYuMjAgICAgbHVicmlkYXRlXzEuNy40IFxuIFs5XSBqc29ubGl0ZV8xLjYgICAgIGV2YWx1YXRlXzAuMTQgICAgbmxtZV8zLjEtMTQwICAgICBndGFibGVfMC4zLjAgICAgXG5bMTNdIGxhdHRpY2VfMC4yMC0zOCAgcGtnY29uZmlnXzIuMC4yICBybGFuZ18wLjQuMCAgICAgIGNsaV8xLjEuMCAgICAgICBcblsxN10gcnN0dWRpb2FwaV8wLjEwICB5YW1sXzIuMi4wICAgICAgIGhhdmVuXzIuMS4xICAgICAgeGZ1bl8wLjggICAgICAgIFxuWzIxXSB3aXRocl8yLjEuMiAgICAgIHhtbDJfMS4yLjAgICAgICAgaHR0cl8xLjQuMCAgICAgICBrbml0cl8xLjIzICAgICAgXG5bMjVdIGdlbmVyaWNzXzAuMC4yICAgaG1zXzAuNC4yICAgICAgICBycHJvanJvb3RfMS4zLTIgIGdyaWRfMy42LjAgICAgICBcblsyOV0gdGlkeXNlbGVjdF8wLjIuNSBnbHVlXzEuMy4xICAgICAgIFI2XzIuNC4wICAgICAgICAgcmVhZHhsXzEuMy4xICAgIFxuWzMzXSBybWFya2Rvd25fMS4xMyAgIG1vZGVscl8wLjEuNCAgICAgbWFncml0dHJfMS41ICAgICBiYWNrcG9ydHNfMS4xLjQgXG5bMzddIHNjYWxlc18xLjAuMCAgICAgaHRtbHRvb2xzXzAuMy42ICBydmVzdF8wLjMuNCAgICAgIGFzc2VydHRoYXRfMC4yLjFcbls0MV0gY29sb3JzcGFjZV8xLjQtMSBzdHJpbmdpXzEuNC4zICAgIGxhenlldmFsXzAuMi4yICAgbXVuc2VsbF8wLjUuMCAgIFxuWzQ1XSBicm9vbV8wLjUuMiAgICAgIGNyYXlvbl8xLjMuNCAgICBcbiJ9 -->
 <pre><code>R version 3.6.0 (2019-04-26)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Debian GNU/Linux 9 (stretch)
@@ -2215,25 +2217,34 @@ Matrix products: default
 BLAS/LAPACK: /usr/lib/libopenblasp-r0.2.19.so
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C               LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C              LC_PAPER=en_US.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C             LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] magrittr_1.5    forcats_0.4.0   stringr_1.4.0   dplyr_0.8.3     purrr_0.3.2     readr_1.3.1     tidyr_0.8.3    
- [8] tibble_2.1.3    ggplot2_3.2.0   tidyverse_1.2.1
+[1] forcats_0.4.0   stringr_1.4.0   dplyr_0.8.3     purrr_0.3.2    
+[5] readr_1.3.1     tidyr_0.8.3     tibble_2.1.3    ggplot2_3.2.0  
+[9] tidyverse_1.2.1
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.1       cellranger_1.1.0 pillar_1.4.2     compiler_3.6.0   base64enc_0.1-3  tools_3.6.0      zeallot_0.1.0   
- [8] digest_0.6.20    lubridate_1.7.4  jsonlite_1.6     evaluate_0.14    nlme_3.1-140     gtable_0.3.0     lattice_0.20-38 
-[15] pkgconfig_2.0.2  rlang_0.4.0      cli_1.1.0        rstudioapi_0.10  yaml_2.2.0       haven_2.1.1      xfun_0.8        
-[22] withr_2.1.2      xml2_1.2.0       httr_1.4.0       knitr_1.23       vctrs_0.1.0      hms_0.4.2        generics_0.0.2  
-[29] rprojroot_1.3-2  grid_3.6.0       tidyselect_0.2.5 glue_1.3.1       R6_2.4.0         fansi_0.4.0      readxl_1.3.1    
-[36] rmarkdown_1.13   modelr_0.1.4     backports_1.1.4  scales_1.0.0     htmltools_0.3.6  rvest_0.3.4      assertthat_0.2.1
-[43] colorspace_1.4-1 utf8_1.1.4       stringi_1.4.3    lazyeval_0.2.2   munsell_0.5.0    broom_0.5.2      crayon_1.3.4    </code></pre>
+ [1] Rcpp_1.0.1       cellranger_1.1.0 pillar_1.4.2     compiler_3.6.0  
+ [5] base64enc_0.1-3  tools_3.6.0      digest_0.6.20    lubridate_1.7.4 
+ [9] jsonlite_1.6     evaluate_0.14    nlme_3.1-140     gtable_0.3.0    
+[13] lattice_0.20-38  pkgconfig_2.0.2  rlang_0.4.0      cli_1.1.0       
+[17] rstudioapi_0.10  yaml_2.2.0       haven_2.1.1      xfun_0.8        
+[21] withr_2.1.2      xml2_1.2.0       httr_1.4.0       knitr_1.23      
+[25] generics_0.0.2   hms_0.4.2        rprojroot_1.3-2  grid_3.6.0      
+[29] tidyselect_0.2.5 glue_1.3.1       R6_2.4.0         readxl_1.3.1    
+[33] rmarkdown_1.13   modelr_0.1.4     magrittr_1.5     backports_1.1.4 
+[37] scales_1.0.0     htmltools_0.3.6  rvest_0.3.4      assertthat_0.2.1
+[41] colorspace_1.4-1 stringi_1.4.3    lazyeval_0.2.2   munsell_0.5.0   
+[45] broom_0.5.2      crayon_1.3.4    </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 </div>
