@@ -46,7 +46,6 @@ if(!dir.exists(output_dir)) {
 ```
 
 ```{r}
-# TODO: the consensus SEG file is not currently in the data download -- when it
 if ( params$base_run ==0 ){
   histologies_file <- file.path("..", "..", "data", "pbta-histologies.tsv")
   consensus_seg_file <- file.path("..", "..", "data", 
