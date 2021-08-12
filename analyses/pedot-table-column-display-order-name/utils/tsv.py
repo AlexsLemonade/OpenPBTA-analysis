@@ -2,8 +2,8 @@ import pandas as pd
 import os
 
 
-class TSV:
-    """TSV table for generating PedOT column display order and name xlsx sheet.
+class TSVSheet:
+    """TSV sheet for generating PedOT column display order and name xlsx sheet.
 
     Attributes:
         xlsx_sheet_name: the name of the xlsx sheet as a string.
@@ -14,14 +14,17 @@ class TSV:
         ValueError: tsv_filepath is invalid or has no corresponding .jsonl.gz
             file.
     """
-    def __init__(self, tsv_filepath: str) -> None:
+    def __init__(self, tsv_sheet_name: str, tsv_filepath: str) -> None:
         """Initializes TSV with a TSV file path."""
+        self._tsv_sheet_name = tsv_sheet_name
+        self.xlsx_sheet_name = tsv_sheet_name
+
         self._tsv_filepath = tsv_filepath
         self._read_tsv()
-        self._set_xlsx_sheet_name()
+        self._set_jsonl_filepath()
         self._set_col_disp_order_name_df()
 
-    def _set_xlsx_sheet_name(self) -> None:
+    def _set_jsonl_filepath(self) -> None:
         """Set xlsx file sheet name for the TSV file."""
         valid_tsv_suffixes = [".tsv", ".tsv.gz"]
         jsonl_filepath = None
@@ -40,7 +43,6 @@ class TSV:
                                                       self._tsv_filepath))
 
         self._jsonl_filepath = jsonl_filepath
-        self.xlsx_sheet_name = os.path.basename(jsonl_filepath)
 
     def _read_tsv(self) -> None:
         """Read TSV file as pd.DataFrame."""

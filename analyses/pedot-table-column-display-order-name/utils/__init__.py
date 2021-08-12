@@ -1,1 +1,1 @@
-from .tsv import TSV
+from .tsv import TSVSheet
