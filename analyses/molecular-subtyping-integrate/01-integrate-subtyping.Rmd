@@ -164,6 +164,35 @@ No NAs in broad_histology, short_histology or harmonized_diagnosis
 Just a note, integrated_diagnosis is expected to be `NA` for samples where subtyping is not performed or if molecular_subtype is "XYZ,To be classified". 
 This means no evidence was provided/available for these samples so we are not able to add integrated_diagnosis.
 
+### Adding cancer_group
+
+Provides a narrower grouping for samples that can be used in generating figures
+```{r}
+
+histology<- histology %>%
+  # remove subtype details
+  dplyr::mutate(cancer_group = str_extract(harmonized_diagnosis, "[^,]*")) %>%
+  # update some values that come from pathology_diagnosis which are not standardized yet
+  dplyr::mutate(cancer_group = case_when(cancer_group == "Brainstem glioma- Diffuse intrinsic pontine glioma" ~ "Diffuse intrinsic pontine glioma",
+                                         cancer_group == "Anaplastic (malignant) meningioma" ~ "Meningioma",
+                                         cancer_group == "Atypical meningioma" ~ "Meningioma",
+                                         cancer_group == "Neurofibroma/Plexiform;Other" ~ "Neurofibroma/Plexiform",
+                                         cancer_group == "Non-germinomatous germ cell tumor;Teratoma" ~ "Teratoma",
+                                         cancer_group %in% c("Meningothelial meningioma", "Clear cell meningioma") ~ "Meningioma",
+                                         cancer_group == "Embryonal Tumor with Multilayered Rosettes" ~ "Embryonal tumor with multilayer rosettes",
+                                         cancer_group == "Adamantinomatous craniopharyngioma" ~ "Craniopharyngioma",
+                                         sample_id == "7316-2577" ~ "Embryonal tumor with multilayer rosettes",
+                                         cancer_group %in% c("Benign tumor","Dysplasia/Gliosis","Other") ~ NA_character_,
+                                         TRUE ~ as.character(cancer_group))
+  ) %>%
+  # remove short forms in the brackets
+  dplyr::mutate(cancer_group = str_extract(cancer_group, "[^(]*")) %>%
+  # remove space at the ends
+  dplyr::mutate(cancer_group = gsub(" $","",cancer_group)) 
+
+```
+
+
 #### Check differences in broad_histology 
 Checking for differences in broad_histology to look for changes in molecular_subtype 
 
