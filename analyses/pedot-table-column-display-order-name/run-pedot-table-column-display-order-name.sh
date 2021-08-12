@@ -14,3 +14,10 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 mkdir -p results
+
+echo 'Run 01-generate-pedot-column-display-order-name-xlsx.py...'
+python3 01-generate-pedot-column-display-order-name-xlsx.py
+
+echo 'Done running 01-generate-pedot-column-display-order-name-xlsx.py.'
+
+echo 'Done running run-pedot-table-column-display-order-name.sh'
