@@ -26,23 +26,27 @@ Generate the Excel spreadsheet using the TSV result files in the following modul
 - `rna-seq-expression-summary-stats`
 - `snv-frequencies`
 
-Each sheet in the Excel spreadsheet has name as the filename of the following JSONL files.
+## Results
 
-- `variant-level-snv-consensus-annotated-mut-freq.jsonl.gz`
-- `gene-level-snv-consensus-annotated-mut-freq.jsonl.gz`
-- `putative-oncogene-fusion-freq.jsonl.gz`
-- `putative-oncogene-fused-gene-freq.jsonl.gz`
-- `long_n_tpm_mean_sd_quantile_gene_wise_zscore.jsonl.gz`
-- `long_n_tpm_mean_sd_quantile_group_wise_zscore.jsonl.gz`
-- `gene-level-cnv-consensus-annotated-mut-freq.jsonl.gz`
+The PedOT table column display order and name Excel spreadsheet, `results/pedot-table-column-display-order-name.xlsx`. Each sheet in the Excel spreadsheet has a name corresponding to a JSONL filename. Excel only allows sheet names to have <= 31 characters.
+
+| Excel sheet name              | JSONL filename                                            |
+| ----------------------------- | --------------------------------------------------------- |
+| SNV gene-level                | `gene-level-snv-consensus-annotated-mut-freq.jsonl.gz`    |
+| SNV variant-level             | `variant-level-snv-consensus-annotated-mut-freq.jsonl.gz` |
+| CNV gene-level                | `gene-level-cnv-consensus-annotated-mut-freq.jsonl.gz`    |
+| Fusion gene-level             | `putative-oncogene-fused-gene-freq.jsonl.gz`              |
+| Fusion fusion-level           | `putative-oncogene-fusion-freq.jsonl.gz`                  |
+| TPM stats gene-wise z-scores  | `long_n_tpm_mean_sd_quantile_gene_wise_zscore.jsonl.gz`   |
+| TPM stats group-wise z-scores | `long_n_tpm_mean_sd_quantile_group_wise_zscore.jsonl.gz`  |
 
 Each sheet contains the following rows.
 
-- Column names in the JSONL/TSV files.
 - Column names for PedOT table view display.
 - 10 sample rows of table values.
+- Column names in the JSONL/TSV files.
 
-## Results
+The first two columns of each sheet are "User guide" and "Row annotation", which will not be displayed on the PedOT website.
 
 ## Usage
 
@@ -51,14 +55,40 @@ Each sheet contains the following rows.
 
 ## Module structure
 
+```text
+.
+├── 01-generate-pedot-column-display-order-name-xlsx.py
+├── README.md
+├── docs
+│   └── pedot_table_display_column_order_name_coordination_Aug5_2021_v1.2.png
+├── results
+│   └── pedot-table-column-display-order-name.xlsx
+├── run-pedot-table-column-display-order-name.sh
+└── utils
+    ├── __init__.py
+    └── tsv.py
+```
+
 ## Analysis scripts
 
-### 01-some-script
+### `01-generate-pedot-column-display-order-name-xlsx.py`
 
 Usage:
 
+```bash
+python3 01-generate-pedot-column-display-order-name-xlsx.py
+```
+
 Input:
 
-Parameters:
+- `../snv-frequencies/results/gene-level-snv-consensus-annotated-mut-freq.tsv`
+- `../snv-frequencies/results/variant-level-snv-consensus-annotated-mut-freq.tsv.gz`
+- `../cnv-frequencies/results/gene-level-cnv-consensus-annotated-mut-freq.tsv.gz`
+- `../fusion-frequencies/results/putative-oncogene-fused-gene-freq.tsv.gz`
+- `../fusion-frequencies/results/putative-oncogene-fusion-freq.tsv.gz`
+- `../rna-seq-expression-summary-stats/results/long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz`
+- `../rna-seq-expression-summary-stats/results/long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz`
 
 Output:
+
+- `results/pedot-table-column-display-order-name.xlsx`
