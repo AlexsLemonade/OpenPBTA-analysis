@@ -4,7 +4,7 @@
 # to evaluate classifier
 # @params snvConsensus multi-caller consensus snv calls
 # @params cnvConsensus multi-caller consensus cnv calls
-# @params histologyFile histology file: pbta-histologies.tsv
+# @params histologyFile histology file: histologies.tsv
 # @params outputFolder output folder for alteration file
 # @params gencode cds bed file from gencode
 
@@ -14,7 +14,7 @@ suppressPackageStartupMessages(library("readr"))
 suppressPackageStartupMessages(library("GenomicRanges"))
 
 #### Source functions ----------------------------------------------------------
-# We can use functions from the `snv-callers` module of the OpenPBTA project
+# We can use functions from the `snv-callers` module of the OpenPedCan project
 # TODO: if a common util folder is established, use that instead
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 source(file.path(root_dir, 
@@ -66,10 +66,10 @@ cnvConsesus <- data.table::fread( cnvConsesusFile,
 )
 
 # gencode cds region BED file
-gencode_cds <- read_tsv(gencodeBed, col_names = FALSE)
+gencode_cds <- data.table::fread(gencodeBed, skip=5)
 
 # histology file
-histology <- read_tsv(histologyFile, guess_max = 10000)
+histology <- read_tsv(histologyFile, guess_max = 100000)
 
 
 # filter the MAF data.frame to only include entries that fall within the
