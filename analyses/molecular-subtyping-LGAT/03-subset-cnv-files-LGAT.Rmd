@@ -47,14 +47,18 @@ manta <- read_tsv(file.path(
 # consensus seg calls
 cnv <- read_tsv(file.path(
   root_dir,
-  "data",
+  "analyses",
+  "copy_number_consensus_call",
+  "results",
   "pbta-cnv-consensus.seg.gz"
 ))
 
 # consensus seg annotated with gene
 cnv_anno <- read_tsv(file.path(
   root_dir,
-  "data",
+  "analyses",
+  "focal-cn-file-preparation",
+  "results",
   "consensus_seg_annotated_cn_autosomes.tsv.gz"
 ))
 
