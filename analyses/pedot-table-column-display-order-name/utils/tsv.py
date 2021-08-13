@@ -46,20 +46,21 @@ class TSVSheet:
         """Initializes TSV with a TSV file path."""
         self._tsv_filepath = tsv_filepath
         self._tsv_basename = os.path.basename(tsv_filepath)
-        self._set_xlsx_sheet_name()
-        self._set_jsonl_filepath()
-        self._read_tsv()
-        self._set_col_disp_order_name_df()
+        self.xlsx_sheet_name = self._get_xlsx_sheet_name()
+        self._jsonl_filepath = self._get_jsonl_filepath()
+        self._df = self._read_tsv()
+        self._col_names = self._df.columns.tolist()
+        self.col_disp_order_name_df = self._get_col_disp_order_name_df()
 
-    def _set_xlsx_sheet_name(self) -> None:
-        """Set xlsx_sheet_name attribute"""
+    def _get_xlsx_sheet_name(self) -> str:
+        """Get xlsx_sheet_name attribute"""
         if self._tsv_basename not in TSV_FN_XLSX_SN_LUT:
             raise ValueError("Unknown TSV file name {}".format(
                 self._tsv_basename))
-        self.xlsx_sheet_name = TSV_FN_XLSX_SN_LUT[self._tsv_basename]
+        return TSV_FN_XLSX_SN_LUT[self._tsv_basename]
 
-    def _set_jsonl_filepath(self) -> None:
-        """Set xlsx file sheet name for the TSV file."""
+    def _get_jsonl_filepath(self) -> str:
+        """Get xlsx file sheet name for the TSV file."""
         valid_tsv_suffixes = [".tsv", ".tsv.gz"]
         jsonl_filepath = None
         for val_tsv_sfx in valid_tsv_suffixes:
@@ -76,20 +77,20 @@ class TSVSheet:
                              "does not exist.".format(jsonl_filepath,
                                                       self._tsv_filepath))
 
-        self._jsonl_filepath = jsonl_filepath
+        return jsonl_filepath
 
-    def _read_tsv(self) -> None:
+    def _read_tsv(self) -> pd.DataFrame:
         """Read TSV file as pd.DataFrame."""
         # dtype=str reads all columns as strings, because values are not
         # processed in this script
         #
         # na_filter=False reads all values as non-missing, because the missing
         # values are not processed in this script
-        self._df = pd.read_csv(self._tsv_filepath,
-                               sep="\t",
-                               dtype=str,
-                               na_filter=False)
-        self._col_names = self._df.columns.tolist()
+        tsv_df = pd.read_csv(self._tsv_filepath,
+                             sep="\t",
+                             dtype=str,
+                             na_filter=False)
+        return tsv_df
 
     def _get_col_disp_order(self) -> List[str]:
         """Get column display order"""
@@ -119,8 +120,16 @@ class TSVSheet:
         col_disp_names = [x.replace("_", " ") for x in col_disp_names]
         return col_disp_names
 
-    def _set_col_disp_order_name_df(self) -> None:
-        """Set column display order name data frame.
+    def _get_row_sample_df(self, n_sample_rows: int) -> pd.DataFrame:
+        """Get row sample data frame"""
+        sample_df = self._df.sample(n=n_sample_rows,
+                                    replace=False,
+                                    random_state=20210811,
+                                    axis=0)
+        return sample_df
+
+    def _get_col_disp_order_name_df(self) -> pd.DataFrame:
+        """Get column display order name data frame.
 
         A column display order name pd.DataFrame has the following rows:
 
@@ -129,10 +138,7 @@ class TSVSheet:
         - 10 sample rows of table values.
         """
         n_sample_rows = 10
-        sample_df = self._df.sample(n=n_sample_rows,
-                                    replace=False,
-                                    random_state=20210811,
-                                    axis=0)
+        sample_df = self._get_row_sample_df(n_sample_rows)
         # Insert a row at top as display name
         col_disp_name_df = pd.DataFrame([self._get_col_disp_names()],
                                         columns=self._col_names)
@@ -171,7 +177,7 @@ class TSVSheet:
                 ""
                 for x in range(sample_df.shape[0] - len(user_guide_column_val))
             ]))
-        self.col_disp_order_name_df = sample_df
+        return sample_df
 
     def write_xlsx_sheet(self, xlsx_writer: pd.ExcelWriter) -> None:
         self.col_disp_order_name_df.to_excel(xlsx_writer,
