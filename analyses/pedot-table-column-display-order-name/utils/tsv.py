@@ -3,11 +3,16 @@ from typing import List
 
 import pandas as pd
 
+# Variant-level SNV TSV file name, which is used for implementing the following
+# known column display order change:
+# - Move Variant_ID_hg38 and Protein_change columns after the
+#   Gene_symbol column
+VARIANT_SNV_FN = "variant-level-snv-consensus-annotated-mut-freq.tsv.gz"
 # TSV filename to xlsx sheet name look up table
-tsv_fn_xlsx_sn_lut = {
+TSV_FN_XLSX_SN_LUT = {
     "gene-level-snv-consensus-annotated-mut-freq.tsv":
         "SNV gene-level",
-    "variant-level-snv-consensus-annotated-mut-freq.tsv.gz":
+    VARIANT_SNV_FN:
         "SNV variant-level",
     "gene-level-cnv-consensus-annotated-mut-freq.tsv.gz":
         "CNV gene-level",
@@ -20,6 +25,9 @@ tsv_fn_xlsx_sn_lut = {
     "long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz":
         "TPM stats group-wise z-scores"
 }
+
+# assert all xlsx sheet names are unique
+assert len(TSV_FN_XLSX_SN_LUT) == len(set(TSV_FN_XLSX_SN_LUT.values()))
 
 
 class TSVSheet:
@@ -34,15 +42,21 @@ class TSVSheet:
         ValueError: tsv_filepath is invalid or has no corresponding .jsonl.gz
             file.
     """
-    def __init__(self, tsv_sheet_name: str, tsv_filepath: str) -> None:
+    def __init__(self, tsv_filepath: str) -> None:
         """Initializes TSV with a TSV file path."""
-        self._tsv_sheet_name = tsv_sheet_name
-        self.xlsx_sheet_name = tsv_sheet_name
-
         self._tsv_filepath = tsv_filepath
-        self._read_tsv()
+        self._tsv_basename = os.path.basename(tsv_filepath)
+        self._set_xlsx_sheet_name()
         self._set_jsonl_filepath()
+        self._read_tsv()
         self._set_col_disp_order_name_df()
+
+    def _set_xlsx_sheet_name(self) -> None:
+        """Set xlsx_sheet_name attribute"""
+        if self._tsv_basename not in TSV_FN_XLSX_SN_LUT:
+            raise ValueError("Unknown TSV file name {}".format(
+                self._tsv_basename))
+        self.xlsx_sheet_name = TSV_FN_XLSX_SN_LUT[self._tsv_basename]
 
     def _set_jsonl_filepath(self) -> None:
         """Set xlsx file sheet name for the TSV file."""
@@ -80,7 +94,7 @@ class TSVSheet:
     def _get_col_disp_order(self) -> List[str]:
         """Get column display order"""
         col_order = self._col_names
-        if self._tsv_sheet_name == "SNV variant-level":
+        if self._tsv_basename == VARIANT_SNV_FN:
             # Move Variant_ID_hg38 and Protein_change columns after the
             # Gene_symbol column
             assert "Variant_ID_hg38" in col_order
