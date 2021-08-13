@@ -71,12 +71,18 @@ exprs_rds = readRDS(exprs_file)
 exprs_total = pandas2ri.ri2py(exprs_rds)
 exprs_total.index = rownamesRDS(exprs_rds)
 
-# Read in histologies file 
+
+# Read in histologies file
 histology = pd.read_csv(histology, sep="\t")
 
 # Filter the expression_df to only contain tumor samples
-tumor_RNA_samples = list(histology[(histology["experimental_strategy"] == "RNA-Seq") & (histology["sample_type"] == "Tumor")]['Kids_First_Biospecimen_ID'])
-exprs_df = exprs_total[[tumor_RNA_samples]]
+cohort = "PBTA"
+tumor_RNA_cohort = list(histology[(histology["experimental_strategy"] == "RNA-Seq") & (histology["sample_type"] == "Tumor") & (histology["cohort"] == cohort)]['Kids_First_Biospecimen_ID'])
+
+exprs_df = exprs_total[tumor_RNA_cohort]
+
+# Transpose the expression dataframe to be compatible with following workflow
+exprs_df = exprs_df.transpose()
 
 # Transform the gene expression data (z-score by gene)
 scaled_fit = StandardScaler().fit(exprs_df)
