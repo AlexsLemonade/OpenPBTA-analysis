@@ -3,6 +3,24 @@ from typing import List
 
 import pandas as pd
 
+# TSV filename to xlsx sheet name look up table
+tsv_fn_xlsx_sn_lut = {
+    "gene-level-snv-consensus-annotated-mut-freq.tsv":
+        "SNV gene-level",
+    "variant-level-snv-consensus-annotated-mut-freq.tsv.gz":
+        "SNV variant-level",
+    "gene-level-cnv-consensus-annotated-mut-freq.tsv.gz":
+        "CNV gene-level",
+    "putative-oncogene-fused-gene-freq.tsv.gz":
+        "Fusion gene-level",
+    "putative-oncogene-fusion-freq.tsv.gz":
+        "Fusion fusion-level",
+    "long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz":
+        "TPM stats gene-wise z-scores",
+    "long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz":
+        "TPM stats group-wise z-scores"
+}
+
 
 class TSVSheet:
     """TSV sheet for generating PedOT column display order and name xlsx sheet.
@@ -79,7 +97,9 @@ class TSVSheet:
         """Get column display names"""
         # Change RMTL to PMTL as column display name, according to slack message
         # https://opentargetspediatrics.slack.com/archives/C021ZLY33S7/p1627998314004300
-        col_disp_name_lut = {"RMTL": "PMTL"}
+        col_disp_name_lut = {
+            "RMTL": "PMTL"
+        }
         col_disp_names = [col_disp_name_lut.get(x, x) for x in self._col_names]
         # Replace "_" in column names with " "
         col_disp_names = [x.replace("_", " ") for x in col_disp_names]
