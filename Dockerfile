@@ -422,6 +422,10 @@ RUN ./install_bioc.r \
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     jq
 
+# Package for python pandas to read and write xlsx files
+RUN pip3 install \
+    "openpyxl==2.6.4"
+
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
 
