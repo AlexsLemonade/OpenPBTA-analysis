@@ -8,7 +8,7 @@ https://doi.org/10.1016/j.celrep.2019.09.071
 Gregory Way, 2018
 Modified by Krutika Gaonkar for OpenPBTA, 2019
  
-In the following notebook, three distinct classifiers to OpenPBTA data (FPKM).
+In the following notebook, three distinct classifiers to OpenPedCan data (TPM).
 The first classifier detects Ras activation. For more details about the algorithm and results, refer to [Way et al. 2018](https://doi.org/10.1016/j.celrep.2018.03.046 "Machine Learning Detects Pan-cancer Ras Pathway Activation in The Cancer Genome Atlas"). I also include _TP53_ inactivation predictions. This classifier was previously applied in [Knijnenburg et al. 2018](https://doi.org/10.1016/j.celrep.2018.03.076 "Genomic and Molecular Landscape of DNA Damage Repair Deficiency across The Cancer Genome Atlas"). The third is a classifier that predicts _NF1_ inactivation. We previously applied this in [Way et al. 2017](https://doi.org/10.1186/s12864-017-3519-7 "A machine learning classifier trained on cancer transcriptomes detects NF1 inactivation signal in glioblastoma").
  
 To apply other classifiers (targeting other genes of interest) refer to https://github.com/greenelab/pancancer.
@@ -16,7 +16,7 @@ To apply other classifiers (targeting other genes of interest) refer to https://
 ## Procedure
  
 1. Load RNAseq matrix (`.RDS`)
-  * The matrix is in `sample` x `gene symbol` format (250 x 51,968)
+  * The matrix is in `gene symbol` x `sample` format 
 2. Process matrix
   * Take the z-score by gene
 3. Load classifier coefficients
@@ -48,11 +48,15 @@ from optparse import OptionParser
 
 parser = OptionParser(usage="usage: %prog [options] arguments")
 parser.add_option(
-    "-f", "--file", dest="filename", help="rds file genes expression X sample"
+    "-f", "--expfile", dest="expfile", help="rds file sample X genes expression"
+)
+parser.add_option(
+    "-t", "--histology", dest="histology", help="rds file sample X genes expression"
 )
 
 (options, args) = parser.parse_args()
-inputfile = options.filename
+exprs_file = options.expfile
+histology = options.histology
 
 np.random.seed(123)
 pandas2ri.activate()
@@ -60,15 +64,19 @@ readRDS = robjects.r["readRDS"]
 rownamesRDS = robjects.r["rownames"]
 
 # Load gene expression data in rds format
-name = os.path.basename(inputfile)
+name = os.path.basename(exprs_file)
 name = re.sub("\.rds$", "", name)
 
-exprs_rds = readRDS(inputfile)
-exprs_df = pandas2ri.ri2py(exprs_rds)
-exprs_df.index = rownamesRDS(exprs_rds)
+exprs_rds = readRDS(exprs_file)
+exprs_total = pandas2ri.ri2py(exprs_rds)
+exprs_total.index = rownamesRDS(exprs_rds)
 
-# transpose
-exprs_df = exprs_df.transpose()
+# Read in histologies file 
+histology = pd.read_csv(histology, sep="\t")
+
+# Filter the expression_df to only contain tumor samples
+tumor_RNA_samples = list(histology[(histology["experimental_strategy"] == "RNA-Seq") & (histology["sample_type"] == "Tumor")]['Kids_First_Biospecimen_ID'])
+exprs_df = exprs_total[[tumor_RNA_samples]]
 
 # Transform the gene expression data (z-score by gene)
 scaled_fit = StandardScaler().fit(exprs_df)

@@ -7,7 +7,7 @@
 # Predicts TP53 and NF1 inactivation score per polya and stranded RNAseq samples
 
 # The script takes one environment variable, `OPENPBTA_BASE_SUBTYPING`, if value is 1 then
-# uses pbta-histologies-base.tsv for subtyping if value is 0 runs all modules with pbta-histologies.tsv(Default)
+# uses histologies-base.tsv for subtyping if value is 0 runs all modules with histologies.tsv(Default)
 
 set -e
 set -o pipefail
@@ -29,7 +29,7 @@ POLYA=${OPENPBTA_POLYAPLOT:-1}
 data_dir="../../data"
 scratch_dir="../../scratch"
 # cds gencode bed file  
-cds_file="${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz"
+cds_file="${scratch_dir}/gencode.v27.primary_assembly.annotation.bed"
 snvconsensus_file="${data_dir}/snv-consensus-plus-hotspots.maf.tsv.gz"
 cnvconsensus_file="${data_dir}/consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz"
 
@@ -41,55 +41,51 @@ else
 fi
 
 
-# Convert GTF to BED file
-# Here we are only extracting lines with as a CDS i.e. are coded in protein
-gunzip -c ${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz \
-  | awk '$3 ~ /CDS/' \
-  | convert2bed --do-not-sort --input=gtf - \
-  > $cds_file
-
-# Prep the SNV consensus data for evaluation downstream
-Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
-  --snvConsensus ${snvconsensus_file} \
-  --cnvConsensus ${cnvconsensus_file} \
-  --histologyFile ${histology_file} \
-  --outputFolder ${analysis_dir}/results \
-  --gencode ${cds_file}
+# # Convert GTF to BED file
+# # Here we are only extracting lines with as a CDS i.e. are coded in protein
+# gunzip -c ${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz \
+#   | awk '$3 ~ /CDS/' \
+#   | convert2bed --do-not-sort --input=gtf - \
+#   > $cds_file
+# 
+# # Prep the SNV consensus data for evaluation downstream
+# Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
+#   --snvConsensus ${snvconsensus_file} \
+#   --cnvConsensus ${cnvconsensus_file} \
+#   --histologyFile ${histology_file} \
+#   --outputFolder ${analysis_dir}/results \
+#   --gencode ${cds_file}
 
 if [[ RUN_FOR_SUBTYPING == "0" ]]
 then
    # expression files for prediction
-   collapsed_stranded="${data_dir}/gene-expression-rsem-tpm-collapsed.rds"
+   collapsed_rna="${data_dir}/gene-expression-rsem-tpm-collapsed.rds"
 else
    # expression files for prediction
-   collapsed_stranded="../collapse-rnaseq/results/gene-expression-rsem-tpm-collapsed.rds"
-fi   
-
-# Skip poly-A steps in CI
-if [ "$POLYA" -gt "0" ]; then
-  python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_polya}
+   collapsed_rna="../collapse-rnaseq/results/gene-expression-rsem-tpm-collapsed.rds"
 fi
+
 
 # Run classifier and ROC plotting for stranded data
-python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_stranded}
+python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_rna} -t ${histology_file}
 
-# check correlation expression and scores
-Rscript -e "rmarkdown::render('${analysis_dir}/02-qc-rna_expression_score.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
-
-# subset cnv where tp53 is lost
-Rscript -e "rmarkdown::render('${analysis_dir}/03-tp53-cnv-loss-domain.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
-
-# subset SV where tp53 is lost
-Rscript -e "rmarkdown::render('${analysis_dir}/04-tp53-sv-loss.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
-
-# gather TP53 altered status
-Rscript -e "rmarkdown::render('${analysis_dir}/05-tp53-altered-annotation.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
-
-# evaluate classifer scores for stranded data
-python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv -c ${histology_file} -o stranded
-
-# Skip poly-A steps in CI
-if [ "$POLYA" -gt "0" ]; then
-  python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv -c ${histology_file} -o polya
-fi
+# # check correlation expression and scores
+# Rscript -e "rmarkdown::render('${analysis_dir}/02-qc-rna_expression_score.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
+# 
+# # subset cnv where tp53 is lost
+# Rscript -e "rmarkdown::render('${analysis_dir}/03-tp53-cnv-loss-domain.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
+# 
+# # subset SV where tp53 is lost
+# Rscript -e "rmarkdown::render('${analysis_dir}/04-tp53-sv-loss.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
+# 
+# # gather TP53 altered status
+# Rscript -e "rmarkdown::render('${analysis_dir}/05-tp53-altered-annotation.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
+# 
+# # evaluate classifer scores for stranded data
+# python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv -c ${histology_file} -o stranded
+# 
+# # Skip poly-A steps in CI
+# if [ "$POLYA" -gt "0" ]; then
+#   python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv -c ${histology_file} -o polya
+# fi
 

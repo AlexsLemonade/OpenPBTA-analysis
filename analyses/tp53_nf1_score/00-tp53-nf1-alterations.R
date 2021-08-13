@@ -62,11 +62,11 @@ consensus_snv <- data.table::fread(snvConsensusFile,
 cnvConsesus <- data.table::fread( cnvConsesusFile,
                           select=c("gene_symbol",
                                    "biospecimen_id",
-                                   "status"),
+                                   "status")
 )
 
 # gencode cds region BED file
-gencode_cds <- data.table::fread(gencodeBed, skip=5)
+gencode_cds <- read_tsv(gencodeBed, col_names = FALSE)
 
 # histology file
 histology <- read_tsv(histologyFile, guess_max = 100000)
@@ -113,11 +113,12 @@ nf1_loss<-cnvConsesus %>%
 tp53_nf1_coding <- tp53_coding %>%
   bind_rows(tp53_loss,nf1_coding,nf1_loss)
 
-# biospecimen IDs for tumor or cell line DNA-seq
+# biospecimen IDs for tumor DNA-seq
 bs_ids <- histology %>%
-  filter(sample_type != "Normal",
+  filter(sample_type == "Tumor",
          experimental_strategy != "RNA-Seq") %>%
   pull(Kids_First_Biospecimen_ID)
+
 
 # all BS ids that are not in the data frame that contain the TP53 and NF1
 # coding mutations should be labeled as not having either
