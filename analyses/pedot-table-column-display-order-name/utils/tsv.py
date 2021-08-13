@@ -1,5 +1,7 @@
-import pandas as pd
 import os
+from typing import List
+
+import pandas as pd
 
 
 class TSVSheet:
@@ -55,6 +57,33 @@ class TSVSheet:
                                sep="\t",
                                dtype=str,
                                na_filter=False)
+        self._col_names = self._df.columns.tolist()
+
+    def _get_col_disp_order(self) -> List[str]:
+        """Get column display order"""
+        col_order = self._col_names
+        if self._tsv_sheet_name == "SNV variant-level":
+            # Move Variant_ID_hg38 and Protein_change columns after the
+            # Gene_symbol column
+            assert "Variant_ID_hg38" in col_order
+            assert "Protein_change" in col_order
+            assert "Gene_symbol" in col_order
+            left_most_cols = [
+                "Gene_symbol", "Variant_ID_hg38", "Protein_change"
+            ]
+            col_order = (left_most_cols +
+                         [x for x in col_order if x not in left_most_cols])
+        return col_order
+
+    def _get_col_disp_names(self) -> List[str]:
+        """Get column display names"""
+        # Change RMTL to PMTL as column display name, according to slack message
+        # https://opentargetspediatrics.slack.com/archives/C021ZLY33S7/p1627998314004300
+        col_disp_name_lut = {"RMTL": "PMTL"}
+        col_disp_names = [col_disp_name_lut.get(x, x) for x in self._col_names]
+        # Replace "_" in column names with " "
+        col_disp_names = [x.replace("_", " ") for x in col_disp_names]
+        return col_disp_names
 
     def _set_col_disp_order_name_df(self) -> None:
         """Set column display order name data frame.
@@ -71,14 +100,15 @@ class TSVSheet:
                                     random_state=20210811,
                                     axis=0)
         # Insert a row at top as display name
-        col_names = sample_df.columns.tolist()
-        col_disp_names = [x.replace("_", " ") for x in col_names]
-        col_disp_name_df = pd.DataFrame([col_disp_names], columns=col_names)
+        col_disp_name_df = pd.DataFrame([self._get_col_disp_names()],
+                                        columns=self._col_names)
         sample_df = pd.concat([col_disp_name_df, sample_df], ignore_index=True)
         # Insert a row at bottom as column name
         # Columns will not be output into xlsx sheet
-        col_name_df = pd.DataFrame([col_names], columns=col_names)
+        col_name_df = pd.DataFrame([self._col_names], columns=self._col_names)
         sample_df = pd.concat([sample_df, col_name_df], ignore_index=True)
+        # Reorder columns
+        sample_df = sample_df[self._get_col_disp_order()]
         # Insert a column at beginning as row annotation
         sample_df.insert(
             loc=0,
