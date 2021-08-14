@@ -17,6 +17,10 @@ The main consideration for this coordination plan is that the Excel spreadsheet 
 - This analysis module is mainly based on the Slack discussions at <https://opentargetspediatrics.slack.com/archives/C021Z53SK98/p1628181091109300>.
 - This analysis module addresses issue <https://github.com/PediatricOpenTargets/ticket-tracker/issues/157>.
 
+**TODO**:
+
+- Implement Excel spreadsheet validation procedures, after the result xlsx file `results/pedot-table-column-display-order-name.xlsx` is reviewed and modified by clinicians.
+
 ## Methods
 
 Generate the Excel spreadsheet using the TSV result files in the following modules.
