@@ -31,16 +31,12 @@ output_xlsx_path = os.path.join("results",
 def main():
     # date time tuple for xlsx file creation
     xlsx_creation_datetime_tuple = (2021, 8, 12, 17, 20, 7)
-    # pylint: disable=abstract-class-instantiated
     with pd.ExcelWriter(output_xlsx_path, engine="openpyxl") as xlsx_writer:
-        # pylint: enable=abstract-class-instantiated
         # Set creation time to make output file identically reproducible
         xlsx_creation_datetime = datetime.datetime(
             *xlsx_creation_datetime_tuple)
-        # pylint: disable=no-member
         xlsx_writer.book.properties.created = xlsx_creation_datetime
         xlsx_writer.book.properties.modified = xlsx_creation_datetime
-        # pylint: enable=no-member
         for tp in tsv_paths:
             tsv_sheet = TSVSheet(tp)
             tsv_sheet.write_xlsx_sheet(xlsx_writer)

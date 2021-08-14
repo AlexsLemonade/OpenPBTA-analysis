@@ -122,8 +122,40 @@ class TSVSheet:
 
     def _get_row_sample_df(self, n_sample_rows: int) -> pd.DataFrame:
         """Get row sample data frame"""
+        if n_sample_rows > self._df.shape[0]:
+            # If n_sample_rows > number of rows in self._df, take full df and
+            # add blank lines
+            n_blank_rows = n_sample_rows - self._df.shape[0]
+            blank_row_df = pd.DataFrame(index=pd.RangeIndex(start=0,
+                                                            stop=n_blank_rows,
+                                                            step=1),
+                                        columns=self._col_names).fillna("")
+            sample_df = pd.concat([self._df.copy(), blank_row_df],
+                                  ignore_index=True)
+            return sample_df
+        # If n_sample_rows <= self._df.shape[0], sample n_sample_rows.
+        sample_weights = None
+        # Add sample weights to favor rows with non-empty RMTL
+        if "RMTL" in self._col_names:
+            rmtl_list = self._df["RMTL"].tolist()
+            n_empty_rmtl = sum([x == "" for x in rmtl_list])
+            n_non_empty_rmtl = sum([x != "" for x in rmtl_list])
+            empty_rmtl_weight = 1
+            if n_non_empty_rmtl != 0:
+                # no divide by 0
+                non_empty_rmtl_weight = n_empty_rmtl / n_non_empty_rmtl * 2
+            else:
+                non_empty_rmtl_weight = 1
+            sample_weights = []
+            for x in rmtl_list:
+                if x == "":
+                    sample_weights.append(empty_rmtl_weight)
+                else:
+                    sample_weights.append(non_empty_rmtl_weight)
+
         sample_df = self._df.sample(n=n_sample_rows,
                                     replace=False,
+                                    weights=sample_weights,
                                     random_state=20210811,
                                     axis=0)
         return sample_df
@@ -169,7 +201,7 @@ class TSVSheet:
             ("Please do not change the order or values of the first two "
              "columns."),
             "Please do not change the values of the last row."
-        ] # yapf: disable
+        ]  # yapf: disable
         sample_df.insert(
             loc=0,
             column="User guide",
@@ -180,6 +212,7 @@ class TSVSheet:
         return sample_df
 
     def write_xlsx_sheet(self, xlsx_writer: pd.ExcelWriter) -> None:
+        """Write column display order name data frame into a xlsx sheet"""
         self.col_disp_order_name_df.to_excel(xlsx_writer,
                                              sheet_name=self.xlsx_sheet_name,
                                              header=False,
