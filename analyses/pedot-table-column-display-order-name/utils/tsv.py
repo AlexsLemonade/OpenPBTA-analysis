@@ -132,32 +132,36 @@ class TSVSheet:
                                         columns=self._col_names).fillna("")
             sample_df = pd.concat([self._df.copy(), blank_row_df],
                                   ignore_index=True)
-            return sample_df
-        # If n_sample_rows <= self._df.shape[0], sample n_sample_rows.
-        sample_weights = None
-        # Add sample weights to favor rows with non-empty RMTL
-        if "RMTL" in self._col_names:
-            rmtl_list = self._df["RMTL"].tolist()
-            n_empty_rmtl = sum([x == "" for x in rmtl_list])
-            n_non_empty_rmtl = sum([x != "" for x in rmtl_list])
-            empty_rmtl_weight = 1
-            if n_non_empty_rmtl != 0:
-                # no divide by 0
-                non_empty_rmtl_weight = n_empty_rmtl / n_non_empty_rmtl * 2
-            else:
-                non_empty_rmtl_weight = 1
-            sample_weights = []
-            for x in rmtl_list:
-                if x == "":
-                    sample_weights.append(empty_rmtl_weight)
+        else:
+            # If n_sample_rows <= self._df.shape[0], sample n_sample_rows.
+            sample_weights = None
+            # Add sample weights to favor rows with non-empty RMTL
+            if "RMTL" in self._col_names:
+                rmtl_list = self._df["RMTL"].tolist()
+                n_empty_rmtl = sum([x == "" for x in rmtl_list])
+                n_non_empty_rmtl = sum([x != "" for x in rmtl_list])
+                empty_rmtl_weight = 1
+                if n_non_empty_rmtl != 0:
+                    # no divide by 0
+                    non_empty_rmtl_weight = n_empty_rmtl / n_non_empty_rmtl * 2
                 else:
-                    sample_weights.append(non_empty_rmtl_weight)
+                    non_empty_rmtl_weight = 1
+                sample_weights = []
+                for x in rmtl_list:
+                    if x == "":
+                        sample_weights.append(empty_rmtl_weight)
+                    else:
+                        sample_weights.append(non_empty_rmtl_weight)
 
-        sample_df = self._df.sample(n=n_sample_rows,
-                                    replace=False,
-                                    weights=sample_weights,
-                                    random_state=20210811,
-                                    axis=0)
+            sample_df = self._df.sample(n=n_sample_rows,
+                                        replace=False,
+                                        weights=sample_weights,
+                                        random_state=20210811,
+                                        axis=0)
+            # sort rows by index labels
+            sample_df = sample_df.sort_index()
+
+        assert sample_df.shape[0] == n_sample_rows
         return sample_df
 
     def _get_col_disp_order_name_df(self) -> pd.DataFrame:
@@ -167,9 +171,9 @@ class TSVSheet:
 
         - Column names in the JSONL/TSV files.
         - Column names for PedOT table view display.
-        - 10 sample rows of table values.
+        - 60 sample rows of table values.
         """
-        n_sample_rows = 10
+        n_sample_rows = 60
         sample_df = self._get_row_sample_df(n_sample_rows)
         # Insert a row at top as display name
         col_disp_name_df = pd.DataFrame([self._get_col_disp_names()],
