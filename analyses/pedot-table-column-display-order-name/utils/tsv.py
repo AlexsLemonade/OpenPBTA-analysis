@@ -202,9 +202,13 @@ class TSVSheet:
              "display orders."),
             ("Change the values of the first row to advise PedOT website "
              "column display names."),
+            ("Delete one or more columns to advise PedOT website not to "
+             "display the deleted columns."),
             ("Please do not change the order or values of the first two "
              "columns."),
-            "Please do not change the values of the last row."
+            "Please do not delete the first or the second column.",
+            "Please do not change the values of the last row.",
+            "Please do not delete any row."
         ]  # yapf: disable
         sample_df.insert(
             loc=0,
