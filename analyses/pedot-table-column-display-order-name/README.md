@@ -55,7 +55,7 @@ The first two columns of each sheet are "User guide" and "Row annotation", which
 ## Usage
 
 1. Change working directory to local `OpenPedCan-analysis`.
-2. Run this analysis module in the continuous integration (CI) docker image using `./scripts/run_in_ci.sh bash analyses/pedot-table-column-display-order-name/run-pedot-table-column-display-order-name.sh`.
+2. Run this analysis module in the `pgc-images.sbgenomics.com/d3b-bixu/open-pedcan:latest` docker image using `bash analyses/pedot-table-column-display-order-name/run-pedot-table-column-display-order-name.sh`.
 
 ## Module structure
 
