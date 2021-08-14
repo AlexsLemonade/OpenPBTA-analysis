@@ -1842,11 +1842,27 @@ $(document).ready(function () {
 <h3>Libraries</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBQaXBlc1xubGlicmFyeShtYWdyaXR0cilcbmxpYnJhcnkodGlkeXZlcnNlKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgUGlwZXMiLCJsaWJyYXJ5KG1hZ3JpdHRyKSIsImxpYnJhcnkodGlkeXZlcnNlKSJdfQ== -->
 <pre class="r"><code># Pipes
 library(magrittr)
 library(tidyverse)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIEF0dGFjaGluZyBwYWNrYWdlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlIDEuMi4xIOKUgOKUgFxuIn0= -->
+<pre><code>── Attaching packages ────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pyUIGdncGxvdDIgMy4yLjAgICAgIOKclCBwdXJyciAgIDAuMy4yXG7inJQgdGliYmxlICAyLjEuMyAgICAg4pyUIGRwbHlyICAgMC44LjNcbuKclCB0aWR5ciAgIDAuOC4zICAgICDinJQgc3RyaW5nciAxLjQuMFxu4pyUIHJlYWRyICAgMS4zLjEgICAgIOKclCBmb3JjYXRzIDAuNC4wXG4ifQ== -->
+<pre><code>✔ ggplot2 3.2.0     ✔ purrr   0.3.2
+✔ tibble  2.1.3     ✔ dplyr   0.8.3
+✔ tidyr   0.8.3     ✔ stringr 1.4.0
+✔ readr   1.3.1     ✔ forcats 0.4.0</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIENvbmZsaWN0cyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlX2NvbmZsaWN0cygpIOKUgOKUgFxu4pyWIHRpZHlyOjpleHRyYWN0KCkgICBtYXNrcyBtYWdyaXR0cjo6ZXh0cmFjdCgpXG7inJYgZHBseXI6OmZpbHRlcigpICAgIG1hc2tzIHN0YXRzOjpmaWx0ZXIoKVxu4pyWIGRwbHlyOjpsYWcoKSAgICAgICBtYXNrcyBzdGF0czo6bGFnKClcbuKcliBwdXJycjo6c2V0X25hbWVzKCkgbWFza3MgbWFncml0dHI6OnNldF9uYW1lcygpXG4ifQ== -->
+<pre><code>── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
+✖ tidyr::extract()   masks magrittr::extract()
+✖ dplyr::filter()    masks stats::filter()
+✖ dplyr::lag()       masks stats::lag()
+✖ purrr::set_names() masks magrittr::set_names()</code></pre>
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -1854,17 +1870,18 @@ library(tidyverse)</code></pre>
 <h3>Input</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGF0YV9kaXIgPC0gZmlsZS5wYXRoKFxcLi5cXCwgXFwuLlxcLCBcXGRhdGFcXClcbnJlc3VsdHNfZGlyIDwtIGZpbGUucGF0aChcXHJlc3VsdHNcXClcbmhpc3RvbG9naWVzX2ZpbGUgPC0gZmlsZS5wYXRoKGRhdGFfZGlyLCBcXHBidGEtaGlzdG9sb2dpZXMtYmFzZS50c3ZcXClcbmNvbXBpbGVkX3N1YnR5cGVzX2ZpbGUgPC0gZmlsZS5wYXRoKHJlc3VsdHNfZGlyLCBcXGNvbXBpbGVkX21vbGVjdWxhcl9zdWJ0eXBlcy50c3ZcXClcbmxnYXRfcmVjb2RlX2ZpbGUgPC0gZmlsZS5wYXRoKHJlc3VsdHNfZGlyLCBcXGxnYXQtcGF0aG9sb2d5LWZyZWUtdGV4dC1zdWJ0eXBlcy50c3ZcXClcbmdsaWFsbnVlcm9uYWxfcmVjb2RlX2ZpbGUgPC0gZmlsZS5wYXRoKHJlc3VsdHNfZGlyLCBcXGdsaWFsbmV1cm9uYWxfdHVtb3Jfc3VidHlwZXMudHN2XFwpXG5jcmFuaW9fYWRhbV9yZWNvZGVfZmlsZSA8LSBmaWxlLnBhdGgocmVzdWx0c19kaXIsIFxcY3JhbmlvX2FkYW1fc3VidHlwZXMudHN2XFwpXG5jbnNfbHltcGhvbWFfc3VidHlwZXNfZmlsZSA8LSBmaWxlLnBhdGgocmVzdWx0c19kaXIsIFxcY25zLWx5bXBob21hLXN1YnR5cGVzLnRzdlxcKVxuanhnX3N1YnR5cGVzX2ZpbGUgPC0gZmlsZS5wYXRoKHJlc3VsdHNfZGlyLCBcXGp1dmVuaWxlLXhhbnRob2dyYW51bG9tYS1zdWJ0eXBlcy50c3ZcXClcbmNob3JvaWRfcGxleHVzX3BhcGlsbG9tYV9zdWJ0eXBlc19maWxlIDwtIGZpbGUucGF0aChyZXN1bHRzX2RpciwgXFxjaG9yb2lkX3BsZXh1c19wYXBpbGxvbWFfc3VidHlwZXMudHN2XFwpXG5gYGAifQ== -->
-<pre class="r"><code>data_dir &lt;- file.path(\..\, \..\, \data\)
-results_dir &lt;- file.path(\results\)
-histologies_file &lt;- file.path(data_dir, \pbta-histologies-base.tsv\)
-compiled_subtypes_file &lt;- file.path(results_dir, \compiled_molecular_subtypes.tsv\)
-lgat_recode_file &lt;- file.path(results_dir, \lgat-pathology-free-text-subtypes.tsv\)
-glialnueronal_recode_file &lt;- file.path(results_dir, \glialneuronal_tumor_subtypes.tsv\)
-cranio_adam_recode_file &lt;- file.path(results_dir, \cranio_adam_subtypes.tsv\)
-cns_lymphoma_subtypes_file &lt;- file.path(results_dir, \cns-lymphoma-subtypes.tsv\)
-jxg_subtypes_file &lt;- file.path(results_dir, \juvenile-xanthogranuloma-subtypes.tsv\)
-choroid_plexus_papilloma_subtypes_file &lt;- file.path(results_dir, \choroid_plexus_papilloma_subtypes.tsv\)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbImRhdGFfZGlyIDwtIGZpbGUucGF0aChcIi4uXCIsIFwiLi5cIiwgXCJkYXRhXCIpIiwicmVzdWx0c19kaXIgPC0gZmlsZS5wYXRoKFwicmVzdWx0c1wiKSIsImhpc3RvbG9naWVzX2ZpbGUgPC0gZmlsZS5wYXRoKGRhdGFfZGlyLCBcInBidGEtaGlzdG9sb2dpZXMtYmFzZS50c3ZcIikiLCJjb21waWxlZF9zdWJ0eXBlc19maWxlIDwtIGZpbGUucGF0aChyZXN1bHRzX2RpciwgXCJjb21waWxlZF9tb2xlY3VsYXJfc3VidHlwZXMudHN2XCIpIiwibWVuaW5naW9tYV9zdWJ0eXBlc19maWxlIDwtIGZpbGUucGF0aChyZXN1bHRzX2RpciwgXCJtZW5pbmdpb21hX3N1YnR5cGVzLnRzdlwiKSIsImxnYXRfcmVjb2RlX2ZpbGUgPC0gZmlsZS5wYXRoKHJlc3VsdHNfZGlyLCBcImxnYXQtcGF0aG9sb2d5LWZyZWUtdGV4dC1zdWJ0eXBlcy50c3ZcIikiLCJnbGlhbG51ZXJvbmFsX3JlY29kZV9maWxlIDwtIGZpbGUucGF0aChyZXN1bHRzX2RpciwgXCJnbGlhbG5ldXJvbmFsX3R1bW9yX3N1YnR5cGVzLnRzdlwiKSIsImNyYW5pb19hZGFtX3JlY29kZV9maWxlIDwtIGZpbGUucGF0aChyZXN1bHRzX2RpciwgXCJjcmFuaW9fYWRhbV9zdWJ0eXBlcy50c3ZcIikiLCJjbnNfbHltcGhvbWFfc3VidHlwZXNfZmlsZSA8LSBmaWxlLnBhdGgocmVzdWx0c19kaXIsIFwiY25zLWx5bXBob21hLXN1YnR5cGVzLnRzdlwiKSIsImp4Z19zdWJ0eXBlc19maWxlIDwtIGZpbGUucGF0aChyZXN1bHRzX2RpciwgXCJqdXZlbmlsZS14YW50aG9ncmFudWxvbWEtc3VidHlwZXMudHN2XCIpIiwiY2hvcm9pZF9wbGV4dXNfcGFwaWxsb21hX3N1YnR5cGVzX2ZpbGUgPC0gZmlsZS5wYXRoKHJlc3VsdHNfZGlyLCBcImNob3JvaWRfcGxleHVzX3BhcGlsbG9tYV9zdWJ0eXBlcy50c3ZcIikiXX0= -->
+<pre class="r"><code>data_dir &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;data&quot;)
+results_dir &lt;- file.path(&quot;results&quot;)
+histologies_file &lt;- file.path(data_dir, &quot;pbta-histologies-base.tsv&quot;)
+compiled_subtypes_file &lt;- file.path(results_dir, &quot;compiled_molecular_subtypes.tsv&quot;)
+meningioma_subtypes_file &lt;- file.path(results_dir, &quot;meningioma_subtypes.tsv&quot;)
+lgat_recode_file &lt;- file.path(results_dir, &quot;lgat-pathology-free-text-subtypes.tsv&quot;)
+glialnueronal_recode_file &lt;- file.path(results_dir, &quot;glialneuronal_tumor_subtypes.tsv&quot;)
+cranio_adam_recode_file &lt;- file.path(results_dir, &quot;cranio_adam_subtypes.tsv&quot;)
+cns_lymphoma_subtypes_file &lt;- file.path(results_dir, &quot;cns-lymphoma-subtypes.tsv&quot;)
+jxg_subtypes_file &lt;- file.path(results_dir, &quot;juvenile-xanthogranuloma-subtypes.tsv&quot;)
+choroid_plexus_papilloma_subtypes_file &lt;- file.path(results_dir, &quot;choroid_plexus_papilloma_subtypes.tsv&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -1873,12 +1890,12 @@ choroid_plexus_papilloma_subtypes_file &lt;- file.path(results_dir, \choroid_ple
 <h3>Output</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVzdWx0c19kaXIgPC0gXFxyZXN1bHRzXFxcbmlmICghZGlyLmV4aXN0cyhyZXN1bHRzX2RpcikpIHtcbiAgZGlyLmNyZWF0ZShyZXN1bHRzX2Rpcilcbn1cbm91dHB1dF9maWxlIDwtIGZpbGUucGF0aChyZXN1bHRzX2RpciwgXFxjb21waWxlZF9tb2xlY3VsYXJfc3VidHlwZXNfYW5kX3JlcG9ydF9pbmZvLnRzdlxcKVxuYGBgIn0= -->
-<pre class="r"><code>results_dir &lt;- \results\
+<!-- rnb-source-begin eyJkYXRhIjpbInJlc3VsdHNfZGlyIDwtIFwicmVzdWx0c1wiIiwiaWYgKCFkaXIuZXhpc3RzKHJlc3VsdHNfZGlyKSkge1xuICBkaXIuY3JlYXRlKHJlc3VsdHNfZGlyKVxufSIsIm91dHB1dF9maWxlIDwtIGZpbGUucGF0aChyZXN1bHRzX2RpciwgXCJjb21waWxlZF9tb2xlY3VsYXJfc3VidHlwZXNfYW5kX3JlcG9ydF9pbmZvLnRzdlwiKSJdfQ== -->
+<pre class="r"><code>results_dir &lt;- &quot;results&quot;
 if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
-output_file &lt;- file.path(results_dir, \compiled_molecular_subtypes_and_report_info.tsv\)</code></pre>
+output_file &lt;- file.path(results_dir, &quot;compiled_molecular_subtypes_and_report_info.tsv&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -1888,27 +1905,29 @@ output_file &lt;- file.path(results_dir, \compiled_molecular_subtypes_and_report
 <h2>Read in data</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBjbGluaWNhbCBwYnRhIGhpc3RvbG9neVxuY2xpbmljYWwgPC0gcmVhZHI6OnJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2RpcixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJwYnRhLWhpc3RvbG9naWVzLWJhc2UudHN2XCIpKSBcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgY2xpbmljYWwgcGJ0YSBoaXN0b2xvZ3kiLCJjbGluaWNhbCA8LSByZWFkcjo6cmVhZF90c3YoZmlsZS5wYXRoKGRhdGFfZGlyLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcInBidGEtaGlzdG9sb2dpZXMtYmFzZS50c3ZcIikpICJdfQ== -->
 <pre class="r"><code># clinical pbta histology
 clinical &lt;- readr::read_tsv(file.path(data_dir,
                                 &quot;pbta-histologies-base.tsv&quot;)) </code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgaW50ZWdyYXRlZF9kaWFnbm9zaXMgPSBcdTAwMWJbMzNtY29sX2xvZ2ljYWwoKVx1MDAxYlszOW0sXG4gIE5vdGVzID0gXHUwMDFiWzMzbWNvbF9sb2dpY2FsKClcdTAwMWJbMzltLFxuICBPU19kYXlzID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIGFnZV9sYXN0X3VwZGF0ZV9kYXlzID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIG1vbGVjdWxhcl9zdWJ0eXBlID0gXHUwMDFiWzMzbWNvbF9sb2dpY2FsKClcdTAwMWJbMzltLFxuICBub3JtYWxfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfcGxvaWR5ID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW1cbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuIn0= -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgaW50ZWdyYXRlZF9kaWFnbm9zaXMgPSBjb2xfbG9naWNhbCgpLFxuICBOb3RlcyA9IGNvbF9sb2dpY2FsKCksXG4gIE9TX2RheXMgPSBjb2xfZG91YmxlKCksXG4gIGFnZV9sYXN0X3VwZGF0ZV9kYXlzID0gY29sX2RvdWJsZSgpLFxuICBtb2xlY3VsYXJfc3VidHlwZSA9IGNvbF9sb2dpY2FsKCksXG4gIG5vcm1hbF9mcmFjdGlvbiA9IGNvbF9kb3VibGUoKSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBjb2xfZG91YmxlKCksXG4gIHR1bW9yX3Bsb2lkeSA9IGNvbF9kb3VibGUoKVxuKVxuIn0= -->
 <pre><code>Parsed with column specification:
 cols(
   .default = col_character(),
-  integrated_diagnosis = [33mcol_logical()[39m,
-  Notes = [33mcol_logical()[39m,
-  OS_days = [32mcol_double()[39m,
-  age_last_update_days = [32mcol_double()[39m,
-  molecular_subtype = [33mcol_logical()[39m,
-  normal_fraction = [32mcol_double()[39m,
-  tumor_fraction = [32mcol_double()[39m,
-  tumor_ploidy = [32mcol_double()[39m
-)
-See spec(...) for full column specifications.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29tcGlsZWRfc3VidHlwZXNfZGYgPC0gcmVhZHI6OnJlYWRfdHN2KGNvbXBpbGVkX3N1YnR5cGVzX2ZpbGUpICU+JSAgXG4gICMgaWRzIHRvIG1hdGNoXG4gIGxlZnRfam9pbihjbGluaWNhbFssYyhcIktpZHNfRmlyc3RfUGFydGljaXBhbnRfSURcIixcbiAgICAgICAgICAgICAgICAgICAgICAgIFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgIyBuZWVkIHR1bW9yX2Rlc2NyaXB0b3IgdG8gbWF0Y2ggdG8gY2xpbmljYWwgcmV2aWV3XG4gICAgICAgICAgICAgICAgICAgICAgICBcInR1bW9yX2Rlc2NyaXB0b3JcIildLGJ5PWMoXCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIktpZHNfRmlyc3RfUGFydGljaXBhbnRfSURcIikpIFxuYGBgIn0= -->
+  integrated_diagnosis = col_logical(),
+  Notes = col_logical(),
+  OS_days = col_double(),
+  age_last_update_days = col_double(),
+  molecular_subtype = col_logical(),
+  normal_fraction = col_double(),
+  tumor_fraction = col_double(),
+  tumor_ploidy = col_double()
+)</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
+<pre><code>See spec(...) for full column specifications.</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfc3VidHlwZXNfZGYgPC0gcmVhZHI6OnJlYWRfdHN2KGNvbXBpbGVkX3N1YnR5cGVzX2ZpbGUpICU+JSAgXG4gICMgaWRzIHRvIG1hdGNoXG4gIGxlZnRfam9pbihjbGluaWNhbFssYyhcIktpZHNfRmlyc3RfUGFydGljaXBhbnRfSURcIixcbiAgICAgICAgICAgICAgICAgICAgICAgIFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgIyBuZWVkIHR1bW9yX2Rlc2NyaXB0b3IgdG8gbWF0Y2ggdG8gY2xpbmljYWwgcmV2aWV3XG4gICAgICAgICAgICAgICAgICAgICAgICBcInR1bW9yX2Rlc2NyaXB0b3JcIildLGJ5PWMoXCJLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIktpZHNfRmlyc3RfUGFydGljaXBhbnRfSURcIikpICJ9 -->
 <pre class="r"><code>compiled_subtypes_df &lt;- readr::read_tsv(compiled_subtypes_file) %&gt;%  
   # ids to match
   left_join(clinical[,c(&quot;Kids_First_Participant_ID&quot;,
@@ -1917,138 +1936,138 @@ See spec(...) for full column specifications.</code></pre>
                         &quot;tumor_descriptor&quot;)],by=c(&quot;Kids_First_Biospecimen_ID&quot;,
                                        &quot;Kids_First_Participant_ID&quot;)) </code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIHNhbXBsZV9pZCA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIG1vbGVjdWxhcl9zdWJ0eXBlID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIGludGVncmF0ZWRfZGlhZ25vc2lzID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIHNob3J0X2hpc3RvbG9neSA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBicm9hZF9oaXN0b2xvZ3kgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgTm90ZXMgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bVxuKVxuIn0= -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBzYW1wbGVfaWQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIG1vbGVjdWxhcl9zdWJ0eXBlID0gY29sX2NoYXJhY3RlcigpLFxuICBpbnRlZ3JhdGVkX2RpYWdub3NpcyA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgc2hvcnRfaGlzdG9sb2d5ID0gY29sX2NoYXJhY3RlcigpLFxuICBicm9hZF9oaXN0b2xvZ3kgPSBjb2xfY2hhcmFjdGVyKCksXG4gIE5vdGVzID0gY29sX2NoYXJhY3RlcigpXG4pXG4ifQ== -->
 <pre><code>Parsed with column specification:
 cols(
-  Kids_First_Participant_ID = [31mcol_character()[39m,
-  sample_id = [31mcol_character()[39m,
-  Kids_First_Biospecimen_ID = [31mcol_character()[39m,
-  molecular_subtype = [31mcol_character()[39m,
-  integrated_diagnosis = [31mcol_character()[39m,
-  short_histology = [31mcol_character()[39m,
-  broad_histology = [31mcol_character()[39m,
-  Notes = [31mcol_character()[39m
+  Kids_First_Participant_ID = col_character(),
+  sample_id = col_character(),
+  Kids_First_Biospecimen_ID = col_character(),
+  molecular_subtype = col_character(),
+  integrated_diagnosis = col_character(),
+  short_histology = col_character(),
+  broad_histology = col_character(),
+  Notes = col_character()
 )</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGdhdF9yZWNvZGVfZGYgPC0gcmVhZHI6OnJlYWRfdHN2KGxnYXRfcmVjb2RlX2ZpbGUpXG5gYGAifQ== -->
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjoibGdhdF9yZWNvZGVfZGYgPC0gcmVhZHI6OnJlYWRfdHN2KGxnYXRfcmVjb2RlX2ZpbGUpIn0= -->
 <pre class="r"><code>lgat_recode_df &lt;- readr::read_tsv(lgat_recode_file)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgc2FtcGxlX2lkID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIHR1bW9yX2Rlc2NyaXB0b3IgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgYnJvYWRfaGlzdG9sb2d5ID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIHNob3J0X2hpc3RvbG9neSA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBtb2xlY3VsYXJfc3VidHlwZSA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBpbnRlZ3JhdGVkX2RpYWdub3NpcyA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBoYXJtb25pemVkX2RpYWdub3NpcyA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBOb3RlcyA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltXG4pXG4ifQ== -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBzYW1wbGVfaWQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIHR1bW9yX2Rlc2NyaXB0b3IgPSBjb2xfY2hhcmFjdGVyKCksXG4gIGJyb2FkX2hpc3RvbG9neSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgc2hvcnRfaGlzdG9sb2d5ID0gY29sX2NoYXJhY3RlcigpLFxuICBtb2xlY3VsYXJfc3VidHlwZSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgaW50ZWdyYXRlZF9kaWFnbm9zaXMgPSBjb2xfY2hhcmFjdGVyKCksXG4gIGhhcm1vbml6ZWRfZGlhZ25vc2lzID0gY29sX2NoYXJhY3RlcigpLFxuICBOb3RlcyA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuIn0= -->
 <pre><code>Parsed with column specification:
 cols(
-  Kids_First_Biospecimen_ID = [31mcol_character()[39m,
-  Kids_First_Participant_ID = [31mcol_character()[39m,
-  sample_id = [31mcol_character()[39m,
-  tumor_descriptor = [31mcol_character()[39m,
-  broad_histology = [31mcol_character()[39m,
-  short_histology = [31mcol_character()[39m,
-  molecular_subtype = [31mcol_character()[39m,
-  integrated_diagnosis = [31mcol_character()[39m,
-  harmonized_diagnosis = [31mcol_character()[39m,
-  Notes = [31mcol_character()[39m
+  Kids_First_Biospecimen_ID = col_character(),
+  Kids_First_Participant_ID = col_character(),
+  sample_id = col_character(),
+  tumor_descriptor = col_character(),
+  broad_histology = col_character(),
+  short_histology = col_character(),
+  molecular_subtype = col_character(),
+  integrated_diagnosis = col_character(),
+  harmonized_diagnosis = col_character(),
+  Notes = col_character()
 )</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWVuaW5naW9tYV9zdWJ0eXBlc19kZiA8LSByZWFkcjo6cmVhZF90c3YobWVuaW5naW9tYV9zdWJ0eXBlc19maWxlKVxuYGBgIn0= -->
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjoibWVuaW5naW9tYV9zdWJ0eXBlc19kZiA8LSByZWFkcjo6cmVhZF90c3YobWVuaW5naW9tYV9zdWJ0eXBlc19maWxlKSJ9 -->
 <pre class="r"><code>meningioma_subtypes_df &lt;- readr::read_tsv(meningioma_subtypes_file)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgc2FtcGxlX2lkID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIHR1bW9yX2Rlc2NyaXB0b3IgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgYnJvYWRfaGlzdG9sb2d5ID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIHNob3J0X2hpc3RvbG9neSA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBoYXJtb25pemVkX2RpYWdub3NpcyA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBOb3RlcyA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltXG4pXG4ifQ== -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBzYW1wbGVfaWQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIHR1bW9yX2Rlc2NyaXB0b3IgPSBjb2xfY2hhcmFjdGVyKCksXG4gIGJyb2FkX2hpc3RvbG9neSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgc2hvcnRfaGlzdG9sb2d5ID0gY29sX2NoYXJhY3RlcigpLFxuICBoYXJtb25pemVkX2RpYWdub3NpcyA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgTm90ZXMgPSBjb2xfY2hhcmFjdGVyKClcbilcbiJ9 -->
 <pre><code>Parsed with column specification:
 cols(
-  Kids_First_Biospecimen_ID = [31mcol_character()[39m,
-  Kids_First_Participant_ID = [31mcol_character()[39m,
-  sample_id = [31mcol_character()[39m,
-  tumor_descriptor = [31mcol_character()[39m,
-  broad_histology = [31mcol_character()[39m,
-  short_histology = [31mcol_character()[39m,
-  harmonized_diagnosis = [31mcol_character()[39m,
-  Notes = [31mcol_character()[39m
+  Kids_First_Biospecimen_ID = col_character(),
+  Kids_First_Participant_ID = col_character(),
+  sample_id = col_character(),
+  tumor_descriptor = col_character(),
+  broad_histology = col_character(),
+  short_histology = col_character(),
+  harmonized_diagnosis = col_character(),
+  Notes = col_character()
 )</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ2xpYWxudWVyb25hbF9yZWNvZGVfZGYgPC0gcmVhZHI6OnJlYWRfdHN2KGdsaWFsbnVlcm9uYWxfcmVjb2RlX2ZpbGUpXG5gYGAifQ== -->
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiZ2xpYWxudWVyb25hbF9yZWNvZGVfZGYgPC0gcmVhZHI6OnJlYWRfdHN2KGdsaWFsbnVlcm9uYWxfcmVjb2RlX2ZpbGUpIn0= -->
 <pre class="r"><code>glialnueronal_recode_df &lt;- readr::read_tsv(glialnueronal_recode_file)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgc2FtcGxlX2lkID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIHBhdGhvbG9neV9kaWFnbm9zaXMgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgcGF0aG9sb2d5X2ZyZWVfdGV4dF9kaWFnbm9zaXMgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgYnJvYWRfaGlzdG9sb2d5ID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIHNob3J0X2hpc3RvbG9neSA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICB0dW1vcl9kZXNjcmlwdG9yID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIGhhcm1vbml6ZWRfZGlhZ25vc2lzID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIE5vdGVzID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW1cbilcbiJ9 -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBzYW1wbGVfaWQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIHBhdGhvbG9neV9kaWFnbm9zaXMgPSBjb2xfY2hhcmFjdGVyKCksXG4gIHBhdGhvbG9neV9mcmVlX3RleHRfZGlhZ25vc2lzID0gY29sX2NoYXJhY3RlcigpLFxuICBicm9hZF9oaXN0b2xvZ3kgPSBjb2xfY2hhcmFjdGVyKCksXG4gIHNob3J0X2hpc3RvbG9neSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgdHVtb3JfZGVzY3JpcHRvciA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgaGFybW9uaXplZF9kaWFnbm9zaXMgPSBjb2xfY2hhcmFjdGVyKCksXG4gIE5vdGVzID0gY29sX2NoYXJhY3RlcigpXG4pXG4ifQ== -->
 <pre><code>Parsed with column specification:
 cols(
-  Kids_First_Biospecimen_ID = [31mcol_character()[39m,
-  Kids_First_Participant_ID = [31mcol_character()[39m,
-  sample_id = [31mcol_character()[39m,
-  pathology_diagnosis = [31mcol_character()[39m,
-  pathology_free_text_diagnosis = [31mcol_character()[39m,
-  broad_histology = [31mcol_character()[39m,
-  short_histology = [31mcol_character()[39m,
-  tumor_descriptor = [31mcol_character()[39m,
-  harmonized_diagnosis = [31mcol_character()[39m,
-  Notes = [31mcol_character()[39m
+  Kids_First_Biospecimen_ID = col_character(),
+  Kids_First_Participant_ID = col_character(),
+  sample_id = col_character(),
+  pathology_diagnosis = col_character(),
+  pathology_free_text_diagnosis = col_character(),
+  broad_histology = col_character(),
+  short_histology = col_character(),
+  tumor_descriptor = col_character(),
+  harmonized_diagnosis = col_character(),
+  Notes = col_character()
 )</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY3JhbmlvX2FkYW1fcmVjb2RlX2RmIDwtIHJlYWRyOjpyZWFkX3RzdihjcmFuaW9fYWRhbV9yZWNvZGVfZmlsZSlcbmBgYCJ9 -->
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiY3JhbmlvX2FkYW1fcmVjb2RlX2RmIDwtIHJlYWRyOjpyZWFkX3RzdihjcmFuaW9fYWRhbV9yZWNvZGVfZmlsZSkifQ== -->
 <pre class="r"><code>cranio_adam_recode_df &lt;- readr::read_tsv(cranio_adam_recode_file)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgc2FtcGxlX2lkID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIGJyb2FkX2hpc3RvbG9neSA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBzaG9ydF9oaXN0b2xvZ3kgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgbW9sZWN1bGFyX3N1YnR5cGUgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgdHVtb3JfZGVzY3JpcHRvciA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBoYXJtb25pemVkX2RpYWdub3NpcyA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBOb3RlcyA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltXG4pXG4ifQ== -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBzYW1wbGVfaWQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIGJyb2FkX2hpc3RvbG9neSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgc2hvcnRfaGlzdG9sb2d5ID0gY29sX2NoYXJhY3RlcigpLFxuICBtb2xlY3VsYXJfc3VidHlwZSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgdHVtb3JfZGVzY3JpcHRvciA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgaGFybW9uaXplZF9kaWFnbm9zaXMgPSBjb2xfY2hhcmFjdGVyKCksXG4gIE5vdGVzID0gY29sX2NoYXJhY3RlcigpXG4pXG4ifQ== -->
 <pre><code>Parsed with column specification:
 cols(
-  Kids_First_Biospecimen_ID = [31mcol_character()[39m,
-  Kids_First_Participant_ID = [31mcol_character()[39m,
-  sample_id = [31mcol_character()[39m,
-  broad_histology = [31mcol_character()[39m,
-  short_histology = [31mcol_character()[39m,
-  molecular_subtype = [31mcol_character()[39m,
-  tumor_descriptor = [31mcol_character()[39m,
-  harmonized_diagnosis = [31mcol_character()[39m,
-  Notes = [31mcol_character()[39m
+  Kids_First_Biospecimen_ID = col_character(),
+  Kids_First_Participant_ID = col_character(),
+  sample_id = col_character(),
+  broad_histology = col_character(),
+  short_histology = col_character(),
+  molecular_subtype = col_character(),
+  tumor_descriptor = col_character(),
+  harmonized_diagnosis = col_character(),
+  Notes = col_character()
 )</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY25zX2x5bXBob21hX3N1YnR5cGVzX2RmIDwtIHJlYWRyOjpyZWFkX3RzdihjbnNfbHltcGhvbWFfc3VidHlwZXNfZmlsZSkgXG5gYGAifQ== -->
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiY25zX2x5bXBob21hX3N1YnR5cGVzX2RmIDwtIHJlYWRyOjpyZWFkX3RzdihjbnNfbHltcGhvbWFfc3VidHlwZXNfZmlsZSkgIn0= -->
 <pre class="r"><code>cns_lymphoma_subtypes_df &lt;- readr::read_tsv(cns_lymphoma_subtypes_file) </code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgc2FtcGxlX2lkID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIHR1bW9yX2Rlc2NyaXB0b3IgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgYnJvYWRfaGlzdG9sb2d5ID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIHNob3J0X2hpc3RvbG9neSA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBoYXJtb25pemVkX2RpYWdub3NpcyA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBOb3RlcyA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltXG4pXG4ifQ== -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBzYW1wbGVfaWQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIHR1bW9yX2Rlc2NyaXB0b3IgPSBjb2xfY2hhcmFjdGVyKCksXG4gIGJyb2FkX2hpc3RvbG9neSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgc2hvcnRfaGlzdG9sb2d5ID0gY29sX2NoYXJhY3RlcigpLFxuICBoYXJtb25pemVkX2RpYWdub3NpcyA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgTm90ZXMgPSBjb2xfY2hhcmFjdGVyKClcbilcbiJ9 -->
 <pre><code>Parsed with column specification:
 cols(
-  Kids_First_Biospecimen_ID = [31mcol_character()[39m,
-  Kids_First_Participant_ID = [31mcol_character()[39m,
-  sample_id = [31mcol_character()[39m,
-  tumor_descriptor = [31mcol_character()[39m,
-  broad_histology = [31mcol_character()[39m,
-  short_histology = [31mcol_character()[39m,
-  harmonized_diagnosis = [31mcol_character()[39m,
-  Notes = [31mcol_character()[39m
+  Kids_First_Biospecimen_ID = col_character(),
+  Kids_First_Participant_ID = col_character(),
+  sample_id = col_character(),
+  tumor_descriptor = col_character(),
+  broad_histology = col_character(),
+  short_histology = col_character(),
+  harmonized_diagnosis = col_character(),
+  Notes = col_character()
 )</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuanhnX3N1YnR5cGVzX2RmIDwtIHJlYWRyOjpyZWFkX3RzdihqeGdfc3VidHlwZXNfZmlsZSlcbmBgYCJ9 -->
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjoianhnX3N1YnR5cGVzX2RmIDwtIHJlYWRyOjpyZWFkX3RzdihqeGdfc3VidHlwZXNfZmlsZSkifQ== -->
 <pre class="r"><code>jxg_subtypes_df &lt;- readr::read_tsv(jxg_subtypes_file)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgc2FtcGxlX2lkID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIHR1bW9yX2Rlc2NyaXB0b3IgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgYnJvYWRfaGlzdG9sb2d5ID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIHNob3J0X2hpc3RvbG9neSA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBoYXJtb25pemVkX2RpYWdub3NpcyA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBOb3RlcyA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltXG4pXG4ifQ== -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBzYW1wbGVfaWQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIHR1bW9yX2Rlc2NyaXB0b3IgPSBjb2xfY2hhcmFjdGVyKCksXG4gIGJyb2FkX2hpc3RvbG9neSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgc2hvcnRfaGlzdG9sb2d5ID0gY29sX2NoYXJhY3RlcigpLFxuICBoYXJtb25pemVkX2RpYWdub3NpcyA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgTm90ZXMgPSBjb2xfY2hhcmFjdGVyKClcbilcbiJ9 -->
 <pre><code>Parsed with column specification:
 cols(
-  Kids_First_Biospecimen_ID = [31mcol_character()[39m,
-  Kids_First_Participant_ID = [31mcol_character()[39m,
-  sample_id = [31mcol_character()[39m,
-  tumor_descriptor = [31mcol_character()[39m,
-  broad_histology = [31mcol_character()[39m,
-  short_histology = [31mcol_character()[39m,
-  harmonized_diagnosis = [31mcol_character()[39m,
-  Notes = [31mcol_character()[39m
+  Kids_First_Biospecimen_ID = col_character(),
+  Kids_First_Participant_ID = col_character(),
+  sample_id = col_character(),
+  tumor_descriptor = col_character(),
+  broad_histology = col_character(),
+  short_histology = col_character(),
+  harmonized_diagnosis = col_character(),
+  Notes = col_character()
 )</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2hvcm9pZF9wbGV4dXNfcGFwaWxsb21hX3N1YnR5cGVzX2RmIDwtIHJlYWRyOjpyZWFkX3RzdihjaG9yb2lkX3BsZXh1c19wYXBpbGxvbWFfc3VidHlwZXNfZmlsZSlcbmBgYCJ9 -->
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiY2hvcm9pZF9wbGV4dXNfcGFwaWxsb21hX3N1YnR5cGVzX2RmIDwtIHJlYWRyOjpyZWFkX3RzdihjaG9yb2lkX3BsZXh1c19wYXBpbGxvbWFfc3VidHlwZXNfZmlsZSkifQ== -->
 <pre class="r"><code>choroid_plexus_papilloma_subtypes_df &lt;- readr::read_tsv(choroid_plexus_papilloma_subtypes_file)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgc2FtcGxlX2lkID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIHBhdGhvbG9neV9kaWFnbm9zaXMgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgcGF0aG9sb2d5X2ZyZWVfdGV4dF9kaWFnbm9zaXMgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgYnJvYWRfaGlzdG9sb2d5ID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIHNob3J0X2hpc3RvbG9neSA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICB0dW1vcl9kZXNjcmlwdG9yID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIGhhcm1vbml6ZWRfZGlhZ25vc2lzID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIE5vdGVzID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW1cbilcbiJ9 -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBzYW1wbGVfaWQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIHBhdGhvbG9neV9kaWFnbm9zaXMgPSBjb2xfY2hhcmFjdGVyKCksXG4gIHBhdGhvbG9neV9mcmVlX3RleHRfZGlhZ25vc2lzID0gY29sX2NoYXJhY3RlcigpLFxuICBicm9hZF9oaXN0b2xvZ3kgPSBjb2xfY2hhcmFjdGVyKCksXG4gIHNob3J0X2hpc3RvbG9neSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgdHVtb3JfZGVzY3JpcHRvciA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgaGFybW9uaXplZF9kaWFnbm9zaXMgPSBjb2xfY2hhcmFjdGVyKCksXG4gIE5vdGVzID0gY29sX2NoYXJhY3RlcigpXG4pXG4ifQ== -->
 <pre><code>Parsed with column specification:
 cols(
-  Kids_First_Biospecimen_ID = [31mcol_character()[39m,
-  Kids_First_Participant_ID = [31mcol_character()[39m,
-  sample_id = [31mcol_character()[39m,
-  pathology_diagnosis = [31mcol_character()[39m,
-  pathology_free_text_diagnosis = [31mcol_character()[39m,
-  broad_histology = [31mcol_character()[39m,
-  short_histology = [31mcol_character()[39m,
-  tumor_descriptor = [31mcol_character()[39m,
-  harmonized_diagnosis = [31mcol_character()[39m,
-  Notes = [31mcol_character()[39m
+  Kids_First_Biospecimen_ID = col_character(),
+  Kids_First_Participant_ID = col_character(),
+  sample_id = col_character(),
+  pathology_diagnosis = col_character(),
+  pathology_free_text_diagnosis = col_character(),
+  broad_histology = col_character(),
+  short_histology = col_character(),
+  tumor_descriptor = col_character(),
+  harmonized_diagnosis = col_character(),
+  Notes = col_character()
 )</code></pre>
-<!-- rnb-output-end -->
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -2058,11 +2077,10 @@ cols(
 <h3>Add meningioma subtypes</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29tcGlsZWRfc3VidHlwZXNfZGYgPC0gY29tcGlsZWRfc3VidHlwZXNfZGYgJT4lXG4gICMgYWRkXG4gIGJpbmRfcm93cyhtZW5pbmdpb21hX3N1YnR5cGVzX2RmKVxuXG5cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfc3VidHlwZXNfZGYgPC0gY29tcGlsZWRfc3VidHlwZXNfZGYgJT4lXG4gICMgYWRkXG4gIGJpbmRfcm93cyhtZW5pbmdpb21hX3N1YnR5cGVzX2RmKSJ9 -->
 <pre class="r"><code>compiled_subtypes_df &lt;- compiled_subtypes_df %&gt;%
   # add
-  bind_rows(meningioma_subtypes_df)
-</code></pre>
+  bind_rows(meningioma_subtypes_df)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2071,13 +2089,12 @@ cols(
 <h3>Recoded LGAT integrated_diagnosis</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29tcGlsZWRfc3VidHlwZXNfZGYgPC0gY29tcGlsZWRfc3VidHlwZXNfZGYgJT4lIFxuICAjIHJlbW92ZSBvbGQgZGF0YVxuICBkcGx5cjo6ZmlsdGVyKCFLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiUgbGdhdF9yZWNvZGVfZGYkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkgJT4lXG4gICMgcmVwbGFjZSBcbiAgYmluZF9yb3dzKGxnYXRfcmVjb2RlX2RmKSBcblxuXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfc3VidHlwZXNfZGYgPC0gY29tcGlsZWRfc3VidHlwZXNfZGYgJT4lIFxuICAjIHJlbW92ZSBvbGQgZGF0YVxuICBkcGx5cjo6ZmlsdGVyKCFLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiUgbGdhdF9yZWNvZGVfZGYkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkgJT4lXG4gICMgcmVwbGFjZSBcbiAgYmluZF9yb3dzKGxnYXRfcmVjb2RlX2RmKSAifQ== -->
 <pre class="r"><code>compiled_subtypes_df &lt;- compiled_subtypes_df %&gt;% 
   # remove old data
   dplyr::filter(!Kids_First_Biospecimen_ID %in% lgat_recode_df$Kids_First_Biospecimen_ID) %&gt;%
   # replace 
-  bind_rows(lgat_recode_df) 
-</code></pre>
+  bind_rows(lgat_recode_df) </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2086,12 +2103,13 @@ cols(
 <h3>Neuronal and mixed neuronal-glial tumors updates in broad_histology, short_histology and harmonized_diagnosis</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29tcGlsZWRfc3VidHlwZXNfZGYgPC0gY29tcGlsZWRfc3VidHlwZXNfZGYgJT4lIFxuICAjIHJlbW92ZSBvbGQgZGF0YVxuICBkcGx5cjo6ZmlsdGVyKCFLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiUgY3JhbmlvX2FkYW1fcmVjb2RlX2RmJEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpICU+JVxuICAjIHJlcGxhY2UgXG4gIGJpbmRfcm93cyhjcmFuaW9fYWRhbV9yZWNvZGVfZGYpIFxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfc3VidHlwZXNfZGYgPC0gY29tcGlsZWRfc3VidHlwZXNfZGYgJT4lIFxuICAjIHJlbW92ZSBvbGQgZGF0YVxuICBkcGx5cjo6ZmlsdGVyKCFLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiUgZ2xpYWxudWVyb25hbF9yZWNvZGVfZGYkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkgJT4lXG4gICMgcmVwbGFjZSBcbiAgYmluZF9yb3dzKGdsaWFsbnVlcm9uYWxfcmVjb2RlX2RmKSAgJT4lXG4gIHNlbGVjdCgtcGF0aG9sb2d5X2RpYWdub3NpcywtcGF0aG9sb2d5X2ZyZWVfdGV4dF9kaWFnbm9zaXMpIn0= -->
 <pre class="r"><code>compiled_subtypes_df &lt;- compiled_subtypes_df %&gt;% 
   # remove old data
-  dplyr::filter(!Kids_First_Biospecimen_ID %in% cranio_adam_recode_df$Kids_First_Biospecimen_ID) %&gt;%
+  dplyr::filter(!Kids_First_Biospecimen_ID %in% glialnueronal_recode_df$Kids_First_Biospecimen_ID) %&gt;%
   # replace 
-  bind_rows(cranio_adam_recode_df) </code></pre>
+  bind_rows(glialnueronal_recode_df)  %&gt;%
+  select(-pathology_diagnosis,-pathology_free_text_diagnosis)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2100,10 +2118,12 @@ cols(
 <h3>Recoding adamantinomatous craniopharyngiomas</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29tcGlsZWRfc3VidHlwZXNfZGYgPC0gY29tcGlsZWRfc3VidHlwZXNfZGYgJT4lIFxuICAjIGFwcGVuZFxuICBiaW5kX3Jvd3MoY25zX2x5bXBob21hX3N1YnR5cGVzX2RmKSBcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfc3VidHlwZXNfZGYgPC0gY29tcGlsZWRfc3VidHlwZXNfZGYgJT4lIFxuICAjIHJlbW92ZSBvbGQgZGF0YVxuICBkcGx5cjo6ZmlsdGVyKCFLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiUgY3JhbmlvX2FkYW1fcmVjb2RlX2RmJEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpICU+JVxuICAjIHJlcGxhY2UgXG4gIGJpbmRfcm93cyhjcmFuaW9fYWRhbV9yZWNvZGVfZGYpICJ9 -->
 <pre class="r"><code>compiled_subtypes_df &lt;- compiled_subtypes_df %&gt;% 
-  # append
-  bind_rows(cns_lymphoma_subtypes_df) </code></pre>
+  # remove old data
+  dplyr::filter(!Kids_First_Biospecimen_ID %in% cranio_adam_recode_df$Kids_First_Biospecimen_ID) %&gt;%
+  # replace 
+  bind_rows(cranio_adam_recode_df) </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2115,12 +2135,10 @@ cols(
 <h3>CNS lymphoma harmonized_diagnosis update</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5jb21waWxlZF9zdWJ0eXBlc19kZiA8LSBjb21waWxlZF9zdWJ0eXBlc19kZiAlPiUgXG4gICMgYXBwZW5kXG4gIGJpbmRfcm93cyhjbnNfbHltcGhvbWFfc3VidHlwZXNfZGYpIFxuXG5gYGAifQ== -->
-<pre class="r"><code>
-compiled_subtypes_df &lt;- compiled_subtypes_df %&gt;% 
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfc3VidHlwZXNfZGYgPC0gY29tcGlsZWRfc3VidHlwZXNfZGYgJT4lIFxuICAjIGFwcGVuZFxuICBiaW5kX3Jvd3MoY25zX2x5bXBob21hX3N1YnR5cGVzX2RmKSAifQ== -->
+<pre class="r"><code>compiled_subtypes_df &lt;- compiled_subtypes_df %&gt;% 
   # append
-  bind_rows(cns_lymphoma_subtypes_df) 
-</code></pre>
+  bind_rows(cns_lymphoma_subtypes_df) </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2129,11 +2147,10 @@ compiled_subtypes_df &lt;- compiled_subtypes_df %&gt;%
 <h3>Juvenile xanthogranuloma harmonized_diagnosis update</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29tcGlsZWRfc3VidHlwZXNfZGYgPC0gY29tcGlsZWRfc3VidHlwZXNfZGYgJT4lIFxuICAjIGFwcGVuZFxuICBiaW5kX3Jvd3MoY2hvcm9pZF9wbGV4dXNfcGFwaWxsb21hX3N1YnR5cGVzX2RmKSAlPiVcbiAgc2VsZWN0KC1wYXRob2xvZ3lfZGlhZ25vc2lzLC1wYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3NpcylcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfc3VidHlwZXNfZGYgPC0gY29tcGlsZWRfc3VidHlwZXNfZGYgJT4lIFxuICAjIGFwcGVuZFxuICBiaW5kX3Jvd3MoanhnX3N1YnR5cGVzX2RmKSAifQ== -->
 <pre class="r"><code>compiled_subtypes_df &lt;- compiled_subtypes_df %&gt;% 
   # append
-  bind_rows(choroid_plexus_papilloma_subtypes_df) %&gt;%
-  select(-pathology_diagnosis,-pathology_free_text_diagnosis)</code></pre>
+  bind_rows(jxg_subtypes_df) </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2142,13 +2159,11 @@ compiled_subtypes_df &lt;- compiled_subtypes_df %&gt;%
 <h3>Atypical choroid plexus papilloma harmonized_diagnosis update</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5jb21waWxlZF9zdWJ0eXBlc19kZiA8LSBjb21waWxlZF9zdWJ0eXBlc19kZiAlPiUgXG4gICMgYXBwZW5kXG4gIGJpbmRfcm93cyhjaG9yb2lkX3BsZXh1c19wYXBpbGxvbWFfc3VidHlwZXNfZGYpICU+JVxuICBzZWxlY3QoLXBhdGhvbG9neV9kaWFnbm9zaXMsLXBhdGhvbG9neV9mcmVlX3RleHRfZGlhZ25vc2lzKVxuXG5gYGAifQ== -->
-<pre class="r"><code>
-compiled_subtypes_df &lt;- compiled_subtypes_df %&gt;% 
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfc3VidHlwZXNfZGYgPC0gY29tcGlsZWRfc3VidHlwZXNfZGYgJT4lIFxuICAjIGFwcGVuZFxuICBiaW5kX3Jvd3MoY2hvcm9pZF9wbGV4dXNfcGFwaWxsb21hX3N1YnR5cGVzX2RmKSAlPiVcbiAgc2VsZWN0KC1wYXRob2xvZ3lfZGlhZ25vc2lzLC1wYXRob2xvZ3lfZnJlZV90ZXh0X2RpYWdub3NpcykifQ== -->
+<pre class="r"><code>compiled_subtypes_df &lt;- compiled_subtypes_df %&gt;% 
   # append
   bind_rows(choroid_plexus_papilloma_subtypes_df) %&gt;%
-  select(-pathology_diagnosis,-pathology_free_text_diagnosis)
-</code></pre>
+  select(-pathology_diagnosis,-pathology_free_text_diagnosis)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2158,11 +2173,10 @@ compiled_subtypes_df &lt;- compiled_subtypes_df %&gt;%
 <h2>Save to file</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29tcGlsZWRfc3VidHlwZXNfZGYgJT4lIFxuICBhcnJhbmdlKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpJT4lXG4gIHdyaXRlX3RzdihvdXRwdXRfZmlsZSlcblxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiY29tcGlsZWRfc3VidHlwZXNfZGYgJT4lIFxuICBhcnJhbmdlKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpJT4lXG4gIHdyaXRlX3RzdihvdXRwdXRfZmlsZSkifQ== -->
 <pre class="r"><code>compiled_subtypes_df %&gt;% 
   arrange(Kids_First_Biospecimen_ID)%&gt;%
-  write_tsv(output_file)
-</code></pre>
+  write_tsv(output_file)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->

@@ -12,6 +12,9 @@ RUN_ORIGINAL=${RUN_ORIGINAL:-0}
 # Run testing files for circle CI - will not by default
 IS_CI=${OPENPBTA_TESTING:-0}
 
+# Run for subtyping
+RUN_FOR_SUBTYPING=${OPENPBTA_BASE_SUBTYPING:-0}
+
 # This script should always run as if it were being called from
 # the directory it lives in.
 script_directory="$(perl -e 'use File::Basename;
@@ -22,13 +25,20 @@ cd "$script_directory" || exit
 scratch_dir=../../scratch
 data_dir=../../data
 results_dir=../../analyses/focal-cn-file-preparation/results
-histologies_file=${data_dir}/pbta-histologies.tsv
+
+if [[ RUN_FOR_SUBTYPING == "0" ]]
+then
+   histologies_file="${data_dir}/pbta-histologies.tsv"
+else
+   histologies_file="${data_dir}/pbta-histologies-base.tsv"
+fi
+
 gtf_file=${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz
 goi_file=../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt
 independent_specimens_file=${data_dir}/independent-specimens.wgswxs.primary.tsv
 
 # Prep the consensus SEG file data
-Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd', clean = TRUE)"
+Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING), clean = TRUE)"
 
 # Run snakemake script implementing `bedtools coverage` for each sample bed file in
 # `scratch/cytoband_status` -- these files are generated in

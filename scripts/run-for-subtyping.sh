@@ -30,6 +30,15 @@ OPENPBTA_BASE_SUBTYPING=1 ../analyses/transcriptomic-dimension-reduction/dimensi
 echo "Run gsea"
 OPENPBTA_BASE_SUBTYPING=1 ../analyses/gene-set-enrichment-analysis/run-gsea.sh
 
+echo "Run cnv consensus"
+../analyses/copy_number_consensus_call/run_consensus_call.sh
+
+echo "Run focal cnv"
+OPENPBTA_BASE_SUBTYPING=1 ../analyses/focal-cn-file-preparation/run-prepare-cn.sh
+
+echo "Run gistic"
+OPENPBTA_BASE_SUBTYPING=1 ../analyses/run-gistic/run-gistic-module.sh 
+
 echo "TP53 altered score"
 OPENPBTA_BASE_SUBTYPING=1 ../analyses/tp53_nf1_score/run_classifier.sh
 

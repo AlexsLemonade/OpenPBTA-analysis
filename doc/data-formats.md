@@ -160,6 +160,10 @@ Consensus mutation files are products of the [`analyses/snv-callers`](https://gi
   * `pbta-snv-consensus-mutation-tmb-all.tsv` includes tumor mutation burden statistics that are calculated based calculated from Strelka2 and Mutect2 SNV consensus, and the intersection of Strelka2 and Mutect2 BED windows sizes.
   * `pbta-snv-consensus-mutation-tmb-coding.tsv` contains coding only tumor mutation burden statistics calculated from the number of coding sequence Strelka2, Mutect2, and Lancet consensus SNVs and size of the intersection of all three callers' BED windows and the Gencode v27 coding sequence regions. 
 
+### Mutation hotspots 
+Mutation calls that overlap hotspots from MSKCC cancer hotspot [database](https://www.cancerhotspots.org/#/download) or overlapping TERT promoter region are retained even if called by 1 caller ,excluding Vardict-only calls because Vardict uniquely calls a large number (~39 million) of very low VAF mutations as discussed [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/README.md) suggesting these could be false calls. 
+ * `pbta-snv-scavenged-hotspots.maf.tsv.gz` 
+
 ### Collapsed Expression Matrices
 
 Collapsed expression matrices are products of the [`analyses/collapse-rnaseq`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/collapse-rnaseq) analysis module.
