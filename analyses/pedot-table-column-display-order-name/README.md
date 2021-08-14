@@ -30,20 +30,20 @@ Generate the Excel spreadsheet using the TSV result files in the following modul
 
 The PedOT table column display order and name Excel spreadsheet, `results/pedot-table-column-display-order-name.xlsx`. Each sheet in the Excel spreadsheet has a name corresponding to a JSONL filename. Excel only allows sheet names to have <= 31 characters.
 
-| Excel sheet name              | JSONL filename                                            |
-| ----------------------------- | --------------------------------------------------------- |
-| SNV gene-level                | `gene-level-snv-consensus-annotated-mut-freq.jsonl.gz`    |
-| SNV variant-level             | `variant-level-snv-consensus-annotated-mut-freq.jsonl.gz` |
-| CNV gene-level                | `gene-level-cnv-consensus-annotated-mut-freq.jsonl.gz`    |
-| Fusion gene-level             | `putative-oncogene-fused-gene-freq.jsonl.gz`              |
-| Fusion fusion-level           | `putative-oncogene-fusion-freq.jsonl.gz`                  |
-| TPM stats gene-wise z-scores  | `long_n_tpm_mean_sd_quantile_gene_wise_zscore.jsonl.gz`   |
-| TPM stats group-wise z-scores | `long_n_tpm_mean_sd_quantile_group_wise_zscore.jsonl.gz`  |
+| Excel sheet name                | JSONL filename                                            |
+| ------------------------------- | --------------------------------------------------------- |
+| `SNV gene-level`                | `gene-level-snv-consensus-annotated-mut-freq.jsonl.gz`    |
+| `SNV variant-level`             | `variant-level-snv-consensus-annotated-mut-freq.jsonl.gz` |
+| `CNV gene-level`                | `gene-level-cnv-consensus-annotated-mut-freq.jsonl.gz`    |
+| `Fusion gene-level`             | `putative-oncogene-fused-gene-freq.jsonl.gz`              |
+| `Fusion fusion-level`           | `putative-oncogene-fusion-freq.jsonl.gz`                  |
+| `TPM stats gene-wise z-scores`  | `long_n_tpm_mean_sd_quantile_gene_wise_zscore.jsonl.gz`   |
+| `TPM stats group-wise z-scores` | `long_n_tpm_mean_sd_quantile_group_wise_zscore.jsonl.gz`  |
 
 Each sheet contains the following rows.
 
 - Column names for PedOT table view display.
-- 10 sample rows of table values.
+- 60 sample rows of table values.
 - Column names in the JSONL/TSV files.
 
 The first two columns of each sheet are "User guide" and "Row annotation", which will not be displayed on the PedOT website.
@@ -66,7 +66,8 @@ The first two columns of each sheet are "User guide" and "Row annotation", which
 ├── run-pedot-table-column-display-order-name.sh
 └── utils
     ├── __init__.py
-    └── tsv.py
+    ├── tsv.py
+    └── xlsx.py
 ```
 
 ## Analysis scripts
