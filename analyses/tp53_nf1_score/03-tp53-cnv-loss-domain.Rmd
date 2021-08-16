@@ -52,24 +52,36 @@ Rscript -e "rmarkdown::render('analyses/focal-cn-file-preparation/02-add-ploidy-
 Rscript -e "rmarkdown::render('analyses/focal-cn-file-preparation/01-add-ploidy-cnvkit.Rmd', clean = TRUE)"
 ```
 
+Read in CNV files with status and location-domain overlap file
 ```{r}
-# consensus seg for file for the location of CNVs
+# consensus seg for file for the location of CNVs (WGS samples)
 consensus_seg <- read_tsv(file.path(root_dir, 
                                     "analyses",
                                     "tp53_nf1_score",
                                     "input",
                                     "consensus_seg_with_status.tsv"))
 
+# cnvkit seg for file for the location of CNVs (WXS samples)
+cnvkit_seg<- read_tsv(file.path(root_dir, 
+                                "analyses",
+                                "tp53_nf1_score",
+                                "input",
+                                "cnvkit_with_status.tsv"))
+
 # Gene location and domain overlap file 
 bioMartDataPfamTp53 <- 
   readRDS(system.file("extdata", "pfamDataBioMart.RDS", package = "annoFuse")) %>%
   dplyr::filter(hgnc_symbol=="TP53")
 
+```
+
+Read in histology file. Subset based on experimental strategy so that all samples have the correct CNV status file to use.
+```{r}
 # histology file
 if ( params$base_run ==0 ){
-  clinical<-read.delim(file.path(data_dir,"pbta-histologies.tsv"), stringsAsFactors = FALSE)
+  clinical<-read.delim(file.path(data_dir,"histologies.tsv"), stringsAsFactors = FALSE)
 } else{
-  clinical<-read.delim(file.path(data_dir,"pbta-histologies-base.tsv"), stringsAsFactors = FALSE)  
+  clinical<-read.delim(file.path(data_dir,"histologies-base.tsv"), stringsAsFactors = FALSE)  
 }
 
 histologies_df <- clinical %>%
