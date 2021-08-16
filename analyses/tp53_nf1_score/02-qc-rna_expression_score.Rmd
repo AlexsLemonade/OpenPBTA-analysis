@@ -159,13 +159,13 @@ tidy(cor.test(polya_stranded_exp_score$expression_value,polya_stranded_exp_score
 ```
 
 
-stranded TP53 expression to classifier_score has a negligible 
+stranded TP53 expression to classifier_score has a 
 negative correlation estimate -0.21 at p value 9.816063e-17	
 
 polya TP53 expression to classifier_score has a negligible 
 negative correlation estimate -0.095 at p value 0.1330592
 
-polya stranded TP53 expression to classifier_score has a negligible 
+polya stranded TP53 expression to classifier_score has a 
 negative correlation estimate -0.326 at p value 5.642812e-20	
 
 Overall distribution of expression and classifier score shows 
