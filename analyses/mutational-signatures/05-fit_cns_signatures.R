@@ -5,8 +5,9 @@ library(signature.tools.lib) # for getting the CNS signatures
 # Set up command line options -------------------------------
 option_list <- list(
   make_option(c("--abbreviated"),
-              type = "integer",
-              default = 0,
+              type = "logical",
+              default = FALSE,
+              action =  "store_true",
               help = "Run an abbreviated analysis with fewer iterations?"))
               
 
