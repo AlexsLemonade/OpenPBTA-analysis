@@ -12,19 +12,20 @@ editor_options:
 
 <br><br><br><br>
 
-#### Packages and paths
+#### Files and paths
 
 
-```{r}
+```{r setup}
 `%>%` <- dplyr::`%>%`
 
-plot_path <- "plots/"
+proj_root_path  <- file.path( rprojroot::find_root(rprojroot::has_dir(".git")) )
+analysis_path   <- file.path(proj_root_path, "analyses", "mutational-signatures")
+plot_path       <- file.path(analysis_path, "plots")
 
-maf_file <- file.path("..", "..", "scratch", "mutational-signatures", "pbta-snv-consensus-wgs.tsv.gz")
-wgs_bed_file <- file.path("..", "..", "data", "WGS.hg38.strelka2.unpadded.bed")
-histology_color_file <- file.path("..", "..", "figures", "palettes", "histology_label_color_table.tsv")
-
-fitted_file <- file.path("results", "fitted_cns_signature_exposures.RDS")
+maf_file             <- file.path(proj_root_path, "scratch", "mutational-signatures", "pbta-snv-consensus-wgs.tsv.gz")
+wgs_bed_file         <- file.path(proj_root_path, "data", "WGS.hg38.strelka2.unpadded.bed")
+histology_color_file <- file.path(proj_root_path, "figures", "palettes", "histology_label_color_table.tsv")
+fitted_file          <- file.path(analysis_path, "results", "fitted_cns_signature_exposures.RDS")
 ```
 
 ```{r read_prep_data, warning=FALSE}
