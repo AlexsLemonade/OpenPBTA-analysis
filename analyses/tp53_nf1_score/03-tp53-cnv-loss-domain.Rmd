@@ -84,14 +84,31 @@ if ( params$base_run ==0 ){
   clinical<-read.delim(file.path(data_dir,"histologies-base.tsv"), stringsAsFactors = FALSE)  
 }
 
-histologies_df <- clinical %>%
-  dplyr::select("Kids_First_Biospecimen_ID",
-                "sample_id")
+histologies_df <- clinical %>% 
+  dplyr::select(Kids_First_Biospecimen_ID, sample_id)
 
+# find the WGS samples + WXS samples and subset "_with_status.tsv" file with that
+wgs_samples <- histologies_wgs_df <- clinical %>% dplyr::filter(sample_type == "Tumor") %>%
+  dplyr::filter(experimental_strategy == "WGS") %>% 
+  dplyr::filter(cohort %in% c("PBTA", "GMKF", "TARGET")) %>% 
+  dplyr::pull("Kids_First_Biospecimen_ID")
+
+wxs_samples <- clinical %>% dplyr::filter(sample_type == "Tumor") %>%
+  dplyr::filter(experimental_strategy == "WXS") %>% 
+  dplyr::filter(cohort %in% c("PBTA", "GMKF", "TARGET")) %>% 
+  dplyr::pull("Kids_First_Biospecimen_ID")
+  
+# Filter the consensus and the cnvkit seg files to contain only either WGS or WXS samples 
+consensus_seg <- consensus_seg %>% dplyr::filter(Kids_First_Biospecimen_ID %in% wgs_samples)
+cnvkit_seg <- cnvkit_seg %>% dplyr::filter(Kids_First_Biospecimen_ID %in% wxs_samples)
+
+# merge the seg files together
+combined_seg <- rbind(consensus_seg, cnvkit_seg)
+  
 # Classifier score 
-# 1) Read in scores from tp53-nf1-classifier for stranded
+# Read in scores from tp53-nf1-classifier 
 
-score_stranded_df <- read_tsv(file.path(results_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv")) %>%
+tp53_classifier_score <- readr::read_tsv(file.path(results_dir, "gene-expression-rsem-tpm-collapsed_classifier_scores.tsv")) %>%
   dplyr::select(
     "tp53_score",
     "sample_id"
@@ -100,26 +117,13 @@ score_stranded_df <- read_tsv(file.path(results_dir, "pbta-gene-expression-rsem-
   left_join(histologies_df,by=c("Kids_First_Biospecimen_ID")) %>%
   as.data.frame()
 
-# 2) Read in scores from tp53-nf1-classifier for polya
-score_polya_df <- read_tsv(file.path(results_dir, "pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv")) %>%
-  dplyr::select(
-    "tp53_score",
-    "sample_id"
-  ) %>%
-  dplyr::rename("Kids_First_Biospecimen_ID"="sample_id") %>%
-  left_join(histologies_df,by=c("Kids_First_Biospecimen_ID")) %>%
-  as.data.frame()
-
-# merge classifier scores
-tp53_classifier_score <- rbind(score_stranded_df,score_polya_df)
-
 ```
 
 Generating genomics ranges for cnv and domain dataframes
 
 ```{r}
 # Genomic range for cnv seg file 
-cnv_gr <- consensus_seg %>%
+cnv_gr <- combined_seg %>%
   dplyr::rename(chr = chrom, start = loc.start, end = loc.end,
                 copy_number = copy.num) %>%
   dplyr::select(-num.mark, -seg.mean) %>%
@@ -137,7 +141,6 @@ domain_gr <- bioMartDataPfamTp53 %>%
                                           starts.in.df.are.0based = FALSE)
 
 ```
-
 
 
 ### Overlap CNV and TP53 Domain ranges 

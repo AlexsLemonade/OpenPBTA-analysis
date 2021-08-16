@@ -31,7 +31,7 @@ _NF1_ positive examples are additionally filtered to remove missense mutations, 
 
 `02-qc-rna_expression_score.Rmd` here expression of TP53 gene was compared to TP53 classifier score. Two RNA library type, `stranded` and `polya stranded` generated strong negative correlation between TP53 expression and TP53 inactivation score, while `polya` samples do not seem to have strong correlation. Thus, for `stranded` and `polya stranded`, expression and classifier score together might be able to predict function; however, for polya, the correlation is not statistically significant.
 
-`03-tp53-cnv-loss-domain.Rmd` here copy_number of regions overlapping TP53 functional domains were compared to TP53 classifier score. We find tumors with TP53 copies <=1 have higher TP53 classifier scores, so we only retain biospecimens with <= 1 copy TP53 as high confidence TP53 loss. 
+`03-tp53-cnv-loss-domain.Rmd` here copy_number of regions overlapping TP53 functional domains were compared to TP53 classifier score. We find tumors with TP53 copies <=1 have higher TP53 classifier scores, so we only retain biospecimens with <= 1 copy TP53 as high confidence TP53 loss. **NOTE**: since now WGS and WXS have their CNV calls processed different (WGS uses 2/3 consensus workflow and WXS only uses WXS samples) - the inputs were read-in, subsetted and then merged for analyses.
 
 `04-tp53-sv-loss.Rmd` here structural variant breakpoints overlapping TP53 are investigated for CNV loss or low expression to gather high confidence TP53 loss via Structural Variants. 
 
