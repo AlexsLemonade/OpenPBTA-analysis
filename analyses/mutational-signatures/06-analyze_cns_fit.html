@@ -1665,7 +1665,10 @@ $(document).ready(function () {
 
 proj_root_path  &lt;- file.path( rprojroot::find_root(rprojroot::has_dir(&quot;.git&quot;)) )
 analysis_path   &lt;- file.path(proj_root_path, &quot;analyses&quot;, &quot;mutational-signatures&quot;)
-plot_path       &lt;- file.path(analysis_path, &quot;plots&quot;)
+plot_path       &lt;- file.path(analysis_path, &quot;plots&quot;, &quot;cns&quot;)
+if (!dir.exists(plot_path)) {
+  dir.create(plot_path, recursive = TRUE)
+}
 
 maf_file             &lt;- file.path(proj_root_path, &quot;scratch&quot;, &quot;mutational-signatures&quot;, &quot;pbta-snv-consensus-wgs.tsv.gz&quot;)
 wgs_bed_file         &lt;- file.path(proj_root_path, &quot;data&quot;, &quot;WGS.hg38.strelka2.unpadded.bed&quot;)

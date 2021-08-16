@@ -20,7 +20,10 @@ editor_options:
 
 proj_root_path  <- file.path( rprojroot::find_root(rprojroot::has_dir(".git")) )
 analysis_path   <- file.path(proj_root_path, "analyses", "mutational-signatures")
-plot_path       <- file.path(analysis_path, "plots")
+plot_path       <- file.path(analysis_path, "plots", "cns")
+if (!dir.exists(plot_path)) {
+  dir.create(plot_path, recursive = TRUE)
+}
 
 maf_file             <- file.path(proj_root_path, "scratch", "mutational-signatures", "pbta-snv-consensus-wgs.tsv.gz")
 wgs_bed_file         <- file.path(proj_root_path, "data", "WGS.hg38.strelka2.unpadded.bed")
