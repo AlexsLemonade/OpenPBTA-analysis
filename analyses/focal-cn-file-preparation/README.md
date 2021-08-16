@@ -60,6 +60,8 @@ To make these calls, the following decisions around cutoffs were made:
 Recurrence here has been arbitrarily defined based on the plotting of the distribution of status calls and a [similar decision](https://github.com/AlexsLemonade/OpenPedCan-analysis/blob/66bb67a7bf29aad4510a0913a2dbc88da0013be8/analyses/fusion_filtering/06-recurrent-fusions-per-histology.R#L152) made in `analyses/fusion_filtering/06-recurrent-fusions-per-histology.R` to make the cutoff for recurrence to be greater than a count of 3 samples that have the same CN status call in the same region.
 This notebook returns a `TSV` file with the recurrent copy number status calls, regions and biospecimen IDs.
 
+* `07-consensus-annotated-merge.R` - This script merges the cnv annotated files for WGS samples (which uses 2/3 consensus cnv calls from 3 callers) with the cnv annotated files for WXS samples (which only uses cnvkit caller for CNV callings). This script first merges WGS+WXS autosome calls, WGS+WXS x_and_y calls and finally merged autosomes with x_and_y. The above mentioned 3 merged files are all saved in the `results` directory.
+
 * `rna-expression-validation.R` - This script examines RNA-seq expression levels (RSEM FPKM) of genes that are called as deletions.
 It produces loss/neutral and zero/neutral correlation plots, as well as stacked barplots displaying the distribution of ranges in expression across each of the calls (loss, neutral, zero).
 _Note: The shell script's default behavior is to produce these plots using the annotated consensus SEG autosome and sex chromsome files found in this module's `results` directory and listed below._
