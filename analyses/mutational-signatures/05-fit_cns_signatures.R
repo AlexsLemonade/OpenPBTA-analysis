@@ -5,7 +5,7 @@ library(signature.tools.lib) # for getting the CNS signatures
 # Set up command line options -------------------------------
 option_list <- list(
   make_option(c("--abbreviated"),
-              type = "logical",
+              type = "integer", # should be integer or plays poorly with CI shell script parameter
               default = FALSE,
               action =  "store_true",
               help = "Run an abbreviated analysis with fewer iterations?"))
@@ -16,12 +16,11 @@ opt <- parse_args(OptionParser(option_list = option_list))
 
 
 # Full or abbreviated?
-if (opt$abbreviated == 1) {
+if (opt$abbreviated ==1) {
   n_iter <- 10 # CI time-saver
 } else {
   n_iter <- 3000 # Full analysis
 }
-
 
 # Set up maf file and output file
 
