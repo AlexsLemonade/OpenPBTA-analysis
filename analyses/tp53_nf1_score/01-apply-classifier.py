@@ -51,12 +51,17 @@ parser.add_option(
     "-f", "--expfile", dest="expfile", help="rds file sample X genes expression"
 )
 parser.add_option(
-    "-t", "--histology", dest="histology", help="rds file sample X genes expression"
+    "-t", "--histology", dest="histology", help="histology file for subsetting expression file"
+)
+parser.add_option(
+    "-c", "--cohorts", type ='string', dest="cohorts", help="list of cohorts of interest"
 )
 
 (options, args) = parser.parse_args()
 exprs_file = options.expfile
 histology = options.histology
+
+cohort_list = options.cohorts.split(",")
 
 np.random.seed(123)
 pandas2ri.activate()
@@ -74,24 +79,40 @@ exprs_total.index = rownamesRDS(exprs_rds)
 
 # Read in histologies file
 histology = pd.read_csv(histology, sep="\t")
+# filter histology file based on cohort
+histology = histology[histology['cohort'].isin(cohort_list)]
 
-# Filter the expression_df to only contain tumor samples
-cohort = "PBTA"
-tumor_RNA_cohort = list(histology[(histology["experimental_strategy"] == "RNA-Seq") & (histology["sample_type"] == "Tumor") & (histology["cohort"] == cohort)]['Kids_First_Biospecimen_ID'])
+exprs_scaled_df = pd.DataFrame()
+exprs_shuffled_df = pd.DataFrame()
 
-exprs_df = exprs_total[tumor_RNA_cohort]
+for cohort in cohort_list:
+  # Filter the expression_df to tumor, RNA-Seq and cohort
+  histology_cohort = histology[(histology["experimental_strategy"] == "RNA-Seq") & (histology["sample_type"] == "Tumor") & (histology["cohort"] == cohort)]
+  RNA_libraries = list(set(histology_cohort['RNA_library']))
+  
+  # Remove NAN from RNA library list
+  RNA_libraries = [RNA_libraries for RNA_libraries in RNA_libraries if str(RNA_libraries) != 'nan']
 
-# Transpose the expression dataframe to be compatible with following workflow
-exprs_df = exprs_df.transpose()
+  for rna_library in RNA_libraries:
+    tumor_RNA_cohort = list(histology_cohort[histology_cohort["RNA_library"] == rna_library]['Kids_First_Biospecimen_ID'])
+    exprs_df = exprs_total[tumor_RNA_cohort]
 
-# Transform the gene expression data (z-score by gene)
-scaled_fit = StandardScaler().fit(exprs_df)
-exprs_scaled_df = pd.DataFrame(
-    scaled_fit.transform(exprs_df), index=exprs_df.index, columns=exprs_df.columns
-)
+    # Transpose the expression dataframe to be compatible with following workflow
+    exprs_df = exprs_df.transpose()
 
-# Shuffle input RNAseq matrix and apply classifiers
-exprs_shuffled_df = exprs_scaled_df.apply(shuffle_columns, axis=0)
+    # Transform the gene expression data (z-score by gene)
+    scaled_fit = StandardScaler().fit(exprs_df)
+    exprs_scaled_df_cohort = pd.DataFrame(
+      scaled_fit.transform(exprs_df), index=exprs_df.index, columns=exprs_df.columns
+    )
+    exprs_scaled_df = exprs_scaled_df.append(exprs_scaled_df_cohort)
+    print("completed scale "+cohort+" "+rna_library)
+    
+    # Shuffle input RNAseq matrix and apply classifiers
+    exprs_shuffled_df_cohort = exprs_scaled_df_cohort.apply(shuffle_columns, axis=0)
+    exprs_shuffled_df=exprs_shuffled_df.append(exprs_shuffled_df_cohort)
+    print("completed shuffle "+cohort+" "+rna_library)
+
 
 # Apply Ras Classifier
 

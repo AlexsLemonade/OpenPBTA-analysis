@@ -67,7 +67,7 @@ fi
 
 
 # Run classifier and ROC plotting for RNA data
-python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_rna} -t ${histology_file}
+python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_rna} -t ${histology_file} -c "PBTA,GMKF,TARGET"
 
 # check correlation expression and scores
 Rscript -e "rmarkdown::render('${analysis_dir}/02-qc-rna_expression_score.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
