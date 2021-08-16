@@ -1,5 +1,60 @@
 # release notes
+
 ## current release
+- release date: 2021-08-17
+- status: available
+- overview of changes:
+    - This particular release is mainly to include 412 tumor/normal pairs of TARGET WXS samples as listed in [ticket 111](https://github.com/PediatricOpenTargets/ticket-tracker/issues/111). Detailed changes see below. 
+- deiltaed changes: 
+    - Histology file updates - the master ticket is d3b center [ticket 43](https://github.com/d3b-center/D3b-codes/pull/43):
+      - 412 tumor/normal TARGET WXS samples were included in the histologies.tsv file per [ticket 111](https://github.com/PediatricOpenTargets/ticket-tracker/issues/111)v
+      - `sample_id` and `aliquot_id` for some TARGET samples were miscoded before. This release fixed the issue per [ticket 145](https://github.com/PediatricOpenTargets/ticket-tracker/issues/145)
+      - `broad_histology` for TARGET samples were updated as following: `Acute Lymphoblastic Leukemia` and `Acute Myeloid Leukemia` were merged to `Hematologic malignancies`; `Clear cell sarcoma of the kidney`, `Rhabdoid tumor`, and `Wilms tumor` were combined as `Renal tumors`; `Osteosarcoma` is changed to `Mesenchymal, non-meningothelial tumors` and `Neuroblastoma` is converted to `Embryonal tumors`. See [ticket 136](https://github.com/PediatricOpenTargets/ticket-tracker/issues/136)
+      - For `gtex_group == "Cells"`, the `composition` column is changed from `Solid Tissue` to `Derived Cell Line` per discussion in d3b center [ticket 43](https://github.com/d3b-center/D3b-codes/pull/43)
+      - Updated MB subtypes in the histologies file per [ticket 148](https://github.com/PediatricOpenTargets/ticket-tracker/issues/148)
+      - Some GMKF WGS samples does not have `germline_sex_estimate` as indicated in [ticket 168](https://github.com/PediatricOpenTargets/ticket-tracker/issues/168). Added using the file in the discussion of [ticket 159](https://github.com/PediatricOpenTargets/ticket-tracker/issues/159)
+      - Some TARGET WXS samples miss `tumor_ploidy` that are actually avaialble - and those samples now have updated ploidy using the file in the discussion session of [ticket 160](https://github.com/PediatricOpenTargets/ticket-tracker/issues/160)
+    
+    - Update DNA related files to include TARGET WXS DNA (412 tumor/normal pairs):
+      - cnv-cnvkit.seg.gz [ticket 156](https://github.com/PediatricOpenTargets/ticket-tracker/issues/156)
+      - cnv-controlfreec.tsv.gz [ticket 156](https://github.com/PediatricOpenTargets/ticket-tracker/issues/156)
+      - snv-consensus-plus-hotspots.maf.tsv.gz [ticket 156](https://github.com/PediatricOpenTargets/ticket-tracker/issues/156)
+      - consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz [ticket 159](https://github.com/PediatricOpenTargets/ticket-tracker/issues/159) and [ticket 160](https://github.com/PediatricOpenTargets/ticket-tracker/issues/160) 
+      - consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz [ticket 159](https://github.com/PediatricOpenTargets/ticket-tracker/issues/159) and [ticket 160](https://github.com/PediatricOpenTargets/ticket-tracker/issues/160)
+      
+    - Added `consensus_wgs_plus_cnvkit_wxs.tsv.gz` which is a merge of `consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz` and `consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz` per [ticket 161](https://github.com/PediatricOpenTargets/ticket-tracker/issues/161)
+
+```
+v8
+├── WGS.hg38.lancet.300bp_padded.bed
+├── WGS.hg38.lancet.unpadded.bed
+├── WGS.hg38.mutect2.vardict.unpadded.bed
+├── WGS.hg38.strelka2.unpadded.bed
+├── WGS.hg38.vardict.100bp_padded.bed
+├── cnv-cnvkit.seg.gz
+├── cnv-controlfreec.tsv.gz
+├── consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz
+├── consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz
+├── consensus_wgs_plus_cnvkit_wxs.tsv.gz
+├── data-files-description.md
+├── efo-mondo-map.tsv
+├── ensg-hugo-rmtl-mapping.tsv
+├── fusion-arriba.tsv.gz
+├── fusion-starfusion.tsv.gz
+├── gene-counts-rsem-expected_count-collapsed.rds
+├── gene-expression-rsem-tpm-collapsed.rds
+├── histologies.tsv
+├── intersect_cds_lancet_strelka_mutect_WGS.bed
+├── intersect_strelka_mutect_WGS.bed
+├── release-notes.md
+├── snv-consensus-plus-hotspots.maf.tsv.gz
+├── sv-manta.tsv.gz
+├── uberon-map-gtex-group.tsv
+└── uberon-map-gtex-subgroup.tsv
+
+```
+
+## archived release
 - release date: 2021-07-23
 - status: available
 - changes:
