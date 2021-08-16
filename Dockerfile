@@ -401,7 +401,7 @@ RUN apt-get -y --no-install-recommends install \
     libgmp-dev
     
 # CNS signatures can be obtained from signature.tools.lib
-RUN R -e "remotes::install_github('Nik-Zainal-Group/signature.tools.lib')"
+RUN R -e "remotes::install_github('Nik-Zainal-Group/signature.tools.lib', ref = '73e899c9090a215a76a307480bda76c241a4a489')"
     
     
 #### Please install your dependencies immediately above this comment.
