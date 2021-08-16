@@ -46,7 +46,11 @@ if (!dir.exists(results_dir)) {
 Rscript -e "rmarkdown::render('analyses/focal-cn-file-preparation/02-add-ploidy-consensus.Rmd', clean = TRUE)"
 ```
 
-consensus_seg_with_status.tsv was copied from scratch to input folder here so we can access the file in this notebook 
+`consensus_seg_with_status.tsv` was copied from scratch to input folder here so we can access the file in this notebook. Additionally, per our current workflow, we only run consensus CNV calling for WGS samples. And for WXS samples, we use CNVKIT reuslts straight. Therefore, `cnvkit_with_status.tsv` is also moved and that is particularly for WXS samples. The following code needs to be run to get the cnvkit annotated file:
+
+```
+Rscript -e "rmarkdown::render('analyses/focal-cn-file-preparation/01-add-ploidy-cnvkit.Rmd', clean = TRUE)"
+```
 
 ```{r}
 # consensus seg for file for the location of CNVs
