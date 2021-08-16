@@ -45,54 +45,48 @@ process_annotate_overlaps <- function(cnv_df,
   #     biospecimen_id, status, copy_number, ploidy, ensembl, gene_symbol,
   #     cytoband
   
-  # run annotation for each biospecimen to deal with the RAM issue
-  sample_list<-cnv_df$Kids_First_Biospecimen_ID %>% unique()
-  annotated_cn_list <- lapply(sample_list, function(x){
-    cnv_df_each <- cnv_df %>% dplyr::filter(Kids_First_Biospecimen_ID == x)
-    # make it into GRanges 
-    cnv_gr <- cnv_df_each %>%
-      GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE,
-                                              starts.in.df.are.0based = FALSE)
-    
-    # Create a data.frame with the overlaps between the CNV file and hg38 genome
-    # annotations
-    overlaps <- IRanges::mergeByOverlaps(cnv_gr, txdb_exons)
-    
-    # Create a data.frame with selected columns from the `autosome_overlaps`
-    # object
-    annotated_cn_each <- data.frame(
-      biospecimen_id = overlaps$Kids_First_Biospecimen_ID,
-      status = overlaps$status,
-      copy_number = overlaps$copy_number,
-      ploidy = overlaps$tumor_ploidy,
-      ensembl = unlist(overlaps$gene_id),
-      stringsAsFactors = FALSE
-    ) %>%
-      dplyr::distinct() %>%
-      # Discard the gene version information in order to get gene symbols and
-      # cytoband mappings
-      dplyr::mutate(ensembl = gsub("\\..*", "", ensembl))
-    
-    annotated_cn_each <- annotated_cn_each %>%
-      dplyr::mutate(
-        gene_symbol = AnnotationDbi::mapIds(org.Hs.eg.db::org.Hs.eg.db,
-                                            keys = ensembl,
-                                            column = "SYMBOL",
-                                            keytype = "ENSEMBL"),
-        cytoband = AnnotationDbi::mapIds(org.Hs.eg.db::org.Hs.eg.db,
-                                         keys = ensembl,
-                                         column = "MAP",
-                                         keytype = "ENSEMBL")
-      )
-    
-    # drop rows that have NA values for the gene symbol
-    if (filt_na_symbol) {
-      annotated_cn_each <- annotated_cn_each %>%
-        dplyr::filter(!is.na(gene_symbol))
-    }
-    return(annotated_cn_each)
-  })
-  annotated_cn <- do.call(rbind, annotated_cn_list)
+  
+  # make it into GRanges 
+  cnv_gr <- cnv_df %>%
+    GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE,
+                                            starts.in.df.are.0based = FALSE)
+  
+  # Create a data.frame with the overlaps between the CNV file and hg38 genome
+  # annotations
+  overlaps <- IRanges::mergeByOverlaps(cnv_gr, txdb_exons)
+  
+  # Create a data.frame with selected columns from the `autosome_overlaps`
+  # object
+  annotated_cn <- data.frame(
+    biospecimen_id = overlaps$Kids_First_Biospecimen_ID,
+    status = overlaps$status,
+    copy_number = overlaps$copy_number,
+    ploidy = overlaps$tumor_ploidy,
+    ensembl = unlist(overlaps$gene_id),
+    stringsAsFactors = FALSE
+  ) %>%
+    dplyr::distinct() %>%
+    # Discard the gene version information in order to get gene symbols and
+    # cytoband mappings
+    dplyr::mutate(ensembl = gsub("\\..*", "", ensembl))
+  
+  annotated_cn <- annotated_cn %>%
+    dplyr::mutate(
+      gene_symbol = AnnotationDbi::mapIds(org.Hs.eg.db::org.Hs.eg.db,
+                                          keys = ensembl,
+                                          column = "SYMBOL",
+                                          keytype = "ENSEMBL"),
+      cytoband = AnnotationDbi::mapIds(org.Hs.eg.db::org.Hs.eg.db,
+                                       keys = ensembl,
+                                       column = "MAP",
+                                       keytype = "ENSEMBL")
+    )
+  
+  # drop rows that have NA values for the gene symbol
+  if (filt_na_symbol) {
+    annotated_cn <- annotated_cn %>%
+      dplyr::filter(!is.na(gene_symbol))
+  }
   return(annotated_cn)
 }
 
