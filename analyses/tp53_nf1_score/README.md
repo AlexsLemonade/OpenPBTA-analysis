@@ -27,9 +27,9 @@ bash analyses/tp53_nf1_score/run_classifier.sh
 For evaluation purposes, a coding SNV 1) is found in a CDS region and 2) is not a silent mutation or in an intron as indicated by the `Variant_Classification` column of the consensus mutation file.
 _NF1_ positive examples are additionally filtered to remove missense mutations, as these are not annotated with OncoKB ([#381 (comment)](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/381#issuecomment-570748578)).
 
-`01-apply-classifier.py` produces  `results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv`  and `results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv`, which contains all 3 classifier scores for the stranded data and for shuffled stranded (e.g., random) data.
+`01-apply-classifier.py` produces  `results/gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv`, which contains all 3 classifier scores for all RNA data and for shuffled RNA (e.g., random) data.
 
-`02-qc-rna_expression_score.Rmd` here expression of TP53 gene was compared to TP53 classifier score. We didn't find a strong correlation between TP53 expression and TP53 inactivation score, thus, expression and classifier score together cannot predict function.
+`02-qc-rna_expression_score.Rmd` here expression of TP53 gene was compared to TP53 classifier score. Two RNA library type, `stranded` and `polya stranded` generated strong negative correlation between TP53 expression and TP53 inactivation score, while `polya` samples do not seem to have strong correlation. Thus, for `stranded` and `polya stranded`, expression and classifier score together might be able to predict function; however, for polya, the correlation is not statistically significant.
 
 `03-tp53-cnv-loss-domain.Rmd` here copy_number of regions overlapping TP53 functional domains were compared to TP53 classifier score. We find tumors with TP53 copies <=1 have higher TP53 classifier scores, so we only retain biospecimens with <= 1 copy TP53 as high confidence TP53 loss. 
 
