@@ -82,7 +82,7 @@ merged_x_and_y <- merged_x_and_y %>% dplyr::select(-germline_sex_estimate)
 combined <- rbind(merged_auto, merged_x_and_y)
 
 readr::write_tsv(combined, 
-          file.path(opt$outdir, "consensus_wgs_plus_cnvkit_wxs_autosome_and_xy.tsv.gz"))
+          file.path(opt$outdir, "consensus_wgs_plus_cnvkit_wxs.tsv.gz"))
 
 
 
