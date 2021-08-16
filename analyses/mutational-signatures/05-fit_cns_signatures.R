@@ -21,9 +21,15 @@ if (opt$abbreviated == 1) {
   n_iter <- 3000 # Full analysis
 }
 
+
 # Set up maf file and output file
-maf_file <- file.path("..", "..", "scratch", "mutational-signatures", "pbta-snv-consensus-wgs.tsv.gz")
-fitted_exposures_file <- file.path("results", "fitted_cns_signature_exposures.RDS")
+
+# Path to root of project:
+proj_root_path <- file.path( rprojroot::find_root(rprojroot::has_dir(".git")) )
+analysis_path <- file.path(proj_root_path, "analyses", "mutational-signatures")
+
+maf_file <- file.path(proj_root_path, "scratch", "mutational-signatures", "pbta-snv-consensus-wgs.tsv.gz")
+fitted_exposures_file <- file.path(analysis_path, "results", "fitted_cns_signature_exposures.RDS")
 
 # CNS signatures 
 refsig_cns_matrix <- t( getOrganSignatures("CNS") )
