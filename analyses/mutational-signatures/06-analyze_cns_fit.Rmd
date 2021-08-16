@@ -157,7 +157,7 @@ signature_counts %>%
    ggplot2::labs(x = "Sample ID",
        y = "Mutation count per Mb",
        title = glue::glue("Top {top_n} most mutated samples")) +
-  # TODO: WHAT IS THE RIGHT PALETTE FOR DISCRETE???
+  # using a colorblind-friendly brewer palette for discrete mapping
   ggplot2::scale_fill_brewer(palette = "Set2", name = "CNS Signature") +
   ggplot2::theme_light() + 
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90), 

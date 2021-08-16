@@ -1652,19 +1652,25 @@ $(document).ready(function () {
 
 </div>
 
+<div id="TOC">
+<ul>
+<li><a href="#session-info">Session info</a></li>
+</ul>
+</div>
 
 <p><br><br><br><br></p>
-<div id="packages-and-paths" class="section level4">
-<h4>Packages and paths</h4>
+<div id="files-and-paths" class="section level4">
+<h4>Files and paths</h4>
 <pre class="r"><code>`%&gt;%` &lt;- dplyr::`%&gt;%`
 
-plot_path &lt;- &quot;plots/&quot;
+proj_root_path  &lt;- file.path( rprojroot::find_root(rprojroot::has_dir(&quot;.git&quot;)) )
+analysis_path   &lt;- file.path(proj_root_path, &quot;analyses&quot;, &quot;mutational-signatures&quot;)
+plot_path       &lt;- file.path(analysis_path, &quot;plots&quot;)
 
-maf_file &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;scratch&quot;, &quot;mutational-signatures&quot;, &quot;pbta-snv-consensus-wgs.tsv.gz&quot;)
-wgs_bed_file &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;data&quot;, &quot;WGS.hg38.strelka2.unpadded.bed&quot;)
-histology_color_file &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;figures&quot;, &quot;palettes&quot;, &quot;histology_label_color_table.tsv&quot;)
-
-fitted_file &lt;- file.path(&quot;results&quot;, &quot;fitted_cns_signature_exposures.RDS&quot;)</code></pre>
+maf_file             &lt;- file.path(proj_root_path, &quot;scratch&quot;, &quot;mutational-signatures&quot;, &quot;pbta-snv-consensus-wgs.tsv.gz&quot;)
+wgs_bed_file         &lt;- file.path(proj_root_path, &quot;data&quot;, &quot;WGS.hg38.strelka2.unpadded.bed&quot;)
+histology_color_file &lt;- file.path(proj_root_path, &quot;figures&quot;, &quot;palettes&quot;, &quot;histology_label_color_table.tsv&quot;)
+fitted_file          &lt;- file.path(analysis_path, &quot;results&quot;, &quot;fitted_cns_signature_exposures.RDS&quot;)</code></pre>
 <pre class="r"><code>maf &lt;- data.table::fread(maf_file, data.table = FALSE)</code></pre>
 <pre><code>## Registered S3 method overwritten by 'R.oo':
 ##   method        from       
@@ -1810,7 +1816,7 @@ signature_counts %&gt;%
    ggplot2::labs(x = &quot;Sample ID&quot;,
        y = &quot;Mutation count per Mb&quot;,
        title = glue::glue(&quot;Top {top_n} most mutated samples&quot;)) +
-  # TODO: WHAT IS THE RIGHT PALETTE FOR DISCRETE???
+  # using a colorblind-friendly brewer palette for discrete mapping
   ggplot2::scale_fill_brewer(palette = &quot;Set2&quot;, name = &quot;CNS Signature&quot;) +
   ggplot2::theme_light() + 
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90), 
@@ -1823,6 +1829,65 @@ top_n_samples_barplot</code></pre>
                  width = 7,
                  height = 5)</code></pre>
 <p>Above is a barplot showing the mutation counts across CNS signatures specifically for the top 10 most highly-mutated samples in the PBTA.</p>
+</div>
+<div id="session-info" class="section level3">
+<h3>Session info</h3>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>## R version 3.6.0 (2019-04-26)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Debian GNU/Linux 9 (stretch)
+## 
+## Matrix products: default
+## BLAS/LAPACK: /usr/lib/libopenblasp-r0.2.19.so
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## loaded via a namespace (and not attached):
+##  [1] BSgenome.Hsapiens.UCSC.hg38_1.4.1 Rcpp_1.0.1                       
+##  [3] lattice_0.20-38                   tidyr_0.8.3                      
+##  [5] Rsamtools_2.2.3                   Biostrings_2.54.0                
+##  [7] assertthat_0.2.1                  rprojroot_1.3-2                  
+##  [9] digest_0.6.20                     R6_2.4.0                         
+## [11] GenomeInfoDb_1.22.1               backports_1.1.4                  
+## [13] stats4_3.6.0                      evaluate_0.14                    
+## [15] ggplot2_3.2.0                     pillar_1.4.2                     
+## [17] zlibbioc_1.32.0                   rlang_0.4.0                      
+## [19] lazyeval_0.2.2                    data.table_1.12.2                
+## [21] S4Vectors_0.24.4                  R.utils_2.9.0                    
+## [23] R.oo_1.22.0                       Matrix_1.2-17                    
+## [25] rmarkdown_1.13                    labeling_0.3                     
+## [27] BiocParallel_1.20.1               readr_1.3.1                      
+## [29] stringr_1.4.0                     RCurl_1.95-4.12                  
+## [31] munsell_0.5.0                     DelayedArray_0.12.3              
+## [33] compiler_3.6.0                    rtracklayer_1.46.0               
+## [35] xfun_0.8                          pkgconfig_2.0.2                  
+## [37] BiocGenerics_0.32.0               htmltools_0.3.6                  
+## [39] tidyselect_0.2.5                  SummarizedExperiment_1.16.1      
+## [41] tibble_2.1.3                      GenomeInfoDbData_1.2.2           
+## [43] deconstructSigs_1.8.0             IRanges_2.20.2                   
+## [45] matrixStats_0.54.0                XML_3.98-1.20                    
+## [47] crayon_1.3.4                      dplyr_0.8.3                      
+## [49] GenomicAlignments_1.22.1          bitops_1.0-6                     
+## [51] R.methodsS3_1.7.1                 grid_3.6.0                       
+## [53] jsonlite_1.6                      gtable_0.3.0                     
+## [55] magrittr_1.5                      scales_1.0.0                     
+## [57] stringi_1.4.3                     XVector_0.26.0                   
+## [59] ellipsis_0.2.0.1                  RColorBrewer_1.1-2               
+## [61] tools_3.6.0                       forcats_0.4.0                    
+## [63] BSgenome_1.54.0                   Biobase_2.46.0                   
+## [65] glue_1.3.1                        purrr_0.3.2                      
+## [67] hms_0.4.2                         parallel_3.6.0                   
+## [69] yaml_2.2.0                        colorspace_1.4-1                 
+## [71] GenomicRanges_1.38.0              knitr_1.23</code></pre>
 </div>
 
 
