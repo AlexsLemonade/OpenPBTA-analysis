@@ -173,3 +173,9 @@ ggplot2::ggsave( file.path(plot_path, glue::glue("top_{top_n}_samples_barplot.pn
 
 Above is a barplot showing the mutation counts across CNS signatures specifically for the top 10 most highly-mutated samples in the PBTA.
 
+
+### Session info
+
+```{r sessioninfo}
+sessionInfo()
+```

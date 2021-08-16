@@ -211,3 +211,9 @@ Clearly, this analysis is extremely sensitive to starting conditions. Even so, w
 
 
 **The two bolded** signatures are commonly associated with one another due to putative shared mechanisms of "defective DNA mismatch repair and microsatellite instability (MSI)."
+
+### Session info
+
+```{r sessioninfo}
+sessionInfo()
+```
