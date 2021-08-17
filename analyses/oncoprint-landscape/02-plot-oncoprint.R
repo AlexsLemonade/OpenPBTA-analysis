@@ -179,6 +179,7 @@ if (!is.null(opt$broad_histology)) {
     metadata <- metadata %>%
       dplyr::filter(
         broad_histology %in% c(
+          "Ependymal tumor",
           "Tumors of sellar region",
           "Neuronal and mixed neuronal-glial tumor",
           "Tumor of cranial and paraspinal nerves",
