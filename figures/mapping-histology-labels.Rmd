@@ -142,7 +142,7 @@ nrow(display_group_df)
 ```
 
 
-Make this notebook stop if there are more than 38 histology groups + `Normal`. 
+Make this notebook stop if there are more than 38 histology groups
 
 ```{r}
 if (nrow(display_group_df) > 38) {
