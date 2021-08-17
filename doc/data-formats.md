@@ -67,6 +67,15 @@ provided as:
 
 * `histologies.tsv`
 
+### Independent Sample List
+
+[Independent sample list](https://github.com/PediatricOpenTargets/OpenPedCan-analysis/tree/dev/analyses/independent-samples) are released as tab separated values in the following file. `wgswxspanel` indicates it includes all experimental strategy for DNA sequencing, `RNA` includes all RNA samples and `primary` and `relapse` specifies which tumor type the samples are from. `eachcohort` indicates the selection is cohort-based.
+
+* `independent-specimens.wgswxspanel.primary.eachcohort.tsv`
+* `independent-specimens.wgswxspanel.relapse.eachcohort.tsv`
+* `independent-specimens.rnaseq.primary.eachcohort.tsv`
+* `independent-specimens.rnaseq.relapse.eachcohort.tsv`
+
 ## Analysis Files
 
 Analysis files are created by a script in `analyses/*`. 

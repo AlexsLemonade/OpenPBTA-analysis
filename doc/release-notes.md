@@ -23,6 +23,12 @@
       - consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz [ticket 159](https://github.com/PediatricOpenTargets/ticket-tracker/issues/159) and [ticket 160](https://github.com/PediatricOpenTargets/ticket-tracker/issues/160)
       
     - Added `consensus_wgs_plus_cnvkit_wxs.tsv.gz` which is a merge of `consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz` and `consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz` per [ticket 161](https://github.com/PediatricOpenTargets/ticket-tracker/issues/161)
+    
+    - Update independent samples files to include TARGET WXS DNA (412 tumor/normal pairs) - [ticket 165](https://github.com/PediatricOpenTargets/ticket-tracker/issues/165). Previously, these files were not added to our releases. Starting this release, we will also add independent sample list to our release as well. 
+      -independent-specimens.wgswxspanel.primary.eachcohort.tsv
+      -independent-specimens.wgswxspanel.relapse.eachcohort.tsv
+      -independent-specimens.rnaseq.primary.eachcohort.tsv
+      -independent-specimens.rnaseq.relapse.eachcohort.tsv
 
 ```
 v8
@@ -41,9 +47,14 @@ v8
 ├── ensg-hugo-rmtl-mapping.tsv
 ├── fusion-arriba.tsv.gz
 ├── fusion-starfusion.tsv.gz
+├── fusion-putative-oncogenic.tsv
 ├── gene-counts-rsem-expected_count-collapsed.rds
 ├── gene-expression-rsem-tpm-collapsed.rds
 ├── histologies.tsv
+├── independent-specimens.wgswxspanel.primary.eachcohort.tsv
+├── independent-specimens.wgswxspanel.relapse.eachcohort.tsv
+├── independent-specimens.rnaseq.primary.eachcohort.tsv
+├── independent-specimens.rnaseq.relapse.eachcohort.tsv
 ├── intersect_cds_lancet_strelka_mutect_WGS.bed
 ├── intersect_strelka_mutect_WGS.bed
 ├── release-notes.md
