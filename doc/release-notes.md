@@ -26,7 +26,7 @@
     - Added `consensus_wgs_plus_cnvkit_wxs.tsv.gz` which is a merge of `consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz` and `consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz` per [ticket 161](https://github.com/PediatricOpenTargets/ticket-tracker/issues/161)
     - Updated `ensg-hugo-rmtl-mapping.tsv` file per [ticket 146](https://github.com/PediatricOpenTargets/ticket-tracker/issues/146). The previous release of this file does not contain all gene ENSG IDs and symbols that are present in `snv-consensus-plus-hotspots.maf.tsv.gz`. This update merged GENCODE V28 and V38 to allow inclusion of more gene ENSG IDs and symbols. 
 
-    - Update independent samples files to include TARGET WXS DNA (412 tumor/normal pairs) - [ticket 165](https://github.com/PediatricOpenTargets/ticket-tracker/issues/165). Previously, these files were not added to our releases. Starting this release, we will also add independent sample list to our release as well. 
+    - Update independent samples files to include TARGET WXS DNA (412 tumor/normal pairs) - [ticket 165](https://github.com/PediatricOpenTargets/ticket-tracker/issues/165). Previously, these files were not added to our releases. Starting this release, we will also add independent sample list to our release as well. For now, we will add files that are used by analyses modules in this file and these are the following: 
       -independent-specimens.wgswxspanel.primary.eachcohort.tsv
       -independent-specimens.wgswxspanel.relapse.eachcohort.tsv
       -independent-specimens.rnaseq.primary.eachcohort.tsv
