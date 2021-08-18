@@ -200,7 +200,7 @@ Get ranks in order of big to small and make them into a new dataframe `cancer_gr
  - We will remove any cancer_group with less than 5 sample counts
  - Remove any sample which has cancer_group==NA since those are mostly Normals or non CNS tumor samples belonging 
    to Other, Benign tumor and Dysplasia/Gliosis
- - We will also replace "/" to ";" in cancer_group terms to work as filenames for outputs
+ - We will also replace "/" to " or " in cancer_group terms to work as filenames for outputs
    
 ```{r}
 cancer_group_order_df <- histology_table %>% 
