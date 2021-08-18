@@ -201,7 +201,7 @@ Get ranks in order of big to small and make them into a new dataframe `cancer_gr
 cancer_group_order_df <- histology_table %>% 
   dplyr::count(cancer_group,name = "cancer_group_n") %>% 
   dplyr::mutate(
-    # replace "/" with ";"
+    # replace "/" with " or "
     cancer_group = gsub("/"," or ",cancer_group),
     cancer_group = forcats::fct_reorder(cancer_group, cancer_group_n, .desc = TRUE),
                 cancer_group_order = as.numeric(cancer_group)) # save the factor order for text table export
