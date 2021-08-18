@@ -196,28 +196,19 @@ display_order_df <- display_group_df %>%
 - Embryonal Tumor with Multilayered Rosettes updated to Embryonal tumor with multilayer rosettes
 
 
-Get ranks in order of big to small and make them into a new dataframe `cancer_group_order_df`. 
- - We will remove any cancer_group with less than 5 sample counts
- - Remove any sample which has cancer_group==NA since those are mostly Normals or non CNS tumor samples belonging 
-   to Other, Benign tumor and Dysplasia/Gliosis
- - We will also replace "/" to ";" in cancer_group terms to work as filenames for outputs
-   
+Get ranks in order of big to small and make them into a new column in `display_group_df`. 
+We will always want the "normal", "benign", "other_tumor" groups to come last so we will push then to the end of the factor order. 
+
 ```{r}
 cancer_group_order_df <- histology_table %>% 
   dplyr::count(cancer_group,name = "cancer_group_n") %>% 
-  # Keep only cancer_groups with 5 or more counts
-  dplyr::filter(cancer_group_n >=5,
-                # remove NA
-		!is.na(cancer_group)) %>% 
   dplyr::mutate(
-    # replace "/" with ";"
-    cancer_group = gsub("/",";",cancer_group),
     cancer_group = forcats::fct_reorder(cancer_group, cancer_group_n, .desc = TRUE),
                 cancer_group_order = as.numeric(cancer_group)) # save the factor order for text table export
 ```
 
 
-Add on the `display_order` column using `inner_join`.
+Add on the `display_order` column using `inner_join` 
 
 ```{r}
 histology_table <- histology_table %>%
@@ -240,7 +231,7 @@ color_palette_display <-
 )
 
 color_palette_cancer_group <-
-  c("#330000", "#f27979", "#332726", "#b2362d", "#f2bab6", "#66211a", "#806560", "#ff6c40", "#331100", "#bf8060", "#4c3426", "#7f3700", "#ff7700", "#f2d2b6", "#99754d", "#e58a00", "#331f00", "#664100", "#e5bb73", "#8c7f69", "#403a30", "#f2c200", "#998a00", "#fff280", "#fff700", "#313300", "#61661a", "#c4cc99", "#8ab32d", "#aaff00", "#89f279", "#004d03", "#1a331b", "#00f220", "#b6f2c4", "#00993d", "#4d6657", "#40805b"
+  c("#cc0000", "#4c0000", "#330000", "#7f2020", "#e57373", "#994d4d", "#663333", "#402020", "#ffbfbf", "#8c6969", "#8c1300", "#d94c36", "#591f16", "#cca099", "#4d3c39", "#f24100", "#b2502d", "#7f3920", "#33170d", "#cc8166", "#8c5946", "#59392d", "#ffd0bf", "#f26100", "#b24700", "#592400", "#e57e39", "#a65b29", "#402310", "#ffb380", "#b27d59", "#735039", "#332b26", "#f28100", "#733d00", "#bf7c30", "#4c3213", "#cc9c66", "#8c6c46", "#403120", "#e6cbac", "#998773", "#f2a200", "#7f5500", "#332200", "#bf8f30", "#e5bf73", "#4d4639", "#f2c200", "#403300", "#7f6c20", "#59502d", "#bfb68f", "#8c8569", "#bfb300", "#8c8300", "#4c4700", "#fff240", "#ccc566", "#99944d", "#33311a", "#fffbbf"
 )
 
 ```
@@ -262,9 +253,13 @@ set.seed(2021)
 subset_colors_display <- sample(color_palette_display, n_colors_display)
 names(subset_colors_display) <- display_order_df$display_group
 
-# Sample from the 38 colors for cancer_group
+# Sample from the 62 colors for cancer_group
 subset_colors_cancer_group <- sample(color_palette_cancer_group, n_colors_cancer_group)
 names(subset_colors_cancer_group) <- cancer_group_order_df$cancer_group
+
+# Remove <NA> from subset_colors_cancer_group 
+# We will assign a gray color for NA below
+subset_colors_cancer_group <- subset_colors_cancer_group[!is.na(names(subset_colors_cancer_group))]
 ```
 
 We want `Other tumor` and the `Benign` in display_group to both always be gray. 
@@ -298,14 +293,19 @@ pie(rep(1, n_colors_cancer_group),
 
 
 Add the hex codes for display_group and cancer_group to the `histology_table`. 
-
+Add gray color if cancer_group==NA
 ```{r}
 histology_table <- histology_table %>%
   # We don't need this anymore
-  dplyr::select(-broad_histology_lower) %>% 
+  dplyr::select(-broad_histology_lower) %>%
   # Add the hex_codes
   dplyr::mutate(hex_codes = dplyr::recode(display_group, !!!subset_colors_display),
-                cancer_group_hex_codes = dplyr::recode(cancer_group, !!!subset_colors_cancer_group)) %>% 
+		cancer_group_hex_codes = dplyr::recode(cancer_group, !!!subset_colors_cancer_group),
+                # is cancer_group is NA for tumor sample add gray color
+		cancer_group_hex_codes = dplyr::if_else(is.na(cancer_group_hex_codes) & sample_type=="Tumor"
+                                                 ,"#808080",
+                                                 cancer_group_hex_codes)
+	       	) %>% 
   # Restore capitalization so its pretty for labeling
   dplyr::mutate(display_group = stringr::str_to_sentence(display_group),
                 # Deal with CNS exception
