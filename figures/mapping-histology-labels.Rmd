@@ -189,7 +189,7 @@ display_order_df <- display_group_df %>%
 # Make `cancer_group_order`
 
 `cancer_group` is a shorter form of `harmonized_diagnosis` with the following edits:
-- Removed Other, Benign tumor and Dysplasia/Gliosis from cancer_group
+- Removed Other, Benign tumor and Dysplasia/Gliosis from `cancer_group`
 - Neurofibroma/Plexiform;Other updated to Neurofibroma/Plexiform
 - Non-germinomatous germ cell tumor;Teratoma updated to Teratoma
 - Anaplastic (malignant) meningioma, Meningothelial meningioma and Clear cell meningioma updated to Meningioma
