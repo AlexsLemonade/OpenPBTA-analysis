@@ -116,9 +116,10 @@ There's handful of very small groups (many are n = 2).
 ```{r}
 histology_table <- working_metadata %>% 
   dplyr::filter(!is.na(cancer_group)) %>%
-  dplyr::mutate(
+  dplyr::mutate(		
     # Put this as a character for later handling
-    display_group = as.character(cancer_group)
+    display_group = as.character(cancer_group),
+    display_group = gsub("/",";",display_group)
     )
 ```
 
