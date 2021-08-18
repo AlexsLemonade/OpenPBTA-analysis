@@ -27,17 +27,24 @@ bash run-oncoprint.sh
 ### Folder Structure
 
 ```
+├── 00-prepare-goi-lists.R
 ├── 01-map-to-sample_id.R
 ├── 02-plot-oncoprint.R
 ├── README.md
+├── data
+│   ├── embryonal-tumor_goi_list.tsv
+│   ├── lgat_goi_list.tsv
+│   ├── oncoprint-goi-lists-OpenPBTA.csv
+│   ├── other_goi_list.tsv
+│   └── hgat_goi_list.tsv
 ├── driver-lists
 │   ├── brain-goi-list-long.txt
 │   └── brain-goi-list-short.txt
 ├── plots
-│   ├── primary-plus_goi_oncoprint.png
-│   ├── primary-plus_oncoprint.png
-│   ├── primary_only_goi_oncoprint.png
-│   └── primary_only_oncoprint.png
+│   ├── primary-plus_*histology*_goi_oncoprint.png
+│   ├── primary-plus_*histology*_oncoprint.png
+│   ├── primary_only_*histology*_goi_oncoprint.png
+│   └── primary_only_*histology*_oncoprint.png
 ├── run-oncoprint.sh
 └── util
     └── oncoplot-functions.R
