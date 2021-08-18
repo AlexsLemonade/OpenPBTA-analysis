@@ -256,8 +256,10 @@ names(subset_colors_display) <- display_order_df$display_group
 # Sample from the 62 colors for cancer_group
 subset_colors_cancer_group <- sample(color_palette_cancer_group, n_colors_cancer_group)
 names(subset_colors_cancer_group) <- cancer_group_order_df$cancer_group
+```
 
-# Remove <NA> from subset_colors_cancer_group 
+Remove <NA> from subset_colors_cancer_group 
+```{r}
 # We will assign a gray color for NA below
 subset_colors_cancer_group <- subset_colors_cancer_group[!is.na(names(subset_colors_cancer_group))]
 ```
