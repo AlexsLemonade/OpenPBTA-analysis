@@ -300,7 +300,7 @@ oncoplot(
   genes = goi_list,
   logColBar = TRUE,
   sortByAnnotation = TRUE,
-  showTumorSampleBarcodes = TRUE,
+  showTumorSampleBarcodes = FALSE,
   removeNonMutated = TRUE,
   annotationFontSize = 1.0,
   SampleNamefontSize = 0.5,
@@ -308,7 +308,8 @@ oncoplot(
   colors = oncoprint_col_palette,
   annotationColor = annotation_colors,
   bgCol = "#F5F5F5",
-  top = opt$top_n
+  top = opt$top_n,
+  drawRowBar = FALSE
 )
 
 dev.off()
