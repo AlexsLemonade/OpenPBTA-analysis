@@ -19,11 +19,13 @@
       - cnv-cnvkit.seg.gz [ticket 156](https://github.com/PediatricOpenTargets/ticket-tracker/issues/156)
       - cnv-controlfreec.tsv.gz [ticket 156](https://github.com/PediatricOpenTargets/ticket-tracker/issues/156)
       - snv-consensus-plus-hotspots.maf.tsv.gz [ticket 156](https://github.com/PediatricOpenTargets/ticket-tracker/issues/156)
+    - Update method to call CNV consensus as described in [ticket 134](https://github.com/PediatricOpenTargets/ticket-tracker/issues/134) and [ticket 149](https://github.com/PediatricOpenTargets/ticket-tracker/issues/149). Briefly, CNV called by `manta` were filtered to contain only `filter == "PASS"` before going into the consensus calling workflow. And in the subsequent step, instead of ony retaining CNV calls that have 50% reciprocal overlap between callers (which was too stringent), the criteria is expanded to include small CNV regions that are 90% covered by a larger CNV. As a result of changing consensus calling criteria and adding TARGET WXS DNA sample results to `cnv-cnvkit.seg.gz` and `cnv-controlfreec.tsv.gz`, the following files were updated:
       - consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz [ticket 159](https://github.com/PediatricOpenTargets/ticket-tracker/issues/159) and [ticket 160](https://github.com/PediatricOpenTargets/ticket-tracker/issues/160) 
       - consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz [ticket 159](https://github.com/PediatricOpenTargets/ticket-tracker/issues/159) and [ticket 160](https://github.com/PediatricOpenTargets/ticket-tracker/issues/160)
       
     - Added `consensus_wgs_plus_cnvkit_wxs.tsv.gz` which is a merge of `consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz` and `consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz` per [ticket 161](https://github.com/PediatricOpenTargets/ticket-tracker/issues/161)
-    
+    - Updated `ensg-hugo-rmtl-mapping.tsv` file per [ticket 146](https://github.com/PediatricOpenTargets/ticket-tracker/issues/146). The previous release of this file does not contain all gene ENSG IDs and symbols that are present in `snv-consensus-plus-hotspots.maf.tsv.gz`. This update merged GENCODE V28 and V38 to allow inclusion of more gene ENSG IDs and symbols. 
+
     - Update independent samples files to include TARGET WXS DNA (412 tumor/normal pairs) - [ticket 165](https://github.com/PediatricOpenTargets/ticket-tracker/issues/165). Previously, these files were not added to our releases. Starting this release, we will also add independent sample list to our release as well. 
       -independent-specimens.wgswxspanel.primary.eachcohort.tsv
       -independent-specimens.wgswxspanel.relapse.eachcohort.tsv
