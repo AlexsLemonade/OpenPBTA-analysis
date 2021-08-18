@@ -196,17 +196,19 @@ display_order_df <- display_group_df %>%
 - Embryonal Tumor with Multilayered Rosettes updated to Embryonal tumor with multilayer rosettes
 
 
-Get ranks in order of big to small and make them into a new column in `display_group_df`. 
-We will always want the "normal", "benign", "other_tumor" groups to come last so we will push then to the end of the factor order. 
-
+Get ranks in order of big to small and make them into a new dataframe `cancer_group_order_df`. 
+ - We will remove any cancer_group with less than 5 sample counts
+ - Remove any sample which has cancer_group==NA since those are mostly Normals or non CNS tumor samples belonging 
+   to Other, Benign tumor and Dysplasia/Gliosis
+ - We will also replace "/" to ";" in cancer_group terms to work as filenames for outputs
+   
 ```{r}
 cancer_group_order_df <- histology_table %>% 
   dplyr::count(cancer_group,name = "cancer_group_n") %>% 
   # Keep only cancer_groups with 5 or more counts
   dplyr::filter(cancer_group_n >=5,
-                # Also removing NA since those are mostly Normals or non CNS tumor samples
-                # belonging to Other, Benign tumor and Dysplasia/Gliosis
-                !is.na(cancer_group)) %>% 
+                # remove NA
+		!is.na(cancer_group)) %>% 
   dplyr::mutate(
     # replace "/" with ";"
     cancer_group = gsub("/",";",cancer_group),
