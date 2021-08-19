@@ -242,7 +242,7 @@ lgat_results_df <- bind_exp_strategies(lgat_results_df) %>%
   ## Short histology update
   short_histology = case_when(
     grepl("^GNG, ",molecular_subtype) ~ "Ganglioglioma",
-    grepl("^GNT, ",molecular_subtype) ~ "GNT",
+    grepl("^GNT, ",molecular_subtype) ~ "Glial-neuronal tumor NOS",
     TRUE ~ "LGAT"),
   Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes)
   )

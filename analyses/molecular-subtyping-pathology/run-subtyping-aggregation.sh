@@ -25,9 +25,6 @@ Rscript -e "rmarkdown::render('pathology-subtyping-craniopharyngioma.Rmd', clean
 # Recoding LGAT samples using pathology_free_text_diagnosis
 Rscript -e "rmarkdown::render('pathology_free_text-subtyping-lgat.Rmd', clean = TRUE)"
 
-# Glialneuronal tumors
-Rscript -e "rmarkdown::render('pathology-harmonized-diagnosis-glialneuronal-tumors.Rmd', clean = TRUE)"
-
 # Run the meningioma pathology-free-text based subtyping step
 Rscript -e "rmarkdown::render('pathology_free_text-subtyping-meningioma.Rmd', clean = TRUE)"
 
