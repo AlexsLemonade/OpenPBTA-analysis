@@ -2,9 +2,9 @@
 
 ## Module structure
 
-01-generate-independent-specimens.R: Generate tables of independent specimens where no two specimens are chosen from the same individual.
-02-generate-independent-rnaseq.R: Generate tables of independent rna-seq specimens.
-03-qc-independent-samples.Rmd: Markdown to tabulate number of biospecimen ids for same participant ids from each output file.
+* `01-generate-independent-specimens.R`: Generate tables of independent specimens where no two specimens are chosen from the same individual.
+* `02-generate-independent-rnaseq.R`: Generate tables of independent rna-seq specimens.
+* `03-qc-independent-samples.Rmd`: Markdown to tabulate number of biospecimen ids for same participant ids from each output file.
 
 ```
 .
