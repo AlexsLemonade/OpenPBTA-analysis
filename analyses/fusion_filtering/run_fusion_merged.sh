@@ -74,28 +74,28 @@ putative_oncogenic_fusion="${results_path}/fusion-putative-oncogenic.tsv"
 #                                        --specimenType "Brain" \
 #                                        --outputFile $normal_expression_brain
 
-# # Run Fusion standardization for arriba caller
-# Rscript 01-fusion-standardization.R --fusionfile $arriba_file \
-#                                     --caller "arriba" \
-#                                     --outputFile $standard_arriba_file
-# 
-# 
-# # Run Fusion standardization for starfusion caller
-# Rscript 01-fusion-standardization.R --fusionfile $starfusion_file \
-#                                     --caller "starfusion" \
-#                                     --outputFile $standard_starfusion_file
-# 
-# # Run Fusion general filtering for combined expression file
-# Rscript 02-fusion-filtering.R --standardFusionFiles $standard_starfusion_file,$standard_arriba_file  \
-#                               --expressionMatrix $rna_expression_file \
-#                               --clinicalFile $histologies_file \
-#                               --cohortInterest "PBTA,GMKF,TARGET" \
-#                               --artifactFilter $artifact_filter  \
-#                               --spanningFragCountFilter $spanningFragCountFilter \
-#                               --readingFrameFilter $reading_frame_filter \
-#                               --referenceFolder $references_path \
-#                               --outputFile "${scratch_path}/standardFusionExp" \
-#                               --readthroughFilter
+# Run Fusion standardization for arriba caller
+Rscript 01-fusion-standardization.R --fusionfile $arriba_file \
+                                    --caller "arriba" \
+                                    --outputFile $standard_arriba_file
+
+
+# Run Fusion standardization for starfusion caller
+Rscript 01-fusion-standardization.R --fusionfile $starfusion_file \
+                                    --caller "starfusion" \
+                                    --outputFile $standard_starfusion_file
+
+# Run Fusion general filtering for combined expression file
+Rscript 02-fusion-filtering.R --standardFusionFiles $standard_starfusion_file,$standard_arriba_file  \
+                              --expressionMatrix $rna_expression_file \
+                              --clinicalFile $histologies_file \
+                              --cohortInterest "PBTA,GMKF,TARGET" \
+                              --artifactFilter $artifact_filter  \
+                              --spanningFragCountFilter $spanningFragCountFilter \
+                              --readingFrameFilter $reading_frame_filter \
+                              --referenceFolder $references_path \
+                              --outputFile "${scratch_path}/standardFusionExp" \
+                              --readthroughFilter
 
 
 # # Fusion zscore annotation for filtered fusion for the combined RNA expression file
