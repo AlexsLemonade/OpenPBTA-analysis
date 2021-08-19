@@ -1,0 +1,48 @@
+pathology_diagnosis	broad_histology	short_histology	subtyping module	questions
+Adenoma	Benign tumor	Adenoma	NA	
+Atypical Teratoid Rhabdoid Tumor (ATRT)	Embryonal tumor	ATRT	NA	
+Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse astrocytic and oligodendroglial tumor	HGAT	HGG	
+Cavernoma	Mesenchymal non-meningothelial tumor	Cavernoma	NA	hemangioma? "i tend to think of cavernomas a bit distinct from hemangioma…but they can overlap. cavernomas can be spontaneous or triggered by insult like radiation, whereas i consider hemangiomas to be more aligned with benign tumors." - from cassie
+Chordoma	Chordoma	Chordoma	chordoma	
+Choroid plexus carcinoma	Choroid plexus tumor	Choroid plexus tumor	NA	
+Choroid plexus papilloma	Benign tumor	Choroid plexus tumor	NA	
+Craniopharyngioma	Tumors of sellar region	Craniopharyngioma	NA	
+Dysembryoplastic neuroepithelial tumor (DNET)	Neuronal and mixed neuronal-glial tumor	GNT	NA	
+Dysembryoplastic neuroepithelial tumor (DNET);Dysplasia/Gliosis;Ganglioglioma	Neuronal and mixed neuronal-glial tumor	GNT	NA	should this be mixed or LGAT? keep as mixed
+Dysembryoplastic neuroepithelial tumor (DNET);Ganglioglioma	Neuronal and mixed neuronal-glial tumor	GNT	NA	should this be mixed or LGAT? keep as mixed
+Dysplasia/Gliosis	Pre-cancerous lesion	Dysplasia	NA	
+Dysplasia/Gliosis;Glial-neuronal tumor NOS	Neuronal and mixed neuronal-glial tumor	GNT	NA	ok? yes
+Ependymoma	Ependymal tumor	Ependymoma	EPN	
+Ewings Sarcoma	Mesenchymal non-meningothelial tumor	EWS	EWS	
+Ganglioglioma	Low-grade astrocytic tumor	Ganglioglioma	LGG	ok? yes
+Ganglioglioma;Low-grade glioma/astrocytoma (WHO grade I/II)	Low-grade astrocytic tumor	LGAT	LGG	
+Ganglioneuroblastoma	Embryonal tumor	Ganglioneuroblastoma	NA	don't need subtyping
+Germinoma	Germ cell tumor	Germinoma	NA	
+Germinoma;Teratoma	Germ cell tumor	Germ cell tumor	NA	
+Glial-neuronal tumor NOS	Neuronal and mixed neuronal-glial tumor	GNT	NA	
+Gliomatosis Cerebri	Diffuse astrocytic and oligodendroglial tumor	HGAT	HGG	all HGG? two are free text as grade 4, but other two not labeled
+Hemangioblastoma	Mesenchymal non-meningothelial tumor	Hemangioblastoma	NA	
+High-grade glioma/astrocytoma (WHO grade III/IV)	Diffuse astrocytic and oligodendroglial tumor	HGAT	HGG	
+Langerhans Cell histiocytosis	Histiocytic tumor	Langerhans cell histiocytosis	NA	
+Low-grade glioma/astrocytoma (WHO grade I/II)	Low-grade astrocytic tumor	LGAT	LGG	
+Low-grade glioma/astrocytoma (WHO grade I/II);Other	Low-grade astrocytic tumor	LGAT	LGG	
+Malignant peripheral nerve sheath tumor (MPNST)	Tumor of cranial and paraspinal nerves	MPNST	NA	
+Medulloblastoma	Embryonal tumor	Medulloblastoma	MB	
+Meningioma	Meningioma	Meningioma 	NA	
+Metastatic secondary tumors	Metastatic tumors	Metastases	NA	
+Metastatic secondary tumors;Neuroblastoma	Metastatic tumors	Metastases	NA	or should this be met? keep as met
+Neuroblastoma	Embryonal tumor	Neuroblastoma	embryonal	
+Neurocytoma	Benign tumor	Neurocytoma	NA	
+Neurofibroma/Plexiform	Tumor of cranial and paraspinal nerves	Neurofibroma	NA	
+Neurofibroma/Plexiform;Other	Tumor of cranial and paraspinal nerves	Neurofibroma	NA	
+Non-germinomatous germ cell tumor;Teratoma	Germ cell tumor	Germ cell tumor	NA	
+Oligodendroglioma	Diffuse astrocytic and oligodendroglial tumor	Oligodendroglioma	NA	ok? not always high grade
+Other				use pathology free text
+Pineoblastoma	Tumor of pineal region	Pineoblastoma	NA	
+Primary CNS lymphoma	Lymphoma	CNS lymphoma	NA	
+Rhabdomyosarcoma	Mesenchymal non-meningothelial tumor	CNS RMS	NA	
+Sarcoma	Mesenchymal non-meningothelial tumor	Sarcoma	EWS	should these be subtyped to determine EWS? yes
+Schwannoma	Tumor of cranial and paraspinal nerves	Schwannoma	NA	
+Subependymal Giant Cell Astrocytoma (SEGA)	Low grade astrocytic tumor	LGAT	LGG	should these also be subtyped with LGG? yes
+Supratentorial or Spinal Cord PNET	Embryonal tumor	Embryonal tumor	embryonal	
+Teratoma	Germ cell tumor	Teratoma	NA	
