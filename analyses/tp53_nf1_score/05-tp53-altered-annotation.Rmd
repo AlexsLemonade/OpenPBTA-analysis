@@ -444,7 +444,7 @@ ggviolin(polya_tp53, x = "tp53_altered", y = "TP53",
   ylab("TP53 RNA expression") +
   rremove("legend")
 
-ggsave(paste0(plot_dir, "/tp53_expression_by_altered_status_polya.png"))
+ggsave(file.path(plot_dir, "tp53_expression_by_altered_status_polya.png"))
 
 ```
 
