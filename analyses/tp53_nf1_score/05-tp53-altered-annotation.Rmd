@@ -368,7 +368,7 @@ ggviolin(tp53_alterations_score_wide, x = "tp53_altered", y = "tp53_score",
   ylab("TP53 score") +
   rremove("legend")
 
-ggsave(paste0(plot_dir, "/tp53_scores_by_altered_status.png"))
+ggsave(paste0(file.path, "tp53_scores_by_altered_status.png"))
 
 ```
 TP53 mutants with gain-of-function (activating) mutants promote tumorigenesis according to literature. [Reference](https://pubmed.ncbi.nlm.nih.gov/17417627/) and [reference](https://pubmed.ncbi.nlm.nih.gov/24677579/) have similar distribution of classifier scores to that of potential loss-of-function (multi-allelic) Tp53 mutations. 
