@@ -54,6 +54,11 @@
 #   data/ensg-hugo-rmtl-mapping.tsv may implicitly introduce duplicated rows.
 #   Therefore, adding Gene_Ensembl_IDs by mapping Gene_symbols is left to users
 #   with cautions for potentially introducing unwanted duplicates.
+# - Similarly, some Gene_Ensembl_IDs are mapped to multiple Gene_symbols, so
+#   adding Gene_symbols by mapping Gene_Ensembl_IDs with
+#   data/ensg-hugo-rmtl-mapping.tsv may implicitly introduce duplicated rows.
+#   Therefore, adding Gene_symbols by mapping Gene_Ensembl_IDs is left to users
+#   with cautions for potentially introducing unwanted duplicates.
 # - Certain annotation files use Gene_symbol as key columns, and certain other
 #   annotation files use Gene_Ensembl_ID as key columns
 #
