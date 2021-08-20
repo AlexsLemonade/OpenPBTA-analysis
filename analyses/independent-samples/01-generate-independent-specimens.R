@@ -124,47 +124,61 @@ wxs_panel_primary_plus_all <- independent_samples(wxs_panel_samples, tumor_types
 
 # write files for independent specimens considering cohort difference - for WGS specimens only 
 message(paste(nrow(wgs_primary_each), "WGS primary specimens for each cohort"))
-readr::write_tsv(wgs_primary_each, wgs_primary_each_file)
+wgs_primary_each %>% dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
+  readr::write_tsv(wgs_primary_each_file)
 
 message(paste(nrow(wgs_relapse_each), "WGS relapse specimens for each cohort"))
-readr::write_tsv(wgs_relapse_each, wgs_relapse_each_file)
+wgs_relapse_each %>% dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_tsv(wgs_relapse_each_file)
 
 message(paste(nrow(wgs_primary_plus_each), "WGS specimens (including non-primary) for each cohort"))
-readr::write_tsv(wgs_primary_plus_each, wgs_primplus_each_file)
+wgs_primary_plus_each %>% dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_tsv(wgs_primplus_each_file)
 
 # write files for independent specimens not considering cohort difference
 message(paste(nrow(wgs_primary_all), "WGS primary specimens for all cohorts"))
-readr::write_tsv(wgs_primary_all, wgs_primary_all_file)
+wgs_primary_all %>% dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_tsv(wgs_primary_all_file)
 
 message(paste(nrow(wgs_relapse_all), "WGS relapse specimens for all cohorts"))
-readr::write_tsv(wgs_relapse_all, wgs_relapse_all_file)
+wgs_relapse_all %>% dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_tsv(wgs_relapse_all_file)
 
 message(paste(nrow(wgs_primary_plus_all), "WGS specimens (including non-primary) for all cohorts"))
-readr::write_tsv(wgs_primary_plus_all, wgs_primplus_all_file)
+wgs_primary_plus_all %>% dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_tsv(wgs_primplus_all_file)
 
 # write files for independent specimens considering cohort difference - for WGS+WXS+Panel specimens 
 message(paste(nrow(wgs_primary_each) + nrow(wxs_panel_primary_each), "WGS+WXS+Panel primary specimens for each cohort"))
-readr::write_tsv(dplyr::bind_rows(wgs_primary_each, wxs_panel_primary_each),
-                 wgswxspanel_primary_each_file)
+dplyr::bind_rows(wgs_primary_each, wxs_panel_primary_each) %>% 
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_tsv(wgswxspanel_primary_each_file)
 
 message(paste(nrow(wgs_relapse_each) + nrow(wxs_panel_relapse_each), "WGS+WXS+Panel relapse specimens for each cohort"))
-readr::write_tsv(dplyr::bind_rows(wgs_relapse_each, wxs_panel_relapse_each),
-                 wgswxspanel_relapse_each_file)
+dplyr::bind_rows(wgs_relapse_each, wxs_panel_relapse_each) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_tsv(wgswxspanel_relapse_each_file)
 
 message(paste(nrow(wgs_primary_plus_each) + nrow(wxs_panel_primary_plus_each), "WGS+WXS+Panel specimens (including non-primary) for each cohort"))
-readr::write_tsv(dplyr::bind_rows(wgs_primary_plus_each, wxs_panel_primary_plus_each),
-                 wgswxspanel_primplus_each_file)
+dplyr::bind_rows(wgs_primary_plus_each, wxs_panel_primary_plus_each) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_tsv(wgswxspanel_primplus_each_file)
 
 # write files for independent specimens not considering cohort difference - for WGS+WXS+Panel specimens 
 
 message(paste(nrow(wgs_primary_all) + nrow(wxs_panel_primary_all), "WGS+WXS+Panel primary specimens for all cohort"))
-readr::write_tsv(dplyr::bind_rows(wgs_primary_all, wxs_panel_primary_all),
-                 wgswxspanel_primary_all_file)
+dplyr::bind_rows(wgs_primary_all, wxs_panel_primary_all) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_tsv(wgswxspanel_primary_all_file)
 
 message(paste(nrow(wgs_relapse_all) + nrow(wxs_panel_relapse_all), "WGS+WXS+Panel relapse specimens for all cohort"))
-readr::write_tsv(dplyr::bind_rows(wgs_relapse_all, wxs_panel_relapse_all),
-                 wgswxspanel_relapse_all_file)
+dplyr::bind_rows(wgs_relapse_all, wxs_panel_relapse_all) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_tsv(wgswxspanel_relapse_all_file)
 
 message(paste(nrow(wgs_primary_plus_all) + nrow(wxs_panel_primary_plus_all), "WGS+WXS+Panel specimens (including non-primary) for all cohort"))
-readr::write_tsv(dplyr::bind_rows(wgs_primary_plus_all, wxs_panel_primary_plus_all),
-                 wgswxspanel_primplus_all_file)
+dplyr::bind_rows(wgs_primary_plus_all, wxs_panel_primary_plus_all) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_tsv(wgswxspanel_primplus_all_file)
+
+
