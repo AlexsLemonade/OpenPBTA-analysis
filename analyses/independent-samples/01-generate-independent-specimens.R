@@ -100,13 +100,13 @@ tumor_samples <- histology_df %>%
 wgs_samples <- tumor_samples %>%
   dplyr::filter(experimental_strategy == "WGS")
 
-wgs_primary_each <- independent_samples(wgs_samples, tumor_types = "primary", independent_level = "each-cohort", seed = 2020)
-wgs_relapse_each <- independent_samples(wgs_samples, tumor_types = "relapse", independent_level = "each-cohort", seed = 2020)
-wgs_primary_plus_each <- independent_samples(wgs_samples, tumor_types = "prefer_primary", independent_level = "each-cohort", seed = 2020)
+wgs_primary_each <- independent_samples(wgs_samples, tumor_types = "primary", independent_level = "each-cohort", seed = 2020) %>% dplyr::arrange(Kids_First_Participant_ID)
+wgs_relapse_each <- independent_samples(wgs_samples, tumor_types = "relapse", independent_level = "each-cohort", seed = 2020) %>% dplyr::arrange(Kids_First_Participant_ID)
+wgs_primary_plus_each <- independent_samples(wgs_samples, tumor_types = "prefer_primary", independent_level = "each-cohort", seed = 2020) %>% dplyr::arrange(Kids_First_Participant_ID)
 
-wgs_primary_all <- independent_samples(wgs_samples, tumor_types = "primary", independent_level = "all-cohorts", seed = 2020)
-wgs_relapse_all <- independent_samples(wgs_samples, tumor_types = "relapse", independent_level = "all-cohorts", seed = 2020)
-wgs_primary_plus_all <- independent_samples(wgs_samples, tumor_types = "prefer_primary", independent_level = "all-cohorts", seed = 2020)
+wgs_primary_all <- independent_samples(wgs_samples, tumor_types = "primary", independent_level = "all-cohorts", seed = 2020) %>% dplyr::arrange(Kids_First_Participant_ID)
+wgs_relapse_all <- independent_samples(wgs_samples, tumor_types = "relapse", independent_level = "all-cohorts", seed = 2020) %>% dplyr::arrange(Kids_First_Participant_ID)
+wgs_primary_plus_all <- independent_samples(wgs_samples, tumor_types = "prefer_primary", independent_level = "all-cohorts", seed = 2020) %>% dplyr::arrange(Kids_First_Participant_ID)
 
 # Generate lists for WXS and Panel samples 
 # WGS is generally preferred, so we will only include those where WGS is not available
@@ -114,13 +114,13 @@ wxs_panel_samples <-  tumor_samples %>%
   dplyr::filter(!(Kids_First_Participant_ID %in% 
                   wgs_samples$Kids_First_Participant_ID))
 
-wxs_panel_primary_each <- independent_samples(wxs_panel_samples, tumor_types = "primary", independent_level = "each-cohort", seed = 2020)
-wxs_panel_relapse_each <- independent_samples(wxs_panel_samples, tumor_types = "relapse", independent_level = "each-cohort", seed = 2020)
-wxs_panel_primary_plus_each <- independent_samples(wxs_panel_samples, tumor_types = "prefer_primary", independent_level = "each-cohort", seed = 2020)
+wxs_panel_primary_each <- independent_samples(wxs_panel_samples, tumor_types = "primary", independent_level = "each-cohort", seed = 2020) %>% dplyr::arrange(Kids_First_Participant_ID)
+wxs_panel_relapse_each <- independent_samples(wxs_panel_samples, tumor_types = "relapse", independent_level = "each-cohort", seed = 2020) %>% dplyr::arrange(Kids_First_Participant_ID)
+wxs_panel_primary_plus_each <- independent_samples(wxs_panel_samples, tumor_types = "prefer_primary", independent_level = "each-cohort", seed = 2020) %>% dplyr::arrange(Kids_First_Participant_ID)
 
-wxs_panel_primary_all <- independent_samples(wxs_panel_samples, tumor_types = "primary", independent_level = "all-cohorts", seed = 2020)
-wxs_panel_relapse_all <- independent_samples(wxs_panel_samples, tumor_types = "relapse", independent_level = "all-cohorts", seed = 2020)
-wxs_panel_primary_plus_all <- independent_samples(wxs_panel_samples, tumor_types = "prefer_primary", independent_level = "all-cohorts", seed = 2020)
+wxs_panel_primary_all <- independent_samples(wxs_panel_samples, tumor_types = "primary", independent_level = "all-cohorts", seed = 2020) %>% dplyr::arrange(Kids_First_Participant_ID)
+wxs_panel_relapse_all <- independent_samples(wxs_panel_samples, tumor_types = "relapse", independent_level = "all-cohorts", seed = 2020) %>% dplyr::arrange(Kids_First_Participant_ID)
+wxs_panel_primary_plus_all <- independent_samples(wxs_panel_samples, tumor_types = "prefer_primary", independent_level = "all-cohorts", seed = 2020) %>% dplyr::arrange(Kids_First_Participant_ID)
 
 # write files for independent specimens considering cohort difference - for WGS specimens only 
 message(paste(nrow(wgs_primary_each), "WGS primary specimens for each cohort"))
