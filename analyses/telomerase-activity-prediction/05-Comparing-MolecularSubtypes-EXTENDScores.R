@@ -22,7 +22,7 @@ output_file <- file.path(analysis_dir, "plots", "PBTA_MolecularSubtypes.pdf")
 ## Reading the clinical data
 hist_file <- readr::read_tsv(hist_file, guess_max = 10000)    
 hist_file <- hist_file %>%
-  dplyr::rename("SampleID" = "Kids_First_Biospecimen_ID")
+  rename("SampleID" = "Kids_First_Biospecimen_ID")
 
 ## Reading Stranded FPKM telomerase scores
 telomerase_scores <- read.delim(telomerase_scores)  
