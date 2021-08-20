@@ -25,7 +25,6 @@ The objective of this module is three-fold:
    * [Meningioma subtypes](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-pathology/results/meningioma_subtypes.tsv) 
    * [Juvenile Xanthograniloma subtypes](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-pathology/results/juvenile-xanthogranuloma-subtypes.tsv)
    * [Adamantinomatous craniopharyngioma subtype](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-pathology/results/cranio_adam_subtypes.tsv)
-   * [Neuronal and mixed neuronal-glial tumors subtypes](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-pathology/results/glialneuronal_tumor_subtypes.tsv)
    * [LGAT subtypes update](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/master/analyses/molecular-subtyping-pathology/results/lgat-pathology-free-text-subtypes.tsv)
    
 
