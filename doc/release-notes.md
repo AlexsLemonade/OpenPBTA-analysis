@@ -40,6 +40,10 @@
       - independent-specimens.wgswxspanel.relapse.eachcohort.tsv
       - independent-specimens.rnaseq.primary.eachcohort.tsv
       - independent-specimens.rnaseq.relapse.eachcohort.tsv
+      - independent-specimens.wgswxspanel.primary.tsv
+      - independent-specimens.wgswxspanel.relapse.tsv
+      - independent-specimens.rnaseq.primary.tsv
+      - independent-specimens.rnaseq.relapse.tsv
     - Updated `fusion-putative-oncogenic.tsv` since at the last step of putative oncogenic fusion filtering, we filter out fusions seen in > 4 broad_histology since they are likely artifacts and with the update of broad_histology, the result will be updated [ticket 175](https://github.com/PediatricOpenTargets/ticket-tracker/issues/175)
       - fusion-putative-oncogenic.tsv
 
