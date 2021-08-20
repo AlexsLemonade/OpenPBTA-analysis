@@ -20,7 +20,7 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses", "independent-samples")
 
 # source sample selection function
-source(file.path(analysis_dir, "independent_rna_samples.R"))
+source(file.path(analysis_dir, "util", "independent_rna_samples.R"))
 
 set.seed(2020)
 
@@ -78,6 +78,10 @@ rnaseq_primplus_all_file <- file.path(out_dir,
 sample_df <- readr::read_tsv(opts$histology_file, 
                              guess_max = 100000,
                              col_types = readr::cols()) # suppress parse message
+
+# randomize rows of histology file to avoid selection bias
+set.seed(100)
+sample_df <- sample_df[sample(nrow(sample_df)), ]
 
 # Read in dna independent sample list to match to rna samples
 # So that independent RNA samples match the DNA samples
