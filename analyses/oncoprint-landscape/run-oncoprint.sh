@@ -16,15 +16,14 @@ cd "$script_directory" || exit
 #### Files ---------------------------------------------------------------------
 
 maf_consensus=../../data/pbta-snv-consensus-mutation.maf.tsv.gz
-hotspots_maf=../../analyses/hotspots-detection/results/pbta-snv-scavenged-hotspots.maf.tsv.gz
+hotspots_maf=../../data/pbta-snv-scavenged-hotspots.maf.tsv.gz
 fusion_file=../../data/pbta-fusion-putative-oncogenic.tsv
 histologies_file=../../data/pbta-histologies.tsv
 intermediate_directory=../../scratch/oncoprint_files
 primary_filename="primary_only"
 primaryplus_filename="primary-plus"
-focal_directory=../focal-cn-file-preparation/results
-consensus_seg_autosomes_cnv_file=${focal_directory}/consensus_seg_annotated_cn_autosomes.tsv.gz
-consensus_seg_cnv_xy_cnv_file=${focal_directory}/consensus_seg_annotated_cn_x_and_y.tsv.gz
+consensus_seg_autosomes_cnv_file=../../data/consensus_seg_annotated_cn_autosomes.tsv.gz
+consensus_seg_cnv_xy_cnv_file=../../data/consensus_seg_annotated_cn_x_and_y.tsv.gz
 oncoprint_data_directory=data
 
 #### Prep genes of interest lists ----------------------------------------------
@@ -65,13 +64,12 @@ Rscript --vanilla 01-map-to-sample_id.R \
 
 # We'll use a declarative array to loop through pairs of broad histology labels
 # and genes of interest files
-histologies=(lgat embryonal hgat ependymal other)
+histologies=(lgat embryonal hgat other)
 
 declare -A labels=(
   [lgat]="Low-grade astrocytic tumor"
   [embryonal]="Embryonal tumor"
   [hgat]="Diffuse astrocytic and oligodendroglial tumor"
-  [ependymal]="Ependymal tumor"
   [other]="Other CNS"
 )
 
@@ -79,7 +77,6 @@ declare -A goi_files=(
   [lgat]="lgat_goi_list.tsv"  
   [embryonal]="embryonal-tumor_goi_list.tsv"
   [hgat]="hgat_goi_list.tsv"
-  [ependymal]="ependymal-tumor_goi_list.tsv"
   [other]="other_goi_list.tsv"
 )
 
