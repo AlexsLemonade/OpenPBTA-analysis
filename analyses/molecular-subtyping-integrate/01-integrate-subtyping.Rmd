@@ -61,7 +61,7 @@ Update "Other" sample broad/short histology and harmonized_diagnosis and add to 
 
 ```{r}
 
-Other_subtypes <- read_tsv(file.path("input","pathology_dx\ and\ pathology_free_text_diagnosis\ to\ broad_histology\ for\ subtyping\ module\ -\ other_diagnosis_rules.tsv "))
+Other_subtypes <- read_tsv(file.path("input","pathology_dx\ and\ pathology_free_text_diagnosis\ to\ broad_histology\ for\ subtyping\ module\ -\ other_diagnosis_rules.tsv"))
 
 compiled_subtyping_other <- base_histology %>%
   select(

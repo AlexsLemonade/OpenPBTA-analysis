@@ -233,6 +233,7 @@ lgat_results_df <- bind_exp_strategies(lgat_results_df) %>%
     str_detect(molecular_subtype, "To be classified") ~ NA_character_,
     grepl("^GNG, ",molecular_subtype) ~ str_replace(molecular_subtype, "GNG, ", "Ganglioglioma, "),
     grepl("^GNT, ",molecular_subtype) ~ str_replace(molecular_subtype, "GNT, ", "Glial-neuronal tumor NOS, "),
+    grepl("^SEGA, ",molecular_subtype) ~ str_replace(molecular_subtype, "SEGA, ", "Subependymal Giant Cell Astrocytoma, "),
     TRUE ~ str_replace(molecular_subtype, "LGG, ", "Low-grade glioma/astrocytoma, ")
   ),
   ## Broad histology update
@@ -242,7 +243,7 @@ lgat_results_df <- bind_exp_strategies(lgat_results_df) %>%
   ## Short histology update
   short_histology = case_when(
     grepl("^GNG, ",molecular_subtype) ~ "Ganglioglioma",
-    grepl("^GNT, ",molecular_subtype) ~ "Glial-neuronal tumor NOS",
+    grepl("^GNT, ",molecular_subtype) ~ "GNT",
     TRUE ~ "LGAT"),
   Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes)
   )
