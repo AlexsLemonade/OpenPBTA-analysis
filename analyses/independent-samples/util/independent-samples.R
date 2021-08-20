@@ -1,3 +1,27 @@
+# independent_samples.R
+
+#' Generate a vector of unique samples
+#' 
+#' The samples from this function will be unique with respect to participants
+#' i.e. only no two samples will come from the same participant. The input list 
+#' should be pre-filtered by `experimental_strategy` and `sample_type`.  
+#' 
+#' 
+#' @param histology_df A data frame of samples, with columns corresponding to those
+#'   in `histologies.tsv`
+#' @param independent_level Designates whether we want to count independent samples in 
+#'  different cohorts as independent or not. "all-cohorts" consider the same sampe
+#'  in different cohorts as the same sample and "each-cohort" consider the same sample
+#'  in different cohorts as "independent" (different). 
+#' @param tumor_types Designates which types of tumors will be included. Options
+#'   are "primary" to include only primary tumors, "prefer_primary" to include
+#'   primary tumors when available, but fall back to other types, or "any" to
+#'   randomly select among all available specimens. As of v6, primary tumors
+#'   are defined as those designated "Initial CNS Tumor" or "Primary Tumor" in the
+#'   `tumor_descriptor` field.
+#' @param seed An optional random number seed. 
+#' 
+#' @return a data frame of Participant and Specimen IDs, each present only once.
 independent_samples <- function(histology_df, 
                                 tumor_types = c("primary", "relapse", "prefer_primary", "any"), 
                                 independent_level = c("all-cohorts", "each-cohort"),
