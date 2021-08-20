@@ -17,7 +17,7 @@ hist_file <- file.path(root_dir, "data", "pbta-histologies.tsv")
 telomerase_scores <- file.path(analysis_dir, "results", "TelomeraseScores_PTBAStranded_FPKM.txt") 
 
 # output file
-output_file <- file.path(analysis_dir, "plots", "PBTA_MolecularSubtypes.pdf")
+output_dir <- file.path(analysis_dir, "plots")
 
 ## Reading the clinical data
 hist_file <- read_tsv(hist_file, guess_max = 10000)    
@@ -42,9 +42,7 @@ telomerase_scores <- telomerase_scores %>%
 
 # apply function
 # create boxplot of NormEXTENDScores per molecular subtype per histology 
-pdf(output_file, width = 7, height = 5)
 plyr::d_ply(telomerase_scores, 
             .variables = "short_histology", 
-            .fun = function(x) boxplot_by_molecular_subtype(scores_mat = x))
-dev.off()
+            .fun = function(x) boxplot_by_molecular_subtype(scores_mat = x, output_dir))
 
