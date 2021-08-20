@@ -14,7 +14,7 @@ RUN_FOR_SUBTYPING=${OPENPBTA_BASE_SUBTYPING:-0}
 # Set the working directory to the directory of this file
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-# Rscript -e "rmarkdown::render('00-repeated-samples.Rmd',params=list(base_run = ${RUN_FOR_SUBTYPING}), clean = TRUE)"
+Rscript -e "rmarkdown::render('00-repeated-samples.Rmd',params=list(base_run = ${RUN_FOR_SUBTYPING}), clean = TRUE)"
 
 if [[ RUN_FOR_SUBTYPING -eq "0" ]]
 then
