@@ -33,4 +33,4 @@ Contents of directory:
 	+ [PTBA_GE_Score_AllScatter.pdf](./plots/PTBA_GE_Score_AllScatter.pdf): represents the telomerase activity scores correlations across different data sets (i.e Stranded counts versus Stranded FPKM and PolyA counts versus PolyA FPKM)
 	+ [PTBA_GE_TM_ScatterComp.pdf](./plots/PTBA_GE_TM_ScatterComp.pdf): correlates TERT and TERC gene expressions with telomerase activities for different data sets (i.e Stranded and PolyA)
 	+ [PBTA_StrandedHistology.pdf](./plots/PBTA_StrandedHistology.pdf): shows the distribution of telomerase activities across different brain tumor histologies
-	+ [PBTA_MolecularSubtypes.pdf](./plots/PBTA_MolecularSubtypes.pdf): compares telomerase activities across different molecular subtypes of various PBTA short histologies.
+	+ `EXTENDScores_{short_histology}.png`: compares telomerase activities across different molecular subtypes of various PBTA short histologies.
