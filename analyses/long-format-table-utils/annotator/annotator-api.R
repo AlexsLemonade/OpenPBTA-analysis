@@ -339,7 +339,8 @@ annotate_long_format_table <- function(
       dplyr::filter(!is.na(rmtl), !is.na(version)) %>%
       dplyr::mutate(RMTL = paste0(rmtl, " (", version, ")")) %>%
       dplyr::select(ensg_id, RMTL) %>%
-      dplyr::rename(Gene_Ensembl_ID = ensg_id)
+      dplyr::rename(Gene_Ensembl_ID = ensg_id) %>%
+      dplyr::distinct()
   }
 
   if (any(c("EFO", "MONDO") %in% columns_to_add)) {
