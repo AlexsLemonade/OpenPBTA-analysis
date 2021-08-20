@@ -1,7 +1,7 @@
 # release notes
 
 ## current release
-- release date: 2021-08-17
+- release date: 2021-08-20
 - status: available
 - overview of changes:
     - This particular release is mainly to include 412 tumor/normal pairs of TARGET WXS samples as listed in [ticket 111](https://github.com/PediatricOpenTargets/ticket-tracker/issues/111). Detailed changes see below. 
@@ -11,7 +11,7 @@
       - `sample_id` and `aliquot_id` for some TARGET samples were miscoded before. This release fixed the issue per [ticket 145](https://github.com/PediatricOpenTargets/ticket-tracker/issues/145)
       - `sample_id` and `aliquot_id` were updated using the GTEx coding nomenclature GTEX-[donor ID]-[tissue site ID]-SM-[aliquot ID] (https://www.gtexportal.org/home/faq#sampleIdFormat)
       - `primary_site` for GTEx samples were updated to match `gtex_subgroup` column, changing `Whole Blood` to `Blood` and `Brain - Cerebellar Hemisphere` to `Brain - Cerebellum`
-      - `broad_histology` for TARGET samples were updated as following: `Acute Lymphoblastic Leukemia` and `Acute Myeloid Leukemia` were merged to `Hematologic malignancies`; `Clear cell sarcoma of the kidney`, `Rhabdoid tumor`, and `Wilms tumor` were combined as `Renal tumors`; `Osteosarcoma` is changed to `Mesenchymal, non-meningothelial tumors` and `Neuroblastoma` is converted to `Embryonal tumors`. See [ticket 136](https://github.com/PediatricOpenTargets/ticket-tracker/issues/136)
+      - `broad_histology` for TARGET samples were updated as following: `Acute Lymphoblastic Leukemia` and `Acute Myeloid Leukemia` were merged to `Hematologic malignancy`; `Clear cell sarcoma of the kidney`, `Rhabdoid tumor`, and `Wilms tumor` were combined as `Renal tumor`; `Osteosarcoma` is changed to `Mesenchymal non-meningothelial tumor` and `Neuroblastoma` is converted to `Embryonal tumor`. See [ticket 136](https://github.com/PediatricOpenTargets/ticket-tracker/issues/136) and [ticket 176] (https://github.com/PediatricOpenTargets/ticket-tracker/issues/176)
       - For `gtex_group == "Cells"`, the `composition` column is changed from `Solid Tissue` to `Derived Cell Line` per discussion in d3b center [ticket 43](https://github.com/d3b-center/D3b-codes/pull/43)
       - For `short_histology`,  neuroblastoma samples previously annotated as `NBL` or `Embryonal tumor` are converted to `Neuroblastoma` to be consistent with other samples 
       - Updated MB subtypes in the histologies file per [ticket 148](https://github.com/PediatricOpenTargets/ticket-tracker/issues/148)
@@ -30,8 +30,12 @@
       
     - Added `consensus_wgs_plus_cnvkit_wxs.tsv.gz` which is a merge of `consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz` and `consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz` per [ticket 161](https://github.com/PediatricOpenTargets/ticket-tracker/issues/161)
     - Updated `ensg-hugo-rmtl-mapping.tsv` file per [ticket 146](https://github.com/PediatricOpenTargets/ticket-tracker/issues/146). The previous release of this file does not contain all gene ENSG IDs and symbols that are present in `snv-consensus-plus-hotspots.maf.tsv.gz`. This update merged GENCODE V28 and V38 to allow inclusion of more gene ENSG IDs and symbols. 
+    - Futher update `ensg-hugo-rmtl-mapping.tsv` [PR 48 D3b codes](https://github.com/d3b-center/D3b-codes/pull/48)
 
-    - Update independent samples files to include TARGET WXS DNA (412 tumor/normal pairs) - [ticket 165](https://github.com/PediatricOpenTargets/ticket-tracker/issues/165). Previously, these files were not added to our releases. Starting this release, we will also add independent sample list to our release as well. For now, we will add files that are used by analyses modules in this file and these are the following: 
+    - Update independent samples files to include TARGET WXS DNA (412 tumor/normal pairs) - [ticket 165](https://github.com/PediatricOpenTargets/ticket-tracker/issues/165). Previously, these files were not added to our releases. Starting this release, we will also add independent sample list to our release as well. 
+    - Updated independent samples so that the `Kids_First_Biospecimen_ID` for `allcohorts` and `eachcohort` match if possible: [ticket 135](https://github.com/PediatricOpenTargets/ticket-tracker/issues/135)
+    - Updated independent sample module to arrange by `Kids_First_Biospecimen_ID` before writing out the file: [ticket 179](https://github.com/PediatricOpenTargets/ticket-tracker/issues/179)
+    - For now, we will add files that are used by analyses modules in this file and these are the following: 
       - independent-specimens.wgswxspanel.primary.eachcohort.tsv
       - independent-specimens.wgswxspanel.relapse.eachcohort.tsv
       - independent-specimens.rnaseq.primary.eachcohort.tsv
