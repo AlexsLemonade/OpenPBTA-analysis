@@ -1,7 +1,8 @@
 {
     "include_path_dx": [
         "low-grade glioma/astrocytoma",
-        "ganglioglioma"
+        "ganglioglioma",
+        "subependymal giant cell astrocytoma (sega)"
     ],
     "exclude_path_dx": [
         "dysembryoplastic neuroepithelial tumor"
