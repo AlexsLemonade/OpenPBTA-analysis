@@ -26,7 +26,7 @@ library(optparse)
 
 
 # source sample selection function
-source(file.path(analysis_dir, "independent-samples.R"))
+source(file.path(analysis_dir, "util", "independent-samples.R"))
 
 set.seed(2020)
 
@@ -85,6 +85,9 @@ histology_df <- readr::read_tsv(opts$histology_file,
                              guess_max = 100000,
                              col_types = readr::cols()) # suppress parse message
 
+# randomize rows of histology file to avoid selection bias
+set.seed(100)
+histology_df <- histology_df[sample(nrow(histology_df)), ]
 
 # Filter to only samples from tumors, where composition is known to be Solid Tissue or Bone Marrow
 # Note that there are some samples with unknown composition, but these will be ignored for now.

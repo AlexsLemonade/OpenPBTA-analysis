@@ -134,48 +134,51 @@ independent_rna_samples <- function(independent_dna_sample_df,
   
   if(independent_level == "each-cohort"){
     # find out the list of cohorts and cancer groups and loop through them to run the process for each cancer group and cohort
-    cohort_list <- sample_df$cohort %>% unique()
-    cancer_group_list <- sample_df$cancer_group %>% unique()   
+    # combination of cohort and cancer groups
+    cohort_cancer_group_combo <- sample_df %>%
+      dplyr::select(cohort, cancer_group) %>%
+      unique() 
     
-    independent_each <- data.frame(Kids_First_Participant_ID = character(), Kids_First_Biospecimen_ID = character(), stringsAsFactors = FALSE)
+    independent_each <- data.frame(Kids_First_Participant_ID = character(), 
+                                   Kids_First_Biospecimen_ID = character(), 
+                                   stringsAsFactors = FALSE)
     
     # loop through each cohort and cancer group and combine the results together
-    for (i in 1:length(cohort_list)){
-      for (j in 1:length(cancer_group_list)){
-        # filter to the specific cancer group and cohort
-        cohort_name <- cohort_list[i]
-        cancer_group_name <- cancer_group_list[j]
-        # deal with cancer group is NA to avoid missing samples
-        if(is.na(cancer_group_name)){
-          filtered_df <- sample_df %>% dplyr::filter(cohort == cohort_name) %>%
-            dplyr::filter(is.na(cancer_group))
-        }else{
-          filtered_df <- sample_df %>% dplyr::filter(cohort == cohort_name) %>%
-            dplyr::filter(cancer_group == cancer_group_name)
-          }
-          # some specific group does not have any specimen 
-        if(nrow(filtered_df) == 0){
-          independent_filtered <- data.frame(Kids_First_Participant_ID = character(), Kids_First_Biospecimen_ID = character(), stringsAsFactors = FALSE)
-          independent_each <- rbind(independent_each, independent_filtered)
-        }else{
-            # find the independent samples for the specific cancer group and cohort
-          independent_filtered <- filtered_df %>%
-            dplyr::group_by(Kids_First_Participant_ID) %>%
-            dplyr::summarize(Kids_First_Biospecimen_ID = sample(Kids_First_Biospecimen_ID, 1)) %>%
-            data.frame() %>% dplyr::distinct()
-            # merge the independent samples together
-            independent_each <- rbind(independent_each, independent_filtered)
-          }
-        }
+    for(i in 1:nrow(cohort_cancer_group_combo)){
+      # filter to the specific cancer group and cohort
+      cohort_name <- cohort_cancer_group_combo[i,1] %>% as.character()
+      cancer_group_name <- cohort_cancer_group_combo[i,2] %>% as.character()
+      
+      # deal with cancer group is NA to avoid missing samples
+      if(is.na(cancer_group_name)){
+        filtered_df <- sample_df %>% 
+          dplyr::filter(cohort == cohort_name) %>%
+          dplyr::filter(is.na(cancer_group))
+      }else{
+        filtered_df <- sample_df %>% 
+          dplyr::filter(cohort == cohort_name) %>%
+          dplyr::filter(cancer_group == cancer_group_name)
       }
+      
+      # find the independent samples for the specific cancer group and cohort
+      # "If there are multiple rows for a given combination of inputs, only the first
+      # row will be preserved. If omitted, will use all variables." -- distinct in dplyr 0.8.3
+      independent_filtered <- filtered_df %>%
+        dplyr::distinct(Kids_First_Participant_ID, .keep_all = TRUE) %>%
+        dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID)
+      
+      # merge the independent samples together
+      independent_each <- rbind(independent_each, independent_filtered)
+    }
     return(independent_each)
     }
   
   if(independent_level == "all-cohorts"){
-    independent_all<- sample_df %>%
-      dplyr::group_by(Kids_First_Participant_ID) %>%
-      dplyr::summarize(Kids_First_Biospecimen_ID = sample(Kids_First_Biospecimen_ID, 1)) %>%
-      data.frame() %>% dplyr::distinct()
+    
+    independent_all <- sample_df %>%
+      dplyr::distinct(Kids_First_Participant_ID, .keep_all = TRUE) %>%
+      dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID)
+    
     return(independent_all)
   }
 }
