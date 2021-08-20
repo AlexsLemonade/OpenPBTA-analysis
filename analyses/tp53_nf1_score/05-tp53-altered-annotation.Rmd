@@ -44,6 +44,16 @@ input_dir <- file.path(root_dir,
                          "analyses",
                          "tp53_nf1_score",
                          "input")
+
+plot_dir <- file.path(root_dir,
+                         "analyses",
+                         "tp53_nf1_score",
+                         "plots")
+
+if (!dir.exists(plot_dir)) {
+  dir.create(plot_dir)
+}
+
 # cell composition
 cell_line_composition <- read_tsv(file.path("..",
                                             "molecular-subtyping-HGG",
@@ -341,14 +351,24 @@ tp53_alterations_score_wide <- tp53_alterations_score_wide %>%
 ## Explore distribution of tp53_altered status vs tp53 inactivation scores
 
 ```{r, out.width="50%"}
-ggplot(tp53_alterations_score_wide, aes(x = factor(tp53_altered), y = tp53_score)) +
-  geom_violin()+
-  geom_jitter(alpha = 0.5, width = 0.2) +
-  stat_compare_means() +
-  theme_bw() +
-  ggtitle("Distribution of scores across tp53 altered status") +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
-  xlab("tp53 altered status") 
+mycomps <- list(c("activated", "Other"), c("loss", "Other"))
+
+ggviolin(tp53_alterations_score_wide, x = "tp53_altered", y = "tp53_score", 
+         color = "tp53_altered", 
+         palette = "jco", 
+         order = c("activated", "loss", "Other"),
+         add = "boxplot",  
+   ggtheme = theme_pubr()) +
+  # Default method = "kruskal.test" for multiple groups
+  # Add pairwise comparisons p-value
+  stat_compare_means(comparisons = mycomps, step.increase = 0.2, label.y = c(1.5, 1.3)) +
+  # Add global p-value
+  stat_compare_means(label.y = 1.7) +
+  xlab("TP53 altered status") +
+  ylab("TP53 score") +
+  rremove("legend")
+
+ggsave(paste0(plot_dir, "/tp53_scores_by_altered_status.png"))
 
 ```
 TP53 mutants with gain-of-function (activating) mutants promote tumorigenesis according to literature. [Reference](https://pubmed.ncbi.nlm.nih.gov/17417627/) and [reference](https://pubmed.ncbi.nlm.nih.gov/24677579/) have similar distribution of classifier scores to that of potential loss-of-function (multi-allelic) Tp53 mutations. 
@@ -376,15 +396,19 @@ stranded_tp53 <- as.data.frame(subset_stranded) %>%
 Plot distribution of TP53 gene expression (stranded)
 
 ```{r, out.width="50%"}
+ggviolin(stranded_tp53, x = "tp53_altered", y = "TP53", 
+         color = "tp53_altered", 
+         palette = "jco",
+         order = c("activated", "loss"),
+         add = "boxplot",  
+   ggtheme = theme_pubr()) +
+  # Add pairwise comparisons p-value
+  stat_compare_means(method = "wilcox.test", label.y = 120) +
+  xlab("TP53 altered status") +
+  ylab("TP53 RNA expression") +
+  rremove("legend")
 
-ggplot(stranded_tp53, aes(x = factor(tp53_altered), y = TP53)) +
-  geom_violin()+
-  geom_jitter(alpha = 0.5, width = 0.2) +
-  stat_compare_means() +
-  theme_bw() +
-  ggtitle("Distribution of TP53 expression across tp53 altered status") +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
-  xlab("tp53 altered status") 
+ggsave(paste0(plot_dir, "/tp53_expression_by_altered_status_stranded.png"))
 
 ```
 
@@ -408,22 +432,25 @@ polya_tp53<- as.data.frame(subset_polya) %>%
 Plot distribution of TP53 gene expression (poly-a)
 
 ```{r, out.width="50%" }
+ggviolin(polya_tp53, x = "tp53_altered", y = "TP53", 
+         color = "tp53_altered", 
+         palette = "jco",
+         order = c("activated", "loss"),
+         add = "boxplot",  
+   ggtheme = theme_pubr()) +
+  # Add pairwise comparisons p-value
+  stat_compare_means(method = "wilcox.test", label.y = 80) +
+  xlab("TP53 altered status") +
+  ylab("TP53 RNA expression") +
+  rremove("legend")
 
-ggplot(polya_tp53, aes(x = factor(tp53_altered), y = TP53)) +
-  geom_violin()+
-  geom_jitter(alpha = 0.5, width = 0.2) +
-  stat_compare_means() +
-  theme_bw() +
-  ggtitle("Distribution of TP53 expression across tp53 altered status") +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
-  xlab("tp53 altered status") 
+ggsave(paste0(plot_dir, "/tp53_expression_by_altered_status_polya.png"))
 
 ```
 
 ### Check if other cancer predisposition have high TP53 inactivation scores  
 
 ```{r ,out.width="50%"}
-
 ggplot(tp53_alterations_score_wide, aes(x = factor(tp53_altered), y = tp53_score)) +
   geom_violin()+
   geom_jitter(alpha = 0.5, width = 0.2) +
@@ -432,6 +459,23 @@ ggplot(tp53_alterations_score_wide, aes(x = factor(tp53_altered), y = tp53_score
   theme(axis.text.x = element_text(angle = 60, hjust = 1))+
   xlab("tp53 altered status") +
   facet_wrap(.~cancer_predispositions)
+
+# plot lfs for manuscript
+lfs <- tp53_alterations_score_wide %>%
+  filter(cancer_predispositions == "Li-Fraumeni syndrome")
+ggviolin(lfs, x = "tp53_altered", y = "tp53_score", 
+         color = "tp53_altered", 
+         palette = "jco",
+         order = c("loss", "Other"),
+         add = "boxplot",  
+   ggtheme = theme_pubr()) +
+  # Add pairwise comparisons p-value
+  stat_compare_means(method = "wilcox.test", label.y = 1.2) +
+  xlab("TP53 altered status") +
+  ylab("TP53 score") +
+  rremove("legend")
+ggsave(paste0(plot_dir, "/lfs_tp53_scores.png"))
+
 
 ```
 Some NF-1 and/or Other inherited conditions NOS have high scoring TP53 mutants as well. 
