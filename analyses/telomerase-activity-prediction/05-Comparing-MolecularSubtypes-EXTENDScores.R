@@ -29,7 +29,7 @@ telomerase_scores <- read.delim(telomerase_scores)
 
 ### Merging Clinical data with the Telomerase scores
 telomerase_scores <- hist_file %>%
-  dplyr::select(SampleID, short_histology, broad_histology, molecular_subtype) %>%
+  select(SampleID, short_histology, broad_histology, molecular_subtype) %>%
   inner_join(telomerase_scores, by = "SampleID")
 
 # filter NA, to be classified and molecular subtype count < 2 (required for p-value calculations)
