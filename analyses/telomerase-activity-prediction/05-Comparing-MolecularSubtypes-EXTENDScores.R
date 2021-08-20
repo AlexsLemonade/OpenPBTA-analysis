@@ -1,6 +1,5 @@
 suppressPackageStartupMessages({
   library(tidyverse)
-  library(dplyr)
 })
 
 # Comparing EXTEND Scores with histology molecular subtypes 
