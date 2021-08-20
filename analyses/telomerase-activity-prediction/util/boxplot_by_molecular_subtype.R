@@ -27,7 +27,7 @@ boxplot_by_molecular_subtype <- function(scores_mat){
     mutate(label = n()) %>%
     mutate(label = paste0(molecular_subtype,' (',label,')'))
   
-  # create heatmap per molecular subtype
+  # create boxplot per molecular subtype
   if(nrow(scores_mat) > 1){
     y_coord <-  max(scores_mat$NormEXTENDScores) + 0.1
     print(y_coord)
