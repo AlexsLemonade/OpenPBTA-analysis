@@ -72,6 +72,10 @@ v8
 ├── independent-specimens.wgswxspanel.relapse.eachcohort.tsv
 ├── independent-specimens.rnaseq.primary.eachcohort.tsv
 ├── independent-specimens.rnaseq.relapse.eachcohort.tsv
+├── independent-specimens.wgswxspanel.primary.tsv
+├── independent-specimens.wgswxspanel.relapse.tsv
+├── independent-specimens.rnaseq.primary.tsv
+├── independent-specimens.rnaseq.relapse.tsv
 ├── intersect_cds_lancet_strelka_mutect_WGS.bed
 ├── intersect_strelka_mutect_WGS.bed
 ├── release-notes.md
