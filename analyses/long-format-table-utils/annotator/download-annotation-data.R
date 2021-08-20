@@ -180,7 +180,8 @@ out_rm_bnn_found_mg_qres_df <- rm_bnn_found_mg_qres_df %>%
   dplyr::summarise(name = collapse_name_vec(name),
                    refseq_protein = collapse_rp_lists(refseq.protein)) %>%
   dplyr::rename(Gene_Ensembl_ID = query, Gene_full_name = name,
-                Protein_RefSeq_ID = refseq_protein)
+                Protein_RefSeq_ID = refseq_protein) %>%
+  dplyr::arrange(Gene_Ensembl_ID)
 
 
 
