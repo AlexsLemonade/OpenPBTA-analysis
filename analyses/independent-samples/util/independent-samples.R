@@ -65,6 +65,8 @@ independent_samples <- function(histology_df,
       }
       
       # find the independent samples for the specific cancer group and cohort
+      # "If there are multiple rows for a given combination of inputs, only the first
+      # row will be preserved. If omitted, will use all variables." -- distinct in dplyr 0.8.3
       independent_filtered <- filtered_df %>%
         dplyr::distinct(Kids_First_Participant_ID, .keep_all = TRUE) %>%
         dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID)
