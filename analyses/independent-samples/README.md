@@ -1,5 +1,45 @@
 # Independent Samples
 
+## Module structure
+
+* `01-generate-independent-specimens.R`: Generate tables of independent specimens where no two specimens are chosen from the same individual.
+* `02-generate-independent-rnaseq.R`: Generate tables of independent rna-seq specimens.
+* `03-qc-independent-samples.Rmd`: Markdown to tabulate number of biospecimen ids for same participant ids from each output file.
+
+```
+.
+├── 00-repeated-samples.Rmd
+├── 00-repeated-samples.nb.html
+├── 01-generate-independent-specimens.R
+├── 02-generate-independent-rnaseq.R
+├── 03-qc-independent-samples.Rmd
+├── 03-qc-independent-samples.nb.html
+├── README.md
+├── results
+│   ├── independent-specimens.rnaseq.primary-plus.eachcohort.tsv
+│   ├── independent-specimens.rnaseq.primary-plus.tsv
+│   ├── independent-specimens.rnaseq.primary.eachcohort.tsv
+│   ├── independent-specimens.rnaseq.primary.tsv
+│   ├── independent-specimens.rnaseq.relapse.eachcohort.tsv
+│   ├── independent-specimens.rnaseq.relapse.tsv
+│   ├── independent-specimens.wgs.primary-plus.eachcohort.tsv
+│   ├── independent-specimens.wgs.primary-plus.tsv
+│   ├── independent-specimens.wgs.primary.eachcohort.tsv
+│   ├── independent-specimens.wgs.primary.tsv
+│   ├── independent-specimens.wgs.relapse.eachcohort.tsv
+│   ├── independent-specimens.wgs.relapse.tsv
+│   ├── independent-specimens.wgswxspanel.primary-plus.eachcohort.tsv
+│   ├── independent-specimens.wgswxspanel.primary-plus.tsv
+│   ├── independent-specimens.wgswxspanel.primary.eachcohort.tsv
+│   ├── independent-specimens.wgswxspanel.primary.tsv
+│   ├── independent-specimens.wgswxspanel.relapse.eachcohort.tsv
+│   └── independent-specimens.wgswxspanel.relapse.tsv
+├── run-independent-samples.sh
+└── util
+    ├── independent-samples.R
+    └── independent_rna_samples.R
+```
+
 ## Summary
 
 Many analyses that involve mutation frequencies or co-occurence require that all samples be independent.
@@ -66,7 +106,8 @@ bash analyses/independent-samples/run-independent-samples.sh
 ```
 
 ## Methods
-When presented with more than one specimen from a given individual with a specific cancer group and cohort, the script randomly selects one specimen to include, with preference for primary tumors and whole genome sequences where available.
+When presented with more than one specimen from a given individual with a specific cancer group and cohort, the script selects the first occurence of the individual so as to include only one specimen, with preference for primary tumors and whole genome sequences where available.
+The input histology file is randomized before using as input in order to avoid any selection bias.
 There is also a preference for the earliest collected samples, but as this data is not currently available, that code is currently deleted.
 
 When multiple RNA-Seq samples exist per participant, the script matches the independent whole genome or whole exome sample_ids to gather matched RNA-Seq sample. If participant has onle RNA-Seq sample then a primary (and relapse if applicable) sample is randomly selected per participant per cancer group per cohort. 
