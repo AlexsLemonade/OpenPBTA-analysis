@@ -55,6 +55,7 @@ Samples are _included_ for subtyping if we detect the following strings in the `
 ```
 low-grade glioma/astrocytoma
 ganglioglioma
+subependymal giant cell astrocytoma
 ```
 
 Samples are _excluded_ if we detect the following strings in the `pathology_diagnosis` field of `pbta-histologies.tsv`:

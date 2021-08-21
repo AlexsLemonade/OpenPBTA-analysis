@@ -324,6 +324,8 @@ all_subtype <- bind_rows(all_rna_subtype,
       gsub("LGG,","GNT,",molecular_subtype),
     pathology_diagnosis == "Ganglioglioma" ~
       gsub("LGG,|GNT,","GNG,",molecular_subtype),
+    pathology_diagnosis == "Subependymal Giant Cell Astrocytoma (SEGA)" ~
+      gsub("LGG,","SEGA,",molecular_subtype),
     TRUE ~ molecular_subtype)) %>%
   dplyr::select(-pathology_free_text_diagnosis,
                 -pathology_diagnosis) %>%
