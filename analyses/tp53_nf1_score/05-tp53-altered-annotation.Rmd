@@ -44,6 +44,16 @@ input_dir <- file.path(root_dir,
                          "analyses",
                          "tp53_nf1_score",
                          "input")
+
+plot_dir <- file.path(root_dir,
+                         "analyses",
+                         "tp53_nf1_score",
+                         "plots")
+
+if (!dir.exists(plot_dir)) {
+  dir.create(plot_dir)
+}
+
 # cell composition
 cell_line_composition <- read_tsv(file.path("..",
                                             "molecular-subtyping-HGG",
@@ -332,7 +342,7 @@ tp53_alterations_score_wide <- tp53_alterations_score_wide %>%
         # when activating == 1
         activating == 1 ~ "activated",
         # if no evidence supports TP53 inativation or activation 
-        TRUE ~ "Other"
+        TRUE ~ "other"
       )
   )
 
@@ -341,14 +351,47 @@ tp53_alterations_score_wide <- tp53_alterations_score_wide %>%
 ## Explore distribution of tp53_altered status vs tp53 inactivation scores
 
 ```{r, out.width="50%"}
-ggplot(tp53_alterations_score_wide, aes(x = factor(tp53_altered), y = tp53_score)) +
-  geom_violin()+
-  geom_jitter(alpha = 0.5, width = 0.2) +
-  stat_compare_means() +
-  theme_bw() +
-  ggtitle("Distribution of scores across tp53 altered status") +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
-  xlab("tp53 altered status") 
+# Default global test is kruskal-wallis for >2 groups
+# Default is to perform multiple corrections, but not bonferroni - specifying bonferroni below
+# Default p values on plots are uncorrected
+
+# More on the functions: http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/76-add-p-values-and-significance-levels-to-ggplots/#compare-more-than-two-groups
+
+# From R help: 
+# p.adjust.method: method for adjusting p values (see p.adjust). Has impact only in a situation, where multiple pairwise tests are performed; or when there are multiple grouping variables. Allowed values include "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none". If you don't want to adjust the p value (not recommended), use p.adjust.method = "none". Note that, when the formula contains multiple variables, the p-value adjustment is done independently for each variable.
+
+# method: the type of test. Default for two samples is wilcox.test and for >2 is kruskal.test. 
+# Allowed values for 2 samples include: "t.test" (parametric), "wilcox.test" (non-parametric) and >2: "anova" (parametric) and "kruskal.test" (non-parametric).
+
+# Create table of statistics, including corrected p values
+adj <- compare_means(tp53_score ~ tp53_altered, data = tp53_alterations_score_wide, p.adjust.method = "bonferroni")
+adj
+
+# Print table of n per group for legends
+tp53_alterations_score_wide %>%
+  filter(!is.na(tp53_score)) %>%
+  group_by(tp53_altered) %>%
+  tally()
+```
+
+```{r}
+# Create plot
+ggviolin(tp53_alterations_score_wide, x = "tp53_altered", y = "tp53_score", 
+         color = "tp53_altered", 
+         palette = "jco", 
+         order = c("activated", "loss", "other"),
+         add = "boxplot",  
+   ggtheme = theme_pubr()) +
+  # Default method = "kruskal.test" for multiple groups
+  # Add adjusted p-value - has to be done manually and from a table - pulling from table above 
+  stat_pvalue_manual(adj, label = "p.adj", y.position = c(1.5, 1.3, 1.1)) +
+  # Add global p-value
+  stat_compare_means(label.y = 1.7) +
+  xlab("TP53 altered status") +
+  ylab("TP53 score") +
+  rremove("legend")
+
+ggsave(file.path(plot_dir, "tp53_scores_by_altered_status.png"))
 
 ```
 TP53 mutants with gain-of-function (activating) mutants promote tumorigenesis according to literature. [Reference](https://pubmed.ncbi.nlm.nih.gov/17417627/) and [reference](https://pubmed.ncbi.nlm.nih.gov/24677579/) have similar distribution of classifier scores to that of potential loss-of-function (multi-allelic) Tp53 mutations. 
@@ -358,7 +401,6 @@ TP53 mutants with gain-of-function (activating) mutants promote tumorigenesis ac
 ### (stranded) Expression profile for activating vs loss TP53 status
 
 ```{r}
-
 stranded <- readRDS(file.path(data_dir,"pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
 
 # subset to TP53
@@ -371,27 +413,35 @@ stranded_tp53 <- as.data.frame(subset_stranded) %>%
   # remove polya from matched scores
   filter(tp53_altered %in% c("activated","loss"))
 
+# Print table of n per group for legends
+stranded_tp53 %>%
+  filter(!is.na(tp53_score)) %>%
+  group_by(tp53_altered) %>%
+  tally()
 ```
 
 Plot distribution of TP53 gene expression (stranded)
 
 ```{r, out.width="50%"}
+ggviolin(stranded_tp53, x = "tp53_altered", y = "TP53", 
+         color = "tp53_altered", 
+         palette = "jco",
+         order = c("activated", "loss"),
+         add = "boxplot",  
+   ggtheme = theme_pubr()) +
+  # Add pairwise comparisons p-value
+  stat_compare_means(method = "wilcox.test", label.y = 120) +
+  xlab("TP53 altered status") +
+  ylab("TP53 RNA expression") +
+  rremove("legend")
 
-ggplot(stranded_tp53, aes(x = factor(tp53_altered), y = TP53)) +
-  geom_violin()+
-  geom_jitter(alpha = 0.5, width = 0.2) +
-  stat_compare_means() +
-  theme_bw() +
-  ggtitle("Distribution of TP53 expression across tp53 altered status") +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
-  xlab("tp53 altered status") 
+ggsave(file.path(plot_dir, "tp53_expression_by_altered_status_stranded.png"))
 
 ```
 
 ### (poly-a) Expression profile for activating vs loss TP53 status
 
 ```{r}
-
 polya <- readRDS(file.path(data_dir,"pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"))
 
 # subset to TP53
@@ -403,27 +453,35 @@ polya_tp53<- as.data.frame(subset_polya) %>%
   left_join(tp53_alterations_score_wide,by=c("rowname"="Kids_First_Biospecimen_ID_RNA")) %>%
   filter(tp53_altered %in% c("activated","loss"))
 
+# Print table of n per group for legends
+polya_tp53 %>%
+  filter(!is.na(tp53_score)) %>%
+  group_by(tp53_altered) %>%
+  tally()
 ```
 
 Plot distribution of TP53 gene expression (poly-a)
 
 ```{r, out.width="50%" }
+ggviolin(polya_tp53, x = "tp53_altered", y = "TP53", 
+         color = "tp53_altered", 
+         palette = "jco",
+         order = c("activated", "loss"),
+         add = "boxplot",  
+   ggtheme = theme_pubr()) +
+  # Add pairwise comparisons p-value
+  stat_compare_means(method = "wilcox.test", label.y = 80) +
+  xlab("TP53 altered status") +
+  ylab("TP53 RNA expression") +
+  rremove("legend")
 
-ggplot(polya_tp53, aes(x = factor(tp53_altered), y = TP53)) +
-  geom_violin()+
-  geom_jitter(alpha = 0.5, width = 0.2) +
-  stat_compare_means() +
-  theme_bw() +
-  ggtitle("Distribution of TP53 expression across tp53 altered status") +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
-  xlab("tp53 altered status") 
+ggsave(file.path(plot_dir, "tp53_expression_by_altered_status_polya.png"))
 
 ```
 
 ### Check if other cancer predisposition have high TP53 inactivation scores  
 
 ```{r ,out.width="50%"}
-
 ggplot(tp53_alterations_score_wide, aes(x = factor(tp53_altered), y = tp53_score)) +
   geom_violin()+
   geom_jitter(alpha = 0.5, width = 0.2) +
@@ -432,6 +490,31 @@ ggplot(tp53_alterations_score_wide, aes(x = factor(tp53_altered), y = tp53_score
   theme(axis.text.x = element_text(angle = 60, hjust = 1))+
   xlab("tp53 altered status") +
   facet_wrap(.~cancer_predispositions)
+
+# plot lfs for manuscript
+lfs <- tp53_alterations_score_wide %>%
+  filter(cancer_predispositions == "Li-Fraumeni syndrome")
+
+lfs %>%
+  filter(!is.na(tp53_score)) %>%
+  group_by(tp53_altered) %>%
+  tally()
+```
+
+```{r}
+ggviolin(lfs, x = "tp53_altered", y = "tp53_score", 
+         color = "tp53_altered", 
+         palette = "jco",
+         order = c("loss", "other"),
+         add = c("boxplot", "jitter"),  
+   ggtheme = theme_pubr()) +
+  # Add pairwise comparisons p-value
+  stat_compare_means(method = "wilcox.test", label.y = 1.2) +
+  xlab("TP53 altered status") +
+  ylab("TP53 score") +
+  rremove("legend")
+ggsave(file.path(plot_dir, "lfs_tp53_scores.png"))
+
 
 ```
 Some NF-1 and/or Other inherited conditions NOS have high scoring TP53 mutants as well. 
