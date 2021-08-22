@@ -1,5 +1,92 @@
 # release notes
+
 ## current release
+- release date: 2021-08-20
+- status: available
+- overview of changes:
+    - This particular release is mainly to include 412 tumor/normal pairs of TARGET WXS samples as listed in [ticket 111](https://github.com/PediatricOpenTargets/ticket-tracker/issues/111). Detailed changes see below. 
+- detailed changes: 
+    - Histology file updates - the master ticket is d3b center [ticket 43](https://github.com/d3b-center/D3b-codes/pull/43):
+      - 412 tumor/normal TARGET WXS samples were included in the histologies.tsv file per [ticket 111](https://github.com/PediatricOpenTargets/ticket-tracker/issues/111)v
+      - `sample_id` and `aliquot_id` for some TARGET samples were miscoded before. This release fixed the issue per [ticket 145](https://github.com/PediatricOpenTargets/ticket-tracker/issues/145)
+      - `sample_id` and `aliquot_id` were updated using the GTEx coding nomenclature GTEX-[donor ID]-[tissue site ID]-SM-[aliquot ID] (https://www.gtexportal.org/home/faq#sampleIdFormat)
+      - `primary_site` for GTEx samples were updated to match `gtex_subgroup` column, changing `Whole Blood` to `Blood` and `Brain - Cerebellar Hemisphere` to `Brain - Cerebellum`
+      - `broad_histology` for TARGET samples were updated as following: `Acute Lymphoblastic Leukemia` and `Acute Myeloid Leukemia` were merged to `Hematologic malignancy`; `Clear cell sarcoma of the kidney`, `Rhabdoid tumor`, and `Wilms tumor` were combined as `Renal tumor`; `Osteosarcoma` is changed to `Mesenchymal non-meningothelial tumor` and `Neuroblastoma` is converted to `Embryonal tumor`. See [ticket 136](https://github.com/PediatricOpenTargets/ticket-tracker/issues/136) and [ticket 176] (https://github.com/PediatricOpenTargets/ticket-tracker/issues/176)
+      - For `gtex_group == "Cells"`, the `composition` column is changed from `Solid Tissue` to `Derived Cell Line` per discussion in d3b center [ticket 43](https://github.com/d3b-center/D3b-codes/pull/43)
+      - For `short_histology`,  neuroblastoma samples previously annotated as `NBL` or `Embryonal tumor` are converted to `Neuroblastoma` to be consistent with other samples 
+      - Updated MB subtypes in the histologies file per [ticket 148](https://github.com/PediatricOpenTargets/ticket-tracker/issues/148)
+      - Some GMKF WGS samples does not have `germline_sex_estimate` as indicated in [ticket 168](https://github.com/PediatricOpenTargets/ticket-tracker/issues/168). Added using the file in the discussion of [ticket 159](https://github.com/PediatricOpenTargets/ticket-tracker/issues/159)
+      - Some TARGET WXS samples miss `tumor_ploidy` that are actually available - and those samples now have updated ploidy using the file in the discussion session of [ticket 160](https://github.com/PediatricOpenTargets/ticket-tracker/issues/160)
+    
+    - Update DNA related files to include TARGET WXS DNA (412 tumor/normal pairs):
+      - cnv-cnvkit.seg.gz [ticket 156](https://github.com/PediatricOpenTargets/ticket-tracker/issues/156)
+      - cnv-controlfreec.tsv.gz [ticket 156](https://github.com/PediatricOpenTargets/ticket-tracker/issues/156)
+      - snv-consensus-plus-hotspots.maf.tsv.gz [ticket 156](https://github.com/PediatricOpenTargets/ticket-tracker/issues/156)
+    - Update method to call CNV consensus (WGS) as described in [ticket 134](https://github.com/PediatricOpenTargets/ticket-tracker/issues/134) and [ticket 149](https://github.com/PediatricOpenTargets/ticket-tracker/issues/149). Briefly, CNV called by `MantaSV` were filtered to contain only `filter == "PASS"` before going into the consensus calling workflow. In the subsequent step, instead of only retaining CNV calls that have 50% reciprocal overlap between callers (which was too stringent), the criteria is expanded to include small CNV regions that are 90% covered by a larger CNV. The consensus is the overlapping region. 
+      - cnv_consensus_seg.gz (WGS samples only - in S3 bucket s3://kf-openaccess-us-east-1-prd-pbta/open-targets/v8/ but not in md5sum.txt file)
+    - As a result of changing consensus calling criteria and adding new TARGET WXS DNA sample results to `cnv-cnvkit.seg.gz` and `cnv-controlfreec.tsv.gz`, the following files were updated:
+      - consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz [ticket 159](https://github.com/PediatricOpenTargets/ticket-tracker/issues/159) and [ticket 160](https://github.com/PediatricOpenTargets/ticket-tracker/issues/160) (only in S3 bucket s3://kf-openaccess-us-east-1-prd-pbta/open-targets/v8/- not included in automatic download)
+      - consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz [ticket 159](https://github.com/PediatricOpenTargets/ticket-tracker/issues/159) and [ticket 160](https://github.com/PediatricOpenTargets/ticket-tracker/issues/160) (only in S3 bucket s3://kf-openaccess-us-east-1-prd-pbta/open-targets/v8/- not included in automatic download)
+      
+    - Added `consensus_wgs_plus_cnvkit_wxs.tsv.gz` which is a merge of `consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz` and `consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz` per [ticket 161](https://github.com/PediatricOpenTargets/ticket-tracker/issues/161)
+    - Updated `ensg-hugo-rmtl-mapping.tsv` file per [ticket 146](https://github.com/PediatricOpenTargets/ticket-tracker/issues/146). The previous release of this file does not contain all gene ENSG IDs and symbols that are present in `snv-consensus-plus-hotspots.maf.tsv.gz`. This update merged GENCODE V28 and V38 to allow inclusion of more gene ENSG IDs and symbols. 
+    - Futher update `ensg-hugo-rmtl-mapping.tsv` [PR 48 D3b codes](https://github.com/d3b-center/D3b-codes/pull/48) to include all gene ENSG ID to symbol mappings in v7 `ensg-hugo-rmtl-mapping.tsv`.
+
+    - Update independent samples files to include TARGET WXS DNA (412 tumor/normal pairs) - [ticket 165](https://github.com/PediatricOpenTargets/ticket-tracker/issues/165). Previously, these files were not added to our releases. Starting this release, we will also add independent sample list to our release as well. 
+    - Updated independent samples so that the `Kids_First_Biospecimen_ID` for `allcohorts` and `eachcohort` match if possible: [ticket 135](https://github.com/PediatricOpenTargets/ticket-tracker/issues/135)
+    - Updated independent sample module to arrange by `Kids_First_Biospecimen_ID` before writing out the file: [ticket 179](https://github.com/PediatricOpenTargets/ticket-tracker/issues/179)
+    - For now, we will add files that are used by analyses modules in this file and these are the following: 
+      - independent-specimens.wgswxspanel.primary.eachcohort.tsv
+      - independent-specimens.wgswxspanel.relapse.eachcohort.tsv
+      - independent-specimens.rnaseq.primary.eachcohort.tsv
+      - independent-specimens.rnaseq.relapse.eachcohort.tsv
+      - independent-specimens.wgswxspanel.primary.tsv
+      - independent-specimens.wgswxspanel.relapse.tsv
+      - independent-specimens.rnaseq.primary.tsv
+      - independent-specimens.rnaseq.relapse.tsv
+    - Updated `fusion-putative-oncogenic.tsv` since at the last step of putative oncogenic fusion filtering, we filter out fusions seen in > 4 broad_histology since they are likely artifacts and with the update of broad_histology, the result will be updated [ticket 175](https://github.com/PediatricOpenTargets/ticket-tracker/issues/175)
+      - fusion-putative-oncogenic.tsv
+
+```
+v8
+├── WGS.hg38.lancet.300bp_padded.bed
+├── WGS.hg38.lancet.unpadded.bed
+├── WGS.hg38.mutect2.vardict.unpadded.bed
+├── WGS.hg38.strelka2.unpadded.bed
+├── WGS.hg38.vardict.100bp_padded.bed
+├── cnv-cnvkit.seg.gz
+├── cnv-controlfreec.tsv.gz
+├── consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz
+├── consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz
+├── consensus_wgs_plus_cnvkit_wxs.tsv.gz
+├── data-files-description.md
+├── efo-mondo-map.tsv
+├── ensg-hugo-rmtl-mapping.tsv
+├── fusion-arriba.tsv.gz
+├── fusion-starfusion.tsv.gz
+├── fusion-putative-oncogenic.tsv
+├── gene-counts-rsem-expected_count-collapsed.rds
+├── gene-expression-rsem-tpm-collapsed.rds
+├── histologies.tsv
+├── independent-specimens.wgswxspanel.primary.eachcohort.tsv
+├── independent-specimens.wgswxspanel.relapse.eachcohort.tsv
+├── independent-specimens.rnaseq.primary.eachcohort.tsv
+├── independent-specimens.rnaseq.relapse.eachcohort.tsv
+├── independent-specimens.wgswxspanel.primary.tsv
+├── independent-specimens.wgswxspanel.relapse.tsv
+├── independent-specimens.rnaseq.primary.tsv
+├── independent-specimens.rnaseq.relapse.tsv
+├── intersect_cds_lancet_strelka_mutect_WGS.bed
+├── intersect_strelka_mutect_WGS.bed
+├── release-notes.md
+├── snv-consensus-plus-hotspots.maf.tsv.gz
+├── sv-manta.tsv.gz
+├── uberon-map-gtex-group.tsv
+└── uberon-map-gtex-subgroup.tsv
+
+```
+
+## archived release
 - release date: 2021-07-23
 - status: available
 - changes:
