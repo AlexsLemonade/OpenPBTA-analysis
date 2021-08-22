@@ -38,5 +38,3 @@ Rscript --vanilla 05-fit_cns_signatures.R  \
   
 # Process, visualize the 8 known CNS signature exposures
 Rscript -e "rmarkdown::render('06-analyze_cns_fit.Rmd', clean = TRUE)"
-
-  
