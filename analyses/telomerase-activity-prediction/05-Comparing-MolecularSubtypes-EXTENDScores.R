@@ -32,17 +32,27 @@ telomerase_scores <- hist_file %>%
   select(SampleID, short_histology, broad_histology, molecular_subtype) %>%
   inner_join(telomerase_scores, by = "SampleID")
 
-# filter NA, to be classified and molecular subtype count < 2 (required for p-value calculations)
+# filter NA, to be classified and reduce to sample count >= 5
 telomerase_scores <- telomerase_scores %>%
   filter(!is.na(molecular_subtype),
          !grepl("To be classified", molecular_subtype)) %>%
-  group_by(molecular_subtype) %>%
-  mutate(n = n()) %>%
-  filter(n > 1)
+  group_by(broad_histology, molecular_subtype) %>%
+  mutate(n_samples = n()) %>%
+  filter(n_samples >= 5)
+
+# filter NA, to be classified and molecular subtype count < 2 
+subtypes <- telomerase_scores %>%
+  select(broad_histology, molecular_subtype) %>%
+  unique() %>%
+  group_by(broad_histology) %>%
+  mutate(n_subtypes = n()) %>%
+  filter(n_subtypes > 1)
+telomerase_scores <- telomerase_scores %>%
+  filter(molecular_subtype %in% subtypes$molecular_subtype)
 
 # apply function
 # create boxplot of NormEXTENDScores per molecular subtype per histology 
 plyr::d_ply(telomerase_scores, 
-            .variables = "short_histology", 
+            .variables = "broad_histology", 
             .fun = function(x) boxplot_by_molecular_subtype(scores_mat = x, output_dir))
 
