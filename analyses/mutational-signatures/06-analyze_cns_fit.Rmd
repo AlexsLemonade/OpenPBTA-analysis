@@ -1,0 +1,184 @@
+---
+title: "Examining CNS signature fitting"
+author: "S. Spielman"
+date: "2021"
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+editor_options:
+  chunk_output_type: console
+---
+
+<br><br><br><br>
+
+#### Files and paths
+
+
+```{r setup}
+`%>%` <- dplyr::`%>%`
+
+proj_root_path  <- file.path( rprojroot::find_root(rprojroot::has_dir(".git")) )
+analysis_path   <- file.path(proj_root_path, "analyses", "mutational-signatures")
+plot_path       <- file.path(analysis_path, "plots", "cns")
+if (!dir.exists(plot_path)) {
+  dir.create(plot_path, recursive = TRUE)
+}
+
+maf_file             <- file.path(proj_root_path, "scratch", "mutational-signatures", "pbta-snv-consensus-wgs.tsv.gz")
+wgs_bed_file         <- file.path(proj_root_path, "data", "WGS.hg38.strelka2.unpadded.bed")
+histology_color_file <- file.path(proj_root_path, "figures", "palettes", "histology_label_color_table.tsv")
+fitted_file          <- file.path(analysis_path, "results", "fitted_cns_signature_exposures.RDS")
+```
+
+```{r read_prep_data, warning=FALSE}
+maf <- data.table::fread(maf_file, data.table = FALSE)
+
+histology_label_mapping <- readr::read_tsv(histology_color_file) %>% 
+  # Select just the columns we will need for plotting
+  dplyr::select(display_group, display_order, hex_codes, Kids_First_Biospecimen_ID) %>% 
+  # Reorder display_group based on display_order
+  dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order)) 
+
+# WGS information for calculating mutation per Mb
+wgs_bed <- readr::read_tsv(wgs_bed_file, col_names=FALSE)
+wgs_size <- sum(wgs_bed[, 3] - wgs_bed[, 2]) 
+
+
+# Exposures into a tibble
+raw_exposures <- readr::read_rds(fitted_file)
+raw_exposures$mean %>%
+  tibble::as_tibble(rownames = "Kids_First_Biospecimen_ID") %>%
+  tidyr::gather(-Kids_First_Biospecimen_ID, 
+                key = "signature", 
+                value = "exposure") -> exposures
+
+
+# Tabulate mutation counts
+sigs_input <- deconstructSigs::mut.to.sigs.input(
+  mut.ref = maf,
+  sample.id = "Tumor_Sample_Barcode",
+  chr = "Chromosome",
+  pos = "Start_Position",
+  ref = "Reference_Allele",
+  alt = "Allele",
+  bsg = BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
+)
+```
+
+```{r get_counts_exposures}
+# Sample mutation counts per WGS Mb, considering only samples with >=50 mutations, since sigfit does not consider samples with <50
+rowSums(sigs_input) %>%
+  # throws a warning - ok for us since our package behavior is not going to change in Docker.
+  tibble::as_tibble(rownames = "Kids_First_Biospecimen_ID") %>%
+  dplyr::rename(mutation_count = "value") %>%
+  dplyr::filter(mutation_count >= 50) %>%
+  dplyr::mutate(sample_count_per_mb = mutation_count / (wgs_size / 10^6)) -> counts_per_mb
+
+
+# Find sample counts for each signature
+dplyr::left_join(counts_per_mb, exposures) %>%
+  dplyr::mutate(signature_count_per_mb = sample_count_per_mb * exposure) %>%
+  dplyr::select(-exposure) -> signature_counts
+signature_counts
+```
+<br><br>
+
+
+```{r barplot_mean_median_counts, fig.width = 8, fig.height = 4}
+
+signature_counts %>%
+  # Need to do calculations per grouping
+  dplyr::inner_join(histology_label_mapping) %>% 
+  dplyr::select(-mutation_count, -sample_count_per_mb) %>%
+  dplyr::group_by(display_group, hex_codes, signature) %>% 
+  dplyr::summarize(
+    # proportion of samples within a group that actually contain the signature. If 1, then all samples have non-zero signature counts. This is expected and correct - we FITTED not EXTRACTED.
+    prop_tumors_with_sig  = sum(signature_count_per_mb > 0) / dplyr::n(), # --> all of these values are 1, not worth plotting
+    # Only calc for samples that have nonzero count. Do median and mean for comparison purposes
+    median_count = median(signature_count_per_mb[signature_count_per_mb != 0]), 
+    mean_count   = mean(signature_count_per_mb[signature_count_per_mb != 0])) %>%
+  dplyr::ungroup() %>%
+  tidyr::gather("count_type",
+                "count", 
+                median_count:mean_count) -> cns_exposure_counts
+cns_exposure_counts
+
+# forcats isn't ordering well since mean and median values, so:
+sig_levels <- c("D", "F", "H", "E", "B", "G", "C", "A") 
+
+cns_exposure_counts %>%
+  #prettier labeling
+  dplyr::mutate(signature_label = stringr::str_replace(signature, "CNS_", ""),
+                signature_label = factor(signature_label, levels = sig_levels),
+                count_type_label = stringr::str_replace(count_type, "_count", ""),
+                count_type_label = stringr::str_to_title(count_type_label),
+                count_type_label = paste( count_type_label, "number of mutations\nacross samples" )) %>% 
+  dplyr::distinct() %>% 
+  ggplot2::ggplot() + 
+  ggplot2::aes(x = signature_label, y = count, fill = hex_codes) +
+  ggplot2::geom_col() +
+  ggplot2::scale_fill_identity() + 
+  ggplot2::facet_wrap(~count_type_label, scales="free_y") +
+  ggplot2::labs(x = "CNS RefSig Signature",
+       y = "Mutation count per Mb",
+       title = "Exposures across histology groups") +
+  ggplot2::theme_light()-> mean_median_exposure_barplot
+
+mean_median_exposure_barplot
+
+ggplot2::ggsave( file.path(plot_path, "mean_median_exposure_barplot.png"), 
+                 mean_median_exposure_barplot, 
+                 width = 8,
+                 height = 4)
+```
+
+Above is a barplot showing the mean (left) and median (right) number of mutations per Mb, across histologies and CNS signatures. Counts are averaged (or median was taken) among all WGS samples in each histology group.
+
+<br><br>
+
+
+```{r most_mutated_samples}
+
+# Show the top_n (10) most mutated samples
+top_n <- 10
+signature_counts %>%
+  dplyr::select(Kids_First_Biospecimen_ID, sample_count_per_mb) %>%
+  dplyr::distinct() %>%
+  dplyr::arrange(-sample_count_per_mb) %>%
+  dplyr::slice(1:top_n) %>%
+  dplyr::pull(Kids_First_Biospecimen_ID) -> top_ten_samples
+
+# Not sure of appropriate color palette for DISCRETE DATA?
+signature_counts %>%
+  dplyr::filter(Kids_First_Biospecimen_ID %in% top_ten_samples) %>%
+  dplyr::mutate(signature_label = stringr::str_replace(signature, "CNS_", "")) %>%
+  ggplot2::ggplot() + 
+  ggplot2::aes(x = forcats::fct_reorder(Kids_First_Biospecimen_ID, mutation_count, .desc=T),
+               y = signature_count_per_mb, fill = signature_label) +
+  ggplot2::geom_col() + 
+   ggplot2::labs(x = "Sample ID",
+       y = "Mutation count per Mb",
+       title = glue::glue("Top {top_n} most mutated samples")) +
+  # using a colorblind-friendly brewer palette for discrete mapping
+  ggplot2::scale_fill_brewer(palette = "Set2", name = "CNS Signature") +
+  ggplot2::theme_light() + 
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90), 
+                 legend.position = "bottom") -> top_n_samples_barplot
+
+top_n_samples_barplot
+
+ggplot2::ggsave( file.path(plot_path, glue::glue("top_{top_n}_samples_barplot.png")), 
+                 top_n_samples_barplot, 
+                 width = 7,
+                 height = 5)
+```
+
+Above is a barplot showing the mutation counts across CNS signatures specifically for the top 10 most highly-mutated samples in the PBTA.
+
+
+### Session info
+
+```{r sessioninfo}
+sessionInfo()
+```
