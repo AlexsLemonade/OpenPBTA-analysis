@@ -38,6 +38,7 @@ histologies_file <- file.path(data_dir, "pbta-histologies-base.tsv")
 compiled_subtypes_file <- file.path(results_dir, "compiled_molecular_subtypes.tsv")
 meningioma_subtypes_file <- file.path(results_dir, "meningioma_subtypes.tsv")
 lgat_recode_file <- file.path(results_dir, "lgat-pathology-free-text-subtypes.tsv")
+glialnueronal_recode_file <- file.path(results_dir, "glialneuronal_tumor_subtypes.tsv")
 cranio_adam_recode_file <- file.path(results_dir, "cranio_adam_subtypes.tsv")
 cns_lymphoma_subtypes_file <- file.path(results_dir, "cns-lymphoma-subtypes.tsv")
 jxg_subtypes_file <- file.path(results_dir, "juvenile-xanthogranuloma-subtypes.tsv")
@@ -71,6 +72,7 @@ compiled_subtypes_df <- readr::read_tsv(compiled_subtypes_file) %>%
 
 lgat_recode_df <- readr::read_tsv(lgat_recode_file)
 meningioma_subtypes_df <- readr::read_tsv(meningioma_subtypes_file)
+glialnueronal_recode_df <- readr::read_tsv(glialnueronal_recode_file)
 cranio_adam_recode_df <- readr::read_tsv(cranio_adam_recode_file)
 cns_lymphoma_subtypes_df <- readr::read_tsv(cns_lymphoma_subtypes_file) 
 jxg_subtypes_df <- readr::read_tsv(jxg_subtypes_file)
@@ -98,6 +100,18 @@ compiled_subtypes_df <- compiled_subtypes_df %>%
   # replace 
   bind_rows(lgat_recode_df) 
 
+
+```
+
+### Neuronal and mixed neuronal-glial tumors updates in broad_histology, short_histology and harmonized_diagnosis
+```{r}
+
+compiled_subtypes_df <- compiled_subtypes_df %>% 
+  # remove old data
+  dplyr::filter(!Kids_First_Biospecimen_ID %in% glialnueronal_recode_df$Kids_First_Biospecimen_ID) %>%
+  # replace 
+  bind_rows(glialnueronal_recode_df)  %>%
+  select(-pathology_diagnosis,-pathology_free_text_diagnosis)
 
 ```
 
