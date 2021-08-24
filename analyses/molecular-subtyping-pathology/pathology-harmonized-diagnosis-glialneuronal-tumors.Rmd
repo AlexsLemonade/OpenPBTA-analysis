@@ -93,6 +93,7 @@ subtype_df <- histologies_df %>%
          Kids_First_Participant_ID,
          sample_id,
          pathology_diagnosis,
+         tumor_descriptor,
          pathology_free_text_diagnosis) %>%
   # For convenience, let's add a column where pathology_free_text_diagnosis
   # is all lower case out of an abundance of caution
