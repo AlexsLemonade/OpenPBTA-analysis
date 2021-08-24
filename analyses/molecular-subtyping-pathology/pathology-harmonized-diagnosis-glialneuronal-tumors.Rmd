@@ -138,7 +138,7 @@ dia_df <- subtype_df %>%
 glioneuronal_df <- subtype_df %>%
   # Filter to samples with "glioneuronal" in pathology free text
   filter(str_detect(pathology_free_text_dx_lower,
-                    lgat_path_dx_list$recode_path_free_text[3])) %>%
+                    lgat_path_dx_list$recode_path_free_text[4])) %>%
   mutate(
     integrated_diagnosis = case_when(
     # Set integrated diagnosis if sample is subtyped
