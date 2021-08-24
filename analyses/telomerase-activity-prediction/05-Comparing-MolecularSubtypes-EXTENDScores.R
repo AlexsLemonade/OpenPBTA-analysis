@@ -32,13 +32,13 @@ telomerase_scores <- hist_file %>%
   select(SampleID, short_histology, broad_histology, molecular_subtype) %>%
   inner_join(telomerase_scores, by = "SampleID")
 
-# filter NA, to be classified and reduce to sample count >= 5
+# filter NA, to be classified and reduce to sample count >= 3
 telomerase_scores <- telomerase_scores %>%
   filter(!is.na(molecular_subtype),
          !grepl("To be classified", molecular_subtype)) %>%
   group_by(broad_histology, molecular_subtype) %>%
   mutate(n_samples = n()) %>%
-  filter(n_samples >= 5)
+  filter(n_samples >= 3)
 
 # filter NA, to be classified and molecular subtype count < 2 
 subtypes <- telomerase_scores %>%
