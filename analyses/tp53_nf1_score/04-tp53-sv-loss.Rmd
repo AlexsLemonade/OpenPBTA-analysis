@@ -11,7 +11,7 @@ params:
     
 In this script we will find if there are a Structural Variant breakpoints within TP53 or covering the gene locus such that it is deleted and concurrently, there are either one or both of:
   - 0 or 1 copy of TP53 (we would already have captured them as loss)
-  - expression less than 1 FPKM
+  - expression less than 1 TPM
 
 We want to subset SV calls which will possibly	lead to loss of function to use for evaluation of TP53 inactivation score at a later step.
 
