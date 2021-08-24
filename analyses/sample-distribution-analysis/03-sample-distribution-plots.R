@@ -60,7 +60,9 @@ final_df <- histologies_df %>%
   reshape2::dcast(Kids_First_Participant_ID + 
                     cancer_group + 
                     tumor_descriptor + 
-                    germline_sex_estimate ~ experimental_strategy) %>%
+                    germline_sex_estimate +
+                    cancer_group_hex_codes ~ experimental_strategy,
+                  fun.aggregate = function(x){as.integer(length(x)>0)}) %>%
   # Get distinct based on participant IDs
   dplyr::distinct(Kids_First_Participant_ID, 
                   WGS,
@@ -71,11 +73,11 @@ final_df <- histologies_df %>%
                   germline_sex_estimate, 
                   cancer_group_hex_codes) %>% 
   # Select our columns of interest
-  dplyr::select(cancer_group, WGS, WXS, RNA-Seq, tumor_descriptor, germline_sex_estimate, cancer_group_hex_codes) %>%
+  dplyr::select(cancer_group, WGS, WXS, `RNA-Seq`, tumor_descriptor, germline_sex_estimate, cancer_group_hex_codes) %>%
   # Remove any row that has an NA
   dplyr::filter(complete.cases(.)) %>%
   # Group by all columns in order to count
-  dplyr::group_by( cancer_group, WGS, WXS, RNA-Seq, tumor_descriptor, germline_sex_estimate, cancer_group_hex_codes) %>%
+  dplyr::group_by( cancer_group, WGS, WXS, `RNA-Seq`, tumor_descriptor, germline_sex_estimate, cancer_group_hex_codes) %>%
   # Add the count to a column named size
   dplyr::add_count(name = "size") %>%
   # Place the value 1 in a column named counter for treemap and sunburt plots
@@ -129,4 +131,4 @@ sun_plot <-
 p <- sunburstR::sund2b(tmnest, colors = color, valueField = "vSize")
 
 # Create HTML outputs for the interactive plots
-mapview::mapshot(p, url = file.path(plots_dir, "histology-pie.html"))
+mapview::mapshot(p, url = file.path(plots_dir, "sample-distribution-pie.html"))
