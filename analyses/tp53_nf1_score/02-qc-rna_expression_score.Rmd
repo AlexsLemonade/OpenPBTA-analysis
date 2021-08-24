@@ -136,7 +136,7 @@ ggplot(polya_exp_score,aes(expression_value,tp53_score))+
 ```
 
  
- PolyA Strnaded
+ PolyA Stranded
 
 ```{r}
 ggplot(polya_stranded_exp_score,aes(expression_value,tp53_score))+
