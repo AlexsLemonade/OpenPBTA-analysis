@@ -59,11 +59,12 @@ consensus_snv <- data.table::fread(snvConsensusFile,
                                    data.table = FALSE)
 
 # read in consensus CNV file
-cnvConsesus <- data.table::fread( cnvConsesusFile,
-                          select=c("gene_symbol",
-                                   "biospecimen_id",
-                                   "status")
-)
+cnvConsesus <- data.table::fread( cnvConsesusFile) %>%
+  dplyr::filter(!grepl('X|Y', cytoband)) %>%
+  dplyr::select(gene_symbol,
+           biospecimen_id,
+           status)
+
 
 # gencode cds region BED file
 gencode_cds <- read_tsv(gencodeBed, col_names = FALSE)
