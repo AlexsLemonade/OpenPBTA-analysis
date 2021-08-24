@@ -61,7 +61,7 @@ Update "Other" sample broad/short histology and harmonized_diagnosis and add to 
 
 ```{r}
 
-Other_subtypes <- read_tsv(file.path("input","pathology_dx and pathology_free_text_diagnosis to broad_histology for subtyping module - rules_without_subtype_WIP.tsv"))
+Other_subtypes <- read_tsv(file.path("input","pathology_dx\ and\ pathology_free_text_diagnosis\ to\ broad_histology\ for\ subtyping\ module\ -\ other_diagnosis_rules.tsv"))
 
 compiled_subtyping_other <- base_histology %>%
   select(
@@ -172,23 +172,34 @@ Provides a narrower grouping for samples that can be used in generating figures
 histology<- histology %>%
   # remove subtype details
   dplyr::mutate(cancer_group = str_extract(harmonized_diagnosis, "[^,]*")) %>%
+  
   # update some values that come from pathology_diagnosis which are not standardized yet
-  dplyr::mutate(cancer_group = case_when(cancer_group == "Brainstem glioma- Diffuse intrinsic pontine glioma" ~ "Diffuse intrinsic pontine glioma",
-                                         cancer_group == "Anaplastic (malignant) meningioma" ~ "Meningioma",
-                                         cancer_group == "Atypical meningioma" ~ "Meningioma",
-                                         cancer_group == "Neurofibroma/Plexiform;Other" ~ "Neurofibroma/Plexiform",
-                                         cancer_group == "Non-germinomatous germ cell tumor;Teratoma" ~ "Teratoma",
-                                         cancer_group %in% c("Meningothelial meningioma", "Clear cell meningioma") ~ "Meningioma",
-                                         cancer_group == "Embryonal Tumor with Multilayered Rosettes" ~ "Embryonal tumor with multilayer rosettes",
-                                         cancer_group == "Adamantinomatous craniopharyngioma" ~ "Craniopharyngioma",
-                                         sample_id == "7316-2577" ~ "Embryonal tumor with multilayer rosettes",
-                                         cancer_group %in% c("Benign tumor","Dysplasia/Gliosis","Other") ~ NA_character_,
-                                         TRUE ~ as.character(cancer_group))
+  dplyr::mutate(cancer_group = case_when(
+    cancer_group == "Brainstem glioma- Diffuse intrinsic pontine glioma" ~ "Diffuse intrinsic pontine glioma",
+    cancer_group == "Anaplastic (malignant) meningioma" ~ "Meningioma",
+    cancer_group == "Atypical meningioma" ~ "Meningioma",
+    cancer_group == "Neurofibroma/Plexiform;Other" ~ "Neurofibroma/Plexiform",
+    cancer_group == "Non-germinomatous germ cell tumor;Teratoma" ~ "Teratoma",
+    cancer_group %in% c("Meningothelial meningioma", "Clear cell meningioma") ~ "Meningioma",
+    cancer_group == "Embryonal Tumor with Multilayered Rosettes" ~ "Embryonal tumor with multilayer rosettes",
+    cancer_group == "Adamantinomatous craniopharyngioma" ~ "Craniopharyngioma",
+    sample_id == "7316-2577" ~ "Embryonal tumor with multilayer rosettes",
+    cancer_group %in% c("Benign tumor","Dysplasia/Gliosis","Other","Dysplasia/Gliosis-Glial-neuronal tumor NOS") ~ NA_character_,
+    TRUE ~ as.character(cancer_group))
   ) %>%
+  # Additional update to clean up terms that we will use in plots
   # remove short forms in the brackets
   dplyr::mutate(cancer_group = str_extract(cancer_group, "[^(]*")) %>%
   # remove space at the ends
-  dplyr::mutate(cancer_group = gsub(" $","",cancer_group)) 
+  dplyr::mutate(cancer_group = gsub(" $","",cancer_group)) %>%
+  # updates so that terms are readable/usable in plots
+  dplyr::mutate(
+    # change "/" to `space`to avoid Unix environments using the "/" 
+    # in the term as sub-folder when the term is used in output plots
+    cancer_group = gsub("/"," ", cancer_group),
+    # change ";" to "-" 
+    cancer_group = gsub(";","-", cancer_group)            
+  )
 
 ```
 
