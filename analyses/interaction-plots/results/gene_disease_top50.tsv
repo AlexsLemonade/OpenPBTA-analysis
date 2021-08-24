@@ -1,6 +1,6 @@
 gene	disease	mutant_samples	total_muts	mean_muts_per_sample
 TP53	Diffuse astrocytic and oligodendroglial tumor	46	57	1.2391304347826086
-BRAF	Low-grade astrocytic tumor	43	43	1
+BRAF	Low-grade astrocytic tumor	42	42	1
 H3F3A	Diffuse astrocytic and oligodendroglial tumor	40	40	1
 CTNNB1	Tumors of sellar region	22	22	1
 ATRX	Diffuse astrocytic and oligodendroglial tumor	21	28	1.3333333333333333
@@ -9,13 +9,14 @@ CTNNB1	Embryonal tumor	12	12	1
 EGFR	Diffuse astrocytic and oligodendroglial tumor	10	15	1.5
 PPM1D	Diffuse astrocytic and oligodendroglial tumor	10	10	1
 DDX3X	Embryonal tumor	9	10	1.1111111111111112
-FGFR1	Low-grade astrocytic tumor	8	12	1.5
 PTPN11	Diffuse astrocytic and oligodendroglial tumor	8	11	1.375
 KMT2D	Embryonal tumor	8	9	1.125
 PIK3CA	Diffuse astrocytic and oligodendroglial tumor	8	9	1.125
-KMT2C	Embryonal tumor	8	8	1
+TNC	Diffuse astrocytic and oligodendroglial tumor	7	13	1.8571428571428572
+FGFR1	Low-grade astrocytic tumor	7	11	1.5714285714285714
 PTEN	Diffuse astrocytic and oligodendroglial tumor	7	8	1.1428571428571428
 TP53	Embryonal tumor	7	8	1.1428571428571428
+KMT2C	Embryonal tumor	7	7	1
 NF2	Meningioma	7	7	1
 PDGFRA	Diffuse astrocytic and oligodendroglial tumor	7	7	1
 RYR2	Diffuse astrocytic and oligodendroglial tumor	6	22	3.6666666666666665
@@ -38,125 +39,128 @@ BCOR	Low-grade astrocytic tumor	5	5	1
 COL4A3	Diffuse astrocytic and oligodendroglial tumor	5	5	1
 IDH1	Low-grade astrocytic tumor	5	5	1
 IGSF10	Diffuse astrocytic and oligodendroglial tumor	5	5	1
-KRAS	Low-grade astrocytic tumor	5	5	1
 NF1	Low-grade astrocytic tumor	5	5	1
 PIK3CA	Low-grade astrocytic tumor	5	5	1
 KMT2D	Diffuse astrocytic and oligodendroglial tumor	4	15	3.75
-ADGRV1	Diffuse astrocytic and oligodendroglial tumor	4	13	3.25
 PRKDC	Diffuse astrocytic and oligodendroglial tumor	4	13	3.25
-CCDC168	Diffuse astrocytic and oligodendroglial tumor	4	12	3
+ADGRV1	Diffuse astrocytic and oligodendroglial tumor	4	12	3
 MUC5AC	Diffuse astrocytic and oligodendroglial tumor	4	12	3
 MYH14	Diffuse astrocytic and oligodendroglial tumor	4	12	3
 KIAA1549	Diffuse astrocytic and oligodendroglial tumor	4	11	2.75
 KMT2C	Diffuse astrocytic and oligodendroglial tumor	4	11	2.75
-MYO10	Diffuse astrocytic and oligodendroglial tumor	4	11	2.75
 RP1L1	Diffuse astrocytic and oligodendroglial tumor	4	11	2.75
 SMARCA4	Diffuse astrocytic and oligodendroglial tumor	4	11	2.75
+CCDC168	Diffuse astrocytic and oligodendroglial tumor	4	10	2.5
 CELSR1	Diffuse astrocytic and oligodendroglial tumor	4	10	2.5
 IGFN1	Diffuse astrocytic and oligodendroglial tumor	4	10	2.5
 LRP1B	Diffuse astrocytic and oligodendroglial tumor	4	9	2.25
-PTPRZ1	Diffuse astrocytic and oligodendroglial tumor	4	7	1.75
+FGFR1	Neuronal and mixed neuronal-glial tumor	4	6	1.5
 FGFR1	Diffuse astrocytic and oligodendroglial tumor	4	5	1.25
 IDH1	Diffuse astrocytic and oligodendroglial tumor	4	4	1
+KRAS	Low-grade astrocytic tumor	4	4	1
+ZNF469	Diffuse astrocytic and oligodendroglial tumor	3	9	3
 PHLPP1	Diffuse astrocytic and oligodendroglial tumor	3	7	2.3333333333333335
-FGFR1	Neuronal and mixed neuronal-glial tumor	3	5	1.6666666666666667
-FBN2	Embryonal tumor	3	4	1.3333333333333333
 NF2	Ependymal tumor	3	4	1.3333333333333333
 NF2	Tumor of cranial and paraspinal nerves	3	4	1.3333333333333333
-DNAH14	Embryonal tumor	3	3	1
-RP1L1	Embryonal tumor	3	3	1
+FSIP2	Metastatic tumors	3	3	1
 SETD2	Embryonal tumor	3	3	1
 STAG2	Embryonal tumor	3	3	1
 PDGFRA	Low-grade astrocytic tumor	2	4	2
 PDGFRA	Neuronal and mixed neuronal-glial tumor	2	4	2
 STAG2	Mesenchymal non-meningothelial tumor	2	3	1.5
-ADGRV1	Embryonal tumor	2	2	1
 ATM	Embryonal tumor	2	2	1
 ATRX	Low-grade astrocytic tumor	2	2	1
-CELSR1	Embryonal tumor	2	2	1
+BRAF	Neuronal and mixed neuronal-glial tumor	2	2	1
+CELSR1	Metastatic tumors	2	2	1
 DDX3X	Diffuse astrocytic and oligodendroglial tumor	2	2	1
-DNHD1	Embryonal tumor	2	2	1
-FSIP2	Embryonal tumor	2	2	1
-FSIP2	Metastatic tumors	2	2	1
+DNAH14	Embryonal tumor	2	2	1
+FBN2	Embryonal tumor	2	2	1
 IGSF10	Embryonal tumor	2	2	1
 KDM6A	Diffuse astrocytic and oligodendroglial tumor	2	2	1
 KIAA1549	Embryonal tumor	2	2	1
 KRAS	Germ cell tumor	2	2	1
 KRAS	Tumor of cranial and paraspinal nerves	2	2	1
-LRP1B	Embryonal tumor	2	2	1
 LRP1B	Low-grade astrocytic tumor	2	2	1
+LRP1B	Metastatic tumors	2	2	1
 MYH14	Embryonal tumor	2	2	1
-MYO10	Embryonal tumor	2	2	1
-PCLO	Embryonal tumor	2	2	1
+PHLPP1	Tumors of sellar region	2	2	1
 PIK3R1	Low-grade astrocytic tumor	2	2	1
-PRKDC	Embryonal tumor	2	2	1
+RP1L1	Embryonal tumor	2	2	1
 RYR2	Embryonal tumor	2	2	1
 STAG2	Diffuse astrocytic and oligodendroglial tumor	2	2	1
 TP53	Mesenchymal non-meningothelial tumor	2	2	1
+ZNF469	Ependymal tumor	2	2	1
+FBN2	Metastatic tumors	1	2	2
 FGFR1	Pre-cancerous lesion	1	2	2
 NF2	Diffuse astrocytic and oligodendroglial tumor	1	2	2
 PTEN	Embryonal tumor	1	2	2
+ADGRV1	Embryonal tumor	1	1	1
 ADGRV1	Low-grade astrocytic tumor	1	1	1
+ADGRV1	Metastatic tumors	1	1	1
 ATM	Low-grade astrocytic tumor	1	1	1
 ATRX	Mesenchymal non-meningothelial tumor	1	1	1
-BCOR	Embryonal tumor	1	1	1
 BCOR	Ependymal tumor	1	1	1
+BCOR	Metastatic tumors	1	1	1
 BCOR	Neuronal and mixed neuronal-glial tumor	1	1	1
-BRAF	Neuronal and mixed neuronal-glial tumor	1	1	1
 CCDC168	Embryonal tumor	1	1	1
 CCDC168	Germ cell tumor	1	1	1
 CCDC168	Tumors of sellar region	1	1	1
-CELSR1	Metastatic tumors	1	1	1
+CELSR1	Embryonal tumor	1	1	1
 COL4A3	Embryonal tumor	1	1	1
 COL4A3	Metastatic tumors	1	1	1
 COL4A3	Tumor of cranial and paraspinal nerves	1	1	1
 CTNNB1	Diffuse astrocytic and oligodendroglial tumor	1	1	1
 CTNNB1	Tumor of pineal region	1	1	1
 DNAH14	Low-grade astrocytic tumor	1	1	1
+DNAH14	Metastatic tumors	1	1	1
+DNHD1	Embryonal tumor	1	1	1
+DNHD1	Metastatic tumors	1	1	1
 FBN2	Low-grade astrocytic tumor	1	1	1
+FSIP2	Embryonal tumor	1	1	1
 IGFN1	Embryonal tumor	1	1	1
 IGFN1	Low-grade astrocytic tumor	1	1	1
 IGFN1	Metastatic tumors	1	1	1
 IGFN1	Tumor of cranial and paraspinal nerves	1	1	1
 IGSF10	Tumor of pineal region	1	1	1
 KDM6A	Low-grade astrocytic tumor	1	1	1
-KIAA1109	Embryonal tumor	1	1	1
+KIAA1109	Metastatic tumors	1	1	1
 KIAA1549	Ependymal tumor	1	1	1
+KMT2C	Metastatic tumors	1	1	1
 KMT2D	Lymphoma	1	1	1
 KMT2D	Tumors of sellar region	1	1	1
+KRAS	Neuronal and mixed neuronal-glial tumor	1	1	1
 LRP1	Tumors of sellar region	1	1	1
+LRP1B	Embryonal tumor	1	1	1
 LRP1B	Mesenchymal non-meningothelial tumor	1	1	1
-LRP1B	Metastatic tumors	1	1	1
 MAGEL2	Embryonal tumor	1	1	1
 MAGEL2	Histiocytic tumor	1	1	1
-MUC5AC	Embryonal tumor	1	1	1
 MUC5AC	Ependymal tumor	1	1	1
 MUC5AC	Mesenchymal non-meningothelial tumor	1	1	1
+MUC5AC	Metastatic tumors	1	1	1
 MYH14	Metastatic tumors	1	1	1
-MYO10	Ependymal tumor	1	1	1
-NF1	Embryonal tumor	1	1	1
 NF1	Germ cell tumor	1	1	1
+NF1	Metastatic tumors	1	1	1
 NF1	Neuronal and mixed neuronal-glial tumor	1	1	1
 NF1	Pre-cancerous lesion	1	1	1
 NF2	Embryonal tumor	1	1	1
 NF2	Mesenchymal non-meningothelial tumor	1	1	1
+PCLO	Embryonal tumor	1	1	1
+PCLO	Metastatic tumors	1	1	1
 PCLO	Tumors of sellar region	1	1	1
 PHLPP1	Benign tumor	1	1	1
-PHLPP1	Embryonal tumor	1	1	1
 PHLPP1	Germ cell tumor	1	1	1
 PHLPP1	Low-grade astrocytic tumor	1	1	1
-PHLPP1	Tumors of sellar region	1	1	1
+PHLPP1	Metastatic tumors	1	1	1
 PIK3CA	Embryonal tumor	1	1	1
 PIK3CA	Tumors of sellar region	1	1	1
+PRKDC	Embryonal tumor	1	1	1
 PRKDC	Ependymal tumor	1	1	1
+PRKDC	Metastatic tumors	1	1	1
 PTEN	Low-grade astrocytic tumor	1	1	1
 PTPN11	Low-grade astrocytic tumor	1	1	1
 PTPN11	Metastatic tumors	1	1	1
 PTPN11	Neuronal and mixed neuronal-glial tumor	1	1	1
-PTPRZ1	Embryonal tumor	1	1	1
-PTPRZ1	Ependymal tumor	1	1	1
-PTPRZ1	Low-grade astrocytic tumor	1	1	1
-PTPRZ1	Metastatic tumors	1	1	1
+RP1L1	Metastatic tumors	1	1	1
 RYR2	Ependymal tumor	1	1	1
 RYR2	Low-grade astrocytic tumor	1	1	1
 SETD2	Benign tumor	1	1	1
@@ -167,3 +171,5 @@ SMARCA4	Tumors of sellar region	1	1	1
 STAG2	Ependymal tumor	1	1	1
 STAG2	Low-grade astrocytic tumor	1	1	1
 TP53	Low-grade astrocytic tumor	1	1	1
+ZNF469	Benign tumor	1	1	1
+ZNF469	Metastatic tumors	1	1	1
