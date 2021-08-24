@@ -72,7 +72,7 @@ We can use the table from [#996](https://github.com/AlexsLemonade/OpenPBTA-analy
 
 pathology_diagnosis | subtyping module | pathology_free_text_diagnosis | broad_histology | short_histology | integrated_diagnosis | harmonized_diagnosis 
 -- | -- | -- | -- | -- | -- | -- 
-Low-grade glioma/astrocytoma (WHO grade I/II) | NA, remove from LGAT module | contains "desmoplastic infantile astrocytoma" | Neuronal and mixed neuronal-glial tumor | GNT | Desmoplastic infantile astrocytoma, <subtype> | Desmoplastic infantile astrocytoma 
+Low-grade glioma/astrocytoma (WHO grade I/II) | NA, remove from LGAT module | contains "desmoplastic infantile astrocytoma" | Neuronal and mixed neuronal-glial tumor | GNT | Desmoplastic infantile astrocytoma and ganglioglioma, <subtype> | Desmoplastic infantile astrocytoma and ganglioglioma 
 Low-grade glioma/astrocytoma (WHO grade I/II) | NA, remove from LGAT module | diffuse leptomeningeal glioneuronal tumor | Neuronal and mixed neuronal-glial tumor | GNT | Diffuse leptomeningeal glioneuronal tumor, <subtype> | Diffuse leptomeningeal glioneuronal tumor
 Low-grade glioma/astrocytoma (WHO grade I/II) | NA, remove from LGAT module | contains "glioneuronal" | Neuronal and mixed neuronal-glial tumor | GNT | Glial-neuronal tumor NOS, <subtype> | Glial-neuronal tumor NOS
 Low-grade glioma/astrocytoma (WHO grade I/II) | NA, remove from LGAT module | rosette forming glioneuronal tumor | Neuronal and mixed neuronal-glial tumor | GNT | Rosette-forming glioneuronal tumor, <subtype> | Rosette-forming glioneuronal tumor
