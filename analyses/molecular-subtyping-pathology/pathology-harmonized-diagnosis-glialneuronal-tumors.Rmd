@@ -121,7 +121,7 @@ dia_df <- subtype_df %>%
       gsub("GNT, ","Desmoplastic infantile astrocytoma, ",molecular_subtype), 
       NA_character_),
     # Set harmonized diagnosis
-    harmonized_diagnosis = "Desmoplastic infantile astrocytoma",
+    harmonized_diagnosis = "Desmoplastic infantile astrocytoma and ganglioglioma",
     Notes = if_else(!is.na(Notes),
                     # If already subtypes in molecular_subtyoing_LGAT,
                     # Notes will be "Updated via OpenPBTA subtyping"
