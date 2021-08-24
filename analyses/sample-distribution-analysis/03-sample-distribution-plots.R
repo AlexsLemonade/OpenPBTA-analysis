@@ -63,6 +63,9 @@ final_df <- histologies_df %>%
                     germline_sex_estimate +
                     cancer_group_hex_codes ~ experimental_strategy,
                   fun.aggregate = function(x){as.integer(length(x)>0)}) %>%
+  dplyr::mutate(WGS = dplyr::if_else(WGS==1,"Available","Not Available"),
+                WXS = dplyr::if_else(WXS==1,"Available","Not Available"),
+                `RNA-Seq`= dplyr::if_else(`RNA-Seq`==1,"Available","Not Available")) %>%
   # Get distinct based on participant IDs
   dplyr::distinct(Kids_First_Participant_ID, 
                   WGS,
