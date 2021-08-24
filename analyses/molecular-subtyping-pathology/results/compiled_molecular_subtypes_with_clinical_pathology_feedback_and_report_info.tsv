@@ -151,14 +151,14 @@ PT_2VSDT9CK	7316-3575	BS_CQ8C6X4X	LGG, wildtype	Low-grade glioma/astrocytoma, wi
 PT_2VSDT9CK	7316-3575	BS_G9XE3N9T	LGG, wildtype	Low-grade glioma/astrocytoma, wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive	NA
 PT_2WA5PM32	7316-949	BS_86Q14TZG	CRANIO, ADAM	Adamantinomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Recurrence	NA
 PT_2WA5PM32	7316-949	BS_AJFG2QDD	CRANIO, ADAM	Adamantinomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Recurrence	NA
-PT_2WVW55DA	7316-1890	BS_NYVVN7SD	GNT, RTK	Desmoplastic infantile astrocytoma, RTK	GNT	Neuronal and mixed neuronal-glial tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	NA	Desmoplastic infantile astrocytoma
-PT_2WVW55DA	7316-1890	BS_QAG1RDXN	GNT, RTK	Desmoplastic infantile astrocytoma, RTK	GNT	Neuronal and mixed neuronal-glial tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	NA	Desmoplastic infantile astrocytoma
+PT_2WVW55DA	7316-1890	BS_NYVVN7SD	GNT, RTK	Desmoplastic infantile astrocytoma and ganglioglioma, RTK	GNT	Neuronal and mixed neuronal-glial tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	NA	Desmoplastic infantile astrocytoma and ganglioglioma
+PT_2WVW55DA	7316-1890	BS_QAG1RDXN	GNT, RTK	Desmoplastic infantile astrocytoma and ganglioglioma, RTK	GNT	Neuronal and mixed neuronal-glial tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	NA	Desmoplastic infantile astrocytoma and ganglioglioma
 PT_2WVW55DA	7316-2092	BS_M28HG0NT	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive	NA
 PT_2WVW55DA	7316-2092	BS_M7HCF7DW	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive	NA
 PT_2WVW55DA	7316-2100	BS_CXVGG342	HGG, H3 wildtype, TP53 loss	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive	NA
 PT_2WVW55DA	7316-2100	BS_RG6JK7ZN	HGG, H3 wildtype, TP53 loss	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Progressive	NA
-PT_2WVW55DA	7316-502	BS_D8N31T39	GNT, RTK	GNT, RTK	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive	NA
-PT_2WVW55DA	7316-502	BS_R94EDP5H	GNT, RTK	GNT, RTK	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Progressive	NA
+PT_2WVW55DA	7316-502	BS_D8N31T39	GNT, RTK	Desmoplastic infantile astrocytoma and ganglioglioma, RTK	GNT	Neuronal and mixed neuronal-glial tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	NA	Desmoplastic infantile astrocytoma and ganglioglioma
+PT_2WVW55DA	7316-502	BS_R94EDP5H	GNT, RTK	Desmoplastic infantile astrocytoma and ganglioglioma, RTK	GNT	Neuronal and mixed neuronal-glial tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	NA	Desmoplastic infantile astrocytoma and ganglioglioma
 PT_2YCHME6S	7316-2622	BS_EXYHZ6D4	LGG, wildtype	Low-grade glioma/astrocytoma, wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_2YCHME6S	7316-2622	BS_MZB884N9	LGG, wildtype	Low-grade glioma/astrocytoma, wildtype	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_2YT37G8P	7316-2962	BS_VW85Q4XJ	LGG, KIAA1549-BRAF	Low-grade glioma/astrocytoma, KIAA1549-BRAF	LGAT	Low-grade astrocytic tumor	Updated via OpenPBTA subtyping	Recurrence	NA
@@ -1316,8 +1316,8 @@ PT_SRWZDG3N	7316-361	BS_95RRF4NE	LGG, BRAF V600E	Low-grade glioma/astrocytoma, B
 PT_STRDJQ01	7316-1038	BS_VPBMDMQX	MB, SHH	Medulloblastoma, SHH-activated	Medulloblastoma	Embryonal tumor	Subtype based on prediction;Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_SYHB12RN	7316-194	BS_9DM8H1RX	HGG, H3 wildtype	High-grade glioma/astrocytoma, H3 wildtype	HGAT	Diffuse astrocytic and oligodendroglial tumor	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_T03AT4BJ	7316-2708	BS_NKEAAFMW	MB, To be classified	NA	Medulloblastoma	Embryonal tumor	NA	Initial CNS Tumor	NA
-PT_T1FV709B	7316-681	BS_EXGBH3TD	GNT, BRAF V600E	Desmoplastic infantile astrocytoma, BRAF V600E	GNT	Neuronal and mixed neuronal-glial tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	NA	Desmoplastic infantile astrocytoma
-PT_T1FV709B	7316-681	BS_XH5JP8DB	GNT, BRAF V600E	Desmoplastic infantile astrocytoma, BRAF V600E	GNT	Neuronal and mixed neuronal-glial tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	NA	Desmoplastic infantile astrocytoma
+PT_T1FV709B	7316-681	BS_EXGBH3TD	GNT, BRAF V600E	Desmoplastic infantile astrocytoma and ganglioglioma, BRAF V600E	GNT	Neuronal and mixed neuronal-glial tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	NA	Desmoplastic infantile astrocytoma and ganglioglioma
+PT_T1FV709B	7316-681	BS_XH5JP8DB	GNT, BRAF V600E	Desmoplastic infantile astrocytoma and ganglioglioma, BRAF V600E	GNT	Neuronal and mixed neuronal-glial tumor	Updated via OpenPBTA subtyping and pathology_free_text_diagnosis	NA	Desmoplastic infantile astrocytoma and ganglioglioma
 PT_T2M1338J	7316-258	BS_C3P5BC92	CRANIO, ADAM	Adamantinomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_T2M1338J	7316-258	BS_CHAFNK64	CRANIO, ADAM	Adamantinomatous craniopharyngioma	Craniopharyngioma	Tumors of sellar region	Updated via OpenPBTA subtyping	Initial CNS Tumor	NA
 PT_T2M1338J	7316-2588	BS_7XZNDFV4	NA	NA	Meningioma	Meningioma	Updated via OpenPBTA subtyping from pathology_free_text_diagnosis	Second Malignancy	Meningioma

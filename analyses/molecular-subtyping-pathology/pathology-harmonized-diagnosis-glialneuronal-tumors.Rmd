@@ -109,10 +109,12 @@ subtype_df <- compiled_subtypes_df %>%
 
 ```{r}
 dia_df <- subtype_df %>%
-  # Filter to samples with "desmoplastic infantile astrocytoma" in pathology
-  # free text
+  # Filter to samples with "desmoplastic infantile astrocytoma" 
+  # or "desmoplastic infantile ganglioglioma" in 
+  # pathology free text diagnosis
   filter(str_detect(pathology_free_text_dx_lower,
-                    lgat_path_dx_list$recode_path_free_text[1])) %>%
+                    paste(lgat_path_dx_list$recode_path_free_text[1:2],
+                          collapse="|"))) %>%
   
   mutate(
     integrated_diagnosis = if_else(
@@ -136,7 +138,7 @@ dia_df <- subtype_df %>%
 glioneuronal_df <- subtype_df %>%
   # Filter to samples with "glioneuronal" in pathology free text
   filter(str_detect(pathology_free_text_dx_lower,
-                    lgat_path_dx_list$recode_path_free_text[2])) %>%
+                    lgat_path_dx_list$recode_path_free_text[3])) %>%
   mutate(
     integrated_diagnosis = case_when(
     # Set integrated diagnosis if sample is subtyped
