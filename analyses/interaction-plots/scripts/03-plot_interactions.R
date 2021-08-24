@@ -215,6 +215,9 @@ display_diseases <- disease_df %>%
   dplyr::pull(disease)
 
 disease_df <- disease_df %>%
+  # remove disease == NA, these are samples where
+  # harmonized_diagnosis is Benign tumor, Dysplasia/Gliosis
+  dplyr::filter(!is.na(disease)) %>%
   dplyr::mutate(disease_factor = 
            forcats::fct_other(disease, keep = display_diseases) %>%
            forcats::fct_relevel(display_diseases)
