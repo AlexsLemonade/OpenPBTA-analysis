@@ -2,6 +2,7 @@ suppressPackageStartupMessages({
   library(ggpubr)
   library(ggplot2)
   library(tidyverse)
+  library(ggsci)
 })
 
 boxplot_by_molecular_subtype <- function(scores_mat, output_dir){
@@ -38,7 +39,7 @@ boxplot_by_molecular_subtype <- function(scores_mat, output_dir){
     adj$p.signif[adj$p.adj <= 0.001 & adj$p.adj > 0.0001] <- '***'
     adj$p.signif[adj$p.adj <= 0.01 & adj$p.adj > 0.001] <- '**'
     adj$p.signif[adj$p.adj <= 0.05 & adj$p.adj > 0.01] <- '*'
-    adj$p.signif[adj$p.adj > 0.05] <- 'ns'
+    adj$p.signif[adj$p.adj > 0.05] <- ''
     
     # get max y-axis for position of p-value labels
     y_coord <-  max(scores_mat$NormEXTENDScores)
@@ -51,14 +52,15 @@ boxplot_by_molecular_subtype <- function(scores_mat, output_dir){
       .$molecular_subtype)
 
     # plot
-    p <- ggboxplot(scores_mat, x = "molecular_subtype", y = "NormEXTENDScores", 
+    p <- ggviolin(scores_mat, x = "molecular_subtype", y = "NormEXTENDScores", 
                    color = "molecular_subtype", 
-                   palette = "jco", 
-                   ggtheme = theme_pubr()) +
+                   palette = "simpsons", 
+                   add = c("boxplot", "jitter"),
+                   ggtheme = theme_pubr()) + 
       # manually add adjusted p-value from table generated above
       stat_pvalue_manual(adj, label = "p.signif", y.position = y_coord + 0.1, step.increase = 0.1, remove.bracket = TRUE) +
       # Add global p-value
-      stat_compare_means(label.y = y_coord + 0.2) +
+      stat_compare_means(label.y = y_coord + 0.3) +
       xlab("Molecular subtype") +
       ylab("NormEXTENDScores") +
       rremove("legend") + 
