@@ -221,21 +221,28 @@ hgg_results_df <- bind_exp_strategies(hgg_results_df) %>%
 ```
 
 ### Handling LGAT
-
+Within LGAT, we will add integrated_diagnosis,broad_histology and short_histology for Ganglioglioma (GNG) and Subependymal Giant Cell Astrocytoma (SEGA) samples.
+For Glial neuronal tumors (GNT) will be updated these values using pathology_free_text_diagnosis in the next step.
 
 ```{r}
 lgat_results_df <- bind_exp_strategies(lgat_results_df) %>%
   inner_join(select(histologies_df,c(join_cols,
-                    pathology_diagnosis)),
+                                     pathology_diagnosis)),
              by = "Kids_First_Biospecimen_ID") %>%
-mutate(integrated_diagnosis = case_when(
-            str_detect(molecular_subtype, "To be classified") ~ NA_character_,
-            pathology_diagnosis == "Ganglioglioma" ~ str_replace(molecular_subtype, "LGG, ", "Ganglioglioma, "),
-            TRUE ~ str_replace(molecular_subtype, "LGG, ", "Low-grade glioma/astrocytoma, ")
-          ),
-         broad_histology = "Low-grade astrocytic tumor",
-         short_histology = if_else(pathology_diagnosis == "Ganglioglioma", "Ganglioglioma", "LGAT"),
-         Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes)
+  ## Integrated diagnosis update
+  mutate(integrated_diagnosis = case_when(
+    str_detect(molecular_subtype, "To be classified") ~ NA_character_,
+    grepl("^GNG, ",molecular_subtype) ~ str_replace(molecular_subtype, "GNG, ", "Ganglioglioma, "),
+    grepl("^SEGA, ",molecular_subtype) ~ str_replace(molecular_subtype, "SEGA, ", "Subependymal Giant Cell Astrocytoma, "),
+    TRUE ~ str_replace(molecular_subtype, "LGG, ", "Low-grade glioma/astrocytoma, ")
+  ),
+  ## Broad histology update
+  broad_histology = "Low-grade astrocytic tumor",
+  ## Short histology update
+  short_histology = case_when(
+    grepl("^GNG, ",molecular_subtype) ~ "Ganglioglioma",
+    TRUE ~ "LGAT"),
+  Notes = if_else(!is.na(integrated_diagnosis), "Updated via OpenPBTA subtyping", Notes)
   )
 
 ```
