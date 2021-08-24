@@ -40,6 +40,7 @@ RUN pip3 install \
 RUN apt-get -y --no-install-recommends install \
    default-jdk
 
+
 # Standalone tools and libraries
 ################################
 
@@ -395,6 +396,14 @@ RUN ./install_bioc.r \
 RUN R -e "remotes::install_github('d3b-center/annoFuse',ref = 'c6a2111b5949ca2aae3853f7f34de3d0db4ffa33', dependencies = TRUE)"
 
 
+# gmp, dependency for signature.tools.lib
+RUN apt-get -y --no-install-recommends install \
+    libgmp-dev
+    
+# CNS signatures can be obtained from signature.tools.lib
+RUN R -e "remotes::install_github('Nik-Zainal-Group/signature.tools.lib', ref = '73e899c9090a215a76a307480bda76c241a4a489')"
+    
+    
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
 
