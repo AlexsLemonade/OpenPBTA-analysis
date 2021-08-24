@@ -118,7 +118,7 @@ dia_df <- subtype_df %>%
     integrated_diagnosis = if_else(
       # Set integrated diagnosis if sample is subtyped
       !is.na(molecular_subtype),
-      gsub("GNT, ","Desmoplastic infantile astrocytoma, ",molecular_subtype), 
+      gsub("GNT, ","Desmoplastic infantile astrocytoma and ganglioglioma, ",molecular_subtype), 
       NA_character_),
     # Set harmonized diagnosis
     harmonized_diagnosis = "Desmoplastic infantile astrocytoma and ganglioglioma",
