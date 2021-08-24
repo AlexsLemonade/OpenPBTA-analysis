@@ -113,7 +113,7 @@ dia_df <- subtype_df %>%
   # or "desmoplastic infantile ganglioglioma" in 
   # pathology free text diagnosis
   filter(str_detect(pathology_free_text_dx_lower,
-                    paste(lgat_path_dx_list$recode_path_free_text[1:2],
+                    paste(lgat_path_dx_list$recode_path_free_text[1:3],
                           collapse="|"))) %>%
   
   mutate(
