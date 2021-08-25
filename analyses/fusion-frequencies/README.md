@@ -16,7 +16,7 @@ Each gene invloved in the fusion is annotated by a Gene_Position, for example:
 
 #### Frequency annotation
 
-Each `cancer_group` and `cohort`(s) combination is considered a `cancer_group_cohort`. `cancer_group_cohort` with `n_samples` >= 5, compute `Frequency_in_overall_dataset`, `Frequency_in_primary_tumors`, and `Frequency_in_relapse_tumors` as following:
+Each `cancer_group` and `cohort`(s) combination is considered a `cancer_group_cohort`. `cancer_group_cohort` with `n_samples` >= 5, `Frequency_in_overall_dataset`, `Frequency_in_primary_tumors`, and `Frequency_in_relapse_tumors` are computed. 
 
 - `Frequency_in_overall_dataset`:
   - For each unique variant, count the number of patients (identified by `Kids_First_Participant_ID`) that have the variant, and call this number `Total_alterations`.
@@ -24,18 +24,34 @@ Each `cancer_group` and `cohort`(s) combination is considered a `cancer_group_co
   - `Frequency_in_overall_dataset = Total_alterations / Patients_in_dataset`.
 
 - `Frequency_in_primary_tumors`:
-  - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `../independent-samples/results/independent-specimens.rnaseq.primary.eachcohort.tsv`, and call this number `Total_primary_tumors_alterated`.
-  - Count the total number of samples in the `cancer_group_cohort` that are also in the `../independent-samples/results/independent-specimens.rnaseq.primary.eachcohort.tsv`, and call this number `Primary_tumors_in_dataset`.
-  - `Frequency_in_primary_tumors = Total_primary_tumors_alterated / Primary_tumors_in_dataset`.
+
+  -  For any `cancer_group_cohort` that contains `cancer_group` that has **multiple cohorts** listed in the `cohort` column (in the intermediate table `nf_cancer_group_cohort_summary_df`), independent sample list for all cohorts is used and the calculation is done as followed:
+    - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `../../data/independent-specimens.rnaseq.primary.tsv`, and call this number `Total_primary_tumors_alterated`.
+    - Count the total number of samples in the `cancer_group_cohort` that are also in the `.../../data/independent-specimens.rnaseq.primary.tsv`, and call this number `Primary_tumors_in_dataset`.
+    - `Frequency_in_primary_tumors = Total_primary_tumors_alterated / Primary_tumors_in_dataset`.
+    
+  -  For any `cancer_group_cohort` that contains `cancer_group` that maps to **single cohort** listed in the `cohort` column (in the intermediate table `nf_cancer_group_cohort_summary_df`), independent sample list for each cohort is used:
+    - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `../../data/independent-specimens.rnaseq.primary.eachcohort.tsv`, and call this number `Total_primary_tumors_alterated`.
+    - Count the total number of samples in the `cancer_group_cohort` that are also in the `.../../data/independent-specimens.rnaseq.primary.eachcohort.tsv`, and call this number `Primary_tumors_in_dataset`.
+    - `Frequency_in_primary_tumors = Total_primary_tumors_alterated / Primary_tumors_in_dataset`.
+
 
 - `Frequency_in_relapse_tumors`:
-  - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `../independent-samples/results/independent-specimens.rnaseq.relapase.eachcohort.tsv`, and call this number `Total_relapse_tumors_alterated`.
-  - Count the total number of samples in the `cancer_group_cohort` that are also in the `../independent-samples/results/independent-specimens.rnaseq.relapase.eachcohort.tsv`, and call this number `Relapse_tumors_in_dataset`.
-  - `Frequency_in_relapse_tumors = Total_relapse_tumors_alterated / Relapse_tumors_in_dataset`.
 
+  -  For any `cancer_group_cohort` that contains `cancer_group` that has **multiple cohorts** listed in the `cohort` column (in the intermediate table `nf_cancer_group_cohort_summary_df`), independent sample list for all cohorts is used and the calculation is done as followed:
+    - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `../../data/independent-specimens.rnaseq.relapase.eachcohort.tsv`, and call this number `Total_relapse_tumors_alterated`.
+    - Count the total number of samples in the `cancer_group_cohort` that are also in the `.../../data/independent-specimens.rnaseq.relapase.eachcohort.tsv`, and call this number `Relapse_tumors_in_dataset`.
+    - `Frequency_in_relapse_tumors = Total_relapse_tumors_alterated / Relapse_tumors_in_dataset`.
+  
+  -  For any `cancer_group_cohort` that contains `cancer_group` that maps to **single cohort** listed in the `cohort` column (in the intermediate table `nf_cancer_group_cohort_summary_df`), independent sample list for each cohort is used:
+    - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `../../data/independent-specimens.rnaseq.relapase.eachcohort.tsv`, and call this number `Total_relapse_tumors_alterated`.
+    - Count the total number of samples in the `cancer_group_cohort` that are also in the `.../../data/independent-specimens.rnaseq.relapase.eachcohort.tsv`, and call this number `Relapse_tumors_in_dataset`.
+    - `Frequency_in_relapse_tumors = Total_relapse_tumors_alterated / Relapse_tumors_in_dataset`.
+  
 Format the SNV mutation frequency table according to the latest spreadsheet that is attached in <https://github.com/PediatricOpenTargets/ticket-tracker/issues/64>.
 
 Merge the fusion frequency tables of all `cancer_group_cohort`s.
+
 
 #### Additional annotation
 
@@ -57,9 +73,11 @@ Rscript --vanilla '01-fusion-frequencies.R'
 Input:
 
 - `../../data/histologies.tsv`
-- `../fusion_filtering/results/fusion-putative-oncogenic.tsv`
-- `../independent-samples/results/independent-specimens.rnaseq.primary.eachcohort.tsv`
-- `../independent-samples/results/independent-specimens.rnaseq.relapse.eachcohort.tsv`
+- `../../data/fusion-putative-oncogenic.tsv`
+- `../../data/independent-specimens.rnaseq.primary.eachcohort.tsv`
+- `../../data/independent-specimens.rnaseq.relapse.eachcohort.tsv`
+- `../../data/independent-specimens.rnaseq.primary.tsv`
+- `../../data/independent-specimens.rnaseq.relapse.tsv`
 
 ```
 results/
