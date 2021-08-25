@@ -17,5 +17,4 @@ cd "$script_directory" || exit
 
 Rscript --vanilla 01-filter-across-types.R
 Rscript --vanilla 02-multilayer-plots.R
-Rscript 03-sample-distribution-plots.R 
-Rscript -e "rmarkdown::render('04-tumor-descriptor-and-assay-count.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('03-tumor-descriptor-and-assay-count.Rmd', clean = TRUE)"
