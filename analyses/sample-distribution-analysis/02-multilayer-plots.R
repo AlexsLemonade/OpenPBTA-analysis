@@ -100,47 +100,6 @@ final_df <- histologies_df %>%
 # Save to tsv file
 readr::write_tsv(final_df, file.path(results_dir, "sample_dist_plot_df.tsv"))
 
-# Plot the treemap
-treemap <-
-  ggplot(
-    final_df,
-    aes(
-      area = size,
-      fill = cancer_group_hex_codes,
-      label = level2,
-      subgroup = level3
-    )
-  ) +
-  geom_treemap() +
-  geom_treemap_subgroup_border(colour = "white") +
-  geom_treemap_text(
-    fontface = "italic",
-    colour = "white",
-    place = "topleft",
-    alpha = 0.4,
-    grow = F,
-    reflow = T,
-    size = 16
-  ) +
-  geom_treemap_subgroup_text(
-    place = "bottomright",
-    grow = T,
-    reflow = T,
-    alpha = 0.6,
-    colour = "#FAFAFA",
-    min.size = 0
-  ) +
-  theme(legend.position = "none") +
-  scale_fill_identity()
-
-# Save treemap
-ggsave(
-  treemap,
-  file = file.path(plots_dir, "distribution_across_cancer_types_treemap.pdf"),
-  width = 22,
-  height = 10
-)
-
 # Create a treemap (for interactive treemap)
 tm <-
   treemap::treemap(
@@ -181,6 +140,4 @@ sun_plot <-
 p <- sunburstR::sund2b(tmnest, colors = color, valueField = "vSize")
 
 # Create HTML outputs for the interactive plots
-mapview::mapshot(interactive_tm, url = file.path(plots_dir,
-                                                 "histology-treemap.html"))
 mapview::mapshot(p, url = file.path(plots_dir, "histology-pie.html"))
