@@ -98,7 +98,38 @@ final_df <- histologies_df %>%
   as.data.frame() 
 
 # Save to tsv file
-readr::write_tsv(final_df, file.path(results_dir, "sample_dist_plot_df.tsv"))
+readr::write_tsv(final_df, file.path(results_dir, "plot_df.tsv"))
+
+# Plot the treemap
+treemap <-
+  ggplot(
+    final_df,
+    aes(
+      area = size,
+      fill = cancer_group_hex_codes,
+      label = level1
+    )
+  ) +
+  geom_treemap() +
+  geom_treemap_text(
+    fontface = "italic",
+    colour = "white",
+    place = "topleft",
+    alpha = 0.4,
+    grow = F,
+    reflow = T,
+    size = 16
+  ) +
+  theme(legend.position = "none") +
+  scale_fill_identity()
+
+# Save treemap
+ggsave(
+  treemap,
+  file = file.path(plots_dir, "distribution_across_cancer_types_treemap.pdf"),
+  width = 22,
+  height = 10
+)
 
 # Create a treemap (for interactive treemap)
 tm <-
