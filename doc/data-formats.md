@@ -51,29 +51,31 @@ The _copy number_ annotated in the CNVkit SEG file is annotated with respect to 
 <br>
 <br>
 
-| Ploidy | Copy Number | Gain/Loss Interpretation     |
-|--------|-------------|------------------------------|
-| 2      | 0           | Loss; homozygous deletion    |
-| 2      | 1           | Loss; hemizygous deletion    |
-| 2      | 2           | Copy neutral                 |
-| 2      | 3           | Gain; one copy gain          |
-| 2      | 4           | Gain; two copy gain          |
-| 2      | 5+          | Gain; possible amplification |
-| 3      | 0           | Loss; 3 copy loss            |
-| 3      | 1           | Loss; 2 copy loss            |
-| 3      | 2           | Loss; 1 copy loss            |
-| 3      | 3           | Copy neutral                 |
-| 3      | 4           | Gain; one copy gain          |
-| 3      | 5           | Gain; two copy gain          |
-| 3      | 6+          | Gain; possible amplification |
-| 4      | 0           | Loss; 4 copy loss            |
-| 4      | 1           | Loss; 3 copy loss            |
-| 4      | 2           | Loss; 2 copy loss            |
-| 4      | 3           | Loss; 1 copy loss            |
-| 4      | 4           | Copy neutral                 |
-| 4      | 5           | Gain; one copy gain          |
-| 4      | 6           | Gain; two copy gain          |
-| 4      | 7+          | Gain; possible amplification |
+Ploidy | Copy Number | Gain/Loss Interpretation
+-- | -- | --
+2 | 0 | Deep deletion; homozygous deletion
+2 | 1 | Loss; hemizygous deletion
+2 | 2 | Copy neutral
+2 | 3 | Gain; one copy gain
+2 | 4 | Gain; two copy gain
+2 | 5+ | Amplification; possible amplification
+3 | 0 | Deep deletion; 3 copy loss
+3 | 1 | Loss; 2 copy loss
+3 | 2 | Loss; 1 copy loss
+3 | 3 | Copy neutral
+3 | 4 | Gain; one copy gain
+3 | 5 | Gain; two copy gain
+3 | 6 | Gain; three copy gain
+3 | 7+ | Amplification; possible amplification
+4 | 0 | Deep deletion; 4 copy loss
+4 | 1 | Loss; 3 copy loss
+4 | 2 | Loss; 2 copy loss
+4 | 3 | Loss; 1 copy loss
+4 | 4 | Copy neutral
+4 | 5 | Gain; one copy gain
+4 | 6 | Gain; two copy gain
+4 | 7 | Gain; two copy gain
+4 | 8+ | Amplification; possible amplification
 
 
 ### Somatic Structural Variant (SV) Data
