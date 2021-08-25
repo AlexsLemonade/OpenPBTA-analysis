@@ -232,7 +232,9 @@ histologies_color_key <- histologies_color_key_df$cancer_group_hex_codes
 names(histologies_color_key) <- histologies_color_key_df$cancer_group
 
 # Now format the color key objet into a list
-annotation_colors <- list(cancer_group = histologies_color_key)
+annotation_colors <- list(cancer_group = histologies_color_key,
+                          germline_sex_estimate = c("Male"="#E69F00",
+                                                    "Female"="#56B4E9"))
 
 #### Prepare MAF object for plotting ------------------------------------------
 
@@ -296,7 +298,7 @@ png(
 
 oncoplot(
   maf_object,
-  clinicalFeatures = "cancer_group",
+  clinicalFeatures = c("cancer_group","germline_sex_estimate"),
   genes = goi_list,
   logColBar = TRUE,
   sortByAnnotation = TRUE,
