@@ -315,7 +315,7 @@ histology_table <- histology_table %>%
   # Add the hex_codes
   dplyr::mutate(hex_codes = dplyr::recode(display_group, !!!subset_colors_display),
 		cancer_group_hex_codes = dplyr::recode(cancer_group, !!!subset_colors_cancer_group),
-                # is cancer_group is NA for tumor sample add gray color
+                # if cancer_group is NA for tumor sample add gray color
 		cancer_group_hex_codes = dplyr::if_else(is.na(cancer_group_hex_codes) & sample_type=="Tumor"
                                                  ,"#808080",
                                                  cancer_group_hex_codes)
