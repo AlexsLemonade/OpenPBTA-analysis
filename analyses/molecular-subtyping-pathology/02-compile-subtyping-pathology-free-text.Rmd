@@ -103,7 +103,10 @@ compiled_subtypes_df <- compiled_subtypes_df %>%
 
 ```
 
-### Neuronal and mixed neuronal-glial tumors updates in broad_histology, short_histology and harmonized_diagnosis
+### Neuronal and mixed neuronal-glial tumors updates in broad_histology, short_histology (, if subtyped integrated_diagnosis) and harmonized_diagnosis. 
+
+If the sample is subtyped as part of molecular_subtyping_LGAT the sample will be present in compiled_subtypes_df. We will add integrated_diagnosis using the pathology_free_text_diagnosis based subtpying.
+
 ```{r}
 
 compiled_subtypes_df <- compiled_subtypes_df %>% 
