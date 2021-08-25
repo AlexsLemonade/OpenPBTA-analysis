@@ -54,18 +54,13 @@ activating	| Any 1 SNV shown in HGVSp_Short overlaps TP53_ activating mutations 
 tp53_altered | Combined evidence, cancer predisposition and score based tp53 status
 
 
-`05-evaluate-classifier.py` evaluates classifier score with TP53 alterations (non-synonymous SNV and all status == "loss" in consensus CNV file from 00-tp53-nf1-alterations.R) 
+`06-evaluate-classifier.py` evaluates classifier score with TP53 alterations (non-synonymous SNV and all status == "loss" in consensus CNV file from 00-tp53-nf1-alterations.R) 
 
-Because some of the classifier genes are not present in the OpenPBTA dataset, the scores should be interpreted as continuous values representing relative gene alterations and not as probabilities.
+Because some of the classifier genes are not present in the OpenPedCan dataset, the scores should be interpreted as continuous values representing relative gene alterations and not as probabilities.
 
-ROC curve for TP53 classifier scores for stranded RNAseq data
-![stranded RNAseq TP53 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/stranded_TP53.png)
+ROC curve for TP53 classifier scores are saved in the results folder. With TARGET samples, we have 3 RNA library types and 3 plots were generated:
+`poly-A_TP53.png`
+`stranded_TP53.png`
+`poly-A_stranded_TP53.png`
 
-ROC curve for TP53 classifier scores for polya RNAseq data
-![polya RNAseq TP53 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/polya_TP53.png)
 
-ROC curve for NF1 classifier scores for stranded RNAseq data
-![stranded RNAseq NF1 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/stranded_NF1.png)
-
-ROC curve for NF1 classifier scores for polya RNASeq data
-![polya RNASeq NF1 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/polya_NF1.png)
