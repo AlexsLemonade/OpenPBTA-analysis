@@ -37,7 +37,7 @@ if [[ RUN_FOR_SUBTYPING == "0" ]]
 then
    histology_file="../../data/histologies.tsv" 
 else 
-   histology_file="../../data/histologies.tsv"  
+   histology_file="../../data/histologies-base.tsv"  
 fi
 
 
@@ -82,10 +82,6 @@ Rscript -e "rmarkdown::render('${analysis_dir}/04-tp53-sv-loss.Rmd',params=list(
 Rscript -e "rmarkdown::render('${analysis_dir}/05-tp53-altered-annotation.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
 # evaluate classifer scores for stranded data
-python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv -c ${histology_file} -o stranded
+python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/gene-expression-rsem-tpm-collapsed_classifier_scores.tsv -c ${histology_file} 
 
-# Skip poly-A steps in CI
-if [ "$POLYA" -gt "0" ]; then
-  python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv -c ${histology_file} -o polya
-fi
 
