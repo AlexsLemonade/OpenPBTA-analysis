@@ -24,7 +24,14 @@ library(tidyverse)
 ### Input
 
 ```{r}
+# Directory setup
 data_dir <- file.path("..", "..", "data")
+results_dir <- "results"
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+
+# Files
 histologies_file <- file.path(data_dir, "pbta-histologies-base.tsv")
 
 # The inclusion criteria for this notebook are the same as the exclusion
@@ -34,6 +41,7 @@ lgat_terms_file <- file.path("..",
                              "molecular-subtyping-LGAT", 
                              "lgat-subset",
                              "lgat_subtyping_path_dx_strings.json")
+compiled_subtypes_file <- file.path(results_dir, "compiled_molecular_subtypes.tsv")
 ```
 
 ### Output
@@ -49,20 +57,25 @@ output_file <- file.path(results_dir, "glialneuronal_tumor_subtypes.tsv")
 ## Read in data
 
 ```{r}
-histologies_df <- readr::read_tsv(histologies_file, guess_max = 10000)
+histologies_df <- readr::read_tsv(histologies_file, , guess_max = 10000,
+                                  col_types = readr::cols(
+                                    molecular_subtype = readr::col_character(),
+                                    integrated_diagnosis = readr::col_character(),
+                                    Notes = readr::col_character()))
 lgat_path_dx_list <- jsonlite::fromJSON(lgat_terms_file)
+compiled_subtypes_df <- readr::read_tsv(compiled_subtypes_file)
 ```
 
 ## Recode `harmonized_diagnosis`, `broad_histology`, and `short_histology`
 
 We can use the table from [#996](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/996) (copied below) to guide us in recoding the `harmonized_diagnosis`, `broad_histology` and `short_histology` fields.
 
-pathology_diagnosis | subtyping module | pathology_free_text_diagnosis | broad_histology | short_histology | harmonized_diagnosis
--- | -- | -- | -- | -- | --
-Low-grade glioma/astrocytoma (WHO grade I/II) | NA, remove from LGAT module | contains "desmoplastic infantile astrocytoma" | Neuronal and mixed neuronal-glial tumor | GNT | Desmoplastic infantile astrocytoma
-Low-grade glioma/astrocytoma (WHO grade I/II) | NA, remove from LGAT module | diffuse leptomeningeal glioneuronal tumor | Neuronal and mixed neuronal-glial tumor | GNT | Diffuse leptomeningeal glioneuronal tumor
-Low-grade glioma/astrocytoma (WHO grade I/II) | NA, remove from LGAT module | contains "glioneuronal" | Neuronal and mixed neuronal-glial tumor | GNT | Glial-neuronal tumor NOS
-Low-grade glioma/astrocytoma (WHO grade I/II) | NA, remove from LGAT module | rosette forming glioneuronal tumor | Neuronal and mixed neuronal-glial tumor | GNT | Rosette-forming glioneuronal tumor
+pathology_diagnosis | subtyping module | pathology_free_text_diagnosis | broad_histology | short_histology | integrated_diagnosis | harmonized_diagnosis 
+-- | -- | -- | -- | -- | -- | -- 
+Low-grade glioma/astrocytoma (WHO grade I/II) | NA, remove from LGAT module | contains "desmoplastic infantile astrocytoma" | Neuronal and mixed neuronal-glial tumor | GNT | Desmoplastic infantile astrocytoma and ganglioglioma, <subtype> | Desmoplastic infantile astrocytoma and ganglioglioma 
+Low-grade glioma/astrocytoma (WHO grade I/II) | NA, remove from LGAT module | diffuse leptomeningeal glioneuronal tumor | Neuronal and mixed neuronal-glial tumor | GNT | Diffuse leptomeningeal glioneuronal tumor, <subtype> | Diffuse leptomeningeal glioneuronal tumor
+Low-grade glioma/astrocytoma (WHO grade I/II) | NA, remove from LGAT module | contains "glioneuronal" | Neuronal and mixed neuronal-glial tumor | GNT | Glial-neuronal tumor NOS, <subtype> | Glial-neuronal tumor NOS
+Low-grade glioma/astrocytoma (WHO grade I/II) | NA, remove from LGAT module | rosette forming glioneuronal tumor | Neuronal and mixed neuronal-glial tumor | GNT | Rosette-forming glioneuronal tumor, <subtype> | Rosette-forming glioneuronal tumor
 
 ```{r}
 subtype_df <- histologies_df %>%
@@ -72,7 +85,7 @@ subtype_df <- histologies_df %>%
     pathology_diagnosis == "Low-grade glioma/astrocytoma (WHO grade I/II)",
     # Use the exclusion criteria from LGAT as inclusion criteria here
     str_detect(str_to_lower(pathology_free_text_diagnosis),
-               paste(lgat_path_dx_list$exclude_path_free_text,
+               paste(lgat_path_dx_list$recode_path_free_text,
                      collapse = "|"))
   ) %>%
   # Subset to relevant ID and disease labels column
@@ -80,25 +93,44 @@ subtype_df <- histologies_df %>%
          Kids_First_Participant_ID,
          sample_id,
          pathology_diagnosis,
-         pathology_free_text_diagnosis,
-         broad_histology,
-         short_histology,
-         tumor_descriptor) %>%
+         tumor_descriptor,
+         pathology_free_text_diagnosis) %>%
   # For convenience, let's add a column where pathology_free_text_diagnosis
   # is all lower case out of an abundance of caution
   mutate(pathology_free_text_dx_lower = str_to_lower(pathology_free_text_diagnosis))
+
+subtype_df <- compiled_subtypes_df %>%
+  inner_join(subtype_df,
+             by=c("Kids_First_Participant_ID", "sample_id", "Kids_First_Biospecimen_ID")) 
+
+
 ```
 
 ### Desmoplastic infantile astrocytoma
 
 ```{r}
 dia_df <- subtype_df %>%
-  # Filter to samples with "desmoplastic infantile astrocytoma" in pathology
-  # free text
+  # Filter to samples with "desmoplastic infantile astrocytoma" 
+  # or "desmoplastic infantile ganglioglioma" in 
+  # pathology free text diagnosis
   filter(str_detect(pathology_free_text_dx_lower,
-                    lgat_path_dx_list$recode_path_free_text[1])) %>%
-  # Set harmonized diagnosis
-  mutate(harmonized_diagnosis = "Desmoplastic infantile astrocytoma")
+                    paste(lgat_path_dx_list$recode_path_free_text[1:3],
+                          collapse="|"))) %>%
+  
+  mutate(
+    integrated_diagnosis = if_else(
+      # Set integrated diagnosis if sample is subtyped
+      !is.na(molecular_subtype),
+      gsub("GNT, ","Desmoplastic infantile astrocytoma and ganglioglioma, ",molecular_subtype), 
+      NA_character_),
+    # Set harmonized diagnosis
+    harmonized_diagnosis = "Desmoplastic infantile astrocytoma and ganglioglioma",
+    Notes = if_else(!is.na(Notes),
+                    # If already subtypes in molecular_subtyoing_LGAT,
+                    # Notes will be "Updated via OpenPBTA subtyping"
+                    paste0( Notes," and pathology_free_text_diagnosis"),
+                    "Updated via pathology_free_text_diagnosis")
+  )
 ```
 
 ### Diffuse leptomeningeal glioneuronal tumor, Rosette-forming glioneuronal tumor, Glial-neuronal tumor NOS
@@ -107,8 +139,25 @@ dia_df <- subtype_df %>%
 glioneuronal_df <- subtype_df %>%
   # Filter to samples with "glioneuronal" in pathology free text
   filter(str_detect(pathology_free_text_dx_lower,
-                    lgat_path_dx_list$recode_path_free_text[2])) %>%
+                    lgat_path_dx_list$recode_path_free_text[4])) %>%
   mutate(
+    integrated_diagnosis = case_when(
+    # Set integrated diagnosis if sample is subtyped
+    !is.na(molecular_subtype) & str_detect(pathology_free_text_dx_lower, 
+                 "diffuse leptomeningeal glioneuronal tumor") ~
+    gsub("GNT,","Diffuse leptomeningeal glioneuronal tumor, ",molecular_subtype),
+    # Set integrated diagnosis if sample is subtyped
+    !is.na(molecular_subtype) & str_detect(pathology_free_text_dx_lower, 
+                 "rosette forming glioneuronal tumor") ~
+    gsub("GNT,","Rosette-forming glioneuronal tumor, ",molecular_subtype),
+    # remaining samples "glioneuronal" in pathology free text
+    # ans where molecular_subtype is not NA
+    !is.na(molecular_subtype) ~ 
+      gsub("GNT,","Glial-neuronal tumor NOS, ", molecular_subtype),
+    # when molecular_subtype is NA
+    TRUE ~ NA_character_
+    ),
+    # Set harmonized diagnosis
     harmonized_diagnosis = case_when(
       str_detect(pathology_free_text_dx_lower, 
                  "diffuse leptomeningeal glioneuronal tumor") ~ 
@@ -118,7 +167,11 @@ glioneuronal_df <- subtype_df %>%
         "Rosette-forming glioneuronal tumor",
       TRUE ~ "Glial-neuronal tumor NOS"  # All others
     ),
-    Notes = "Updated via pathology_free_text_diagnosis"
+    Notes = if_else(!is.na(Notes),
+                    # If already subtypes in molecular_subtyoing_LGAT,
+                    # Notes will be "Updated via OpenPBTA subtyping"
+                    paste0( Notes," and pathology_free_text_diagnosis"),
+                    "Updated via pathology_free_text_diagnosis")
   )
 ```
 
