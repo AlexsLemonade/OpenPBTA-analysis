@@ -5,7 +5,7 @@ suppressPackageStartupMessages({
   library(ggsci)
 })
 
-boxplot_by_molecular_subtype <- function(scores_mat, plots_dir, results_dir){
+plot_by_molecular_subtype <- function(scores_mat, plots_dir, results_dir){
   
   # plot title
   broad_histology <- unique(scores_mat$broad_histology)
@@ -19,7 +19,7 @@ boxplot_by_molecular_subtype <- function(scores_mat, plots_dir, results_dir){
   scores_mat <- scores_mat %>%
     mutate(molecular_subtype = paste0(molecular_subtype,' (N=',n_samples,')'))
   
-  # create boxplot per molecular subtype
+  # create plot per molecular subtype
   if(nrow(scores_mat) > 1){
     
     # calculate adjusted p-value
@@ -51,7 +51,7 @@ boxplot_by_molecular_subtype <- function(scores_mat, plots_dir, results_dir){
     # get max y-axis for position of p-value labels
     y_coord <-  max(scores_mat$NormEXTENDScores)
     
-    # order of boxplot
+    # order of plot
     scores_mat$molecular_subtype <- factor(scores_mat$molecular_subtype, levels = scores_mat %>%
       group_by(molecular_subtype) %>%
       summarise(median = mean(NormEXTENDScores)) %>%

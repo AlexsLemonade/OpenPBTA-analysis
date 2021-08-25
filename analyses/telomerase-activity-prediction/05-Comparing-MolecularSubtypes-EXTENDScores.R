@@ -8,7 +8,7 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses", "telomerase-activity-prediction")
 
 # source function
-source(file.path(analysis_dir, "util", "boxplot_by_molecular_subtype.R"))
+source(file.path(analysis_dir, "util", "plot_by_molecular_subtype.R"))
 
 # histology file
 hist_file <- file.path(root_dir, "data", "pbta-histologies.tsv") 
@@ -52,8 +52,8 @@ telomerase_scores <- telomerase_scores %>%
   filter(molecular_subtype %in% subtypes$molecular_subtype)
 
 # apply function
-# create boxplot of NormEXTENDScores per molecular subtype per histology 
+# create plot of NormEXTENDScores per molecular subtype per histology 
 plyr::d_ply(telomerase_scores, 
             .variables = "broad_histology", 
-            .fun = function(x) boxplot_by_molecular_subtype(scores_mat = x, plots_dir, results_dir))
+            .fun = function(x) plot_by_molecular_subtype(scores_mat = x, plots_dir, results_dir))
 
