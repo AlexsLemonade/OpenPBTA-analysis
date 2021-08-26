@@ -65,7 +65,7 @@ plot_by_molecular_subtype <- function(scores_mat, plots_dir, results_dir){
                    add = c("boxplot", "jitter"),
                    ggtheme = theme_pubr()) + 
       # manually add adjusted p-value from table generated above
-      stat_pvalue_manual(adj, label = "p.signif", y.position = y_coord + 0.1, step.increase = 0.1, remove.bracket = TRUE) +
+      stat_pvalue_manual(adj, label = "p.signif", y.position = y_coord + 0.1)+
       # Add global p-value
       stat_compare_means(label.y = y_coord + 0.3) +
       xlab("Molecular subtype") +
