@@ -233,8 +233,8 @@ names(histologies_color_key) <- histologies_color_key_df$cancer_group
 
 # Now format the color key objet into a list
 annotation_colors <- list(cancer_group = histologies_color_key,
-                          germline_sex_estimate = c("Male"="#E69F00",
-                                                    "Female"="#56B4E9"))
+                          germline_sex_estimate = c("Male"="#2166ac",
+                                                    "Female"="#b2182b"))
 
 #### Prepare MAF object for plotting ------------------------------------------
 
