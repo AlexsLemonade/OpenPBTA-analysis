@@ -58,15 +58,14 @@ opt <- optparse::parse_args(opt_parser)
 lgat_png <- file.path(onco_dir, paste0(opt$lead_filename, "_lgat_goi_oncoprint.png"))
 embryonal_png <- file.path(onco_dir, paste0(opt$lead_filename, "_embryonal_goi_oncoprint.png"))
 hgat_png <- file.path(onco_dir, paste0(opt$lead_filename, "_hgat_goi_oncoprint.png"))
-ependymal_png <- file.path(onco_dir, paste0(opt$lead_filename, "_ependymal_goi_oncoprint.png"))
 other_cns_png <- file.path(onco_dir, paste0(opt$lead_filename, "_other_goi_oncoprint.png"))
 
 #### Assemble multipanel figure ------------------------------------------------
 
-oncoprint_figure <- multi_panel_figure(columns = 8,
-                                            rows = 2,
-                                            width = 1200,
-                                            height = 300)
+oncoprint_figure <- multi_panel_figure(columns = 6,
+                                       rows = 2,
+                                       width = 1000,
+                                       height = 300)
 
 oncoprint_figure <- fill_panel(oncoprint_figure,
                                     lgat_png,
@@ -84,17 +83,10 @@ oncoprint_figure <- fill_panel(oncoprint_figure,
 
 oncoprint_figure <- fill_panel(oncoprint_figure,
                                     hgat_png,
-                                    col = 6:7,
-                                    row = 1,
-                                    scaling = "stretch",
-                                    label = "Diffuse astrocytic and oligodendroglial tumor")
-
-oncoprint_figure <- fill_panel(oncoprint_figure,
-                                    ependymal_png,
                                     col = 2:3,
                                     row = 2,
                                     scaling = "stretch",
-                                    label = "Ependymal tumor")
+                                    label = "Diffuse astrocytic and oligodendroglial tumor")
 
 oncoprint_figure <- fill_panel(oncoprint_figure,
                                     other_cns_png,
