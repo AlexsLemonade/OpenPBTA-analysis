@@ -1,0 +1,8 @@
+variable	group1	group2	p.format	p.adj	p.signif	method
+NormEXTENDScores	all	CNS Embryonal, NOS (N=10)	0.0127	0.089		Wilcoxon
+NormEXTENDScores	all	MB, Group3 (N=14)	0.9052	1		Wilcoxon
+NormEXTENDScores	all	MB, Group4 (N=50)	0.0179	0.12		Wilcoxon
+NormEXTENDScores	all	MB, SHH (N=30)	0.3240	1		Wilcoxon
+NormEXTENDScores	all	MB, WNT (N=10)	0.0066	0.046	*	Wilcoxon
+NormEXTENDScores	all	ETMR, C19MC-altered (N=4)	0.1671	1		Wilcoxon
+NormEXTENDScores	all	CNS NB-FOXR2 (N=3)	0.5859	1		Wilcoxon

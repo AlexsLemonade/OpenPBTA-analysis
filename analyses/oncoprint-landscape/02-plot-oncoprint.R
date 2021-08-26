@@ -161,13 +161,13 @@ histology_label_mapping <- readr::read_tsv(
             "palettes", 
             "histology_label_color_table.tsv")) %>%
   # Select just the columns we will need for plotting
-  dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes)
+  dplyr::select(Kids_First_Biospecimen_ID, cancer_group, cancer_group_order, cancer_group_hex_codes)
 
 # Join on these columns to the metadata
 metadata <- metadata %>% 
-  dplyr::inner_join(histology_label_mapping, by = "Kids_First_Biospecimen_ID") %>% 
-  # Reorder display_group based on display_order
-  dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
+  dplyr::inner_join(histology_label_mapping, by = c("Kids_First_Biospecimen_ID","cancer_group")) %>% 
+  # Reorder cancer_group based on cancer_group_order
+  dplyr::mutate(cancer_group = forcats::fct_reorder(cancer_group, cancer_group_order))
 
 # Filter to the metadata associated with the broad histology value, if provided
 if (!is.null(opt$broad_histology)) {
@@ -220,19 +220,21 @@ oncoprint_col_palette <- readr::read_tsv(file.path(
   # Use deframe so we can use it as a recoding list
   tibble::deframe()
 
-# Color coding for `display_group` classification
+# Color coding for `cancer_group` classification
 # Get unique tumor descriptor categories
 histologies_color_key_df <- metadata %>%
-  dplyr::arrange(display_order) %>%
-  dplyr::select(display_group, hex_codes) %>%
+  dplyr::arrange(cancer_group_order) %>%
+  dplyr::select(cancer_group, cancer_group_hex_codes) %>%
   dplyr::distinct()
 
 # Make color key specific to these samples
-histologies_color_key <- histologies_color_key_df$hex_codes
-names(histologies_color_key) <- histologies_color_key_df$display_group
+histologies_color_key <- histologies_color_key_df$cancer_group_hex_codes
+names(histologies_color_key) <- histologies_color_key_df$cancer_group
 
 # Now format the color key objet into a list
-annotation_colors <- list(display_group = histologies_color_key)
+annotation_colors <- list(cancer_group = histologies_color_key,
+                          germline_sex_estimate = c("Male"="#2166ac",
+                                                    "Female"="#b2182b"))
 
 #### Prepare MAF object for plotting ------------------------------------------
 
@@ -296,7 +298,7 @@ png(
 
 oncoplot(
   maf_object,
-  clinicalFeatures = "display_group",
+  clinicalFeatures = c("cancer_group","germline_sex_estimate"),
   genes = goi_list,
   logColBar = TRUE,
   sortByAnnotation = TRUE,
