@@ -1,7 +1,9 @@
-library('ggpubr')
+suppressPackageStartupMessages({
+  library(ggpubr)
+  library(grid)
+  library(optparse)
+})
 stringsAsFactors=FALSE
-library(grid)
-library(optparse)
 
 ###############################################  Comparing TERT and TERC expression with EXTEND Scores (Figure 2)  ################################################################################################
 

@@ -1,0 +1,8 @@
+variable	group1	group2	p.format	p.adj	p.signif	method
+NormEXTENDScores	all	HGG, H3 wildtype (N=32)	0.51	1		Wilcoxon
+NormEXTENDScores	all	HGG, H3 wildtype, TP53 loss (N=18)	0.49	1		Wilcoxon
+NormEXTENDScores	all	DMG, H3 K28 (N=10)	0.83	1		Wilcoxon
+NormEXTENDScores	all	HGG, H3 G35 (N=4)	0.63	1		Wilcoxon
+NormEXTENDScores	all	HGG, H3 wildtype, TP53 activated (N=5)	0.90	1		Wilcoxon
+NormEXTENDScores	all	DMG, H3 K28, TP53 loss (N=21)	0.34	1		Wilcoxon
+NormEXTENDScores	all	DMG, H3 K28, TP53 activated (N=3)	0.48	1		Wilcoxon
