@@ -206,12 +206,12 @@ disease_df <-
   readr::read_tsv(disease_file, col_types = readr::cols()) %>%
   dplyr::mutate(gene = factor(gene, levels = genes))
 
-
 display_diseases <- disease_df %>%
-  dplyr::group_by(disease) %>%
-  dplyr::tally(wt = mutant_samples) %>%
-  dplyr::arrange(desc(n)) %>%
-  head(7) %>% # seven so we end up with 8 total for color reasons
+  dplyr::select(disease, mutant_samples) %>%
+  dplyr::arrange(desc(mutant_samples)) %>%
+  dplyr::select(disease) %>%
+  unique() %>%
+  head(10) %>% # top 10 diseases with highest mutated samples
   dplyr::pull(disease)
 
 disease_df <- disease_df %>%
