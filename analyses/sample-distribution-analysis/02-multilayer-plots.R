@@ -129,6 +129,8 @@ tm <-
     draw = TRUE
   )$tm
 
+tm
+
 # Update colors
 level1 <- subset(tm, level == 1)
 # merge to get hex_codes 
@@ -160,14 +162,14 @@ new.tm <- dplyr::bind_rows(list(level1, level2, level3, level4, level5, level6, 
 # Convert the tm data.frame into a d3.js hierarchy object which is needed
 # for the sund2b plot
 tmnest <-
-  d3r::d3_nest(tm[, c("level1", "level2", "level3",
+  d3r::d3_nest(new.tm[, c("level1", "level2", "level3",
                       "level4", "level5", "level6",
                       "vSize")],
                value_cols = c("vSize"))
 
 # Create an interactive treemap
 interactive_tm <-
-  d3treeR::d3tree(tm,
+  d3treeR::d3tree(new.tm,
                   rootname = "Cancer Histologies Treemap",
                   width = 1200,
                   height = 700)
