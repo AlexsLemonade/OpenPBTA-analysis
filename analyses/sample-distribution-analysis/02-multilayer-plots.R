@@ -52,12 +52,10 @@ final_df <- histologies_df %>%
   dplyr::inner_join(histology_label_mapping,
                     c("Kids_First_Biospecimen_ID", "sample_type",
                       "integrated_diagnosis", "Notes","harmonized_diagnosis",
-                      "broad_histology", "short_histology", "cancer_group")) %>% 
-  # Reorder cancer_group based on cancer_group_order
-  dplyr::mutate(cancer_group = forcats::fct_reorder(cancer_group, cancer_group_order)) %>%
+                      "broad_histology", "short_histology", "cancer_group")) %>%
   # Extract WGS, WXS, RNA-Seq
   # To-do targeted sequencing?
-  reshape2::dcast(Kids_First_Participant_ID + 
+  reshape2::dcast(Kids_First_Biospecimen_ID + 
                     broad_histology +
                     cancer_group + 
                     tumor_descriptor + 
@@ -66,9 +64,11 @@ final_df <- histologies_df %>%
                   fun.aggregate = function(x){as.integer(length(x)>0)}) %>%
   dplyr::mutate(WGS = dplyr::if_else(WGS==1,"WGS","Not Available"),
                 WXS = dplyr::if_else(WXS==1,"WXS","Not Available"),
-                `RNA-Seq`= dplyr::if_else(`RNA-Seq`==1,"RNA-Seq","Not Available")) %>%
+                `RNA-Seq`= dplyr::if_else(`RNA-Seq`==1,"RNA-Seq","Not Available"),
+                cancer_group = dplyr::if_else(is.na(cancer_group),
+                                              "Other",cancer_group)) %>%
   # Get distinct based on participant IDs
-  dplyr::distinct(Kids_First_Participant_ID, 
+  dplyr::distinct(Kids_First_Biospecimen_ID, 
                   WGS,
                   WXS,
                   `RNA-Seq`,
@@ -111,6 +111,7 @@ final_df <- histologies_df %>%
                 level7 = germline_sex_estimate) %>%
   # Reorder the rows according to the 3 levels
   dplyr::arrange(level1, level2, level3, level4, level5, level6, level7) %>%
+  dplyr::ungroup() %>%
   # tbl_df -> data.frame
   as.data.frame() 
 
@@ -127,6 +128,9 @@ tm <-
     vSize = "counter",
     draw = TRUE
   )$tm
+
+
+saveRDS(tm,"tm.RDS")
 
 # Update colors
 # merge to get hex_codes 
@@ -177,10 +181,8 @@ saveRDS(new.tm,"new_tm.RDS")
 # Convert the new.tm data.frame into a d3.js hierarchy object which is needed
 # for the sund2b plot
 tmnest <-
-  d3r::d3_nest(new.tm[, c("level1", "level2", "level3",
-                      "level4", "level5", "level6",
-                      "level7", "vSize")],
-               value_cols = c("vSize"))
+  d3r::d3_nest(new.tm,
+               value_cols = colnames(new.tm)[-(1:7)])
 
 
 # Create a sunburst plot
@@ -193,7 +195,9 @@ sun_plot <-
   )
 
 # Create an interactive sund2b plot
-p <- sunburstR::sund2b(tmnest, valueField = "vSize")
+p <- sunburstR::sund2b(tmnest,
+                       colors = htmlwidgets::JS("function(name, d){return d.color || '#ccc';}"),
+                       valueField = "vSize")
 
 # Create HTML outputs for the interactive plots
 mapview::mapshot(p, url = file.path(plots_dir, "histology-pie.html"))
