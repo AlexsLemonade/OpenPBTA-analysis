@@ -41,20 +41,18 @@ histology_label_mapping <- readr::read_tsv(
   file.path(root_dir,
             "figures",
             "palettes", 
-            "histology_label_color_table.tsv")) %>% 
-  # Select just the columns we will need for plotting
-  dplyr::select(Kids_First_Biospecimen_ID, cancer_group_order, cancer_group_hex_codes)
-
-# Use histology_label_color_table.tsv for broad_histology and cancer_group hex codes
-histologies_color_key_df <- readr::read_tsv(file.path(palette_dir,"histology_label_color_table.tsv"),
-                                            col_types = readr::cols())
+            "histology_label_color_table.tsv"),
+  col_types = readr::cols())
 
 # Create final data.frame prepped for treemap and sunburst functions
 final_df <- histologies_df %>%
   dplyr::filter(sample_type == "Tumor",
                 composition == "Solid Tissue") %>%
   # Join on the color codes
-  dplyr::inner_join(histology_label_mapping, by = "Kids_First_Biospecimen_ID") %>% 
+  dplyr::inner_join(histology_label_mapping,
+                    c("Kids_First_Biospecimen_ID", "sample_type",
+                      "integrated_diagnosis", "Notes","harmonized_diagnosis",
+                      "broad_histology", "short_histology", "cancer_group")) %>% 
   # Reorder cancer_group based on cancer_group_order
   dplyr::mutate(cancer_group = forcats::fct_reorder(cancer_group, cancer_group_order)) %>%
   # Extract WGS, WXS, RNA-Seq
@@ -124,55 +122,66 @@ tm <-
   treemap::treemap(
     final_df,
     index = c("level1", "level2", "level3",
-              "level4", "level5", "level6"),
+              "level4", "level5", "level6",
+              "level7"),
     vSize = "counter",
     draw = TRUE
   )$tm
 
-tm
-
 # Update colors
-level1 <- subset(tm, level == 1)
 # merge to get hex_codes 
-level1 <- level1 %>%
+level1 <- tm %>%
+  dplyr::filter(level == 1) %>%
   dplyr::select(-color)%>%
-  dplyr::left_join(histologies_color_key_df
+  dplyr::inner_join(histology_label_mapping
                           , by= c( "level1"="broad_histology")) %>%
   dplyr::rename(color=hex_codes)%>%
-  dplyr::select(level1, color)
-level2 <- subset(tm, level == 2)
-# merge to get hex_codes
-level2 <- level2 %>%
+  dplyr::select(colnames(tm))
+
+level2 <- tm %>%
+  dplyr::filter(level == 2) %>%
   dplyr::select(-color)%>%
-  dplyr::left_join(histologies_color_key_df
+  dplyr::inner_join(histology_label_mapping
                    , by= c( "level2"="cancer_group")) %>%
   dplyr::rename(color=cancer_group_hex_codes)%>%
-  dplyr::select(level2, color)
-level3 <- subset(tm, level == 3)
-level3$color <- ifelse(level3$level3 == "WGS", "#E5E5E5", "#FFFFFF")
-level4 <- subset(tm, level == 4)
-level4$color <- ifelse(level4$level4 == "WXS", "#B3B3B3", "#FFFFFF")
-level5 <- subset(tm, level == 5)
-level5$color <- ifelse(level5$level5 == "RNA-Seq", "#CCCCCC", "#FFFFFF")
-level6 <- subset(tm, level == 6)
-level7 <- subset(tm, level == 7)
+  dplyr::select(colnames(tm))
 
-new.tm <- dplyr::bind_rows(list(level1, level2, level3, level4, level5, level6, level7))
+level3 <- tm %>%
+  dplyr::filter(level == 3 ) %>%
+  dplyr::mutate(color = dplyr::if_else(level3 == "WGS", "#E5E5E5", "#FFFFFF"))
 
-# Convert the tm data.frame into a d3.js hierarchy object which is needed
+level4 <- tm %>%
+  dplyr::filter(level == 4 ) %>%
+  dplyr::mutate( color = dplyr::if_else(level4 == "WXS", "#B3B3B3", "#FFFFFF"))
+
+level5 <- tm %>%
+  dplyr::filter(level == 5 ) %>%
+  dplyr::mutate( color = dplyr::if_else(level5 == "RNA-Seq", "#CCCCCC", "#FFFFFF"))
+
+level6 <-  tm %>%
+  dplyr::filter(level == 6 ) 
+
+level7 <-  tm %>%
+  dplyr::filter(level == 7 ) %>%
+  dplyr::mutate(color = dplyr::case_when(
+    level7 == "Male" ~"#2166ac",
+    level7 == "Female" ~"#b2182b",
+    TRUE ~ "#FFFFFF")
+    )
+
+new.tm <- dplyr::bind_rows(level1, level2, level3, level4, level5, level6, level7) %>%
+  unique()
+
+saveRDS(new.tm,"new_tm.RDS")
+
+# Convert the new.tm data.frame into a d3.js hierarchy object which is needed
 # for the sund2b plot
 tmnest <-
   d3r::d3_nest(new.tm[, c("level1", "level2", "level3",
                       "level4", "level5", "level6",
-                      "vSize")],
+                      "level7", "vSize")],
                value_cols = c("vSize"))
 
-# Create an interactive treemap
-interactive_tm <-
-  d3treeR::d3tree(new.tm,
-                  rootname = "Cancer Histologies Treemap",
-                  width = 1200,
-                  height = 700)
 
 # Create a sunburst plot
 sun_plot <-
