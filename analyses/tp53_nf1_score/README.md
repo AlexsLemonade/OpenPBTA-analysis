@@ -8,7 +8,7 @@ Now published in [Rokita et al. _Cell Reports._ 2019.](https://doi.org/10.1016/j
 In brief, _TP53_ inactivation, _NF1_ inactivation, and Ras activation classifiers are applied to the stranded and polya OpenPBTA RNA-seq data.
 The classifiers were trained on TCGA PanCan data ([Way et al. _Cell Reports._ 2018](https://doi.org/10.1016/j.celrep.2018.03.046), [Knijnenburg et al. _Cell Reports._ 2018.](https://doi.org/10.1016/j.celrep.2018.03.076)).
 See [`01-apply-classifier.py`](01-apply-classifier.py) for more information about the procedure.
-To evaluate the classifier scores, we use [`02-evaluate-classifier.py`](02-evaluate-classifier.py) and input SNV data to identify true TP53/NF1 loss samples and compare scores of shuffled data to true calls and plot ROC curves. 
+To evaluate the classifier scores, we use [`06-evaluate-classifier.py`](06-evaluate-classifier.py) and input SNV data to identify true TP53/NF1 loss samples and compare scores of shuffled data to true calls and plot ROC curves. 
 
 #### Running the analysis
 
@@ -71,11 +71,7 @@ ROC curve for TP53 classifier scores for stranded RNAseq data
 ROC curve for TP53 classifier scores for polya RNAseq data
 ![polya RNAseq TP53 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/polya_TP53.png)
 
-ROC curve for NF1 classifier scores for stranded RNAseq data
-![stranded RNAseq NF1 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/stranded_NF1.png)
+`07-plot-roc.R` creates an updated version of the plots created by `06-evaluate-classifier.py` using a unified theme.
 
-ROC curve for NF1 classifier scores for polya RNASeq data
-![polya RNASeq NF1 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/polya_NF1.png)
-
-`07-compare-molecularsubtypes-tp53scores.R` creates violin plots of TP53 scores across all molecular subtypes per broad histology.
+`08-compare-molecularsubtypes-tp53scores.R` creates violin plots of TP53 scores across all molecular subtypes per broad histology.
 

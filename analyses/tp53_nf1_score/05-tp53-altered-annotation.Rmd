@@ -1,9 +1,7 @@
 ---
 title: "Tp53 SNV hotspots"
 author: "K S Gaonkar (D3B)"
-output:
-  html_document:
-    df_print: paged
+output: html_notebook
 params:
   base_run:
     label: 1/0 to run with base histology

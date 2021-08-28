@@ -161,6 +161,10 @@ def get_roc_plot(scores_df, gene, outputfilename, color):
         .transpose()
         .assign(gene=gene, shuffled=False)
     )
+    
+    # save the dataframe for plotting in R
+    roc_df.to_csv(outputfilename + "_" + gene + ".tsv", sep="\t", index=False)
+
     plt.subplots(figsize=(5, 5))
     plt.axis("equal")
     plt.plot([0, 1], [0, 1], "k--")
