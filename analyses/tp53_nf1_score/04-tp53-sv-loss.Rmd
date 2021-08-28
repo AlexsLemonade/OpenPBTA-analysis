@@ -21,9 +21,11 @@ We want to subset SV calls which will possibly	lead to loss of function to use f
 
 ### Setup
 ```{r}
-library("ggpubr")
-library("ggthemes")
-library("tidyverse")
+suppressPackageStartupMessages({
+  library(ggpubr)
+  library(ggthemes)
+  library(tidyverse)
+})
 
 # rootdir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))

@@ -76,3 +76,6 @@ ROC curve for NF1 classifier scores for stranded RNAseq data
 
 ROC curve for NF1 classifier scores for polya RNASeq data
 ![polya RNASeq NF1 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/polya_NF1.png)
+
+`07-compare-molecularsubtypes-tp53scores.R` creates violin plots of TP53 scores across all molecular subtypes per broad histology.
+

@@ -1,0 +1,8 @@
+variable	group1	group2	p.format	p.adj	p.signif	method
+tp53_score	all	HGG, H3 wildtype (N=36)	0.00028	0.002	**	Wilcoxon
+tp53_score	all	HGG, H3 wildtype, TP53 loss (N=19)	0.03884	0.27		Wilcoxon
+tp53_score	all	DMG, H3 K28 (N=20)	0.00605	0.042	*	Wilcoxon
+tp53_score	all	DMG, H3 K28, TP53 activated (N=9)	0.82389	1		Wilcoxon
+tp53_score	all	HGG, H3 G35 (N=4)	0.07222	0.51		Wilcoxon
+tp53_score	all	DMG, H3 K28, TP53 loss (N=37)	0.00108	0.0076	**	Wilcoxon
+tp53_score	all	HGG, H3 wildtype, TP53 activated (N=5)	0.58397	1		Wilcoxon
