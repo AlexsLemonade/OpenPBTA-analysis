@@ -2,10 +2,10 @@ Cancer_Group	EFO_New	EFO_Old	MONDO_New	MONDO_Old	Comments
 
 Adenoma	?	EFO_0000232	?	MONDO_0002454
 Central Neurocytoma	EFO_1000856	EFO_1000856	MONDO_0019134
-Chordoma	EFO_1000543	EFO_0003820	MONDO_0008978	MONDO_0008978	Needs discussion
+Chordoma	Orphanet_178	EFO_0003820	MONDO_0008978	MONDO_0008978
 Choroid plexus carcinoma	MONDO_0016718	EFO_0007206	MONDO_0016717	MONDO_0016718	Needs discussion
 Choroid plexus cyst	?	EFO_0007206	MONDO_0022735	-	Needs discussion
-CNS Embryonal tumor	MONDO_0000640	EFO_0005784	?	MONDO_0018843	Needs discussion
+CNS Embryonal tumor	MONDO_0018843	EFO_0005784	MONDO_0018843	MONDO_0018843	Needs discussion
 CNS neuroblastoma	?	EFO_1000158	?	MONDO_0006130	Needs Verification
 Diffuse midline glioma	No exact match	EFO_1000026	No exact match	MONDO_0006033		Repetition, Diffuse intrinsic pontine glioma
 Dysplasia/Gliosis;Glial-neuronal tumor NOS	MONDO_0016729	EFO_0003094	MONDO_0016729	MONDO_0016729	Needs discussion
