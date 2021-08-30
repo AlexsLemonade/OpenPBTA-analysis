@@ -64,7 +64,7 @@ other_cns_png <- file.path(onco_dir, paste0(opt$lead_filename, "_other_goi_oncop
 
 oncoprint_figure <- multi_panel_figure(columns = 6,
                                        rows = 2,
-                                       width = 1000,
+                                       width = 700,
                                        height = 300)
 
 oncoprint_figure <- fill_panel(oncoprint_figure,
@@ -72,27 +72,27 @@ oncoprint_figure <- fill_panel(oncoprint_figure,
                                     col = 2:3,
                                     row = 1,
                                     scaling = "stretch",
-                                    label = "Low-grade astrocytic tumor")
+                                    label = "A")
 
 oncoprint_figure <- fill_panel(oncoprint_figure,
                                     embryonal_png,
                                     col = 4:5,
                                     row = 1,
                                     scaling = "stretch",
-                                    label = "Embryonal tumor")
+                                    label = "B")
 
 oncoprint_figure <- fill_panel(oncoprint_figure,
                                     hgat_png,
                                     col = 2:3,
                                     row = 2,
                                     scaling = "stretch",
-                                    label = "Diffuse astrocytic and oligodendroglial tumor")
+                                    label = "C")
 
 oncoprint_figure <- fill_panel(oncoprint_figure,
                                     other_cns_png,
                                     col = 4:5,
                                     row = 2,
                                     scaling = "stretch",
-                                    label = "Other CNS")
+                                    label = "D")
 
 save_multi_panel_figure(oncoprint_figure, opt$png_name)

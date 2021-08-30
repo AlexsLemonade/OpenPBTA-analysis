@@ -304,14 +304,17 @@ oncoplot(
   sortByAnnotation = TRUE,
   showTumorSampleBarcodes = FALSE,
   removeNonMutated = TRUE,
-  annotationFontSize = 1.0,
-  SampleNamefontSize = 0.5,
-  fontSize = 0.7,
+  annotationFontSize = 1.25,
+  SampleNamefontSize = 1,
+  fontSize = 1,
   colors = oncoprint_col_palette,
   annotationColor = annotation_colors,
   bgCol = "#F5F5F5",
   top = opt$top_n,
-  drawRowBar = FALSE
+  drawRowBar = FALSE,
+  titleText = opt$broad_histology,
+  titleFontSize = 1.75,
+  gene_mar = 10
 )
 
 dev.off()
