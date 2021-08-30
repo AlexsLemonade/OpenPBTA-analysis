@@ -55,7 +55,7 @@ final_df <- histologies_df %>%
                       "broad_histology", "short_histology", "cancer_group")) %>%
   # Extract WGS, WXS, RNA-Seq
   # To-do targeted sequencing?
-  reshape2::dcast(Kids_First_Biospecimen_ID + 
+  reshape2::dcast(sample_id + 
                     broad_histology +
                     cancer_group + 
                     tumor_descriptor + 
@@ -68,7 +68,7 @@ final_df <- histologies_df %>%
                 cancer_group = dplyr::if_else(is.na(cancer_group),
                                               "Other",cancer_group)) %>%
   # Get distinct based on participant IDs
-  dplyr::distinct(Kids_First_Biospecimen_ID, 
+  dplyr::distinct(sample_id, 
                   WGS,
                   WXS,
                   `RNA-Seq`,
@@ -163,7 +163,13 @@ level5 <- tm %>%
   dplyr::mutate( color = dplyr::if_else(level5 == "RNA-Seq", "#CCCCCC", "#FFFFFF"))
 
 level6 <-  tm %>%
-  dplyr::filter(level == 6 ) 
+  dplyr::filter(level == 6 ) %>%
+  dplyr::mutate( color = dplyr::case_when(
+    level6 == "Initial CNS Tumor" ~ "#709AE1FF",
+    grepl("Progressive|Progressive Disease Post-Mortem", level6) ~ "#075149FF",
+    level6 == "Recurrence" ~ "#FD8CC1FF",
+    level6 == "Second Malignancy" ~ "#FD7446FF")
+  )
 
 level7 <-  tm %>%
   dplyr::filter(level == 7 ) %>%
