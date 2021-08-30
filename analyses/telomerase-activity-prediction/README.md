@@ -12,7 +12,7 @@ Goals include:
 
 4. Analyze the distribution of telomerase activities across different histologies (used short and broad histologies from the clinical data).
 
-5. Compare the telomerase activities across different molecular subtypes of various PBTA histologies (used short histologies from the clinical data).
+5. Compare the telomerase activities across different molecular subtypes of various PBTA histologies (used short histologies, broad histologies and cancer groups from the clinical data).
 
 6. Generate plots for the analysis modules.
 
@@ -33,5 +33,6 @@ Contents of directory:
 3. The directory `plots/` contains:
 	+ [PTBA_GE_Score_AllScatter.pdf](./plots/PTBA_GE_Score_AllScatter.pdf): represents the telomerase activity scores correlations across different data sets (i.e Stranded counts versus Stranded FPKM and PolyA counts versus PolyA FPKM)
 	+ [PTBA_GE_TM_ScatterComp.pdf](./plots/PTBA_GE_TM_ScatterComp.pdf): correlates TERT and TERC gene expressions with telomerase activities for different data sets (i.e Stranded and PolyA)
-	+ [PBTA_StrandedHistology.pdf](./plots/PBTA_StrandedHistology.pdf): shows the distribution of telomerase activities across different brain tumor histologies
+	+ [PBTA_Stranded_histology.pdf](./plots/PBTA_Stranded_histology.pdf): shows the distribution of telomerase activities across different brain tumor histologies
+	+ [PBTA_Stranded_cancer_group.pdf](./plots/PBTA_Stranded_histology.pdf): shows the distribution of telomerase activities across different brain tumor cancer groups
 	+ `EXTENDScores_{broad_histology}.png`: compares telomerase activities across different molecular subtypes of various PBTA short histologies.
