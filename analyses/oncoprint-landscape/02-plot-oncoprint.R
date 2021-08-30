@@ -290,8 +290,8 @@ if (!is.null(opt$goi_list)){
 # dataset and save as a png file.
 png(
   file.path(plots_dir, tolower(gsub(" ", "-", opt$png_name))),
-  width = 65,
-  height = 30,
+  width = 15,
+  height = 10,
   units = "cm",
   res = 300
 )

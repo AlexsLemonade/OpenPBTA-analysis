@@ -62,35 +62,35 @@ other_cns_png <- file.path(onco_dir, paste0(opt$lead_filename, "_other_goi_oncop
 
 #### Assemble multipanel figure ------------------------------------------------
 
-oncoprint_figure <- multi_panel_figure(columns = 6,
+oncoprint_figure <- multi_panel_figure(columns = 4,
                                        rows = 2,
-                                       width = 700,
-                                       height = 300)
+                                       width = 450,
+                                       height = 225)
 
 oncoprint_figure <- fill_panel(oncoprint_figure,
                                     lgat_png,
-                                    col = 2:3,
+                                    col = 1:2,
                                     row = 1,
                                     scaling = "stretch",
                                     label = "A")
 
 oncoprint_figure <- fill_panel(oncoprint_figure,
                                     embryonal_png,
-                                    col = 4:5,
+                                    col = 3:4,
                                     row = 1,
                                     scaling = "stretch",
                                     label = "B")
 
 oncoprint_figure <- fill_panel(oncoprint_figure,
                                     hgat_png,
-                                    col = 2:3,
+                                    col = 1:2,
                                     row = 2,
                                     scaling = "stretch",
                                     label = "C")
 
 oncoprint_figure <- fill_panel(oncoprint_figure,
                                     other_cns_png,
-                                    col = 4:5,
+                                    col = 3:4,
                                     row = 2,
                                     scaling = "stretch",
                                     label = "D")
