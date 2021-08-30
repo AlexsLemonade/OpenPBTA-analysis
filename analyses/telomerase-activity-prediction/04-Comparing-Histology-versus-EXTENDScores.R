@@ -18,8 +18,8 @@ B = file.path(root_dir, "analyses", "telomerase-activity-prediction",
 				 
 # set up the command line options
 option_list <- list(
-  make_option(c("-o", "--output"), type = "character",
-              help = "Plot output (.pdf)")
+  make_option(c("-o", "--outputname"), type = "character",
+              help = "Plot output prefix for _histology.pdf and _cancer_group.pdf")
 )
 
 
@@ -27,9 +27,8 @@ option_list <- list(
 # where each element is named by the long flag option
 opt <- parse_args(OptionParser(option_list = option_list))
 
-PBTA_EXTEND_HistologyCompPlot <- opt$output
-
-
+PBTA_EXTEND_HistologyCompPlot <- paste0(opt$output,"_histology.pdf")
+PBTA_EXTEND_CancerGroupCompPlot <- paste0(opt$output,"_cancer_group.pdf")
 
 
 PTBA_Histology = readr::read_tsv(A, guess_max = 10000)    ## Reading the clinical data
@@ -67,9 +66,15 @@ theme_set(theme_classic() +
 
 P1 = ggplot(Stranded_Histology, aes(x=fct_reorder(short_histology,NormEXTENDScores,.desc =TRUE),y=NormEXTENDScores))+geom_boxplot(size= 0.1,notch=FALSE,outlier.size = 0,outlier.shape=NA,fill="pink",alpha=0.5)+ geom_jitter(alpha= 0.5,shape=16, cex=0.3)+  ylab("EXTEND Scores")+ ggtitle("Tumor Short Histology")
 P2 = ggplot(Stranded_Histology, aes(x=fct_reorder(broad_histology,NormEXTENDScores,.desc =TRUE),y=NormEXTENDScores))+geom_boxplot(size= 0.1,notch=FALSE,outlier.size = 0,outlier.shape=NA,fill="pink",alpha=0.5)+ geom_jitter(alpha=0.5,shape=16, cex=0.3)+ ylab("EXTEND Scores")+ ggtitle("Tumor Broad Histology")
+P3 = ggplot(Stranded_Histology, aes(x=fct_reorder(cancer_group,NormEXTENDScores,.desc =TRUE),y=NormEXTENDScores))+geom_boxplot(size= 0.1,notch=FALSE,outlier.size = 0,outlier.shape=NA,fill="pink",alpha=0.5)+ geom_jitter(alpha=0.5,shape=16, cex=0.3)+ ylab("EXTEND Scores")+ ggtitle("Tumor Broad Histology")
 
-plot_grid(P1,P2, nrow = 2,labels = "AUTO", label_size = 12, scale=c(0.95,0.95),  align = "v")
+plot_grid(P1,P2,P3, nrow = 3,labels = "AUTO", label_size = 12, scale=c(0.95,0.95),  align = "v")
 
 dev.off()
 
+pdf(PBTA_EXTEND_CancerGroupCompPlot)
+
+plot_grid(P3, nrow = 1,labels = "AUTO", label_size = 12, scale=c(0.95,0.95),  align = "v")
+
+dev.off()
 

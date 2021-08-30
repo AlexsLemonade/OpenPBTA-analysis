@@ -33,7 +33,7 @@ Rscript --vanilla 03-Comparing-TERTexp-TERCexp-EXTENDScores.R --output plots/PTB
 
 #Distribution of telomerase scores across various histologies of brain tumors.
 echo "Plotting distribution of EXTEND scores in histologies..."
-Rscript --vanilla 04-Comparing-Histology-versus-EXTENDScores.R --output plots/PBTA_StrandedHistology.pdf
+Rscript --vanilla 04-Comparing-Histology-versus-EXTENDScores.R --outputname plots/PBTA_Stranded
 
 #Distribution of telomerase scores across different molecular subtypes of medulloblastoma tumors.
 echo "Plotting distribution of EXTEND scores in MB subtypes..."
