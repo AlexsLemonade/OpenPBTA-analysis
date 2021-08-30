@@ -132,7 +132,7 @@ final_df <- histologies_df %>%
   as.data.frame() 
 
 # Save to tsv file
-readr::write_tsv(final_df, file.path(results_dir, "plot_df.tsv"))
+readr::write_tsv(final_df, file.path(results_dir, "plots_df.tsv"))
 
 # Create a treemap (for interactive treemap)
 tm <-
@@ -144,9 +144,6 @@ tm <-
     vSize = "counter",
     draw = TRUE
   )$tm
-
-
-saveRDS(tm,"tm.RDS")
 
 # Update colors
 # merge to get hex_codes 
@@ -197,8 +194,6 @@ level7 <-  tm %>%
 
 new.tm <- dplyr::bind_rows(level1, level2, level3, level4, level5, level6, level7) %>%
   unique()
-
-saveRDS(new.tm,"new_tm.RDS")
 
 # Convert the new.tm data.frame into a d3.js hierarchy object which is needed
 # for the sund2b plot
