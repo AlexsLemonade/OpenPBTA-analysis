@@ -3,7 +3,7 @@ set -e
 set -o pipefail
 
 # Use the OpenPBTA bucket as the default.
-URL=${OPENPBTA_URL:-https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/open-targets}
+URL=${OPENPBTA_URL:-https://s3.amazonaws.com/d3b-openaccess-us-east-1-prd-pbta/open-targets}
 RELEASE=${OPENPBTA_RELEASE:-v8}
 PREVIOUS=${OPENPBTA_RELEASE:-v7}
 
