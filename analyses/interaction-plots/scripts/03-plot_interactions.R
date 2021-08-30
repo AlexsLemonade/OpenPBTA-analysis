@@ -129,11 +129,9 @@ divergent_colors <- divergent_palette %>%
 na_color <- divergent_palette %>%
   dplyr::filter(color_names == "na_color") %>%
   dplyr::pull(hex_codes)
-# not currently using "histologies_color_palette.tsv" as the current 
-# implementation uses `broad_histology`, which is not covered in that color scheme
-# Since we are only showing the most common subset of diseases, we don't need all colors,
-# but this should probably be updated in the future
 
+histologies_color_key_df <- readr::read_tsv(file.path(palette_dir,"histology_label_color_table.tsv"),
+                                         col_types = readr::cols())
 
 # create scales for consistent sizing
 # The scales will need to have opts$plotsize elements, 
@@ -206,19 +204,28 @@ disease_df <-
   readr::read_tsv(disease_file, col_types = readr::cols()) %>%
   dplyr::mutate(gene = factor(gene, levels = genes))
 
-
 display_diseases <- disease_df %>%
-  dplyr::group_by(disease) %>%
-  dplyr::tally(wt = mutant_samples) %>%
-  dplyr::arrange(desc(n)) %>%
-  head(7) %>% # seven so we end up with 8 total for color reasons
+  dplyr::select(disease, mutant_samples) %>%
+  dplyr::arrange(desc(mutant_samples)) %>%
+  dplyr::select(disease) %>%
+  unique() %>%
+  head(10) %>% # top 10 diseases with highest mutated samples
   dplyr::pull(disease)
 
 disease_df <- disease_df %>%
+  # remove disease == NA, these are samples where
+  # harmonized_diagnosis is Benign tumor, Dysplasia/Gliosis
+  dplyr::filter(!is.na(disease)) %>%
   dplyr::mutate(disease_factor = 
            forcats::fct_other(disease, keep = display_diseases) %>%
            forcats::fct_relevel(display_diseases)
   )
+
+histologies_color_key <- histologies_color_key_df$cancer_group_hex_codes
+names(histologies_color_key) <- histologies_color_key_df$cancer_group
+
+# Adding gray for Other histologies outside the top 10 above
+histologies_color_key <- c(histologies_color_key,"Other"="#808080")
 
 # get scale to match cooccurence plot
 # Extra scale units for the case where there are fewer genes than opts$plotsize
@@ -234,8 +241,7 @@ disease_plot <- ggplot(
     y = "Samples with mutations",
     fill = "Diagnosis"
   ) + 
-  # TODO: update to project color scheme (currently requires translation of disease to short_histology)
-  colorblindr::scale_fill_OkabeIto() + 
+  scale_fill_manual(values = histologies_color_key) + 
   scale_x_discrete(
     limits = xscale2,
     breaks = disease_df$gene

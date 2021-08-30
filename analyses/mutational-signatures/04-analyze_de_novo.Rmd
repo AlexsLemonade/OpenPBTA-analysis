@@ -4,7 +4,6 @@ author: "S. Spielman"
 date: "2021"
 output:
   html_document:
-    toc: yes
     df_print: paged
 params:
   is_ci: 0
@@ -21,14 +20,19 @@ params:
 library(sigfit)
 `%>%` <- dplyr::`%>%`
 
+proj_root_path  <- file.path( rprojroot::find_root(rprojroot::has_dir(".git")) )
+analysis_path   <- file.path(proj_root_path, "analyses", "mutational-signatures")
+plot_path       <- file.path(analysis_path, "plots")
+
+
 # Path to input data
-path_to_input_rds <- file.path("..", "..", "scratch", "mutational-signatures", "extraction")
+path_to_input_rds <- file.path(proj_root_path, "scratch", "mutational-signatures", "extraction")
 
 # Path to consine similarity GOF plots
-path_to_cosine <- file.path("plots", "denovo", "extraction")
+path_to_cosine <- file.path(analysis_path, "plots", "denovo", "extraction")
 
 # Result path
-path_to_results <- "results"
+path_to_results <- file.path(analysis_path, "results")
 if (!dir.exists(path_to_results)) {
   dir.create(path_to_results, recursive = TRUE)
 }
@@ -211,3 +215,9 @@ Clearly, this analysis is extremely sensitive to starting conditions. Even so, w
 
 
 **The two bolded** signatures are commonly associated with one another due to putative shared mechanisms of "defective DNA mismatch repair and microsatellite instability (MSI)."
+
+### Session info
+
+```{r sessioninfo}
+sessionInfo()
+```

@@ -51,29 +51,31 @@ The _copy number_ annotated in the CNVkit SEG file is annotated with respect to 
 <br>
 <br>
 
-| Ploidy | Copy Number | Gain/Loss Interpretation     |
-|--------|-------------|------------------------------|
-| 2      | 0           | Loss; homozygous deletion    |
-| 2      | 1           | Loss; hemizygous deletion    |
-| 2      | 2           | Copy neutral                 |
-| 2      | 3           | Gain; one copy gain          |
-| 2      | 4           | Gain; two copy gain          |
-| 2      | 5+          | Gain; possible amplification |
-| 3      | 0           | Loss; 3 copy loss            |
-| 3      | 1           | Loss; 2 copy loss            |
-| 3      | 2           | Loss; 1 copy loss            |
-| 3      | 3           | Copy neutral                 |
-| 3      | 4           | Gain; one copy gain          |
-| 3      | 5           | Gain; two copy gain          |
-| 3      | 6+          | Gain; possible amplification |
-| 4      | 0           | Loss; 4 copy loss            |
-| 4      | 1           | Loss; 3 copy loss            |
-| 4      | 2           | Loss; 2 copy loss            |
-| 4      | 3           | Loss; 1 copy loss            |
-| 4      | 4           | Copy neutral                 |
-| 4      | 5           | Gain; one copy gain          |
-| 4      | 6           | Gain; two copy gain          |
-| 4      | 7+          | Gain; possible amplification |
+Ploidy | Copy Number | Gain/Loss Interpretation
+-- | -- | --
+2 | 0 | Deep deletion; homozygous deletion
+2 | 1 | Loss; hemizygous deletion
+2 | 2 | Copy neutral
+2 | 3 | Gain; one copy gain
+2 | 4 | Gain; two copy gain
+2 | 5+ | Amplification; possible amplification
+3 | 0 | Deep deletion; 3 copy loss
+3 | 1 | Loss; 2 copy loss
+3 | 2 | Loss; 1 copy loss
+3 | 3 | Copy neutral
+3 | 4 | Gain; one copy gain
+3 | 5 | Gain; two copy gain
+3 | 6 | Gain; three copy gain
+3 | 7+ | Amplification; possible amplification
+4 | 0 | Deep deletion; 4 copy loss
+4 | 1 | Loss; 3 copy loss
+4 | 2 | Loss; 2 copy loss
+4 | 3 | Loss; 1 copy loss
+4 | 4 | Copy neutral
+4 | 5 | Gain; one copy gain
+4 | 6 | Gain; two copy gain
+4 | 7 | Gain; two copy gain
+4 | 8+ | Amplification; possible amplification
 
 
 ### Somatic Structural Variant (SV) Data
@@ -159,6 +161,10 @@ Consensus mutation files are products of the [`analyses/snv-callers`](https://gi
   Note that this file is not strictly a MAF file, as it adds a Variant Allele Frequency (`VAF`) column and does not contain a version comment as the first line.
   * `pbta-snv-consensus-mutation-tmb-all.tsv` includes tumor mutation burden statistics that are calculated based calculated from Strelka2 and Mutect2 SNV consensus, and the intersection of Strelka2 and Mutect2 BED windows sizes.
   * `pbta-snv-consensus-mutation-tmb-coding.tsv` contains coding only tumor mutation burden statistics calculated from the number of coding sequence Strelka2, Mutect2, and Lancet consensus SNVs and size of the intersection of all three callers' BED windows and the Gencode v27 coding sequence regions. 
+
+### Mutation hotspots 
+Mutation calls that overlap hotspots from MSKCC cancer hotspot [database](https://www.cancerhotspots.org/#/download) or overlapping TERT promoter region are retained even if called by 1 caller ,excluding Vardict-only calls because Vardict uniquely calls a large number (~39 million) of very low VAF mutations as discussed [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/README.md) suggesting these could be false calls. 
+ * `pbta-snv-scavenged-hotspots.maf.tsv.gz` 
 
 ### Collapsed Expression Matrices
 
