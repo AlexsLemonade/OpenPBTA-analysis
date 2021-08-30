@@ -44,6 +44,22 @@ histology_label_mapping <- readr::read_tsv(
             "histology_label_color_table.tsv"),
   col_types = readr::cols())
 
+# Read binary color for Male/Female color coding
+binary_mapping <- readr::read_tsv(
+  file.path(root_dir,
+            "figures",
+            "palettes",
+            "binary_color_palette.tsv")
+)
+
+# Read tumor_descriptor palette
+tumor_descriptor_palette <- readr::read_tsv(
+  file.path(root_dir,
+            "figures",
+            "palettes",
+            "tumor_descriptor_palette.tsv")
+)
+
 # Create final data.frame prepped for treemap and sunburst functions
 final_df <- histologies_df %>%
   dplyr::filter(sample_type == "Tumor",
@@ -164,19 +180,19 @@ level5 <- tm %>%
 
 level6 <-  tm %>%
   dplyr::filter(level == 6 ) %>%
-  dplyr::mutate( color = dplyr::case_when(
-    level6 == "Initial CNS Tumor" ~ "#709AE1FF",
-    grepl("Progressive|Progressive Disease Post-Mortem", level6) ~ "#075149FF",
-    level6 == "Recurrence" ~ "#FD8CC1FF",
-    level6 == "Second Malignancy" ~ "#FD7446FF")
-  )
+  dplyr::select(-color)%>%
+  dplyr::inner_join(tumor_descriptor_palette,
+                    by= c( "level6"="color_names")) %>%
+  dplyr::rename(color=hex_codes)%>%
+  dplyr::select(colnames(tm))
 
 level7 <-  tm %>%
   dplyr::filter(level == 7 ) %>%
   dplyr::mutate(color = dplyr::case_when(
-    level7 == "Male" ~"#2166ac",
-    level7 == "Female" ~"#b2182b",
-    TRUE ~ "#FFFFFF")
+    level7 == "Male" ~ binary_mapping$hex_codes[1],
+    level7 == "Female" ~ binary_mapping$hex_codes[2],
+    # na_color
+    TRUE ~ binary_mapping$hex_codes[3])
     )
 
 new.tm <- dplyr::bind_rows(level1, level2, level3, level4, level5, level6, level7) %>%
