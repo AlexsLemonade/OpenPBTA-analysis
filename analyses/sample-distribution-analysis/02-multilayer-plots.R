@@ -163,7 +163,7 @@ level3 <- tm %>%
   dplyr::filter(level == 3 ) %>%
   dplyr::mutate(color = dplyr::case_when(level3 == "WGS" ~ "#E5E5E5",
                                          level3 == "WXS" ~ "#B3B3B3",
-                                         level3 == "Targetted Sequencing" ~ "6b6b6b",
+                                         level3 == "Targeted Sequencing" ~ "6b6b6b",
                                          TRUE ~"#FFFFFF"))
 level4 <- tm %>%
   dplyr::filter(level == 4 ) %>%
