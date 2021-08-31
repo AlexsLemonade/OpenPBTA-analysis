@@ -78,15 +78,15 @@ final_df <- histologies_df %>%
                     germline_sex_estimate +
                     cancer_group_hex_codes ~ experimental_strategy,
                   fun.aggregate = function(x){as.integer(length(x)>0)}) %>%
-  dplyr::mutate(WGS = dplyr::if_else(WGS==1,"WGS","Not Available"),
-                WXS = dplyr::if_else(WXS==1,"WXS","Not Available"),
+  dplyr::mutate(`DNA-Seq` = dplyr::if_else(WGS==1,"WGS","Not Available"),
+                `DNA-Seq` = dplyr::if_else(WXS==1,"WXS",`DNA-Seq`),
+                `DNA-Seq` = dplyr::if_else(`Targeted Sequencing`==1,"Targeted Sequencing",`DNA-Seq`),
                 `RNA-Seq`= dplyr::if_else(`RNA-Seq`==1,"RNA-Seq","Not Available"),
                 cancer_group = dplyr::if_else(is.na(cancer_group),
                                               "Other",cancer_group)) %>%
   # Get distinct based on participant IDs
   dplyr::distinct(sample_id, 
-                  WGS,
-                  WXS,
+                  `DNA-Seq`,
                   `RNA-Seq`,
                   broad_histology,
                   cancer_group, 
@@ -96,8 +96,7 @@ final_df <- histologies_df %>%
   # Select our columns of interest
   dplyr::select(broad_histology,
                 cancer_group,
-                WGS,
-                WXS, 
+                `DNA-Seq`,
                 `RNA-Seq`, 
                 tumor_descriptor,
                 germline_sex_estimate,
@@ -107,8 +106,7 @@ final_df <- histologies_df %>%
   # Group by all columns in order to count
   dplyr::group_by( broad_histology,
                    cancer_group,
-                   WGS,
-                   WXS,
+                   `DNA-Seq`,
                    `RNA-Seq`,
                    tumor_descriptor,
                    germline_sex_estimate,
@@ -120,13 +118,12 @@ final_df <- histologies_df %>%
   # Change the column names
   dplyr::rename(level1 = broad_histology,
                 level2 = cancer_group,
-                level3 = WGS,
-                level4 = WXS,
-                level5 = `RNA-Seq`,
-                level6 = tumor_descriptor,
-                level7 = germline_sex_estimate) %>%
+                level3 = `DNA-Seq`,
+                level4 = `RNA-Seq`,
+                level5 = tumor_descriptor,
+                level6 = germline_sex_estimate) %>%
   # Reorder the rows according to the 3 levels
-  dplyr::arrange(level1, level2, level3, level4, level5, level6, level7) %>%
+  dplyr::arrange(level1, level2, level3, level4, level5, level6) %>%
   dplyr::ungroup() %>%
   # tbl_df -> data.frame
   as.data.frame() 
@@ -139,8 +136,7 @@ tm <-
   treemap::treemap(
     final_df,
     index = c("level1", "level2", "level3",
-              "level4", "level5", "level6",
-              "level7"),
+              "level4", "level5", "level6"),
     vSize = "counter",
     draw = TRUE
   )$tm
@@ -165,41 +161,39 @@ level2 <- tm %>%
 
 level3 <- tm %>%
   dplyr::filter(level == 3 ) %>%
-  dplyr::mutate(color = dplyr::if_else(level3 == "WGS", "#E5E5E5", "#FFFFFF"))
-
+  dplyr::mutate(color = dplyr::case_when(level3 == "WGS" ~ "#E5E5E5",
+                                         level3 == "WXS" ~ "#B3B3B3",
+                                         level3 == "Targetted Sequencing" ~ "6b6b6b",
+                                         TRUE ~"#FFFFFF"))
 level4 <- tm %>%
   dplyr::filter(level == 4 ) %>%
-  dplyr::mutate( color = dplyr::if_else(level4 == "WXS", "#B3B3B3", "#FFFFFF"))
-
-level5 <- tm %>%
-  dplyr::filter(level == 5 ) %>%
   dplyr::mutate( color = dplyr::if_else(level5 == "RNA-Seq", "#CCCCCC", "#FFFFFF"))
 
-level6 <-  tm %>%
-  dplyr::filter(level == 6 ) %>%
+level5 <-  tm %>%
+  dplyr::filter(level == 5 ) %>%
   dplyr::select(-color)%>%
   dplyr::inner_join(tumor_descriptor_palette,
-                    by= c( "level6"="color_names")) %>%
+                    by= c( "level5"="color_names")) %>%
   dplyr::rename(color=hex_codes)%>%
   dplyr::select(colnames(tm))
 
-level7 <-  tm %>%
-  dplyr::filter(level == 7 ) %>%
+level6 <-  tm %>%
+  dplyr::filter(level == 6 ) %>%
   dplyr::mutate(color = dplyr::case_when(
-    level7 == "Male" ~ binary_mapping$hex_codes[1],
-    level7 == "Female" ~ binary_mapping$hex_codes[2],
+    level6 == "Male" ~ binary_mapping$hex_codes[1],
+    level6 == "Female" ~ binary_mapping$hex_codes[2],
     # na_color
     TRUE ~ binary_mapping$hex_codes[3])
     )
 
-new.tm <- dplyr::bind_rows(level1, level2, level3, level4, level5, level6, level7) %>%
+new.tm <- dplyr::bind_rows(level1, level2, level3, level4, level5, level6) %>%
   unique()
 
 # Convert the new.tm data.frame into a d3.js hierarchy object which is needed
 # for the sund2b plot
 tmnest <-
   d3r::d3_nest(new.tm,
-               value_cols = colnames(new.tm)[-(1:7)])
+               value_cols = colnames(new.tm)[-(1:6)])
 
 
 # Create a sunburst plot
