@@ -284,8 +284,6 @@ annotated_m_fus_freq_tbl <- annotated_m_fus_freq_tbl %>%
 annotated_m_fus_freq_tbl %>%
   write_tsv(file.path(results_dir, paste0(output_filename,'.tsv')))
 
-head(annotated_m_fus_freq_tbl)
-
 # write to json
 jsonlite::write_json(
   annotated_m_fus_freq_tbl,
