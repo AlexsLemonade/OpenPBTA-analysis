@@ -65,7 +65,7 @@ other_cns_png <- file.path(onco_dir, paste0(opt$lead_filename, "_other_goi_oncop
 oncoprint_figure <- multi_panel_figure(columns = 4,
                                        rows = 2,
                                        width = 450,
-                                       height = 225)
+                                       height = 265)
 
 oncoprint_figure <- fill_panel(oncoprint_figure,
                                     lgat_png,

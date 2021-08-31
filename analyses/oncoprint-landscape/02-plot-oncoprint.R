@@ -290,8 +290,8 @@ if (!is.null(opt$goi_list)){
 # dataset and save as a png file.
 png(
   file.path(plots_dir, tolower(gsub(" ", "-", opt$png_name))),
-  width = 15,
-  height = 10,
+  width = 35,
+  height = 20,
   units = "cm",
   res = 300
 )
@@ -312,8 +312,8 @@ oncoplot(
   bgCol = "#F5F5F5",
   top = opt$top_n,
   drawRowBar = FALSE,
-  titleText = opt$broad_histology,
-  titleFontSize = 1.75,
+  titleText = ifelse(is.null(opt$broad_histology), "", opt$broad_histology),
+  titleFontSize = 1.3,
   gene_mar = 10
 )
 
