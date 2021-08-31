@@ -140,8 +140,7 @@ RUN ./install_bioc.r \
     survminer
 
 # maftools for proof of concept in create-subset-files
-RUN ./install_bioc.r \
-    maftools
+RUN R -e "remotes::install_github('PoisonAlien/maftools', ref = '9719868262f946e0b8eb2e7ec2510ee18c6cafa3')"
 
 # ComplexHeatmap
 RUN ./install_bioc.r \
