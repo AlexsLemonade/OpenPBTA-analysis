@@ -333,7 +333,7 @@ gene_disease_counts <- gene_sample_counts %>%
   dplyr::filter(gene %in% top_count_genes) %>%
   dplyr::left_join(sample_meta, 
                    by = c("sample" = "Kids_First_Biospecimen_ID")) %>%
-  dplyr::group_by(gene, disease = broad_histology) %>%
+  dplyr::group_by(gene, disease = cancer_group) %>%
   dplyr::summarize(mutant_samples = dplyr::n(),
                    total_muts = sum(mutations),
                    mean_muts_per_sample = mean(mutations)) %>%

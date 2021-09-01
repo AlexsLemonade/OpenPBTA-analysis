@@ -10,7 +10,7 @@ jobs:
 
       - run:
           name: Data Download
-          command: OPENPBTA_URL=https://s3.amazonaws.com/kf-openaccess-us-east-1-prd-pbta/data OPENPBTA_RELEASE=testing ./scripts/run_in_ci.sh bash download-data.sh
+          command: OPENPBTA_URL=https://s3.amazonaws.com/d3b-openaccess-us-east-1-prd-pbta/data OPENPBTA_RELEASE=testing ./scripts/run_in_ci.sh bash download-data.sh
 
       - run:
           name: List Data Directory Contents
@@ -28,9 +28,6 @@ jobs:
           name: Sample Distribution Analyses
           command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
 
-      - run:
-          name: Sample Distribution Figure
-          command: ./scripts/run_in_ci.sh Rscript figures/scripts/fig1-sample-distribution.R
 
       - run:
           name: Transcriptome dimensionality reduction

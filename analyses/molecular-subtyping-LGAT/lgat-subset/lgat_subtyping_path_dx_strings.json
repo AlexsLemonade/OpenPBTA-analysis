@@ -1,12 +1,15 @@
 {
     "include_path_dx": [
         "low-grade glioma/astrocytoma",
-        "ganglioglioma"
+        "ganglioglioma",
+        "subependymal giant cell astrocytoma"
     ],
     "exclude_path_dx": [
         "dysembryoplastic neuroepithelial tumor"
     ],
     "recode_path_free_text": [
+        "desmoplastic infantile",
+        "desmoplastic infantile ganglioglioma",
         "desmoplastic infantile astrocytoma",
         "glioneuronal"
     ]
