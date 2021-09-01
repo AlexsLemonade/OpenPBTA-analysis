@@ -12,3 +12,4 @@ The purpose of maintaining this dataset is to map each cancer group found in the
 The EFO codes may have prefix “EFO_”, “MONDO_” or “Orphanet_”, while the MONDO codes have a prefix “MONDO_”; each followed by seven digits.
 
 As more cancer groups or subtypes are added to existing histologies dataset and/or in case of any ambiguity, these codes will be revised.
+Currently, all non-NA cancer groups from the histologies files except 'Epilepsy', 'Dysplasia/Gliosis;Glial-neuronal tumor NOS', 'Arteriovenous malformation', and 'Reactive connective tissue' are included in this file.
