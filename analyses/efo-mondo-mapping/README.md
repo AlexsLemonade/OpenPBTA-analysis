@@ -5,7 +5,7 @@ The Experimental Factor Ontology (EFO) is a resource that provides systematic de
 
 The Mondo Disease Ontology (Mondo) is another independent resource aiming to harmonize disease definitions. 
 
-The purpose of maintaining this dataset is to map each cancer group found in the histologies.tsv to its appropriate EFO and MONDO codes.
+The purpose of maintaining `efo-mondo-map.tsv` is to map each cancer group found in the `histologies.tsv` to its appropriate EFO and MONDO codes.
 
 ###Format
 
