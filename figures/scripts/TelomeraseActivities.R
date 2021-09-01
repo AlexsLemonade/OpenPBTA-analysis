@@ -59,7 +59,9 @@ PBTA_Histology <- readr::read_tsv(Histologies) %>%
   dplyr::inner_join(histology_label_mapping, by = 
                       c("Kids_First_Biospecimen_ID",
                         "cancer_group")) %>%
-  dplyr::rename("SampleID" = "Kids_First_Biospecimen_ID") ## Renaming "Kids_First_Biospecimen_ID" as SampleID for comparison purpose
+  ## Renaming "Kids_First_Biospecimen_ID" as SampleID for comparison purpose
+  dplyr::rename("SampleID" = "Kids_First_Biospecimen_ID")  %>%
+  dplyr::filter(!is.na(cancer_group))
 
 # Get a distinct version of the color keys
 histologies_color_key_df <- PBTA_Histology %>%
