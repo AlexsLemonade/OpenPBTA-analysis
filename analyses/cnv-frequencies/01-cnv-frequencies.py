@@ -122,7 +122,7 @@ def compute_variant_frequencies(all_tumors_df, all_cohorts_primary_tumors_file, 
      primary_tumors_frequecy_dfs = []
      relapse_tumors_frequecy_dfs = []
      for row in cancer_group_cohort_df.itertuples(index=False):
-          if row.num_samples > 5:
+          if row.num_samples > 3:
                for df_name, tumor_df in tumor_dfs.items():
                     df = pd.DataFrame()
                     if row.cohort == "all_cohorts":
