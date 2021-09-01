@@ -44,9 +44,9 @@ histology_label_mapping <- readr::read_tsv(
   file.path(palette_dir, "histology_label_color_table.tsv")
 ) %>%
   # Select just the columns we will need for plotting
-  dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>%
-  # Reorder display_group based on display_order
-  dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
+  dplyr::select(Kids_First_Biospecimen_ID, cancer_group, cancer_group_order, cancer_group_hex_codes) %>%
+  # Reorder cancer_group based on cancer_group_order
+  dplyr::mutate(cancer_group = forcats::fct_reorder(cancer_group, cancer_group_order))
 
 
 # Declare output directory
@@ -56,25 +56,27 @@ supplementary_telomerase_png <- file.path(output_dir, "SuppTelomerase_Activities
 
 # Read in the histologies file and join on the histology color mappings and labels
 PBTA_Histology <- readr::read_tsv(Histologies) %>%
-  dplyr::inner_join(histology_label_mapping, by = "Kids_First_Biospecimen_ID") %>%
-  dplyr::rename("SampleID" = "Kids_First_Biospecimen_ID") ## Renaming "Kids_First_Biospecimen_ID" as SampleID for comparison purpose
-
+  dplyr::inner_join(histology_label_mapping, by = 
+                      c("Kids_First_Biospecimen_ID",
+                        "cancer_group")) %>%
+  ## Renaming "Kids_First_Biospecimen_ID" as SampleID for comparison purpose
+  dplyr::rename("SampleID" = "Kids_First_Biospecimen_ID")  %>%
+  dplyr::filter(!is.na(cancer_group))
 
 # Get a distinct version of the color keys
 histologies_color_key_df <- PBTA_Histology %>%
-  dplyr::select(display_group, hex_codes) %>%
+  dplyr::select(cancer_group, cancer_group_hex_codes) %>%
   dplyr::distinct()
 
 # Make color key specific to these samples
-annotation_colors <- histologies_color_key_df$hex_codes
-names(annotation_colors) <- histologies_color_key_df$display_group
+annotation_colors <- histologies_color_key_df$cancer_group_hex_codes
+names(annotation_colors) <- histologies_color_key_df$cancer_group
 
 
 TMScores1 <- read.table(Telomerase_StdFpkm, sep = "	", head = T) ## Reading Stranded FPKM telomerase scores
 colnames(TMScores1)[colnames(TMScores1) == "NormEXTENDScores"] <- "NormEXTENDScores_Stranded_FPKM"
 
 PTBA_GE_Standard_Histology <- merge(PBTA_Histology, TMScores1, by = "SampleID") ### Merging Clinical data with the Telomerase scores
-
 
 TMScores2 <- read.table(Telomerase_PolyaFpkm, sep = "	", head = T)
 colnames(TMScores2)[colnames(TMScores2) == "NormEXTENDScores"] <- "NormEXTENDScores_PolyA_FPKM"
@@ -94,41 +96,16 @@ PBTA_Stranded_TMScores <- merge(TMScores1, TMScores3, by = "SampleID")
 # This data frame will be used for most histology plots
 Stranded_Histology <- PTBA_GE_Standard_Histology
 
-
-# Make a harmonized_diagnosis version of this datas frame that removes the > 5 groups
-Stranded_Harmonized_dx <- Stranded_Histology %>% 
-  dplyr::count(harmonized_diagnosis) %>% 
-  dplyr::filter(n > 5) %>% 
-  dplyr::inner_join(Stranded_Histology, by = "harmonized_diagnosis")
-
-########################################## Figure C data compilation #########################################################
-
-
-Medulloblastoma_His <- PTBA_GE_Standard_Histology[which(PTBA_GE_Standard_Histology$short_histology == "Medulloblastoma"), ] ### Select tumors with catagory labelled as "Medulloblastoma"
-
-stat.test <- data.frame(compare_means(
-  NormEXTENDScores_Stranded_FPKM ~ molecular_subtype,
-  data = Medulloblastoma_His,
-  method = "t.test"
-))
-
-combinations <- nrow(stat.test)
-
-statistics <- stat.test %>%
-  dplyr::filter(p.adj < 0.1) %>% # filter to more significant results
-  mutate(y.position = seq(1, by = 0.04, length.out = dplyr::n()))
-
-
 #########################################  Saving Figure in PNG format
 
 
 ## Figure for main text: Boxplots
-png(telomerase_png, width = 5, height = 6, units = "in", res = 1200)
+png(telomerase_png, width = 6, height = 6, units = "in", res = 1200)
 
 theme_set(theme_classic() +
   theme(
     plot.title = element_text(size = 10, face = "bold"),
-    axis.text.x = element_text(angle = 40, size = 6, vjust = 1, hjust = 1),
+    axis.text.x = element_text(angle = 60, size = 6, vjust = 1, hjust = 1),
     axis.text.y = element_text(size = 7),
     axis.title.x = element_text(size = 0),
     axis.title.y = element_text(size = 8),
@@ -140,41 +117,16 @@ theme_set(theme_classic() +
   ))
 
 P1 <- ggplot(Stranded_Histology , aes(
-  x = fct_reorder(display_group, NormEXTENDScores_Stranded_FPKM, .desc = TRUE) %>%
+  x = fct_reorder(cancer_group, NormEXTENDScores_Stranded_FPKM, .desc = TRUE) %>%
     forcats::fct_relevel("Benign", "Other tumor", "Normal", after = Inf),
   y = NormEXTENDScores_Stranded_FPKM
 )) +
   geom_boxplot(
     size = 0.2, notch = FALSE, outlier.size = 0, outlier.shape = NA,
-    aes(color = display_group, fill = display_group), alpha = 0.4
+    aes(color = cancer_group, fill = cancer_group), alpha = 0.4
   ) +
-  geom_jitter(shape = 16, cex = 0.1, aes(color = display_group)) +
+  geom_jitter(shape = 16, cex = 0.1, aes(color = cancer_group)) +
   scale_fill_manual(values = annotation_colors, aesthetics = c("colour", "fill"))
-
-
-P2 <- ggplot(
-  Stranded_Harmonized_dx,
-  aes(
-    x = fct_reorder(harmonized_diagnosis, NormEXTENDScores_Stranded_FPKM, .desc = TRUE),
-    y = NormEXTENDScores_Stranded_FPKM, 
-  )
-) +
-  geom_boxplot(size = 0.2, notch = FALSE, outlier.size = 0, outlier.shape = NA, aes(color = hex_codes, fill = hex_codes), alpha = 0.4) +
-  geom_jitter(shape = 16, cex = 0.1, aes(color = hex_codes)) +
-  ggplot2::scale_fill_identity() + 
-  ggplot2::scale_color_identity()
-
-P3 <- ggplot(Medulloblastoma_His, aes(
-  x = fct_reorder(molecular_subtype, NormEXTENDScores_Stranded_FPKM, .desc = TRUE),
-  y = NormEXTENDScores_Stranded_FPKM
-)) +
-  geom_boxplot(size = 0.2, notch = FALSE, outlier.size = 0, outlier.shape = NA, color = "black", fill = "#808080", alpha = 0.4) +
-  geom_jitter(shape = 16, width = 0.1, size = 0.2, color = "black") +
-  stat_pvalue_manual(
-    data = statistics, label = "p.adj", size = 1.7,
-    xmin = "group1", xmax = "group2", tip.length = 0.003,
-    y.position = "y.position"
-  )
 
 grid.newpage()
 # Create layout : nrow = 2, ncol =2
@@ -189,18 +141,8 @@ define_region <- function(row, col) {
 print(ggpar(P1,
   font.xtickslab = c(5, "black"),
   font.ytickslab = 6, font.x = 6, font.y = 6, ylab = "EXTEND Scores",
-  xlab = "Tumor Display Group", title = "A", font.title = 7
+  xlab = "Tumor Cancer Group", title = "A", font.title = 7
 ), vp = define_region(row = 1:3, col = 1:3))
-print(ggpar(P2,
-  font.xtickslab = c(5, "black"),
-  font.ytickslab = 6, font.x = 6, font.y = 6, ylab = "EXTEND Scores",
-  xlab = "Tumor Harmonized Diagnosis (for groups n > 5)", title = "B", font.title = 7
-), vp = define_region(row = 4:6, col = 1:2))
-print(ggpar(P3,
-  font.xtickslab = c(5, "black"),
-  font.ytickslab = 6, font.x = 6, font.y = 6, font.legend = 6,
-  xlab = "Medulloblastoma Subgroups", ylab = "EXTEND Scores", title = "C", font.title = 7
-), vp = define_region(row = 4:5, col = 3))
 
 dev.off()
 
