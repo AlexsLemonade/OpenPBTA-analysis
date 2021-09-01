@@ -214,7 +214,6 @@ if (identical(alt_id, c("FusionName", "Fusion_Type"))) {
 
 rm(tumor_kfbids)
 
-
 # Compute mutation frequencies -------------------------------------------------
 message('Compute mutation frequencies...')
 cancer_group_cohort_summary_df <- get_cg_cs_tbl(td_htl_dfs$overall_htl_df)
