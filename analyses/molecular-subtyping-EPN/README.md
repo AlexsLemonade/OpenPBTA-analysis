@@ -31,12 +31,12 @@ This above  script is designed to change to this directory to run, so it should 
                 </tr>
                 <tr>
                     <td>EPN, ST RELA</td>
-                    <td>C11orf95--RELA, LTBP3--RELA, PTEN--TAS2R1</td>
+                    <td>C11orf95--RELA, LTBP3--RELA</td>
                     <td>Yes</td>
                 </tr>
                 <tr>
                     <td>EPN, ST YAP1</td>
-                    <td>YAP1--MAMLD1, C11orf95--MAML2, YAP1--FAM118B</td>
+                    <td>C11orf95--YAP1, YAP1--MAMLD1, YAP1--FAM118B</td>
                     <td>Yes</td>
                 </tr>
             </table>
