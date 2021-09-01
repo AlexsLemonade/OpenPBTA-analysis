@@ -60,9 +60,22 @@ merge <- chromoth_per_sample %>%
 
 ### Plot the number of chromothripsis regions per sample along with CNV and/or SV break counts
 
-Define plot theme:
+Define plot theme and colors:
 ```{r}
 theme_set(theme_light())
+
+max_regions <- max(merge$count_regions_any_conf)
+colors <- colorRampPalette(brewer.pal(9,"YlOrRd"))(max_regions+1)
+colors[1] <- "#1C00ff00"  # Assign no color to "0"
+```
+
+Truncate # chromothripsis regions above 5 (for stripcharts):
+```{r}
+merge <- merge %>%
+  mutate(count_regions_any_conf_truncated = ifelse(count_regions_any_conf>=5, ">=5", count_regions_any_conf)) %>%
+  mutate(count_regions_any_conf_truncated = as.factor(count_regions_any_conf_truncated)) %>%
+  mutate(count_regions_any_conf_truncated = 
+           forcats::fct_relevel(count_regions_any_conf_truncated, ">=5", after = Inf))
 ```
 
 
@@ -74,11 +87,9 @@ p <- merge %>%
     # Sort by number of chromothripsis calls so that the samples with chromothripsis are more visible
   ggplot(aes(x = cnv_breaks_count, y = sv_breaks_count, fill = as.factor(count_regions_any_conf))) +
   geom_point(shape=21, size=2, color="black") + 
-  scale_fill_brewer(palette="YlOrRd", name="# Chromothripsis\nRegions") +
+  scale_fill_manual(values=colors, name="# Chromothripsis\nRegions") +
   xlab("# CNV Breaks") + 
-  ylab("# SV Breaks") +
-  ylim(c(0, 5000)) 
-
+  ylab("# SV Breaks") 
 p
 ggsave(file.path(plots_dir, "count_chromothripsis_cnv_and_sv_breaks_scatterplot.pdf"), p)
 ```
@@ -87,10 +98,10 @@ ggsave(file.path(plots_dir, "count_chromothripsis_cnv_and_sv_breaks_scatterplot.
 
 ```{r}
 p <- merge %>%
-  ggplot(aes(x = as.factor(count_regions_any_conf), 
-                               y = cnv_breaks_count, fill = as.factor(count_regions_any_conf))) +
+  ggplot(aes(x = count_regions_any_conf_truncated, 
+                               y = cnv_breaks_count, fill = count_regions_any_conf_truncated)) +
   geom_jitter(shape=21, size=2, color="black") +
-  scale_fill_brewer(palette="YlOrRd") +
+  scale_fill_manual(values=colors) +
   theme(legend.position = "none") +
   geom_boxplot(fill=NA, outlier.shape=NA) +
   xlab("# Chromothripsis Regions") + 
@@ -103,15 +114,14 @@ ggsave(file.path(plots_dir, "count_chromothripsis_cnv_breaks_stripchart.pdf"), p
 
 ```{r}
 p <- merge %>%
-  ggplot(aes(x = as.factor(count_regions_any_conf), 
-                               y = sv_breaks_count, fill = as.factor(count_regions_any_conf))) +
+  ggplot(aes(x = count_regions_any_conf_truncated, 
+                               y = sv_breaks_count, fill = count_regions_any_conf_truncated)) +
   geom_jitter(shape=21, size=2, color="black") +
-  scale_fill_brewer(palette="YlOrRd") +
+  scale_fill_manual(values=colors) +
   theme(legend.position = "none") +
   geom_boxplot(fill=NA, outlier.shape=NA) +
   xlab("# Chromothripsis Regions") + 
-  ylab("# SV Breaks") +
-  ylim(c(0, 5000)) 
+  ylab("# SV Breaks") 
 p
 ggsave(file.path(plots_dir, "count_chromothripsis_sv_breaks_stripchart.pdf"), p)
 ``` 
