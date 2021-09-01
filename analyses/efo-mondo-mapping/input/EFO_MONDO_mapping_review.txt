@@ -1,0 +1,33 @@
+Cancer_Group	EFO_New	EFO_Old	MONDO_New	MONDO_Old	Comments
+
+Adenoma	?	EFO_0000232	?	MONDO_0002454
+Central Neurocytoma	EFO_1000856	EFO_1000856	MONDO_0019134
+Chordoma	Orphanet_178	EFO_0003820	MONDO_0008978	MONDO_0008978
+Choroid plexus carcinoma	MONDO_0016718	EFO_0007206	MONDO_0016717	MONDO_0016718	Needs discussion
+Choroid plexus cyst	?	EFO_0007206	MONDO_0022735	-	Needs discussion
+CNS Embryonal tumor	MONDO_0018843	EFO_0005784	MONDO_0018843	MONDO_0018843	Needs discussion
+CNS neuroblastoma	?	EFO_1000158	?	MONDO_0006130	Needs Verification
+Diffuse midline glioma	No exact match	EFO_1000026	No exact match	MONDO_0006033		Repetition, Diffuse intrinsic pontine glioma
+Dysplasia/Gliosis;Glial-neuronal tumor NOS	MONDO_0016729	EFO_0003094	MONDO_0016729	MONDO_0016729	Needs discussion
+Embryonal tumor with multilayer rosettes	MONDO_0016715	EFO_0005784	MONDO_0016715	Needs discussion, but looks okay
+Extraventricular Neurocytoma	-	EFO_0007201	MONDO_0016727	MONDO_0002682	Not sure about EFO code
+Fibromyxoid lesion	-	EFO_1000541	-	MONDO_0037745	Not sure about EFO code
+Germinoma	-	EFO_0000514	-	MONDO_0005040	Confirm Germinoma is Germ cell tumor
+Germinoma;Teratoma	-	EFO_1000282	MONDO_0006233	MONDO_0002601	Not sure about MONDO code							
+Glial-neuronal tumor NOS	-	EFO_0003833	-	MONDO_0016729	Not sure about EFO code
+Hemangioblastoma	-	EFO_0003833	-	MONDO_0016748	Not sure about EFO code
+Langerhans Cell histiocytosis	-	EFO_1000318	MONDO_0018310	MONDO_0009519	Not sure about MONDO code
+Low-grade glioma/astrocytoma	-	EFO_0005543	-	MONDO_0016685	Not sure about EFO code
+Malignant peripheral nerve sheath tumor	-	EFO_0000760	MONDO_0017827	MONDO_0018078		Not sure about MONDO code
+Melanocytic tumor	MONDO_0016744	EFO_0000326	MONDO_0016744	MONDO_0003222	Needs Discussion
+Meningioma	-	EFO_0003851	-	MONDO_0016642	Should be revisited
+Metastatic secondary tumors	-	EFO_0009709	-	MONDO_0024883	Should be revisited
+Metastatic secondary tumors;Neuroblastoma	-	EFO_0000621	-	MONDO_0005072	Should be revisited
+Myofibroblastoma	MONDO_0040675	EFO_1000255	-	MONDO_0040675	EFO and MONDO code end up same
+Myxoid spindle cell tumor	-	EFO_0000705	-	MONDO_0020664	Should be revisited
+Oligodendroglioma	-	EFO_0000632	MONDO_0002540	-	MONDO code was missing, added
+Rhabdomyosarcoma	-	EFO_0002918	MONDO_0005212	MONDO_0002847	Should be revisited
+Rosai-Dorfman disease	-	EFO_1000297	-	MONDO_0006412	Should be revisited
+Subependymal Giant Cell Astrocytoma	MONDO_0016693	EFO_0000272	-	MONDO_0016693	EFO and MONDO code end up same
+Teratoma	MONDO_0002601	EFO_0000514	MONDO_0002601	EFO and MONDO code end up same
+Wilms tumor	-	EFO_0003865	-	MONDO_0006058	Should be revisited
