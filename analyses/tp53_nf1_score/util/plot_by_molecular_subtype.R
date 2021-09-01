@@ -12,8 +12,8 @@ plot_by_molecular_subtype <- function(scores_mat, plots_dir, results_dir){
   print(broad_histology)
   print(length(unique(scores_mat$molecular_subtype)))
   plot_title <- paste0("TP53 activity scores for ", broad_histology)
-  plot_fname <- file.path(plots_dir, paste0('TP53scores_', gsub(' ', '_',broad_histology), '.png'))
-  table_fname <- file.path(results_dir, paste0('TP53scores_', gsub(' ', '_',broad_histology), '.tsv'))
+  plot_fname <- file.path(plots_dir, paste0('tp53_scores_vs_molecular_subtype_', gsub(' ', '_',broad_histology), '.png'))
+  table_fname <- file.path(results_dir, paste0('tp53_scores_vs_molecular_subtype_', gsub(' ', '_',broad_histology), '.tsv'))
   
   # create labels: count of samples per molecular subtype
   scores_mat <- scores_mat %>%

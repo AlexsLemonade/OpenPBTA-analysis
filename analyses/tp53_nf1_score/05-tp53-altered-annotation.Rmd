@@ -508,7 +508,6 @@ ggviolin(lfs, x = "tp53_altered", y = "tp53_score",
   xlab("TP53 altered status") +
   ylab("TP53 score") +
   rremove("legend")
-ggsave(file.path(plot_dir, "lfs_tp53_scores.png"))
 ```
 
 ### Table of scores across tp53 altered status by cancer predisposition
