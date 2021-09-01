@@ -65,16 +65,15 @@ cnvconsensus <- cnvconsensus %>%
   dplyr::mutate(chrom = stringr::str_remove_all(chrom, "chr"))
 
 # Replace rows of NA copy number with ploidy for that particular tumor
-  # This is necessary because the latest cnvconsensus data reports all regions lacking CNVs as "NA"
-  # But ShatterSeek needs complete CN data to identify oscillating CN regions
-  # Here, we assume the NA regions match the tumor ploidy. Although it's important to note that some regions marked NA
-  # could be uncallable regions, in addition the regions lacking CNVs.
-##### TODO: convert to dplyr
-metadata <- as.data.frame(metadata)
-rownames(metadata) <- metadata$Kids_First_Biospecimen_ID
-cnvconsensus <- cnvconsensus %>%
-  mutate(ploidy = metadata[cnvconsensus$ID, "tumor_ploidy"]) 
-cnvconsensus[is.na(cnvconsensus$copy.num), "copy.num"] <- cnvconsensus[is.na(cnvconsensus$copy.num), "ploidy"]
+  # This is necessary because the latest cnvconsensus data reports all regions lacking CNVs as "NA",
+  # but ShatterSeek needs complete CN data to identify oscillating CN regions.
+  # Here, we assume the NA regions match the tumor ploidy. (Although it's important to note that some 
+  # regions marked NA could be uncallable regions, in addition to the regions lacking CNVs.)
+cnvconsensus <- metadata %>% 
+  dplyr::select(Kids_First_Biospecimen_ID, tumor_ploidy) %>%
+  dplyr::rename(ID = Kids_First_Biospecimen_ID) %>%
+  dplyr::inner_join(cnvconsensus, by="ID") %>%
+  dplyr::mutate(copy.num = dplyr::case_when(is.na(copy.num) ~ tumor_ploidy, TRUE ~ copy.num))
 
 
 ## ===================== Define function to merge consecutive CN segments =====================
