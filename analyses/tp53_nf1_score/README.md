@@ -62,7 +62,7 @@ hotspot	| Any 1 SNV shown in HGVSp_Short overlaps MSKCC cancer hotspot [database
 activating	| Any 1 SNV shown in HGVSp_Short overlaps TP53_ activating mutations R273C and R248W. [Reference](https://pubmed.ncbi.nlm.nih.gov/17417627/) and [reference](https://pubmed.ncbi.nlm.nih.gov/24677579/). 
 tp53_altered | Combined evidence, cancer predisposition and score based tp53 status
 
-TP53 expression profile for activating vs loss TP53 status:
+**TP53 expression profile for activating vs loss TP53 status:**
 
 ```
 plots
@@ -70,14 +70,14 @@ plots
 ├── tp53_expression_by_altered_status_stranded.png
 ```
 
-Plots of TP53 scores vs TP53 altered status:
+**Plots of TP53 scores vs TP53 altered status:**
 
 ```
 plots
 ├── tp53_scores_by_altered_status.png
 ```
 
-Plots of TP53 scores vs TP53 altered status per cancer predispositions:
+**Plots of TP53 scores vs TP53 altered status per cancer predispositions:**
 
 ```
 plots
@@ -93,9 +93,9 @@ plots
 └── tp53_scores_vs_tp53_altered_status_Tuberous\ Sclerosis.png
 ```
 
-`06-evaluate-classifier.py` evaluates classifier score with TP53 alterations (non-synonymous SNV and all status == "loss" in consensus CNV file from 00-tp53-nf1-alterations.R) 
+* `06-evaluate-classifier.py` evaluates classifier score with TP53 alterations (non-synonymous SNV and all status == "loss" in consensus CNV file from 00-tp53-nf1-alterations.R) 
 
-ROC threshold results for shuffled vs non-shuffled stranded and polya classifier output:
+**ROC threshold results for shuffled vs non-shuffled stranded and polya classifier output:**
 
 ```
 results
@@ -117,7 +117,7 @@ plots
 
 * `08-compare-molecularsubtypes-tp53scores.R` creates violin plots of TP53 scores across all molecular subtypes per broad histology.
 
-Plots of TP53 scores vs Molecular subtypes per broad histology: 
+**Plots of TP53 scores vs Molecular subtypes per broad histology:**
 
 ```
 plots
@@ -127,7 +127,7 @@ plots
 ├── tp53_scores_vs_molecular_subtype_Low-grade_astrocytic_tumor.png
 ```
 
-Associated p-values:
+**Associated p-values:**
 
 ```
 results
