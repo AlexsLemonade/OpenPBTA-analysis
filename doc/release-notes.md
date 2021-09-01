@@ -1,6 +1,52 @@
 # release notes
 
 ## current release
+- release date: 2021-09-01
+- status: available
+- overview of changes:
+  - This particular release is just an update of `efo-mondo-map.tsv` per discussion in [ticket 182](https://github.com/PediatricOpenTargets/ticket-tracker/issues/182).
+  - MONDO and EFO codes were manually reviewed and assigned to `cancer_group` in OpenPedCan.  
+
+```
+v9
+├── WGS.hg38.lancet.300bp_padded.bed
+├── WGS.hg38.lancet.unpadded.bed
+├── WGS.hg38.mutect2.vardict.unpadded.bed
+├── WGS.hg38.strelka2.unpadded.bed
+├── WGS.hg38.vardict.100bp_padded.bed
+├── cnv-cnvkit.seg.gz
+├── cnv-controlfreec.tsv.gz
+├── consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz
+├── consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz
+├── consensus_wgs_plus_cnvkit_wxs.tsv.gz
+├── data-files-description.md
+├── efo-mondo-map.tsv
+├── ensg-hugo-rmtl-mapping.tsv
+├── fusion-arriba.tsv.gz
+├── fusion-starfusion.tsv.gz
+├── fusion-putative-oncogenic.tsv
+├── gene-counts-rsem-expected_count-collapsed.rds
+├── gene-expression-rsem-tpm-collapsed.rds
+├── histologies.tsv
+├── independent-specimens.wgswxspanel.primary.eachcohort.tsv
+├── independent-specimens.wgswxspanel.relapse.eachcohort.tsv
+├── independent-specimens.rnaseq.primary.eachcohort.tsv
+├── independent-specimens.rnaseq.relapse.eachcohort.tsv
+├── independent-specimens.wgswxspanel.primary.tsv
+├── independent-specimens.wgswxspanel.relapse.tsv
+├── independent-specimens.rnaseq.primary.tsv
+├── independent-specimens.rnaseq.relapse.tsv
+├── intersect_cds_lancet_strelka_mutect_WGS.bed
+├── intersect_strelka_mutect_WGS.bed
+├── release-notes.md
+├── snv-consensus-plus-hotspots.maf.tsv.gz
+├── sv-manta.tsv.gz
+├── uberon-map-gtex-group.tsv
+└── uberon-map-gtex-subgroup.tsv
+
+```
+
+## archived release
 - release date: 2021-08-20
 - status: available
 - overview of changes:
@@ -86,7 +132,6 @@ v8
 
 ```
 
-## archived release
 - release date: 2021-07-23
 - status: available
 - changes:
