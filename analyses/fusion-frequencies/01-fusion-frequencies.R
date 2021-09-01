@@ -221,7 +221,7 @@ cancer_group_cohort_summary_df <- get_cg_cs_tbl(td_htl_dfs$overall_htl_df)
 
 # nf = n_samples filtered
 nf_cancer_group_cohort_summary_df <- cancer_group_cohort_summary_df %>%
-  filter(n_samples >= 5)
+  filter(n_samples >= 3)
 
 # Run get_cg_ch_mut_freq_tbl() per cancer_group and cohort
 fus_freq_tbl_list <- lapply(
