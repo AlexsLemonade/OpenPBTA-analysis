@@ -16,26 +16,44 @@ Each gene invloved in the fusion is annotated by a Gene_Position, for example:
 
 #### Frequency annotation
 
-Each `cancer_group` and `cohort`(s) combination is considered a `cancer_group_cohort`. `cancer_group_cohort` with `n_samples` >= 5, compute `Frequency_in_overall_dataset`, `Frequency_in_primary_tumors`, and `Frequency_in_relapse_tumors` as following:
+For each `cancer_group` and `cohort`(s) combination is considered a `cancer_group_cohort`. `cancer_group_cohort` with `n_samples` >= 5,  `Frequency_in_overall_dataset`, `Frequency_in_primary_tumors`, and `Frequency_in_relapse_tumors` were computed. 
+In this module, we generated two fusion frequency tables - one `putative-oncogene-fusion-freq.jsonl.gz` calculate the frequency of a specific fusion in primary tumors, relapse tumors, and overall dataset. 
+In `putative-oncogene-fused-gene-freq.jsonl.gz` on the other hand, we calculate the frequency of a particular gene being fused in primary tumors, relapse tumors, and overall dataset.
+As long as a gene is a partner in a particular fusion (from 1A, 1B, 2A or 2B), it is counted as fused in that particular sample. 
 
+Table one - `putative-oncogene-fusion-freq.jsonl.gz`
 - `Frequency_in_overall_dataset`:
-  - For each unique variant, count the number of patients (identified by `Kids_First_Participant_ID`) that have the variant, and call this number `Total_alterations`.
-  - Count the total number of patients in the `cancer_group_cohort`, and call this number `Patients_in_dataset`.
-  - `Frequency_in_overall_dataset = Total_alterations / Patients_in_dataset`.
+  - For each unique fusion, count the number of patients (identified by `Kids_First_Participant_ID`) that have the fusion, and call this number `Total_alterations`.
+- Count the total number of patients in the `cancer_group_cohort`, and call this number `Patients_in_dataset`.
+- `Frequency_in_overall_dataset = Total_alterations / Patients_in_dataset`.
+
+Please **NOTE** that `Total_alterations` is the number of patients that have the particular fusion - NOT the total number of fusions. 
+If a specific fusion occured 3 times but they were all from the same patient, the `Total_alterations` would equal to 1 not 3.
+Therefore, `Total_alterations` cannot be directly summed in most cases, because the value corresponds to the size of a set of patients, and union of the patient sets need to be taken to have a grand "sum" of Total_alterations. For example,
+- Row 1 altered patients are {a, b, c}; Total_alterations = 3.
+- Row 2 altered patients are {a, c, d}; Total_alterations = 3.
+- Row 1 and 2 altered patients should be {a, b, c, d}; Total_alterations = 4.
 
 - `Frequency_in_primary_tumors`:
-  - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `../independent-samples/results/independent-specimens.rnaseq.primary.eachcohort.tsv`, and call this number `Total_primary_tumors_alterated`.
-  - Count the total number of samples in the `cancer_group_cohort` that are also in the `../independent-samples/results/independent-specimens.rnaseq.primary.eachcohort.tsv`, and call this number `Primary_tumors_in_dataset`.
-  - `Frequency_in_primary_tumors = Total_primary_tumors_alterated / Primary_tumors_in_dataset`.
+  - For each unique fusion, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `../independent-samples/results/independent-specimens.rnaseq.primary.eachcohort.tsv`, and call this number `Total_primary_tumors_alterated`.
+- Count the total number of samples in the `cancer_group_cohort` that are also in the `../independent-samples/results/independent-specimens.rnaseq.primary.eachcohort.tsv`, and call this number `Primary_tumors_in_dataset`.
+- `Frequency_in_primary_tumors = Total_primary_tumors_alterated / Primary_tumors_in_dataset`.
 
 - `Frequency_in_relapse_tumors`:
-  - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `../independent-samples/results/independent-specimens.rnaseq.relapase.eachcohort.tsv`, and call this number `Total_relapse_tumors_alterated`.
-  - Count the total number of samples in the `cancer_group_cohort` that are also in the `../independent-samples/results/independent-specimens.rnaseq.relapase.eachcohort.tsv`, and call this number `Relapse_tumors_in_dataset`.
-  - `Frequency_in_relapse_tumors = Total_relapse_tumors_alterated / Relapse_tumors_in_dataset`.
+  - For each unique fusion, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `../independent-samples/results/independent-specimens.rnaseq.relapase.eachcohort.tsv`, and call this number `Total_relapse_tumors_alterated`.
+- Count the total number of samples in the `cancer_group_cohort` that are also in the `../independent-samples/results/independent-specimens.rnaseq.relapase.eachcohort.tsv`, and call this number `Relapse_tumors_in_dataset`.
+- `Frequency_in_relapse_tumors = Total_relapse_tumors_alterated / Relapse_tumors_in_dataset`.
+
+Please **NOTE** that just like `Total_alterations`, `Total_relapse_tumors_alterated` and `Total_primary_tumors_alterated` are also the number of patients that have the particular fusion - NOT the total number of fusions. 
 
 Format the SNV mutation frequency table according to the latest spreadsheet that is attached in <https://github.com/PediatricOpenTargets/ticket-tracker/issues/64>.
 
 Merge the fusion frequency tables of all `cancer_group_cohort`s.
+The combined table was is written out as `putative-oncogene-fusion-freq.jsonl.gz`.
+
+Table two - `putative-oncogene-fused-gene-freq.jsonl.gz`
+The overall calculation logic is identical to table one. 
+The difference is instead of calculating the frequency for each unique fusion, we are calculating the frequency for each unique gene that is present within a fusion (from 1A, 1B, 2A or 2B in a particular fusion) in different tumor types.'
 
 #### Additional annotation
 

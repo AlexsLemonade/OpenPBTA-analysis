@@ -85,9 +85,9 @@ ensg_hugo_rmtl_df <- read_tsv(file.path(data_dir,'ensg-hugo-rmtl-mapping.tsv'),
 stopifnot(identical(sum(is.na(ensg_hugo_rmtl_df$ensg_id)), as.integer(0)))
 stopifnot(identical(sum(is.na(ensg_hugo_rmtl_df$gene_symbol)), as.integer(0)))
 # assert all ensg_id are unique
-# result SNV table is left joined by ensg_id
-stopifnot(identical(length(unique(ensg_hugo_rmtl_df$ensg_id)),
-                    nrow(ensg_hugo_rmtl_df)))
+# ENSG IDs are assigned to multiple gene symbols in d3b-center/D3b-codes#48. The annotator does not map ENSG ID to gene symbols.
+# stopifnot(identical(length(unique(ensg_hugo_rmtl_df$ensg_id)),
+#                    nrow(ensg_hugo_rmtl_df)))
 
 
 # Subset independent samples in histology table --------------------------------
@@ -270,7 +270,7 @@ annotated_m_fus_freq_tbl <- annotate_long_format_table(
 stopifnot(identical(sum(is.na(m_fus_freq_tbl)), as.integer(0)))
 
 # write to tsv
-annotated_m_fus_freq_tbl %>%
+annotated_m_fus_freq_tbl <- annotated_m_fus_freq_tbl %>%
   select(keep_cols, Gene_Ensembl_ID, Disease, MONDO, RMTL, EFO,Dataset,
          Total_alterations_Over_Patients_in_dataset,
          Frequency_in_overall_dataset,
@@ -279,7 +279,9 @@ annotated_m_fus_freq_tbl %>%
          Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
          Frequency_in_relapse_tumors) %>%
   unique() %>%
-  dplyr::rename(Gene_symbol = Gene_Symbol) %>%
+  dplyr::rename(Gene_symbol = Gene_Symbol) 
+
+annotated_m_fus_freq_tbl %>%
   write_tsv(file.path(results_dir, paste0(output_filename,'.tsv')))
 
 # write to json
