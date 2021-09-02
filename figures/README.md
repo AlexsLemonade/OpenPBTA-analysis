@@ -186,8 +186,7 @@ In general, we will use the `ggpubr` package with `ggtheme = theme_pubr())` and 
 
 To view the palette:
 ```
-library("scales")
-show_col(pal_simpsons("springfield")(16))
+scales::show_col(ggsci::pal_simpsons("springfield")(16))
 ```
 
 For 2+ group comparisons, we will use violin or boxplots with jitter.
