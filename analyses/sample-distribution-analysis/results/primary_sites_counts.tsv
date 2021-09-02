@@ -1,21 +1,21 @@
 primary_site	number_of_types	max_type	second_max_type
-Temporal Lobe	36	Low-grade glioma/astrocytoma, BRAF wildtype	Low-grade glioma/astrocytoma, BRAF V600E
-Ventricles	33	Choroid plexus papilloma	Ependymoma
-Frontal Lobe	32	Low-grade glioma/astrocytoma, BRAF wildtype	High-grade glioma/astrocytoma (WHO grade III/IV)
-Spinal Cord	31	Neurofibroma/Plexiform	Ependymoma
-Cerebellum	29	Low-grade glioma/astrocytoma, BRAF fusion	Medulloblastoma, group 4
-Parietal Lobe	29	Low-grade glioma/astrocytoma, BRAF wildtype	High-grade glioma/astrocytoma, H3 wildtype
-Occipital Lobe	19	Low-grade glioma/astrocytoma, BRAF V600E	Supratentorial Ependymoma, RELA fusion positive
-Suprasellar/Hypothalamic/Pituitary	19	Adamantimomatous craniopharyngioma	Craniopharyngioma
-Thalamus	14	Diffuse midline glioma, H3 K28-mutant	Low-grade glioma/astrocytoma, BRAF fusion
-Brain Stem- Midbrain	12	Low-grade glioma/astrocytoma, BRAF fusion	High-grade glioma/astrocytoma (WHO grade III/IV)
+Temporal Lobe	54	Dysembryoplastic neuroepithelial tumor (DNET)	High-grade glioma/astrocytoma, H3 wildtype
+Frontal Lobe	49	High-grade glioma/astrocytoma (WHO grade III/IV)	Dysembryoplastic neuroepithelial tumor (DNET)
+Cerebellum	46	Low-grade glioma/astrocytoma, KIAA1549-BRAF	Medulloblastoma, group 4
+Parietal Lobe	40	High-grade glioma/astrocytoma, H3 wildtype	Ependymoma, Supratentorial, RELA fusion positive
+Ventricles	40	Choroid plexus papilloma	Ependymoma
+Spinal Cord	35	Neurofibroma/Plexiform	Ependymoma
+Occipital Lobe	23	Ependymoma, Supratentorial, RELA fusion positive	Choroid plexus papilloma
+Suprasellar/Hypothalamic/Pituitary	23	Adamantinomatous craniopharyngioma	Craniopharyngioma
+Thalamus	15	Diffuse midline glioma, H3 K28-mutant	Low-grade glioma/astrocytoma, KIAA1549-BRAF
+Optic Pathway	15	Low-grade glioma/astrocytoma, BRAF V600E	Low-grade glioma/astrocytoma, KIAA1549-BRAF
+Brain Stem- Midbrain	14	High-grade glioma/astrocytoma (WHO grade III/IV)	Low-grade glioma/astrocytoma, KIAA1549-BRAF
+Skull	14	Langerhans Cell histiocytosis	Atypical meningioma
+Basal Ganglia	12	Atypical Teratoid Rhabdoid Tumor (ATRT)	Diffuse midline glioma, H3 K28-mutant
 Pons	12	Diffuse midline glioma, H3 K28-mutant	Brainstem glioma- Diffuse intrinsic pontine glioma
-Skull	11	Langerhans Cell histiocytosis	Atypical Teratoid Rhabdoid Tumor (ATRT)
-Brain Stem-Medulla	10	High-grade glioma/astrocytoma (WHO grade III/IV)	Brainstem glioma- Diffuse intrinsic pontine glioma
-Basal Ganglia	9	Atypical Teratoid Rhabdoid Tumor (ATRT)	Diffuse midline glioma, H3 K28-mutant
-Optic Pathway	9	Low-grade glioma/astrocytoma, BRAF fusion	Low-grade glioma/astrocytoma, BRAF V600E
+Brain Stem-Medulla	11	High-grade glioma/astrocytoma (WHO grade III/IV)	Brainstem glioma- Diffuse intrinsic pontine glioma
+Meninges	7	Meningioma	Anaplastic (malignant) meningioma
 Pineal Gland	7	Teratoma	CNS Embryonal tumor, NOS
 Spine NOS	7	Schwannoma	Benign tumor, meningioangiomatosis
-Hippocampus	6	Dysembryoplastic neuroepithelial tumor (DNET);Ganglioglioma	High-grade glioma/astrocytoma (WHO grade III/IV)
-Meninges	5	Meningioma	Atypical Teratoid Rhabdoid Tumor (ATRT)
+Hippocampus	6	Dysembryoplastic neuroepithelial tumor (DNET);Ganglioglioma	Ganglioglioma, wildtype
 Cranial Nerves NOS	3	Schwannoma	Atypical Teratoid Rhabdoid Tumor (ATRT)

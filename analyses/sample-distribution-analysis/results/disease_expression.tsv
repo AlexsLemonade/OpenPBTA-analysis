@@ -1,61 +1,79 @@
 harmonized_diagnosis	count	percent
-Low-grade glioma/astrocytoma, BRAF fusion	121	12.49%
-Low-grade glioma/astrocytoma, BRAF wildtype	119	12.28%
-Ependymoma	57	5.88%
-Diffuse midline glioma, H3 K28-mutant	52	5.37%
-Medulloblastoma, group 4	47	4.85%
-High-grade glioma/astrocytoma, H3 wildtype	41	4.23%
-Low-grade glioma/astrocytoma, BRAF V600E	36	3.72%
-High-grade glioma/astrocytoma (WHO grade III/IV)	35	3.61%
-Atypical Teratoid Rhabdoid Tumor (ATRT)	28	2.89%
-Meningioma	27	2.79%
-Medulloblastoma	26	2.68%
-Supratentorial Ependymoma, RELA fusion positive	26	2.68%
-Dysembryoplastic neuroepithelial tumor (DNET)	24	2.48%
-Medulloblastoma, SHH-activated	24	2.48%
-Adamantimomatous craniopharyngioma	22	2.27%
-Neurofibroma/Plexiform	18	1.86%
-Choroid plexus papilloma	16	1.65%
-Craniopharyngioma	16	1.65%
-Schwannoma	16	1.65%
-CNS Embryonal tumor, NOS	14	1.44%
-Dysplasia/Gliosis	14	1.44%
-Medulloblastoma, group 3	14	1.44%
-Low-grade glioma/astrocytoma (WHO grade I/II)	11	1.14%
-Brainstem glioma- Diffuse intrinsic pontine glioma	9	0.93%
-Ewing sarcoma	9	0.93%
-Medulloblastoma, WNT-activated	9	0.93%
-Teratoma	8	0.83%
-Glial-neuronal tumor NOS	6	0.62%
-Sarcoma	6	0.62%
-Embryonal tumor with multilayer rosettes, C19MC-altered	5	0.52%
+Low-grade glioma/astrocytoma, KIAA1549-BRAF	107	10.96%
+Diffuse midline glioma, H3 K28-mutant	55	5.64%
+Ependymoma	55	5.64%
+Medulloblastoma, group 4	48	4.92%
+High-grade glioma/astrocytoma, H3 wildtype	43	4.41%
+Low-grade glioma/astrocytoma, wildtype	40	4.1%
+High-grade glioma/astrocytoma (WHO grade III/IV)	35	3.59%
+Atypical Teratoid Rhabdoid Tumor (ATRT)	28	2.87%
+Adamantinomatous craniopharyngioma	27	2.77%
+Ependymoma, Supratentorial, RELA fusion positive	26	2.66%
+Dysembryoplastic neuroepithelial tumor (DNET)	24	2.46%
+Low-grade glioma/astrocytoma, BRAF V600E	24	2.46%
+Medulloblastoma	24	2.46%
+Medulloblastoma, SHH-activated	24	2.46%
+Meningioma	19	1.95%
+Neurofibroma/Plexiform	18	1.84%
+Schwannoma	16	1.64%
+Choroid plexus papilloma	14	1.43%
+Dysplasia/Gliosis	14	1.43%
+Ganglioglioma, wildtype	14	1.43%
+Medulloblastoma, group 3	14	1.43%
+CNS Embryonal tumor, NOS	13	1.33%
+Ganglioglioma, BRAF V600E	13	1.33%
+Craniopharyngioma	11	1.13%
+Low-grade glioma/astrocytoma, other MAPK	11	1.13%
+Low-grade glioma/astrocytoma (WHO grade I/II)	10	1.02%
+Medulloblastoma, WNT-activated	10	1.02%
+Brainstem glioma- Diffuse intrinsic pontine glioma	9	0.92%
+Ewing sarcoma	9	0.92%
+Low-grade glioma/astrocytoma, RTK	9	0.92%
+Low-grade glioma/astrocytoma, FGFR	8	0.82%
+Teratoma	8	0.82%
+Glial-neuronal tumor NOS	7	0.72%
+Atypical meningioma	6	0.61%
+Low-grade glioma/astrocytoma, NF1-germline	6	0.61%
+Sarcoma	6	0.61%
+Embryonal tumor with multilayer rosettes, C19MC-altered	5	0.51%
+Ganglioglioma, KIAA1549-BRAF	5	0.51%
+Low-grade glioma/astrocytoma, BRAF V600E, CDKN2A/B	5	0.51%
 Adenoma	4	0.41%
 Choroid plexus carcinoma	4	0.41%
+Ependymoma, Supratentorial, YAP1 fusion positive	4	0.41%
+Ganglioglioma, other MAPK	4	0.41%
 Germinoma	4	0.41%
 High-grade glioma/astrocytoma, H3 G35-mutant	4	0.41%
 Langerhans Cell histiocytosis	4	0.41%
 Malignant peripheral nerve sheath tumor (MPNST)	4	0.41%
 Metastatic secondary tumors	4	0.41%
-Neuroblastoma	4	0.41%
 Pineoblastoma	4	0.41%
-Supratentorial Ependymoma, YAP1 fusion positive	4	0.41%
 Benign tumor, dermoid cyst	3	0.31%
 Benign tumor, meningioangiomatosis	3	0.31%
-Chordoma	3	0.31%
-High-grade glioma/astrocytoma, BRAF V600E	3	0.31%
-Subependymal Giant Cell Astrocytoma (SEGA)	3	0.31%
-Benign tumor, osteoblastoma	2	0.21%
-Cavernoma	2	0.21%
-Central Neurocytoma	2	0.21%
-CNS neuroblastoma	2	0.21%
-Diffuse midline glioma, H3 K28-mutant, BRAF V600E	2	0.21%
-Ganglioneuroblastoma	2	0.21%
-Hemangioblastoma	2	0.21%
-High-grade glioma/astrocytoma, IDH-mutant	2	0.21%
-Oligodendroglioma	2	0.21%
-Other	2	0.21%
-Posterior Fossa Ependymoma, Type A	2	0.21%
-Rhabdomyosarcoma	2	0.21%
+Ependymoma, Posterior Fossa, Type A	3	0.31%
+Low-grade glioma/astrocytoma, IDH	3	0.31%
+Metastatic secondary tumors;Neuroblastoma	3	0.31%
+Neurocytoma	3	0.31%
+Pilocytic astrocytoma	3	0.31%
+Subependymal Giant Cell Astrocytoma, wildtype	3	0.31%
+Atypical choroid plexus papilloma	2	0.2%
+Benign tumor, osteoblastoma	2	0.2%
+Cavernoma	2	0.2%
+Chordoma, conventional	2	0.2%
+Chordoma, poorly differentiated	2	0.2%
+CNS neuroblastoma	2	0.2%
+Ganglioglioma	2	0.2%
+Ganglioglioma, RTK	2	0.2%
+Ganglioneuroblastoma	2	0.2%
+Hemangioblastoma	2	0.2%
+High-grade glioma/astrocytoma, IDH-mutant	2	0.2%
+Juvenile xanthogranuloma	2	0.2%
+Low-grade glioma/astrocytoma, MYB/MYBL1	2	0.2%
+Low-grade glioma/astrocytoma, NF1-somatic	2	0.2%
+Neuroblastoma	2	0.2%
+Oligodendroglioma	2	0.2%
+Rhabdomyosarcoma	2	0.2%
+Anaplastic (malignant) meningioma	1	0.1%
 Arteriovenous malformation	1	0.1%
 Benign tumor, atypical lymphoid infiltrate	1	0.1%
 Benign tumor, cortical tubers	1	0.1%
@@ -69,24 +87,47 @@ Benign tumor, perineuroma	1	0.1%
 Benign tumor, prolactinoma	1	0.1%
 Benign tumor, rathke cleft cyst	1	0.1%
 Choroid plexus cyst	1	0.1%
+Clear cell meningioma	1	0.1%
+CNS Burkitt's lymphoma	1	0.1%
 CNS Embryonal tumor, HGNET-MN1	1	0.1%
+Desmoplastic infantile astrocytoma and ganglioglioma, BRAF V600E	1	0.1%
+Desmoplastic infantile astrocytoma and ganglioglioma, RTK	1	0.1%
+Diffuse fibrillary astrocytoma	1	0.1%
+Diffuse leptomeningeal glioneuronal tumor,  KIAA1549-BRAF	1	0.1%
 Dysembryoplastic neuroepithelial tumor (DNET);Dysplasia/Gliosis;Ganglioglioma	1	0.1%
 Dysembryoplastic neuroepithelial tumor (DNET);Ganglioglioma	1	0.1%
 Dysplasia/Gliosis;Glial-neuronal tumor NOS	1	0.1%
 Embryonal tumor with multilayer rosettes, NOS	1	0.1%
+Ependymoma, H3 K28-mutant	1	0.1%
 Epilepsy, chronic rasmussen encephalitis	1	0.1%
-Extraventricular Neurocytoma	1	0.1%
 Fibromyxoid lesion	1	0.1%
-Ganglioglioma	1	0.1%
+Ganglioglioma, BRAF V600E, CDKN2A/B	1	0.1%
+Ganglioglioma, FGFR	1	0.1%
+Ganglioglioma, H3	1	0.1%
+Ganglioglioma, IDH	1	0.1%
+Ganglioglioma, MYB/MYBL1	1	0.1%
+Ganglioglioma, NF1-germline	1	0.1%
+Ganglioglioma, NF1-somatic, BRAF V600E	1	0.1%
+Ganglioglioma, other MAPK, IDH	1	0.1%
 Ganglioneuroma	1	0.1%
 Germinoma;Teratoma	1	0.1%
-Low-grade astrocytic tumor	1	0.1%
+Glial-neuronal tumor NOS,  KIAA1549-BRAF	1	0.1%
+Glial-neuronal tumor NOS,  other MAPK	1	0.1%
+Low-grade glioma/astrocytoma, KIAA1549-BRAF, other MAPK	1	0.1%
+Low-grade glioma/astrocytoma, NF1-germline, CDKN2A/B	1	0.1%
+Low-grade glioma/astrocytoma, NF1-germline, FGFR	1	0.1%
+Low-grade glioma/astrocytoma, NF1-somatic, FGFR	1	0.1%
+Low-grade glioma/astrocytoma, NF1-somatic, NF1-germline, CDKN2A/B	1	0.1%
+Low-grade glioma/astrocytoma, RTK, CDKN2A/B	1	0.1%
 Melanocytic tumor	1	0.1%
-Metastatic secondary tumors;Neuroblastoma	1	0.1%
+Meningothelial meningioma	1	0.1%
 Myofibroblastoma	1	0.1%
 Myxoid spindle cell tumor	1	0.1%
 Neurofibroma/Plexiform;Other	1	0.1%
 Non-germinomatous germ cell tumor;Teratoma	1	0.1%
-Primary CNS lymphoma	1	0.1%
+Pleomorphic xanthoastrocytoma	1	0.1%
+Pleomorphic xanthoastrocytoma, BRAF V600E	1	0.1%
 Reactive connective tissue	1	0.1%
 Rosai-Dorfman disease	1	0.1%
+Rosette-forming glioneuronal tumor,  other MAPK, FGFR	1	0.1%
+Subependymal Giant Cell Astrocytoma	1	0.1%
