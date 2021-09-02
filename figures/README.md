@@ -209,7 +209,7 @@ Caution: the default p-values on the plots are uncorrected.
 
 Below is an example for creating a violin plot with boxplot, jitter, and appropriate statistics.
 
-```
+```r
 if(length(unique(df$var_x)) > 2){
     method <- "kruskal.test"
   } else {
