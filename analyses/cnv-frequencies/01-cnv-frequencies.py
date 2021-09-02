@@ -28,10 +28,12 @@ from collections import OrderedDict
 def read_parameters():
      p = argparse.ArgumentParser(description=("The 01-snv-frequencies.py scripts creates copy number variation (CNV) cancer type and study gene-level alterations frequencies table for the OPenPedCan analyses modules."), formatter_class=argparse.RawTextHelpFormatter)
      p.add_argument('HISTOLOGY_FILE', type=str, default=None, help="OPenPedCan histology file (histologies.tsv)\n\n")
-     p.add_argument('CNV_FILE', type=str, default=None, help="OPenPedCan CNV consensus file (consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz and consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz)\n\n")
-     p.add_argument('PRIMARY_TUMORS', type=str, default=None, help="OPenPedCan independent primary tumor samples file (independent-specimens.wgs.primary.eachcohort.tsv)\n\n")
-     p.add_argument('RELAPSE_TUMORS', type=str, default=None, help="OPenPedCan independent relapse tumor samples file (independent-specimens.wgs.relapse.eachcohort.tsv)\n\n")
-     p.add_argument('-v', '--version', action='version', version="classify_reads.py version {} ({})".format(__version__, __date__), help="Print the current 01-cnv-frequencies.py version and exit\n\n")
+     p.add_argument('CNV_FILE', type=str, default=None, help="OPenPedCan CNV consensus file (consensus_wgs_plus_cnvkit_wxs.tsv.gz)\n\n")
+     p.add_argument('AC_PRIMARY_TUMORS', type=str, default=None, help="OPenPedCan all cohorts independent primary tumor samples file (independent-specimens.wgswxspanel.primary.tsv)\n\n")
+     p.add_argument('AC_RELAPSE_TUMORS', type=str, default=None, help="OPenPedCan all cohorts independent relapse tumor samples file (independent-specimens.wgswxspanel.relapse.tsv)\n\n")
+     p.add_argument('EC_PRIMARY_TUMORS', type=str, default=None, help="OPenPedCan each cohort independent primary tumor samples file (independent-specimens.wgswxspanel.primary.eachcohort.tsv)\n\n")
+     p.add_argument('EC_RELAPSE_TUMORS', type=str, default=None, help="OPenPedCan each cohort independent relapse tumor samples file (independent-specimens.wgswxspanel.relapse.eachcohort.tsv)\n\n")
+     p.add_argument('-v', '--version', action='version', version="01-cnv-frequencies.py version {} ({})".format(__version__, __date__), help="Print the current 01-cnv-frequencies.py version and exit\n\n")
      return p.parse_args()
 
 
@@ -86,17 +88,27 @@ def get_cancer_groups_and_cohorts(all_tumors_df):
      return(cancer_group_cohort_df)
 
 
-def compute_variant_frequencies(all_tumors_df, primary_tumors_file, relapase_tumors_file, cancer_group_cohort_df):
-     # get independent primary tumor samples and subset from all tumor sample dataframe
+def compute_variant_frequencies(all_tumors_df, all_cohorts_primary_tumors_file, all_cohorts_relapase_tumors_file, each_cohort_primary_tumors_file, each_cohort_relapase_tumors_file, cancer_group_cohort_df):
      tumor_dfs = {"all_tumors": all_tumors_df}
-     primary_tumors_samples_list = list(pd.read_csv(primary_tumors_file, sep="\t", dtype=str)["Kids_First_Biospecimen_ID"].unique())
-     primary_tumors_df = all_tumors_df[all_tumors_df.Kids_First_Biospecimen_ID.isin(primary_tumors_samples_list)].reset_index()
-     tumor_dfs["primary_tumors"] = primary_tumors_df
+     # get all cohorts independent primary tumor samples and subset from all tumor sample dataframe
+     all_cohorts_primary_tumors_samples_list = list(pd.read_csv(all_cohorts_primary_tumors_file, sep="\t", dtype=str)["Kids_First_Biospecimen_ID"].unique())
+     all_cohorts_primary_tumors_df = all_tumors_df[all_tumors_df.Kids_First_Biospecimen_ID.isin(all_cohorts_primary_tumors_samples_list)].reset_index()
+     tumor_dfs["all_cohorts_primary_tumors"] = all_cohorts_primary_tumors_df
      
-     # get independent relapse tumor sample and subset from all tumor samples dataframe
-     relapse_tumors_samples_list = list(pd.read_csv(relapase_tumors_file, sep="\t", dtype=str)["Kids_First_Biospecimen_ID"].unique())
-     relapse_tumors_df = all_tumors_df[all_tumors_df.Kids_First_Biospecimen_ID.isin(relapse_tumors_samples_list)].reset_index()
-     tumor_dfs["relapse_tumors"] = relapse_tumors_df
+     # get all cohorts independent relapse tumor sample and subset from all tumor samples dataframe
+     all_cohorts_relapse_tumors_samples_list = list(pd.read_csv(all_cohorts_relapase_tumors_file, sep="\t", dtype=str)["Kids_First_Biospecimen_ID"].unique())
+     all_cohorts_relapse_tumors_df = all_tumors_df[all_tumors_df.Kids_First_Biospecimen_ID.isin(all_cohorts_relapse_tumors_samples_list)].reset_index()
+     tumor_dfs["all_cohorts_relapse_tumors"] = all_cohorts_relapse_tumors_df
+
+     # get each cohort independent primary tumor samples and subset from all tumor sample dataframe
+     each_cohort_primary_tumors_samples_list = list(pd.read_csv(each_cohort_primary_tumors_file, sep="\t", dtype=str)["Kids_First_Biospecimen_ID"].unique())
+     each_cohort_primary_tumors_df = all_tumors_df[all_tumors_df.Kids_First_Biospecimen_ID.isin(each_cohort_primary_tumors_samples_list)].reset_index()
+     tumor_dfs["each_cohort_primary_tumors"] = each_cohort_primary_tumors_df
+     
+     # get each cohort independent relapse tumor sample and subset from all tumor samples dataframe
+     each_cohort_relapse_tumors_samples_list = list(pd.read_csv(each_cohort_relapase_tumors_file, sep="\t", dtype=str)["Kids_First_Biospecimen_ID"].unique())
+     each_cohort_relapse_tumors_df = all_tumors_df[all_tumors_df.Kids_First_Biospecimen_ID.isin(each_cohort_relapse_tumors_samples_list)].reset_index()
+     tumor_dfs["each_cohort_relapse_tumors"] = each_cohort_relapse_tumors_df
      
      # compute variant frequencies for each cancer group per cohort and  cancer group in cohorts
      # for the overal dataset (all tumor samples)  and independent primary/replase tumor samples
@@ -110,12 +122,15 @@ def compute_variant_frequencies(all_tumors_df, primary_tumors_file, relapase_tum
      primary_tumors_frequecy_dfs = []
      relapse_tumors_frequecy_dfs = []
      for row in cancer_group_cohort_df.itertuples(index=False):
-          if row.num_samples > 5:
+          if row.num_samples > 3:
                for df_name, tumor_df in tumor_dfs.items():
+                    df = pd.DataFrame()
                     if row.cohort == "all_cohorts":
-                         df = tumor_df[(tumor_df["cancer_group"] == row.cancer_group)]
+                         if df_name == "all_cohorts_primary_tumors" or df_name == "all_cohorts_relapse_tumors" or "all_tumors":
+                              df = tumor_df[(tumor_df["cancer_group"] == row.cancer_group)]
                     else:
-                         df = tumor_df[(tumor_df["cancer_group"] == row.cancer_group) & (tumor_df["cohort"] == row.cohort)]
+                         if df_name == "each_cohort_primary_tumors" or df_name == "each_cohort_relapse_tumors" or "all_tumors":
+                              df = tumor_df[(tumor_df["cancer_group"] == row.cancer_group) & (tumor_df["cohort"] == row.cohort)]
                     if df.empty:
                          continue
                     num_samples = df["Kids_First_Biospecimen_ID"].nunique()
@@ -124,26 +139,26 @@ def compute_variant_frequencies(all_tumors_df, primary_tumors_file, relapase_tum
                     df = df.rename_axis(["Gene_Ensembl_ID", "Variant_type"]).reset_index()
                     df["num_patients"] = num_patients
                     for i in df.itertuples():
-                         if df_name == "primary_tumors" or df_name == "relapse_tumors":
-                              df.at[i.Index, "Total_alterations/Patients_in_dataset"] = "{}/{}".format(i.total_sample_alterations, num_samples)
-                              df.at[i.Index, "Frequency_in_overall_dataset"] = "{:.2f}%".format((i.total_sample_alterations/num_samples)*100)
                          if df_name == "all_tumors":
                               df.at[i.Index, "Total_alterations/Patients_in_dataset"] = "{}/{}".format(i.total_patient_alterations, num_patients)
                               df.at[i.Index, "Frequency_in_overall_dataset"] = "{:.2f}%".format((i.total_patient_alterations/num_patients)*100)
+                         if df_name == "each_cohort_primary_tumors" or df_name == "each_cohort_relapse_tumors" or df_name == "all_cohorts_primary_tumors" or df_name == "all_cohorts_relapse_tumors":
+                              df.at[i.Index, "Total_alterations/Patients_in_dataset"] = "{}/{}".format(i.total_sample_alterations, num_samples)
+                              df.at[i.Index, "Frequency_in_overall_dataset"] = "{:.2f}%".format((i.total_sample_alterations/num_samples)*100)
                          df.at[i.Index, "Dataset"] = row.cohort
                          df.at[i.Index, "Disease"] = row.cancer_group
                     df = df [["Gene_symbol", "Gene_Ensembl_ID", "Variant_type", "Dataset", "Disease", "Total_alterations/Patients_in_dataset", "Frequency_in_overall_dataset"]]
-                    if df_name == "primary_tumors":
+                    if df_name == "each_cohort_primary_tumors" or df_name == "all_cohorts_primary_tumors":
                          primary_tumors_frequecy_dfs.append(df)
-                    elif df_name == "relapse_tumors":
+                    if df_name == "each_cohort_relapse_tumors" or df_name == "all_cohorts_relapse_tumors":
                          relapse_tumors_frequecy_dfs.append(df)
-                    else:
+                    if df_name == "all_tumors":
                          all_tumors_frequecy_dfs.append(df)
+
                          
-     # merge overal dataset (all tumor samples) and independent primary/replase tumor samples
-     # frequencies for cancer groups per cohorts into a single dataframe
+     #  merge overal dataset (all tumor samples) and independent primary/replase tumor samples frequencies for cancer groups per cohorts into a single dataframe
      merging_list = []
-     #frequencies in overall dataset
+     # frequencies in overall dataset
      all_tumors_frequecy_df = pd.concat(all_tumors_frequecy_dfs, sort=False, ignore_index=True)
      merging_list.append(all_tumors_frequecy_df)
      # frequencies in independent primary tumors
@@ -173,18 +188,18 @@ def get_annotations(cnv_frequency_df, CNV_FILE):
      args = read_parameters()
 
      # write annotated CNV frequencies results to TSV file
-     cnv_freq_tsv = "{}/{}_freq.tsv".format(results_dir, os.path.splitext(os.path.splitext(os.path.basename(args.CNV_FILE))[0])[0])
+     cnv_freq_tsv = "{}/gene-level-cnv-consensus-mut-freq.tsv".format(results_dir)
      cnv_frequency_df.to_csv(cnv_freq_tsv, sep="\t", index=False, encoding="utf-8")
 
      # annotate full gene names, OncoKB categories, EFO and MONDO disease accessions, 
      # and Relevant Molecular Target (RMTL) from the long-format-table-utils analysis module
      log_file = "{}/annotator.log".format(results_dir)
-     cnv_annot_freq_tsv = "{}/{}_annot_freq.tsv".format(results_dir, os.path.splitext(os.path.splitext(os.path.basename(args.CNV_FILE))[0])[0])
+     cnv_annot_freq_tsv = "{}/gene-level-cnv-consensus-annotated-mut-freq.tsv".format(results_dir)
      with open(log_file, "w") as log:
           subprocess.run(["Rscript", "--vanilla", "analyses/long-format-table-utils/annotator/annotator-cli.R", "-r", "-c", "Gene_full_name,RMTL,OncoKB_cancer_gene,OncoKB_oncogene_TSG,EFO,MONDO", "-i", cnv_freq_tsv, "-o", cnv_annot_freq_tsv, "-v"], stdout=log, check=True)
 
      # transform annotated CNV frequencies results from TSV to JSONL file
-     cnv_annot_freq_jsonl = "{}/{}_annot_freq.jsonl".format(results_dir, os.path.splitext(os.path.splitext(os.path.basename(args.CNV_FILE))[0])[0])
+     cnv_annot_freq_jsonl = "{}/gene-level-cnv-consensus-annotated-mut-freq.jsonl".format(results_dir)
      tsv_file = open(cnv_annot_freq_tsv, "r")
      jsonl_file = open(cnv_annot_freq_jsonl, "w")
      reader = csv.DictReader(tsv_file, delimiter="\t")
@@ -206,7 +221,7 @@ def main():
      # call functions to compute CNV gene-level and add functional annotations
      all_tumors_df = merge_histology_and_cnv_data(args.HISTOLOGY_FILE, args.CNV_FILE)
      cancer_group_cohort_df = get_cancer_groups_and_cohorts(all_tumors_df)
-     cnv_frequency_df = compute_variant_frequencies(all_tumors_df, args.PRIMARY_TUMORS, args.RELAPSE_TUMORS, cancer_group_cohort_df)
+     cnv_frequency_df = compute_variant_frequencies(all_tumors_df, args.AC_PRIMARY_TUMORS, args.AC_RELAPSE_TUMORS, args.EC_PRIMARY_TUMORS, args.EC_RELAPSE_TUMORS, cancer_group_cohort_df)
      cnv_frequency_df = get_annotations(cnv_frequency_df, args.CNV_FILE)
      sys.exit(0)
 
