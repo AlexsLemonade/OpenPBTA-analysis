@@ -378,7 +378,7 @@ stopifnot(identical(
 
 # all cohorts independent sample table
 rna_ac_idps_df <- read_tsv(
-  file.path('..', 'independent-samples', 'results',
+  file.path('../..', 'data',
             'independent-specimens.rnaseq.primary.tsv'),
   col_types = cols(.default = col_guess()))
 
@@ -397,7 +397,7 @@ stopifnot(all(rna_ac_htl_df$Kids_First_Biospecimen_ID %in% colnames(tpm_df)))
 
 # each cohort independent sample table
 rna_ec_idps_df <- read_tsv(
-  file.path('..', 'independent-samples', 'results',
+  file.path('../..', 'data',
             'independent-specimens.rnaseq.primary.eachcohort.tsv'),
   col_types = cols(.default = col_guess()))
 

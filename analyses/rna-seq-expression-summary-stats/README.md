@@ -174,8 +174,8 @@ Input:
 - `../../data/gene-expression-rsem-tpm-collapsed.rds`
 - `../../data/histologies.tsv`
 - `../../data/ensg-hugo-rmtl-mapping.tsv`
-- `../independent-samples/results/independent-specimens.rnaseq.primary.tsv`
-- `../independent-samples/results/independent-specimens.rnaseq.primary.eachcohort.tsv`
+- `../../data/independent-specimens.rnaseq.primary.tsv`
+- `../../data/independent-specimens.rnaseq.primary.eachcohort.tsv`
 
 Output:
 
