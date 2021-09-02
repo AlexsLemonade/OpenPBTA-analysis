@@ -23,7 +23,7 @@ Each `cancer_group` and `cohort`(s) combination is considered a `cancer_group_co
 
 - `Frequency_in_primary_tumors`:
   - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `independent-specimens.wgs.primary.eachcohort.tsv`, and call this number `Total_primary_tumors_alterated`.
-  - Count the total number of samples in the `cancer_group_cohort` that are also in the `independent-specimens.wgswxspanel.primary.eachcohort.tsv` or each cohort and `independent-specimens.wgswxspanel.primary.tsv` for all cohorts, and call this number `Primary_tumors_in_dataset`.
+  - Count the total number of samples in the `cancer_group_cohort` that are also in the `independent-specimens.wgswxspanel.primary.eachcohort.tsv` for each cohort and `independent-specimens.wgswxspanel.primary.tsv` for all cohorts, and call this number `Primary_tumors_in_dataset`.
   - `Frequency_in_primary_tumors = Total_primary_tumors_alterated / Primary_tumors_in_dataset`.
 
 - `Frequency_in_relapse_tumors`:
