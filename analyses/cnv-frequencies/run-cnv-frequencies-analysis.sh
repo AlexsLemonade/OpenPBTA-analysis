@@ -46,3 +46,4 @@ gzip analyses/cnv-frequencies/results/gene-level-cnv-consensus-annotated-mut-fre
 ####### remove intermediate temporary and log files ######################
 rm -f analyses/cnv-frequencies/results/consensus_wgs_plus_cnvkit_wxs_*
 rm -f analyses/cnv-frequencies/results/annotator.log
+
