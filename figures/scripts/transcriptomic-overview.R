@@ -46,10 +46,15 @@ palette_dir <- file.path(root_dir, "figures", "palettes")
 histology_label_mapping <- readr::read_tsv(
   file.path(palette_dir, "histology_label_color_table.tsv")) %>%
   # Select just the columns we will need for plotting
-  dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes,
+                cancer_group, cancer_group_order, cancer_group_hex_codes) %>%
   # Reorder display_group based on display_order
   dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
 
+cancer_group_color_palette <- unique(histology_label_mapping$cancer_group_hex_codes)
+names(cancer_group_color_palette) <- unique(histology_label_mapping$cancer_group)
+
+cancer_group_color_palette 
 divergent_palette <- read_tsv(file.path(palette_dir,
                                         "divergent_color_palette.tsv"))
 gradient_palette <- read_tsv(file.path(palette_dir,
@@ -117,11 +122,11 @@ umap_plot <- read_tsv(rsem_umap_file) %>%
   # Join on color palette info
   dplyr::inner_join(histology_label_mapping,
                     by = "Kids_First_Biospecimen_ID") %>%
-  select(X1, X2, display_group) %>%
-  plot_dimension_reduction(point_color = "display_group",
+  select(X1, X2, cancer_group) %>%
+  plot_dimension_reduction(point_color = "cancer_group",
                            x_label = "UMAP1",
                            y_label = "UMAP2",
-                           color_palette = annotation_colors) +
+                           color_palette = cancer_group_color_palette) +
   theme(text = element_text(size = 10),
         legend.position = "none")
 
@@ -223,7 +228,7 @@ immune_deconv_file <- file.path(
 load(immune_deconv_file)
 
 # Get in wide format for making a heatmap
-deconv_mat <- deconv.res %>%
+deconv_mat <- deconv_output %>%
   select(cell_type, `sample`, fraction) %>%
   spread(`sample`, fraction) %>%
   tibble::column_to_rownames("cell_type") %>%
