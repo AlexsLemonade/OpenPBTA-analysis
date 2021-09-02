@@ -198,7 +198,7 @@ For 2+ group comparisons, we will use violin or boxplots with jitter.
 Some modules perform group-wise comparisons. 
 For the manuscript, we may want to output tables of the statistics and/or print the statistical test and p-value directly on the plot.
 We use the functions `ggpubr::compare_means()` and `ggpubr::stat_compare_means()` for this. 
-Below are the default tests, parameters, and method options (for more than two groups)[http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/76-add-p-values-and-significance-levels-to-ggplots/#compare-more-than-two-groups].
+Below are the default tests, parameters, and method options for 2 groups or [more than two groups](http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/76-add-p-values-and-significance-levels-to-ggplots/#compare-more-than-two-groups) for your convenience.
 Caution: the default p-values on the plots are uncorrected.
 
 |                                            | 2 groups                                             | 3+ groups                                                             |
