@@ -76,8 +76,8 @@ To see a summary of what colors are used for histology labeling, see [`mapping-h
 
 **Step 1)** Read in color palette and select the pertinent columns
 
-There's some extra columns in `histology_label_color_table.tsv` that you don't need for plotting per se but are more record-keeping purposes. 
-With the code chunk below, we only import the four columns we need and then do a factor reorder to make sure the `display_group` is in the order declared by `display_order`. 
+There are some extra columns in `histology_label_color_table.tsv` that you don't need for plotting per se but are more record-keeping purposes. 
+With the code chunk below, you can import the columns you need (For example: `Kids_First_Biospecimen_ID, display_group, display_order, hex_codes` or `Kids_First_Biospecimen_ID, cancer_group, cancer_group_order, cancer_group_hex_codes` and then do a factor reorder to make sure the `display_group` (or `cancer_group`)is in the order declared by `display_order` (`cancer_group_order`). 
 
 ```
 # Import standard color palettes for project
@@ -178,3 +178,55 @@ The script can be called from anywhere in this repository (will look for the `.g
 The hex codes table in `figures/README.md` and its swatches should also be updated by using the `swatches_table` function at the end of the script and copy and pasting this function's output to the appropriate place in the table.
 
 The histology color palette file is created by running `Rscript -e "rmarkdown::render('figures/mapping-histology-labels.Rmd', clean = TRUE)"`.
+
+
+### Overall figure theme
+
+In general, we will use the `ggpubr` package with `ggtheme = theme_pubr())` and color palette `simpsons` from package `ggsci` since it has 16 levels and can accommodate the levels in groups such as `molecular_subtype`.
+
+To view the palette:
+```
+library("scales")
+show_col(pal_simpsons("springfield")(16))
+```
+
+For 2+ group comparisons, we will use violin or boxplots with jitter.
+
+
+### Statistics
+
+Some modules perform group-wise comparisons. 
+For the manuscript, we may want to output tables of the statistics and/or print the statistical test and p-value directly on the plot.
+We use the functions `compare_means()` and `stat_compare_means()` for this. 
+Below are the default tests, parameters, and method options (for more)[http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/76-add-p-values-and-significance-levels-to-ggplots/#compare-more-than-two-groups].
+Caution: the default p-values on the plots are uncorrected.
+
+|                                            | 2 groups                                             | 3+ groups                                                             |
+|--------------------------------------------|------------------------------------------------------|-----------------------------------------------------------------------|
+| Default test (method)                      | Wilcoxon                                             | Kruskal-wallis                                                        |
+| Allowed methods                            | "wilcox.test" (non-parametric) "t.test" (parametric) | "kruskal.test" (non-parametric) "anova" (parametric)                  |
+| Default multiple testing (p.adjust.method) | NA                                                   | yes, but not bonferroni                                               |
+| Allowed p.adjust.method                    | NA                                                   | "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none" |
+
+Below is an example for creating a violin plot with boxplot, jitter, and appropriate statistics.
+
+```
+if(length(unique(df$var_x)) > 2){
+    method <- "kruskal.test"
+  } else {
+    method <- "wilcox.test"
+  }
+
+
+p <- ggviolin(df, x = "var_x", y = "var_y", 
+           color = "var_color", 
+           palette = "simpsons",
+           order = c("a", "b", "c"),
+           add = c("boxplot", "jitter"),  
+           ggtheme = theme_pubr()) +
+    # Add pairwise comparisons p-value
+    stat_compare_means(method = method, label.y = 1.2, label.x.npc = "center") +
+    xlab("xlab_text") +
+    ylab("ylab_text") +
+    rremove("legend")
+```
