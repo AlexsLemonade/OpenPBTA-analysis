@@ -185,7 +185,7 @@ The histology color palette file is created by running `Rscript -e "rmarkdown::r
 In general, we will use the `ggpubr` package with `ggtheme = theme_pubr())` and color palette `simpsons` from package `ggsci` since it has 16 levels and can accommodate the levels in groups such as `molecular_subtype`.
 
 To view the palette:
-```
+```r
 scales::show_col(ggsci::pal_simpsons("springfield")(16))
 ```
 
