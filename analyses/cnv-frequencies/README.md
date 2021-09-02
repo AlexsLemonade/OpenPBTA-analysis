@@ -23,12 +23,12 @@ Each `cancer_group` and `cohort`(s) combination is considered a `cancer_group_co
 
 - `Frequency_in_primary_tumors`:
   - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `independent-specimens.wgs.primary.eachcohort.tsv`, and call this number `Total_primary_tumors_alterated`.
-  - Count the total number of samples in the `cancer_group_cohort` that are also in the `independent-specimens.wgswxspanel.primary.eachcohort.tsv`, and call this number `Primary_tumors_in_dataset`.
+  - Count the total number of samples in the `cancer_group_cohort` that are also in the `independent-specimens.wgswxspanel.primary.eachcohort.tsv` for each cohort and `independent-specimens.wgswxspanel.primary.tsv` for all cohorts, and call this number `Primary_tumors_in_dataset`.
   - `Frequency_in_primary_tumors = Total_primary_tumors_alterated / Primary_tumors_in_dataset`.
 
 - `Frequency_in_relapse_tumors`:
   - For each unique variant, count the number of samples (identified by `Kids_First_Biospecimen_ID`) that are in the `independent-specimens.wgs.relapse.eachcohort.tsv`, and call this number `Total_relapse_tumors_alterated`.
-  - Count the total number of samples in the `cancer_group_cohort` that are also in the `independent-specimens.wgswxspanel.relapse.eachcohort.tsv`, and call this number `Relapse_tumors_in_dataset`.
+  - Count the total number of samples in the `cancer_group_cohort` that are also in the `independent-specimens.wgswxspanel.relapse.eachcohort.tsv` for each cohort and `independent-specimens.wgswxspanel.relapse.tsv` for all cohorts, and call this number `Relapse_tumors_in_dataset`.
   - `Frequency_in_relapse_tumors = Total_relapse_tumors_alterated / Relapse_tumors_in_dataset`.
 
 Format the CNV mutation frequency table according to the latest spreadsheet that is attached in <https://github.com/PediatricOpenTargets/ticket-tracker/issues/66>.
@@ -54,7 +54,7 @@ Adapted from [snv-callers analysis module](https://github.com/PediatricOpenTarge
 
 Usage:
 ```bash
-bash run-cnv-frequencies-analysis.sh
+bash analysis/cnv-frequencies/run-cnv-frequencies-analysis.sh
 
 ```
 
@@ -63,7 +63,7 @@ Python functions to create copy number variation (CNV) cancer type and study gen
 
 Usage:
 ```bash
-python3 analysis/cnv-frequencies/01-cnv-frequencies.py HISTOLOGY_FILE CNV_FILE PRIMARY_TUMORS RELAPSE_TUMORS
+python3 analysis/cnv-frequencies/01-cnv-frequencies.py HISTOLOGY_FILE CNV_FILE  AC_PRIMARY_TUMORS AC_RELAPSE_TUMORS EC_PRIMARY_TUMORS EC_RELAPSE_TUMORS
 ```
 
 Parameter Options:
@@ -75,12 +75,18 @@ positional arguments:
                   (consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz
                   and consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz)
                   
-  PRIMARY_TUMORS  OPenPedCan independent primary tumor samples file 
+  AC_PRIMARY_TUMORS  OPenPedCan all cohorts independent primary tumor samples file 
+                  (independent-specimens.wgswxspanel.primary.tsv)
+                  
+  AC_RELAPSE_TUMORS  OPenPedCan all cohorts independent relapse tumor samples file 
+                  (independent-specimens.wgswxspanel.relapse.tsv)
+                  
+  EC_PRIMARY_TUMORS  OPenPedCan each cohort independent primary tumor samples file 
                   (independent-specimens.wgswxspanel.primary.eachcohort.tsv)
                   
-  RELAPSE_TUMORS  OPenPedCan independent relapse tumor samples file 
+  EC_RELAPSE_TUMORS  OPenPedCan each cohort independent relapse tumor samples file 
                   (independent-specimens.wgswxspanel.relapse.eachcohort.tsv)
-                  
+
 optional arguments:
   -h, --help      show this help message and exit
   -v, --version   Print the current 01-cnv-frequencies.py version and exit
@@ -88,10 +94,11 @@ optional arguments:
 
 Input:
 - `data/histologies.tsv`
-- `data/consensus_wgs_plus_cnvkit_wxs_autosomes.tsv.gz`
-- `data/consensus_wgs_plus_cnvkit_wxs_x_and_y.tsv.gz`
-- `analyses/independent-samples/results/independent-specimens.wgswxspanel.primary.eachcohort.tsv`
-- `analyses/independent-samples/results/independent-specimens.wgswxspanel.relapse.eachcohort.tsv`
+- `data/consensus_wgs_plus_cnvkit_wxs.tsv.gz`
+- `data/independent-specimens.wgswxspanel.primary.tsv`
+- `data/independent-specimens.wgswxspanel.relapse.tsv`
+- `data/independent-specimens.wgswxspanel.primary.eachcohort.tsv`
+- `data/independent-specimens.wgswxspanel.relapse.eachcohort.tsv`
 
 Output:
 - `analysis/cnv-frequencies/results/gene-level-cnv-consensus-annotated-mut-freq.tsv.gz`

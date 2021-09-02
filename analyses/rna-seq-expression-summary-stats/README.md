@@ -21,7 +21,7 @@ For each cancer group and cohort, calculate TPM means, standard deviations, z-sc
 
 ### Methods
 
-Select independent RNA-seq samples using `independent-specimens.rnaseq.primary.eachcohort.tsv` in the results of the `independent-samples` analysis module.
+Select independent RNA-seq samples using `independent-specimens.rnaseq.primary.eachcohort.tsv` for `all cohorts` and `independent-specimens.rnaseq.primary.eachcohort.tsv` for `each cohort` in the results of the `independent-samples` analysis module.
 
 Group all samples with one of the following two methods:
 
@@ -30,7 +30,7 @@ Group all samples with one of the following two methods:
 
 For each grouping method, compute summary statistics as following:
 
-For all `sample_group`s with >= 5 samples, generate the following summary statistics:
+For all `sample_group`s with >= 3 samples, generate the following summary statistics:
 
 - TPM means of each gene across all selected samples, and denote this vector as `mean_TPM_vector`.
 - TPM standard deviations of each gene across all selected samples.
@@ -70,7 +70,7 @@ The `NA`/`NaN`s in result tables are replaced with blank string `''`s.
 
 #### `all-cohorts` sample metadata table
 
-The samples used in each `all-cohorts` `sample_group` are listed in `results/cancer_group_all_cohort_sample_metadata.tsv`. The columns are as following:
+The samples used in each `all-cohorts` `sample_group` are listed in `results/cancer_group_all_cohorts_sample_metadata.tsv`. The columns are as following:
 
 - `sample_group`
 - included one or more `cohort`s in the `sample_group`
@@ -79,7 +79,7 @@ The samples used in each `all-cohorts` `sample_group` are listed in `results/can
 
 #### `each-cohort` sample metadata table
 
-The samples used in each `each-cohort` `sample_group` are listed in `results/cancer_group_individual_cohort_sample_metadata.tsv`. The columns are as following:
+The samples used in each `each-cohort` `sample_group` are listed in `results/cancer_group_each_cohort_sample_metadata.tsv`. The columns are as following:
 
 - `sample_group`
 - the number of samples in the `sample_group`
@@ -131,7 +131,7 @@ CDR1            ENSG00000281508 Meningioma      EFO_0003851     MONDO_0016642   
 
 ### Usage
 
-1. Change working directory to local `OpenPBTA-analysis`.
+1. Change working directory to local `OpenPedCan-analysis`.
 2. Download data using `bash download-data.sh`.
 3. Run this analysis module in the continuous integration (CI) docker image using `./scripts/run_in_ci.sh bash analyses/rna-seq-expression-summary-stats/run-rna-seq-expression-summary-stats.sh`.
 
@@ -142,8 +142,8 @@ CDR1            ENSG00000281508 Meningioma      EFO_0003851     MONDO_0016642   
 ├── 01-tpm-summary-stats.R
 ├── README.md
 ├── results
-│   ├── cancer_group_all_cohort_sample_metadata.tsv
-│   ├── cancer_group_individual_cohort_sample_metadata.tsv
+│   ├── cancer_group_all_cohorts_sample_metadata.tsv
+│   ├── cancer_group_each_cohort_sample_metadata.tsv
 │   ├── long_n_tpm_mean_sd_quantile_gene_wise_zscore.jsonl.gz
 │   ├── long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv.gz
 │   ├── long_n_tpm_mean_sd_quantile_group_wise_zscore.jsonl.gz
@@ -174,12 +174,13 @@ Input:
 - `../../data/gene-expression-rsem-tpm-collapsed.rds`
 - `../../data/histologies.tsv`
 - `../../data/ensg-hugo-rmtl-mapping.tsv`
-- `../independent-samples/results/independent-specimens.rnaseq.primary.eachcohort.tsv`
+- `../../data/independent-specimens.rnaseq.primary.tsv`
+- `../../data/independent-specimens.rnaseq.primary.eachcohort.tsv`
 
 Output:
 
-- `results/cancer_group_all_cohort_sample_metadata.tsv`
-- `results/cancer_group_individual_cohort_sample_metadata.tsv`
+- `results/cancer_group_all_cohorts_sample_metadata.tsv`
+- `results/cancer_group_each_cohort_sample_metadata.tsv`
 - `long_n_tpm_mean_sd_quantile_gene_wise_zscore.json`
 - `long_n_tpm_mean_sd_quantile_gene_wise_zscore.tsv`
 - `long_n_tpm_mean_sd_quantile_group_wise_zscore.json`
