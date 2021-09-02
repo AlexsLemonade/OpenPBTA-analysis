@@ -17,19 +17,42 @@ library(dplyr)
 ### Read in data
 
 ```{r}
-cnvkit_file <- file.path("..", "..", "data", "cnv-cnvkit.seg.gz")
+cnvkit_file <- file.path("..", "..", "data", "v8", "cnv-cnvkit.seg.gz")
 cnvkit_df <- readr::read_tsv(cnvkit_file)
 ```
 
 ```{r}
-histologies_file <- file.path("..", "..", "data", "histologies.tsv")
+histologies_file <- file.path("..", "..", "data", "v8", "histologies.tsv")
 histologies_df <- readr::read_tsv(histologies_file, guess_max = 100000)
 ```
+
+
+# Edits for https://github.com/PediatricOpenTargets/ticket-tracker/issues/177
+# For PBTA, histologies file has germline_sex_estimate already assigned to WXS patients which have had WGS performed
+# Updating here germline_sex_estimate for cohort=="TARGET" where is.na(germline_sex_estimate)
+#Isolate IDs where germline_sex_estimate is NA and cohort == "TARGET"
+germline_sex_estimate_na <- histologies_df %>% filter(cohort == "TARGET") %>% filter(is.na(germline_sex_estimate))
+na_ids <- germline_sex_estimate_na %>% pull(Kids_First_Biospecimen_ID)
+
+#Split the dataset into two groups, fix data for select IDs
+histology_subset1 <- histologies_df %>% filter(!Kids_First_Biospecimen_ID %in% na_ids)
+
+histology_subset2 <- germline_sex_estimate_na %>% mutate(germline_sex_estimate = reported_gender)
+
+#Merge data after fixing germline_estimate with new value
+
+histologies_df_final <- rbind(histology_subset1,histology_subset2)
+
+#Verify counts match
+#length(histologies_df$Kids_First_Biospecimen_ID)
+#length(histology_subset1$Kids_First_Biospecimen_ID)
+#length(histology_subset2$Kids_First_Biospecimen_ID)
+#length(histologies_df_final$Kids_First_Biospecimen_ID)
 
 ### Add inferred ploidy information to CNVkit results
 
 ```{r}
-add_ploidy_df <- histologies_df %>%
+add_ploidy_df <- histologies_df_final  %>%
   select(Kids_First_Biospecimen_ID, tumor_ploidy, germline_sex_estimate) %>%
   inner_join(cnvkit_df, by = c("Kids_First_Biospecimen_ID" = "ID")) %>%
   select(-tumor_ploidy, -germline_sex_estimate, everything())
@@ -51,62 +74,28 @@ add_autosomes_df <- add_ploidy_df %>%
     copy.num == tumor_ploidy ~ "neutral"
   ))
 
+
 # this logic is consistent with what is observed in the controlfreec file
 # specifically, in samples where germline sex estimate = Female, X chromosomes
 # appear to be treated the same way as autosomes
 
-samples_WGS <- histologies_df %>% filter(experimental_strategy == "WGS")
-samples_WXS <- histologies_df %>% filter(experimental_strategy == "WXS")
-samples_superset <- inner_join(samples_WGS, samples_WXS, by = "cohort_participant_id", copy = FALSE)
-
-
 add_xy_df <- add_ploidy_df %>%
   filter(chrom %in% c("chrX", "chrY")) %>%  
   mutate(status = case_when(
-
-  copy.num < (0.5 * tumor_ploidy) & case_when ( cohort == "PBTA" & germline_sex_estimate == NA ~ samples_superset$germline_sex_estimate.x , TRUE ~ germline_sex_estimate) == "Male" ~ "loss",
-
-  copy.num > (0.5 * tumor_ploidy) & case_when ( cohort == "PBTA" & germline_sex_estimate == NA ~ samples_superset$germline_sex_estimate.x , TRUE ~ germline_sex_estimate) == "Male" ~ "gain",
-
-  copy.num == (0.5 * tumor_ploidy) & case_when ( cohort == "PBTA" & germline_sex_estimate == NA ~ samples_superset$germline_sex_estimate.x , TRUE ~ germline_sex_estimate) == "Male"  ~ "neutral",
-
-
-  copy.num < (0.5 * tumor_ploidy) & case_when (cohort == 'TARGET' & germline_sex_estimate == NA ~ case_when (samples_superset$germline_sex_estimate.x == NA ~ reported_gender, TRUE ~ samples_superset$germline_sex_estimate.x), TRUE ~ germline_sex_estimate) == "Male" ~ "loss",
-
-
-  copy.num > (0.5 * tumor_ploidy) & case_when (cohort == 'TARGET' & germline_sex_estimate == NA ~ case_when (samples_superset$germline_sex_estimate.x == NA ~ reported_gender, TRUE ~ samples_superset$germline_sex_estimate.x), TRUE ~ germline_sex_estimate) == "Male" ~ "gain",
-
-  copy.num == (0.5 * tumor_ploidy) & case_when (cohort == 'TARGET' & germline_sex_estimate == NA ~ case_when (samples_superset$germline_sex_estimate.x == NA ~ reported_gender, TRUE ~ samples_superset$germline_sex_estimate.x), TRUE ~ germline_sex_estimate) == "Male" ~ "neutral",
+    germline_sex_estimate == "Male" & copy.num < (0.5 * tumor_ploidy) ~ "loss",
+    germline_sex_estimate == "Male" & copy.num > (0.5 * tumor_ploidy) ~ "gain",
+    germline_sex_estimate == "Male" & copy.num == (0.5 * tumor_ploidy) ~ "neutral",
+    # there are some instances where there are chromosome Y segments are in
+    # samples where the germline_sex_estimate is Female
+    chrom == "chrY" & germline_sex_estimate == "Female" & copy.num > 0 ~ "unknown",
+    chrom == "chrY" & germline_sex_estimate == "Female" & copy.num == 0 ~ "neutral",
+    # mirroring controlfreec, X treated same as autosomes
+    chrom == "chrX" & germline_sex_estimate == "Female" & copy.num < tumor_ploidy ~ "loss",
+    chrom == "chrX" & germline_sex_estimate == "Female" & copy.num > tumor_ploidy ~ "gain",
+    chrom == "chrX" & germline_sex_estimate == "Female" & copy.num == tumor_ploidy ~ "neutral"
+  ))
 
 
-  
-
-  # there are some instances where there are chromosome Y segments are in
-  # samples where the germline_sex_estimate is Female
-
-  chrom == "chrY" & copy.num > 0 & case_when ( cohort == "PBTA" & germline_sex_estimate == NA ~ samples_superset$germline_sex_estimate.x , TRUE ~ germline_sex_estimate) == "Female" ~ "unknown",
-
-  chrom == "chrY" & copy.num > 0 & case_when (cohort == 'TARGET' & germline_sex_estimate == NA ~ case_when (samples_superset$germline_sex_estimate.x == NA ~ reported_gender, TRUE ~ samples_superset$germline_sex_estimate.x), TRUE ~ germline_sex_estimate) == "Female" ~ "unknown",
-
-  chrom == "chrY" & copy.num == 0 & case_when ( cohort == "PBTA" & germline_sex_estimate == NA ~ samples_superset$germline_sex_estimate.x , TRUE ~ germline_sex_estimate) == "Female"  ~ "neutral",
-
-  chrom == "chrY" & copy.num == 0 & case_when (cohort == 'TARGET' & germline_sex_estimate == NA ~ case_when (samples_superset$germline_sex_estimate.x == NA ~ reported_gender, TRUE ~ samples_superset$germline_sex_estimate.x), TRUE ~ germline_sex_estimate) == "Female" ~ "neutral",
-
-
-
-
-  # mirroring controlfreec, X treated same as autosomes
-
-  chrom == "chrX" & copy.num < tumor_ploidy & case_when ( cohort == "PBTA" & germline_sex_estimate == NA ~ samples_superset$germline_sex_estimate.x , TRUE ~ germline_sex_estimate) == "Female" ~ "loss",
-  chrom == "chrX" & copy.num < tumor_ploidy & case_when (cohort == 'TARGET' & germline_sex_estimate == NA ~ case_when (samples_superset$germline_sex_estimate.x == NA ~ reported_gender, TRUE ~ samples_superset$germline_sex_estimate.x), TRUE ~ germline_sex_estimate) == "Female" ~ "loss",
-
-  chrom == "chrX" & copy.num > tumor_ploidy & case_when ( cohort == "PBTA" & germline_sex_estimate == NA ~ samples_superset$germline_sex_estimate.x , TRUE ~ germline_sex_estimate) == "Female" ~ "gain",
-  chrom == "chrX" & copy.num > tumor_ploidy & case_when (cohort == 'TARGET' & germline_sex_estimate == NA ~ case_when (samples_superset$germline_sex_estimate.x == NA ~ reported_gender, TRUE ~ samples_superset$germline_sex_estimate.x), TRUE ~ germline_sex_estimate) == "Female" ~ "gain",
-
-  chrom == "chrX" & copy.num == tumor_ploidy & case_when ( cohort == "PBTA" & germline_sex_estimate == NA ~ samples_superset$germline_sex_estimate.x , TRUE ~ germline_sex_estimate) == "Female" ~ "neutral"
-  chrom == "chrX" & copy.num == tumor_ploidy & case_when (cohort == 'TARGET' & germline_sex_estimate == NA ~ case_when (samples_superset$germline_sex_estimate.x == NA ~ reported_gender, TRUE ~ samples_superset$germline_sex_estimate.x), TRUE ~ germline_sex_estimate) == "Female" ~ "neutral"
-  
-))
 
 add_status_df <- dplyr::bind_rows(add_autosomes_df, add_xy_df) %>%
   dplyr::select(-germline_sex_estimate)
