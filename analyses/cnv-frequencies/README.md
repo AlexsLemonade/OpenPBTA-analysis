@@ -54,7 +54,7 @@ Adapted from [snv-callers analysis module](https://github.com/PediatricOpenTarge
 
 Usage:
 ```bash
-bash run-cnv-frequencies-analysis.sh
+bash analysis/cnv-frequencies/run-cnv-frequencies-analysis.sh
 
 ```
 
