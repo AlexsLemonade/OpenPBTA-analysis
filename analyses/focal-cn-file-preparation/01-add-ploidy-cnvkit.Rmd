@@ -17,37 +17,52 @@ library(dplyr)
 ### Read in data
 
 ```{r}
-cnvkit_file <- file.path("..", "..", "data", "v8", "cnv-cnvkit.seg.gz")
+cnvkit_file <- file.path("..", "..", "data", "cnv-cnvkit.seg.gz")
 cnvkit_df <- readr::read_tsv(cnvkit_file)
 ```
 
 ```{r}
-histologies_file <- file.path("..", "..", "data", "v8", "histologies.tsv")
+histologies_file <- file.path("..", "..", "data", "histologies.tsv")
 histologies_df <- readr::read_tsv(histologies_file, guess_max = 100000)
 ```
 
-
 # Edits for https://github.com/PediatricOpenTargets/ticket-tracker/issues/177
-# For PBTA, histologies file has germline_sex_estimate already assigned to WXS patients which have had WGS performed
-# Updating here germline_sex_estimate for cohort=="TARGET" where is.na(germline_sex_estimate)
-#Isolate IDs where germline_sex_estimate is NA and cohort == "TARGET"
-germline_sex_estimate_na <- histologies_df %>% filter(cohort == "TARGET") %>% filter(is.na(germline_sex_estimate))
-na_ids <- germline_sex_estimate_na %>% pull(Kids_First_Biospecimen_ID)
+```{r}
+# Filter to WXS tumor with no germline sex estimate
+no_estimate <- histologies_df %>% filter(sample_type == "Tumor") %>% filter(experimental_strategy == "WXS") %>%   filter(is.na(germline_sex_estimate)) %>% select(-germline_sex_estimate)
 
-#Split the dataset into two groups, fix data for select IDs
-histology_subset1 <- histologies_df %>% filter(!Kids_First_Biospecimen_ID %in% na_ids)
+# Extract participant ID with no germline sex estimate
+no_estimate_participants <- no_estimate %>% pull(cohort_participant_id) %>% unique()
 
-histology_subset2 <- germline_sex_estimate_na %>% mutate(germline_sex_estimate = reported_gender)
+# Find out matching WGS - currently this has no entry for v9
+no_estimate_participants_match_wgs <- histologies_df %>% filter(cohort_participant_id %in% no_estimate_participants) %>% filter(experimental_strategy == "WGS") %>% filter(sample_type == "Tumor") %>% select(cohort_participant_id, germline_sex_estimate)
 
-#Merge data after fixing germline_estimate with new value
+# Merge data that was fixed with WGS germline sex estimate
+no_estimate_fixed_through_wgs <- left_join(no_estimate, no_estimate_participants_match_wgs, by = "cohort_participant_id") %>% filter(!is.na(germline_sex_estimate))
 
-histologies_df_final <- rbind(histology_subset1,histology_subset2)
+# Identify data that was not fixed due to NA
+no_estimate_still_na <- left_join(no_estimate, no_estimate_participants_match_wgs, by = "cohort_participant_id") %>% filter(is.na(germline_sex_estimate))
 
-#Verify counts match
-#length(histologies_df$Kids_First_Biospecimen_ID)
-#length(histology_subset1$Kids_First_Biospecimen_ID)
-#length(histology_subset2$Kids_First_Biospecimen_ID)
-#length(histologies_df_final$Kids_First_Biospecimen_ID)
+# Fix NA data using gender
+no_estimate_still_na_fixed <- no_estimate_still_na %>% 
+  mutate(germline_sex_estimate = case_when(
+                                  reported_gender == "Female" ~ "Female", 
+                                  reported_gender == "Male" ~ "Male",
+                                  TRUE ~ as.character(NA))
+         )
+
+# Merge back fixed_wgs, fixed_na, and exist_germline_estimate data
+histologies_df_fixed <- bind_rows(no_estimate_fixed_through_wgs, no_estimate_still_na_fixed)
+
+histologies_df_final <- histologies_df %>% 
+  left_join(select(histologies_df_fixed, germline_sex_estimate, Kids_First_Biospecimen_ID), by = "Kids_First_Biospecimen_ID",
+            suffix = c('.x', '.y'), suffixes_mandatory = c(FALSE, TRUE)) %>%
+  mutate(germline_sex_estimate = case_when(Kids_First_Biospecimen_ID == Kids_First_Biospecimen_ID ~ germline_sex_estimate.y
+                                           , TRUE ~ germline_sex_estimate.x)) %>% 
+  select(-germline_sex_estimate.x, - germline_sex_estimate.y)
+
+```
+
 
 ### Add inferred ploidy information to CNVkit results
 
@@ -94,8 +109,6 @@ add_xy_df <- add_ploidy_df %>%
     chrom == "chrX" & germline_sex_estimate == "Female" & copy.num > tumor_ploidy ~ "gain",
     chrom == "chrX" & germline_sex_estimate == "Female" & copy.num == tumor_ploidy ~ "neutral"
   ))
-
-
 
 add_status_df <- dplyr::bind_rows(add_autosomes_df, add_xy_df) %>%
   dplyr::select(-germline_sex_estimate)
