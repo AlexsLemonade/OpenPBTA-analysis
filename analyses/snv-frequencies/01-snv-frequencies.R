@@ -27,90 +27,6 @@ num_to_pct_chr <- function(x, digits = 2, format = "f", ...) {
 
 
 
-# Copied from long-format-table-utils/annotator/download-annotation-data.R, in
-# order to handle MAF ENSG IDs that are not in ensg-hugo-rmtl-mapping.tsv
-#
-# Collapse a list of refseq.protein character vectors from mygene.info query
-# results
-#
-# Args:
-# - rp_vec_list: list of refseq.protein character vectors from mygene.info query
-#   results
-#
-# Returns a single character value of a comma-separated refseq.protein value or
-# NA
-collapse_rp_lists <- function(rp_vec_list) {
-  # remove list elements that are NULL
-  rm_null_rp_vec_list <- purrr::discard(rp_vec_list, is.null)
-  # assert non-null list elements are all characters
-  lapply(rm_null_rp_vec_list, function(x) {
-    if (!is.character(x)) {
-      stop(paste0("mygene query returns non-character refseq.protein.\n",
-                  "Check query results. Revise download-annotation-data.R ",
-                  "to handle non-character values."))
-    }
-  })
-
-  # combined vector of unique refseq.protein values
-  uniq_c_rm_null_rp_vec <- sort(unique(
-    purrr::reduce(rm_null_rp_vec_list, c, .init = character(0))))
-  # remove NA
-  rm_na_uniq_c_rm_null_rp_vec <- purrr::discard(
-    uniq_c_rm_null_rp_vec, is.na)
-  # keep only NP_### refseq.protein values
-  np_rp_vec <- purrr::keep(
-    rm_na_uniq_c_rm_null_rp_vec, function(x) stringr::str_detect(x, "^NP_"))
-
-  clp_np_rp_str <- paste(np_rp_vec, collapse = ",")
-
-  if (identical(clp_np_rp_str, "")) {
-    # no NP_### value for the gene query
-    #
-    # dplyr::summarise needs function return value to be character for a
-    # character column. NA_character_ is still NA in character class rather than
-    # "NA".
-    return(NA_character_)
-  } else {
-    return(clp_np_rp_str)
-  }
-}
-
-
-
-# Copied from long-format-table-utils/annotator/download-annotation-data.R, in
-# order to handle MAF ENSG IDs that are not in ensg-hugo-rmtl-mapping.tsv
-#
-# Collapse a name character vector from mygene.info query results
-#
-# Args:
-# - gn_vec: character vector of name values from mygene.info query results
-#
-# Returns a single character value of a comma-separated name value or NA
-collapse_name_vec <- function(gn_vec) {
-  # assert non-null list elements are all characters
-  if (!is.character(gn_vec)) {
-    stop(paste0("mygene query returns non-character refseq.protein.\n",
-                "Check query results. Revise download-annotation-data.R ",
-                "to handle non-character values."))
-  }
-  # remove NAs
-  uniq_rm_na_gn_vec <- sort(unique(purrr::discard(gn_vec, is.na)))
-
-  clp_gn_str <- paste(uniq_rm_na_gn_vec, collapse = ",")
-  if (identical(clp_gn_str, "")) {
-    # no non-NA name for the gene query
-    #
-    # dplyr::summarise needs function return value to be character for a
-    # character column. NA_character_ is still NA in character class rather than
-    # "NA".
-    return(NA_character_)
-  } else {
-    return(clp_gn_str)
-  }
-}
-
-
-
 # Generate a summary table of cancer_group and cohort
 #
 # Args:
@@ -725,16 +641,30 @@ stopifnot(all(maf_df$NCBI_Build == 'GRCh38'))
 # assert all records have tumor sample barcode
 stopifnot(identical(sum(is.na(maf_df$Tumor_Sample_Barcode)), as.integer(0)))
 
-# primary independent sample data frame
-primary_indp_sdf <- read_tsv(
-  file.path('..', 'independent-samples', 'results',
+# primary all cohorts independent sample data frame
+primary_ac_indp_sdf <- read_tsv(
+  file.path('../..', 'data',
+            'independent-specimens.wgswxspanel.primary.tsv'),
+  col_types = cols(
+    .default = col_guess()))
+
+# primary each cohorts independent sample data frame
+primary_ec_indp_sdf <- read_tsv(
+  file.path('../..', 'data',
             'independent-specimens.wgswxspanel.primary.eachcohort.tsv'),
   col_types = cols(
     .default = col_guess()))
 
-# relapse independent samples
-relapse_indp_sdf <- read_tsv(
-  file.path('..', 'independent-samples', 'results',
+# relapse all cohorts independent sample data frame
+relapse_ac_indp_sdf <- read_tsv(
+  file.path('../..', 'data',
+            'independent-specimens.wgswxspanel.relapse.tsv'),
+  col_types = cols(
+    .default = col_guess()))
+
+# relapse each cohorts independent sample data frame
+relapse_ec_indp_sdf <- read_tsv(
+  file.path('../..', 'data',
             'independent-specimens.wgswxspanel.relapse.eachcohort.tsv'),
   col_types = cols(
     .default = col_guess()))
@@ -824,13 +754,21 @@ stopifnot(identical(sort(unique(maf_df$Kids_First_Biospecimen_ID)),
 
 # td = tumor descriptor
 td_htl_dfs <- list(
-  primary_htl_df = maf_sample_htl_df %>%
+  primary_ac_htl_df = maf_sample_htl_df %>%
     filter(Kids_First_Biospecimen_ID %in%
-             primary_indp_sdf$Kids_First_Biospecimen_ID),
+             primary_ac_indp_sdf $Kids_First_Biospecimen_ID),
 
-  relapse_htl_df = maf_sample_htl_df %>%
+  primary_ec_htl_df = maf_sample_htl_df %>%
     filter(Kids_First_Biospecimen_ID %in%
-             relapse_indp_sdf$Kids_First_Biospecimen_ID),
+             primary_ec_indp_sdf $Kids_First_Biospecimen_ID),
+
+  relapse_ac_htl_df = maf_sample_htl_df %>%
+    filter(Kids_First_Biospecimen_ID %in%
+             relapse_ac_indp_sdf$Kids_First_Biospecimen_ID),
+
+  relapse_ec_htl_df = maf_sample_htl_df %>%
+    filter(Kids_First_Biospecimen_ID %in%
+             relapse_ec_indp_sdf$Kids_First_Biospecimen_ID),
 
   overall_htl_df = maf_sample_htl_df
 )
@@ -843,7 +781,7 @@ cancer_group_cohort_summary_df <- get_cg_cs_tbl(td_htl_dfs$overall_htl_df)
 
 # nf = n_samples filtered
 nf_cancer_group_cohort_summary_df <- cancer_group_cohort_summary_df %>%
-  filter(n_samples >= 5)
+  filter(n_samples >= 3)
 
 mut_freq_tbl_list <- lapply(
   seq_len(nrow(nf_cancer_group_cohort_summary_df)),
@@ -858,15 +796,29 @@ mut_freq_tbl_list <- lapply(
     stopifnot(identical(paste(c_cohorts, collapse = '&'), cgcs_row$cohort))
     message(paste(c_cancer_group, cgcs_row$cohort))
 
-    var_level_tbl <- get_cg_ch_var_level_mut_freq_tbl(
-      maf_df, td_htl_dfs$overall_htl_df, td_htl_dfs$primary_htl_df,
-      td_htl_dfs$relapse_htl_df, c_cancer_group, c_cohorts,
-      pcb_pot_case_set_id_vec)
-
-    gene_level_tbl <- get_cg_ch_gene_level_mut_freq_tbl(
-      maf_df, td_htl_dfs$overall_htl_df, td_htl_dfs$primary_htl_df,
-      td_htl_dfs$relapse_htl_df, c_cancer_group, c_cohorts,
-      pcb_pot_case_set_id_vec)
+    if(str_detect(cgcs_row$cohort, '&')) {
+      # Call function for variant level all cohorts that have the cancer_group
+      var_level_tbl <- get_cg_ch_var_level_mut_freq_tbl(
+        maf_df, td_htl_dfs$overall_htl_df, td_htl_dfs$primary_ac_htl_df,
+        td_htl_dfs$relapse_ac_htl_df, c_cancer_group, c_cohorts,
+        pcb_pot_case_set_id_vec)
+      # Call function for gene level all cohorts that have the cancer_group
+      gene_level_tbl <- get_cg_ch_gene_level_mut_freq_tbl(
+        maf_df, td_htl_dfs$overall_htl_df, td_htl_dfs$primary_ac_htl_df,
+        td_htl_dfs$relapse_ac_htl_df, c_cancer_group, c_cohorts,
+        pcb_pot_case_set_id_vec)
+    }else{
+      # Call function for variant level each cohort and cancer_group
+      var_level_tbl <- get_cg_ch_var_level_mut_freq_tbl(
+        maf_df, td_htl_dfs$overall_htl_df, td_htl_dfs$primary_ec_htl_df,
+        td_htl_dfs$relapse_ec_htl_df, c_cancer_group, c_cohorts,
+        pcb_pot_case_set_id_vec)
+      # Call function for gene level each cohort and cancer_group
+      gene_level_tbl <- get_cg_ch_gene_level_mut_freq_tbl(
+        maf_df, td_htl_dfs$overall_htl_df, td_htl_dfs$primary_ec_htl_df,
+        td_htl_dfs$relapse_ec_htl_df, c_cancer_group, c_cohorts,
+        pcb_pot_case_set_id_vec)
+    }
 
     res_list <- list(var_level_tbl = var_level_tbl,
                      gene_level_tbl = gene_level_tbl)
@@ -903,65 +855,15 @@ var_level_mut_freq_tbl <- annotate_long_format_table(
   var_level_mut_freq_tbl,
   columns_to_add = c(
     'EFO', 'MONDO',
-    'RMTL', 'OncoKB_cancer_gene', 'OncoKB_oncogene_TSG'))
+    'RMTL', 'OncoKB_cancer_gene', 'OncoKB_oncogene_TSG',
+    'Gene_full_name', 'Protein_RefSeq_ID'))
 
 gene_level_mut_freq_tbl <- annotate_long_format_table(
   gene_level_mut_freq_tbl,
   columns_to_add = c(
     'EFO', 'MONDO',
-    'RMTL', 'Gene_type', 'OncoKB_cancer_gene', 'OncoKB_oncogene_TSG'))
-
-# Protein_RefSeq_ID and Gene_full_name need to be added directly using
-# mygene.info, because annotator only have Protein_RefSeq_ID and Gene_full_name
-# for ENSG IDs that are in ensg-hugo-rmtl-mapping.tsv.
-# snv-consensus-plus-hotspots.maf.tsv.gz has ENSG IDs that are not in
-# ensg-hugo-rmtl-mapping.tsv, e.g. ENSG00000284770 and ENSG00000285053.
-#
-# The following code is adapted from
-# long-format-table-utils/annotator/download-annotation-data.R, in order to
-# handle MAF ENSG IDs that are not in ensg-hugo-rmtl-mapping.tsv
-message('Retrieve Gene_full_name and Protein_RefSeq_ID from mygene.info...')
-query_ens_gids <- unique(
-  c(var_level_mut_freq_tbl$Gene_Ensembl_ID,
-    gene_level_mut_freq_tbl$Gene_Ensembl_ID))
-stopifnot(identical(sum(is.na(query_ens_gids)), as.integer(0)))
-
-mg_qres_list <- mygene::queryMany(
-  query_ens_gids, scopes = "ensembl.gene", fields = c("refseq", "name"),
-  species = "human", returnall = TRUE, return.as = "DataFrame")
-
-found_mg_qres_df <- tibble::as_tibble(
-  mg_qres_list$response[, c("query", "notfound", "name", "refseq.protein")]) %>%
-  tidyr::replace_na(list(notfound = FALSE)) %>%
-  dplyr::filter(!notfound)
-
-# remove rows that have both NA name and NULL refseq.protein
-rm_bnn_found_mg_qres_df <- found_mg_qres_df %>%
-  dplyr::filter(!(is.na(name) & purrr::map_lgl(refseq.protein, is.null)))
-
-# collapses name and refseq.protein for output
-ann_rm_bnn_found_mg_qres_df <- rm_bnn_found_mg_qres_df %>%
-  dplyr::group_by(query) %>%
-  dplyr::summarise(name = collapse_name_vec(name),
-                   refseq_protein = collapse_rp_lists(refseq.protein)) %>%
-  dplyr::rename(Gene_Ensembl_ID = query, Gene_full_name = name,
-                Protein_RefSeq_ID = refseq_protein)
-
-var_level_mut_freq_tbl <- left_join(
-  var_level_mut_freq_tbl,
-  ann_rm_bnn_found_mg_qres_df,
-  by = 'Gene_Ensembl_ID') %>%
-  dplyr::mutate_if(
-      function(x) sum(is.na(x)) > 0,
-      function(x) tidyr::replace_na(x, replace = ""))
-
-gene_level_mut_freq_tbl <- left_join(
-  gene_level_mut_freq_tbl,
-  ann_rm_bnn_found_mg_qres_df,
-  by = 'Gene_Ensembl_ID')  %>%
-  dplyr::mutate_if(
-      function(x) sum(is.na(x)) > 0,
-      function(x) tidyr::replace_na(x, replace = ""))
+    'RMTL', 'Gene_type', 'OncoKB_cancer_gene', 'OncoKB_oncogene_TSG',
+    'Gene_full_name', 'Protein_RefSeq_ID'))
 
 
 
