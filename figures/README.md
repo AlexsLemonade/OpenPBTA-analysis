@@ -12,7 +12,8 @@ We recommend [using the download script](https://github.com/AlexsLemonade/OpenPB
 
 See [these instructions](https://github.com/AlexsLemonade/OpenPBTA-analysis#docker-image) for setting up the project Docker container.
 Briefly, the latest version of the project Docker image, which is updated upon commit to `master`, can be obtained and run via:
-```
+
+```bash
 docker pull ccdlopenpbta/open-pbta:latest
 docker run \
   -e PASSWORD=<password> \
@@ -26,7 +27,7 @@ You may choose to use [`docker exec`](https://docs.docker.com/engine/reference/c
 
 This script runs **_all_** the intermediate steps needed to generate figures starting with the original data files.
 
-```
+```bash
 bash figures/generate-figures.sh
 ```
 
@@ -76,10 +77,10 @@ To see a summary of what colors are used for histology labeling, see [`mapping-h
 
 **Step 1)** Read in color palette and select the pertinent columns
 
-There's some extra columns in `histology_label_color_table.tsv` that you don't need for plotting per se but are more record-keeping purposes. 
-With the code chunk below, we only import the four columns we need and then do a factor reorder to make sure the `display_group` is in the order declared by `display_order`. 
+There are some extra columns in `histology_label_color_table.tsv` that you don't need for plotting per se but are more record-keeping purposes. 
+With the code chunk below, you can import the columns you need (For example: `Kids_First_Biospecimen_ID, display_group, display_order, hex_codes` or `Kids_First_Biospecimen_ID, cancer_group, cancer_group_order, cancer_group_hex_codes` and then do a factor reorder to make sure the `display_group` (or `cancer_group`)is in the order declared by `display_order` (`cancer_group_order`). 
 
-```
+```r
 # Import standard color palettes for project
 histology_label_mapping <- readr::read_tsv(
   file.path(figures_dir, "palettes", "histology_label_color_table.tsv")
@@ -93,7 +94,7 @@ histology_label_mapping <- readr::read_tsv(
 **Step 2)** Use `dplyr::inner_join` using `Kids_First_Biospecimen_ID` to join by so you can add on the `hex_codes` and `display_group` for each biospecimen. 
 `display_order` specifies what order the `display_group`s should be displayed.
 
-```
+```r
 # Read in the metadata
 metadata <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
   dplyr::inner_join(histology_label_mapping, by = "Kids_First_Biospecimen_ID")
@@ -105,7 +106,7 @@ Using the `ggplot2::scale_fill_identity()` or `ggplot2::scale_color_identity()` 
 For base R plots, you should be able to supply the `hex_codes` column as your `col` argument.
 `display_group` should be used as the labels in the plot.
 
-```
+```r
 metadata %>%
   dplyr::group_by(display_group, hex_codes) %>%
   dplyr::summarize(count = dplyr::n()) %>%
@@ -120,7 +121,7 @@ metadata %>%
 
 You may want to remove the `na_color` at the end of the list depending on whether your data include `NA`s or if the plotting function you are using has the `na_color` supplied separately.
 
-```
+```r
 gradient_col_palette <- readr::read_tsv(
   file.path(figures_dir, "palettes", "gradient_color_palette.tsv")
 )
@@ -128,7 +129,7 @@ gradient_col_palette <- readr::read_tsv(
 
 If we need the `NA` color separated, like for use with `ComplexHeatmap` which has a separate argument for the color for `NA` values.
 
-```
+```r
 na_color <- gradient_col_palette %>%
   dplyr::filter(color_names == "na_color")
 
@@ -142,7 +143,7 @@ In this example, we are building a `colorRamp2` function based on a regular inte
 However, depending on your data's distribution a regular interval based palette might not represent your data well on the plot.
 You can provide any numeric vector to color code a palette using `circlize::colorRamp2` as long as that numeric vector is the same length as the palette itself.
 
-```
+```r
 gradient_col_val <- seq(from = min(df$variable), to = max(df$variable),
                         length.out = nrow(gradient_col_palette))
 
@@ -154,7 +155,7 @@ col_fun <- circlize::colorRamp2(gradient_col_val,
 This step depends on how your main plotting function would like the data supplied.
 For example, `ComplexHeatmap` wants a function to be supplied to their `col` argument.
 
-```
+```r
 # Apply to variable directly and make a new column
 df <- df %>%
   dplyr::mutate(color_key = col_fun(variable))
@@ -178,3 +179,54 @@ The script can be called from anywhere in this repository (will look for the `.g
 The hex codes table in `figures/README.md` and its swatches should also be updated by using the `swatches_table` function at the end of the script and copy and pasting this function's output to the appropriate place in the table.
 
 The histology color palette file is created by running `Rscript -e "rmarkdown::render('figures/mapping-histology-labels.Rmd', clean = TRUE)"`.
+
+
+### Overall figure theme
+
+In general, we will use the `ggpubr` package with `ggtheme = theme_pubr())` and color palette `simpsons` from package `ggsci` since it has 16 levels and can accommodate the levels in groups such as `molecular_subtype`.
+
+To view the palette:
+```r
+scales::show_col(ggsci::pal_simpsons("springfield")(16))
+```
+
+For 2+ group comparisons, we will use violin or boxplots with jitter.
+
+
+### Statistics
+
+Some modules perform group-wise comparisons. 
+For the manuscript, we may want to output tables of the statistics and/or print the statistical test and p-value directly on the plot.
+We use the functions `ggpubr::compare_means()` and `ggpubr::stat_compare_means()` for this. 
+Below are the default tests, parameters, and method options for 2 groups or [more than two groups](http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/76-add-p-values-and-significance-levels-to-ggplots/#compare-more-than-two-groups) for your convenience.
+Caution: the default p-values on the plots are uncorrected.
+
+|                                            | 2 groups                                             | 3+ groups                                                             |
+|--------------------------------------------|------------------------------------------------------|-----------------------------------------------------------------------|
+| Default test (method)                      | Wilcoxon                                             | Kruskal-wallis                                                        |
+| Allowed methods                            | "wilcox.test" (non-parametric) "t.test" (parametric) | "kruskal.test" (non-parametric) "anova" (parametric)                  |
+| Default multiple testing (p.adjust.method) | NA                                                   | yes, but not bonferroni                                               |
+| Allowed p.adjust.method                    | NA                                                   | "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none" |
+
+Below is an example for creating a violin plot with boxplot, jitter, and appropriate statistics.
+
+```r
+if(length(unique(df$var_x)) > 2){
+    method <- "kruskal.test"
+  } else {
+    method <- "wilcox.test"
+  }
+
+
+p <- ggviolin(df, x = "var_x", y = "var_y", 
+           color = "var_color", 
+           palette = "simpsons",
+           order = c("a", "b", "c"),
+           add = c("boxplot", "jitter"),  
+           ggtheme = theme_pubr()) +
+    # Add pairwise comparisons p-value
+    stat_compare_means(method = method, label.y = 1.2, label.x.npc = "center") +
+    xlab("xlab_text") +
+    ylab("ylab_text") +
+    rremove("legend")
+```
