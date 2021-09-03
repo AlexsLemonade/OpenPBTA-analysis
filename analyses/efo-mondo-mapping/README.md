@@ -3,7 +3,7 @@
 
 ## Introduction and Purpose
 
-The Experimental Factor Ontology (EFO) is a resource that provides systematic description of experimental variables including cancer groups available in [European Bioinformatics Institute](https://www.ebi.ac.uk/ "EMBL-EBI's Homepage") databases and some other external projects. 
+The Experimental Factor Ontology (EFO) is a resource that provides systematic description of experimental variables including cancer groups available in [European Bioinformatics Institute](https://www.ebi.ac.uk/) databases and some other external projects. 
 The scope of EFO is to support the annotation, analysis and visualization of data handled by many groups at the EBI and as the core ontology for [OpenTargets](https://www.opentargets.org/ "OpenTargets' Homepage").
 
 
