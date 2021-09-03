@@ -13,10 +13,14 @@ option_list <- list(
               help = "columnname from fusion_file to be used as Alt_ID or multiple comma separated columnames"),
   make_option(c("-c", "--input_histologies"), type  = "character",
               help = "Input histologies.tsv "),
-  make_option(c("-p", "--primary_independence_list"), type = "character",
-              help = "Input independence list for primary samples"),
-  make_option(c("-r", "--relapse_independence_list"), type = "character",
-              help = "Input independence list for relapse samples"),
+  make_option(c("-p", "--primary_independence_all"), type = "character",
+              help = "Input independence list for primary samples for all cohorts"),
+  make_option(c("-r", "--relapse_independence_all"), type = "character",
+              help = "Input independence list for relapse samples for all cohorts"),
+  make_option(c("-q", "--primary_independence_each"), type = "character",
+              help = "Input independence list for primary samples for each cohort"),
+  make_option(c("-t", "--relapse_independence_each"), type = "character",
+              help = "Input independence list for relapse samples for each cohort"),
   make_option(c("-o", "--output_filename"), type = "character", 
               default = "putative-oncogene-fusion-freq",
               help = "Output filename suffix ")
@@ -26,8 +30,10 @@ option_list <- list(
 opt <- parse_args(OptionParser(option_list = option_list))
 fusion_file <- opt$fusion_file
 input_histologies <- opt$input_histologies
-primary_independence_list <- opt$primary_independence_list
-relapse_independence_list <- opt$relapse_independence_list
+primary_independence_all <- opt$primary_independence_all
+relapse_independence_all <- opt$relapse_independence_all
+primary_independence_each <- opt$primary_independence_each
+relapse_independence_each <- opt$relapse_independence_each
 output_filename <- opt$output_filename
 alt_id <- unlist(strsplit(opt$alt_id,","))
 
@@ -68,16 +74,27 @@ fusion_df <- read_tsv(fusion_file, guess_max = 100000)
 # assert all records have Sample
 stopifnot(identical(sum(is.na(fusion_df$Sample)), as.integer(0)))
 
-# primary independent sample data frame
-primary_indp_sdf <- read_tsv(primary_independence_list,
+# primary independent sample data frame for all cohorts
+primary_indp_sdf_all <- read_tsv(primary_independence_all,
   col_types = cols(
     .default = col_guess()))
 
-# relapse independent samples
-relapse_indp_sdf <- read_tsv(relapse_independence_list,
+# relapse independent samples for all cohorts
+relapse_indp_sdf_all <- read_tsv(relapse_independence_all,
   col_types = cols(
     .default = col_guess()))
 
+# primary independent sample data frame for each cohort
+primary_indp_sdf_each <- read_tsv(primary_independence_each,
+                                 col_types = cols(
+                                   .default = col_guess()))
+
+# relapse independent samples for each cohort
+relapse_indp_sdf_each <- read_tsv(relapse_independence_each,
+                                 col_types = cols(
+                                   .default = col_guess()))
+
+# read ENSEMBL, Hugo Symbol and RMTL mapping file
 ensg_hugo_rmtl_df <- read_tsv(file.path(data_dir,'ensg-hugo-rmtl-mapping.tsv'),
                               col_types = cols(.default = col_guess())) %>%
   distinct()
@@ -85,6 +102,7 @@ ensg_hugo_rmtl_df <- read_tsv(file.path(data_dir,'ensg-hugo-rmtl-mapping.tsv'),
 stopifnot(identical(sum(is.na(ensg_hugo_rmtl_df$ensg_id)), as.integer(0)))
 stopifnot(identical(sum(is.na(ensg_hugo_rmtl_df$gene_symbol)), as.integer(0)))
 # assert all ensg_id are unique
+
 # ENSG IDs are assigned to multiple gene symbols in d3b-center/D3b-codes#48. The annotator does not map ENSG ID to gene symbols.
 # stopifnot(identical(length(unique(ensg_hugo_rmtl_df$ensg_id)),
 #                    nrow(ensg_hugo_rmtl_df)))
@@ -94,13 +112,21 @@ stopifnot(identical(sum(is.na(ensg_hugo_rmtl_df$gene_symbol)), as.integer(0)))
 message('Prepare data...')
 # td = tumor descriptor
 td_htl_dfs <- list(
-  primary_htl_df = htl_df %>%
+  primary_htl_each_df = htl_df %>%
     filter(Kids_First_Biospecimen_ID %in%
-             primary_indp_sdf$Kids_First_Biospecimen_ID),
+             primary_indp_sdf_each$Kids_First_Biospecimen_ID),
   
-  relapse_htl_df = htl_df %>%
+  relapse_htl_each_df = htl_df %>%
     filter(Kids_First_Biospecimen_ID %in%
-             relapse_indp_sdf$Kids_First_Biospecimen_ID),
+             relapse_indp_sdf_each$Kids_First_Biospecimen_ID),
+  
+  primary_htl_all_df = htl_df %>%
+    filter(Kids_First_Biospecimen_ID %in%
+             primary_indp_sdf_all$Kids_First_Biospecimen_ID),
+  
+  relapse_htl_all_df = htl_df %>%
+    filter(Kids_First_Biospecimen_ID %in%
+             relapse_indp_sdf_all$Kids_First_Biospecimen_ID),
   
   overall_htl_df = htl_df %>%
     filter(sample_type == 'Tumor')
@@ -189,14 +215,13 @@ if (identical(alt_id, c("FusionName", "Fusion_Type"))) {
 
 rm(tumor_kfbids)
 
-
 # Compute mutation frequencies -------------------------------------------------
 message('Compute mutation frequencies...')
 cancer_group_cohort_summary_df <- get_cg_cs_tbl(td_htl_dfs$overall_htl_df)
 
 # nf = n_samples filtered
 nf_cancer_group_cohort_summary_df <- cancer_group_cohort_summary_df %>%
-  filter(n_samples >= 5)
+  filter(n_samples >= 3)
 
 # Run get_cg_ch_mut_freq_tbl() per cancer_group and cohort
 fus_freq_tbl_list <- lapply(
@@ -212,10 +237,18 @@ fus_freq_tbl_list <- lapply(
     stopifnot(identical(paste(c_cohorts, collapse = '&'), cgcs_row$cohort))
     message(paste(c_cancer_group, cgcs_row$cohort))
     
-    # Call function for each cohort and cancer_group
-    res_df <- get_cg_ch_mut_freq_tbl(
-      fusion_df, td_htl_dfs$overall_htl_df, td_htl_dfs$primary_htl_df,
-      td_htl_dfs$relapse_htl_df, c_cancer_group, c_cohorts) 
+    if(str_detect(cgcs_row$cohort, '&')){
+      # Call function for all cohorts that have the cancer_group
+      res_df <- get_cg_ch_mut_freq_tbl(
+        fusion_df, td_htl_dfs$overall_htl_df, td_htl_dfs$primary_htl_all_df,
+        td_htl_dfs$relapse_htl_all_df, c_cancer_group, c_cohorts) 
+    }else{
+      # Call function for each cohort and cancer_group
+      res_df <- get_cg_ch_mut_freq_tbl(
+        fusion_df, td_htl_dfs$overall_htl_df, td_htl_dfs$primary_htl_each_df,
+        td_htl_dfs$relapse_htl_each_df, c_cancer_group, c_cohorts) 
+    }
+    
     
     if ( nrow(res_df) != 0 ){
       # merge fusion dataframe with the counts and frequencies in each cancer_group
