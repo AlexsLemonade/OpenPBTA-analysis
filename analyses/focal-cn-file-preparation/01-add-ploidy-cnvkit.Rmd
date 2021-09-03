@@ -41,7 +41,12 @@ pull(cohort_participant_id) %>%
 unique()
 
 # Find out matching WGS - currently this has no entry for v9
-no_estimate_participants_match_wgs <- histologies_df %>% filter(cohort_participant_id %in% no_estimate_participants) %>% filter(experimental_strategy == "WGS") %>% filter(sample_type == "Tumor") %>% select(cohort_participant_id, germline_sex_estimate)
+no_estimate_participants_match_wgs <- histologies_df %>% 
+filter(cohort_participant_id %in% 
+no_estimate_participants) %>% 
+filter(experimental_strategy == "WGS") %>% 
+filter(sample_type == "Tumor") %>% 
+select(cohort_participant_id, germline_sex_estimate)
 
 # Merge data that was fixed with WGS germline sex estimate
 no_estimate_fixed_through_wgs <- left_join(no_estimate, no_estimate_participants_match_wgs, by = "cohort_participant_id") %>% filter(!is.na(germline_sex_estimate))
