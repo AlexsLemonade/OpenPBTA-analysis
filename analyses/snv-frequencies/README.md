@@ -25,6 +25,8 @@ Issues addressed:
 - Variant-level mutation frequencies: <https://github.com/PediatricOpenTargets/ticket-tracker/issues/64>
 - Gene-level mutation frequencies: <https://github.com/PediatricOpenTargets/ticket-tracker/issues/91>
 - <https://github.com/PediatricOpenTargets/ticket-tracker/issues/8>. This issue is no longer compatible with the purpose of this module. This module intends to compute mutation frequencies for each variant, but this issue intents to compute the mutation frequencies for each gene. This issue is listed here for future reference.
+- Change independent sample lists used in snv-frequencies: https://github.com/PediatricOpenTargets/ticket-tracker/issues/137
+- Rerun snv-frequencies module for v9 data release: https://github.com/PediatricOpenTargets/ticket-tracker/issues/173
 
 ### Methods
 
@@ -32,7 +34,7 @@ Issues addressed:
 
 Subset `snv-consensus-plus-hotspots.maf.tsv.gz` to keep only samples with `sample_type == 'Tumor'` and non-NA `cancer_group` and `cohort` values in `histologies.tsv`.
 
-Subset `histologies.tsv`, `../independent-samples/results/independent-specimens.wgswxspanel.primary.eachcohort.tsv`, and `../independent-samples/results/independent-specimens.wgswxspanel.relapse.eachcohort.tsv` to keep only samples that are in the `snv-consensus-plus-hotspots.maf.tsv.gz` subset.
+Subset `histologies.tsv`, `../../data/independent-specimens.wgswxspanel.primary.tsv` and `../../data/independent-specimens.wgswxspanel.relapse.tsv` for `all cohorts` independent samples, and ../../data/independent-specimens.wgswxspanel.primary.eachcohort.tsv` and `../../data/independent-specimens.wgswxspanel.relapse.eachcohort.tsv` for each cohort independent samples to keep only samples that are in the `snv-consensus-plus-hotspots.maf.tsv.gz` subset.
 
 #### Subset non-synonymous variants
 
@@ -103,8 +105,6 @@ Add the following annotation columns to variant-level and gene-level tables usin
 - `OncoKB_cancer_gene`
 - `OncoKB_oncogene_TSG`
 
-Note: `Protein_RefSeq_ID` and `Gene_full_name` are still added directly using the [R mygene package](https://www.bioconductor.org/packages/release/bioc/html/mygene.html), and relevant code is adapted from `long-format-table-utils/annotator/annotator-api.R`, because annotator only have `Protein_RefSeq_ID` and `Gene_full_name` for `Gene_Ensembl_ID`s that are in `ensg-hugo-rmtl-mapping.tsv`. `snv-consensus-plus-hotspots.maf.tsv.gz` has ENSG IDs that are not in `ensg-hugo-rmtl-mapping.tsv`, e.g. ENSG00000284770 and ENSG00000285053. See <https://github.com/PediatricOpenTargets/ticket-tracker/issues/146> for more details. Protein_RefSeq_ID and Gene_full_name may be added through annotator at a later point, after the missing gene symbol and ENSG ID mapping issue is resolved.
-
 Add `Gene_type`, `PedcBio_PedOT_oncoprint_plot_URL` and `PedcBio_PedOT_mutations_plot_URL` annotation columns to gene-level tables.
 
 The PedcBioPortal `case_set_id`s in the URLs are obtained from [the `sample-lists` PedcBioPortal web API](https://pedcbioportal.kidsfirstdrc.org/api/swagger-ui.html#/Sample_Lists), with the following command:
@@ -122,7 +122,7 @@ Results are generated using PediatricOpenTargets/OpenPedCan-analysis data releas
 The merged variant-level and gene-level SNV mutation frequency tables of all `cancer_group_cohort`s is output in TSV and JSONL formats.
 
 - `results/gene-level-snv-consensus-annotated-mut-freq.jsonl.gz`
-- `results/gene-level-snv-consensus-annotated-mut-freq.tsv`
+- `results/gene-level-snv-consensus-annotated-mut-freq.tsv.gz`
 
 - `results/variant-level-snv-consensus-annotated-mut-freq.jsonl.gz`
 - `results/variant-level-snv-consensus-annotated-mut-freq.tsv.gz`
@@ -151,8 +151,10 @@ Input:
 
 - `../../data/histologies.tsv`
 - `../../data/snv-consensus-plus-hotspots.maf.tsv.gz`
-- `../independent-samples/results/independent-specimens.wgswxspanel.primary.eachcohort.tsv`
-- `../independent-samples/results/independent-specimens.wgswxspanel.relapse.eachcohort.tsv`
+- `../../data/independent-specimens.wgswxspanel.primary.tsv`
+- `../../data/independent-specimens.wgswxspanel.relapse.tsv`
+- `../../data/independent-specimens.wgswxspanel.primary.eachcohort.tsv`
+- `../../data/independent-specimens.wgswxspanel.relapse.eachcohort.tsv`
 - `input/ped_opentargets_2021_pedcbio_case_set_ids.json`
 
 Output:
