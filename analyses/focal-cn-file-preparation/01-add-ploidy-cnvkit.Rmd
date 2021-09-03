@@ -29,7 +29,11 @@ histologies_df <- readr::read_tsv(histologies_file, guess_max = 100000)
 # Edits for https://github.com/PediatricOpenTargets/ticket-tracker/issues/177
 ```{r}
 # Filter to WXS tumor with no germline sex estimate
-no_estimate <- histologies_df %>% filter(sample_type == "Tumor") %>% filter(experimental_strategy == "WXS") %>%   filter(is.na(germline_sex_estimate)) %>% select(-germline_sex_estimate)
+no_estimate <- histologies_df %>% 
+filter(sample_type == "Tumor") %>% 
+filter(experimental_strategy == "WXS") %>%  
+ filter(is.na(germline_sex_estimate)) %>%
+  select(-germline_sex_estimate)
 
 # Extract participant ID with no germline sex estimate
 no_estimate_participants <- no_estimate %>% pull(cohort_participant_id) %>% unique()
