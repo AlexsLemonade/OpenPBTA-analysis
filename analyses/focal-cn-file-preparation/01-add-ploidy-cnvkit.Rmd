@@ -30,30 +30,32 @@ histologies_df <- readr::read_tsv(histologies_file, guess_max = 100000)
 ```{r}
 # Filter to WXS tumor with no germline sex estimate
 no_estimate <- histologies_df %>% 
-filter(sample_type == "Tumor") %>% 
-filter(experimental_strategy == "WXS") %>%  
- filter(is.na(germline_sex_estimate)) %>%
+  filter(sample_type == "Tumor") %>% 
+  filter(experimental_strategy == "WXS") %>%  
+  filter(is.na(germline_sex_estimate)) %>%
   select(-germline_sex_estimate)
 
 # Extract participant ID with no germline sex estimate
 no_estimate_participants <- no_estimate %>% 
-pull(cohort_participant_id) %>% 
-unique()
+  pull(cohort_participant_id) %>% 
+  unique()
 
 # Find out matching WGS - currently this has no entry for v9
 no_estimate_participants_match_wgs <- histologies_df %>% 
-filter(cohort_participant_id %in% 
-no_estimate_participants) %>% 
-filter(experimental_strategy == "WGS") %>% 
-filter(sample_type == "Tumor") %>% 
-select(cohort_participant_id, germline_sex_estimate)
+  filter(cohort_participant_id %in% 
+  no_estimate_participants) %>% 
+  filter(experimental_strategy == "WGS") %>% 
+  filter(sample_type == "Tumor") %>% 
+  select(cohort_participant_id, germline_sex_estimate)
 
 # Merge data that was fixed with WGS germline sex estimate
 no_estimate_fixed_through_wgs <- left_join(no_estimate, no_estimate_participants_match_wgs, by = "cohort_participant_id") %>% 
-filter(!is.na(germline_sex_estimate))
+  filter(!is.na(germline_sex_estimate))
 
 # Identify data that was not fixed due to NA
-no_estimate_still_na <- left_join(no_estimate, no_estimate_participants_match_wgs, by = "cohort_participant_id") %>% filter(is.na(germline_sex_estimate))
+no_estimate_still_na <- left_join(no_estimate, no_estimate_participants_match_wgs
+                                  , by = "cohort_participant_id") %>%
+  filter(is.na(germline_sex_estimate))
 
 # Fix NA data using gender
 no_estimate_still_na_fixed <- no_estimate_still_na %>% 
@@ -67,7 +69,8 @@ no_estimate_still_na_fixed <- no_estimate_still_na %>%
 histologies_df_fixed <- bind_rows(no_estimate_fixed_through_wgs, no_estimate_still_na_fixed)
 
 histologies_df_final <- histologies_df %>% 
-  left_join(select(histologies_df_fixed, germline_sex_estimate, Kids_First_Biospecimen_ID), by = "Kids_First_Biospecimen_ID",
+  left_join(select(histologies_df_fixed, germline_sex_estimate, Kids_First_Biospecimen_ID)
+            , by = "Kids_First_Biospecimen_ID",
             suffix = c('.x', '.y'), suffixes_mandatory = c(FALSE, TRUE)) %>%
   mutate(germline_sex_estimate = case_when(Kids_First_Biospecimen_ID == Kids_First_Biospecimen_ID ~ germline_sex_estimate.y
                                            , TRUE ~ germline_sex_estimate.x)) %>% 
