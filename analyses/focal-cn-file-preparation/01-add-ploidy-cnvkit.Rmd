@@ -49,7 +49,8 @@ filter(sample_type == "Tumor") %>%
 select(cohort_participant_id, germline_sex_estimate)
 
 # Merge data that was fixed with WGS germline sex estimate
-no_estimate_fixed_through_wgs <- left_join(no_estimate, no_estimate_participants_match_wgs, by = "cohort_participant_id") %>% filter(!is.na(germline_sex_estimate))
+no_estimate_fixed_through_wgs <- left_join(no_estimate, no_estimate_participants_match_wgs, by = "cohort_participant_id") %>% 
+filter(!is.na(germline_sex_estimate))
 
 # Identify data that was not fixed due to NA
 no_estimate_still_na <- left_join(no_estimate, no_estimate_participants_match_wgs, by = "cohort_participant_id") %>% filter(is.na(germline_sex_estimate))
