@@ -117,7 +117,7 @@ p <- ggplot(chromoth_histology_summary, aes(x = display_group, y = prop, fill = 
   scale_fill_identity() +
   plot_options
 p
-ggsave(file.path(plots_dir, "chromothripsis_proportion_by_displayGroup.pdf"), p, width=7, height=7)
+ggsave(file.path(plots_dir, "chromothripsis_proportion_by_displayGroup.png"), p, width=7, height=7)
 ```
 
 ### Plot proportion of tumors by cancer_group
@@ -133,7 +133,7 @@ p <- ggplot(chromoth_histology_summary_cg, aes(x = cancer_group, y = prop, fill 
   xlab(NULL) + 
   ylab("Proportion of Tumors")
 p
-ggsave(file.path(plots_dir, "chromothripsis_proportion_by_cancerGroup.pdf"), p, width=7, height=7)
+ggsave(file.path(plots_dir, "chromothripsis_proportion_by_cancerGroup.png"), p, width=7, height=7)
 ```
 
 ### Plot proportion of tumors by display_group, using fill to show the cancer_groups
@@ -163,7 +163,7 @@ p <- ggplot(chromoth_histology_summary_cg_by_dg, aes(x = display_group, y = prop
   scale_fill_identity() +
   plot_options
 p
-ggsave(file.path(plots_dir, "chromothripsis_proportion_by_displayGroup_fillByCancerGroup.pdf"), p, width=7, height=7)
+ggsave(file.path(plots_dir, "chromothripsis_proportion_by_displayGroup_fillByCancerGroup.png"), p, width=7, height=7)
 ```
 
 
@@ -184,7 +184,7 @@ p <- ggplot(chromoth_histology, aes(x = display_group,
   scale_alpha_manual(values=c(0, 0.5, 1), name="Chromothripsis\nConfidence Level") +
   plot_options
 p
-ggsave(file.path(plots_dir, "chromothripsis_proportion_by_displayGroup_fillByConfidence.pdf"), p, width=7, height=7)
+ggsave(file.path(plots_dir, "chromothripsis_proportion_by_displayGroup_fillByConfidence.png"), p, width=7, height=7)
 ```
 
 ### Plot proportion of tumors by display_group, using fill to show number of chromothripsis regions per sample
@@ -205,6 +205,6 @@ p <- ggplot(chromoth_histology, aes(x = display_group, fill = as.factor(count_re
   scale_fill_manual(values=colors, name="# Chromothripsis\nRegions") +
   plot_options
 p
-ggsave(file.path(plots_dir, "chromothripsis_proportion_by_displayGroup_fillByCount.pdf"), p, width=7, height=7)
+ggsave(file.path(plots_dir, "chromothripsis_proportion_by_displayGroup_fillByCount.png"), p, width=7, height=7)
 ```
 

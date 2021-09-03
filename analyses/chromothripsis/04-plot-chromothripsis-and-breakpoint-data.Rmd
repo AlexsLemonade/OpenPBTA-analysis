@@ -30,6 +30,7 @@ library(ggplot2)
 library(RColorBrewer)
 library(readr)
 library(dplyr)
+library(grid)
 ```
 
 
@@ -60,10 +61,13 @@ merge <- chromoth_per_sample %>%
 
 ### Plot the number of chromothripsis regions per sample along with CNV and/or SV break counts
 
-Define plot theme and colors:
+Define plot theme:
 ```{r}
 theme_set(theme_light())
+```
 
+Define color scale for # chromothripsis regions:
+```{r}
 max_regions <- max(merge$count_regions_any_conf)
 colors <- colorRampPalette(brewer.pal(9,"YlOrRd"))(max_regions+1)
 colors[1] <- "#1C00ff00"  # Assign no color to "0"
@@ -82,16 +86,26 @@ merge <- merge %>%
 #### Scatterplot: CNV breaks vs. SV breaks, colored by # chromothripsis regions
 
 ```{r}
+# Fit linear regression and create plot label
+fit <- lm(sv_breaks_count ~ cnv_breaks_count, data = merge)
+fit_label <- paste0("Linear Regression of SV breaks on CNV breaks:\n",
+                   "Adj R2=", signif(summary(fit)$adj.r.squared, 3),
+                     ", P=", signif(summary(fit)$coef[2,4], 3))
+fit_label_grob <- grobTree(textGrob(fit_label, x=0.99, y=0.95, hjust=1))
+
+# Create scatterplot
 p <- merge %>%
   arrange(count_regions_any_conf) %>%
     # Sort by number of chromothripsis calls so that the samples with chromothripsis are more visible
   ggplot(aes(x = cnv_breaks_count, y = sv_breaks_count, fill = as.factor(count_regions_any_conf))) +
   geom_point(shape=21, size=2, color="black") + 
   scale_fill_manual(values=colors, name="# Chromothripsis\nRegions") +
+  stat_smooth(aes(fill=NULL), method = "lm", col = "red", show.legend = FALSE) + 
+  annotation_custom(fit_label_grob) +
   xlab("# CNV Breaks") + 
   ylab("# SV Breaks") 
 p
-ggsave(file.path(plots_dir, "count_chromothripsis_cnv_and_sv_breaks_scatterplot.pdf"), p)
+ggsave(file.path(plots_dir, "count_chromothripsis_cnv_and_sv_breaks_scatterplot.png"), p)
 ```
 
 #### Stripchart: Chromothripsis regions vs. CNV breaks
@@ -107,7 +121,7 @@ p <- merge %>%
   xlab("# Chromothripsis Regions") + 
   ylab("# CNV Breaks") 
 p
-ggsave(file.path(plots_dir, "count_chromothripsis_cnv_breaks_stripchart.pdf"), p)
+ggsave(file.path(plots_dir, "count_chromothripsis_cnv_breaks_stripchart.png"), p)
 ```
 
 #### Stripchart: Chromothripsis regions vs. SV breaks
@@ -123,5 +137,5 @@ p <- merge %>%
   xlab("# Chromothripsis Regions") + 
   ylab("# SV Breaks") 
 p
-ggsave(file.path(plots_dir, "count_chromothripsis_sv_breaks_stripchart.pdf"), p)
+ggsave(file.path(plots_dir, "count_chromothripsis_sv_breaks_stripchart.png"), p)
 ``` 
