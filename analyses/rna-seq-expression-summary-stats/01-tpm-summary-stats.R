@@ -376,24 +376,44 @@ stopifnot(identical(
 ))
 
 
-# independent sample table
-rna_idps_df <- read_tsv(
-  file.path('..', 'independent-samples', 'results',
+# all cohorts independent sample table
+rna_ac_idps_df <- read_tsv(
+  file.path('../..', 'data',
+            'independent-specimens.rnaseq.primary.tsv'),
+  col_types = cols(.default = col_guess()))
+
+rna_ac_idps_kfbids <- rna_ac_idps_df$Kids_First_Biospecimen_ID
+# assert no NA in rna_ac_idps_kfbids
+stopifnot(identical(as.integer(0), sum(is.na(rna_ac_idps_kfbids))))
+# assert all rna_ac_idps_kfbids are unique
+stopifnot(identical(length(rna_ac_idps_kfbids),
+  length(unique(rna_ac_idps_kfbids))))
+
+# subset histology data frame to have all cohorts independent samples in tpm_df
+rna_ac_htl_df <- htl_df %>%
+  filter(Kids_First_Biospecimen_ID %in% colnames(tpm_df),
+         Kids_First_Biospecimen_ID %in% rna_ac_idps_kfbids)
+stopifnot(all(rna_ac_htl_df$Kids_First_Biospecimen_ID %in% colnames(tpm_df)))
+
+# each cohort independent sample table
+rna_ec_idps_df <- read_tsv(
+  file.path('../..', 'data',
             'independent-specimens.rnaseq.primary.eachcohort.tsv'),
   col_types = cols(.default = col_guess()))
 
-rna_idps_kfbids <- rna_idps_df$Kids_First_Biospecimen_ID
-# assert no NA in rna_idps_kfbids
-stopifnot(identical(as.integer(0), sum(is.na(rna_idps_kfbids))))
-# assert all rna_idps_kfbids are unique
-stopifnot(identical(length(rna_idps_kfbids), length(unique(rna_idps_kfbids))))
+rna_ec_idps_kfbids <- rna_ec_idps_df$Kids_First_Biospecimen_ID
+# assert no NA in rna_ec_idps_kfbids
+stopifnot(identical(as.integer(0), sum(is.na(rna_ec_idps_kfbids))))
+# assert all rna_ec_idps_kfbids are unique
+stopifnot(identical(length(rna_ec_idps_kfbids),
+  length(unique(rna_ec_idps_kfbids))))
 
 
 # subset histology data frame to have independent samples in tpm_df
-rna_htl_df <- htl_df %>%
+rna_ec_htl_df <- htl_df %>%
   filter(Kids_First_Biospecimen_ID %in% colnames(tpm_df),
-         Kids_First_Biospecimen_ID %in% rna_idps_kfbids)
-stopifnot(all(rna_htl_df$Kids_First_Biospecimen_ID %in% colnames(tpm_df)))
+         Kids_First_Biospecimen_ID %in% rna_ec_idps_kfbids)
+stopifnot(all(rna_ec_htl_df$Kids_First_Biospecimen_ID %in% colnames(tpm_df)))
 
 
 # gene symbol to ENSG id table
@@ -431,10 +451,10 @@ gsb_gids_df <- data.frame(gsb_gids_tbl, stringsAsFactors = FALSE)
 message('Compute TPM summary statistics for all cohorts...')
 # select cancer samples
 # nf = n_samples filtered
-nf_all_cohorts_rna_htl_df <- rna_htl_df %>%
+nf_all_cohorts_rna_ac_htl_df <- rna_ac_htl_df %>%
   filter(!is.na(cancer_group), !is.na(cohort)) %>%
   group_by(cancer_group) %>%
-  filter(n() >= 5) %>%
+  filter(n() >= 3) %>%
   ungroup() %>%
   mutate(sample_group = paste0(cancer_group, '___all_cohorts'))
 # The sample_group column needs to describe three things of a sample:
@@ -451,7 +471,7 @@ nf_all_cohorts_rna_htl_df <- rna_htl_df %>%
 # - grouping method is implicit in each-cohort grouping method
 
 
-nf_all_cohorts_sample_meta_out_df <- nf_all_cohorts_rna_htl_df %>%
+nf_all_cohorts_sample_meta_out_df <- nf_all_cohorts_rna_ac_htl_df %>%
   group_by(sample_group) %>%
   summarise(
     n_samples = n(),
@@ -462,10 +482,10 @@ nf_all_cohorts_sample_meta_out_df <- nf_all_cohorts_rna_htl_df %>%
   arrange(sample_group)
 
 write_tsv(nf_all_cohorts_sample_meta_out_df,
-          'results/cancer_group_all_cohort_sample_metadata.tsv')
+          'results/cancer_group_all_cohorts_sample_metadata.tsv')
 
 # This table is used for annotating long tables in the last section.
-nf_all_cohorts_sample_meta_df <- nf_all_cohorts_rna_htl_df %>%
+nf_all_cohorts_sample_meta_df <- nf_all_cohorts_rna_ac_htl_df %>%
   group_by(sample_group) %>%
   summarise(
     n_samples = n(),
@@ -475,19 +495,19 @@ nf_all_cohorts_sample_meta_df <- nf_all_cohorts_rna_htl_df %>%
 
 
 nf_all_cohorts_tpm_df <- tpm_df[
-  , nf_all_cohorts_rna_htl_df$Kids_First_Biospecimen_ID]
+  , nf_all_cohorts_rna_ac_htl_df$Kids_First_Biospecimen_ID]
 # assert gene symbols are the same
 stopifnot(identical(rownames(nf_all_cohorts_tpm_df), rownames(tpm_df)))
 # assert nf_all_cohorts_tpm_df columns match
-# nf_all_cohorts_rna_htl_df$Kids_First_Biospecimen_ID
+# nf_all_cohorts_rna_ac_htl_df$Kids_First_Biospecimen_ID
 stopifnot(identical(
-  nf_all_cohorts_rna_htl_df$Kids_First_Biospecimen_ID,
+  nf_all_cohorts_rna_ac_htl_df$Kids_First_Biospecimen_ID,
   colnames(nf_all_cohorts_tpm_df)
 ))
 
 # summary stats data frames
 nf_all_cohorts_tpm_ss_out_dfs <- get_expression_summary_stats_out_dfs(
-  nf_all_cohorts_tpm_df, nf_all_cohorts_rna_htl_df$sample_group,
+  nf_all_cohorts_tpm_df, nf_all_cohorts_rna_ac_htl_df$sample_group,
   gsb_gids_df)
 
 
@@ -496,14 +516,14 @@ nf_all_cohorts_tpm_ss_out_dfs <- get_expression_summary_stats_out_dfs(
 message('Compute TPM summary statistics for each individual cohort...')
 # select cancer samples
 # ind = individual
-nf_ind_cohort_rna_htl_df <- rna_htl_df %>%
+nf_each_cohort_rna_ec_htl_df <- rna_ec_htl_df %>%
   filter(!is.na(cancer_group), !is.na(cohort)) %>%
   mutate(sample_group = paste(cancer_group, cohort, sep = '___')) %>%
   group_by(sample_group) %>%
-  filter(n() >= 5) %>%
+  filter(n() >= 3) %>%
   ungroup()
 
-nf_ind_cohort_sample_meta_out_df <- nf_ind_cohort_rna_htl_df %>%
+nf_each_cohort_sample_meta_out_df <- nf_each_cohort_rna_ec_htl_df %>%
   group_by(sample_group) %>%
   summarise(
     n_samples = n(),
@@ -511,11 +531,11 @@ nf_ind_cohort_sample_meta_out_df <- nf_ind_cohort_rna_htl_df %>%
                                        collapse=',')) %>%
   arrange(sample_group)
 
-write_tsv(nf_ind_cohort_sample_meta_out_df,
-          'results/cancer_group_individual_cohort_sample_metadata.tsv')
+write_tsv(nf_each_cohort_sample_meta_out_df,
+          'results/cancer_group_each_cohort_sample_metadata.tsv')
 
 # This table is used for annotating long tables in the last section.
-nf_ind_cohort_sample_meta_df <- nf_ind_cohort_rna_htl_df %>%
+nf_each_cohort_sample_meta_df <- nf_each_cohort_rna_ec_htl_df %>%
   group_by(sample_group) %>%
   summarise(
     n_samples = n(),
@@ -523,20 +543,20 @@ nf_ind_cohort_sample_meta_df <- nf_ind_cohort_rna_htl_df %>%
     cohort = unique(cohort)) %>%
   arrange(sample_group)
 
-nf_ind_cohort_tpm_df <- tpm_df[
-  , nf_ind_cohort_rna_htl_df$Kids_First_Biospecimen_ID]
+nf_each_cohort_tpm_df <- tpm_df[
+  , nf_each_cohort_rna_ec_htl_df$Kids_First_Biospecimen_ID]
 # assert gene symbols are the same
-stopifnot(identical(rownames(nf_ind_cohort_tpm_df), rownames(tpm_df)))
-# assert nf_ind_cohort_tpm_df columns match
-# nf_ind_cohort_rna_htl_df$Kids_First_Biospecimen_ID
+stopifnot(identical(rownames(nf_each_cohort_tpm_df), rownames(tpm_df)))
+# assert nf_each_cohort_tpm_df columns match
+# nf_each_cohort_rna_ec_htl_df$Kids_First_Biospecimen_ID
 stopifnot(identical(
-  nf_ind_cohort_rna_htl_df$Kids_First_Biospecimen_ID,
-  colnames(nf_ind_cohort_tpm_df)
+  nf_each_cohort_rna_ec_htl_df$Kids_First_Biospecimen_ID,
+  colnames(nf_each_cohort_tpm_df)
 ))
 
 # summary stats data frames
-nf_ind_cohort_tpm_ss_out_dfs <- get_expression_summary_stats_out_dfs(
-  nf_ind_cohort_tpm_df, nf_ind_cohort_rna_htl_df$sample_group,
+nf_each_cohort_tpm_ss_out_dfs <- get_expression_summary_stats_out_dfs(
+  nf_each_cohort_tpm_df, nf_each_cohort_rna_ec_htl_df$sample_group,
   gsb_gids_df)
 
 
@@ -552,17 +572,17 @@ nf_all_cohorts_tpm_ss_long_tbl <- sum_stat_df_list_wide_to_long(
   nf_all_cohorts_tpm_ss_out_dfs, 'sample_group',
   nf_all_cohorts_sample_meta_df)
 
-nf_ind_cohort_tpm_ss_long_tbl <- sum_stat_df_list_wide_to_long(
-  nf_ind_cohort_tpm_ss_out_dfs, 'sample_group',
-  nf_ind_cohort_sample_meta_df)
+nf_each_cohort_tpm_ss_long_tbl <- sum_stat_df_list_wide_to_long(
+  nf_each_cohort_tpm_ss_out_dfs, 'sample_group',
+  nf_each_cohort_sample_meta_df)
 
 stopifnot(identical(colnames(nf_all_cohorts_tpm_ss_long_tbl),
-                    colnames(nf_ind_cohort_tpm_ss_long_tbl)))
+                    colnames(nf_each_cohort_tpm_ss_long_tbl)))
 
 m_tpm_ss_long_tbl <- bind_rows(nf_all_cohorts_tpm_ss_long_tbl,
-                               nf_ind_cohort_tpm_ss_long_tbl)
+                               nf_each_cohort_tpm_ss_long_tbl)
 stopifnot(identical(colnames(m_tpm_ss_long_tbl),
-                    colnames(nf_ind_cohort_tpm_ss_long_tbl)))
+                    colnames(nf_each_cohort_tpm_ss_long_tbl)))
 
 m_tpm_ss_long_tbl <- m_tpm_ss_long_tbl %>%
   select(gene_symbol, gene_id, cancer_group, cohort, tpm_mean, tpm_sd,
