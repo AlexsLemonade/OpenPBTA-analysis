@@ -40,7 +40,7 @@ no_estimate_participants <- no_estimate %>%
   unique()
 
 # Find out matching WGS
-# Use cohort_participant_id for filtering samples that have WGS, when WXS was performed
+# Use Kids_First_Participant_ID for filtering samples that have WGS, when WXS was performed
 no_estimate_participants_match_wgs <- histologies_df %>% 
   filter(Kids_First_Participant_ID %in% no_estimate_participants & 
            experimental_strategy == "WGS" & sample_type == "Tumor") %>% 
