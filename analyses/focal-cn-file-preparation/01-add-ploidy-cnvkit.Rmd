@@ -17,12 +17,12 @@ library(dplyr)
 ### Read in data
 
 ```{r}
-cnvkit_file <- file.path("..", "..", "data","v9", "cnv-cnvkit.seg.gz")
+cnvkit_file <- file.path("..", "..", "data", "cnv-cnvkit.seg.gz")
 cnvkit_df <- readr::read_tsv(cnvkit_file)
 ```
 
 ```{r}
-histologies_file <- file.path("..", "..", "data","v9", "histologies.tsv")
+histologies_file <- file.path("..", "..", "data", "histologies.tsv")
 histologies_df <- readr::read_tsv(histologies_file, guess_max = 100000)
 ```
 
