@@ -42,7 +42,7 @@ no_estimate_participants <- no_estimate %>%
 # Find out matching WGS
 # Use cohort_participant_id for filtering samples that have WGS, when WXS was performed
 no_estimate_participants_match_wgs <- histologies_df %>% 
-  filter(cohort_participant_id %in% no_estimate_participants & 
+  filter(Kids_First_Participant_ID %in% no_estimate_participants & 
            experimental_strategy == "WGS" & sample_type == "Tumor") %>% 
   select(Kids_First_Participant_ID, germline_sex_estimate)
 
