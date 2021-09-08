@@ -26,7 +26,8 @@ RUN_ORIGINAL=1 bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
 
 * `01-add-ploidy-cnvkit.Rmd` - The two CNV callers, CNVkit and ControlFreeC, do not handle ploidy in the same way ([A Note on Ploidy](https://github.com/AlexsLemonade/OpenPedCan-analysis/blob/de661fbe740717472fcf01c7d9b74fe1b946aece/doc/data-formats.md#a-note-on-ploidy) in the Data Formats documentation).
   This notebook adds the ploidy inferred via ControlFreeC to the CNVkit data and adds a status column that defines gain and loss broadly.
-  Specifically, segments with copy number fewer than ploidy are losses, segments with copy number greater than ploidy are marked as a gain, and segments where copy number is equal to ploidy are marked as neutral.
+- Specifically, segments with copy number fewer than ploidy are losses, segments with copy number greater than ploidy are marked as a gain, and segments where copy number is equal to ploidy are marked as neutral. 
+- Additionally, WXS samples were updated to use either `germline_sex_estimate` from matched WGS samples or `reported_gender` for xy chromosome copy number calls.
   (Note that [the logic around sex chromosomes in males when ploidy = 3 leaves something to be desired](https://github.com/AlexsLemonade/OpenPedCan-analysis/pull/259#discussion_r345354403)).
 
 * `02-add-ploidy-consensus.Rmd` - This is very similar to the CNVkit file prep (`01-add-ploidy-cnvkit.Rmd`).
