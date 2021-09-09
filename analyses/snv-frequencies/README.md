@@ -121,7 +121,7 @@ Two more changes in column names and additions of three more columns are made fo
  Three additional columns added: 
  - `chop_uuid` includes 32 digit UUIDs that are unique for each row of the file 
  - `datatypeId` column with `somatic_mutation` in each row
- - `datasourceId` column with `chop_gene_level_snv` in each row for gene-level table and `chop_variantlevel_snv` in each row for variant-level table.
+ - `datasourceId` column with `chop_gene_level_snv` in each row for gene-level table and `chop_variant_level_snv` in each row for variant-level table.
 
 ### Results
 
