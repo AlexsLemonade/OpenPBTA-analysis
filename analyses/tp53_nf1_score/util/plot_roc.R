@@ -12,7 +12,7 @@ plot_roc <- function(roc_df, plots_dir, fname){
   # add legend 
   roc_df <- roc_df %>%
     group_by(shuffled) %>%
-    mutate(auroc = round(auroc, 2),
+    dplyr::mutate(auroc = round(auroc, 2),
            shuffled = ifelse(shuffled, 'TP53 Shuffle', 'TP53'),
            Classifier = paste0(shuffled, ' (AUROC = ', auroc,')'))
 
