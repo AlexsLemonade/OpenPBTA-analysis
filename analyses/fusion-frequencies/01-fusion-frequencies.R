@@ -316,9 +316,9 @@ annotated_m_fus_freq_tbl <- annotated_m_fus_freq_tbl %>%
          Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
          Frequency_in_relapse_tumors) %>%
   unique() %>%
-  dplyr::rename(Gene_symbol = Gene_Symbol) %>% 
-  dplyr::rename(targetFromSourceId = Gene_Ensembl_ID) %>%
-  dplyr::rename(diseaseFromSourceMappedId = EFO) %>% 
+  dplyr::rename(Gene_symbol = Gene_Symbol,
+                targetFromSourceId = Gene_Ensembl_ID,
+                diseaseFromSourceMappedId = EFO) %>% 
   dplyr::mutate(datatypeId = "somatic_mutation") %>%
   dplyr::mutate(datasourceId = data_source_id) 
 
