@@ -1,4 +1,7 @@
-library(tidyverse)
+
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(ids))
+
 # This imports the annotate_long_format_table function
 source('../long-format-table-utils/annotator/annotator-api.R')
 
@@ -890,6 +893,15 @@ var_level_mut_freq_tbl <- var_level_mut_freq_tbl %>%
   mutate(datatypeId = "somatic_mutation",
          datasourceId = "chop_variant_level_snv")
 
+# generate UUID for each row of the table
+uuid_string <- uuid(nrow(var_level_mut_freq_tbl))
+# make sure all the uuids generated are unique
+stopifnot(length(unique(uuid_string)) == nrow(var_level_mut_freq_tbl))
+
+# assign UUID to each row
+var_level_mut_freq_tbl <- var_level_mut_freq_tbl %>%
+  dplyr::mutate(chop_uuid = uuid_string)
+
 gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
   select(Gene_symbol, RMTL, Dataset, Disease, EFO, MONDO,
          Gene_full_name, Gene_type, Protein_RefSeq_ID,
@@ -907,6 +919,16 @@ gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
   mutate(datatypeId = "somatic_mutation",
          datasourceId = "chop_gene_level_snv")
 
+# generate UUID for each row of the table
+uuid_string_2 <- uuid(nrow(gene_level_mut_freq_tbl))
+# make sure all the uuids generated are unique
+stopifnot(length(unique(uuid_string_2)) == nrow(gene_level_mut_freq_tbl))
+
+# assign UUID to each row
+gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
+  dplyr::mutate(chop_uuid = uuid_string_2)
+
+# write out tsv and jsonl files
 write_tsv(
   var_level_mut_freq_tbl,
   file.path(tables_dir, 'variant-level-snv-consensus-annotated-mut-freq.tsv'))
