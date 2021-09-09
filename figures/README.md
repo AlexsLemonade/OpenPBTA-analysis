@@ -12,7 +12,8 @@ We recommend [using the download script](https://github.com/AlexsLemonade/OpenPB
 
 See [these instructions](https://github.com/AlexsLemonade/OpenPBTA-analysis#docker-image) for setting up the project Docker container.
 Briefly, the latest version of the project Docker image, which is updated upon commit to `master`, can be obtained and run via:
-```
+
+```bash
 docker pull ccdlopenpbta/open-pbta:latest
 docker run \
   -e PASSWORD=<password> \
@@ -26,7 +27,7 @@ You may choose to use [`docker exec`](https://docs.docker.com/engine/reference/c
 
 This script runs **_all_** the intermediate steps needed to generate figures starting with the original data files.
 
-```
+```bash
 bash figures/generate-figures.sh
 ```
 
@@ -40,7 +41,7 @@ However, we list information about the resources, intermediate steps, and [PBTA 
 
 | Figure | Individual script | Notes on requirements | Linked analysis modules | PBTA data files consumed |
 |--------|--------|------------------|-------------------------|-----------------------------|
-| Figure 1 | [`scripts/fig1-sample-distribution.R`](./scripts/fig1-sample-distribution.R) | No high RAM requirements | [`sample-distribution-analysis`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/sample-distribution-analysis) |  `pbta-histologies.tsv` |
+| Figure 1 | No individual script | No high RAM requirements | [`sample-distribution-analysis`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/sample-distribution-analysis) |  `pbta-histologies.tsv` |
 | Figure 2 | [`scripts/fig2-mutational-landscape.R`](./scripts/fig2-mutational-landscape.R) | 256GB of RAM are needed due to the run_caller_consensus_analysis-pbta.sh handling of large MAF files|[`snv-callers`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers) <br> [`mutational-signatures`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/mutational-signatures) |  `pbta-snv-lancet.vep.maf.gz` <br> `pbta-snv-mutect2.vep.maf.gz` <br> `pbta-snv-strelka2.vep.maf.gz` <br> `pbta-snv-vardict.vep.maf.gz` <br> `tcga-snv-lancet.vep.maf.gz` <br> `tcga-snv-mutect2.vep.maf.gz` <br> `tcga-snv-strelka2.vep.maf.gz` |
 | CN status heatmap | [`analyses/copy_number_consensus_call/run_consensus_call.sh`](./analyses/copy_number_consensus_call/run_consensus_call.sh) and [`analyses/cnv-chrom-plot/cn_status_heatmap.Rmd`](./analyses/cnv-chrom-plot/cn_status_heatmap.Rmd) | No high RAM requirements | [`cnv-chrom-plot`](./analyses/cnv-chrom-plot) |  `pbta-cnv-controlfreec.tsv.gz` <br> `pbta-sv-manta.tsv.gz` <br> `pbta-cnv-cnvkit.seg.gz` |
 | Figure 3 | No individual script <br> ([`analyses/focal-cn-file-preparation/run-prepare-cn.sh`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/focal-cn-file-preparation/run-prepare-cn.sh) and [`analyses/oncoprint-landscape/run-oncoprint.sh`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/oncoprint-landscape/run-oncoprint.sh) scripts are used)              | 24GB of RAM are needed due to the `run-prepare-cn.sh` handling of large copy number files | [`focal-cn-file-preparation`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/focal-cn-file-preparation) <br> [`oncoprint-landscape`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/oncoprint-landscape) | `pbta-histologies.tsv` <br> `pbta-snv-consensus-mutation.maf.tsv.gz` <br> `pbta-fusion-putative-oncogenic.tsv` <br> `consensus_seg_annotated_cn_autosomes.tsv.gz` <br> `independent-specimens.wgs.primary-plus.tsv` |
@@ -67,6 +68,8 @@ To see a summary of what colors are used for histology labeling, see [`mapping-h
 |`divergent_col_palette.tsv`|<br>divergent_low_5:![053061](https://placehold.it/150x40/053061/FFFFFF?text=053061) <br>divergent_low_4:![2166ac](https://placehold.it/150x40/2166ac/FFFFFF?text=2166ac) <br>divergent_low_3:![4393c3](https://placehold.it/150x40/4393c3/FFFFFF?text=4393c3) <br>divergent_low_2:![92c5de](https://placehold.it/150x40/92c5de/FFFFFF?text=92c5de) <br>divergent_low_1:![d1e5f0](https://placehold.it/150x40/d1e5f0/FFFFFF?text=d1e5f0) <br>divergent_neutral:![f7f7f7](https://placehold.it/150x40/f7f7f7/FFFFFF?text=f7f7f7) <br>divergent_high_1:![fddbc7](https://placehold.it/150x40/fddbc7/FFFFFF?text=fddbc7) <br>divergent_high_2:![f4a582](https://placehold.it/150x40/f4a582/FFFFFF?text=f4a582) <br>divergent_high_3:![d6604d](https://placehold.it/150x40/d6604d/FFFFFF?text=d6604d) <br>divergent_high_4:![b2182b](https://placehold.it/150x40/b2182b/FFFFFF?text=b2182b) <br>divergent_high_5:![67001f](https://placehold.it/150x40/67001f/FFFFFF?text=67001f) <br>na_color:![f1f1f1](https://placehold.it/150x40/f1f1f1/FFFFFF?text=f1f1f1)|12 hex codes where the numbers in the name indicate distance from `divergent_neutral`.|For data has that is bidirectional e.g. Amplification/Deletion values like `seg.mean`|
 |`binary_col_palette.tsv` |<br>binary_1:![2166ac](https://placehold.it/150x40/2166ac/FFFFFF?text=2166ac) <br>binary_2:![b2182b](https://placehold.it/150x40/b2182b/FFFFFF?text=b2182b) <br>na_color:![f1f1f1](https://placehold.it/150x40/f1f1f1/000000?text=f1f1f1)|A vector of two hex codes|For binary variables e.g. presence/absence or Amp/Del as statuses|
 | `oncoprint_color_palette.tsv` | <br>Missense_Mutation:![35978f](https://placehold.it/150x40/35978f/FFFFFF?text=35978f) <br>Nonsense_Mutation:![000000](https://placehold.it/150x40/000000/FFFFFF?text=000000) <br>Frame_Shift_Del:![56B4E9](https://placehold.it/150x40/56B4E9/FFFFFF?text=56B4E9) <br>Frame_Shift_Ins:![FFBBFF](https://placehold.it/150x40/FFBBFF/FFFFFF?text=FFBBFF) <br>Splice_Site:![F0E442](https://placehold.it/150x40/F0E442/FFFFFF?text=F0E442) <br>Translation_Start_Site:![191970](https://placehold.it/150x40/191970/FFFFFF?text=191970) <br>Nonstop_Mutation:![545454](https://placehold.it/150x40/545454/FFFFFF?text=545454) <br>In_Frame_Del:![CAE1FF](https://placehold.it/150x40/CAE1FF/FFFFFF?text=CAE1FF) <br>In_Frame_Ins:![FFE4E1](https://placehold.it/150x40/FFE4E1/FFFFFF?text=FFE4E1) <br>Stop_Codon_Ins:![CC79A7](https://placehold.it/150x40/CC79A7/FFFFFF?text=CC79A7) <br>Start_Codon_Del:![56B4E9](https://placehold.it/150x40/56B4E9/FFFFFF?text=56B4E9) <br>Fusion:![7B68EE](https://placehold.it/150x40/7B68EE/FFFFFF?text=7B68EE) <br>Multi_Hit:![00F021](https://placehold.it/150x40/00F021/FFFFFF?text=00F021) <br>Hom_Deletion:![313695](https://placehold.it/150x40/313695/FFFFFF?text=313695) <br>Hem_Deletion:![abd9e9](https://placehold.it/150x40/abd9e9/FFFFFF?text=abd9e9) <br>amplification:![c51b7d](https://placehold.it/150x40/c51b7d/FFFFFF?text=c51b7d) <br>loss:![0072B2](https://placehold.it/150x40/0072B2/FFFFFF?text=0072B2) <br>gain:![D55E00](https://placehold.it/150x40/D55E00/FFFFFF?text=D55E00) <br>High_Level_Gain:![FF0000](https://placehold.it/150x40/FF0000/FFFFFF?text=FF0000) <br>Multi_Hit_Fusion:![CD96CD](https://placehold.it/150x40/CD96CD/FFFFFF?text=CD96CD) | A named vector of hex codes assigned to each `short_histology` and to each `CNV`, `SNV` and `Fusion` category | For plotting an oncoprint figure, this vector provides hex codes for `CNV`, `SNV`, and `Fusion` categories |
+| `tumor_descriptor_palette.tsv` | <br> Initial CNS Tumor:	![709AE1FF](https://placehold.it/150x40/35978f/FFFFFF?text=709AE1FF)  <br> Progressive	![075149FF](https://placehold.it/150x40/35978f/FFFFFF?text=709AE1FF) <br> Progressive Disease Post-Mortem	![075149FF](https://placehold.it/150x40/35978f/FFFFFF?text=075149FF)
+<br> Recurrence	![FD8CC1FF](https://placehold.it/150x40/35978f/FFFFFF?text=FD8CC1FF) <br> Second Malignancy	![FD7446FF](https://placehold.it/150x40/35978f/FFFFFF?text=FD7446FF) | A named vector of hex codes assigned to each `tumor_descriptor` | For plotting in sample distribution, this vector provides color for tumor descriptor categories |
 
 ## Color coding examples in R
 
@@ -74,10 +77,10 @@ To see a summary of what colors are used for histology labeling, see [`mapping-h
 
 **Step 1)** Read in color palette and select the pertinent columns
 
-There's some extra columns in `histology_label_color_table.tsv` that you don't need for plotting per se but are more record-keeping purposes. 
-With the code chunk below, we only import the four columns we need and then do a factor reorder to make sure the `display_group` is in the order declared by `display_order`. 
+There are some extra columns in `histology_label_color_table.tsv` that you don't need for plotting per se but are more record-keeping purposes. 
+With the code chunk below, you can import the columns you need (For example: `Kids_First_Biospecimen_ID, display_group, display_order, hex_codes` or `Kids_First_Biospecimen_ID, cancer_group, cancer_group_order, cancer_group_hex_codes` and then do a factor reorder to make sure the `display_group` (or `cancer_group`)is in the order declared by `display_order` (`cancer_group_order`). 
 
-```
+```r
 # Import standard color palettes for project
 histology_label_mapping <- readr::read_tsv(
   file.path(figures_dir, "palettes", "histology_label_color_table.tsv")
@@ -91,7 +94,7 @@ histology_label_mapping <- readr::read_tsv(
 **Step 2)** Use `dplyr::inner_join` using `Kids_First_Biospecimen_ID` to join by so you can add on the `hex_codes` and `display_group` for each biospecimen. 
 `display_order` specifies what order the `display_group`s should be displayed.
 
-```
+```r
 # Read in the metadata
 metadata <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
   dplyr::inner_join(histology_label_mapping, by = "Kids_First_Biospecimen_ID")
@@ -103,7 +106,7 @@ Using the `ggplot2::scale_fill_identity()` or `ggplot2::scale_color_identity()` 
 For base R plots, you should be able to supply the `hex_codes` column as your `col` argument.
 `display_group` should be used as the labels in the plot.
 
-```
+```r
 metadata %>%
   dplyr::group_by(display_group, hex_codes) %>%
   dplyr::summarize(count = dplyr::n()) %>%
@@ -118,7 +121,7 @@ metadata %>%
 
 You may want to remove the `na_color` at the end of the list depending on whether your data include `NA`s or if the plotting function you are using has the `na_color` supplied separately.
 
-```
+```r
 gradient_col_palette <- readr::read_tsv(
   file.path(figures_dir, "palettes", "gradient_color_palette.tsv")
 )
@@ -126,7 +129,7 @@ gradient_col_palette <- readr::read_tsv(
 
 If we need the `NA` color separated, like for use with `ComplexHeatmap` which has a separate argument for the color for `NA` values.
 
-```
+```r
 na_color <- gradient_col_palette %>%
   dplyr::filter(color_names == "na_color")
 
@@ -140,7 +143,7 @@ In this example, we are building a `colorRamp2` function based on a regular inte
 However, depending on your data's distribution a regular interval based palette might not represent your data well on the plot.
 You can provide any numeric vector to color code a palette using `circlize::colorRamp2` as long as that numeric vector is the same length as the palette itself.
 
-```
+```r
 gradient_col_val <- seq(from = min(df$variable), to = max(df$variable),
                         length.out = nrow(gradient_col_palette))
 
@@ -152,7 +155,7 @@ col_fun <- circlize::colorRamp2(gradient_col_val,
 This step depends on how your main plotting function would like the data supplied.
 For example, `ComplexHeatmap` wants a function to be supplied to their `col` argument.
 
-```
+```r
 # Apply to variable directly and make a new column
 df <- df %>%
   dplyr::mutate(color_key = col_fun(variable))
@@ -176,3 +179,54 @@ The script can be called from anywhere in this repository (will look for the `.g
 The hex codes table in `figures/README.md` and its swatches should also be updated by using the `swatches_table` function at the end of the script and copy and pasting this function's output to the appropriate place in the table.
 
 The histology color palette file is created by running `Rscript -e "rmarkdown::render('figures/mapping-histology-labels.Rmd', clean = TRUE)"`.
+
+
+### Overall figure theme
+
+In general, we will use the `ggpubr` package with `ggtheme = theme_pubr())` and color palette `simpsons` from package `ggsci` since it has 16 levels and can accommodate the levels in groups such as `molecular_subtype`.
+
+To view the palette:
+```r
+scales::show_col(ggsci::pal_simpsons("springfield")(16))
+```
+
+For 2+ group comparisons, we will use violin or boxplots with jitter.
+
+
+### Statistics
+
+Some modules perform group-wise comparisons. 
+For the manuscript, we may want to output tables of the statistics and/or print the statistical test and p-value directly on the plot.
+We use the functions `ggpubr::compare_means()` and `ggpubr::stat_compare_means()` for this. 
+Below are the default tests, parameters, and method options for 2 groups or [more than two groups](http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/76-add-p-values-and-significance-levels-to-ggplots/#compare-more-than-two-groups) for your convenience.
+Caution: the default p-values on the plots are uncorrected.
+
+|                                            | 2 groups                                             | 3+ groups                                                             |
+|--------------------------------------------|------------------------------------------------------|-----------------------------------------------------------------------|
+| Default test (method)                      | Wilcoxon                                             | Kruskal-wallis                                                        |
+| Allowed methods                            | "wilcox.test" (non-parametric) "t.test" (parametric) | "kruskal.test" (non-parametric) "anova" (parametric)                  |
+| Default multiple testing (p.adjust.method) | NA                                                   | yes, but not bonferroni                                               |
+| Allowed p.adjust.method                    | NA                                                   | "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none" |
+
+Below is an example for creating a violin plot with boxplot, jitter, and appropriate statistics.
+
+```r
+if(length(unique(df$var_x)) > 2){
+    method <- "kruskal.test"
+  } else {
+    method <- "wilcox.test"
+  }
+
+
+p <- ggviolin(df, x = "var_x", y = "var_y", 
+           color = "var_color", 
+           palette = "simpsons",
+           order = c("a", "b", "c"),
+           add = c("boxplot", "jitter"),  
+           ggtheme = theme_pubr()) +
+    # Add pairwise comparisons p-value
+    stat_compare_means(method = method, label.y = 1.2, label.x.npc = "center") +
+    xlab("xlab_text") +
+    ylab("ylab_text") +
+    rremove("legend")
+```

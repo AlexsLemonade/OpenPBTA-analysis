@@ -178,7 +178,21 @@ oncoprint_df <- data.frame(color_names = oncoprint_color_names,
                      colors, ")")
   # Cat this out
   cat(swatches)
-}
+ }
+ 
+ # Format as data.frame
+ tumor_descriptor_palette <- data.frame(color_names = c("Initial CNS Tumor",
+                                                        "Progressive",
+                                                        "Progressive Disease Post-Mortem",
+                                                        "Recurrence",
+                                                        "Second Malignancy"),
+                                        hex_codes = c("#709AE1FF",
+                                                      "#075149FF",
+                                                      "#075149FF",
+                                                      "#FD8CC1FF",
+                                                      "#FD7446FF")) %>%
+   readr::write_tsv(file.path(output_dir, "tumor_descriptor_palette.tsv"))
+ 
 #
 # Usage:
 # Put whichever color palette you are updating into function.
