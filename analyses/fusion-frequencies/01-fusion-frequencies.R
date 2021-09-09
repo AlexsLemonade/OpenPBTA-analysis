@@ -319,8 +319,8 @@ annotated_m_fus_freq_tbl <- annotated_m_fus_freq_tbl %>%
   dplyr::rename(Gene_symbol = Gene_Symbol,
                 targetFromSourceId = Gene_Ensembl_ID,
                 diseaseFromSourceMappedId = EFO) %>% 
-  dplyr::mutate(datatypeId = "somatic_mutation") %>%
-  dplyr::mutate(datasourceId = data_source_id) 
+  dplyr::mutate(datatypeId = "somatic_mutation",
+                datasourceId = data_source_id) 
 
 # generate UUID for each row of the table
 uuid_string <- uuid(nrow(annotated_m_fus_freq_tbl))
