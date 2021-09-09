@@ -884,7 +884,11 @@ var_level_mut_freq_tbl <- var_level_mut_freq_tbl %>%
          Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
          Frequency_in_relapse_tumors,
          HotSpot, OncoKB_cancer_gene, OncoKB_oncogene_TSG) %>%
-  rename(Variant_ID_hg38 = Variant_ID)
+  rename(Variant_ID_hg38 = Variant_ID,
+         targetFromSourceId = Gene_Ensembl_ID,
+         diseaseFromSourceMappedId = EFO) %>%
+  mutate(datatypeId = "somatic_mutation",
+         datasourceId = "chop_variant_level_snv")
 
 gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
   select(Gene_symbol, RMTL, Dataset, Disease, EFO, MONDO,
@@ -897,7 +901,11 @@ gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
          Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
          Frequency_in_relapse_tumors,
          OncoKB_cancer_gene, OncoKB_oncogene_TSG,
-         PedcBio_PedOT_oncoprint_plot_URL, PedcBio_PedOT_mutations_plot_URL)
+         PedcBio_PedOT_oncoprint_plot_URL, PedcBio_PedOT_mutations_plot_URL) %>%
+  rename(targetFromSourceId = Gene_Ensembl_ID,
+         diseaseFromSourceMappedId = EFO) %>%
+  mutate(datatypeId = "somatic_mutation",
+         datasourceId = "chop_gene_level_snv")
 
 write_tsv(
   var_level_mut_freq_tbl,
