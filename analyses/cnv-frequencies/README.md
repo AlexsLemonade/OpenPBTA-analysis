@@ -35,7 +35,7 @@ Each `cancer_group` and `cohort`(s) combination is considered a `cancer_group_co
 ### Changes proposed by FNL for PedOT database
 
 #### Renamed columns 
-- `Gene_Ensembl_Id` to "targetFromSourceId"
+- `Gene_Ensembl_Id` to `targetFromSourceId`
 - `EFO` to `diseaseFromSourceMappedId`
 - `Total_alterations/Patients_in_dataset` to `Total_alterations_over_Patients_in_dataset`
 - `Total_primary_tumors_altered/Primary_tumors_in_dataset` to `Total_primary_tumors_altered_over_Primary_tumors_in_dataset`
