@@ -99,3 +99,11 @@ if [ "$POLYA" -gt "0" ]; then
   python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv -c ${histology_file} -o polya
 fi
 
+# plot ROC curves for poly-A and stranded data
+Rscript 07-plot-roc.R
+
+# create violin plots of TP53 scores across molecular subtypes per broad histology
+Rscript 08-compare-molecularsubtypes-tp53scores.R
+
+
+

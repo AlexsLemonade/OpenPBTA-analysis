@@ -1,0 +1,16 @@
+variable	group1	group2	p.format	p.adj	p.signif	method
+tp53_score	all	LGG, other MAPK (N=12)	0.7306	1		Wilcoxon
+tp53_score	all	LGG, NF1-germline (N=6)	0.1440	1		Wilcoxon
+tp53_score	all	LGG, KIAA1549-BRAF (N=114)	0.7927	1		Wilcoxon
+tp53_score	all	LGG, IDH (N=3)	0.0067	0.1		Wilcoxon
+tp53_score	all	LGG, wildtype (N=42)	0.0619	0.93		Wilcoxon
+tp53_score	all	LGG, FGFR (N=8)	0.0769	1		Wilcoxon
+tp53_score	all	LGG, BRAF V600E (N=26)	2.9e-05	0.00043	***	Wilcoxon
+tp53_score	all	GNG, BRAF V600E (N=12)	0.2443	1		Wilcoxon
+tp53_score	all	GNG, wildtype (N=14)	0.0175	0.26		Wilcoxon
+tp53_score	all	SEGA, wildtype (N=3)	0.0817	1		Wilcoxon
+tp53_score	all	GNG, RTK (N=3)	0.4067	1		Wilcoxon
+tp53_score	all	LGG, BRAF V600E, CDKN2A/B (N=5)	0.0038	0.057		Wilcoxon
+tp53_score	all	LGG, RTK (N=11)	0.6721	1		Wilcoxon
+tp53_score	all	GNG, other MAPK (N=4)	0.1839	1		Wilcoxon
+tp53_score	all	GNG, KIAA1549-BRAF (N=5)	0.1387	1		Wilcoxon

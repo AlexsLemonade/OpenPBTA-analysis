@@ -4,7 +4,7 @@ author: "K S Gaonkar (D3B)"
 output: html_notebook
 params:
   base_run:
-    label: "1/0 to run with base histology"
+    label: 1/0 to run with base histology
     value: 0
     input: integer
 ---
@@ -13,42 +13,42 @@ In this notebook we will add TP53 alteration status as discussed in [#837](https
 
 **TP53 altered - loss**, if :
 
- - A sample contains a TP53 hotspot SNV mutation. (Cancer hotspot database and downloadable file available). Please also crosscheck that all mutations from this table are included.
- - A sample contains two TP53 alterations, suggesting (but not confirming) that both alleles are affected (SNV+SNV, (CNV or SV) + SNV).
- - A sample contains one alteration (SNV or (CNV or SV)) + has cancer_predispositions == "Li-Fraumeni syndrome", suggesting there is a germline variant in addition to the somatic variant we observe.
- - A sample does not have a TP53 alterations, but has cancer_predispositions == "Li-Fraumeni syndrome" and TP53 classifier score for matched RNA-Seq > 0.5 (or higher cutoff we decide upon later).
- 
- Note: CNV and SV will be considered as the same event, but we will be adding SV_counts and SV.type to the altered status output file
- 
+- A sample contains a TP53 hotspot SNV mutation. (Cancer hotspot database and downloadable file available). Please also crosscheck that all mutations from this table are included.
+- A sample contains two TP53 alterations, suggesting (but not confirming) that both alleles are affected (SNV+SNV, (CNV or SV) + SNV).
+- A sample contains one alteration (SNV or (CNV or SV)) + has cancer_predispositions == "Li-Fraumeni syndrome", suggesting there is a germline variant in addition to the somatic variant we observe.
+- A sample does not have a TP53 alterations, but has cancer_predispositions == "Li-Fraumeni syndrome" and TP53 classifier score for matched RNA-Seq > 0.5 (or higher cutoff we decide upon later).
+
+Note: CNV and SV will be considered as the same event, but we will be adding SV_counts and SV.type to the altered status output file
+
 **TP53 altered - activated**, if:
 
 - A sample contains one of the two TP53 activating mutations R273C and R248W. Reference and reference.
 
-
-
-
-
 ## Setup
-```{r}
-library("ggpubr")
-library("ggthemes")
-library("tidyverse")
-library("ggfortify")
-library("broom")
+```{r, message=FALSE}
+suppressPackageStartupMessages({
+  library(plyr)
+  library(ggpubr)
+  library(ggthemes)
+  library(tidyverse)
+  library(ggfortify)
+  library(broom)
+})
 
 # rootdir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
+source(file.path('util', 'plot_by_cancer_predisposition.R'))
 
 input_dir <- file.path(root_dir,
-                         "analyses",
-                         "tp53_nf1_score",
-                         "input")
+                       "analyses",
+                       "tp53_nf1_score",
+                       "input")
 
 plot_dir <- file.path(root_dir,
-                         "analyses",
-                         "tp53_nf1_score",
-                         "plots")
+                      "analyses",
+                      "tp53_nf1_score",
+                      "plots")
 
 if (!dir.exists(plot_dir)) {
   dir.create(plot_dir)
@@ -70,15 +70,15 @@ if ( params$base_run ==0 ){
 }
 
 histology <- clinical %>%
-   dplyr::select("Kids_First_Biospecimen_ID",
-          "sample_id",
-          "cancer_predispositions",
-          "sample_type",
-          "experimental_strategy",
-          "composition") %>%
-   # merge cell line composition
+  dplyr::select("Kids_First_Biospecimen_ID",
+                "sample_id",
+                "cancer_predispositions",
+                "sample_type",
+                "experimental_strategy",
+                "composition") %>%
+  # merge cell line composition
   left_join(cell_line_composition)
- 
+
 
 # Cancer database
 hotspot_database_2017_tp53_snv <- readxl::read_xls(file.path(input_dir,"hotspots_v2.xls"),sheet = 1) %>%
@@ -111,7 +111,7 @@ classifier_score_polya <-read_tsv(
     "pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv")) %>%
   dplyr::select(sample_id,tp53_score)
 
-classifier_score<- rbind(classifier_score_polya,classifier_score_stranded) %>%
+classifier_score <- rbind(classifier_score_polya,classifier_score_stranded) %>%
   dplyr::rename(Kids_First_Biospecimen_ID_RNA=sample_id) %>%
   left_join(histology ,by=c("Kids_First_Biospecimen_ID_RNA"="Kids_First_Biospecimen_ID")) 
 
@@ -150,40 +150,39 @@ functional_sites_tp53 %>%
 2 functional sites are missing in hotspots database.
 
 ## SNV for TP53
- - We will use the `pbta-snv-consensus-mutation.maf.tsv.gz` from `snv-callers` module which gathers calls that are present in all 3 callers (strelka2,mutect2 and lancet)
- - In addition, we will also use `pbta-snv-scavenged-hotspots.maf.tsv.gz` from `hotspot-detection` module to gather calls that overlap MSKCC hotspots found in any caller (except if only vardict calls the site as variant, we remove these calls since we have a lot of calls unique to vardict which we consider as false positive as discussed [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers#snv-caller-comparison-analysis))
- - We will also removing `Silent` or `Intron` classified variants to capture only putative damaging mutations
+- We will use the `pbta-snv-consensus-mutation.maf.tsv.gz` from `snv-callers` module which gathers calls that are present in all 3 callers (strelka2,mutect2 and lancet)
+- In addition, we will also use `pbta-snv-scavenged-hotspots.maf.tsv.gz` from `hotspot-detection` module to gather calls that overlap MSKCC hotspots found in any caller (except if only vardict calls the site as variant, we remove these calls since we have a lot of calls unique to vardict which we consider as false positive as discussed [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers#snv-caller-comparison-analysis))
+- We will also removing `Silent` or `Intron` classified variants to capture only putative damaging mutations
 
 ```{r}
 
 
 tp53_consensus_maf <- data.table::fread(
   file.path(root_dir, "data" , "pbta-snv-consensus-mutation.maf.tsv.gz"),
-                                   select = c("Chromosome",
-                                              "Start_Position",
-                                              "End_Position",
-                                              "Strand",
-                                              "Variant_Classification",
-                                              "Tumor_Sample_Barcode",
-                                              "Hugo_Symbol",
-                                              "HGVSp_Short"),
-                                   data.table = FALSE) %>%
+  select = c("Chromosome",
+             "Start_Position",
+             "End_Position",
+             "Strand",
+             "Variant_Classification",
+             "Tumor_Sample_Barcode",
+             "Hugo_Symbol",
+             "HGVSp_Short"),
+  data.table = FALSE) %>%
   filter(Hugo_Symbol == "TP53")
 
 tp53_hotspot_maf <- data.table::fread(
   file.path(root_dir, "analyses" , "hotspots-detection" , "results" , "pbta-snv-scavenged-hotspots.maf.tsv.gz"),
-                                   select = c("Chromosome",
-                                              "Start_Position",
-                                              "End_Position",
-                                              "Strand",
-                                              "Variant_Classification",
-                                              "Tumor_Sample_Barcode",
-                                              "Hugo_Symbol",
-                                              "HGVSp_Short"),
-                                   data.table = FALSE) %>%
+  select = c("Chromosome",
+             "Start_Position",
+             "End_Position",
+             "Strand",
+             "Variant_Classification",
+             "Tumor_Sample_Barcode",
+             "Hugo_Symbol",
+             "HGVSp_Short"),
+  data.table = FALSE) %>%
   filter(Hugo_Symbol == "TP53") %>%
   dplyr::select(colnames(tp53_consensus_maf))
-
 
 
 tp53_consensus_hotspot_maf <- tp53_consensus_maf %>%
@@ -218,7 +217,6 @@ tp53_consensus_hotspot_maf  <- tp53_consensus_hotspot_maf  %>%
       TRUE ~ 0
     )
   )
-
 ```
 
 ## Gather SNV,CNV, classifier and cancer_predisposition values
@@ -226,8 +224,7 @@ tp53_consensus_hotspot_maf  <- tp53_consensus_hotspot_maf  %>%
 We will gather values per sample_id since DNA and RNA samples can be only matched by `sample_id`
 
 
-```{r}
-
+```{r, message=FALSE, warning=FALSE}
 tp53_alterations <- histology %>%
   filter(experimental_strategy != "RNA-Seq") %>%
   # merge cell line composition
@@ -256,19 +253,17 @@ tp53_alterations_score <- tp53_alterations %>%
                                   "Kids_First_Participant_ID")) %>%
   # select useful columns
   dplyr::select(sample_id,Kids_First_Biospecimen_ID_RNA,Kids_First_Biospecimen_ID_DNA,
-         tp53_score,cancer_predispositions,HGVSp_Short,copy_number,SV.type,FusionName,hotspot,activating) %>%
+                tp53_score,cancer_predispositions,HGVSp_Short,copy_number,SV.type,FusionName,hotspot,activating) %>%
   arrange(sample_id) %>%
   unique() %>%
   replace_na(list(hotspot = 0, activating = 0))
 
 tp53_alterations_score 
-
 ```
 
 Convert the above to wide format
 
-```{r}
-
+```{r, message=FALSE}
 tp53_alterations_score_wide <- tp53_alterations_score %>%
   # group 
   group_by(sample_id,
@@ -294,7 +289,6 @@ tp53_alterations_score_wide <- tp53_alterations_score %>%
     activating = max(unique(activating[!is.na(activating)]))) 
 
 tp53_alterations_score_wide
-
 ```
 
 ### Add annotation
@@ -323,21 +317,21 @@ tp53_alterations_score_wide <- tp53_alterations_score_wide %>%
               # Li-Fraumeni syndrome suggesting
               # germline TP53 mutant as cancer predisposition 
               (SNV_indel_counts >= 1 & 
-                             grepl("Li-Fraumeni syndrome",cancer_predispositions)) |
+                 grepl("Li-Fraumeni syndrome",cancer_predispositions)) |
               # check if CNV|SV mutant|Fusion  and has
               # Li-Fraumeni syndrome suggesting
               # germline TP53 mutant as cancer predisposition 
               ((CNV_loss_counts >= 1 | SV_counts >=1 | Fusion_counts >=1) & 
-                             grepl("Li-Fraumeni syndrome",cancer_predispositions)) |
+                 grepl("Li-Fraumeni syndrome",cancer_predispositions)) |
               # check if tp53 inactivating score for RNA_Seq is greater that 0.5
               # and has Li-Fraumeni syndrome suggesting
               # germline TP53 mutant as cancer predisposition 
               (tp53_score > 0.5 & 
-                             grepl("Li-Fraumeni syndrome",cancer_predispositions)) |
+                 grepl("Li-Fraumeni syndrome",cancer_predispositions)) |
               # check if tp53 inactivating score for RNA_Seq is greater that 0.5
               # and has 1 or more SNV| (CNV|SV|Fusion) loss in TP53
               (tp53_score > 0.5 & 
-                             (SNV_indel_counts >= 1 | (CNV_loss_counts >=1 | SV_counts >=1 |Fusion_counts >=1)))
+                 (SNV_indel_counts >= 1 | (CNV_loss_counts >=1 | SV_counts >=1 |Fusion_counts >=1)))
           ) ~ "loss",
         # when activating == 1
         activating == 1 ~ "activated",
@@ -345,12 +339,11 @@ tp53_alterations_score_wide <- tp53_alterations_score_wide %>%
         TRUE ~ "other"
       )
   )
-
 ```
 
 ## Explore distribution of tp53_altered status vs tp53 inactivation scores
 
-```{r, out.width="50%"}
+```{r, message=FALSE}
 # Default global test is kruskal-wallis for >2 groups
 # Default is to perform multiple corrections, but not bonferroni - specifying bonferroni below
 # Default p values on plots are uncorrected
@@ -364,7 +357,9 @@ tp53_alterations_score_wide <- tp53_alterations_score_wide %>%
 # Allowed values for 2 samples include: "t.test" (parametric), "wilcox.test" (non-parametric) and >2: "anova" (parametric) and "kruskal.test" (non-parametric).
 
 # Create table of statistics, including corrected p values
-adj <- compare_means(tp53_score ~ tp53_altered, data = tp53_alterations_score_wide, p.adjust.method = "bonferroni")
+adj <- compare_means(tp53_score ~ tp53_altered, 
+                     data = tp53_alterations_score_wide, 
+                     p.adjust.method = "bonferroni")
 adj
 
 # Print table of n per group for legends
@@ -374,14 +369,14 @@ tp53_alterations_score_wide %>%
   tally()
 ```
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 # Create plot
 ggviolin(tp53_alterations_score_wide, x = "tp53_altered", y = "tp53_score", 
          color = "tp53_altered", 
          palette = "jco", 
          order = c("activated", "loss", "other"),
          add = "boxplot",  
-   ggtheme = theme_pubr()) +
+         ggtheme = theme_pubr()) +
   # Default method = "kruskal.test" for multiple groups
   # Add adjusted p-value - has to be done manually and from a table - pulling from table above 
   stat_pvalue_manual(adj, label = "p.adj", y.position = c(1.5, 1.3, 1.1)) +
@@ -390,9 +385,7 @@ ggviolin(tp53_alterations_score_wide, x = "tp53_altered", y = "tp53_score",
   xlab("TP53 altered status") +
   ylab("TP53 score") +
   rremove("legend")
-
 ggsave(file.path(plot_dir, "tp53_scores_by_altered_status.png"))
-
 ```
 TP53 mutants with gain-of-function (activating) mutants promote tumorigenesis according to literature. [Reference](https://pubmed.ncbi.nlm.nih.gov/17417627/) and [reference](https://pubmed.ncbi.nlm.nih.gov/24677579/) have similar distribution of classifier scores to that of potential loss-of-function (multi-allelic) Tp53 mutations. 
 
@@ -409,7 +402,7 @@ subset_stranded <- t(stranded)[,"TP53"]
 stranded_tp53 <- as.data.frame(subset_stranded) %>%
   dplyr::rename(TP53=subset_stranded) %>%
   rownames_to_column() %>%
-  left_join(tp53_alterations_score_wide,by=c("rowname"="Kids_First_Biospecimen_ID_RNA")) %>%
+  left_join(tp53_alterations_score_wide, by = c("rowname" = "Kids_First_Biospecimen_ID_RNA")) %>%
   # remove polya from matched scores
   filter(tp53_altered %in% c("activated","loss"))
 
@@ -422,21 +415,19 @@ stranded_tp53 %>%
 
 Plot distribution of TP53 gene expression (stranded)
 
-```{r, out.width="50%"}
+```{r, warning=FALSE, message=FALSE}
 ggviolin(stranded_tp53, x = "tp53_altered", y = "TP53", 
          color = "tp53_altered", 
          palette = "jco",
          order = c("activated", "loss"),
          add = "boxplot",  
-   ggtheme = theme_pubr()) +
+         ggtheme = theme_pubr()) +
   # Add pairwise comparisons p-value
   stat_compare_means(method = "wilcox.test", label.y = 120) +
   xlab("TP53 altered status") +
   ylab("TP53 RNA expression") +
   rremove("legend")
-
 ggsave(file.path(plot_dir, "tp53_expression_by_altered_status_stranded.png"))
-
 ```
 
 ### (poly-a) Expression profile for activating vs loss TP53 status
@@ -462,26 +453,24 @@ polya_tp53 %>%
 
 Plot distribution of TP53 gene expression (poly-a)
 
-```{r, out.width="50%" }
+```{r, message=FALSE, warning=FALSE}
 ggviolin(polya_tp53, x = "tp53_altered", y = "TP53", 
          color = "tp53_altered", 
          palette = "jco",
          order = c("activated", "loss"),
          add = "boxplot",  
-   ggtheme = theme_pubr()) +
+         ggtheme = theme_pubr()) +
   # Add pairwise comparisons p-value
   stat_compare_means(method = "wilcox.test", label.y = 80) +
   xlab("TP53 altered status") +
   ylab("TP53 RNA expression") +
   rremove("legend")
-
 ggsave(file.path(plot_dir, "tp53_expression_by_altered_status_polya.png"))
-
 ```
 
 ### Check if other cancer predisposition have high TP53 inactivation scores  
 
-```{r ,out.width="50%"}
+```{r, message=FALSE, warning=FALSE}
 ggplot(tp53_alterations_score_wide, aes(x = factor(tp53_altered), y = tp53_score)) +
   geom_violin()+
   geom_jitter(alpha = 0.5, width = 0.2) +
@@ -490,7 +479,11 @@ ggplot(tp53_alterations_score_wide, aes(x = factor(tp53_altered), y = tp53_score
   theme(axis.text.x = element_text(angle = 60, hjust = 1))+
   xlab("tp53 altered status") +
   facet_wrap(.~cancer_predispositions)
+```
 
+### Li-Fraumeni syndrome (table of tp53 scores per tp53 altered status)
+
+```{r}
 # plot lfs for manuscript
 lfs <- tp53_alterations_score_wide %>%
   filter(cancer_predispositions == "Li-Fraumeni syndrome")
@@ -501,7 +494,9 @@ lfs %>%
   tally()
 ```
 
-```{r}
+# Li-Fraumeni syndrome (plot tp53 scores per tp53 altered status)
+
+```{r, message=FALSE, warning=FALSE}
 ggviolin(lfs, x = "tp53_altered", y = "tp53_score", 
          color = "tp53_altered", 
          palette = "jco",
@@ -513,10 +508,28 @@ ggviolin(lfs, x = "tp53_altered", y = "tp53_score",
   xlab("TP53 altered status") +
   ylab("TP53 score") +
   rremove("legend")
-ggsave(file.path(plot_dir, "lfs_tp53_scores.png"))
-
-
 ```
+
+### Table of scores across tp53 altered status by cancer predisposition
+
+```{r}
+# table of scores across tp53 altered status by cancer predisposition
+tp53_alterations_score_wide %>% filter(!is.na(cancer_predispositions)) %>%
+  group_by(cancer_predispositions, tp53_altered) %>%
+  filter(!is.na(tp53_score)) %>%
+  tally()
+```
+
+# Plot of scores across tp53 altered status by cancer predisposition
+
+```{r, warning=FALSE, message=FALSE}
+# plot of scores across tp53 altered status by cancer predisposition
+d_ply(tp53_alterations_score_wide %>%
+        filter(!is.na(cancer_predispositions),
+               !is.na(tp53_score)), .variables = "cancer_predispositions", 
+      .fun = function(x) plot_by_cancer_predisposition(lfs = x, plot_dir))
+```
+
 Some NF-1 and/or Other inherited conditions NOS have high scoring TP53 mutants as well. 
 
 Interesting 2 bs ids annotated with Li-Fraumeni synfrome pre-disposition have very low tp53 classifier scores.
@@ -526,7 +539,7 @@ Interesting 2 bs ids annotated with Li-Fraumeni synfrome pre-disposition have ve
 tp53_alterations_score_wide %>%
   filter(cancer_predispositions == "Li-Fraumeni syndrome",
          tp53_score < 0.5) 
-  
+
 ```
 
 

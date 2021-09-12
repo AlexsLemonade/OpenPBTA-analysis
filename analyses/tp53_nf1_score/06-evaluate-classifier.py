@@ -159,8 +159,20 @@ def get_roc_plot(scores_df, gene, outputfilename, color):
     roc_df = (
         pd.DataFrame([fpr_pbta, tpr_pbta, thresh_pbta], index=["fpr", "tpr", "threshold"])
         .transpose()
-        .assign(gene=gene, shuffled=False)
+        .assign(gene=gene, shuffled=False, auroc=auroc_pbta)
     )
+    # save the dataframe for plotting in R
+    roc_df.to_csv(os.path.join("results", outputfilename + "_" + gene + "_roc_threshold_results.tsv"), sep="\t", index=False)
+    
+    # save shuffled data
+    roc_shuff_df = (
+        pd.DataFrame([fpr_shuff, tpr_shuff, thresh_shuff], index=["fpr", "tpr", "threshold"])
+        .transpose()
+        .assign(gene=gene, shuffled=True, auroc=auroc_shuff)
+    )
+    
+    roc_shuff_df.to_csv(os.path.join("results", outputfilename + "_" + gene + "_roc_threshold_results_shuffled.tsv"), sep="\t", index=False)
+
     plt.subplots(figsize=(5, 5))
     plt.axis("equal")
     plt.plot([0, 1], [0, 1], "k--")
@@ -188,9 +200,6 @@ def get_roc_plot(scores_df, gene, outputfilename, color):
     plt.tick_params(labelsize=10)
 
     lgd = plt.legend(bbox_to_anchor=(0.3, 0.15), loc=2, borderaxespad=0.0, fontsize=10)
-    plt.savefig(outputfilename + "_" + gene + ".png")
-
-
-outputfilename = os.path.join("results", outputfilename)
+    plt.savefig(os.path.join("plots", outputfilename + "_" + gene + "_roc.png"))
 
 get_roc_plot(scores_df, gene="TP53", outputfilename=outputfilename, color="#7570b3")

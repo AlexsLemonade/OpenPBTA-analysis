@@ -2,13 +2,15 @@
 
 **Module author:** Krutika Gaonkar ([@kgaonkar6](https://github.com/kgaonkar6)) and Jaclyn Taroni (@jaclyn-taroni); code adapted from Gregory Way ([@gwaygenomics](https://github.com/gwaygenomics))
 
+**Modified:** Komal Rathi ([@komalsrathi](https://github.com/komalsrathi))
+
 This module is adapted from: [`marislab/pdx-classification`](https://github.com/marislab/pdx-classification).
 Now published in [Rokita et al. _Cell Reports._ 2019.](https://doi.org/10.1016/j.celrep.2019.09.071)
 
 In brief, _TP53_ inactivation, _NF1_ inactivation, and Ras activation classifiers are applied to the stranded and polya OpenPBTA RNA-seq data.
 The classifiers were trained on TCGA PanCan data ([Way et al. _Cell Reports._ 2018](https://doi.org/10.1016/j.celrep.2018.03.046), [Knijnenburg et al. _Cell Reports._ 2018.](https://doi.org/10.1016/j.celrep.2018.03.076)).
 See [`01-apply-classifier.py`](01-apply-classifier.py) for more information about the procedure.
-To evaluate the classifier scores, we use [`02-evaluate-classifier.py`](02-evaluate-classifier.py) and input SNV data to identify true TP53/NF1 loss samples and compare scores of shuffled data to true calls and plot ROC curves. 
+To evaluate the classifier scores, we use [`06-evaluate-classifier.py`](06-evaluate-classifier.py) and input SNV data to identify true TP53/NF1 loss samples and compare scores of shuffled data to true calls and plot ROC curves. 
 
 #### Running the analysis
 
@@ -30,19 +32,19 @@ bash analyses/tp53_nf1_score/run_classifier.sh
 
 ### Order of analysis
 
-`00-tp53-nf1-alterations.R` produces `TP53_NF1_snv_alteration.tsv`, which contains information about the presence or absence of coding SNVs in _TP53_ and _NF1_ for the purpose of evaluating the classifier results.
+* `00-tp53-nf1-alterations.R` produces `TP53_NF1_snv_alteration.tsv`, which contains information about the presence or absence of coding SNVs in _TP53_ and _NF1_ for the purpose of evaluating the classifier results.
 For evaluation purposes, a coding SNV 1) is found in a CDS region and 2) is not a silent mutation or in an intron as indicated by the `Variant_Classification` column of the consensus mutation file.
 _NF1_ positive examples are additionally filtered to remove missense mutations, as these are not annotated with OncoKB ([#381 (comment)](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/381#issuecomment-570748578)).
 
-`01-apply-classifier.py` produces  `results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv`  and `results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv`, which contains all 3 classifier scores for the stranded data and for shuffled stranded (e.g., random) data.
+* `01-apply-classifier.py` produces  `results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv`  and `results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv`, which contains all 3 classifier scores for the stranded data and for shuffled stranded (e.g., random) data.
 
-`02-qc-rna_expression_score.Rmd` here expression of TP53 gene was compared to TP53 classifier score. We didn't find a strong correlation between TP53 expression and TP53 inactivation score, thus, expression and classifier score together cannot predict function.
+* `02-qc-rna_expression_score.Rmd` here expression of TP53 gene was compared to TP53 classifier score. We didn't find a strong correlation between TP53 expression and TP53 inactivation score, thus, expression and classifier score together cannot predict function.
 
-`03-tp53-cnv-loss-domain.Rmd` here copy_number of regions overlapping TP53 functional domains were compared to TP53 classifier score to visualize the distribution of scores. We also save the TP53 loss calls which will be input for downstream altered status script.
+* `03-tp53-cnv-loss-domain.Rmd` here copy_number of regions overlapping TP53 functional domains were compared to TP53 classifier score to visualize the distribution of scores. We also save the TP53 loss calls which will be input for downstream altered status script.
 
-`04-tp53-sv-loss.Rmd` here structural variant breakpoints overlapping TP53 are investigated for CNV loss or low expression to gather high confidence TP53 loss via Structural Variants. 
+* `04-tp53-sv-loss.Rmd` here structural variant breakpoints overlapping TP53 are investigated for CNV loss or low expression to gather high confidence TP53 loss via Structural Variants. 
 
-`05-tp53-altered-annotation.Rmd` here we take a deeper look into tp53 altered status with respect to number of SNVs/CNVs suggesting bi-allelic mutations or with respect to cancer_predisposition and tp53 classifier scores.
+* `05-tp53-altered-annotation.Rmd` here we take a deeper look into tp53 altered status with respect to number of SNVs/CNVs suggesting bi-allelic mutations or with respect to cancer_predisposition, molecular subtypes and tp53 classifier scores.
 
 
 Columns | Description
@@ -60,19 +62,78 @@ hotspot	| Any 1 SNV shown in HGVSp_Short overlaps MSKCC cancer hotspot [database
 activating	| Any 1 SNV shown in HGVSp_Short overlaps TP53_ activating mutations R273C and R248W. [Reference](https://pubmed.ncbi.nlm.nih.gov/17417627/) and [reference](https://pubmed.ncbi.nlm.nih.gov/24677579/). 
 tp53_altered | Combined evidence, cancer predisposition and score based tp53 status
 
+**TP53 expression profile for activating vs loss TP53 status:**
 
-`06-evaluate-classifier.py` evaluates classifier score with TP53 alterations (non-synonymous SNV and all status == "loss" in consensus CNV file from 00-tp53-nf1-alterations.R) 
+```
+plots
+├── tp53_expression_by_altered_status_polya.png
+├── tp53_expression_by_altered_status_stranded.png
+```
+
+**Plots of TP53 scores vs TP53 altered status:**
+
+```
+plots
+├── tp53_scores_by_altered_status.png
+```
+
+**Plots of TP53 scores vs TP53 altered status per cancer predispositions:**
+
+```
+plots
+├── tp53_scores_vs_tp53_altered_status_Li-Fraumeni\ syndrome.png
+├── tp53_scores_vs_tp53_altered_status_NF-1,Other\ inherited\ conditions\ NOS.png
+├── tp53_scores_vs_tp53_altered_status_NF-1.png
+├── tp53_scores_vs_tp53_altered_status_NF-2,Schwannomatosis.png
+├── tp53_scores_vs_tp53_altered_status_NF-2.png
+├── tp53_scores_vs_tp53_altered_status_None\ documented.png
+├── tp53_scores_vs_tp53_altered_status_Other\ inherited\ conditions\ NOS,Schwannomatosis.png
+├── tp53_scores_vs_tp53_altered_status_Other\ inherited\ conditions\ NOS.png
+├── tp53_scores_vs_tp53_altered_status_Schwannomatosis.png
+└── tp53_scores_vs_tp53_altered_status_Tuberous\ Sclerosis.png
+```
+
+* `06-evaluate-classifier.py` evaluates classifier score with TP53 alterations (non-synonymous SNV and all status == "loss" in consensus CNV file from 00-tp53-nf1-alterations.R) 
+
+**ROC threshold results for shuffled vs non-shuffled stranded and polya classifier output:**
+
+```
+results
+├── polya_TP53_roc_threshold_results.tsv
+├── polya_TP53_roc_threshold_results_shuffled.tsv
+├── stranded_TP53_roc_threshold_results.tsv
+├── stranded_TP53_roc_threshold_results_shuffled.tsv
+```
 
 Because some of the classifier genes are not present in the OpenPBTA dataset, the scores should be interpreted as continuous values representing relative gene alterations and not as probabilities.
 
-ROC curve for TP53 classifier scores for stranded RNAseq data
-![stranded RNAseq TP53 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/stranded_TP53.png)
+* `07-plot-roc.R` using the output obtained from `06-evaluate-classifier.py`, it creates ROC curves for TP53 classifier scores for stranded and poly-A RNA-seq data: 
 
-ROC curve for TP53 classifier scores for polya RNAseq data
-![polya RNAseq TP53 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/polya_TP53.png)
+```
+plots
+├── polya_TP53_roc.png
+├── stranded_TP53_roc.png
+```
 
-ROC curve for NF1 classifier scores for stranded RNAseq data
-![stranded RNAseq NF1 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/stranded_NF1.png)
+* `08-compare-molecularsubtypes-tp53scores.R` creates violin plots of TP53 scores across all molecular subtypes per broad histology.
 
-ROC curve for NF1 classifier scores for polya RNASeq data
-![polya RNASeq NF1 classifier ROC](https://github.com/kgaonkar6/OpenPBTA-analysis/blob/validation_step/analyses/tp53_nf1_score/results/polya_NF1.png)
+**Plots of TP53 scores vs Molecular subtypes per broad histology:**
+
+```
+plots
+├── tp53_scores_vs_molecular_subtype_Diffuse_astrocytic_and_oligodendroglial_tumor.png
+├── tp53_scores_vs_molecular_subtype_Embryonal_tumor.png
+├── tp53_scores_vs_molecular_subtype_Ependymal_tumor.png
+├── tp53_scores_vs_molecular_subtype_Low-grade_astrocytic_tumor.png
+```
+
+**Associated p-values:**
+
+```
+results
+├── tp53_scores_vs_molecular_subtype_Diffuse_astrocytic_and_oligodendroglial_tumor.tsv
+├── tp53_scores_vs_molecular_subtype_Embryonal_tumor.tsv
+├── tp53_scores_vs_molecular_subtype_Ependymal_tumor.tsv
+└── tp53_scores_vs_molecular_subtype_Low-grade_astrocytic_tumor.tsv
+```
+
