@@ -23,7 +23,8 @@ output_file <- file.path(root_dir,
 include_path_dx <- stringr::str_to_lower(
   c(
     "Low-grade glioma/astrocytoma",
-    "Ganglioglioma"
+    "Ganglioglioma",
+    "Subependymal Giant Cell Astrocytoma"
   ))
 
 # Exclusion criterion from https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/753#issuecomment-697008356
@@ -32,10 +33,13 @@ exclude_path_dx <- stringr::str_to_lower(
     "Dysembryoplastic neuroepithelial tumor"
   ))
 
-# Exclusion criteria on the basis of pathology_free_text_diagnosis per 
-# https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/995
-exclude_path_free_text <- stringr::str_to_lower(
+# Update:Recode criteria on the basis of pathology_free_text_diagnosis  
+# We were removing these as per https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/995
+# but we want to keep these to recode some LGAT subtypes as GNT now
+recode_path_free_text <- stringr::str_to_lower(
   c(
+    "desmoplastic infantile",
+    "desmoplastic infantile ganglioglioma",
     "desmoplastic infantile astrocytoma",
     "glioneuronal"  # This also covers the more specific cases (e.g., rosette forming glioneuronal tumor)
   ))
@@ -43,7 +47,7 @@ exclude_path_free_text <- stringr::str_to_lower(
 # Create a list with the strings we'll use for inclusion/exclusion
 terms_list <- list(include_path_dx = include_path_dx,
                    exclude_path_dx = exclude_path_dx,
-                   exclude_path_free_text = exclude_path_free_text)
+                   recode_path_free_text = recode_path_free_text)
 
 # Write to file
 writeLines(jsonlite::prettify(jsonlite::toJSON(terms_list)), output_file)

@@ -55,6 +55,7 @@ Samples are _included_ for subtyping if we detect the following strings in the `
 ```
 low-grade glioma/astrocytoma
 ganglioglioma
+subependymal giant cell astrocytoma
 ```
 
 Samples are _excluded_ if we detect the following strings in the `pathology_diagnosis` field of `pbta-histologies.tsv`:
@@ -63,7 +64,7 @@ Samples are _excluded_ if we detect the following strings in the `pathology_diag
 dysembryoplastic neuroepithelial tumor
 ```
 
-When `pathology_diagnosis == "Low-grade glioma/astrocytoma (WHO grade I/II)"`, we _exclude_ samples if we detect the following strings in `pathology_free_text_diagnosis`:
+When `pathology_diagnosis == "Low-grade glioma/astrocytoma (WHO grade I/II)"`, we will _recode_ samples if we detect the following strings in `pathology_free_text_diagnosis` as "GNT, <subtype>" :
 
 ```
 desmoplastic infantile astrocytoma
@@ -82,7 +83,8 @@ The files in the `lgat-subset` were generated via `01-subset-files-for-LGAT.R` u
 ### Inputs from data download
 
 * `pbta-histologies.tsv`: is used to subset samples according to [the criteria above](#inclusion-exclusion-criteria)
-* `pbta-snv-consensus-mutation.maf.tsv.gz`: 
+* `pbta-snv-consensus-mutation.maf.tsv.gz`: from `snv-callers` module which gathers calls that are present in all 3 callers (strelka2,mutect2 and lancet) 
+* `pbta-snv-scavenged-hotspots.maf.tsv.gz`: from `hotspot-detection` module to gather calls that overlap MSKCC hotspots found in any caller (except if only vardict calls the site as variant, we remove these calls since we have a lot of calls unique to vardict which we consider as false positive as discussed [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers#snv-caller-comparison-analysis))
 
 ### Run script
 
