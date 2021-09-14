@@ -313,8 +313,6 @@ lgat_subtypes
 ```
 
 ```{r}
-# remove snv_consensus_hotspot_maf 
-rm(snv_consensus_hotspot_maf )
 
 # save to subset folder
 write_tsv(lgat_subtypes,file.path(subset_dir, "LGAT_snv_subset.tsv"))
