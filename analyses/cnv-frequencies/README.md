@@ -31,9 +31,23 @@ Each `cancer_group` and `cohort`(s) combination is considered a `cancer_group_co
   - Count the total number of samples in the `cancer_group_cohort` that are also in the `independent-specimens.wgswxspanel.relapse.eachcohort.tsv` for each cohort and `independent-specimens.wgswxspanel.relapse.tsv` for all cohorts, and call this number `Relapse_tumors_in_dataset`.
   - `Frequency_in_relapse_tumors = Total_relapse_tumors_alterated / Relapse_tumors_in_dataset`.
 
-Format the CNV mutation frequency table according to the latest spreadsheet that is attached in <https://github.com/PediatricOpenTargets/ticket-tracker/issues/66>.
 
-Merge the CNV frequency tables of all `cancer_group_cohort`s.
+### Changes proposed by FNL for PedOT database
+
+#### Renamed columns 
+- `Gene_Ensembl_Id` to `targetFromSourceId`
+- `EFO` to `diseaseFromSourceMappedId`
+- `Total_alterations/Patients_in_dataset` to `Total_alterations_over_Patients_in_dataset`
+- `Total_primary_tumors_altered/Primary_tumors_in_dataset` to `Total_primary_tumors_altered_over_Primary_tumors_in_dataset`
+- `Total_relapse_tumors_altered/Relapse_tumors_in_dataset` to `Total_relapse_tumors_altered_over_Relapse_tumors_in_datase`
+
+
+#### New columns
+- `datatypeId` column with value for all rows set to `somatic_mutation`
+- `chop_uuid` column with unique UUID for each row
+- `datasourceId` column with value for all rows set to `chop_gene_level_cnv`
+
+
 
 ### Results
 
