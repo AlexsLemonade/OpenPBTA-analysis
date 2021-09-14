@@ -54,8 +54,8 @@ The first two columns of each sheet are "User guide" and "Row annotation", which
 
 ## Usage
 
-1. Change working directory to local `OpenPedCan-analysis`.
-2. Run this analysis module in the `pgc-images.sbgenomics.com/d3b-bixu/open-pedcan:latest` docker image using `bash analyses/pedot-table-column-display-order-name/run-pedot-table-column-display-order-name.sh`.
+1. Change working directory to local `OpenPedCan-analysis/analyses/pedot-table-column-display-order-name/`.
+2. Run this analysis module in the `pgc-images.sbgenomics.com/d3b-bixu/open-pedcan:latest` docker image using `bash run-pedot-table-column-display-order-name.sh`.
 
 ## Module structure
 
@@ -86,7 +86,7 @@ python3 01-generate-pedot-column-display-order-name-xlsx.py
 
 Input:
 
-- `../snv-frequencies/results/gene-level-snv-consensus-annotated-mut-freq.tsv`
+- `../snv-frequencies/results/gene-level-snv-consensus-annotated-mut-freq.tsv.gz`
 - `../snv-frequencies/results/variant-level-snv-consensus-annotated-mut-freq.tsv.gz`
 - `../cnv-frequencies/results/gene-level-cnv-consensus-annotated-mut-freq.tsv.gz`
 - `../fusion-frequencies/results/putative-oncogene-fused-gene-freq.tsv.gz`
