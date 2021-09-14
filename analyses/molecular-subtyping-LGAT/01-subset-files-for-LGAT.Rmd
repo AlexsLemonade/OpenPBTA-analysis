@@ -69,13 +69,12 @@ path_dx_list <- jsonlite::fromJSON(
 # clinical file
 clinical <- read_tsv(file.path(root_dir, 
                                "data",
-                               "pbta-histologies-base.tsv"), 
+                               "histologies.tsv"), 
                      guess_max = 10000)
 ```
 
 ### SNV for subtyping 
- - We will use the `pbta-snv-consensus-mutation.maf.tsv.gz` from `snv-callers` module which gathers calls that are present in all 3 callers (strelka2,mutect2 and lancet)
- - In addition, we will also use `pbta-snv-scavenged-hotspots.maf.tsv.gz` from `hotspot-detection` module to gather calls that overlap MSKCC hotspots found in any caller (except if only vardict calls the site as variant, we remove these calls since we have a lot of calls unique to vardict which we consider as false positive as discussed [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers#snv-caller-comparison-analysis))
+ - We will use the `snv-consensus-plus-hotspots.maf.tsv.gz` which contained consensus calling plus hotspot rescued for SNV calling - detilaed in [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers#snv-caller-comparison-analysis))
 
 ```{r load-inputs-please-wait}
 
@@ -93,21 +92,10 @@ keep_cols <- c("Chromosome",
              "PolyPhen",
              "DOMAINS")
 
-snv_consensus_maf <- data.table::fread(
-  file.path(root_dir, "data" , "pbta-snv-consensus-mutation.maf.tsv.gz"),
+snv_consensus_hotspot_maf <- data.table::fread(
+  file.path(root_dir, "data" , "snv-consensus-plus-hotspots.maf.tsv.gz"),
   select = keep_cols,
   data.table = FALSE) 
-
-## Read in snv hotspot mutation data
-snv_hotspot_maf <- data.table::fread(
-  file.path(root_dir, "analyses" , "hotspots-detection" , "results" , "pbta-snv-scavenged-hotspots.maf.tsv.gz"),
-  select = keep_cols,
-  data.table = FALSE) %>%
-  select(colnames(snv_consensus_maf))
-
-snv_consensus_hotspot_maf <- snv_consensus_maf %>%
-  bind_rows(snv_hotspot_maf) %>%
-  unique()
 
 ```
 

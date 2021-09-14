@@ -54,7 +54,7 @@ path_dx_list <- jsonlite::fromJSON(
 # clinical file
 lgat_manifest <- read_tsv(file.path(root_dir, 
                                     "data",
-                                    "pbta-histologies-base.tsv"), 
+                                    "histologies.tsv"), 
                           guess_max = 10000) %>%
   filter(Kids_First_Biospecimen_ID %in% bsid_to_include) %>%
   # select columns for interest
