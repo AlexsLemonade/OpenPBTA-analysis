@@ -35,6 +35,7 @@ Rscript 01-fusion-frequencies.R --fusion_file $fusion_file \
 	--relapse_independence_all $isl_relapse_all \
 	--primary_independence_each $isl_primary_each \
 	--relapse_independence_each $isl_relapse_each \
+	--data_source_id "chop_putative_oncogene_fusion" \
 	--output_filename "putative-oncogene-fusion-freq" 
 
 jq --compact-output '.[]' \
@@ -51,6 +52,7 @@ Rscript 01-fusion-frequencies.R --fusion_file $fusion_file \
         --relapse_independence_all $isl_relapse_all \
       	--primary_independence_each $isl_primary_each \
       	--relapse_independence_each $isl_relapse_each \
+      	--data_source_id "chop_putative_oncogene_fused_gene" \
         --output_filename "putative-oncogene-fused-gene-freq" 
 
 jq --compact-output '.[]' \

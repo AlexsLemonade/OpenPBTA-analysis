@@ -62,16 +62,33 @@ Please also **NOTE** that just like `Total_alterations`, `Total_relapse_tumors_a
   
 Format the SNV mutation frequency table according to the latest spreadsheet that is attached in <https://github.com/PediatricOpenTargets/ticket-tracker/issues/64>.
 
-Merge the fusion frequency tables of all `cancer_group_cohort`s.
+The fusion frequency tables of all `cancer_group_cohort`s were merged.
+
+Additionallly, some field names were changed for OT compatbiitliy:
+- `Gene_Ensembl_Id` is changed to `targetFromSourceId`
+- `EFO` to `diseaseFromSourceMappedId`
+Three additional columns added: 
+- `chop_uuid` includes 32 digit UUIDs that are unique for each row of the file 
+- `datatypeId` column with `somatic_mutation` in each row
+- `datasourceId` column with `chop_putative_oncogene_fusion` in each row
+
 The combined table was written out as `putative-oncogene-fusion-freq.jsonl.gz`.
-Table fields for this table include: `FusionName`, `Fusion_Type`, `Gene_symbol`, `Gene_Position`, `Fusion_anno`, `BreakpointLocation`,`annots`, `Kinase_domain_retained_Gene1A`, `Kinase_domain_retained_Gene1B`, `Reciprocal_exists_either_gene_kinase`, `Gene1A_anno`, `Gene1B_anno`, `Gene2A_anno`, `Gene2B_anno`, `Gene_Ensembl_ID`, `Disease`, `MONDO`, `RMTL`, `EFO`, `Dataset`, `Total_alterations_Over_Patients_in_dataset`, `Frequency_in_overall_dataset`, `Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset`, `Frequency_in_primary_tumors`, `Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset` and	`Frequency_in_relapse_tumors`
+Table fields for this table include: `FusionName`, `Fusion_Type`, `Gene_symbol`, `Gene_Position`, `Fusion_anno`, `BreakpointLocation`,`annots`, `Kinase_domain_retained_Gene1A`, `Kinase_domain_retained_Gene1B`, `Reciprocal_exists_either_gene_kinase`, `Gene1A_anno`, `Gene1B_anno`, `Gene2A_anno`, `Gene2B_anno`, `targetFromSourceId`, `Disease`, `MONDO`, `RMTL`, `diseaseFromSourceMappedId`, `Dataset`, `Total_alterations_Over_Patients_in_dataset`, `Frequency_in_overall_dataset`, `Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset`, `Frequency_in_primary_tumors`, `Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset`, `Frequency_in_relapse_tumors`, `chop_uuid`, `datatypeId` and `datasourceId`.
 
 Table two - `putative-oncogene-fused-gene-freq.jsonl.gz`
 The overall calculation logic is identical to table one. 
 The difference is instead of calculating the frequency for each unique fusion, we are calculating the frequency for each unique gene that is present within a fusion (from 1A, 1B, 2A or 2B in a particular fusion) in different tumor types.
-After merging fusion frequency tables of all `cancer_group_cohort`s, the combined table was written out as `putative-oncogene-fused-gene-freq.jsonl.gz`.
+After merging fusion frequency tables of all `cancer_group_cohort`s, some field names were changed for OT compatbiitliy:
+- `Gene_Ensembl_Id` is changed to `targetFromSourceId`
+- `EFO` to `diseaseFromSourceMappedId`
+Three additional columns added: 
+- `chop_uuid` includes 32 digit UUIDs that are unique for each row of the file 
+- `datatypeId` column with `somatic_mutation` in each row
+- `datasourceId` column with `chop_putative_oncogene_fused_gene` in each row
+
+the combined table was written out as `putative-oncogene-fused-gene-freq.jsonl.gz`.
 Table fields for this table include:
-`Gene_symbol`,`Gene_Ensembl_ID`, `Disease`, `MONDO`, `RMTL`, `EFO`, `Dataset`, `Total_alterations_Over_Patients_in_dataset`, `Frequency_in_overall_dataset`, `Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset`, `Frequency_in_primary_tumors`, `Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset` and	`Frequency_in_relapse_tumors`.
+`Gene_symbol`,`targetFromSourceId`, `Disease`, `MONDO`, `RMTL`, `diseaseFromSourceMappedId`, `Dataset`, `Total_alterations_Over_Patients_in_dataset`, `Frequency_in_overall_dataset`, `Total_primary_tumors_mutated_Over_Primary_tumors_in_dataset`, `Frequency_in_primary_tumors`, `Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset`, `Frequency_in_relapse_tumors`, `chop_uuid`, `datatypeId` and `datasourceId`.
 
 #### Additional annotation
 
