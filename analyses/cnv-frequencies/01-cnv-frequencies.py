@@ -222,6 +222,7 @@ def main():
      all_tumors_df = merge_histology_and_cnv_data(args.HISTOLOGY_FILE, args.CNV_FILE)
      cancer_group_cohort_df = get_cancer_groups_and_cohorts(all_tumors_df)
      cnv_frequency_df = compute_variant_frequencies(all_tumors_df, args.AC_PRIMARY_TUMORS, args.AC_RELAPSE_TUMORS, args.EC_PRIMARY_TUMORS, args.EC_RELAPSE_TUMORS, cancer_group_cohort_df)
+     cnv_frequency_df = cnv_frequency_df.drop_duplicates()
      cnv_frequency_df = get_annotations(cnv_frequency_df, args.CNV_FILE)
      sys.exit(0)
 
