@@ -70,7 +70,7 @@ path_dx_list <- jsonlite::fromJSON(
 clinical <- read_tsv(file.path(root_dir, 
                                "data",
                                "histologies.tsv"), 
-                     guess_max = 10000)
+                     guess_max = 100000)
 ```
 
 ### SNV for subtyping 

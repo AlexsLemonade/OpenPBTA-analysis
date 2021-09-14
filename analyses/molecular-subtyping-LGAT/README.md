@@ -82,9 +82,8 @@ The files in the `lgat-subset` were generated via `01-subset-files-for-LGAT.R` u
 
 ### Inputs from data download
 
-* `pbta-histologies.tsv`: is used to subset samples according to [the criteria above](#inclusion-exclusion-criteria)
-* `pbta-snv-consensus-mutation.maf.tsv.gz`: from `snv-callers` module which gathers calls that are present in all 3 callers (strelka2,mutect2 and lancet) 
-* `pbta-snv-scavenged-hotspots.maf.tsv.gz`: from `hotspot-detection` module to gather calls that overlap MSKCC hotspots found in any caller (except if only vardict calls the site as variant, we remove these calls since we have a lot of calls unique to vardict which we consider as false positive as discussed [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers#snv-caller-comparison-analysis))
+* `histologies.tsv`: is used to subset samples according to [the criteria above](#inclusion-exclusion-criteria)
+* `snv-consensus-plus-hotspots.maf.tsv.gz`: from D3b workflow does a 2/4 consensus plus gather calls that overlap MSKCC hotspots found in any caller
 
 ### Run script
 
@@ -92,7 +91,7 @@ The files in the `lgat-subset` were generated via `01-subset-files-for-LGAT.R` u
 bash run_subtyping.sh
 ```
 
-This does not run the `00-v17-LGAT-select-pathology-dx` notebook, as that is intended to be run once and tied to a specific release (`release-v17-20200908`).
+This does not run the `00-v9-LGAT-select-pathology-dx` notebook, as that is intended to be run once and tied to a specific release (`v9 release`).
 
 #### Order of scripts in subtyping
 

@@ -2022,7 +2022,7 @@ bioMartDataPfamFGFR1 &lt;-
 # was used to subset clinical file
 lgat_specimens_df &lt;- read_tsv(file.path(subset_dir, &quot;lgat_metadata.tsv&quot;))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgYWxpcXVvdF9pZCA9IGNvbF9kb3VibGUoKSxcbiAgRUZTX2RheXMgPSBjb2xfbG9naWNhbCgpLFxuICBPU19kYXlzID0gY29sX2RvdWJsZSgpLFxuICBhZ2VfbGFzdF91cGRhdGVfZGF5cyA9IGNvbF9kb3VibGUoKSxcbiAgbm9ybWFsX2ZyYWN0aW9uID0gY29sX2xvZ2ljYWwoKSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBjb2xfbG9naWNhbCgpLFxuICB0dW1vcl9wbG9pZHkgPSBjb2xfbG9naWNhbCgpLFxuICBndGV4X2dyb3VwID0gY29sX2xvZ2ljYWwoKSxcbiAgZ3RleF9zdWJncm91cCA9IGNvbF9sb2dpY2FsKClcbilcbiJ9 -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgYWxpcXVvdF9pZCA9IGNvbF9kb3VibGUoKSxcbiAgRUZTX2RheXMgPSBjb2xfbG9naWNhbCgpLFxuICBPU19kYXlzID0gY29sX2RvdWJsZSgpLFxuICBhZ2VfbGFzdF91cGRhdGVfZGF5cyA9IGNvbF9kb3VibGUoKSxcbiAgbm9ybWFsX2ZyYWN0aW9uID0gY29sX2RvdWJsZSgpLFxuICB0dW1vcl9mcmFjdGlvbiA9IGNvbF9kb3VibGUoKSxcbiAgdHVtb3JfcGxvaWR5ID0gY29sX2RvdWJsZSgpLFxuICBndGV4X2dyb3VwID0gY29sX2xvZ2ljYWwoKSxcbiAgZ3RleF9zdWJncm91cCA9IGNvbF9sb2dpY2FsKClcbilcbiJ9 -->
 <pre><code>Parsed with column specification:
 cols(
   .default = col_character(),
@@ -2030,9 +2030,9 @@ cols(
   EFS_days = col_logical(),
   OS_days = col_double(),
   age_last_update_days = col_double(),
-  normal_fraction = col_logical(),
-  tumor_fraction = col_logical(),
-  tumor_ploidy = col_logical(),
+  normal_fraction = col_double(),
+  tumor_fraction = col_double(),
+  tumor_ploidy = col_double(),
   gtex_group = col_logical(),
   gtex_subgroup = col_logical()
 )</code></pre>
