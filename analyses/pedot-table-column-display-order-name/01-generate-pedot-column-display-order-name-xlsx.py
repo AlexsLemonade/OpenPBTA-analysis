@@ -8,7 +8,7 @@ from utils import update_xlsx_datetime
 # List of all TSV file paths to generate the xlsx spreadsheet
 tsv_paths = [
     os.path.join("..", "snv-frequencies", "results",
-                 "gene-level-snv-consensus-annotated-mut-freq.tsv"),
+                 "gene-level-snv-consensus-annotated-mut-freq.tsv.gz"),
     os.path.join("..", "snv-frequencies", "results",
                  "variant-level-snv-consensus-annotated-mut-freq.tsv.gz"),
     os.path.join("..", "cnv-frequencies", "results",
