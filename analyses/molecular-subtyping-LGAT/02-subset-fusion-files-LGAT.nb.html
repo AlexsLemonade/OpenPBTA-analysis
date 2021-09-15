@@ -1836,19 +1836,19 @@ if (!dir.exists(subset_dir)) {
 <!-- rnb-source-begin eyJkYXRhIjoibGdhdF9zcGVjaW1lbnNfZGY8LXJlYWRfdHN2KGZpbGUucGF0aChzdWJzZXRfZGlyLCBcImxnYXRfbWV0YWRhdGEudHN2XCIpKSJ9 -->
 <pre class="r"><code>lgat_specimens_df&lt;-read_tsv(file.path(subset_dir, &quot;lgat_metadata.tsv&quot;))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgYWxpcXVvdF9pZCA9IGNvbF9kb3VibGUoKSxcbiAgaW50ZWdyYXRlZF9kaWFnbm9zaXMgPSBjb2xfbG9naWNhbCgpLFxuICBOb3RlcyA9IGNvbF9sb2dpY2FsKCksXG4gIE9TX2RheXMgPSBjb2xfZG91YmxlKCksXG4gIGFnZV9sYXN0X3VwZGF0ZV9kYXlzID0gY29sX2RvdWJsZSgpLFxuICBtb2xlY3VsYXJfc3VidHlwZSA9IGNvbF9sb2dpY2FsKCksXG4gIG5vcm1hbF9mcmFjdGlvbiA9IGNvbF9kb3VibGUoKSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBjb2xfZG91YmxlKCksXG4gIHR1bW9yX3Bsb2lkeSA9IGNvbF9kb3VibGUoKVxuKVxuIn0= -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgYWxpcXVvdF9pZCA9IGNvbF9kb3VibGUoKSxcbiAgRUZTX2RheXMgPSBjb2xfbG9naWNhbCgpLFxuICBPU19kYXlzID0gY29sX2RvdWJsZSgpLFxuICBhZ2VfbGFzdF91cGRhdGVfZGF5cyA9IGNvbF9kb3VibGUoKSxcbiAgbm9ybWFsX2ZyYWN0aW9uID0gY29sX2RvdWJsZSgpLFxuICB0dW1vcl9mcmFjdGlvbiA9IGNvbF9kb3VibGUoKSxcbiAgdHVtb3JfcGxvaWR5ID0gY29sX2RvdWJsZSgpLFxuICBndGV4X2dyb3VwID0gY29sX2xvZ2ljYWwoKSxcbiAgZ3RleF9zdWJncm91cCA9IGNvbF9sb2dpY2FsKClcbilcbiJ9 -->
 <pre><code>Parsed with column specification:
 cols(
   .default = col_character(),
   aliquot_id = col_double(),
-  integrated_diagnosis = col_logical(),
-  Notes = col_logical(),
+  EFS_days = col_logical(),
   OS_days = col_double(),
   age_last_update_days = col_double(),
-  molecular_subtype = col_logical(),
   normal_fraction = col_double(),
   tumor_fraction = col_double(),
-  tumor_ploidy = col_double()
+  tumor_ploidy = col_double(),
+  gtex_group = col_logical(),
+  gtex_subgroup = col_logical()
 )</code></pre>
 <!-- rnb-message-end -->
 <!-- rnb-message-begin eyJkYXRhIjoiU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->

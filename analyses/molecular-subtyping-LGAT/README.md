@@ -55,6 +55,7 @@ Samples are _included_ for subtyping if we detect the following strings in the `
 ```
 low-grade glioma/astrocytoma
 ganglioglioma
+subependymal giant cell astrocytoma
 ```
 
 Samples are _excluded_ if we detect the following strings in the `pathology_diagnosis` field of `pbta-histologies.tsv`:
@@ -63,7 +64,7 @@ Samples are _excluded_ if we detect the following strings in the `pathology_diag
 dysembryoplastic neuroepithelial tumor
 ```
 
-When `pathology_diagnosis == "Low-grade glioma/astrocytoma (WHO grade I/II)"`, we _exclude_ samples if we detect the following strings in `pathology_free_text_diagnosis`:
+When `pathology_diagnosis == "Low-grade glioma/astrocytoma (WHO grade I/II)"`, we will _recode_ samples if we detect the following strings in `pathology_free_text_diagnosis` as "GNT, <subtype>" :
 
 ```
 desmoplastic infantile astrocytoma
@@ -81,8 +82,8 @@ The files in the `lgat-subset` were generated via `01-subset-files-for-LGAT.R` u
 
 ### Inputs from data download
 
-* `pbta-histologies.tsv`: is used to subset samples according to [the criteria above](#inclusion-exclusion-criteria)
-* `pbta-snv-consensus-mutation.maf.tsv.gz`: 
+* `histologies.tsv`: is used to subset samples according to [the criteria above](#inclusion-exclusion-criteria)
+* `snv-consensus-plus-hotspots.maf.tsv.gz`: from D3b workflow does a 2/4 consensus plus gather calls that overlap MSKCC hotspots found in any caller
 
 ### Run script
 
@@ -90,7 +91,7 @@ The files in the `lgat-subset` were generated via `01-subset-files-for-LGAT.R` u
 bash run_subtyping.sh
 ```
 
-This does not run the `00-v17-LGAT-select-pathology-dx` notebook, as that is intended to be run once and tied to a specific release (`release-v17-20200908`).
+This does not run the `00-v9-LGAT-select-pathology-dx` notebook, as that is intended to be run once and tied to a specific release (`v9 release`).
 
 #### Order of scripts in subtyping
 
