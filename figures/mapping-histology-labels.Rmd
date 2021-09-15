@@ -240,6 +240,21 @@ And now let's take a look!
 palette_df
 ```
 
+### Add display names for convenience
+
+When multiple values are using the same color, it can be helpful to have a separate value for the legend, e.g., for all `#808080` broad histologies, we may want to display `Other`. 
+We'll add a couple columns for legend-making convenience.
+
+```{r}
+palette_df <- palette_df %>%
+  mutate(broad_histology_display = if_else(broad_histology_hex == "#808080",
+                                           "Other",
+                                           broad_histology),
+         cancer_group_display = if_else(cancer_group_hex == "#d3d3d3",
+                                        "Other",
+                                        cancer_group))
+```
+
 ### Save to TSV 
 
 ```{r}
