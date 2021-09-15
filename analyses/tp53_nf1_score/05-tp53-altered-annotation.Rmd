@@ -318,126 +318,60 @@ expr_combined <- readRDS(file.path(data_dir,"gene-counts-rsem-expected_count-col
 
 ```
 
-#### (stranded) Expression profile for activating vs loss TP53 status
-
-```{r}
-# subset to stranded samples 
-stranded_samples <- clinical %>% 
-  filter(sample_type == "Tumor",
-         experimental_strategy == "RNA-Seq",
-         cohort %in% c("PBTA","GMKF","TARGET"),
-         RNA_library == "stranded") %>%
-  pull(Kids_First_Biospecimen_ID) %>% unique()
-
-stranded <- expr_combined %>% select(stranded_samples)
-
-# subset to TP53
-subset_stranded <- t(stranded)[,"TP53"]
-
-stranded_tp53 <- as.data.frame(subset_stranded) %>%
-  dplyr::rename(TP53=subset_stranded) %>%
-  rownames_to_column() %>%
-  left_join(tp53_alterations_score_wide,by=c("rowname"="Kids_First_Biospecimen_ID_RNA")) %>%
-  # remove polya from matched scores
-  filter(tp53_altered %in% c("activated","loss"))
-
-```
-
-Plot distribution of TP53 gene expression (stranded)
+#### Expression profile for activating vs loss TP53 status
 
 ```{r, out.width="50%"}
-
-ggplot(stranded_tp53, aes(x = factor(tp53_altered), y = TP53)) +
-  geom_violin()+
-  geom_jitter(alpha = 0.5, width = 0.2) +
-  stat_compare_means() +
-  theme_bw() +
-  ggtitle("Distribution of TP53 expression across tp53 altered status") +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
-  xlab("tp53 altered status") 
-
-```
-
-#### (poly-a) Expression profile for activating vs loss TP53 status
-
-```{r}
-
-# subset to polya samples 
-polya_samples <- clinical %>% 
+# iterate through all possible RNA library type 
+# first filter to 
+clinical_filtered <- clinical %>% 
   filter(sample_type == "Tumor",
-         experimental_strategy == "RNA-Seq",
-         cohort %in% c("PBTA","GMKF","TARGET"),
-         RNA_library == "poly-A") %>%
-  pull(Kids_First_Biospecimen_ID) %>% unique()
+         experimental_strategy == "RNA-Seq") %>%
+  filter(!cohort %in% c("TCGA","GTEx")) %>%
+  filter(!is.na(RNA_library))
 
-polya <- expr_combined %>% select(polya_samples)
+# generate list of all RNA library type
+rna_library_list <- clinical_filtered %>% 
+  pull(RNA_library) %>% 
+  unique()
 
-# subset to TP53
-subset_polya<- t(polya)[,"TP53"]
+for(i in 1:length(rna_library_list)) {
+  
+  library_each <- rna_library_list[[i]]
+  # pull BS IDs for that RNA library type
+  library_samples <- clinical_filtered %>% 
+    filter(RNA_library == library_each) %>%
+    pull(Kids_First_Biospecimen_ID) %>% 
+    unique()
+  # subset expression matrix using that
+  expr_each <- expr_combined %>% select(library_samples)
 
-polya_tp53<- as.data.frame(subset_polya) %>%
-  dplyr::rename(TP53=subset_polya) %>%
-  rownames_to_column() %>%
-  left_join(tp53_alterations_score_wide,by=c("rowname"="Kids_First_Biospecimen_ID_RNA")) %>%
-  filter(tp53_altered %in% c("activated","loss"))
+  # subset to TP53
+  subset_expr_each <- t(expr_each)[,"TP53"] %>% 
+    as.data.frame() 
+  colnames(subset_expr_each) <- "TP53"
+  
+  # combine the TP53 alteration information
+  subset_expr_combined <- subset_expr_each %>%
+    tibble::rownames_to_column() %>% 
+    left_join(tp53_alterations_score_wide,by=c("rowname"="Kids_First_Biospecimen_ID_RNA")) %>%
+    filter(tp53_altered %in% c("activated","loss"))
+  
+  # plot distribution of TP53 gene expression 
+  plot<- ggplot(subset_expr_combined, aes(x = factor(tp53_altered), y = TP53)) +
+    geom_violin()+
+    geom_jitter(alpha = 0.5, width = 0.2) +
+    stat_compare_means() +
+    theme_bw() +
+    ggtitle("Distribution of TP53 expression across tp53 altered status") +
+    theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+    xlab(paste0("tp53 altered status wth RNA library", library_each))
 
-```
+  print(plot)
+}
 
-Plot distribution of TP53 gene expression (poly-a)
-
-```{r, out.width="50%" }
-
-ggplot(polya_tp53, aes(x = factor(tp53_altered), y = TP53)) +
-  geom_violin()+
-  geom_jitter(alpha = 0.5, width = 0.2) +
-  stat_compare_means() +
-  theme_bw() +
-  ggtitle("Distribution of TP53 expression across tp53 altered status") +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
-  xlab("tp53 altered status") 
-
-```
-
-
-#### (poly-a stranded) Expression profile for activating vs loss TP53 status
-
-```{r}
-
-# subset to polya samples 
-polya_stranded_samples <- clinical %>% 
-  filter(sample_type == "Tumor",
-         experimental_strategy == "RNA-Seq",
-         cohort %in% c("PBTA","GMKF","TARGET"),
-         RNA_library == "poly-A stranded") %>%
-  pull(Kids_First_Biospecimen_ID) %>% unique()
-
-polya_stranded <- expr_combined %>% select(polya_stranded_samples)
-
-# subset to TP53
-subset_polya_stranded<- t(polya_stranded)[,"TP53"]
-
-polya_stranded_tp53<- as.data.frame(subset_polya_stranded) %>%
-  dplyr::rename(TP53=subset_polya_stranded) %>%
-  rownames_to_column() %>%
-  left_join(tp53_alterations_score_wide,by=c("rowname"="Kids_First_Biospecimen_ID_RNA")) %>%
-  filter(tp53_altered %in% c("activated","loss"))
 
 ```
 
-Plot distribution of TP53 gene expression (poly-a)
-
-```{r, out.width="50%" }
-
-ggplot(polya_stranded_tp53, aes(x = factor(tp53_altered), y = TP53)) +
-  geom_violin()+
-  geom_jitter(alpha = 0.5, width = 0.2) +
-  stat_compare_means() +
-  theme_bw() +
-  ggtitle("Distribution of TP53 expression across tp53 altered status") +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
-  xlab("tp53 altered status") 
-
-```
 
 ### Check if other cancer predisposition have high TP53 inactivation scores  
 
