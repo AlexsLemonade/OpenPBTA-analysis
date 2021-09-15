@@ -29,7 +29,7 @@ _NF1_ positive examples are additionally filtered to remove missense mutations, 
 
 `01-apply-classifier.py` produces  `results/gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv`, which contains all 3 classifier scores for all RNA data and for shuffled RNA (e.g., random) data.
 
-`02-qc-rna_expression_score.Rmd` here expression of TP53 gene was compared to TP53 classifier score. Two RNA library type, `stranded` and `polya stranded` generated strong negative correlation between TP53 expression and TP53 inactivation score, while `polya` samples do not seem to have strong correlation. Thus, for `stranded` and `polya stranded`, expression and classifier score together might be able to predict function; however, for polya, the correlation is not statistically significant.
+`02-qc-rna_expression_score.Rmd` here expression of TP53 gene was compared to TP53 classifier score. This script runs comparison for all different types of RNA library in the datasets. Currently, two RNA library type, `stranded` and `polya stranded` generated strong negative correlation between TP53 expression and TP53 inactivation score, while `polya` samples do not seem to have strong correlation. Thus, for `stranded` and `polya stranded`, expression and classifier score together might be able to predict function; however, for polya, the correlation is not statistically significant.
 
 `03-tp53-cnv-loss-domain.Rmd` here copy_number of regions overlapping TP53 functional domains were compared to TP53 classifier score. We find tumors with TP53 copies <=1 have higher TP53 classifier scores, so we only retain biospecimens with <= 1 copy TP53 as high confidence TP53 loss. 
 
