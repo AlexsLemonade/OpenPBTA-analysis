@@ -264,13 +264,13 @@ broad_histology_order_df <- histologies_df %>%
   # Count samples within a broad histology
   count(broad_histology) %>%
   # Add Other placeholder
-  bind_rows(data.frame(broad_histology = "Other", 
+  bind_rows(data.frame(broad_histology = "Other",
                        n = 0, 
                        stringsAsFactors = FALSE)) %>%
   # Reorder based on sample size except Benign tumor and Other should come last
   # And then add numeric column with the order
-  mutate(broad_histology = forcats::fct_reorder(broad_histology, 
-                                                      n, 
+  mutate(broad_histology = forcats::fct_reorder(broad_histology,
+                                                      n,
                                                       .desc = TRUE) %>%
            forcats::fct_relevel("Benign tumor",
                                 "Other",
@@ -288,6 +288,21 @@ And now we're ready to add this to the palette data frame.
 palette_df <- palette_df %>%
   left_join(broad_histology_order_df, 
             by = c("broad_histology_display" = "broad_histology"))
+```
+
+### Add `oncoprint_include`
+
+For most plots that make use of the `cancer_group` palette, such as a box or violin plot, we will rely heavily on labels and therefore using the gray hex code for multiple groups will not be a problem.
+In oncoprints, we'll want to drop `cancer_group` with small sample size ([#1177](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1177)).
+We'll add a logical column to help with that.
+
+```{r}
+palette_df <- palette_df %>%
+  mutate(oncoprint_include = if_else(cancer_group_display == "Other",
+                                     FALSE,
+                                     TRUE)) %>%
+  # If cancer_group is NA, then set to FALSE
+  replace_na(list(oncoprint_include = FALSE))
 ```
 
 ### Save to TSV 
