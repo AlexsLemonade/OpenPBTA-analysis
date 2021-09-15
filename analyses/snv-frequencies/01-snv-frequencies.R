@@ -1,4 +1,7 @@
-library(tidyverse)
+
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(ids))
+
 # This imports the annotate_long_format_table function
 source('../long-format-table-utils/annotator/annotator-api.R')
 
@@ -884,7 +887,20 @@ var_level_mut_freq_tbl <- var_level_mut_freq_tbl %>%
          Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
          Frequency_in_relapse_tumors,
          HotSpot, OncoKB_cancer_gene, OncoKB_oncogene_TSG) %>%
-  rename(Variant_ID_hg38 = Variant_ID)
+  rename(Variant_ID_hg38 = Variant_ID,
+         targetFromSourceId = Gene_Ensembl_ID,
+         diseaseFromSourceMappedId = EFO) %>%
+  mutate(datatypeId = "somatic_mutation",
+         datasourceId = "chop_variant_level_snv")
+
+# generate UUID for each row of the table
+uuid_string <- uuid(nrow(var_level_mut_freq_tbl))
+# make sure all the uuids generated are unique
+stopifnot(length(unique(uuid_string)) == nrow(var_level_mut_freq_tbl))
+
+# assign UUID to each row
+var_level_mut_freq_tbl <- var_level_mut_freq_tbl %>%
+  dplyr::mutate(chop_uuid = uuid_string)
 
 gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
   select(Gene_symbol, RMTL, Dataset, Disease, EFO, MONDO,
@@ -897,8 +913,22 @@ gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
          Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
          Frequency_in_relapse_tumors,
          OncoKB_cancer_gene, OncoKB_oncogene_TSG,
-         PedcBio_PedOT_oncoprint_plot_URL, PedcBio_PedOT_mutations_plot_URL)
+         PedcBio_PedOT_oncoprint_plot_URL, PedcBio_PedOT_mutations_plot_URL) %>%
+  rename(targetFromSourceId = Gene_Ensembl_ID,
+         diseaseFromSourceMappedId = EFO) %>%
+  mutate(datatypeId = "somatic_mutation",
+         datasourceId = "chop_gene_level_snv")
 
+# generate UUID for each row of the table
+uuid_string_2 <- uuid(nrow(gene_level_mut_freq_tbl))
+# make sure all the uuids generated are unique
+stopifnot(length(unique(uuid_string_2)) == nrow(gene_level_mut_freq_tbl))
+
+# assign UUID to each row
+gene_level_mut_freq_tbl <- gene_level_mut_freq_tbl %>%
+  dplyr::mutate(chop_uuid = uuid_string_2)
+
+# write out tsv and jsonl files
 write_tsv(
   var_level_mut_freq_tbl,
   file.path(tables_dir, 'variant-level-snv-consensus-annotated-mut-freq.tsv'))

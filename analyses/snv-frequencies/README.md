@@ -115,9 +115,17 @@ curl -X GET "https://pedcbioportal.kidsfirstdrc.org/api/studies/ped_opentargets_
 
 To update the `case_set_id`s, rerun the `curl` command with your own PedcBioPortal web API access token. The token can be requested and downloaded at <https://pedcbioportal.kidsfirstdrc.org/webAPI>. More information about the access token is at <https://docs.cbioportal.org/2.2-authorization-and-authentication/authenticating-users-via-tokens#using-data-access-tokens>.
 
+Two more changes in column names and additions of three more columns are made for OT compatibility:
+ - `Gene_Ensembl_Id` is changed to `targetFromSourceId`
+ - `EFO` to `diseaseFromSourceMappedId`
+ Three additional columns added: 
+ - `chop_uuid` includes 32 digit UUIDs that are unique for each row of the file 
+ - `datatypeId` column with `somatic_mutation` in each row
+ - `datasourceId` column with `chop_gene_level_snv` in each row for gene-level table and `chop_variant_level_snv` in each row for variant-level table.
+
 ### Results
 
-Results are generated using PediatricOpenTargets/OpenPedCan-analysis data release v7.
+Results are generated using PediatricOpenTargets/OpenPedCan-analysis data release v9.
 
 The merged variant-level and gene-level SNV mutation frequency tables of all `cancer_group_cohort`s is output in TSV and JSONL formats.
 

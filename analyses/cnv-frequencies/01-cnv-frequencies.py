@@ -17,6 +17,7 @@ import os
 import sys
 import csv
 import json
+import uuid
 import argparse
 import subprocess
 import numpy as np
@@ -140,14 +141,14 @@ def compute_variant_frequencies(all_tumors_df, all_cohorts_primary_tumors_file, 
                     df["num_patients"] = num_patients
                     for i in df.itertuples():
                          if df_name == "all_tumors":
-                              df.at[i.Index, "Total_alterations/Patients_in_dataset"] = "{}/{}".format(i.total_patient_alterations, num_patients)
+                              df.at[i.Index, "Total_alterations_over_Patients_in_dataset"] = "{}/{}".format(i.total_patient_alterations, num_patients)
                               df.at[i.Index, "Frequency_in_overall_dataset"] = "{:.2f}%".format((i.total_patient_alterations/num_patients)*100)
                          if df_name == "each_cohort_primary_tumors" or df_name == "each_cohort_relapse_tumors" or df_name == "all_cohorts_primary_tumors" or df_name == "all_cohorts_relapse_tumors":
-                              df.at[i.Index, "Total_alterations/Patients_in_dataset"] = "{}/{}".format(i.total_sample_alterations, num_samples)
+                              df.at[i.Index, "Total_alterations_over_Patients_in_dataset"] = "{}/{}".format(i.total_sample_alterations, num_samples)
                               df.at[i.Index, "Frequency_in_overall_dataset"] = "{:.2f}%".format((i.total_sample_alterations/num_samples)*100)
                          df.at[i.Index, "Dataset"] = row.cohort
                          df.at[i.Index, "Disease"] = row.cancer_group
-                    df = df [["Gene_symbol", "Gene_Ensembl_ID", "Variant_type", "Dataset", "Disease", "Total_alterations/Patients_in_dataset", "Frequency_in_overall_dataset"]]
+                    df = df [["Gene_symbol", "Gene_Ensembl_ID", "Variant_type", "Dataset", "Disease", "Total_alterations_over_Patients_in_dataset", "Frequency_in_overall_dataset"]]
                     if df_name == "each_cohort_primary_tumors" or df_name == "all_cohorts_primary_tumors":
                          primary_tumors_frequecy_dfs.append(df)
                     if df_name == "each_cohort_relapse_tumors" or df_name == "all_cohorts_relapse_tumors":
@@ -163,14 +164,14 @@ def compute_variant_frequencies(all_tumors_df, all_cohorts_primary_tumors_file, 
      merging_list.append(all_tumors_frequecy_df)
      # frequencies in independent primary tumors
      primary_tumors_frequecy_df = pd.concat(primary_tumors_frequecy_dfs, sort=False, ignore_index=True)
-     primary_tumors_frequecy_df.rename(columns={"Total_alterations/Patients_in_dataset": "Total_primary_tumors_altered/Primary_tumors_in_dataset", "Frequency_in_overall_dataset": "Frequency_in_primary_tumors"}, inplace=True)
+     primary_tumors_frequecy_df.rename(columns={"Total_alterations_over_Patients_in_dataset": "Total_primary_tumors_altered_over_Primary_tumors_in_dataset", "Frequency_in_overall_dataset": "Frequency_in_primary_tumors"}, inplace=True)
      merging_list.append(primary_tumors_frequecy_df)
      # frequencies in independent relapse tumors
      relapse_tumors_frequecy_df = pd.concat(relapse_tumors_frequecy_dfs, sort=False, ignore_index=True)
-     relapse_tumors_frequecy_df.rename(columns={"Total_alterations/Patients_in_dataset": "Total_relapse_tumors_altered/Relapse_tumors_in_dataset", "Frequency_in_overall_dataset": "Frequency_in_relapse_tumors"}, inplace=True)
+     relapse_tumors_frequecy_df.rename(columns={"Total_alterations_over_Patients_in_dataset": "Total_relapse_tumors_altered_over_Relapse_tumors_in_dataset", "Frequency_in_overall_dataset": "Frequency_in_relapse_tumors"}, inplace=True)
      merging_list.append(relapse_tumors_frequecy_df)
      cnv_frequency_df = reduce(lambda x, y: pd.merge(x, y, how="outer", on=["Gene_symbol", "Gene_Ensembl_ID", "Variant_type", "Dataset", "Disease"]), merging_list).fillna("")
-     cnv_frequency_df = cnv_frequency_df.replace({"Total_primary_tumors_altered/Primary_tumors_in_dataset": "", "Total_relapse_tumors_altered/Relapse_tumors_in_dataset": ""}, "0/0")
+     cnv_frequency_df = cnv_frequency_df.replace({"Total_primary_tumors_altered_over_Primary_tumors_in_dataset": "", "Total_relapse_tumors_altered_over_Relapse_tumors_in_dataset": ""}, "0/0")
      return(cnv_frequency_df)
 
 
@@ -197,6 +198,18 @@ def get_annotations(cnv_frequency_df, CNV_FILE):
      cnv_annot_freq_tsv = "{}/gene-level-cnv-consensus-annotated-mut-freq.tsv".format(results_dir)
      with open(log_file, "w") as log:
           subprocess.run(["Rscript", "--vanilla", "analyses/long-format-table-utils/annotator/annotator-cli.R", "-r", "-c", "Gene_full_name,RMTL,OncoKB_cancer_gene,OncoKB_oncogene_TSG,EFO,MONDO", "-i", cnv_freq_tsv, "-o", cnv_annot_freq_tsv, "-v"], stdout=log, check=True)
+
+     # columns changes proposed by the FNL:
+     cnv_annot_freq_df = pd.read_csv(cnv_annot_freq_tsv, sep="\t", na_filter=False, dtype=str)
+     #1 rename "Gene_Ensembl_Id" to "targetFromSourceId" and "EFO" to "diseaseFromSourceMappedId"
+     cnv_annot_freq_df.rename(columns={"Gene_Ensembl_ID": "targetFromSourceId", "EFO": "diseaseFromSourceMappedId"}, inplace=True)
+     #2 add "datatypeId" column  with value for every row set to "somatic_mutation"
+     cnv_annot_freq_df["datatypeId"] = "somatic_mutation"
+     #3 add "chop_uuid" column - the uuid value for each row should be unique
+     cnv_annot_freq_df["chop_uuid"] = [uuid.uuid4() for x in range(len(cnv_annot_freq_df))]
+     #4 add "datasourceId" column with value for each row set to "chop_gene_level_cnv"
+     cnv_annot_freq_df["datasourceId"] = "chop_gene_level_cnv"
+     cnv_annot_freq_df.to_csv(cnv_annot_freq_tsv, sep="\t", index=False, encoding="utf-8")
 
      # transform annotated CNV frequencies results from TSV to JSONL file
      cnv_annot_freq_jsonl = "{}/gene-level-cnv-consensus-annotated-mut-freq.jsonl".format(results_dir)
