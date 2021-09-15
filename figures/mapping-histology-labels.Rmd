@@ -290,7 +290,7 @@ palette_df <- palette_df %>%
             by = c("broad_histology_display" = "broad_histology"))
 ```
 
-### Add `oncoprint_include`
+### Add `oncoprint_include` and `oncoprint_group`
 
 For most plots that make use of the `cancer_group` palette, such as a box or violin plot, we will rely heavily on labels and therefore using the gray hex code for multiple groups will not be a problem.
 In oncoprints, we'll want to drop `cancer_group` with small sample size ([#1177](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1177)).
@@ -303,6 +303,45 @@ palette_df <- palette_df %>%
                                      TRUE)) %>%
   # If cancer_group is NA, then set to FALSE
   replace_na(list(oncoprint_include = FALSE))
+```
+
+We will have four panels of individual oncoprints, where many `broad_histology` values will get grouped together into the `Other CNS` panel which you can see [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/d31c927a27813ec0b8032fbe768002f31723636f/analyses/oncoprint-landscape/02-plot-oncoprint.R#L181).
+We can move this information into our palette data frame.
+
+```{r}
+# Taken from the current plot oncoprint script as of the writing of this
+# See permalink above
+other_cns_broad_histologies <- c(
+  "Ependymal tumor",
+  "Tumors of sellar region",
+  "Neuronal and mixed neuronal-glial tumor",
+  "Tumor of cranial and paraspinal nerves",
+  "Meningioma",
+  "Mesenchymal non-meningothelial tumor",
+  "Germ cell tumor",
+  "Choroid plexus tumor",
+  "Histiocytic tumor",
+  "Tumor of pineal region",
+  "Metastatic tumors",
+  "Other astrocytic tumor",
+  "Lymphoma",
+  "Melanocytic tumor",
+  "Other tumor"
+)
+
+palette_df <- palette_df %>%
+  mutate(oncoprint_group = case_when(
+    # If the broad histology is in the vector above and the cancer group will 
+    # be included, set to Other CNS
+    broad_histology %in% other_cns_broad_histologies &
+      oncoprint_include != FALSE ~ "Other CNS",
+    # If this cancer group doesn't get included in the oncoprint, set to NA
+    # Same with Benign tumors -- those do not get included in that module
+    oncoprint_include == FALSE | 
+      broad_histology == "Benign tumor" ~ NA_character_,
+    # Otherwise use broad histology
+    TRUE ~ broad_histology
+  ))
 ```
 
 ### Save to TSV 
