@@ -84,22 +84,13 @@ included_labels_df <- histologies_df %>%
   tally() %>%
   # Add a column called included which is a logical that can be used as 
   # a sample size filter & also to drop the NA values
-  mutate(included = case_when(
-    n < 10 ~ FALSE,
-    is.na(cancer_group) ~ FALSE,
-    TRUE ~ TRUE
-  ))
+  filter(n >= 10, 
+         !is.na(cancer_group))
+
+included_labels_df
 ```
 
-Let's take a look at only the `broad_histology` and `cancer_group` we'll create a palette for. 
-
-```{r}
-included_labels_df %>%
-  filter(included) %>%
-  select(-included)
-```
-
-So the unique values for `broad_histology` and `cancer_group` in `included_labels_df` are what we need to take into account for our palette.
+So the unique values for `broad_histology` and `cancer_group` above are what we need to take into account for our palette.
 
 ## Create palettes
 
@@ -253,6 +244,50 @@ palette_df <- palette_df %>%
          cancer_group_display = if_else(cancer_group_hex == "#d3d3d3",
                                         "Other",
                                         cancer_group))
+```
+
+### Add `broad_histology_order` 
+
+Previously, we had a concept known as `display_order` where we ordered categories based on their number of samples (from large to small).
+Now that we've dropped `display_group`, let's apply this same concept to `broad_histology`.
+
+```{r}
+broad_histology_order_df <- histologies_df %>%  
+  # Exclude normal samples
+  filter(sample_type == "Tumor",
+         # Only count histologies that we'll have a hex code for
+         broad_histology %in% included_labels_df$broad_histology) %>%
+  # Filter to unique sample--broad_histology pairs
+  select(sample_id, 
+         broad_histology) %>%
+  distinct() %>%
+  # Count samples within a broad histology
+  count(broad_histology) %>%
+  # Add Other placeholder
+  bind_rows(data.frame(broad_histology = "Other", 
+                       n = 0, 
+                       stringsAsFactors = FALSE)) %>%
+  # Reorder based on sample size except Benign tumor and Other should come last
+  # And then add numeric column with the order
+  mutate(broad_histology = forcats::fct_reorder(broad_histology, 
+                                                      n, 
+                                                      .desc = TRUE) %>%
+           forcats::fct_relevel("Benign tumor",
+                                "Other",
+                                after = Inf),
+         broad_histology_order = as.numeric(broad_histology)) %>%
+  # No longer require the sample size
+  select(-n)
+
+broad_histology_order_df
+```
+
+And now we're ready to add this to the palette data frame.
+
+```{r}
+palette_df <- palette_df %>%
+  left_join(broad_histology_order_df, 
+            by = c("broad_histology_display" = "broad_histology"))
 ```
 
 ### Save to TSV 
