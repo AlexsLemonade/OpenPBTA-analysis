@@ -67,7 +67,7 @@ fi
 
 
 # Run classifier and ROC plotting for RNA data
-python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_rna} -t ${histology_file} -c "PBTA,GMKF,TARGET"
+python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_rna} -t ${histology_file} 
 
 # check correlation expression and scores
 Rscript -e "rmarkdown::render('${analysis_dir}/02-qc-rna_expression_score.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
@@ -82,6 +82,10 @@ Rscript -e "rmarkdown::render('${analysis_dir}/04-tp53-sv-loss.Rmd',params=list(
 Rscript -e "rmarkdown::render('${analysis_dir}/05-tp53-altered-annotation.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
 # evaluate classifer scores for stranded data
-python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/gene-expression-rsem-tpm-collapsed_classifier_scores.tsv -c ${histology_file} 
+python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv -c ${histology_file} -o stranded
 
+# Skip poly-A steps in CI
+if [ "$POLYA" -gt "0" ]; then
+  python3 ${analysis_dir}/06-evaluate-classifier.py -s ${analysis_dir}/results/tp53_altered_status.tsv -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv -c ${histology_file} -o polya
+fi
 
