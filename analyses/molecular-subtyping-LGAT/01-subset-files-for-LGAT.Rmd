@@ -214,7 +214,7 @@ lgat_mapk <- snv_consensus_hotspot_maf %>%
 lgat_nf1 <- snv_consensus_hotspot_maf %>%
   dplyr::filter(
     Hugo_Symbol %in% snvOI$NF1$gene & 
-      Variant_Classification %in% c("Missense_Mutation","Nonsense_Mutation") 
+      Variant_Classification %in% c("Missense_Mutation","Nonsense_Mutation", "Splice_Site", "Translation_Start_Site", "Frame_Shift_Del", "Frame_Shift_Ins", "Splice_Region") 
   ) %>%
   right_join(lgat_dna_df,by=c("Tumor_Sample_Barcode"="Kids_First_Biospecimen_ID"))
 
