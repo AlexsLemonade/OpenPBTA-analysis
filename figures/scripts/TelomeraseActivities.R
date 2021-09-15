@@ -39,44 +39,35 @@ Histologies <- file.path(root_dir, "data", "pbta-histologies.tsv") ### Variable 
 
 palette_dir <- file.path(root_dir, "figures", "palettes")
 
-# Import standard color palettes for project
-histology_label_mapping <- readr::read_tsv(
-  file.path(palette_dir, "histology_label_color_table.tsv")
-) %>%
-  # Select just the columns we will need for plotting
-  dplyr::select(Kids_First_Biospecimen_ID, cancer_group, cancer_group_order, cancer_group_hex_codes) %>%
-  # Reorder cancer_group based on cancer_group_order
-  dplyr::mutate(cancer_group = forcats::fct_reorder(cancer_group, cancer_group_order))
-
-
 # Declare output directory
 output_dir <- file.path(root_dir, "figures", "pngs")
 telomerase_png <- file.path(output_dir, "Telomerase_Activities.png")
 supplementary_telomerase_png <- file.path(output_dir, "SuppTelomerase_Activities.png")
 
-# Read in the histologies file and join on the histology color mappings and labels
-PBTA_Histology <- readr::read_tsv(Histologies) %>%
-  dplyr::inner_join(histology_label_mapping, by = 
-                      c("Kids_First_Biospecimen_ID",
-                        "cancer_group")) %>%
+# Get palette for cancer group
+cancer_group_palette <- readr::read_tsv(
+  file.path(palette_dir, "broad_histology_cancer_group_palette.tsv")
+) %>%
+  dplyr::select(cancer_group, cancer_group_hex) %>%
+  # Remove NA values -- a cancer group hex value will be NA only if the
+  # cancer group is NA
+  dplyr::filter(complete.cases(.))
+
+# Make color palette suitable for use with ggplot
+annotation_colors <- cancer_group_palette$cancer_group_hex
+names(annotation_colors) <- cancer_group_palette$cancer_group
+
+# We need to map between biospecimen ID and cancer group
+cancer_group_id_df <- readr::read_tsv(Histologies) %>%
+  dplyr::filter(!is.na(cancer_group)) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, cancer_group) %>%
   ## Renaming "Kids_First_Biospecimen_ID" as SampleID for comparison purpose
-  dplyr::rename("SampleID" = "Kids_First_Biospecimen_ID")  %>%
-  dplyr::filter(!is.na(cancer_group))
-
-# Get a distinct version of the color keys
-histologies_color_key_df <- PBTA_Histology %>%
-  dplyr::select(cancer_group, cancer_group_hex_codes) %>%
-  dplyr::distinct()
-
-# Make color key specific to these samples
-annotation_colors <- histologies_color_key_df$cancer_group_hex_codes
-names(annotation_colors) <- histologies_color_key_df$cancer_group
-
+  dplyr::rename("SampleID" = "Kids_First_Biospecimen_ID")
 
 TMScores1 <- read.table(Telomerase_StdFpkm, sep = "	", head = T) ## Reading Stranded FPKM telomerase scores
 colnames(TMScores1)[colnames(TMScores1) == "NormEXTENDScores"] <- "NormEXTENDScores_Stranded_FPKM"
 
-PTBA_GE_Standard_Histology <- merge(PBTA_Histology, TMScores1, by = "SampleID") ### Merging Clinical data with the Telomerase scores
+PTBA_GE_Standard_Histology <- merge(cancer_group_id_df, TMScores1, by = "SampleID") ### Merging Clinical data with the Telomerase scores
 
 TMScores2 <- read.table(Telomerase_PolyaFpkm, sep = "	", head = T)
 colnames(TMScores2)[colnames(TMScores2) == "NormEXTENDScores"] <- "NormEXTENDScores_PolyA_FPKM"
@@ -117,15 +108,15 @@ theme_set(theme_classic() +
   ))
 
 P1 <- ggplot(Stranded_Histology , aes(
-  x = fct_reorder(cancer_group, NormEXTENDScores_Stranded_FPKM, .desc = TRUE) %>%
-    forcats::fct_relevel("Benign", "Other tumor", "Normal", after = Inf),
+  x = fct_reorder(cancer_group, NormEXTENDScores_Stranded_FPKM, .desc = TRUE),
   y = NormEXTENDScores_Stranded_FPKM
 )) +
   geom_boxplot(
     size = 0.2, notch = FALSE, outlier.size = 0, outlier.shape = NA,
-    aes(color = cancer_group, fill = cancer_group), alpha = 0.4
+    aes(color = cancer_group, fill = cancer_group), alpha = 0.65
   ) +
-  geom_jitter(shape = 16, cex = 0.1, aes(color = cancer_group)) +
+  geom_jitter(shape = 16, cex = 0.2, aes(color = cancer_group),
+              alpha = 0.75) +
   scale_fill_manual(values = annotation_colors, aesthetics = c("colour", "fill"))
 
 grid.newpage()
@@ -164,7 +155,7 @@ theme_set(theme_classic() +
 
 P1 <- ggscatter(PBTA_PolyA_TMScores,
   x = "NormEXTENDScores_PolyACounts", y = "NormEXTENDScores_PolyA_FPKM", color = "red", size = 0.2,
-  add = "reg.line", # Add regressin line
+  add = "reg.line", # Add regression line
   add.params = list(color = "black", fill = "grey", size = 0.5), # Customize reg. line
   conf.int = TRUE # Add confidence interval
 ) + stat_cor(method = "spearman", size = 2)
@@ -172,7 +163,7 @@ P1 <- ggscatter(PBTA_PolyA_TMScores,
 
 P2 <- ggscatter(PBTA_Stranded_TMScores,
   x = "NormEXTENDScores_StrandedCounts", y = "NormEXTENDScores_Stranded_FPKM", color = "red", size = 0.2,
-  add = "reg.line", # Add regressin line
+  add = "reg.line", # Add regression line
   add.params = list(color = "black", fill = "grey", size = 0.5), # Customize reg. line
   conf.int = TRUE # Add confidence interval
 ) + stat_cor(method = "spearman", size = 2)
