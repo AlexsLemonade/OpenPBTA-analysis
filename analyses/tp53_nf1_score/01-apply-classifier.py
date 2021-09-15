@@ -53,15 +53,10 @@ parser.add_option(
 parser.add_option(
     "-t", "--histology", dest="histology", help="histology file for subsetting expression file"
 )
-parser.add_option(
-    "-c", "--cohorts", type ='string', dest="cohorts", help="list of cohorts of interest"
-)
 
 (options, args) = parser.parse_args()
 exprs_file = options.expfile
 histology = options.histology
-
-cohort_list = options.cohorts.split(",")
 
 np.random.seed(123)
 pandas2ri.activate()
@@ -80,7 +75,9 @@ exprs_total.index = rownamesRDS(exprs_rds)
 # Read in histologies file
 histology = pd.read_csv(histology, sep="\t")
 # filter histology file based on cohort
-histology = histology[histology['cohort'].isin(cohort_list)]
+histology = histology[histology.cohort != "TCGA"]
+histology = histology[histology.cohort != "GTEx"]
+cohort_list = list(histology['cohort'].unique())
 
 exprs_scaled_df = pd.DataFrame()
 exprs_shuffled_df = pd.DataFrame()
@@ -107,7 +104,7 @@ for cohort in cohort_list:
     )
     exprs_scaled_df = exprs_scaled_df.append(exprs_scaled_df_cohort)
     print("completed scale "+cohort+" "+rna_library)
-    
+
     # Shuffle input RNAseq matrix and apply classifiers
     exprs_shuffled_df_cohort = exprs_scaled_df_cohort.apply(shuffle_columns, axis=0)
     exprs_shuffled_df=exprs_shuffled_df.append(exprs_shuffled_df_cohort)

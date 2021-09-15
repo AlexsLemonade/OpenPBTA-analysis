@@ -118,7 +118,7 @@ tp53_nf1_coding <- tp53_coding %>%
 bs_ids <- histology %>%
   filter(sample_type == "Tumor",
          experimental_strategy != "RNA-Seq") %>%
-  filter(cohort %in% c("PBTA", "GMKF", "TARGET")) %>%
+  filter(!cohort %in% c("GTEx", "TCGA")) %>%
   pull(Kids_First_Biospecimen_ID)
 
 
