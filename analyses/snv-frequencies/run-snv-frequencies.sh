@@ -72,4 +72,8 @@ echo 'gzip results/variant-level-snv-consensus-annotated-mut-freq.tsv...'
 
 gzip --no-name results/variant-level-snv-consensus-annotated-mut-freq.tsv
 
+echo 'gzip results/gene-level-snv-consensus-annotated-mut-freq.tsv...'
+
+gzip --no-name results/gene-level-snv-consensus-annotated-mut-freq.tsv
+
 echo 'Done running run-snv-frequencies.sh'

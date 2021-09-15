@@ -64,6 +64,15 @@ Rscript --vanilla 04-prepare-cn-file.R \
 --controlfreec \
 --runWXSonly
 
+# Run merging for all annotated files 
+Rscript --vanilla 07-consensus-annotated-merge.R \
+--cnvkit_auto ${results_dir}/cnvkit_annotated_cn_wxs_autosomes.tsv.gz \
+--cnvkit_x_and_y ${results_dir}/cnvkit_annotated_cn_wxs_x_and_y.tsv.gz \
+--consensus_auto ${results_dir}/consensus_seg_annotated_cn_autosomes.tsv.gz \
+--consensus_x_and_y ${results_dir}/consensus_seg_annotated_cn_x_and_y.tsv.gz \
+--outdir ${results_dir}
+
+
 # filenameLead=("cnvkit_annotated_cn" "controlfreec_annotated_cn" "cnvkit_annotated_cn_wxs" "controlfreec_annotated_cn_wxs")
 # chromosomeType=("autosomes" "x_and_y")
 # for filename in ${filenameLead[@]}; do
@@ -77,5 +86,4 @@ Rscript --vanilla 04-prepare-cn-file.R \
 #         --filename_lead ${filename}_${chromosome_type}
 #   done
 # done
-
 fi

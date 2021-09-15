@@ -36,3 +36,7 @@ Rscript 02-generate-independent-rnaseq.R \
   --output_directory results \
   --independent_dna_sample_df_each $independent_DNA_each \
   --independent_dna_sample_df_all $independent_DNA_all
+
+# run report on outputs
+Rscript -e "rmarkdown::render('03-qc-independent-samples.Rmd', clean = TRUE)"
+

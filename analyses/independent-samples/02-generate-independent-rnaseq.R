@@ -20,7 +20,7 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 analysis_dir <- file.path(root_dir, "analyses", "independent-samples")
 
 # source sample selection function
-source(file.path(analysis_dir, "independent_rna_samples.R"))
+source(file.path(analysis_dir, "util", "independent_rna_samples.R"))
 
 set.seed(2020)
 
@@ -79,6 +79,10 @@ sample_df <- readr::read_tsv(opts$histology_file,
                              guess_max = 100000,
                              col_types = readr::cols()) # suppress parse message
 
+# randomize rows of histology file to avoid selection bias
+set.seed(100)
+sample_df <- sample_df[sample(nrow(sample_df)), ]
+
 # Read in dna independent sample list to match to rna samples
 # So that independent RNA samples match the DNA samples
 independent_dna_sample_df_each <- readr::read_tsv(opts$independent_dna_sample_df_each)
@@ -100,7 +104,8 @@ independent_rna_primary_each <- sample_df %>%
                           independent_level = "each-cohort",
                           histology_df = .,
                           match_type = "independent_dna_plus_only_rna",
-                          tumor_description_rna_only = "primary",seed = 2020) %>%
+                          tumor_description_rna_only = "primary",seed = 2020) %>% 
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
   readr::write_tsv(rnaseq_primary_each_file)
 
 independent_rna_relapse_each <- sample_df %>%
@@ -110,6 +115,7 @@ independent_rna_relapse_each <- sample_df %>%
                           histology_df = .,
                           match_type = "independent_dna_plus_only_rna",
                           tumor_description_rna_only = "relapse",seed = 2020) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
   readr::write_tsv(rnaseq_relapse_each_file)
 
 independent_rna_primary_plus_each <- sample_df %>%
@@ -119,6 +125,7 @@ independent_rna_primary_plus_each <- sample_df %>%
                           histology_df = .,
                           match_type = "independent_dna_plus_only_rna",
                           tumor_description_rna_only = "primary_plus",seed = 2020) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
   readr::write_tsv(rnaseq_primplus_each_file)
 
 # write independent sample outputs for independent level of all cohorts 
@@ -129,6 +136,7 @@ independent_rna_primary_all <- sample_df %>%
                           histology_df = .,
                           match_type = "independent_dna_plus_only_rna",
                           tumor_description_rna_only = "primary",seed = 2020) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
   readr::write_tsv(rnaseq_primary_all_file)
 
 independent_rna_relapse_all <- sample_df %>%
@@ -138,6 +146,7 @@ independent_rna_relapse_all <- sample_df %>%
                           histology_df = .,
                           match_type = "independent_dna_plus_only_rna",
                           tumor_description_rna_only = "relapse",seed = 2020) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
   readr::write_tsv(rnaseq_relapse_all_file)
 
 independent_rna_primary_plus_all <- sample_df %>%
@@ -147,4 +156,5 @@ independent_rna_primary_plus_all <- sample_df %>%
                           histology_df = .,
                           match_type = "independent_dna_plus_only_rna",
                           tumor_description_rna_only = "primary_plus",seed = 2020) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
   readr::write_tsv(rnaseq_primplus_all_file)

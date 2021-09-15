@@ -155,17 +155,11 @@ if (!identical(sum(is.na(ensg_hugo_rmtl_df$gene_symbol)), as.integer(0))) {
               "If data is downloaded properly, submit a GitHub data issue."))
 }
 
-# assert all ensg_id are unique
-if (!identical(length(unique(ensg_hugo_rmtl_df$ensg_id)),
-               nrow(ensg_hugo_rmtl_df))) {
-  stop(paste0("Found duplicated ensg_id in ensg-hugo-rmtl-mapping.tsv.\n",
-              "Check if PedOT release data are downloaded properly.\n",
-              "If data is downloaded properly, submit a GitHub data issue."))
-}
+
 
 # Download data from https://mygene.info/ --------------------------------------
 message("Retrieve Gene_full_name and Protein_RefSeq_ID from mygene.info...")
-ens_gids <- ensg_hugo_rmtl_df$ensg_id
+ens_gids <- unique(ensg_hugo_rmtl_df$ensg_id)
 
 mg_qres_list <- mygene::queryMany(
   ens_gids, scopes = "ensembl.gene", fields = c("refseq", "name"),
@@ -186,7 +180,8 @@ out_rm_bnn_found_mg_qres_df <- rm_bnn_found_mg_qres_df %>%
   dplyr::summarise(name = collapse_name_vec(name),
                    refseq_protein = collapse_rp_lists(refseq.protein)) %>%
   dplyr::rename(Gene_Ensembl_ID = query, Gene_full_name = name,
-                Protein_RefSeq_ID = refseq_protein)
+                Protein_RefSeq_ID = refseq_protein) %>%
+  dplyr::arrange(Gene_Ensembl_ID)
 
 
 
