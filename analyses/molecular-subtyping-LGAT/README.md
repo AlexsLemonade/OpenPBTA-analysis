@@ -99,7 +99,7 @@ This does not run the `00-v9-LGAT-select-pathology-dx` notebook, as that is inte
 
 columnname  | description | values
  --- | --- | ---
-NF1_mut | somatic loss of NF1 via either missense, nonsense mutation | "Yes" mutation exists, "No" mutation is absent 
+NF1_mut | somatic loss of NF1 via either missense, nonsense, splice region, splice site, frame-shift ins, frame-shift dels, and translation start site mutation | "Yes" mutation exists, "No" mutation is absent 
 BRAF_V600E_mut | contains BRAF V600E or V599 SNV or non-canonical BRAF alterations such as p.V600ins or p.D594N | "Yes" mutation exists, "No" mutation is absent
 MAPK_mut | contains mutation in KRAS, NRAS, HRAS, MAP2K1, MAP2K2, MAP2K1, ARAF, RAF1, BRAF (other than BRAF_V600E_mut) SNV or indel | "Yes" mutation exists, "No" mutation is absent
 RTK_mut | harbors a MET,KIT or PDGFRA SNV | "Yes" mutation exists, "No" mutation is absent
