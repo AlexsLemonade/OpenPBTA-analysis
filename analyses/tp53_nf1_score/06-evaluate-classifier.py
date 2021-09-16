@@ -60,7 +60,10 @@ np.random.seed(123)
 # read TP53/NF1 alterations
 full_status_df = pd.read_table(status_file, low_memory=False)
 # read in clinical file
-clinical_df = pd.read_table(clinical)
+clinical_df = pd.read_table(clinical, low_memory=False)
+clinical_df = clinical_df[clinical_df.cohort != "TCGA"]
+clinical_df = clinical_df[clinical_df.cohort != "GTEx"]
+clinical_df = clinical_df[clinical_df['RNA_library'].notnull()]
 
 # Obtain a binary status matrix
 for idx, val in enumerate(full_status_df.itertuples()):
@@ -162,8 +165,9 @@ possible_rna_library = [x for x in possible_rna_library if pd.isnull(x) == False
 # for each library type, run the analyses:
 
 for rna_library in possible_rna_library:
-  rna_library_filtered =  clinical_df['RNA_library']==rna_library
-  rna_library_filtered_samples = list(set(clinical_df[rna_library_filtered]['Kids_First_Biospecimen_ID']))
+
+  rna_library_filtered =  clinical_df[clinical_df['RNA_library'].str.contains(rna_library)]
+  rna_library_filtered_samples = list(set(rna_library_filtered['Kids_First_Biospecimen_ID']))
   
   scores_df_filtered = scores_df[scores_df.SAMPLE_ID.isin(rna_library_filtered_samples)]
   full_status_df_filtered = full_status_df[full_status_df.Kids_First_Biospecimen_ID_RNA.isin(rna_library_filtered_samples)]
