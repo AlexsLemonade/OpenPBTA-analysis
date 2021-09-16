@@ -9,10 +9,13 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 # files gets run -- it will be turned off in CI
 SUBSET=${OPENPBTA_SUBSET:-1}
 
-# Generate JSON file with strings for inclusion/exclusion criteria 
+# Generate JSON file with strings for inclusion/exclusion criteria
 Rscript --vanilla 00-LGAT-select-pathology-dx.R
 
-# subset by SNV 
+# Generate a notebook for inspecting how the subsetting works
+Rscript -e "rmarkdown::render('00-v9-LGAT-select-pathology-dx.Rmd')"
+
+# subset by SNV
 Rscript -e "rmarkdown::render('01-subset-files-for-LGAT.Rmd')"
 # subset by Fusion
 Rscript -e "rmarkdown::render('02-subset-fusion-files-LGAT.Rmd')"

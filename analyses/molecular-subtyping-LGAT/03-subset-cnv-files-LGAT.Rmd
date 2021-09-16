@@ -41,21 +41,21 @@ if (!dir.exists(subset_dir)) {
 manta <- read_tsv(file.path(
   root_dir,
   "data",
-  "pbta-sv-manta.tsv.gz"
+  "sv-manta.tsv.gz"
 ))
 
 # consensus seg calls
 cnv <- read_tsv(file.path(
   root_dir,
   "data",
-  "pbta-cnv-consensus.seg.gz"
+  "cnv-consensus.seg.gz"
 ))
 
 # consensus seg annotated with gene
 cnv_anno <- read_tsv(file.path(
   root_dir,
   "data",
-  "consensus_seg_annotated_cn_autosomes.tsv.gz"
+  "consensus_wgs_plus_cnvkit_wxs.tsv.gz"
 ))
 
 # Gene location and domain overlap file

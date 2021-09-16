@@ -26,7 +26,8 @@ RUN_ORIGINAL=1 bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
 
 * `01-add-ploidy-cnvkit.Rmd` - The two CNV callers, CNVkit and ControlFreeC, do not handle ploidy in the same way ([A Note on Ploidy](https://github.com/AlexsLemonade/OpenPedCan-analysis/blob/de661fbe740717472fcf01c7d9b74fe1b946aece/doc/data-formats.md#a-note-on-ploidy) in the Data Formats documentation).
   This notebook adds the ploidy inferred via ControlFreeC to the CNVkit data and adds a status column that defines gain and loss broadly.
-  Specifically, segments with copy number fewer than ploidy are losses, segments with copy number greater than ploidy are marked as a gain, and segments where copy number is equal to ploidy are marked as neutral.
+- Specifically, segments with copy number fewer than ploidy are losses, segments with copy number greater than ploidy are marked as a gain, and segments where copy number is equal to ploidy are marked as neutral. 
+- Additionally, WXS samples were updated to use either `germline_sex_estimate` from matched WGS samples or `reported_gender` for xy chromosome copy number calls.
   (Note that [the logic around sex chromosomes in males when ploidy = 3 leaves something to be desired](https://github.com/AlexsLemonade/OpenPedCan-analysis/pull/259#discussion_r345354403)).
 
 * `02-add-ploidy-consensus.Rmd` - This is very similar to the CNVkit file prep (`01-add-ploidy-cnvkit.Rmd`).
@@ -59,6 +60,8 @@ To make these calls, the following decisions around cutoffs were made:
 * `06-find-recurrent-calls.Rmd` - This notebook determines the recurrent focal copy number dominant status calls by region using the output of `05-define-most-focal-cn-units.Rmd`.
 Recurrence here has been arbitrarily defined based on the plotting of the distribution of status calls and a [similar decision](https://github.com/AlexsLemonade/OpenPedCan-analysis/blob/66bb67a7bf29aad4510a0913a2dbc88da0013be8/analyses/fusion_filtering/06-recurrent-fusions-per-histology.R#L152) made in `analyses/fusion_filtering/06-recurrent-fusions-per-histology.R` to make the cutoff for recurrence to be greater than a count of 3 samples that have the same CN status call in the same region.
 This notebook returns a `TSV` file with the recurrent copy number status calls, regions and biospecimen IDs.
+
+* `07-consensus-annotated-merge.R` - This script merges the cnv annotated files for WGS samples (which uses 2/3 consensus cnv calls from 3 callers) with the cnv annotated files for WXS samples (which only uses cnvkit caller for CNV callings). This script first merges WGS+WXS autosome calls, WGS+WXS x_and_y calls and finally merged autosomes with x_and_y. The above mentioned 3 merged files are all saved in the `results` directory.
 
 * `rna-expression-validation.R` - This script examines RNA-seq expression levels (RSEM FPKM) of genes that are called as deletions.
 It produces loss/neutral and zero/neutral correlation plots, as well as stacked barplots displaying the distribution of ranges in expression across each of the calls (loss, neutral, zero).

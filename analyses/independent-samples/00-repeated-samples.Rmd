@@ -22,15 +22,17 @@ This is particularly important for analyses such as mutation co-occurence, where
 # load libraries
 library(dplyr)
 
-# source sample selection funciton
-source("independent-samples.R")
+# base directories
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+# source sample selection function
+source(file.path("util", "independent-samples.R"))
 
 set.seed(201910)
 ```
 
 
 ```{r load files}
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 if(params$base_run == 0) {
 sample_df <- readr::read_tsv(file.path(root_dir, "data", "histologies.tsv"), guess_max = 100000)
 } else {
