@@ -90,12 +90,12 @@ histologies_df <- clinical %>%
 # find the WGS samples + WXS samples and subset "_with_status.tsv" file with that
 wgs_samples <- histologies_wgs_df <- clinical %>% dplyr::filter(sample_type == "Tumor") %>%
   dplyr::filter(experimental_strategy == "WGS") %>% 
-  dplyr::filter(!cohort %in% c("TCGA", "GTEx")) %>% 
+  dplyr::filter(cohort =="PBTA") %>% 
   dplyr::pull("Kids_First_Biospecimen_ID")
 
 wxs_samples <- clinical %>% dplyr::filter(sample_type == "Tumor") %>%
   dplyr::filter(experimental_strategy == "WXS") %>% 
-  dplyr::filter(!cohort %in% c("TCGA", "GTEx")) %>% 
+  dplyr::filter(cohort =="PBTA") %>% 
   dplyr::pull("Kids_First_Biospecimen_ID")
   
 # Filter the consensus and the cnvkit seg files to contain only either WGS or WXS samples 

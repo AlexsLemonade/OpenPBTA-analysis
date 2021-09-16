@@ -48,12 +48,16 @@ parser.add_option("-f", "--file", dest="filename", help="scores output file ")
 parser.add_option(
     "-c", "--clinical", dest="clinical", help="histologies.tsv clinical file"
 )
+parser.add_option(
+    "-r", "--cohorts", type ='string', dest="cohorts", help="list of cohorts of interest"
+)
 
 
 (options, args) = parser.parse_args()
 status_file = options.status_file
 scores_file = options.filename
 clinical = options.clinical
+cohort_list = options.cohorts.split(",")
 
 np.random.seed(123)
 
@@ -61,6 +65,7 @@ np.random.seed(123)
 full_status_df = pd.read_table(status_file, low_memory=False)
 # read in clinical file
 clinical_df = pd.read_table(clinical, low_memory=False)
+clinical_df = clinical_df[clinical_df['cohort'].isin(cohort_list)]
 clinical_df = clinical_df[clinical_df.cohort != "TCGA"]
 clinical_df = clinical_df[clinical_df.cohort != "GTEx"]
 clinical_df = clinical_df[clinical_df['RNA_library'].notnull()]

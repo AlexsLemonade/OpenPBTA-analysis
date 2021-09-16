@@ -326,7 +326,7 @@ expr_combined <- readRDS(file.path(data_dir,"gene-counts-rsem-expected_count-col
 clinical_filtered <- clinical %>% 
   filter(sample_type == "Tumor",
          experimental_strategy == "RNA-Seq") %>%
-  filter(!cohort %in% c("TCGA","GTEx")) %>%
+  filter(cohort =="PBTA") %>%
   filter(!is.na(RNA_library))
 
 # generate list of all RNA library type
