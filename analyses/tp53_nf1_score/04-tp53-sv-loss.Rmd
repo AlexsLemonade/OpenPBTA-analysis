@@ -92,7 +92,7 @@ sv_with_loss_cnv <- manta_sv_tp53 %>%
 sv_with_loss_cnv
 sv_with_loss_cnv %>% dplyr::pull(Kids.First.Biospecimen.ID.Tumor)%>% unique()
 ```
-BS_3NX3RBCX, BS_G6ASNYWP, BS_CQ40NN4X, BS_ZYXTC212, BS_B6E0477K, BS_MYVQ8YDT and BS_4D9SK48F have a CNV loss and multiple SV breakpoints overlapping TP53 locus!
+BS_3NX3RBCX have a CNV loss and multiple SV breakpoints overlapping TP53 locus!
 
 BS_EJV0N3BX that previously had an overlap no longer exist - need to figure out why.
 

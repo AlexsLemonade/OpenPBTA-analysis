@@ -364,7 +364,7 @@ for(i in 1:length(rna_library_list)) {
     theme_bw() +
     ggtitle("Distribution of TP53 expression across tp53 altered status") +
     theme(axis.text.x = element_text(angle = 60, hjust = 1))+
-    xlab(paste0("tp53 altered status wth RNA library", library_each))
+    xlab(paste0("tp53 altered status wth RNA library ", library_each))
 
   print(plot)
 }
