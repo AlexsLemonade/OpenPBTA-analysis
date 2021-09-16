@@ -22,11 +22,7 @@ In this notebook we will add TP53 alteration status as discussed in [#837](https
  
 **TP53 altered - activated**, if:
 
-- A sample contains one of the two TP53 activating mutations R273C and R248W. Reference and reference.
-
-
-
-
+- A sample contains one of the two TP53 activating mutations p.R273C and p.R248W. [@doi:10.1038/ng0593-42]
 
 ## Setup
 ```{r}
@@ -54,9 +50,9 @@ cell_line_composition <- read_tsv(file.path("..",
 
 # histology
 if ( params$base_run ==0 ){
-  clinical<-read.delim(file.path(data_dir,"pbta-histologies.tsv"), stringsAsFactors = FALSE)
+  clinical<-read.delim(file.path(data_dir,"histologies.tsv"), stringsAsFactors = FALSE)
 } else{
-  clinical<-read.delim(file.path(data_dir,"pbta-histologies-base.tsv"), stringsAsFactors = FALSE)  
+  clinical<-read.delim(file.path(data_dir,"histologies-base.tsv"), stringsAsFactors = FALSE)  
 }
 
 histology <- clinical %>%
@@ -89,19 +85,11 @@ if (!dir.exists(results_dir)) {
 }
 
 # classifier scores
-classifier_score_stranded <- read_tsv(
+classifier_score <- read_tsv(
   file.path(
     results_dir,
-    "pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv"))%>%
-  select(sample_id,tp53_score)
-
-classifier_score_polya <-read_tsv(
-  file.path(
-    results_dir,
-    "pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv")) %>%
-  select(sample_id,tp53_score)
-
-classifier_score<- rbind(classifier_score_polya,classifier_score_stranded) %>%
+    "gene-expression-rsem-tpm-collapsed_classifier_scores.tsv"))%>%
+  select(sample_id,tp53_score) %>%
   dplyr::rename(Kids_First_Biospecimen_ID_RNA=sample_id) %>%
   left_join(histology ,by=c("Kids_First_Biospecimen_ID_RNA"="Kids_First_Biospecimen_ID")) 
 
@@ -139,7 +127,7 @@ Removing Silent or Intron classified variants to capture only putative damaging 
 
 ```{r}
 consensus_tp53_snv_indel <- data.table::fread(
-  file.path(data_dir,"pbta-snv-consensus-mutation.maf.tsv.gz"),
+  file.path(data_dir,"snv-consensus-plus-hotspots.maf.tsv.gz"),
                                    select = c("Chromosome",
                                               "Start_Position",
                                               "End_Position",
@@ -322,70 +310,68 @@ TP53 mutants with gain-of-function (activating) mutants promote tumorigenesis ac
 
 "Other" annotated samples either don't have any high-confidence loss/gain TP53 SNVs nor CNV losses OR DNA sample is not available.
 
-### (stranded) Expression profile for activating vs loss TP53 status
 
+### Expression profile for activating vs loss TP53 status
 ```{r}
 
-stranded <- readRDS(file.path(data_dir,"pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
-
-# subset to TP53
-subset_stranded <- t(stranded)[,"TP53"]
-
-stranded_tp53 <- as.data.frame(subset_stranded) %>%
-  dplyr::rename(TP53=subset_stranded) %>%
-  rownames_to_column() %>%
-  left_join(tp53_alterations_score_wide,by=c("rowname"="Kids_First_Biospecimen_ID_RNA")) %>%
-  # remove polya from matched scores
-  filter(tp53_altered %in% c("activated","loss"))
+expr_combined <- readRDS(file.path(data_dir,"gene-counts-rsem-expected_count-collapsed.rds"))
 
 ```
 
-Plot distribution of TP53 gene expression (stranded)
+#### Expression profile for activating vs loss TP53 status
 
 ```{r, out.width="50%"}
+# iterate through all possible RNA library type 
+# first filter to 
+clinical_filtered <- clinical %>% 
+  filter(sample_type == "Tumor",
+         experimental_strategy == "RNA-Seq") %>%
+  filter(cohort =="PBTA") %>%
+  filter(!is.na(RNA_library))
 
-ggplot(stranded_tp53, aes(x = factor(tp53_altered), y = TP53)) +
-  geom_violin()+
-  geom_jitter(alpha = 0.5, width = 0.2) +
-  stat_compare_means() +
-  theme_bw() +
-  ggtitle("Distribution of TP53 expression across tp53 altered status") +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
-  xlab("tp53 altered status") 
+# generate list of all RNA library type
+rna_library_list <- clinical_filtered %>% 
+  pull(RNA_library) %>% 
+  unique()
+
+for(i in 1:length(rna_library_list)) {
+  
+  library_each <- rna_library_list[[i]]
+  # pull BS IDs for that RNA library type
+  library_samples <- clinical_filtered %>% 
+    filter(RNA_library == library_each) %>%
+    pull(Kids_First_Biospecimen_ID) %>% 
+    unique()
+  # subset expression matrix using that
+  expr_each <- expr_combined %>% select(library_samples)
+
+  # subset to TP53
+  subset_expr_each <- t(expr_each)[,"TP53"] %>% 
+    as.data.frame() 
+  colnames(subset_expr_each) <- "TP53"
+  
+  # combine the TP53 alteration information
+  subset_expr_combined <- subset_expr_each %>%
+    tibble::rownames_to_column() %>% 
+    left_join(tp53_alterations_score_wide,by=c("rowname"="Kids_First_Biospecimen_ID_RNA")) %>%
+    filter(tp53_altered %in% c("activated","loss"))
+  
+  # plot distribution of TP53 gene expression 
+  plot<- ggplot(subset_expr_combined, aes(x = factor(tp53_altered), y = TP53)) +
+    geom_violin()+
+    geom_jitter(alpha = 0.5, width = 0.2) +
+    stat_compare_means() +
+    theme_bw() +
+    ggtitle("Distribution of TP53 expression across tp53 altered status") +
+    theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+    xlab(paste0("tp53 altered status wth RNA library ", library_each))
+
+  print(plot)
+}
+
 
 ```
 
-### (poly-a) Expression profile for activating vs loss TP53 status
-
-```{r}
-
-polya <- readRDS(file.path(data_dir,"pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"))
-
-# subset to TP53
-subset_polya <- t(polya)[,"TP53"]
-
-polya_tp53<- as.data.frame(subset_polya) %>%
-  dplyr::rename(TP53=subset_polya) %>%
-  rownames_to_column() %>%
-  left_join(tp53_alterations_score_wide,by=c("rowname"="Kids_First_Biospecimen_ID_RNA")) %>%
-  filter(tp53_altered %in% c("activated","loss"))
-
-```
-
-Plot distribution of TP53 gene expression (poly-a)
-
-```{r, out.width="50%" }
-
-ggplot(polya_tp53, aes(x = factor(tp53_altered), y = TP53)) +
-  geom_violin()+
-  geom_jitter(alpha = 0.5, width = 0.2) +
-  stat_compare_means() +
-  theme_bw() +
-  ggtitle("Distribution of TP53 expression across tp53 altered status") +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
-  xlab("tp53 altered status") 
-
-```
 
 ### Check if other cancer predisposition have high TP53 inactivation scores  
 

@@ -57,7 +57,7 @@ expressionMatrix<-readRDS(exp_file)
 
 clinical_filtered <- clinical %>% dplyr::filter(sample_type == "Tumor") %>%
   dplyr::filter(experimental_strategy == "RNA-Seq") %>% 
-  dplyr::filter(!cohort %in% c("GTEx", "TCGA")) %>%
+  dplyr::filter(cohort =="PBTA") %>%
   dplyr::filter(!is.na(RNA_library))
 
 # Generate RNA library list that can be used to iterate 

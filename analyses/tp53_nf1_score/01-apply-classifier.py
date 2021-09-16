@@ -53,10 +53,14 @@ parser.add_option(
 parser.add_option(
     "-t", "--histology", dest="histology", help="histology file for subsetting expression file"
 )
+parser.add_option(
+     "-c", "--cohorts", type ='string', dest="cohorts", help="list of cohorts of interest"
+ )
 
 (options, args) = parser.parse_args()
 exprs_file = options.expfile
 histology = options.histology
+cohort_list = options.cohorts.split(",")
 
 np.random.seed(123)
 pandas2ri.activate()
@@ -75,6 +79,7 @@ exprs_total.index = rownamesRDS(exprs_rds)
 # Read in histologies file
 histology = pd.read_csv(histology, sep="\t")
 # filter histology file based on cohort
+histology = histology[histology['cohort'].isin(cohort_list)]
 histology = histology[histology.cohort != "TCGA"]
 histology = histology[histology.cohort != "GTEx"]
 cohort_list = list(histology['cohort'].unique())

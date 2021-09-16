@@ -35,7 +35,9 @@ option_list <- list(
   make_option(c("-o","--outputFolder"),type="character",
               help="output folder for results "),
   make_option(c("-g","--gencode"),type="character",
-              help="cds gencode bed file")
+              help="cds gencode bed file"),
+  make_option(c("-r","--cohort"),type="character",
+              help="list of cohorts to subset the files to (.tsv)")
 )
 
 opt <- parse_args(OptionParser(option_list=option_list,add_help_option = FALSE))
@@ -44,6 +46,7 @@ histologyFile <- opt$histologyFile
 outputFolder <- opt$outputFolder
 gencodeBed <- opt$gencode
 cnvConsesusFile <- opt$cnvConsensus
+cohort_interest<-unlist(strsplit(opt$cohort,","))
 
 #### Generate files with TP53, NF1 mutations -----------------------------------
 
@@ -118,7 +121,7 @@ tp53_nf1_coding <- tp53_coding %>%
 bs_ids <- histology %>%
   filter(sample_type == "Tumor",
          experimental_strategy != "RNA-Seq") %>%
-  filter(!cohort %in% c("GTEx", "TCGA")) %>%
+  filter(cohort %in% cohort_interest) %>%
   pull(Kids_First_Biospecimen_ID)
 
 
