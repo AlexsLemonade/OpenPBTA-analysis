@@ -7,7 +7,7 @@
 # Predicts TP53 and NF1 inactivation score per polya and stranded RNAseq samples
 
 # The script takes one environment variable, `OPENPBTA_BASE_SUBTYPING`, if value is 1 then
-# uses pbta-histologies-base.tsv for subtyping if value is 0 runs all modules with pbta-histologies.tsv(Default)
+# uses histologies-base.tsv for subtyping if value is 0 runs all modules with histologies.tsv(Default)
 
 set -e
 set -o pipefail
@@ -30,14 +30,14 @@ data_dir="../../data"
 scratch_dir="../../scratch"
 # cds gencode bed file  
 cds_file="${scratch_dir}/gencode.v27.primary_assembly.annotation.bed"
-snvconsensus_file="${data_dir}/pbta-snv-consensus-mutation.maf.tsv.gz"
-cnvconsensus_file="${data_dir}/consensus_seg_annotated_cn_autosomes.tsv.gz"
+snvconsensus_file="${data_dir}/snv-consensus-plus-hotspots.maf.tsv.gz"
+cnvconsensus_file="${data_dir}/consensus_wgs_plus_cnvkit_wxs.tsv.gz"
 
 if [[ RUN_FOR_SUBTYPING == "0" ]]
 then
-   histology_file="../../data/pbta-histologies.tsv" 
+   histology_file="../../data/histologies.tsv" 
 else 
-   histology_file="../../data/pbta-histologies-base.tsv"  
+   histology_file="../../data/histologies-base.tsv"  
 fi
 
 
@@ -59,21 +59,15 @@ Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
 if [[ RUN_FOR_SUBTYPING == "0" ]]
 then
    # expression files for prediction
-   collapsed_stranded="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
-   collapsed_polya="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
+   collapsed_rna="${data_dir}/gene-expression-rsem-tpm-collapsed.rds"
 else
    # expression files for prediction
-   collapsed_stranded="../collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
-   collapsed_polya="../collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
-fi   
-
-# Skip poly-A steps in CI
-if [ "$POLYA" -gt "0" ]; then
-  python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_polya}
+   collapsed_rna="../collapse-rnaseq/results/gene-expression-rsem-tpm-collapsed.rds"
 fi
 
-# Run classifier and ROC plotting for stranded data
-python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_stranded}
+
+# Run classifier and ROC plotting for RNA data
+python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_rna} -t ${histology_file} 
 
 # check correlation expression and scores
 Rscript -e "rmarkdown::render('${analysis_dir}/02-qc-rna_expression_score.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"

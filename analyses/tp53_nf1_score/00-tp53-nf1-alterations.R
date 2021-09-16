@@ -4,7 +4,7 @@
 # to evaluate classifier
 # @params snvConsensus multi-caller consensus snv calls
 # @params cnvConsensus multi-caller consensus cnv calls
-# @params histologyFile histology file: pbta-histologies.tsv
+# @params histologyFile histology file: histologies.tsv
 # @params outputFolder output folder for alteration file
 # @params gencode cds bed file from gencode
 
@@ -14,7 +14,7 @@ suppressPackageStartupMessages(library("readr"))
 suppressPackageStartupMessages(library("GenomicRanges"))
 
 #### Source functions ----------------------------------------------------------
-# We can use functions from the `snv-callers` module of the OpenPBTA project
+# We can use functions from the `snv-callers` module of the OpenPedCan project
 # TODO: if a common util folder is established, use that instead
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 source(file.path(root_dir, 
@@ -59,17 +59,18 @@ consensus_snv <- data.table::fread(snvConsensusFile,
                                    data.table = FALSE)
 
 # read in consensus CNV file
-cnvConsesus <- data.table::fread( cnvConsesusFile,
-                          select=c("gene_symbol",
-                                   "biospecimen_id",
-                                   "status"),
-)
+cnvConsesus <- data.table::fread( cnvConsesusFile) %>%
+  dplyr::filter(!grepl('X|Y', cytoband)) %>%
+  dplyr::select(gene_symbol,
+           biospecimen_id,
+           status)
+
 
 # gencode cds region BED file
 gencode_cds <- read_tsv(gencodeBed, col_names = FALSE)
 
 # histology file
-histology <- read_tsv(histologyFile, guess_max = 10000)
+histology <- read_tsv(histologyFile, guess_max = 100000)
 
 
 # filter the MAF data.frame to only include entries that fall within the
@@ -113,11 +114,13 @@ nf1_loss<-cnvConsesus %>%
 tp53_nf1_coding <- tp53_coding %>%
   bind_rows(tp53_loss,nf1_coding,nf1_loss)
 
-# biospecimen IDs for tumor or cell line DNA-seq
+# biospecimen IDs for tumor DNA-seq
 bs_ids <- histology %>%
-  filter(sample_type != "Normal",
+  filter(sample_type == "Tumor",
          experimental_strategy != "RNA-Seq") %>%
+  filter(!cohort %in% c("GTEx", "TCGA")) %>%
   pull(Kids_First_Biospecimen_ID)
+
 
 # all BS ids that are not in the data frame that contain the TP53 and NF1
 # coding mutations should be labeled as not having either
