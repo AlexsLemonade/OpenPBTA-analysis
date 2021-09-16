@@ -58,7 +58,7 @@ tp53_altered | Combined evidence, cancer predisposition and score based tp53 sta
 
 Because some of the classifier genes are not present in the OpenPedCan dataset, the scores should be interpreted as continuous values representing relative gene alterations and not as probabilities.
 
-ROC curve for TP53 classifier scores are saved in the results folder. With TARGET samples, we have 3 RNA library types and 3 plots were generated:
+ROC curve for TP53 classifier scores are saved in the results folder. We iterate through all possible RNA library types and print out the graphs accordingly. With TARGET samples, we have 3 RNA library types and 3 plots were generated:
 `poly-A_TP53.png`
 `stranded_TP53.png`
 `poly-A_stranded_TP53.png`
