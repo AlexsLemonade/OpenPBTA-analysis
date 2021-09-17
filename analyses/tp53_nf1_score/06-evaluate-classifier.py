@@ -46,32 +46,29 @@ parser.add_option(
 )
 parser.add_option("-f", "--file", dest="filename", help="scores output file ")
 parser.add_option(
-    "-c", "--clinical", dest="clinical", help="pbta-histologies.tsv clinical file"
+    "-c", "--clinical", dest="clinical", help="histologies.tsv clinical file"
 )
 parser.add_option(
-    "-o",
-    "--output_basename",
-    dest="outputfile",
-    help="output plots basename for TP53 and NF1 ROC curves",
+    "-r", "--cohorts", type ='string', dest="cohorts", help="list of cohorts of interest"
 )
+
 
 (options, args) = parser.parse_args()
 status_file = options.status_file
 scores_file = options.filename
 clinical = options.clinical
-outputfilename = options.outputfile
-
+cohort_list = options.cohorts.split(",")
 
 np.random.seed(123)
 
 # read TP53/NF1 alterations
 full_status_df = pd.read_table(status_file, low_memory=False)
 # read in clinical file
-clinical_df = pd.read_table(clinical)
-# select only IDs
-clinical_df = clinical_df[
-    ["Kids_First_Biospecimen_ID", "sample_id", "Kids_First_Participant_ID"]
-]
+clinical_df = pd.read_table(clinical, low_memory=False)
+clinical_df = clinical_df[clinical_df['cohort'].isin(cohort_list)]
+clinical_df = clinical_df[clinical_df.cohort != "TCGA"]
+clinical_df = clinical_df[clinical_df.cohort != "GTEx"]
+clinical_df = clinical_df[clinical_df['RNA_library'].notnull()]
 
 # Obtain a binary status matrix
 for idx, val in enumerate(full_status_df.itertuples()):
@@ -89,37 +86,13 @@ for idx, val in enumerate(full_status_df.itertuples()):
     else:
         full_status_df.loc[idx,'tp53_status']=0
 
-
 print("drop tp53_score columns from tp53 annotation file")
 full_status_df = full_status_df.drop("tp53_score" , axis = "columns")
-
-
 
 # read in scores from 01
 file = os.path.join(scores_file)
 scores_df = pd.read_table(file)
 scores_df = scores_df.rename(str.upper, axis="columns")
-
-scores_df = scores_df.merge(
-    full_status_df,
-    how="left",
-    left_on="SAMPLE_ID",
-    right_on="Kids_First_Biospecimen_ID_RNA",
-)
-
-print("scores df shape")
-print(scores_df.shape)
-scores_df.tp53_status.value_counts()
-
-scores_df = scores_df.assign(SAMPLE_ID=scores_df.loc[:, "sample_id"])
-
-
-gene_status = ["tp53_status"]
-# binary counts for tp53 loss status
-print("TP53 status")
-print(scores_df.tp53_status.value_counts())
-
-print(scores_df.head())
 
 def get_roc_plot(scores_df, gene, outputfilename, color):
     """
@@ -189,8 +162,44 @@ def get_roc_plot(scores_df, gene, outputfilename, color):
 
     lgd = plt.legend(bbox_to_anchor=(0.3, 0.15), loc=2, borderaxespad=0.0, fontsize=10)
     plt.savefig(outputfilename + "_" + gene + ".png")
+    
+# find distinct RNA library type
+possible_rna_library = list(set(clinical_df['RNA_library']))
+possible_rna_library = [x for x in possible_rna_library if pd.isnull(x) == False]
 
+# for each library type, run the analyses:
 
-outputfilename = os.path.join("results", outputfilename)
+for rna_library in possible_rna_library:
 
-get_roc_plot(scores_df, gene="TP53", outputfilename=outputfilename, color="#7570b3")
+  rna_library_filtered =  clinical_df[clinical_df['RNA_library'].str.contains(rna_library)]
+  rna_library_filtered_samples = list(set(rna_library_filtered['Kids_First_Biospecimen_ID']))
+  
+  scores_df_filtered = scores_df[scores_df.SAMPLE_ID.isin(rna_library_filtered_samples)]
+  full_status_df_filtered = full_status_df[full_status_df.Kids_First_Biospecimen_ID_RNA.isin(rna_library_filtered_samples)]
+  
+  # subset the socre_df and full_status to specific RNA_library type 
+  scores_df_filtered = scores_df_filtered.merge(
+      full_status_df_filtered,
+      how="left",
+      left_on="SAMPLE_ID",
+      right_on="Kids_First_Biospecimen_ID_RNA",
+  )
+
+  print("scores df filtered shape")
+  print(scores_df_filtered.shape)
+  scores_df_filtered.tp53_status.value_counts()
+
+  scores_df_filtered = scores_df_filtered.assign(SAMPLE_ID=scores_df_filtered.loc[:, "sample_id"])
+
+  gene_status = ["tp53_status"]
+  # binary counts for tp53 loss status
+  print("TP53 status")
+  print(scores_df_filtered.tp53_status.value_counts())
+
+  print(scores_df_filtered.head())
+
+  rna_library_fixed = rna_library.replace(" ", "_")
+  outputfilename = os.path.join("results", rna_library_fixed)
+  
+  get_roc_plot(scores_df_filtered, gene="TP53", outputfilename=outputfilename, color="#7570b3")
+  

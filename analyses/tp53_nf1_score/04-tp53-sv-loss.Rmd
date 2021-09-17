@@ -11,7 +11,7 @@ params:
     
 In this script we will find if there are a Structural Variant breakpoints within TP53 or covering the gene locus such that it is deleted and concurrently, there are either one or both of:
   - 0 or 1 copy of TP53 (we would already have captured them as loss)
-  - expression less than 1 FPKM
+  - expression less than 1 TPM
 
 We want to subset SV calls which will possibly	lead to loss of function to use for evaluation of TP53 inactivation score at a later step.
 
@@ -39,16 +39,16 @@ if (!dir.exists(results_dir)) {
 ### Input files
 ```{r}
 
-manta_sv <- read_tsv(file.path(data_dir, "pbta-sv-manta.tsv.gz"))
-stranded_expr <- readRDS(file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
-polya_expr <- readRDS(file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"))
+manta_sv <- read_tsv(file.path(data_dir, "sv-manta.tsv.gz"), guess_max = 5000000)
+rna_expr <- readRDS(file.path(data_dir, "gene-expression-rsem-tpm-collapsed.rds"))
+
 if ( params$base_run ==0 ){
-  clinical<-read.delim(file.path(data_dir,"pbta-histologies.tsv"), stringsAsFactors = FALSE)
+  clinical<-read.delim(file.path(data_dir,"histologies.tsv"), stringsAsFactors = FALSE)
 } else{
-  clinical<-read.delim(file.path(data_dir,"pbta-histologies-base.tsv"), stringsAsFactors = FALSE)  
+  clinical<-read.delim(file.path(data_dir,"histologies-base.tsv"), stringsAsFactors = FALSE)  
 }
 
-histology <- select(clinical,c("Kids_First_Biospecimen_ID", "sample_id"))
+histology <- dplyr::select(clinical,c("Kids_First_Biospecimen_ID", "sample_id"))
 
 # high confidence cnv losses from `03-tp53-cnv-loss-domain.Rmd`
 cnv_tp53_loss <- read_tsv(file.path(results_dir, "loss_overlap_domains_tp53.tsv"))
@@ -59,7 +59,7 @@ Since we want to capture TP53 loss phenotypes we will only keep breakpoints that
  
 ```{r}
 manta_sv_tp53 <- manta_sv %>%
-  select(SV.chrom, SV.start, SV.end, SV.length, Kids.First.Biospecimen.ID.Tumor, SV.type, Gene.name, ALT) %>%
+  dplyr::select(SV.chrom, SV.start, SV.end, SV.length, Kids.First.Biospecimen.ID.Tumor, SV.type, Gene.name, ALT) %>%
   # Distribution of TP53 SVs
   filter(
     # only overlaps TP53 gene
@@ -73,7 +73,8 @@ manta_sv_tp53 <- manta_sv %>%
   )
 
 manta_sv_tp53 %>%
-  arrange(Kids.First.Biospecimen.ID.Tumor)
+  arrange(Kids.First.Biospecimen.ID.Tumor) %>%
+  knitr::kable()
 ```
 
 ## Filter SV calls that are associated with sample with TP53 CNV loss
@@ -89,31 +90,28 @@ sv_with_loss_cnv <- manta_sv_tp53 %>%
   filter(sample_id %in% cnv_tp53_loss$sample_id)
 
 sv_with_loss_cnv
+sv_with_loss_cnv %>% dplyr::pull(Kids.First.Biospecimen.ID.Tumor)%>% unique()
 ```
-BS_3NX3RBCX and BS_EJV0N3BX have a CNV loss and multiple SV breakpoints overlapping TP53 locus!
+BS_3NX3RBCX have a CNV loss and multiple SV breakpoints overlapping TP53 locus!
 
+BS_EJV0N3BX that previously had an overlap no longer exist - need to figure out why.
 
 ## Filter SV calls that are associated with sample with low TP53 expression
 We will use sample_id from `manta_sv_tp53` to filter stranded and polya expression file 
 
 ```{r}
-stranded_expr_tp53 <- stranded_expr["TP53", ] %>%
+
+lowexpr_tp53_with_sv <- rna_expr["TP53", ] %>%
   t() %>%
   as.data.frame() %>%
-  rownames_to_column(var = "Kids_First_Biospecimen_ID")
-
-polya_expr_tp53 <- polya_expr["TP53", ] %>%
-  t() %>%
-  as.data.frame() %>%
-  rownames_to_column(var = "Kids_First_Biospecimen_ID")
-
-lowexpr_tp53_with_sv <- bind_rows(stranded_expr_tp53, polya_expr_tp53) %>%
+  rownames_to_column(var = "Kids_First_Biospecimen_ID") %>%
   # add sample_id to expression df
   left_join(histology,
     by = c("Kids_First_Biospecimen_ID")
   ) %>%
   # filter to keep only low expressed TP53 sample_ids
   filter(TP53 < 1)
+
 
 sv_with_lowexpr <- manta_sv_tp53 %>%
   # filter to samples with SV within or overlapping TP53

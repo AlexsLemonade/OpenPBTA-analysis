@@ -10,7 +10,7 @@ import pandas as pd
 VARIANT_SNV_FN = "variant-level-snv-consensus-annotated-mut-freq.tsv.gz"
 # TSV filename to xlsx sheet name look up table
 TSV_FN_XLSX_SN_LUT = {
-    "gene-level-snv-consensus-annotated-mut-freq.tsv":
+    "gene-level-snv-consensus-annotated-mut-freq.tsv.gz":
         "SNV gene-level",
     VARIANT_SNV_FN:
         "SNV variant-level",
@@ -25,6 +25,10 @@ TSV_FN_XLSX_SN_LUT = {
     "long_n_tpm_mean_sd_quantile_group_wise_zscore.tsv.gz":
         "TPM stats group-wise z-scores"
 }
+
+# A list of names to drop from the PedOT column display
+COLUMNS_TO_DROP = ["EFO", "MONDO"]
+
 
 # assert all xlsx sheet names are unique
 assert len(TSV_FN_XLSX_SN_LUT) == len(set(TSV_FN_XLSX_SN_LUT.values()))
@@ -185,6 +189,9 @@ class TSVSheet:
         sample_df = pd.concat([sample_df, col_name_df], ignore_index=True)
         # Reorder columns
         sample_df = sample_df[self._get_col_disp_order()]
+        # drop columns that are not required in PedOT column display
+        if len(COLUMNS_TO_DROP) != 0:
+            sample_df.drop(columns=COLUMNS_TO_DROP, inplace=True)
         # Insert a column at beginning as row annotation
         sample_df.insert(
             loc=0,

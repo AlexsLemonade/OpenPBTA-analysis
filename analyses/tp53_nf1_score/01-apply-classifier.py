@@ -8,7 +8,7 @@ https://doi.org/10.1016/j.celrep.2019.09.071
 Gregory Way, 2018
 Modified by Krutika Gaonkar for OpenPBTA, 2019
  
-In the following notebook, three distinct classifiers to OpenPBTA data (FPKM).
+In the following notebook, three distinct classifiers to OpenPedCan data (TPM).
 The first classifier detects Ras activation. For more details about the algorithm and results, refer to [Way et al. 2018](https://doi.org/10.1016/j.celrep.2018.03.046 "Machine Learning Detects Pan-cancer Ras Pathway Activation in The Cancer Genome Atlas"). I also include _TP53_ inactivation predictions. This classifier was previously applied in [Knijnenburg et al. 2018](https://doi.org/10.1016/j.celrep.2018.03.076 "Genomic and Molecular Landscape of DNA Damage Repair Deficiency across The Cancer Genome Atlas"). The third is a classifier that predicts _NF1_ inactivation. We previously applied this in [Way et al. 2017](https://doi.org/10.1186/s12864-017-3519-7 "A machine learning classifier trained on cancer transcriptomes detects NF1 inactivation signal in glioblastoma").
  
 To apply other classifiers (targeting other genes of interest) refer to https://github.com/greenelab/pancancer.
@@ -16,7 +16,7 @@ To apply other classifiers (targeting other genes of interest) refer to https://
 ## Procedure
  
 1. Load RNAseq matrix (`.RDS`)
-  * The matrix is in `sample` x `gene symbol` format (250 x 51,968)
+  * The matrix is in `gene symbol` x `sample` format 
 2. Process matrix
   * Take the z-score by gene
 3. Load classifier coefficients
@@ -48,11 +48,19 @@ from optparse import OptionParser
 
 parser = OptionParser(usage="usage: %prog [options] arguments")
 parser.add_option(
-    "-f", "--file", dest="filename", help="rds file genes expression X sample"
+    "-f", "--expfile", dest="expfile", help="rds file sample X genes expression"
 )
+parser.add_option(
+    "-t", "--histology", dest="histology", help="histology file for subsetting expression file"
+)
+parser.add_option(
+     "-c", "--cohorts", type ='string', dest="cohorts", help="list of cohorts of interest"
+ )
 
 (options, args) = parser.parse_args()
-inputfile = options.filename
+exprs_file = options.expfile
+histology = options.histology
+cohort_list = options.cohorts.split(",")
 
 np.random.seed(123)
 pandas2ri.activate()
@@ -60,24 +68,53 @@ readRDS = robjects.r["readRDS"]
 rownamesRDS = robjects.r["rownames"]
 
 # Load gene expression data in rds format
-name = os.path.basename(inputfile)
+name = os.path.basename(exprs_file)
 name = re.sub("\.rds$", "", name)
 
-exprs_rds = readRDS(inputfile)
-exprs_df = pandas2ri.ri2py(exprs_rds)
-exprs_df.index = rownamesRDS(exprs_rds)
+exprs_rds = readRDS(exprs_file)
+exprs_total = pandas2ri.ri2py(exprs_rds)
+exprs_total.index = rownamesRDS(exprs_rds)
 
-# transpose
-exprs_df = exprs_df.transpose()
 
-# Transform the gene expression data (z-score by gene)
-scaled_fit = StandardScaler().fit(exprs_df)
-exprs_scaled_df = pd.DataFrame(
-    scaled_fit.transform(exprs_df), index=exprs_df.index, columns=exprs_df.columns
-)
+# Read in histologies file
+histology = pd.read_csv(histology, sep="\t")
+# filter histology file based on cohort
+histology = histology[histology['cohort'].isin(cohort_list)]
+histology = histology[histology.cohort != "TCGA"]
+histology = histology[histology.cohort != "GTEx"]
+cohort_list = list(histology['cohort'].unique())
 
-# Shuffle input RNAseq matrix and apply classifiers
-exprs_shuffled_df = exprs_scaled_df.apply(shuffle_columns, axis=0)
+exprs_scaled_df = pd.DataFrame()
+exprs_shuffled_df = pd.DataFrame()
+
+for cohort in cohort_list:
+  # Filter the expression_df to tumor, RNA-Seq and cohort
+  histology_cohort = histology[(histology["experimental_strategy"] == "RNA-Seq") & (histology["sample_type"] == "Tumor") & (histology["cohort"] == cohort)]
+  RNA_libraries = list(set(histology_cohort['RNA_library']))
+  
+  # Remove NAN from RNA library list
+  RNA_libraries = [RNA_libraries for RNA_libraries in RNA_libraries if str(RNA_libraries) != 'nan']
+
+  for rna_library in RNA_libraries:
+    tumor_RNA_cohort = list(histology_cohort[histology_cohort["RNA_library"] == rna_library]['Kids_First_Biospecimen_ID'])
+    exprs_df = exprs_total[tumor_RNA_cohort]
+
+    # Transpose the expression dataframe to be compatible with following workflow
+    exprs_df = exprs_df.transpose()
+
+    # Transform the gene expression data (z-score by gene)
+    scaled_fit = StandardScaler().fit(exprs_df)
+    exprs_scaled_df_cohort = pd.DataFrame(
+      scaled_fit.transform(exprs_df), index=exprs_df.index, columns=exprs_df.columns
+    )
+    exprs_scaled_df = exprs_scaled_df.append(exprs_scaled_df_cohort)
+    print("completed scale "+cohort+" "+rna_library)
+
+    # Shuffle input RNAseq matrix and apply classifiers
+    exprs_shuffled_df_cohort = exprs_scaled_df_cohort.apply(shuffle_columns, axis=0)
+    exprs_shuffled_df=exprs_shuffled_df.append(exprs_shuffled_df_cohort)
+    print("completed shuffle "+cohort+" "+rna_library)
+
 
 # Apply Ras Classifier
 

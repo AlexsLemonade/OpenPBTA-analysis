@@ -4,7 +4,7 @@
 # to evaluate classifier
 # @params snvConsensus multi-caller consensus snv calls
 # @params cnvConsensus multi-caller consensus cnv calls
-# @params histologyFile histology file: pbta-histologies.tsv
+# @params histologyFile histology file: histologies.tsv
 # @params outputFolder output folder for alteration file
 # @params gencode cds bed file from gencode
 
@@ -14,7 +14,7 @@ suppressPackageStartupMessages(library("readr"))
 suppressPackageStartupMessages(library("GenomicRanges"))
 
 #### Source functions ----------------------------------------------------------
-# We can use functions from the `snv-callers` module of the OpenPBTA project
+# We can use functions from the `snv-callers` module of the OpenPedCan project
 # TODO: if a common util folder is established, use that instead
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 source(file.path(root_dir, 
@@ -35,7 +35,9 @@ option_list <- list(
   make_option(c("-o","--outputFolder"),type="character",
               help="output folder for results "),
   make_option(c("-g","--gencode"),type="character",
-              help="cds gencode bed file")
+              help="cds gencode bed file"),
+  make_option(c("-r","--cohort"),type="character",
+              help="list of cohorts to subset the files to (.tsv)")
 )
 
 opt <- parse_args(OptionParser(option_list=option_list,add_help_option = FALSE))
@@ -44,6 +46,7 @@ histologyFile <- opt$histologyFile
 outputFolder <- opt$outputFolder
 gencodeBed <- opt$gencode
 cnvConsesusFile <- opt$cnvConsensus
+cohort_interest<-unlist(strsplit(opt$cohort,","))
 
 #### Generate files with TP53, NF1 mutations -----------------------------------
 
@@ -59,17 +62,18 @@ consensus_snv <- data.table::fread(snvConsensusFile,
                                    data.table = FALSE)
 
 # read in consensus CNV file
-cnvConsesus <- data.table::fread( cnvConsesusFile,
-                          select=c("gene_symbol",
-                                   "biospecimen_id",
-                                   "status"),
-)
+cnvConsesus <- data.table::fread( cnvConsesusFile) %>%
+  dplyr::filter(!grepl('X|Y', cytoband)) %>%
+  dplyr::select(gene_symbol,
+           biospecimen_id,
+           status)
+
 
 # gencode cds region BED file
 gencode_cds <- read_tsv(gencodeBed, col_names = FALSE)
 
 # histology file
-histology <- read_tsv(histologyFile, guess_max = 10000)
+histology <- read_tsv(histologyFile, guess_max = 100000)
 
 
 # filter the MAF data.frame to only include entries that fall within the
@@ -113,11 +117,13 @@ nf1_loss<-cnvConsesus %>%
 tp53_nf1_coding <- tp53_coding %>%
   bind_rows(tp53_loss,nf1_coding,nf1_loss)
 
-# biospecimen IDs for tumor or cell line DNA-seq
+# biospecimen IDs for tumor DNA-seq
 bs_ids <- histology %>%
-  filter(sample_type != "Normal",
+  filter(sample_type == "Tumor",
          experimental_strategy != "RNA-Seq") %>%
+  filter(cohort %in% cohort_interest) %>%
   pull(Kids_First_Biospecimen_ID)
+
 
 # all BS ids that are not in the data frame that contain the TP53 and NF1
 # coding mutations should be labeled as not having either

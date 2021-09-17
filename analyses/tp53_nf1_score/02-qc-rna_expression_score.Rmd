@@ -25,18 +25,18 @@ data_dir <- file.path(root_dir, "data")
 results_dir <- "results"
 
 if ( params$base_run ==0 ){
-  clinical<-read.delim(file.path(data_dir,"pbta-histologies.tsv"), stringsAsFactors = FALSE)
+  clinical<-read.delim(file.path(data_dir,"histologies.tsv"), stringsAsFactors = FALSE)
 } else{
-  clinical<-read.delim(file.path(data_dir,"pbta-histologies-base.tsv"), stringsAsFactors = FALSE)  
+  clinical<-read.delim(file.path(data_dir,"histologies-base.tsv"), stringsAsFactors = FALSE)  
 }
 ```
 
 ### Classifier scores
 
- 1) Read in scores from tp53-nf1-classifier for stranded
+ Read in scores from tp53-nf1-classifier 
 ```{r}
 
-score_stranded_df <- read_tsv(file.path(results_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv")) %>%
+score_df <- read_tsv(file.path(results_dir, "gene-expression-rsem-tpm-collapsed_classifier_scores.tsv")) %>%
   dplyr::select(
     "tp53_score",
     "sample_id"
@@ -45,45 +45,57 @@ score_stranded_df <- read_tsv(file.path(results_dir, "pbta-gene-expression-rsem-
 
 ```
 
- 2) Read in scores from tp53-nf1-classifier for polya
-```{r}
-score_polya_df <- read_tsv(file.path(results_dir, "pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv")) %>%
-  dplyr::select(
-    "tp53_score",
-    "sample_id"
-  ) %>%
-  as.data.frame()
-
-```
 
 ### Expression matrices
 
+Read in expression matrices and filter expression matrices to only contain cohort and samples of interest using histology file
+
 ```{r}
 
-stranded_exp_file <- file.path(data_dir,"pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
-polya_exp_file <- file.path(data_dir,"pbta-gene-expression-rsem-fpkm-collapsed.polya.rds")
+exp_file <- file.path(data_dir,"gene-expression-rsem-tpm-collapsed.rds")
+expressionMatrix<-readRDS(exp_file) 
 
+clinical_filtered <- clinical %>% dplyr::filter(sample_type == "Tumor") %>%
+  dplyr::filter(experimental_strategy == "RNA-Seq") %>% 
+  dplyr::filter(cohort =="PBTA") %>%
+  dplyr::filter(!is.na(RNA_library))
+
+# Generate RNA library list that can be used to iterate 
+rna_library_list <- clinical_filtered %>% pull(RNA_library) %>% unique()
+
+# filter to samples of a particular RNA library type
+expression_matrix_list <- lapply(rna_library_list, function(x){
+  
+  # filter to the samples of interest
+  samples_library <- clinical_filtered %>% 
+    dplyr::filter(RNA_library == x) %>%
+    dplyr::pull(Kids_First_Biospecimen_ID)
+  
+  # seperate exptression matrix to sample of interest 
+  expression_matrix_library <- expressionMatrix %>% dplyr::select(samples_library) %>%
+    rownames_to_column()
+})
+  
 ```
+
 
 Format expression matrices to long format
 
 ```{r}
 
-expression_mat_to_long <- function(expressionFile,score_df,gene){
-# load expressionMatrix RDS for expression based filtering for less than given threshold
-expressionMatrix<-readRDS(expressionFile) %>% 
-  rownames_to_column()
-
+expression_mat_to_long <- function(expressionMatrix,score_df,gene){
+# use filtered expression matrix for expression based filtering for less than given threshold
 # Taking snippet from @jaclyn-taroni idea used in expression based fusion call filtering
 
 expression_long_df <- expressionMatrix %>%
   # rename rowname to GeneSymbol
   dplyr::rename(GeneSymbol=rowname) %>%
+  # filter to gene of interest
+  dplyr::filter(GeneSymbol == gene) %>%
   # Get the data into long format
   reshape2::melt(variable.name = "Kids_First_Biospecimen_ID",
                  value.name = "expression_value") %>%
-  dplyr::mutate(Kids_First_Biospecimen_ID= as.character(Kids_First_Biospecimen_ID)) %>%
-  dplyr::filter(GeneSymbol %in% gene) 
+  dplyr::mutate(Kids_First_Biospecimen_ID= as.character(Kids_First_Biospecimen_ID)) 
 
 # merge score and expression file
 merge_score_exp <- expression_long_df %>%
@@ -92,52 +104,68 @@ merge_score_exp <- expression_long_df %>%
 return(merge_score_exp)
 }
 
-stranded_exp_score <- expression_mat_to_long(stranded_exp_file,score_stranded_df,"TP53")
-polya_exp_score <- expression_mat_to_long(polya_exp_file,score_polya_df,"TP53")
+scores_exp_list <- lapply(expression_matrix_list, function(y){
+  expression_mat_to_long(y,score_df,"TP53")
+})
 
 ```
 
 
 ### Correlation between RNA-expression and classifier sccore
-Stranded 
 
 ```{r}
 
-ggplot(stranded_exp_score,aes(expression_value,tp53_score))+
+for (i in 1:length(scores_exp_list)){
+  # get each scores file
+  scores_file <- scores_exp_list[[i]]
+  
+  # get the name of the library 
+  library_name <- rna_library_list[[i]]
+  
+  # print out the score
+  score_plot <- ggplot(scores_file,aes(expression_value,tp53_score))+
   geom_point() +
   geom_smooth(method='lm') +
-  ggtitle("Stranded RNA-Seq expression v/s score correlation")
+  ggtitle(paste0(library_name, "RNA-Seq expression v/s score correlation"))
+  
+  print(score_plot)
+}
 
+  
 ```
- 
- Polya
 
-```{r}
-ggplot(polya_exp_score,aes(expression_value,tp53_score))+
-  geom_point() +
-  geom_smooth(method='lm') +
-  ggtitle("Polya RNA-Seq expression v/s score correlation")
-
-```
 
 ### Corr.test 
 
 ```{r}
-tidy(cor.test(stranded_exp_score$expression_value,stranded_exp_score$tp53_score))
-tidy(cor.test(polya_exp_score$expression_value,polya_exp_score$tp53_score))
 
+for (j in 1:length(scores_exp_list)){
+  # subset to the scores df
+  exp_score <- scores_exp_list[[j]]
+  # print out the correlation 
+  print(tidy(cor.test(exp_score$expression_value,exp_score$tp53_score))) 
+}
+  
 ```
 
 
-stranded TP53 expression to classifier_score has a negligible 
-negative correlation estimate -0.05 at p value 0.067
+stranded TP53 expression to classifier_score has a 
+negative correlation estimate -0.21 at p value 9.816063e-17	
 
 polya TP53 expression to classifier_score has a negligible 
-negative correlation estimate -0.139 at p value 0.297
+negative correlation estimate -0.095 at p value 0.1330592
+
+polya stranded TP53 expression to classifier_score has a 
+negative correlation estimate -0.326 at p value 5.642812e-20	
 
 Overall distribution of expression and classifier score shows 
-negligible correlation so we cannot directly use the expression/classifier 
-score to infer functionality/phenotype of TP53 inactivation in samples
+negative correlation. For stranded and polya stranded, there are statistically
+significant negative correlation of -0.21 and -0.326. For these two methods. 
+it seemed like expression/classifier score is correlated with functionality/
+phenotype of TP53 inactivation in samples. For polyA samples, there is a negative
+correlation estimate of -0.095 at p value 0.1330592. And we cannot directly 
+use the expression/classifier score to infer functionality/phenotype of TP53 
+inactivation in samples
 
 ### Sample_id matched polya and stranded
 
@@ -150,19 +178,45 @@ sample_id_multi_library <- clinical %>%
             RNA_library = toString(RNA_library)) %>%
   filter(counts > 1)
 
-sample_id_multi_library 
+sample_id_multi_library %>% 
+  dplyr::filter(!sample_id %in% c("01", "03", "04", "09")) %>%
+  knitr::kable()
 
+```
+
+Note that for sample_id of 01,03,04,09 - a lot of samples exist - indicating issues with indexing of those sample_ids at this point. 
+This will likely be fixed later on but at this moment, we will simply remove those. 
+```{r}
+sample_id_multi_library
 ```
 
 7316-85 has multiple stranded let's look at the values
 ```{r}
- clinical %>%
+polya_samples <- clinical_filtered %>%
+  dplyr::filter(RNA_library == "poly-A") %>% 
+  pull(Kids_First_Biospecimen_ID) %>% 
+  unique()
+
+stranded_samples <- clinical_filtered %>%
+  dplyr::filter(RNA_library == "stranded") %>% 
+  pull(Kids_First_Biospecimen_ID) %>% 
+  unique()
+  
+score_polya_df<- score_df %>% 
+  dplyr::filter(sample_id %in% polya_samples)
+
+score_stranded_df<- score_df %>% 
+  dplyr::filter(sample_id %in% stranded_samples)
+
+clinical %>%
   left_join(score_stranded_df , by=c("Kids_First_Biospecimen_ID"="sample_id")) %>%
   left_join(score_polya_df,by=c("Kids_First_Biospecimen_ID"="sample_id"),
-            suffix = c("_stranded","_polya")) %>%
+          suffix = c("_stranded","_polya")) %>%
   filter(sample_id == "7316-85",experimental_strategy=="RNA-Seq") %>%
-  select(sample_id,tp53_score_stranded,tp53_score_polya)
+  select(sample_id,tp53_score_stranded,tp53_score_polya) %>%
+  knitr::kable()
 ```
+
 
 
 ```{r}

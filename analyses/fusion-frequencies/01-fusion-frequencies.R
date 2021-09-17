@@ -5,6 +5,7 @@
 suppressPackageStartupMessages(library(optparse))
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(rtracklayer))
+suppressPackageStartupMessages(library(ids))
 
 option_list <- list(
   make_option(c("-i", "--fusion_file"), type = "character",
@@ -21,6 +22,8 @@ option_list <- list(
               help = "Input independence list for primary samples for each cohort"),
   make_option(c("-t", "--relapse_independence_each"), type = "character",
               help = "Input independence list for relapse samples for each cohort"),
+  make_option(c("-s", "--data_source_id"), type = "character",
+              help = "data source id for the particular file"),
   make_option(c("-o", "--output_filename"), type = "character", 
               default = "putative-oncogene-fusion-freq",
               help = "Output filename suffix ")
@@ -34,6 +37,7 @@ primary_independence_all <- opt$primary_independence_all
 relapse_independence_all <- opt$relapse_independence_all
 primary_independence_each <- opt$primary_independence_each
 relapse_independence_each <- opt$relapse_independence_each
+data_source_id <- opt$data_source_id
 output_filename <- opt$output_filename
 alt_id <- unlist(strsplit(opt$alt_id,","))
 
@@ -312,8 +316,22 @@ annotated_m_fus_freq_tbl <- annotated_m_fus_freq_tbl %>%
          Total_relapse_tumors_mutated_Over_Relapse_tumors_in_dataset,
          Frequency_in_relapse_tumors) %>%
   unique() %>%
-  dplyr::rename(Gene_symbol = Gene_Symbol) 
+  dplyr::rename(Gene_symbol = Gene_Symbol,
+                targetFromSourceId = Gene_Ensembl_ID,
+                diseaseFromSourceMappedId = EFO) %>% 
+  dplyr::mutate(datatypeId = "somatic_mutation",
+                datasourceId = data_source_id) 
 
+# generate UUID for each row of the table
+uuid_string <- uuid(nrow(annotated_m_fus_freq_tbl))
+# make sure all the uuids generated are unique
+stopifnot(length(unique(uuid_string)) == nrow(annotated_m_fus_freq_tbl))
+
+# assign UUID to each row
+annotated_m_fus_freq_tbl <- annotated_m_fus_freq_tbl %>%
+  dplyr::mutate(chop_uuid = uuid_string)
+
+# write to tsv file
 annotated_m_fus_freq_tbl %>%
   write_tsv(file.path(results_dir, paste0(output_filename,'.tsv')))
 

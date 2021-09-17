@@ -46,36 +46,69 @@ if (!dir.exists(results_dir)) {
 Rscript -e "rmarkdown::render('analyses/focal-cn-file-preparation/02-add-ploidy-consensus.Rmd', clean = TRUE)"
 ```
 
-consensus_seg_with_status.tsv was copied from scratch to input folder here so we can access the file in this notebook 
+`consensus_seg_with_status.tsv` was copied from scratch to input folder here so we can access the file in this notebook. Additionally, per our current workflow, we only run consensus CNV calling for WGS samples. And for WXS samples, we use CNVKIT results straight. Therefore, `cnvkit_with_status.tsv` is also moved and that is particularly for WXS samples. The following code needs to be run to get the cnvkit annotated file:
 
+```
+Rscript -e "rmarkdown::render('analyses/focal-cn-file-preparation/01-add-ploidy-cnvkit.Rmd', clean = TRUE)"
+```
+
+Read in CNV files with status and location-domain overlap file
 ```{r}
-# consensus seg for file for the location of CNVs
+# consensus seg for file for the location of CNVs (WGS samples)
 consensus_seg <- read_tsv(file.path(root_dir, 
                                     "analyses",
                                     "tp53_nf1_score",
                                     "input",
                                     "consensus_seg_with_status.tsv"))
 
+# cnvkit seg for file for the location of CNVs (WXS samples)
+cnvkit_seg<- read_tsv(file.path(root_dir, 
+                                "analyses",
+                                "tp53_nf1_score",
+                                "input",
+                                "cnvkit_with_status.tsv"))
+
 # Gene location and domain overlap file 
 bioMartDataPfamTp53 <- 
   readRDS(system.file("extdata", "pfamDataBioMart.RDS", package = "annoFuse")) %>%
   dplyr::filter(hgnc_symbol=="TP53")
 
+```
+
+Read in histology file. Subset based on experimental strategy so that all samples have the correct CNV status file to use.
+```{r}
 # histology file
 if ( params$base_run ==0 ){
-  clinical<-read.delim(file.path(data_dir,"pbta-histologies.tsv"), stringsAsFactors = FALSE)
+  clinical<-read.delim(file.path(data_dir,"histologies.tsv"), stringsAsFactors = FALSE)
 } else{
-  clinical<-read.delim(file.path(data_dir,"pbta-histologies-base.tsv"), stringsAsFactors = FALSE)  
+  clinical<-read.delim(file.path(data_dir,"histologies-base.tsv"), stringsAsFactors = FALSE)  
 }
 
-histologies_df <- clinical %>%
-  dplyr::select("Kids_First_Biospecimen_ID",
-                "sample_id")
+histologies_df <- clinical %>% 
+  dplyr::select(Kids_First_Biospecimen_ID, sample_id)
 
+# find the WGS samples + WXS samples and subset "_with_status.tsv" file with that
+wgs_samples <- histologies_wgs_df <- clinical %>% dplyr::filter(sample_type == "Tumor") %>%
+  dplyr::filter(experimental_strategy == "WGS") %>% 
+  dplyr::filter(cohort =="PBTA") %>% 
+  dplyr::pull("Kids_First_Biospecimen_ID")
+
+wxs_samples <- clinical %>% dplyr::filter(sample_type == "Tumor") %>%
+  dplyr::filter(experimental_strategy == "WXS") %>% 
+  dplyr::filter(cohort =="PBTA") %>% 
+  dplyr::pull("Kids_First_Biospecimen_ID")
+  
+# Filter the consensus and the cnvkit seg files to contain only either WGS or WXS samples 
+consensus_seg <- consensus_seg %>% dplyr::filter(Kids_First_Biospecimen_ID %in% wgs_samples)
+cnvkit_seg <- cnvkit_seg %>% dplyr::filter(Kids_First_Biospecimen_ID %in% wxs_samples)
+
+# merge the seg files together
+combined_seg <- rbind(consensus_seg, cnvkit_seg)
+  
 # Classifier score 
-# 1) Read in scores from tp53-nf1-classifier for stranded
+# Read in scores from tp53-nf1-classifier 
 
-score_stranded_df <- read_tsv(file.path(results_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv")) %>%
+tp53_classifier_score <- readr::read_tsv(file.path(results_dir, "gene-expression-rsem-tpm-collapsed_classifier_scores.tsv")) %>%
   dplyr::select(
     "tp53_score",
     "sample_id"
@@ -84,26 +117,13 @@ score_stranded_df <- read_tsv(file.path(results_dir, "pbta-gene-expression-rsem-
   left_join(histologies_df,by=c("Kids_First_Biospecimen_ID")) %>%
   as.data.frame()
 
-# 2) Read in scores from tp53-nf1-classifier for polya
-score_polya_df <- read_tsv(file.path(results_dir, "pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv")) %>%
-  dplyr::select(
-    "tp53_score",
-    "sample_id"
-  ) %>%
-  dplyr::rename("Kids_First_Biospecimen_ID"="sample_id") %>%
-  left_join(histologies_df,by=c("Kids_First_Biospecimen_ID")) %>%
-  as.data.frame()
-
-# merge classifier scores
-tp53_classifier_score <- rbind(score_stranded_df,score_polya_df)
-
 ```
 
 Generating genomics ranges for cnv and domain dataframes
 
 ```{r}
 # Genomic range for cnv seg file 
-cnv_gr <- consensus_seg %>%
+cnv_gr <- combined_seg %>%
   dplyr::rename(chr = chrom, start = loc.start, end = loc.end,
                 copy_number = copy.num) %>%
   dplyr::select(-num.mark, -seg.mean) %>%
@@ -121,7 +141,6 @@ domain_gr <- bioMartDataPfamTp53 %>%
                                           starts.in.df.are.0based = FALSE)
 
 ```
-
 
 
 ### Overlap CNV and TP53 Domain ranges 
