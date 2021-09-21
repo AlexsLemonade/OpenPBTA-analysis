@@ -31,10 +31,20 @@ export LD_LIBRARY_PATH=$ORIG_LD_LIBRARY_PATH
 unset XAPPLRESDIR
 
 else
+
+  RESULTSDIR=results
+  DATADIR=../../data
+  REFDIR=../copy_number_consensus_call/ref
+  
+  # Generate files that are compatible for GISTIC 
+  Rscript scripts/prepare_seg_for_gistic.R \
+    --in_consensus $DATADIR/cnv-consensus.seg.gz \
+    --out_consensus $RESULTSDIR/cnv-consensus-gistic-only.seg.gz \
+    --histology $DATADIR/histologies.tsv
   
   # run GISTIC for the whole cohort
   echo "Running GISTIC on the entire OpenPedCan cohort..."
-bash scripts/run-gistic-opentargets.sh
+  bash scripts/run-gistic-opentargets.sh
 
 fi
 
