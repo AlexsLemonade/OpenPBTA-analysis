@@ -34,7 +34,6 @@ else
 
   RESULTSDIR=results
   DATADIR=../../data
-  REFDIR=../copy_number_consensus_call/ref
   
   # Generate files that are compatible for GISTIC 
   Rscript scripts/prepare_seg_for_gistic.R \

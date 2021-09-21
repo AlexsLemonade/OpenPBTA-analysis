@@ -5,9 +5,7 @@
 # Currently, if we use the cnv consensus seg file as is, since we define copy.num=NA for neutral calls
 # a lot of NAs are present in the file and will cause GISTIC to error out. 
 # Those changes were made for the focal CN module so in order not to change that but also fixed the 
-# issue in GISTIC, we generated a consensus seg file just for GISTIC.
-# Additionally, we now use CNVkit only file for WXS files so we need to make sure the file is compatible
-# with GISTIC as well
+# issue in GISTIC, we generated a consensus seg file just for GISTIC by using `tumor_ploidy` as `copy.num`
 
 
 # Magrittr pipe
