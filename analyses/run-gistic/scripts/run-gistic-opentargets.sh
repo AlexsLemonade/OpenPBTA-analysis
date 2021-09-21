@@ -20,7 +20,7 @@ FILEPREFIX=${FILEPREFIX:-"consensus"}
 
 # The results directory relative to where this script lives
 # and the folder name that will contain the GISTIC results, respectively
-# These will be constructed into a file ath that is the basedir argument
+# These will be constructed into a file path that is the basedir argument
 # for GISTIC
 RESULTSDIR=${RESULTSDIR:-"../results"}
 OUTPUTFOLDER=${OUTPUTFOLDER:-"cnv-consensus"}
