@@ -23,7 +23,7 @@ FILEPREFIX=${FILEPREFIX:-"consensus"}
 # These will be constructed into a file path that is the basedir argument
 # for GISTIC
 RESULTSDIR=${RESULTSDIR:-"../results"}
-OUTPUTFOLDER=${OUTPUTFOLDER:-"cnv-consensus"}
+OUTPUTFOLDER=${OUTPUTFOLDER:-"cnv-consensus-gistic"}
 
 basedir=${RESULTSDIR}/${OUTPUTFOLDER}
 mkdir -p $basedir
