@@ -20,3 +20,7 @@ The EFO codes may have prefix “EFO_”, “MONDO_” or “Orphanet_”, while
 
 As more cancer groups or subtypes are added to existing histologies dataset and/or in case of any ambiguity, these codes will be revised.
 Currently, all non-NA cancer groups from `histologies.tsv` except 'Epilepsy', 'Dysplasia/Gliosis;Glial-neuronal tumor NOS', 'Arteriovenous malformation', and 'Reactive connective tissue' are included `efo-mondo-map.tsv`.
+
+Update on 09/21/2021
+Unnecessary trailing white space from three cancer groups have been removed.
+
