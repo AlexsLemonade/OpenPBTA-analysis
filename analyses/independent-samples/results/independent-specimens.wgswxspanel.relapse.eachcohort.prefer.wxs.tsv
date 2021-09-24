@@ -34,6 +34,7 @@ PT_1ZAWNGWT	BS_6X2BQQGE	PBTA	Low-grade glioma/astrocytoma	WGS	Progressive
 PT_8SDJXNFR	BS_6Z4WHYDG	PBTA	Ependymoma	WGS	Recurrence
 PT_MTE126WM	BS_74A1TB03	PBTA	Atypical Teratoid Rhabdoid Tumor	WGS	Progressive
 PT_KZ04SDDS	BS_79NQJZ09	PBTA	High-grade glioma/astrocytoma	WGS	Progressive
+PT_1H2REHT2	BS_7M7JNG00	PBTA	Low-grade glioma/astrocytoma	WGS	Progressive
 PT_FMK5VFYW	BS_80X7AVCP	PBTA	CNS Embryonal tumor	WGS	Progressive
 PT_858H7ABM	BS_872Q3FK2	PBTA	Diffuse midline glioma	WGS	Recurrence
 PT_R1N5M7NH	BS_886M7JMG	PBTA	Arteriovenous malformation	WGS	Recurrence
@@ -44,7 +45,7 @@ PT_596H0BQF	BS_8Q8CAY84	PBTA	NA	WGS	Progressive
 PT_37B5JRP1	BS_8Q8N6AHW	PBTA	High-grade glioma/astrocytoma	WGS	Progressive
 PT_MXASQ2GW	BS_922YMFYK	PBTA	Neurofibroma/Plexiform	WGS	Progressive
 PT_RDJ40M73	BS_928HWFFM	PBTA	High-grade glioma/astrocytoma	WGS	Recurrence
-PT_1H2REHT2	BS_96S0VQBN	PBTA	High-grade glioma/astrocytoma	WGS	Progressive
+PT_KZ56XHJT	BS_9DN4QR6E	PBTA	Diffuse midline glioma	WXS	Progressive
 PT_HJMP6PH2	BS_9SVMVJ45	PBTA	Ewing sarcoma	WGS	Recurrence
 PT_20ZM6THA	BS_9X9E86DY	PBTA	Low-grade glioma/astrocytoma	WGS	Recurrence
 PT_ESHACWF6	BS_A94A7EJ4	PBTA	Atypical Teratoid Rhabdoid Tumor	WGS	Progressive
@@ -72,12 +73,12 @@ PT_ZZ8SBJJ5	BS_CPZZR2R7	PBTA	Choroid plexus papilloma	WGS	Progressive
 PT_2VSDT9CK	BS_CQ8C6X4X	PBTA	Low-grade glioma/astrocytoma	WGS	Progressive
 PT_MDWPRDBT	BS_D368BNRD	PBTA	High-grade glioma/astrocytoma	WGS	Progressive
 PT_ER1C7KPB	BS_D59VEERR	PBTA	Ganglioglioma	WGS	Progressive
-PT_KZ56XHJT	BS_D6STCMQS	PBTA	Diffuse midline glioma	WGS	Progressive Disease Post Mortem
 PT_N32BYY8A	BS_D6XHKZDZ	PBTA	High-grade glioma/astrocytoma	WGS	Progressive
 PT_XTVQB9S4	BS_DE26D072	PBTA	Atypical Teratoid Rhabdoid Tumor	WGS	Progressive
 PT_B38P3Y5T	BS_DH86PF5A	PBTA	Diffuse midline glioma	WGS	Progressive
 PT_6N825561	BS_E0S2Y0TS	PBTA	Atypical Teratoid Rhabdoid Tumor	WGS	Progressive
 PT_FN4GEEFR	BS_E1VJCEWB	PBTA	Medulloblastoma	WGS	Progressive
+PT_KTRJ8TFY	BS_EE73VE7V	PBTA	High-grade glioma/astrocytoma	WGS	Progressive Disease Post Mortem
 PT_9AW9EWHA	BS_EFBBP9H3	PBTA	Ependymoma	WGS	Progressive
 PT_DNAJYFZT	BS_EJ1H9PZY	PBTA	Ependymoma	WGS	Progressive
 PT_QDGVJKE0	BS_EP25TTAG	PBTA	High-grade glioma/astrocytoma	WGS	Progressive
@@ -85,15 +86,14 @@ PT_2ECVKTTQ	BS_ERMGD2N5	PBTA	Low-grade glioma/astrocytoma	WGS	Recurrence
 PT_EB0D3BXG	BS_F0GNWEJJ	PBTA	Metastatic secondary tumors;Neuroblastoma	WGS	Progressive
 PT_JP1FDKN9	BS_FF73TT6D	PBTA	Ependymoma	WGS	Recurrence
 PT_NPETR8RY	BS_FSM39DXA	PBTA	Ependymoma	WGS	Recurrence
+PT_NK8A49X5	BS_GKXD33YH	PBTA	Diffuse midline glioma	WXS	Progressive
 PT_Y7F2JZMQ	BS_GS9JCK55	PBTA	Low-grade glioma/astrocytoma	WGS	Progressive
 PT_GH27VJBD	BS_H8MAKDRB	PBTA	Ependymoma	WGS	Progressive
 PT_C94VR1Y2	BS_HBAKYKQM	PBTA	Ependymoma	WGS	Recurrence
-PT_NK8A49X5	BS_HEJ72V3F	PBTA	Diffuse midline glioma	WGS	Progressive
 PT_3D74J8RZ	BS_HGP0PV0D	PBTA	Meningioma	WGS	Progressive
 PT_V5ASTHRH	BS_HNE6BPMH	PBTA	Germinoma;Teratoma	WGS	Progressive
 PT_0NY38X3W	BS_HQFNQHVW	PBTA	Ependymoma	WGS	Progressive
 PT_95S99RWE	BS_HYGK88B0	PBTA	Adamantinomatous Craniopharyngioma	WGS	Recurrence
-PT_KTRJ8TFY	BS_HYKV2TH9	PBTA	Diffuse midline glioma	WGS	Progressive Disease Post Mortem
 PT_ZD45GXZ0	BS_J33YVP27	PBTA	Ependymoma	WGS	Progressive
 PT_2BJF83GQ	BS_J5J0EA7Y	PBTA	Low-grade glioma/astrocytoma	WGS	Progressive
 PT_KBFM551M	BS_J8EK6RNF	PBTA	High-grade glioma/astrocytoma	WGS	Progressive Disease Post Mortem
@@ -111,7 +111,6 @@ PT_Y76A7PBA	BS_M4E4H6NG	PBTA	High-grade glioma/astrocytoma	WGS	Recurrence
 PT_962TCBVR	BS_ME97J1GA	PBTA	Low-grade glioma/astrocytoma	WGS	Progressive
 PT_Z7YJ7MSM	BS_MGY2V5N4	PBTA	Glial-neuronal tumor NOS	WGS	Recurrence
 PT_H024RK87	BS_MRX1SPFB	PBTA	Teratoma	WGS	Recurrence
-PT_DFQAH7RS	BS_MW16Y7ME	PBTA	Dysembryoplastic neuroepithelial tumor	WGS	Progressive
 PT_AWMZ12NP	BS_N8WXTFN4	PBTA	Low-grade glioma/astrocytoma	WGS	Progressive
 PT_25Z2NX27	BS_N9SMBR24	PBTA	NA	WGS	Progressive
 PT_3T3VGWC6	BS_NCGGFG6H	PBTA	Low-grade glioma/astrocytoma	WGS	Recurrence
@@ -166,3 +165,40 @@ PT_XA8ASFJK	BS_Z7R92XX6	PBTA	Low-grade glioma/astrocytoma	WGS	Progressive
 PT_PKP1250P	BS_ZBWQG7VR	PBTA	Ependymoma	WGS	Recurrence
 PT_TGTJECMR	BS_ZJSMC22A	PBTA	Teratoma	WGS	Progressive
 PT_2YT37G8P	BS_ZJZFT0AJ	PBTA	Low-grade glioma/astrocytoma	WGS	Recurrence
+PT_DFQAH7RS	BS_ZKFEMJZ8	PBTA	Low-grade glioma/astrocytoma	WGS	Recurrence
+PANTSM	TARGET-10-PANTSM-04A-01D	TARGET	Acute Lymphoblastic Leukemia	WXS	Recurrence
+PAPAGK	TARGET-10-PAPAGK-04A-01D	TARGET	Acute Lymphoblastic Leukemia	WXS	Recurrence
+PAPEFH	TARGET-10-PAPEFH-04A-01D	TARGET	Acute Lymphoblastic Leukemia	WXS	Recurrence
+PAPJIB	TARGET-10-PAPJIB-04A-01D	TARGET	Acute Lymphoblastic Leukemia	WXS	Recurrence
+PAPLDL	TARGET-10-PAPLDL-04A-01D	TARGET	Acute Lymphoblastic Leukemia	WXS	Recurrence
+PAPNNX	TARGET-10-PAPNNX-04A-01D	TARGET	Acute Lymphoblastic Leukemia	WXS	Recurrence
+PAPSPG	TARGET-10-PAPSPG-04A-01D	TARGET	Acute Lymphoblastic Leukemia	WXS	Recurrence
+PAPSPN	TARGET-10-PAPSPN-04A-01D	TARGET	Acute Lymphoblastic Leukemia	WXS	Recurrence
+PAPZNK	TARGET-10-PAPZNK-04A-01D	TARGET	Acute Lymphoblastic Leukemia	WXS	Recurrence
+PARAKF	TARGET-10-PARAKF-04A-01D	TARGET	Acute Lymphoblastic Leukemia	WXS	Recurrence
+PARFTR	TARGET-10-PARFTR-04A-01D	TARGET	Acute Lymphoblastic Leukemia	WXS	Recurrence
+PARGHW	TARGET-10-PARGHW-04A-01D	TARGET	Acute Lymphoblastic Leukemia	WXS	Recurrence
+PARIAD	TARGET-10-PARIAD-04A-01D	TARGET	Acute Lymphoblastic Leukemia	WXS	Recurrence
+PARJZZ	TARGET-10-PARJZZ-04A-01D	TARGET	Acute Lymphoblastic Leukemia	WXS	Recurrence
+PARPNM	TARGET-10-PARPNM-04A-01D	TARGET	Acute Lymphoblastic Leukemia	WXS	Recurrence
+PASFXA	TARGET-10-PASFXA-04A-01D	TARGET	Acute Lymphoblastic Leukemia	WXS	Recurrence
+PASLZM	TARGET-10-PASLZM-04A-01D	TARGET	Acute Lymphoblastic Leukemia	WXS	Recurrence
+PAEEYP	TARGET-20-PAEEYP-04A-01D	TARGET	Acute Myeloid Leukemia	WXS	Recurrence
+PAERAH	TARGET-20-PAERAH-04A-01D	TARGET	Acute Myeloid Leukemia	WXS	Recurrence
+PAKKBK	TARGET-20-PAKKBK-04A-01D	TARGET	Acute Myeloid Leukemia	WXS	Recurrence
+PAMYAS	TARGET-20-PAMYAS-04A-01D	TARGET	Acute Myeloid Leukemia	WXS	Recurrence
+PANGTF	TARGET-20-PANGTF-04A-01D	TARGET	Acute Myeloid Leukemia	WXS	Recurrence
+PANLIZ	TARGET-20-PANLIZ-04A-01D	TARGET	Acute Myeloid Leukemia	WXS	Recurrence
+PANLRE	TARGET-20-PANLRE-04A-01D	TARGET	Acute Myeloid Leukemia	WXS	Recurrence
+PANSBH	TARGET-20-PANSBH-04A-01D	TARGET	Acute Myeloid Leukemia	WXS	Recurrence
+PANVGP	TARGET-20-PANVGP-04A-01D	TARGET	Acute Myeloid Leukemia	WXS	Recurrence
+PARGVC	TARGET-20-PARGVC-04A-01D	TARGET	Acute Myeloid Leukemia	WXS	Recurrence
+PARUNX	TARGET-20-PARUNX-04A-01D	TARGET	Acute Myeloid Leukemia	WXS	Recurrence
+PARVUA	TARGET-20-PARVUA-04A-01D	TARGET	Acute Myeloid Leukemia	WXS	Recurrence
+PARWXU	TARGET-20-PARWXU-04A-01D	TARGET	Acute Myeloid Leukemia	WXS	Recurrence
+PASFEW	TARGET-20-PASFEW-04A-01D	TARGET	Acute Myeloid Leukemia	WXS	Recurrence
+PAJNGH	TARGET-50-PAJNGH-02A-01D	TARGET	Wilms tumor	WXS	Recurrence
+PAJNTJ	TARGET-50-PAJNTJ-02A-01D	TARGET	Wilms tumor	WXS	Recurrence
+PAJPDC	TARGET-50-PAJPDC-02A-01D	TARGET	Wilms tumor	WXS	Recurrence
+PALFME	TARGET-50-PALFME-02A-01D	TARGET	Wilms tumor	WXS	Recurrence
+PALJIP	TARGET-50-PALJIP-02A-01D	TARGET	Wilms tumor	WXS	Recurrence

@@ -16,7 +16,7 @@
 #' @param tumor_types Designates which types of tumors will be included. Options
 #'   are "primary" to include only primary tumors, "prefer_primary" to include
 #'   primary tumors when available, but fall back to other types, or "any" to
-#'   randomly select among all available specimens. As of v6, primary tumors
+#'   randomly select among all available specimens. As of v9, primary tumors
 #'   are defined as those designated "Initial CNS Tumor" or "Primary Tumor" in the
 #'   `tumor_descriptor` field.
 #' @param seed An optional random number seed. 
@@ -93,7 +93,7 @@ independent_samples <- function(histology_df,
       # row will be preserved. If omitted, will use all variables." -- distinct in dplyr 0.8.3
       independent_filtered <- filtered_df %>%
         dplyr::distinct(Kids_First_Participant_ID, .keep_all = TRUE) %>%
-        dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID)
+        dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, cohort, cancer_group, experimental_strategy, tumor_descriptor)
       
       # merge the independent samples together
       independent_each <- rbind(independent_each, independent_filtered)
@@ -106,7 +106,7 @@ independent_samples <- function(histology_df,
 
     independent_all <- sample_df %>%
       dplyr::distinct(Kids_First_Participant_ID, .keep_all = TRUE) %>%
-      dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID)
+      dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, cohort, cancer_group, experimental_strategy, tumor_descriptor)
     
     return(independent_all)
   }

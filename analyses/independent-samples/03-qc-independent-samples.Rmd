@@ -17,85 +17,60 @@ suppressPackageStartupMessages({
 
 ## Output files
 
-```{r output_files}
-each_cohort_filenames <- c('independent-specimens.rnaseq.primary.eachcohort.tsv',
-                           'independent-specimens.rnaseq.relapse.eachcohort.tsv',
-                           'independent-specimens.wgs.primary.eachcohort.tsv',
-                           'independent-specimens.wgs.relapse.eachcohort.tsv',
-                           'independent-specimens.wgswxspanel.primary.eachcohort.tsv',
-                           'independent-specimens.wgswxspanel.relapse.eachcohort.tsv')
+```{r wgs_only}
+wgs_only_files <- c("independent-specimens.wgs.primary.eachcohort.tsv",
+                    "independent-specimens.wgs.primary.tsv",
+                    "independent-specimens.wgs.relapse.eachcohort.tsv",
+                    "independent-specimens.wgs.relapse.tsv",
+                    "independent-specimens.wgs.primary-plus.eachcohort.tsv",
+                    "independent-specimens.wgs.primary-plus.tsv")
+```
 
+```{r wgs_preferred}
+wgs_preferred_files <- c("independent-specimens.wgswxspanel.primary.eachcohort.tsv",
+                         "independent-specimens.wgswxspanel.primary.tsv",
+                         "independent-specimens.wgswxspanel.relapse.eachcohort.tsv",
+                         "independent-specimens.wgswxspanel.relapse.tsv",
+                         "independent-specimens.wgswxspanel.primary-plus.eachcohort.tsv",
+                         "independent-specimens.wgswxspanel.primary-plus.tsv")
+```
+
+```{r wxs_preferred}
+wxs_preferred_files <- c("independent-specimens.wgswxspanel.primary.eachcohort.prefer.wxs.tsv",
+                         "independent-specimens.wgswxspanel.primary.prefer.wxs.tsv",
+                         "independent-specimens.wgswxspanel.relapse.eachcohort.prefer.wxs.tsv",
+                         "independent-specimens.wgswxspanel.relapse.prefer.wxs.tsv",
+                         "independent-specimens.wgswxspanel.primary-plus.eachcohort.prefer.wxs.tsv",
+                         "independent-specimens.wgswxspanel.primary-plus.prefer.wxs.tsv")
 ```
 
 ## Functions
 
 ```{r set_functions}
-# do not compare participant ids that are duplicated in each_cohort_df
-do_not_compare <- function(x) {
-  each_cohort_df <- read_tsv(x, col_types = cols())
-  all_cohort_df <- read_tsv(str_remove(x, 'eachcohort\\.'), col_types = cols())
-  # Do not compare Kids_First_Participant_IDs that are duplicated in each_cohort_df
-  each_cohort_duplicated_participant_ids <- each_cohort_df %>%
-    group_by(Kids_First_Participant_ID) %>%
-    summarise(n_Kids_First_Participant_ID = n()) %>%
-    filter(n_Kids_First_Participant_ID > 1) %>%
-    pull(Kids_First_Participant_ID)
-  
-  each_cohort_df %>%
-    filter(!Kids_First_Participant_ID %in% each_cohort_duplicated_participant_ids) %>%
-    rename(Kids_First_Biospecimen_ID_each_cohort = Kids_First_Biospecimen_ID) %>%
-    inner_join(rename(all_cohort_df,
-                      Kids_First_Biospecimen_ID_all_cohorts = Kids_First_Biospecimen_ID),
-               by = 'Kids_First_Participant_ID') %>%
-    filter(!is.na(Kids_First_Biospecimen_ID_each_cohort), !is.na(Kids_First_Biospecimen_ID_all_cohorts)) %>%
-    mutate(same_Biospecimen_ID_for_the_same_Patient_ID = (
-      Kids_First_Biospecimen_ID_each_cohort == Kids_First_Biospecimen_ID_all_cohorts)) %>%
-    count(same_Biospecimen_ID_for_the_same_Patient_ID) %>%
-    mutate(list = str_remove(
-      str_replace(x, '\\.eachcohort\\.tsv', ' each-cohort vs all-cohorts'),
-      'independent-specimens\\.')) %>%
-    select(list, same_Biospecimen_ID_for_the_same_Patient_ID, n)
-}
-
-# only compare participant ids that are duplicated in each_cohort_df
-compare <- function(x) {
-  each_cohort_df <- read_tsv(x, col_types = cols())
-  all_cohort_df <- read_tsv(str_remove(x, 'eachcohort\\.'), col_types = cols())
-  # Only compare Kids_First_Participant_IDs that are duplicated in each_cohort_df
-  each_cohort_duplicated_participant_ids <- each_cohort_df %>%
-    group_by(Kids_First_Participant_ID) %>%
-    summarise(n_Kids_First_Participant_ID = n()) %>%
-    filter(n_Kids_First_Participant_ID > 1) %>%
-    pull(Kids_First_Participant_ID)
-  
-  each_cohort_df %>%
-    filter(Kids_First_Participant_ID %in% each_cohort_duplicated_participant_ids) %>%
-    rename(Kids_First_Biospecimen_ID_each_cohort = Kids_First_Biospecimen_ID) %>%
-    left_join(rename(all_cohort_df,
-                     Kids_First_Biospecimen_ID_all_cohorts = Kids_First_Biospecimen_ID),
-              by = 'Kids_First_Participant_ID') %>%
-    filter(!is.na(Kids_First_Biospecimen_ID_each_cohort), !is.na(Kids_First_Biospecimen_ID_all_cohorts)) %>%
-    mutate(same_Biospecimen_ID_for_the_same_Patient_ID = (
-      Kids_First_Biospecimen_ID_each_cohort == Kids_First_Biospecimen_ID_all_cohorts)) %>%
-    count(same_Biospecimen_ID_for_the_same_Patient_ID) %>%
-    mutate(list = str_remove(
-      str_replace(x, '\\.eachcohort\\.tsv', ' each-cohort vs all-cohorts'),
-      'independent-specimens\\.')) %>%
-    select(list, same_Biospecimen_ID_for_the_same_Patient_ID, n)
+# number of total rows + number of total Kids_First_Participant_ID
+count_num <- function(x){
+  df <- read_tsv(x, col_types = cols())
+  data.frame(file = x, n_rows = nrow(df), unique_KF_id = length(unique(df$Kids_First_Participant_ID)))
 }
 ```
 
-### Only compare Kids_First_Participant_IDs that are duplicated in each_cohort_df
+### WGS File summary
 
-```{r only_compare}
-DT::datatable(map_df(each_cohort_filenames, .f = function(x) 
-  compare(file.path('results', x))))
+```{r wgs_file_summary}
+DT::datatable(map_df(wgs_only_files, .f = function(x) 
+  count_num(file.path('results', x))))
 ```
 
-### Do not compare Kids_First_Participant_IDs that are duplicated in each_cohort_df
+### WGS-preferred File summary
 
-```{r}
-DT::datatable(map_df(each_cohort_filenames, .f = function(x) do_not_compare(file.path('results',x))))
+```{r wgs_pref_file_summary}
+DT::datatable(map_df(wgs_preferred_files, .f = function(x) 
+  count_num(file.path('results', x))))
 ```
 
+### WXS-preferred File summary
 
+```{r wxs_pref_file_summary}
+DT::datatable(map_df(wxs_preferred_files, .f = function(x) 
+  count_num(file.path('results', x))))
+```
