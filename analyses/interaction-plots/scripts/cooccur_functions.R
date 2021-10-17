@@ -84,7 +84,10 @@ filter_mutations <- function(maf_df,
 #'   the first but not second gene, etc.); `odds_ratio` for co-occurence,
 #'   `cooccur_sign`: 1 if co-occurence greater than by chance, -1 if less
 #'   frequent than expected; `p` the fisher's exact test p value; and a
-#'   `cooccur_score` calucated as `cooccur_sign * -log10(p)`.
+#'   `cooccur_score` calculated as `cooccur_sign * -log10(p)`. Overall percent 
+#'   of samples mutated denoted as `perc_mutated_gene1` and `perc_mutated_gene2` 
+#'   and percent of those in which mutations are co-occuring or mutually exclusive 
+#'   denoted as `perc_cooccur_or_mutexcl`.
 coocurrence <- function(gene_sample_df,
                         genes = sample(unique(gene_sample_df$gene), 25),
                         samples = unique(gene_sample_df$sample)) {
@@ -131,14 +134,23 @@ coocurrence <- function(gene_sample_df,
       mut00 = sum(muts1 == 0 & muts2 == 0),
       odds_ratio = (mut11 * mut00) / (mut10 * mut01),
       cooccur_sign = ifelse(odds_ratio > 1, 1, -1)
-    ) %>%
+      ) %>%
     dplyr::rowwise() %>%
     dplyr::mutate(p = row_fisher(mut11, mut10, mut01, mut00)) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(
       q = p.adjust(p, method = "BH"),
-      cooccur_score = cooccur_sign * -log10(p)
-    )
-
+      cooccur_score = cooccur_sign * -log10(p)) %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(    
+      n_mutated_gene1 = sum(mut11, mut10),
+      n_mutated_gene2 = sum(mut11, mut01),
+      perc_mutated_gene1 = sum(mut11, mut10)*100/sum(mut11, mut10, mut01, mut00),
+      perc_mutated_gene2 = sum(mut11, mut01)*100/sum(mut11, mut10, mut01, mut00),
+      perc_cooccur_or_mutexcl = ifelse(cooccur_sign == 1, 
+                                       mut11*100/sum(mut11, mut10), 
+                                       sum(mut10,mut01)*100/sum(mut11, mut10, mut01))
+)
+    
   return(gene_pair_summary)
 }
