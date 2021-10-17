@@ -86,8 +86,8 @@ filter_mutations <- function(maf_df,
 #'   `odds_ratio` for co-occurence, `cooccur_sign`: 1 if co-occurence greater than by chance, 
 #'   -1 if less frequent than expected; `p` the fisher's exact test p value; and a
 #'   `cooccur_score` calculated as `cooccur_sign * -log10(p)`. Overall percent 
-#'   of samples mutated denoted as `perc_mutated_gene1` and `perc_mutated_gene2` 
-#'   and percent of those in which mutations are co-occuring or mutually exclusive 
+#'   of samples mutated denoted as `perc_mutated_gene1` and `perc_mutated_gene2`. 
+#'   Percent of gene1-mutated samples in which gene2 mutations are co-occuring or mutually exclusive 
 #'   denoted as `perc_cooccur_or_mutexcl`.
 coocurrence <- function(gene_sample_df,
                         genes = sample(unique(gene_sample_df$gene), 25),
