@@ -81,9 +81,10 @@ filter_mutations <- function(maf_df,
 #' @return A data frame summarizing the co-occurence of pairs of genes in the
 #'   gene list with columns `gene1`; `gene2`; counts of each mutations in
 #'   each category of sharing (`mut11`: both mutated; `mut10`: mutated in
-#'   the first but not second gene, etc.); `odds_ratio` for co-occurence,
-#'   `cooccur_sign`: 1 if co-occurence greater than by chance, -1 if less
-#'   frequent than expected; `p` the fisher's exact test p value; and a
+#'   the first but not second gene, etc.) and summary (`n_mutated_gene1` and 
+#'   `n_mutated_gene2`: number of samples with gene1 or gene2 mutated, ) `n_mutated_gene1`); 
+#'   `odds_ratio` for co-occurence, `cooccur_sign`: 1 if co-occurence greater than by chance, 
+#'   -1 if less frequent than expected; `p` the fisher's exact test p value; and a
 #'   `cooccur_score` calculated as `cooccur_sign * -log10(p)`. Overall percent 
 #'   of samples mutated denoted as `perc_mutated_gene1` and `perc_mutated_gene2` 
 #'   and percent of those in which mutations are co-occuring or mutually exclusive 
