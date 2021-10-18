@@ -79,16 +79,34 @@ filter_mutations <- function(maf_df,
 #'   samples present in the data frame.
 #'
 #' @return A data frame summarizing the co-occurence of pairs of genes in the
-#'   gene list with columns `gene1`; `gene2`; counts of each mutations in
-#'   each category of sharing (`mut11`: both mutated; `mut10`: mutated in
-#'   the first but not second gene, etc.) and summary (`n_mutated_gene1` and 
-#'   `n_mutated_gene2`: number of samples with gene1 or gene2 mutated, ) `n_mutated_gene1`); 
-#'   `odds_ratio` for co-occurence, `cooccur_sign`: 1 if co-occurence greater than by chance, 
-#'   -1 if less frequent than expected; `p` the fisher's exact test p value; and a
-#'   `cooccur_score` calculated as `cooccur_sign * -log10(p)`. Overall percent 
-#'   of samples mutated denoted as `perc_mutated_gene1` and `perc_mutated_gene2`. 
-#'   Percent of gene1-mutated samples in which gene2 mutations are co-occuring or mutually exclusive 
-#'   denoted as `perc_cooccur_or_mutexcl`.
+#'   gene list with columns:
+#'  `gene1`; `gene2` (gene names);
+#'  `mut11`; `mut10`; `mut01` (counts of mutations in each category of sharing:
+#'     `mut11`: both mutated; `mut10`: mutated in the first but not second gene, etc.);
+#'  `odds_ratio` (odds ratio for for co-occurence);
+#'  `cooccur_sign` (1 if co-occurence greater than by chance, -1 if less frequent than expected)
+#'  `p` (the fisher's exact test p value);
+#'  `q` (Benjamini-Hochberg adjusted p value);
+#'  `cooccur_score` (calculated as `cooccur_sign * -log10(p)`);
+#'  `n_mutated_gene1`; `n_mutated_gene2` (count of samples with gene1 or gene2 mutations); 
+#'  `perc_mutated_gene1`; `perc_mutated_gene2` (percent of samples with gene 1 or gene 2 mutations);
+#'  `perc_cooccur`;
+#'  `perc_mutexl`;#' @return A data frame summarizing the co-occurence of pairs of genes in the
+#'   gene list with columns:
+#'  `gene1`; `gene2` (gene names);
+#'  `mut11`; `mut10`; `mut01` (counts of mutations in each category of sharing:
+#'     `mut11`: both mutated; `mut10`: mutated in the first but not second gene, etc.);
+#'  `odds_ratio` (odds ratio for for co-occurence);
+#'  `cooccur_sign` (1 if co-occurence greater than by chance, -1 if less frequent than expected)
+#'  `p` (the fisher's exact test p value);
+#'  `q` (Benjamini-Hochberg adjusted p value);
+#'  `cooccur_score` (calculated as `cooccur_sign * -log10(p)`);
+#'  `n_mutated_gene1`; `n_mutated_gene2` (count of samples with gene1 or gene2 mutations); 
+#'  `perc_mutated_gene1`; `perc_mutated_gene2` (percent of samples with gene 1 or gene 2 mutations);
+#'  `perc_cooccur_all_samples`; (Percent of all surveyed samples with co-occurring gene1/2 mutations);
+#'  `perc_mutexcl_all_samples`; (Percent of all surveyed samples with gene1/2 mutations being mutually exclusive);
+#'  `perc_cooccur_gene1_mutated`; (Percent of gene1-mutated samples in which gene2 mutations are co-occurring);
+#'  `perc_mutexcl_gene1_mutated`; (Percent of gene1-mutated samples in which gene2 mutations are mutually exclusive)
 coocurrence <- function(gene_sample_df,
                         genes = sample(unique(gene_sample_df$gene), 25),
                         samples = unique(gene_sample_df$sample)) {
@@ -148,9 +166,14 @@ coocurrence <- function(gene_sample_df,
       n_mutated_gene2 = sum(mut11, mut01),
       perc_mutated_gene1 = sum(mut11, mut10)*100/sum(mut11, mut10, mut01, mut00),
       perc_mutated_gene2 = sum(mut11, mut01)*100/sum(mut11, mut10, mut01, mut00),
-      perc_cooccur_or_mutexcl = ifelse(cooccur_sign == 1, 
-                                       mut11*100/sum(mut11, mut10), 
-                                       sum(mut10,mut01)*100/sum(mut11, mut10, mut01))
+      perc_cooccur_all_samples = ifelse(cooccur_sign == 1, 
+                                        mut11*100/sum(mut11, mut10, mut01, mut00), NA),
+      perc_mutexcl_all_samples = ifelse(cooccur_sign == -1, 
+                                        sum(mut10,mut01)*100/sum(mut11, mut10, mut01, mut00), NA),
+      perc_cooccur_gene1_mutated = ifelse(cooccur_sign == 1, 
+                                          mut11*100/sum(mut11, mut10), NA),
+      perc_mutexcl_gene1_mutated = ifelse(cooccur_sign == -1,
+                                          sum(mut10,mut01)*100/sum(mut11, mut10, mut01), NA)
 )
     
   return(gene_pair_summary)
