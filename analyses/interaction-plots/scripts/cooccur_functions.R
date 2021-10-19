@@ -166,14 +166,10 @@ coocurrence <- function(gene_sample_df,
       n_mutated_gene2 = sum(mut11, mut01),
       perc_mutated_gene1 = sum(mut11, mut10)*100/sum(mut11, mut10, mut01, mut00),
       perc_mutated_gene2 = sum(mut11, mut01)*100/sum(mut11, mut10, mut01, mut00),
-      perc_cooccur_all_samples = ifelse(cooccur_sign == 1, 
-                                        mut11*100/sum(mut11, mut10, mut01, mut00), NA),
-      perc_mutexcl_all_samples = ifelse(cooccur_sign == -1, 
-                                        sum(mut10,mut01)*100/sum(mut11, mut10, mut01, mut00), NA),
-      perc_cooccur_gene1_mutated = ifelse(cooccur_sign == 1, 
-                                          mut11*100/sum(mut11, mut10), NA),
-      perc_mutexcl_gene1_mutated = ifelse(cooccur_sign == -1,
-                                          sum(mut10,mut01)*100/sum(mut11, mut10, mut01), NA)
+      perc_cooccur_all_samples = mut11*100/sum(mut11, mut10, mut01, mut00),
+      perc_mutexcl_all_samples = sum(mut10,mut01)*100/sum(mut11, mut10, mut01, mut00),
+      perc_cooccur_gene1_mutated = mut11*100/sum(mut11, mut10),
+      perc_mutexcl_gene1_mutated = sum(mut10,mut01)*100/sum(mut11, mut10, mut01)
 )
     
   return(gene_pair_summary)
