@@ -312,7 +312,6 @@ oncoplot(
   bgCol = "#F5F5F5",
   top = opt$top_n,
   drawRowBar = FALSE,
-  titleText = ifelse(is.null(opt$broad_histology), "", opt$broad_histology),
   titleFontSize = 1.3,
   gene_mar = 10
 )
