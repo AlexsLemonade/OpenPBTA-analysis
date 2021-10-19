@@ -387,10 +387,11 @@ gather_n_per_cancer_group <- function(metadata, broad_histology){
   }
 }
 
-output_file <- file.path(output_dir, paste0(opt$filename_lead, "_n_per_cancer_group.tsv"))
-lapply(c("Low-grade astrocytic tumor","Embryonal tumor",
+output_file <- file.path('data', paste0(opt$filename_lead, "_n_per_cancer_group.tsv"))
+lapply(as.list(c("Low-grade astrocytic tumor","Embryonal tumor",
          "Diffuse astrocytic and oligodendroglial tumor",
-         "Other CNS"), function(x) gather_n_per_cancer_group(histologies_df,x)) %>%
+         "Other CNS")), function(x) gather_n_per_cancer_group(histologies_df,x)) %>%
 	bind_rows() %>%
+        unique() %>% 
         readr::write_tsv(output_file)
 
