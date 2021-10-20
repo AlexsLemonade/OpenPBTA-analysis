@@ -103,8 +103,8 @@ filter_mutations <- function(maf_df,
 #'  `cooccur_score` (calculated as `cooccur_sign * -log10(p)`);
 #'  `n_mutated_gene1`; `n_mutated_gene2` (count of samples with gene1 or gene2 mutations); 
 #'  `perc_mutated_gene1`; `perc_mutated_gene2` (percent of samples with gene 1 or gene 2 mutations);
-#'  `perc_cooccur`; (Percent of all surveyed samples with co-occurring gene1/2 mutations when either gene1 or gene2 are mutated);
-#'  `perc_mutexcl`; (Percent of all surveyed samples with gene1/2 mutations being mutually exclusive);
+#'  `perc_cooccur`; (Percent of samples with mutations in gene 1 and/or gene 2 with co-occurring gene1/2 mutations);
+#'  `perc_mutexcl`; (Percent of samples with mutations in gene 1 and/or gene 2 where gene1/2 mutations are mutually exclusive);
 coocurrence <- function(gene_sample_df,
                         genes = sample(unique(gene_sample_df$gene), 25),
                         samples = unique(gene_sample_df$sample)) {
