@@ -103,10 +103,8 @@ filter_mutations <- function(maf_df,
 #'  `cooccur_score` (calculated as `cooccur_sign * -log10(p)`);
 #'  `n_mutated_gene1`; `n_mutated_gene2` (count of samples with gene1 or gene2 mutations); 
 #'  `perc_mutated_gene1`; `perc_mutated_gene2` (percent of samples with gene 1 or gene 2 mutations);
-#'  `perc_cooccur_all_samples`; (Percent of all surveyed samples with co-occurring gene1/2 mutations);
-#'  `perc_mutexcl_all_samples`; (Percent of all surveyed samples with gene1/2 mutations being mutually exclusive);
-#'  `perc_cooccur_gene1_mutated`; (Percent of gene1-mutated samples in which gene2 mutations are co-occurring);
-#'  `perc_mutexcl_gene1_mutated`; (Percent of gene1-mutated samples in which gene2 mutations are mutually exclusive)
+#'  `perc_cooccur`; (Percent of all surveyed samples with co-occurring gene1/2 mutations when either gene1 or gene2 are mutated);
+#'  `perc_mutexcl`; (Percent of all surveyed samples with gene1/2 mutations being mutually exclusive);
 coocurrence <- function(gene_sample_df,
                         genes = sample(unique(gene_sample_df$gene), 25),
                         samples = unique(gene_sample_df$sample)) {
@@ -166,10 +164,8 @@ coocurrence <- function(gene_sample_df,
       n_mutated_gene2 = sum(mut11, mut01),
       perc_mutated_gene1 = sum(mut11, mut10)*100/sum(mut11, mut10, mut01, mut00),
       perc_mutated_gene2 = sum(mut11, mut01)*100/sum(mut11, mut10, mut01, mut00),
-      perc_cooccur_all_samples = mut11*100/sum(mut11, mut10, mut01, mut00),
-      perc_mutexcl_all_samples = sum(mut10,mut01)*100/sum(mut11, mut10, mut01, mut00),
-      perc_cooccur_gene1_mutated = mut11*100/sum(mut11, mut10),
-      perc_mutexcl_gene1_mutated = sum(mut10,mut01)*100/sum(mut11, mut10, mut01)
+      perc_cooccur = mut11*100/sum(mut11 + mut10 + mut01),
+      perc_mutexcl = sum(mut10,mut01)*100/sum(mut11, mut10, mut01, mut00)
 )
     
   return(gene_pair_summary)
