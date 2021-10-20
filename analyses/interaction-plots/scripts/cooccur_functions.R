@@ -164,7 +164,7 @@ coocurrence <- function(gene_sample_df,
       n_mutated_gene2 = sum(mut11, mut01),
       perc_mutated_gene1 = sum(mut11, mut10)*100/sum(mut11, mut10, mut01, mut00),
       perc_mutated_gene2 = sum(mut11, mut01)*100/sum(mut11, mut10, mut01, mut00),
-      perc_cooccur = mut11*100/sum(mut11 + mut10 + mut01),
+      perc_cooccur = mut11*100/sum(mut11, mut10, mut01),
       perc_mutexcl = sum(mut10,mut01)*100/sum(mut11, mut10, mut01)
 )
     
