@@ -303,40 +303,38 @@ if (!is.null(opt$goi_list)){
 
 }
 
+### Plot and Save Oncoprint --------------------------------------------------
 
+# Given a maf object, plot an oncoprint of the variants in the
+# dataset and save as a png file.
+png(
+  file.path(plots_dir, tolower(gsub(" ", "-", opt$png_name))),
+  width = 35,
+  height = 20,
+  units = "cm",
+  res = 300
+)
 
-#### Plot and Save Oncoprint --------------------------------------------------
-# 
-# # Given a maf object, plot an oncoprint of the variants in the
-# # dataset and save as a png file.
-# png(
-#   file.path(plots_dir, tolower(gsub(" ", "-", opt$png_name))),
-#   width = 35,
-#   height = 20,
-#   units = "cm",
-#   res = 300
-# )
-# 
-# oncoplot(
-#   maf_object,
-#   clinicalFeatures = c("cancer_group","germline_sex_estimate"),
-#   genes = goi_list,
-#   logColBar = TRUE,
-#   sortByAnnotation = TRUE,
-#   showTumorSampleBarcodes = FALSE,
-#   removeNonMutated = TRUE,
-#   annotationFontSize = 1.25,
-#   SampleNamefontSize = 1,
-#   fontSize = 1,
-#   colors = oncoprint_col_palette,
-#   annotationColor = annotation_colors,
-#   bgCol = "#F5F5F5",
-#   top = opt$top_n,
-#   drawRowBar = FALSE,
-#   titleText = ifelse(is.null(opt$broad_histology), "", opt$broad_histology),
-#   titleFontSize = 1.3,
-#   gene_mar = 10
-# )
-# 
-# dev.off()
+oncoplot(
+  maf_object,
+  clinicalFeatures = c("cancer_group","germline_sex_estimate"),
+  genes = goi_list,
+  logColBar = TRUE,
+  sortByAnnotation = TRUE,
+  showTumorSampleBarcodes = FALSE,
+  removeNonMutated = TRUE,
+  annotationFontSize = 1.25,
+  SampleNamefontSize = 1,
+  fontSize = 1,
+  colors = oncoprint_col_palette,
+  annotationColor = annotation_colors,
+  bgCol = "#F5F5F5",
+  top = opt$top_n,
+  drawRowBar = FALSE,
+  titleText = ifelse(is.null(opt$broad_histology), "", opt$broad_histology),
+  titleFontSize = 1.3,
+  gene_mar = 10
+)
+
+dev.off()
 
