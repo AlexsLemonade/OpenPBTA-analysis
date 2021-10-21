@@ -43,6 +43,14 @@ if (!dir.exists(plots_dir)) {
   dir.create(plots_dir)
 }
 
+# Path to output directory for tables produced
+tables_dir <-
+  file.path(root_dir, "analyses", "oncoprint-landscape", "tables")
+
+if (!dir.exists(tables_dir)) {
+  dir.create(tables_dir)
+}
+
 # Source the custom functions script
 source(
   file.path(
@@ -112,6 +120,12 @@ option_list <- list(
     action = "store_true",
     default = FALSE,
     help = "logical statement on whether to include intronic variants in oncoprint plot"
+  ),
+  optparse::make_option(
+    c("--output_prefix"),
+    type = "character",
+    default = NULL,
+    help = "file prefix for the output tables"
   )
 )
 
@@ -126,6 +140,8 @@ opt <- optparse::parse_args(opt_parser)
 cnv_df <- opt$cnv_file
 fusion_df <- opt$fusion_file
 goi_list <- opt$goi_list
+
+print(opt$output_prefix)
 
 #### Read in data --------------------------------------------------------------
 
@@ -269,53 +285,60 @@ if (!is.null(opt$goi_list)){
   # Get top mutated genes per this subset object
   gene_sum <- mafSummary(filtered_maf_object)$gene.summary
   
+  # write out results 
+  if (!is.null(opt$output_prefix)) {
+    readr::write_tsv(gene_sum, file.path("tables", opt$output_prefix))
+  }
+  
   # Sort to get top altered genes rather than mutated only genes
   goi_list <- gene_sum %>%
     dplyr::arrange(dplyr::desc(AlteredSamples)) %>%
     # Filter to genes where multiple samples have an alteration
     dplyr::filter(AlteredSamples > 1) %>%
     dplyr::pull(Hugo_Symbol)
-  
+
   if (opt$top_n < length(goi_list)) {
     # Now let's filter to the `top_n` genes
     goi_list <- goi_list[1:opt$top_n]
-    
+
   }
-  
+
 }
 
+
+
 #### Plot and Save Oncoprint --------------------------------------------------
-
-# Given a maf object, plot an oncoprint of the variants in the
-# dataset and save as a png file.
-png(
-  file.path(plots_dir, tolower(gsub(" ", "-", opt$png_name))),
-  width = 35,
-  height = 20,
-  units = "cm",
-  res = 300
-)
-
-oncoplot(
-  maf_object,
-  clinicalFeatures = c("cancer_group","germline_sex_estimate"),
-  genes = goi_list,
-  logColBar = TRUE,
-  sortByAnnotation = TRUE,
-  showTumorSampleBarcodes = FALSE,
-  removeNonMutated = TRUE,
-  annotationFontSize = 1.25,
-  SampleNamefontSize = 1,
-  fontSize = 1,
-  colors = oncoprint_col_palette,
-  annotationColor = annotation_colors,
-  bgCol = "#F5F5F5",
-  top = opt$top_n,
-  drawRowBar = FALSE,
-  titleText = ifelse(is.null(opt$broad_histology), "", opt$broad_histology),
-  titleFontSize = 1.3,
-  gene_mar = 10
-)
-
-dev.off()
+# 
+# # Given a maf object, plot an oncoprint of the variants in the
+# # dataset and save as a png file.
+# png(
+#   file.path(plots_dir, tolower(gsub(" ", "-", opt$png_name))),
+#   width = 35,
+#   height = 20,
+#   units = "cm",
+#   res = 300
+# )
+# 
+# oncoplot(
+#   maf_object,
+#   clinicalFeatures = c("cancer_group","germline_sex_estimate"),
+#   genes = goi_list,
+#   logColBar = TRUE,
+#   sortByAnnotation = TRUE,
+#   showTumorSampleBarcodes = FALSE,
+#   removeNonMutated = TRUE,
+#   annotationFontSize = 1.25,
+#   SampleNamefontSize = 1,
+#   fontSize = 1,
+#   colors = oncoprint_col_palette,
+#   annotationColor = annotation_colors,
+#   bgCol = "#F5F5F5",
+#   top = opt$top_n,
+#   drawRowBar = FALSE,
+#   titleText = ifelse(is.null(opt$broad_histology), "", opt$broad_histology),
+#   titleFontSize = 1.3,
+#   gene_mar = 10
+# )
+# 
+# dev.off()
 
