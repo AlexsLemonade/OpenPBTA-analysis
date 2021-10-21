@@ -122,10 +122,10 @@ option_list <- list(
     help = "logical statement on whether to include intronic variants in oncoprint plot"
   ),
   optparse::make_option(
-    c("--output_prefix"),
+    c("--output_table"),
     type = "character",
     default = NULL,
-    help = "file prefix for the output tables"
+    help = "file name for the output tables"
   )
 )
 
@@ -140,8 +140,6 @@ opt <- optparse::parse_args(opt_parser)
 cnv_df <- opt$cnv_file
 fusion_df <- opt$fusion_file
 goi_list <- opt$goi_list
-
-print(opt$output_prefix)
 
 #### Read in data --------------------------------------------------------------
 
@@ -286,8 +284,8 @@ if (!is.null(opt$goi_list)){
   gene_sum <- mafSummary(filtered_maf_object)$gene.summary
   
   # write out results 
-  if (!is.null(opt$output_prefix)) {
-    readr::write_tsv(gene_sum, file.path("tables", opt$output_prefix))
+  if (!is.null(opt$output_table)) {
+    readr::write_tsv(gene_sum, file.path("tables", opt$output_table))
   }
   
   # Sort to get top altered genes rather than mutated only genes

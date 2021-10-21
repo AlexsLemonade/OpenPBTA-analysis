@@ -106,7 +106,7 @@ for histology in "${histologies[@]}"; do
       --top_n 20 \
       --png_name "${filename}_${histology}_goi_oncoprint.png" \
       --broad_histology "${labels[$histology]}" \
-      --output_prefix "${filename}_${histology}_oncoprint_summary_n.tsv"
+      --output_table "${filename}_${histology}_oncoprint_summary_n.tsv"
 
   done
 done
