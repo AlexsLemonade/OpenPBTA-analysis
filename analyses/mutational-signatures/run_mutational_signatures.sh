@@ -19,7 +19,7 @@ ABBREVIATED_MUTSIGS=${OPENPBTA_QUICK_MUTSIGS:-0}
 # Split up the consensus MAF files by experimental strategy (writes to scratch)
 Rscript --vanilla 02-split_experimental_strategy.R
 
-if [ "$CNS_FIT_ONLY" -lt "1" ]; then
+if [ "$CNS_FIT_ONLY" == "0" ]; then
 
   # Run the mutational signatures analysis using existing signatures
   Rscript -e "rmarkdown::render('01-known_signatures.Rmd', clean = TRUE)"
