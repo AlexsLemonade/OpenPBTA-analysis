@@ -300,7 +300,6 @@ if (!is.null(opt$goi_list)){
     goi_list <- goi_list[1:opt$top_n]
 
   }
-
 }
 
 ### Plot and Save Oncoprint --------------------------------------------------
