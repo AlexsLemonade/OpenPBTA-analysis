@@ -9,7 +9,7 @@ library(ComplexHeatmap)
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # Declare output directory
-output_dir <- file.path(root_dir, "figures", "pdfs", "fig4")
+output_dir <- file.path(root_dir, "figures", "pdfs", "fig4", "panels")
 if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
 }

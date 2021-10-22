@@ -40,7 +40,7 @@ Histologies <- file.path(root_dir, "data", "pbta-histologies.tsv") ### Variable 
 palette_dir <- file.path(root_dir, "figures", "palettes")
 
 # Declare output directory
-output_dir <- file.path(root_dir, "figures", "pdfs", "fig4")
+output_dir <- file.path(root_dir, "figures", "pdfs", "fig4", "panels")
 if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
 }
