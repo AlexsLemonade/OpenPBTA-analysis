@@ -216,7 +216,7 @@ palette_df <- histologies_df %>%
   left_join(cancer_group_df, by = "cancer_group") %>%
   # Fill all other values with gray colors
   replace_na(list(broad_histology_hex = "#808080", 
-                  cancer_group_hex = "#d3d3d3")) %>%
+                  cancer_group_hex = "#b5b5b5")) %>%
   # The exception being - if cancer_group == NA, so should cancer_group_hex!
   mutate(cancer_group_hex = if_else(is.na(cancer_group), 
                                     NA_character_, 
