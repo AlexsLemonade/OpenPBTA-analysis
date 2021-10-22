@@ -29,6 +29,7 @@ proj_root_path <- file.path( rprojroot::find_root(rprojroot::has_dir(".git")) )
 analysis_path <- file.path(proj_root_path, "analyses", "mutational-signatures")
 
 maf_file <- file.path(proj_root_path, "scratch", "mutational-signatures", "pbta-snv-consensus-wgs.tsv.gz")
+fit_object_file <- file.path(analysis_path, "results", "fit_signatures_cns.rds")
 fitted_exposures_file <- file.path(analysis_path, "results", "fitted_cns_signature_exposures.RDS")
 
 # CNS signatures 
@@ -58,8 +59,11 @@ fit <- sigfit::fit_signatures(counts = sigs_input,
                               seed = 42, 
                               model = "poisson") # Highly similar performance to nmf and MUCH more efficient
 
+# Save entire object, to be ignored
+readr::write_rds(fit, fit_object_file, compress = "gz")
+
+
 # Extract the information and save
 fitted_exposures <- sigfit::retrieve_pars(fit, par = "exposures") 
 readr::write_rds(fitted_exposures, fitted_exposures_file)
-
 
