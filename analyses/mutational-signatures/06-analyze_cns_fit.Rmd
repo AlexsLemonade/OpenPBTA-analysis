@@ -3,11 +3,10 @@ title: "Examining CNS signature fitting"
 author: "S. Spielman"
 date: "2021"
 output:
-  html_document:
-    toc: yes
-    df_print: paged
-editor_options:
-  chunk_output_type: console
+  html_notebook:
+    toc: true
+editor_options: 
+  chunk_output_type: inline
 ---
 
 <br><br><br><br>
@@ -44,10 +43,16 @@ histology_label_mapping <- readr::read_tsv(histology_color_file) %>%
 wgs_bed <- readr::read_tsv(wgs_bed_file, col_names=FALSE)
 wgs_size <- sum(wgs_bed[, 3] - wgs_bed[, 2]) 
 
+# Read in exposures from CNS signature fitting
+raw_exposures <- readr::read_rds(fitted_file)
+exposures_mean <- raw_exposures$mean
+# Set exposures to 0, if lower confidence interval hits 0.01
+# https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/678/files#diff-83a49ed371610e147e8d2a5560157f05a013aaa4f2d67c81b5164da7e2687140R436
+# "sufficiently non-zero" threshold per vignette, too
+exposures_mean[raw_exposures$lower_95 < 0.01] <- 0
 
 # Exposures into a tibble
-raw_exposures <- readr::read_rds(fitted_file)
-raw_exposures$mean %>%
+exposures_mean %>%
   tibble::as_tibble(rownames = "Kids_First_Biospecimen_ID") %>%
   tidyr::gather(-Kids_First_Biospecimen_ID, 
                 key = "signature", 
@@ -67,12 +72,14 @@ sigs_input <- deconstructSigs::mut.to.sigs.input(
 ```
 
 ```{r get_counts_exposures}
-# Sample mutation counts per WGS Mb, considering only samples with >=50 mutations, since sigfit does not consider samples with <50
+# Sample mutation counts per WGS Mb
 rowSums(sigs_input) %>%
   # throws a warning - ok for us since our package behavior is not going to change in Docker.
   tibble::as_tibble(rownames = "Kids_First_Biospecimen_ID") %>%
   dplyr::rename(mutation_count = "value") %>%
-  dplyr::filter(mutation_count >= 50) %>%
+  ## Original comment said sigfit doesn't consider samples with <50, but I think we see some non-zero exposures that suggest otherwise
+  ## also probably makes sense to include these in the denominator wrt to proportion of tumors with signature
+  # dplyr::filter(mutation_count >= 50) %>%  
   dplyr::mutate(sample_count_per_mb = mutation_count / (wgs_size / 10^6)) -> counts_per_mb
 
 
@@ -81,6 +88,9 @@ dplyr::left_join(counts_per_mb, exposures) %>%
   dplyr::mutate(signature_count_per_mb = sample_count_per_mb * exposure) %>%
   dplyr::select(-exposure) -> signature_counts
 signature_counts
+
+# Write signature counts to file for downstream use
+readr::write_tsv(signature_counts, file.path(analysis_path, "results", "fitted_cns_signature_counts.tsv"))
 ```
 <br><br>
 
