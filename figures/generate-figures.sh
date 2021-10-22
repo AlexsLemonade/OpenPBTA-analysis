@@ -131,16 +131,8 @@ Rscript --vanilla ${analyses_dir}/gene-set-enrichment-analysis/01-conduct-gsea-a
 # displayed in a heatmap
 Rscript --vanilla -e "rmarkdown::render('${analyses_dir}/gene-set-enrichment-analysis/02-model-gsea.Rmd', clean = TRUE)"
 
-# Immune deconvolution - we can't use CIBERSORT because we don't have access to it
-# By not supplying an argument to --method, we are electing only to use xCell
-Rscript --vanilla ${analyses_dir}/immune-deconv/01-immune-deconv.R \
-  --polyaexprs ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds \
-  --strandedexprs ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
-  --clin ${data_dir}/pbta-histologies.tsv \
-  --output ${analyses_dir}/immune-deconv/results/deconv-output-for-figures.RData
-
-# Step that generates the transcriptomic overview figure itself
-Rscript --vanilla scripts/transcriptomic-overview.R
+# Step that generates the GSVA, UMAP, and legend panels
+Rscript --vanilla scripts/fig4-panels-gsva-umap.R
 
 ####### CN Status Heatmap
 if [ "$RUN_LOCAL" -lt "1" ]; then

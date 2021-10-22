@@ -40,9 +40,15 @@ Histologies <- file.path(root_dir, "data", "pbta-histologies.tsv") ### Variable 
 palette_dir <- file.path(root_dir, "figures", "palettes")
 
 # Declare output directory
-output_dir <- file.path(root_dir, "figures", "pngs")
-telomerase_png <- file.path(output_dir, "Telomerase_Activities.png")
-supplementary_telomerase_png <- file.path(output_dir, "SuppTelomerase_Activities.png")
+output_dir <- file.path(root_dir, "figures", "pdfs", "fig4")
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir, recursive = TRUE)
+}
+
+telomerase_pdf <- file.path(output_dir, "Telomerase_Activities.pdf")
+
+
+supplementary_telomerase_png <- file.path(root_dir, "figures", "pngs", "SuppTelomerase_Activities.png")
 
 # Get palette for cancer group
 cancer_group_palette <- readr::read_tsv(
@@ -91,8 +97,6 @@ Stranded_Histology <- PTBA_GE_Standard_Histology
 
 
 ## Figure for main text: Boxplots
-png(telomerase_png, width = 6, height = 6, units = "in", res = 1200)
-
 theme_set(theme_classic() +
   theme(
     plot.title = element_text(size = 10, face = "bold"),
@@ -117,27 +121,12 @@ P1 <- ggplot(Stranded_Histology , aes(
   ) +
   geom_jitter(shape = 16, cex = 0.2, aes(color = cancer_group),
               alpha = 0.75) +
-  scale_fill_manual(values = annotation_colors, aesthetics = c("colour", "fill"))
+  scale_fill_manual(values = annotation_colors, aesthetics = c("colour", "fill")) +
+  ylab("EXTEND Scores (Stranded FPKM)") +
+  xlab("Cancer Group")
 
-grid.newpage()
-# Create layout : nrow = 2, ncol =2
-pushViewport(viewport(layout = grid.layout(nrow = 6, ncol = 3)))
-# A helper function to define a region on the layout
-define_region <- function(row, col) {
-  viewport(layout.pos.row = row, layout.pos.col = col)
-}
-
-
-
-print(ggpar(P1,
-  font.xtickslab = c(5, "black"),
-  font.ytickslab = 6, font.x = 6, font.y = 6, ylab = "EXTEND Scores",
-  xlab = "Tumor Cancer Group", title = "A", font.title = 7
-), vp = define_region(row = 1:3, col = 1:3))
-
-dev.off()
-
-
+ggsave(plot = P1, telomerase_pdf, dpi = 1200, units = "in",
+       width = 8, height = 4)
 
 ## Figure for SI: scatterplots
 png(supplementary_telomerase_png, width = 4, height = 2, units = "in", res = 1200)
