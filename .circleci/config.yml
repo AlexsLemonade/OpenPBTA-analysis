@@ -155,7 +155,7 @@ jobs:
 
       - run:
           name: Mutational Signatures
-          command: OPENPBTA_QUICK_MUTSIGS=1 ./scripts/run_in_ci.sh bash analyses/mutational-signatures/run_mutational_signatures.sh
+          command: OPENPBTA_QUICK_MUTSIGS=1 OPENPBTA_CNS_FIT_ONLY=0 ./scripts/run_in_ci.sh bash analyses/mutational-signatures/run_mutational_signatures.sh
 
 #      - run:
 #          name: Chromosomal instability breakpoints
