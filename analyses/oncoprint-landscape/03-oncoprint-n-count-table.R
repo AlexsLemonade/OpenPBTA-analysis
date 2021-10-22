@@ -29,22 +29,40 @@ if (!dir.exists(results_dir)) {
 # Declare command line options
 option_list <- list(
   optparse::make_option(
-    c("-m", "--maf_file"),
+    c("-m", "--maf_file_po"),
     type = "character",
     default = NULL,
-    help = "file path to MAF file that contains SNV information",
+    help = "file path to MAF file that contains SNV information of primary_only samples",
   ),
   optparse::make_option(
-    c("-c", "--cnv_file"),
+    c("-c", "--cnv_file_po"),
     type = "character",
     default = NULL,
-    help = "file path to file that contains CNV information"
+    help = "file path to file that contains CNV information of primary_only samples"
   ),
   optparse::make_option(
-    c("-f", "--fusion_file"),
+    c("-f", "--fusion_file_po"),
     type = "character",
     default = NULL,
-    help = "file path to file that contains fusion information"
+    help = "file path to file that contains fusion information of primary_only samples"
+  ),
+  optparse::make_option(
+    c("-g", "--maf_file_pp"),
+    type = "character",
+    default = NULL,
+    help = "file path to MAF file that contains SNV information of primary-plus samples",
+  ),
+  optparse::make_option(
+    c("-d", "--cnv_file_pp"),
+    type = "character",
+    default = NULL,
+    help = "file path to file that contains CNV information of primary-plus samples"
+  ),
+  optparse::make_option(
+    c("-e", "--fusion_file_pp"),
+    type = "character",
+    default = NULL,
+    help = "file path to file that contains fusion information of primary-plus samples"
   ),
   optparse::make_option(
     c("-s", "--metadata_file"),
@@ -53,7 +71,7 @@ option_list <- list(
     help = "file path to the histologies file"
   ),
   optparse::make_option(
-    c("-g", "--goi_list"),
+    c("-l", "--goi_list"),
     type = "character",
     default = NULL,
     help = "comma-separated list of genes of interest files that contain the
@@ -87,8 +105,6 @@ opt <- optparse::parse_args(opt_parser)
 # be defined for the `prepare_and_plot_oncoprint` custom function (the
 # cnv_file specifically for the `read.maf` function within the custom function),
 # even if they are NULL
-cnv_df <- opt$cnv_file
-fusion_df <- opt$fusion_file
 broad_histology_list<-unlist(strsplit(opt$broad_histology_list,","))
 short_name_list<-unlist(strsplit(opt$short_name_list,","))
 
@@ -110,28 +126,37 @@ metadata <- readr::read_tsv(opt$metadata_file, guess_max = 10000) %>%
   dplyr::rename(Tumor_Sample_Barcode = sample_id)
 
 # Read in MAF file
-maf_df <- data.table::fread(opt$maf_file,
-                            stringsAsFactors = FALSE,
-                            data.table = FALSE)
+maf_df_po <- data.table::fread(opt$maf_file_po,
+                               stringsAsFactors = FALSE,
+                               data.table = FALSE)
+maf_df_pp <- data.table::fread(opt$maf_file_pp,
+                               stringsAsFactors = FALSE,
+                               data.table = FALSE)
 
 if (!opt$include_introns) {
-  maf_df <- maf_df %>%
+  maf_df_po <- maf_df_po %>%
+    dplyr::filter(Variant_Classification != "Intron")
+  
+  maf_df_pp <- maf_df_pp %>%
     dplyr::filter(Variant_Classification != "Intron")
 }
 
 # Read in cnv file
-if (!is.null(opt$cnv_file)) {
-  cnv_df <- readr::read_tsv(opt$cnv_file) 
-}
+cnv_df_po <- readr::read_tsv(opt$cnv_file_po) 
+cnv_df_pp <- readr::read_tsv(opt$cnv_file_pp) 
+
 
 # Read in fusion file and join
-if (!is.null(opt$fusion_file)) {
-  fusion_df <- readr::read_tsv(opt$fusion_file)
-}
+fusion_df_po <- readr::read_tsv(opt$fusion_file_po)
+fusion_df_pp <- readr::read_tsv(opt$fusion_file_pp)
+
 
 #### Set up oncoprint annotation objects --------------------------------------
-oncoprint_n_table <- data.frame(matrix(ncol = 2, nrow = 0))
-colnames(oncoprint_n_table) <- c("broad_histology", "n_sample")
+oncoprint_n_table_po <- data.frame(matrix(ncol = 3, nrow = 0))
+oncoprint_n_table_pp <- data.frame(matrix(ncol = 3, nrow = 0))
+
+colnames(oncoprint_n_table_po) <- c("broad_histology", "n_sample", "tumor_type")
+colnames(oncoprint_n_table_pp) <- c("broad_histology", "n_sample", "tumor_type")
 
 for(i in 1:length(broad_histology_list)){
   histology_of_interest <- broad_histology_list[i]
@@ -162,28 +187,50 @@ for(i in 1:length(broad_histology_list)){
       )
     }
   # Now filter the remaining data files
-  maf_each <- maf_df %>%
+  maf_po_each <- maf_df_po %>%
     dplyr::filter(Tumor_Sample_Barcode %in% metadata_each$Tumor_Sample_Barcode)
   
-  cnv_each <- cnv_df %>%
+  cnv_po_each <- cnv_df_po %>%
     dplyr::filter(Tumor_Sample_Barcode %in% metadata_each$Tumor_Sample_Barcode)
   
-  fusion_each <- fusion_df %>%
+  fusion_po_each <- fusion_df_po %>%
     dplyr::filter(Tumor_Sample_Barcode %in% metadata_each$Tumor_Sample_Barcode)
   
   # get bs ids in each dataframe
-  maf_bsid <- maf_each %>% pull(Tumor_Sample_Barcode) %>% unique()
-  cnv_bsid <- cnv_each %>% pull(Tumor_Sample_Barcode) %>% unique()
-  fusion_bsid <- fusion_each %>% pull(Tumor_Sample_Barcode) %>% unique()
+  maf_po_bsid <- maf_po_each %>% pull(Tumor_Sample_Barcode) %>% unique()
+  cnv_po_bsid <- cnv_po_each %>% pull(Tumor_Sample_Barcode) %>% unique()
+  fusion_po_bsid <- fusion_po_each %>% pull(Tumor_Sample_Barcode) %>% unique()
   # take union
-  all_bsid <- union(maf_bsid, cnv_bsid) %>% union(fusion_bsid) 
+  all_po_bsid <- union(maf_po_bsid, cnv_po_bsid) %>% union(fusion_po_bsid) 
   # write out broad histology and number of samples to a table 
-  oncoprint_n_table[i,1] <- histology_of_interest
-  oncoprint_n_table[i,2] <- length(all_bsid)
+  oncoprint_n_table_po[i,1] <- histology_of_interest
+  oncoprint_n_table_po[i,2] <- length(all_po_bsid)
+  oncoprint_n_table_po[i,3] <- "primary_only"
+  
+  # Now do the same thing for primary plus samples
+  maf_pp_each <- maf_df_pp %>%
+    dplyr::filter(Tumor_Sample_Barcode %in% metadata_each$Tumor_Sample_Barcode)
+  
+  cnv_pp_each <- cnv_df_pp %>%
+    dplyr::filter(Tumor_Sample_Barcode %in% metadata_each$Tumor_Sample_Barcode)
+  
+  fusion_pp_each <- fusion_df_pp %>%
+    dplyr::filter(Tumor_Sample_Barcode %in% metadata_each$Tumor_Sample_Barcode)
+  
+  # get bs ids in each dataframe
+  maf_pp_bsid <- maf_pp_each %>% pull(Tumor_Sample_Barcode) %>% unique()
+  cnv_pp_bsid <- cnv_pp_each %>% pull(Tumor_Sample_Barcode) %>% unique()
+  fusion_pp_bsid <- fusion_pp_each %>% pull(Tumor_Sample_Barcode) %>% unique()
+  # take union
+  all_pp_bsid <- union(maf_pp_bsid, cnv_pp_bsid) %>% union(fusion_pp_bsid) 
+  # write out broad histology and number of samples to a table 
+  oncoprint_n_table_pp[i,1] <- histology_of_interest
+  oncoprint_n_table_pp[i,2] <- length(all_pp_bsid)
+  oncoprint_n_table_pp[i,3] <- "primary-plus"
   
 }
 
 # write out n number entering oncoprint
-oncoprint_n_table %>% 
+bind_rows(oncoprint_n_table_pp, oncoprint_n_table_po) %>% 
   readr::write_tsv(file.path(results_dir, "sample_n_in_oncoprint.tsv"))
 

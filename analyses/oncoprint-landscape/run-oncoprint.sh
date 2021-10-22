@@ -112,9 +112,12 @@ for histology in "${histologies[@]}"; do
 done
 
 Rscript --vanilla 03-oncoprint-n-count-table.R \
-  --maf_file "${intermediate_directory}/primary_only_maf.tsv" \
-  --cnv_file "${intermediate_directory}/primary_only_cnv.tsv" \
-  --fusion_file "${intermediate_directory}/primary_only_fusions.tsv" \
+  --maf_file_po "${intermediate_directory}/primary_only_maf.tsv" \
+  --cnv_file_po "${intermediate_directory}/primary_only_cnv.tsv" \
+  --fusion_file_po "${intermediate_directory}/primary_only_fusions.tsv" \
+  --maf_file_pp "${intermediate_directory}/primary-plus_maf.tsv" \
+  --cnv_file_pp "${intermediate_directory}/primary-plus_cnv.tsv" \
+  --fusion_file_pp "${intermediate_directory}/primary-plus_fusions.tsv" \
   --metadata_file "${histologies_file}" \
   --broad_histology_list "Low-grade astrocytic tumor,Embryonal tumor,Diffuse astrocytic and oligodendroglial tumor,Other CNS" \
   --short_name_list "lgat,embryonal,hgat,other" 
