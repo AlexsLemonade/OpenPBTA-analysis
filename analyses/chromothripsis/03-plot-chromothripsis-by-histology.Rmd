@@ -208,3 +208,8 @@ p
 ggsave(file.path(plots_dir, "chromothripsis_proportion_by_displayGroup_fillByCount.png"), p, width=7, height=7)
 ```
 
+### Session Info
+
+```{r}
+sessionInfo()
+```

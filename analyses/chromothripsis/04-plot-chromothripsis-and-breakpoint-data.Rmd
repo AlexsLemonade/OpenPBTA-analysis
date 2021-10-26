@@ -141,3 +141,9 @@ p <- merge %>%
 p
 ggsave(file.path(plots_dir, "count_chromothripsis_sv_breaks_stripchart.png"), p)
 ``` 
+
+### Session Info
+
+```{r}
+sessionInfo()
+```
