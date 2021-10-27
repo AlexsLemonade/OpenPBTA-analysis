@@ -39,6 +39,7 @@ bash run-mutational-signatures.sh
   + This script saves the fitted CNS signature exposures in `results/fitted_cns_signature_exposures.RDS`.
 
 + The Rmd `06-analyze_cns_fit.Rmd` analyzes and visualizes the results from CNS signature fitting. 
+  Exposures are set to zero when the lower end of the Bayesian HPD interval < 0.01 ([ref](https://htmlpreview.github.io/?https://github.com/kgori/sigfit/blob/050c389bafd14090524fb4d97edc127d449a2d3b/doc/sigfit_vignette.html)).
   + The knitted HTML contains several figures which are also separately exported to `plots/cns/`:
     + `mean_median_exposure_barplot.png` displays the mean and median exposures for CNS signatures for each of the main histology groups we consider in PBTA.
     + `top_10_samples_barplot.png` displays the relative signature exposures for the top-10 most mutated samples in the PBTA.
