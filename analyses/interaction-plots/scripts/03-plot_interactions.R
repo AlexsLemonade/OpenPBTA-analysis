@@ -17,7 +17,7 @@
 #
 # Command line example:
 #
-# Rscript analyses/interaction-plots/02-plot_interactions.R \
+# Rscript analyses/interaction-plots/03-plot_interactions.R \
 #   --infile analysis/interaction-plots/results/cooccur.tsv \
 #   --outfile analysis/interaction-plots/results/cooccur.png
 
@@ -29,6 +29,7 @@
 # Load libraries:
 library(optparse)
 library(ggplot2)
+library(ggpattern)
 library(patchwork)
 
 # define options
@@ -130,8 +131,9 @@ na_color <- divergent_palette %>%
   dplyr::filter(color_names == "na_color") %>%
   dplyr::pull(hex_codes)
 
-histologies_color_key_df <- readr::read_tsv(file.path(palette_dir,"histology_label_color_table.tsv"),
-                                         col_types = readr::cols())
+histologies_color_key_df <- readr::read_tsv(file.path(palette_dir,
+                                                      "broad_histology_cancer_group_palette.tsv"),
+                                            col_types = readr::cols())
 
 # create scales for consistent sizing
 # The scales will need to have opts$plotsize elements,
@@ -199,18 +201,33 @@ if (is.na(opts$disease_table)) {
 }
 # otherwise make a gene by disease stacked bar chart
 
-disease_file = opts$disease_table
+disease_file <- opts$disease_table
 disease_df <-
   readr::read_tsv(disease_file, col_types = readr::cols()) %>%
   dplyr::mutate(gene = factor(gene, levels = genes))
 
-display_diseases <- disease_df %>%
-  dplyr::select(disease, mutant_samples) %>%
-  dplyr::arrange(desc(mutant_samples)) %>%
-  dplyr::select(disease) %>%
-  unique() %>%
-  head(10) %>% # top 10 diseases with highest mutated samples
-  dplyr::pull(disease)
+# Previously calculated top 10
+# display_diseases <- disease_df %>%
+#   dplyr::select(disease, mutant_samples) %>%
+#   dplyr::arrange(desc(mutant_samples)) %>%
+#   dplyr::select(disease) %>%
+#   unique() %>%
+#   head(10) %>% # top 10 diseases with highest mutated samples
+#   dplyr::pull(disease)
+
+# Now a manual version to make patterning easier
+display_diseases <- c(
+  "Diffuse midline glioma",
+  "Low-grade glioma astrocytoma",
+  "Craniopharyngioma",
+  "High-grade glioma astrocytoma",
+  "Ganglioglioma",
+  "Medulloblastoma",
+  "Meningioma",
+  "Ependymoma",
+  "Schwannoma",
+  "Dysembryoplastic neuroepithelial tumor"
+)
 
 disease_df <- disease_df %>%
   # remove disease == NA, these are samples where
@@ -221,11 +238,31 @@ disease_df <- disease_df %>%
            forcats::fct_relevel(display_diseases)
   )
 
-histologies_color_key <- histologies_color_key_df$cancer_group_hex_codes
+histologies_color_key <- histologies_color_key_df$cancer_group_hex
 names(histologies_color_key) <- histologies_color_key_df$cancer_group
-
 # Adding gray for Other histologies outside the top 10 above
-histologies_color_key <- c(histologies_color_key,"Other"="#808080")
+histologies_color_key <- c(histologies_color_key, "Other" = "#d3d3d3")
+
+# Cycle through some patterns for the bar chart
+patterns_key <- c(
+  `Diffuse midline glioma` = "stripe",
+  `Low-grade glioma astrocytoma` = "none",
+  Craniopharyngioma = "none",
+  `High-grade glioma astrocytoma` = "circle",
+  Ganglioglioma = "none",
+  Medulloblastoma = "none",
+  Meningioma = "none",
+  Ependymoma = "none",
+  Schwannoma = "none",
+  `Dysembryoplastic neuroepithelial tumor` = "none",
+  Other = "none"
+)
+
+# Use different densities for different patterns
+patterns_density_key <- dplyr::recode(patterns_key,
+                                      stripe = 0.05,
+                                      circle = 0.15,
+                                      none = 0)
 
 # get scale to match cooccurence plot
 # Extra scale units for the case where there are fewer genes than opts$plotsize
@@ -234,14 +271,25 @@ xscale2 <- levels(disease_df$gene) %>%
 
 disease_plot <- ggplot(
   disease_df,
-  aes(x = gene, y = mutant_samples, fill = disease_factor)) +
-  geom_col(width = 0.7) +
+  aes(x = gene,
+      y = mutant_samples)) +
+  geom_col_pattern(aes(fill = disease_factor,
+                       pattern = disease_factor),
+                   width = 0.7,
+                   pattern_colour = "white",
+                   pattern_fill = "white",
+                   pattern_angle = 45,
+                   pattern_spacing = 0.01,
+                   pattern_key_scale_factor = 0.6) +
   labs(
     x = "",
     y = "Samples with mutations",
-    fill = "Diagnosis"
+    fill = "Cancer Group",
+    pattern = "Cancer Group"
   ) +
   scale_fill_manual(values = histologies_color_key) +
+  scale_pattern_manual(values = patterns_key) +
+  scale_pattern_density_manual(values = patterns_density_key) +
   scale_x_discrete(
     limits = xscale2,
     breaks = disease_df$gene
@@ -256,7 +304,7 @@ disease_plot <- ggplot(
     ),
     legend.position = c(1,1),
     legend.justification = c(1,1),
-    legend.key.size = unit(1, "char"))
+    legend.key.size = unit(1.5, "char"))
 
 if (!is.na(opts$disease_plot)){
   ggsave(opts$disease_plot, disease_plot)
