@@ -35,8 +35,8 @@ Rscript -e "rmarkdown::render('mapping-histology-labels.Rmd', clean = TRUE)"
 # Run sample distribution analysis
 bash ${analyses_dir}/sample-distribution-analysis/run-sample-distribution.sh
 
-# Run the figure assembly
-Rscript --vanilla scripts/fig1-sample-distribution.R
+# TODO: Rscript for figure (related: https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1175)
+
 
 ################ Mutational landscape figure
 if [ "$RUN_LOCAL" -lt "1" ]; then
@@ -49,11 +49,8 @@ if [ "$RUN_LOCAL" -lt "1" ]; then
   bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh
   cd $WORKDIR
 
-  # Run mutational signatures analysis
-  Rscript --vanilla -e "rmarkdown::render('../analyses/mutational-signatures/01-known_signatures.Rmd', clean = TRUE)"
+  # TODO: Run mutational signatures analysis
 
-  # Run the figure assembly
-  Rscript --vanilla scripts/fig2-mutational-landscape.R
 fi
 
 ######################
