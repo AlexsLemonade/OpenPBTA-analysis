@@ -72,8 +72,11 @@ cp ${analyses_dir}/interaction-plots/plots/combined_top50.png pngs/mutation_cooc
 bash ${analyses_dir}/chromothripsis/run-chromothripsis.sh
 
 # Create directory that will hold the relevant scatter plot from the chromothripsis module
-mkdir -p pdfs/fig3
-cp ${analyses_dir}/chromothripsis/plots/04-breakpoint-data/count_chromothripsis_cnv_and_sv_breaks_scatterplot.pdf pdfs/fig3/count_chromothripsis_cnv_and_sv_breaks_scatterplot.pdf
+mkdir -p pdfs/fig3/panels
+cp ${analyses_dir}/chromothripsis/plots/04-breakpoint-data/count_chromothripsis_cnv_and_sv_breaks_scatterplot.pdf pdfs/fig3/panels/count_chromothripsis_cnv_and_sv_breaks_scatterplot.pdf
+
+# Run the Rscript that creates the barplot using the most recent color palette
+Rscript --vanilla scripts/fig3-chromothripsis-barplot.R
 
 ######################
 ## Oncoprint plot(s)
