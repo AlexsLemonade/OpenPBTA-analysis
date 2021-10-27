@@ -74,7 +74,7 @@ declare -A labels=(
 )
 
 declare -A goi_files=(
-  [lgat]="lgat_goi_list.tsv"  
+  [lgat]="lgat_goi_list.tsv"
   [embryonal]="embryonal-tumor_goi_list.tsv"
   [hgat]="hgat_goi_list.tsv"
   [other]="other_goi_list.tsv"
@@ -94,8 +94,8 @@ for histology in "${histologies[@]}"; do
       --fusion_file "${intermediate_directory}/${filename}_fusions.tsv" \
       --metadata_file "${histologies_file}" \
       --png_name "${filename}_${histology}_oncoprint.png" \
-      --broad_histology "${labels[$histology]}"
-      
+      --broad_histology "${labels[$histology]}" 
+
     # Genes of interest only version of oncoprint
     Rscript --vanilla 02-plot-oncoprint.R \
       --maf_file "${intermediate_directory}/${filename}_maf.tsv" \
@@ -105,7 +105,19 @@ for histology in "${histologies[@]}"; do
       --goi_list "${oncoprint_data_directory}/${goi_files[$histology]}" \
       --top_n 20 \
       --png_name "${filename}_${histology}_goi_oncoprint.png" \
-      --broad_histology "${labels[$histology]}"
+      --broad_histology "${labels[$histology]}" \
+      --output_table "${filename}_${histology}_oncoprint_summary_n.tsv"
 
-  done  
+  done
 done
+
+Rscript --vanilla 03-oncoprint-n-count-table.R \
+  --maf_file_po "${intermediate_directory}/primary_only_maf.tsv" \
+  --cnv_file_po "${intermediate_directory}/primary_only_cnv.tsv" \
+  --fusion_file_po "${intermediate_directory}/primary_only_fusions.tsv" \
+  --maf_file_pp "${intermediate_directory}/primary-plus_maf.tsv" \
+  --cnv_file_pp "${intermediate_directory}/primary-plus_cnv.tsv" \
+  --fusion_file_pp "${intermediate_directory}/primary-plus_fusions.tsv" \
+  --metadata_file "${histologies_file}" \
+  --broad_histology_list "Low-grade astrocytic tumor,Embryonal tumor,Diffuse astrocytic and oligodendroglial tumor,Other CNS" \
+  --short_name_list "lgat,embryonal,hgat,other" 

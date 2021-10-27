@@ -22,7 +22,8 @@ bash run-oncoprint.sh
   * Filtering via an [independent specimen file](https://alexslemonade.github.io/OpenPBTA-manuscript/#selection-of-independent-samples) is optional, but highly recommended.
 * `02-plot-oncoprint.R` takes the files from above and optionally a file or set of files (to be concatenated) that will restrict the set of genes that are being plotted in an OncoPrint.
 	* Running this via `run-oncoprint.sh` will restrict plotting to a list of top mutated genes (generated in `analyses/interaction-plots/scripts/01-disease-specimen-lists.R`) and top genes with recurrent CNVs (generated in `analyses/focal-cn-file-preparation/06-find-recurrent-calls.Rmd`)
-
+  * This script also returns tables summary of the total of number of samples that have alterations in gene of interest
+* `03-oncoprint-n-count-table.R` counts the number of samples that enter oncoprint plotting (with or without alterations in genes of interest) for each broad histology group
 
 ### Folder Structure
 
@@ -30,6 +31,7 @@ bash run-oncoprint.sh
 ├── 00-prepare-goi-lists.R
 ├── 01-map-to-sample_id.R
 ├── 02-plot-oncoprint.R
+├── 03-oncoprint-n-count-table.R
 ├── README.md
 ├── data
 │   ├── embryonal-tumor_goi_list.tsv
@@ -45,6 +47,10 @@ bash run-oncoprint.sh
 │   ├── primary-plus_*histology*_oncoprint.png
 │   ├── primary_only_*histology*_goi_oncoprint.png
 │   └── primary_only_*histology*_oncoprint.png
+├── tables
+│   ├── summary_n_in_oncoprint.tsv
+│   ├── primary-plus_*histology*_summary_n.tsv
+│   └── primary_only_*histology*_summary_n.tsv
 ├── run-oncoprint.sh
 └── util
     └── oncoplot-functions.R
