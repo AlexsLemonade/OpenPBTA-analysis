@@ -8,7 +8,7 @@
 #
 # --infile The input file  with a summaries of gene-gene mutation co-occurence,
 #    minimally including gene1, gene2, and cooccur_score columns.
-#   
+#
 # --outfile The output plot location. Specify type of file with the extension
 #   (.png or .pdf, most likely).
 #
@@ -19,7 +19,7 @@
 #
 # Rscript analyses/interaction-plots/02-plot_interactions.R \
 #   --infile analysis/interaction-plots/results/cooccur.tsv \
-#   --outfile analysis/interaction-plots/results/cooccur.png 
+#   --outfile analysis/interaction-plots/results/cooccur.png
 
 #### Initial Set Up
 
@@ -102,7 +102,7 @@ cooccur_df <-
 
 labels <- unique(c(cooccur_df$label1, cooccur_df$label2))
 
-# check the order of the labels to be decreasing by mut count 
+# check the order of the labels to be decreasing by mut count
 label_counts <- as.numeric(stringr::str_extract(labels, "\\b\\d+\\b"))
 labels <- labels[order(label_counts, decreasing = TRUE)]
 # order genes the same way, in case we want to use those
@@ -121,7 +121,7 @@ cooccur_df <- cooccur_df %>%
 # Get color palettes
 
 palette_dir <- file.path(root_dir, "figures", "palettes")
-divergent_palette <- readr::read_tsv(file.path(palette_dir, "divergent_color_palette.tsv"), 
+divergent_palette <- readr::read_tsv(file.path(palette_dir, "divergent_color_palette.tsv"),
                                      col_types = readr::cols())
 divergent_colors <- divergent_palette %>%
   dplyr::filter(color_names != "na_color") %>%
@@ -134,9 +134,9 @@ histologies_color_key_df <- readr::read_tsv(file.path(palette_dir,"histology_lab
                                          col_types = readr::cols())
 
 # create scales for consistent sizing
-# The scales will need to have opts$plotsize elements, 
+# The scales will need to have opts$plotsize elements,
 # so after getting the unique list, we concatenate on extra elements.
-# for convenience, these are just numbers 1:n 
+# for convenience, these are just numbers 1:n
 # where n is the number of extra labels needed for the scale
 xscale <- cooccur_df$label1 %>%
   as.character() %>%
@@ -145,7 +145,7 @@ xscale <- cooccur_df$label1 %>%
 yscale <- cooccur_df$label2 %>%
   as.character() %>%
   unique() %>%
-  # the concatenated labels need to be at the front of the Y scale, 
+  # the concatenated labels need to be at the front of the Y scale,
   # since this will be at the bottom in the plot.
   c(1:(opts$plotsize - length(.)), .)
 
@@ -193,7 +193,7 @@ cooccur_plot <- ggplot(
 
 ggsave(cooccur_plot, filename = plot_file)
 
-# if we don't have a disease table, quit 
+# if we don't have a disease table, quit
 if (is.na(opts$disease_table)) {
  quit()
 }
@@ -216,7 +216,7 @@ disease_df <- disease_df %>%
   # remove disease == NA, these are samples where
   # harmonized_diagnosis is Benign tumor, Dysplasia/Gliosis
   dplyr::filter(!is.na(disease)) %>%
-  dplyr::mutate(disease_factor = 
+  dplyr::mutate(disease_factor =
            forcats::fct_other(disease, keep = display_diseases) %>%
            forcats::fct_relevel(display_diseases)
   )
@@ -234,19 +234,19 @@ xscale2 <- levels(disease_df$gene) %>%
 
 disease_plot <- ggplot(
   disease_df,
-  aes(x = gene, y = mutant_samples, fill = disease_factor)) + 
+  aes(x = gene, y = mutant_samples, fill = disease_factor)) +
   geom_col(width = 0.7) +
   labs(
     x = "",
     y = "Samples with mutations",
     fill = "Diagnosis"
-  ) + 
-  scale_fill_manual(values = histologies_color_key) + 
+  ) +
+  scale_fill_manual(values = histologies_color_key) +
   scale_x_discrete(
     limits = xscale2,
     breaks = disease_df$gene
-  ) + 
-  scale_y_continuous(expand = c(0, 0.5, 0.1, 0)) + 
+  ) +
+  scale_y_continuous(expand = c(0, 0.5, 0.1, 0)) +
   theme_classic() +
   theme(
     axis.text.x = element_text(
@@ -284,13 +284,13 @@ cooccur_plot2 <- cooccur_plot +
   scale_y_discrete(
     limits = yscale,
     labels = ylabels
-  ) + 
+  ) +
   theme(
     plot.margin = unit(c(-3.5,0,0,0), "char") # negative top margin to move plots together
   )
 
 # Move labels and themes for disease plot
-disease_plot2 <- disease_plot + 
+disease_plot2 <- disease_plot +
   theme(
     axis.text.x = element_text(
       angle = -90,
@@ -303,18 +303,17 @@ disease_plot2 <- disease_plot +
   )
 
 # Combine plots with <patchwork>
-# Layout of the two plots will be one over the other (1 column), 
+# Layout of the two plots will be one over the other (1 column),
 # with the upper plot 3/4 the height of the lower plot
 combined_plot <- disease_plot2 + cooccur_plot2 +
   plot_layout(ncol = 1, heights = c(3, 4)) +
-  plot_annotation(tag_levels = "A") & 
   theme( # add uniform labels
     axis.text.x = element_text(size = 9),
     axis.text.y = element_text(size = 9)
   )
 
 
-ggsave(combined_plot, 
-       filename = opts$combined_plot, 
+ggsave(combined_plot,
+       filename = opts$combined_plot,
        width = 8,
        height = 14)
