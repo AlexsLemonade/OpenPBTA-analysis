@@ -141,11 +141,11 @@ tp53_scores <- readr::read_tsv("../analyses/tp53_nf1_score/results/tp53_altered_
 # get extend scores file
 telomerase_scores_polya <- readr::read_tsv("../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_counts.txt") %>%
   dplyr::select(SampleID, NormEXTENDScores) %>% 
-  dplyr::rename(Tumor_Sample_Barcode = SampleID)
+  dplyr::rename(Kids_First_Biospecimen_ID_RNA = SampleID)
   
 telomerase_scores_stranded <- readr::read_tsv("../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt") %>%
   dplyr::select(SampleID, NormEXTENDScores) %>% 
-  dplyr::rename(Tumor_Sample_Barcode = SampleID)
+  dplyr::rename(Kids_First_Biospecimen_ID_RNA = SampleID)
 
 telomerase_scores_combined <- bind_rows(telomerase_scores_polya, telomerase_scores_stranded)
 
