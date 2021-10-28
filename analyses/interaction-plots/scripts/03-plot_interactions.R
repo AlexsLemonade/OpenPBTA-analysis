@@ -236,7 +236,12 @@ disease_df <- disease_df %>%
   dplyr::mutate(disease_factor =
            forcats::fct_other(disease, keep = display_diseases) %>%
            forcats::fct_relevel(display_diseases)
-  )
+  ) %>%
+  # If you are to outline the stacked bars in anyway, all Other samples need to
+  # be summarized
+  dplyr::group_by(gene, disease_factor) %>%
+  dplyr::summarize(mutant_samples = sum(mutant_samples)) %>%
+  dplyr::ungroup()
 
 histologies_color_key <- histologies_color_key_df$cancer_group_hex
 names(histologies_color_key) <- histologies_color_key_df$cancer_group
@@ -276,8 +281,9 @@ disease_plot <- ggplot(
   geom_col_pattern(aes(fill = disease_factor,
                        pattern = disease_factor),
                    width = 0.7,
-                   pattern_colour = "white",
-                   pattern_fill = "white",
+                   color = "#999999",
+                   pattern_colour = "#FFFFFF",
+                   pattern_fill = "#FFFFFF",
                    pattern_angle = 45,
                    pattern_spacing = 0.01,
                    pattern_key_scale_factor = 0.6) +
