@@ -47,6 +47,7 @@ Rscript -e "rmarkdown::render('figures/mapping-histology-labels.Rmd',
 
 ```{r}
 library(tidyverse)
+library(RColorBrewer)
 ```
 
 ### Directories and Files
@@ -270,8 +271,8 @@ broad_histology_order_df <- histologies_df %>%
   # Reorder based on sample size except Benign tumor and Other should come last
   # And then add numeric column with the order
   mutate(broad_histology = forcats::fct_reorder(broad_histology,
-                                                      n,
-                                                      .desc = TRUE) %>%
+                                                n,
+                                                .desc = TRUE) %>%
            forcats::fct_relevel("Benign tumor",
                                 "Other",
                                 after = Inf),
@@ -290,20 +291,9 @@ palette_df <- palette_df %>%
             by = c("broad_histology_display" = "broad_histology"))
 ```
 
-### Add `oncoprint_include` and `oncoprint_group`
+### Add `oncoprint_group` and `oncoprint_hex`
 
 For most plots that make use of the `cancer_group` palette, such as a box or violin plot, we will rely heavily on labels and therefore using the gray hex code for multiple groups will not be a problem.
-In oncoprints, we'll want to drop `cancer_group` with small sample size ([#1177](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1177)).
-We'll add a logical column to help with that.
-
-```{r}
-palette_df <- palette_df %>%
-  mutate(oncoprint_include = if_else(cancer_group_display == "Other",
-                                     FALSE,
-                                     TRUE)) %>%
-  # If cancer_group is NA, then set to FALSE
-  replace_na(list(oncoprint_include = FALSE))
-```
 
 We will have four panels of individual oncoprints, where many `broad_histology` values will get grouped together into the `Other CNS` panel which you can see [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/d31c927a27813ec0b8032fbe768002f31723636f/analyses/oncoprint-landscape/02-plot-oncoprint.R#L181).
 We can move this information into our palette data frame.
@@ -331,16 +321,53 @@ other_cns_broad_histologies <- c(
 
 palette_df <- palette_df %>%
   mutate(oncoprint_group = case_when(
-    # If the broad histology is in the vector above and the cancer group will 
-    # be included, set to Other CNS
-    broad_histology %in% other_cns_broad_histologies &
-      oncoprint_include != FALSE ~ "Other CNS",
-    # If this cancer group doesn't get included in the oncoprint, set to NA
-    # Same with Benign tumors -- those do not get included in that module
-    oncoprint_include == FALSE | 
-      broad_histology == "Benign tumor" ~ NA_character_,
-    # Otherwise use broad histology
-    TRUE ~ broad_histology
+    broad_histology %in% other_cns_broad_histologies ~ "Other CNS",
+    broad_histology %in% c(
+      "Low-grade astrocytic tumor",
+      "Embryonal tumor",
+      "Diffuse astrocytic and oligodendroglial tumor"
+    ) ~ broad_histology,
+    TRUE ~ NA_character_
+  ))
+```
+
+For cancer groups that do not get their own hex code for display (i.e., due to small sample sizes), we'll use a selection of grey colors as a palette and rely heavily on the ordering of the OncoPrint legend.
+Unfortunately there are over 20 "Other CNS" cancer groups that meet this criterion, so it is not feasible to have a color for each of them and they will not be included in the "Other CNS" OncoPrint.
+
+```{r}
+greys_df <- palette_df %>%
+  filter(cancer_group_display == "Other",
+         !is.na(oncoprint_group),
+         oncoprint_group != "Other CNS")
+
+# Sample the greys sequential palette from color brewer
+set.seed(2021)
+greys_df <- greys_df %>%
+  mutate(oncoprint_hex = sample(brewer.pal(nrow(greys_df), "Greys")))
+```
+
+Add `oncoprint_hex` & `oncoprint_include`, the latter will be `FALSE` when the former is `NA`.
+
+Add `oncoprint_hex` for all other cancer groups and `oncoprint_include`.
+The latter will be FALSE when the former is NA.
+
+```{r}
+palette_df <- palette_df %>%
+  left_join(greys_df) %>%
+  # When there's an oncoprint group and a specific cancer group display color,
+  # use the cancer group display color as the oncoprint color
+  mutate(oncoprint_hex = if_else(
+    cancer_group_hex != "#b5b5b5" & !is.na(oncoprint_group),
+    cancer_group_hex,
+    oncoprint_hex
+  ),
+  # Only when there's a specific oncoprint color -- even if that is a grey 
+  # selected only for the oncoprint -- will a cancer group be included in the
+  # oncoprint
+  oncoprint_include = if_else(
+    is.na(oncoprint_hex),
+    FALSE,
+    TRUE
   ))
 ```
 
