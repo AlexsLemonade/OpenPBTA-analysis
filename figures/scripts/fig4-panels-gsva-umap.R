@@ -127,6 +127,7 @@ umap_plot <- read_tsv(rsem_umap_file) %>%
                            y_label = "UMAP2",
                            alpha_value = 0.5,
                            color_palette = annotation_colors) +
+  ggpubr::theme_pubr() +
   theme(text = element_text(size = 10),
         legend.position = "none")
 
