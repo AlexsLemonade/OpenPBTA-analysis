@@ -174,7 +174,7 @@ create_two_plot_panel <- function(broad_histology_label)  {
     scale_pattern_manual(values = experimental_strategy_pattern) +
     theme_pubr() +
     theme(axis.text.x = element_text(angle = 90,
-                                     vjust = 1,
+                                     vjust = 0.5,
                                      hjust = 1)) +
     labs(x = "",
          y = "Sample Size") +
@@ -193,7 +193,7 @@ create_two_plot_panel <- function(broad_histology_label)  {
     scale_fill_manual(values = tumor_descriptor_palette) +
     theme_pubr() +
     theme(axis.text.x = element_text(angle = 90,
-                                     vjust = 1,
+                                     vjust = 0.5,
                                      hjust = 1)) +
     labs(x = "",
          y = "Proportion") +
