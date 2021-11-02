@@ -4,8 +4,7 @@ suppressPackageStartupMessages({
 })
 
 # set up directories
-#root_dir <- rprojroot::find_root(rprojroot::has_dir(".git")) 
-root_dir <- "~/OpenPBTA-analysis/"
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git")) 
 palette_dir <- file.path(root_dir, "figures", "palettes")
 output_dir <- file.path(root_dir, "analyses", "tp53_nf1_score",
                         "plots")
