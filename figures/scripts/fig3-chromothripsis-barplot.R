@@ -89,7 +89,6 @@ chromoth_cancer_group_df <- chromo_per_sample_df %>%
 # Reorder cancer_group based on proportion and remove any cancer groups with
 # no instances of chromothripsis
 chromoth_cancer_group_df <- chromoth_cancer_group_df  %>%
-  filter(prop > 0) %>%
   mutate(cancer_group = fct_reorder(cancer_group, prop))
 
 #### Plotting ------------------------------------------------------------------
