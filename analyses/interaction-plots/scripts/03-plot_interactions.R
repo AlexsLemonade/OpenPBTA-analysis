@@ -215,7 +215,7 @@ disease_df <-
 #   head(10) %>% # top 10 diseases with highest mutated samples
 #   dplyr::pull(disease)
 
-# Now a manual version to make patterning easier
+# Now a manual version
 display_diseases <- c(
   "Diffuse midline glioma",
   "Low-grade glioma astrocytoma",
@@ -248,26 +248,6 @@ names(histologies_color_key) <- histologies_color_key_df$cancer_group
 # Adding gray for Other histologies outside the top 10 above
 histologies_color_key <- c(histologies_color_key, "Other" = "#d3d3d3")
 
-# Cycle through some patterns for the bar chart
-patterns_key <- c(
-  `Diffuse midline glioma` = "stripe",
-  `Low-grade glioma astrocytoma` = "none",
-  Craniopharyngioma = "none",
-  `High-grade glioma astrocytoma` = "circle",
-  Ganglioglioma = "none",
-  Medulloblastoma = "none",
-  Meningioma = "none",
-  Ependymoma = "none",
-  Schwannoma = "none",
-  `Dysembryoplastic neuroepithelial tumor` = "none",
-  Other = "none"
-)
-
-# Use different densities for different patterns
-patterns_density_key <- dplyr::recode(patterns_key,
-                                      stripe = 0.05,
-                                      circle = 0.15,
-                                      none = 0)
 
 # get scale to match cooccurence plot
 # Extra scale units for the case where there are fewer genes than opts$plotsize
@@ -277,25 +257,16 @@ xscale2 <- levels(disease_df$gene) %>%
 disease_plot <- ggplot(
   disease_df,
   aes(x = gene,
-      y = mutant_samples)) +
-  geom_col_pattern(aes(fill = disease_factor,
-                       pattern = disease_factor),
-                   width = 0.7,
-                   color = "#999999",
-                   pattern_colour = "#FFFFFF",
-                   pattern_fill = "#FFFFFF",
-                   pattern_angle = 45,
-                   pattern_spacing = 0.01,
-                   pattern_key_scale_factor = 0.6) +
+      y = mutant_samples,
+      fill = disease_factor)) +
+  geom_col(width = 0.7,
+           color = "#666666") +
   labs(
     x = "",
     y = "Samples with mutations",
-    fill = "Cancer Group",
-    pattern = "Cancer Group"
+    fill = "Cancer Group"
   ) +
   scale_fill_manual(values = histologies_color_key) +
-  scale_pattern_manual(values = patterns_key) +
-  scale_pattern_density_manual(values = patterns_density_key) +
   scale_x_discrete(
     limits = xscale2,
     breaks = disease_df$gene
