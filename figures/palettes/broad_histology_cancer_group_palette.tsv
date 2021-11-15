@@ -1,17 +1,17 @@
 broad_histology	cancer_group	broad_histology_hex	cancer_group_hex	broad_histology_display	cancer_group_display	broad_histology_order	oncoprint_group	oncoprint_hex	oncoprint_include
 Benign tumor	NA	#590024	NA	Benign tumor	NA	11	NA	NA	FALSE
-Benign tumor	Choroid plexus papilloma	#590024	#592d3e	Benign tumor	Choroid plexus papilloma	11	NA	NA	FALSE
+Benign tumor	Choroid plexus papilloma	#590024	#4d2635	Benign tumor	Choroid plexus papilloma	11	NA	NA	FALSE
 Benign tumor	Atypical choroid plexus papilloma	#590024	#b5b5b5	Benign tumor	Other	11	NA	NA	FALSE
 Benign tumor	Adenoma	#590024	#b5b5b5	Benign tumor	Other	11	NA	NA	FALSE
 Chordoma	Chordoma	#808080	#b5b5b5	Other	Other	12	NA	NA	FALSE
 Choroid plexus tumor	Choroid plexus carcinoma	#808080	#b5b5b5	Other	Other	12	Other CNS	NA	FALSE
 Choroid plexus tumor	Choroid plexus cyst	#808080	#b5b5b5	Other	Other	12	Other CNS	NA	FALSE
-Diffuse astrocytic and oligodendroglial tumor	High-grade glioma astrocytoma	#ff80e5	#bf0099	Diffuse astrocytic and oligodendroglial tumor	High-grade glioma astrocytoma	2	Diffuse astrocytic and oligodendroglial tumor	#bf0099	TRUE
+Diffuse astrocytic and oligodendroglial tumor	High-grade glioma astrocytoma	#ff80e5	#ffccf5	Diffuse astrocytic and oligodendroglial tumor	High-grade glioma astrocytoma	2	Diffuse astrocytic and oligodendroglial tumor	#ffccf5	TRUE
 Diffuse astrocytic and oligodendroglial tumor	Diffuse midline glioma	#ff80e5	#ff40d9	Diffuse astrocytic and oligodendroglial tumor	Diffuse midline glioma	2	Diffuse astrocytic and oligodendroglial tumor	#ff40d9	TRUE
-Diffuse astrocytic and oligodendroglial tumor	Diffuse intrinsic pontine glioma	#ff80e5	#ffccf5	Diffuse astrocytic and oligodendroglial tumor	Diffuse intrinsic pontine glioma	2	Diffuse astrocytic and oligodendroglial tumor	#ffccf5	TRUE
+Diffuse astrocytic and oligodendroglial tumor	Diffuse intrinsic pontine glioma	#ff80e5	#bf0099	Diffuse astrocytic and oligodendroglial tumor	Diffuse intrinsic pontine glioma	2	Diffuse astrocytic and oligodendroglial tumor	#bf0099	TRUE
 Diffuse astrocytic and oligodendroglial tumor	Oligodendroglioma	#ff80e5	#b5b5b5	Diffuse astrocytic and oligodendroglial tumor	Other	2	Diffuse astrocytic and oligodendroglial tumor	#525252	TRUE
-Embryonal tumor	Medulloblastoma	#220040	#9426fb	Embryonal tumor	Medulloblastoma	3	Embryonal tumor	#9426fb	TRUE
-Embryonal tumor	CNS Embryonal tumor	#220040	#7739ad	Embryonal tumor	CNS Embryonal tumor	3	Embryonal tumor	#7739ad	TRUE
+Embryonal tumor	Medulloblastoma	#220040	#a340ff	Embryonal tumor	Medulloblastoma	3	Embryonal tumor	#a340ff	TRUE
+Embryonal tumor	CNS Embryonal tumor	#220040	#b08ccf	Embryonal tumor	CNS Embryonal tumor	3	Embryonal tumor	#b08ccf	TRUE
 Embryonal tumor	Atypical Teratoid Rhabdoid Tumor	#220040	#4d0d85	Embryonal tumor	Atypical Teratoid Rhabdoid Tumor	3	Embryonal tumor	#4d0d85	TRUE
 Embryonal tumor	Embryonal tumor with multilayer rosettes	#220040	#b5b5b5	Embryonal tumor	Other	3	Embryonal tumor	#737373	TRUE
 Embryonal tumor	Ganglioneuroblastoma	#220040	#b5b5b5	Embryonal tumor	Other	3	Embryonal tumor	#252525	TRUE
