@@ -96,7 +96,10 @@ filter_mutations <- function(maf_df,
 #'  `gene1`; `gene2` (gene names);
 #'  `mut11`; `mut10`; `mut01` (counts of mutations in each category of sharing:
 #'     `mut11`: both mutated; `mut10`: mutated in the first but not second gene, etc.);
-#'  `odds_ratio` (odds ratio for for co-occurence);
+#'  `odds_ratio` (odds ratio for co-occurence);
+#'  `standard_error_or` (standard error of the odds ratio for co-occurence);
+#'  `or_ci_lower_bound` (lower bound of the confidence interval for odds ratio for co-occurence );
+#'  `or_ci_upper_bound` (upper bound of the confidence interval for odds ratio for co-occurence);
 #'  `cooccur_sign` (1 if co-occurence greater than by chance, -1 if less frequent than expected)
 #'  `p` (the fisher's exact test p value);
 #'  `q` (Benjamini-Hochberg adjusted p value);
@@ -152,6 +155,10 @@ coocurrence <- function(gene_sample_df,
       odds_ratio = (mut11 * mut00) / (mut10 * mut01),
       cooccur_sign = ifelse(odds_ratio > 1, 1, -1)
       ) %>%
+    dplyr::mutate(
+      standard_error_or = sqrt(1/mut11 + 1/mut00 + 1/mut10 + 1/mut01),
+      or_ci_lower_bound = exp(log(odds_ratio) - 1.96 * standard_error_or),
+      or_ci_upper_bound = exp(log(odds_ratio) + 1.96 * standard_error_or)) %>%
     dplyr::rowwise() %>%
     dplyr::mutate(p = row_fisher(mut11, mut10, mut01, mut00)) %>%
     dplyr::ungroup() %>%
