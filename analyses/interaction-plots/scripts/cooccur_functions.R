@@ -114,10 +114,8 @@ filter_mutations <- function(maf_df,
 #'  `mut11`; `mut10`; `mut01` (counts of mutations in each category of sharing:
 #'     `mut11`: both mutated; `mut10`: mutated in the first but not second gene, etc.);
 #'  `odds_ratio` (odds ratio for co-occurence);
-#'  `standard_error_or` (standard error of the odds ratio for co-occurence);
-#'  `or_ci_lower_bound` (lower bound of the confidence interval for odds ratio for co-occurence );
-#'  `or_ci_upper_bound` (upper bound of the confidence interval for odds ratio for co-occurence);
 #'  `cooccur_sign` (1 if co-occurence greater than by chance, -1 if less frequent than expected)
+#'  `ci` (confidence interval for odds_ratio);
 #'  `p` (the fisher's exact test p value);
 #'  `q` (Benjamini-Hochberg adjusted p value);
 #'  `cooccur_score` (calculated as `cooccur_sign * -log10(p)`);
