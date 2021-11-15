@@ -126,6 +126,7 @@ broad_histology_df <- data.frame(
                           "#b2502d"),
   stringsAsFactors = FALSE
 )
+
 # value for "other" histologies
 broad_histology_other_hex <- "#808080"
 ```
@@ -136,8 +137,9 @@ Now to create a legend with `legend()` (h/t [this StackOverflow answer](https://
 plot(NULL, xaxt = "n", yaxt = "n", bty = "n", ylab = "", xlab = "", 
      xlim = 0:1, ylim = 0:1)
 legend("topleft", 
-       legend = broad_histology_df$broad_histology,
-       col = broad_histology_df$broad_histology_hex,
+       legend = c(broad_histology_df$broad_histology, "Other"),
+       col = c(broad_histology_df$broad_histology_hex, 
+               broad_histology_other_hex),
        pch = 15, pt.cex = 2, cex = 1, bty = "n")
 mtext("Broad Histology", at = 0.135, cex = 1.5)
 ```
@@ -197,8 +199,8 @@ And again, we'll create a legend with `legend()`
 plot(NULL, xaxt = "n", yaxt = "n", bty = "n", ylab = "", xlab = "", 
      xlim = 0:1, ylim = 0:1)
 legend("topleft", 
-       legend = cancer_group_df$cancer_group,
-       col = cancer_group_df$cancer_group_hex,
+       legend = c(cancer_group_df$cancer_group, "Other"),
+       col = c(cancer_group_df$cancer_group_hex, cancer_group_other_hex),
        pch = 15, pt.cex = 1.5, cex = 0.75, bty = "n")
 mtext("Cancer Group", at = 0.0625, cex = 1)
 ```
