@@ -19,6 +19,23 @@ row_fisher <- function(w, x, y, z) {
   return(fisher$p.value)
 }
 
+#' Calculate confidence interval for odds ratio
+#' 
+#' @return CI of odds ratio 
+calc_ci <- function(mut11, mut10, mut01, mut00, odds_ratio){
+  if(sum(mut11==0 | mut10==0 | mut01==0 | mut00==0)>0){
+    standard_error_or <- sqrt(1/(mut11+0.5) + 1/(mut10+0.5) + 1/(mut01+0.5) + 1/(mut00+0.5))
+  } 
+  else {
+    standard_error_or <- sqrt(1/mut11 + 1/mut10 + 1/mut01 + 1/mut00)
+  }
+  or_ci_lower_bound <- exp(log(odds_ratio) - 1.96 * standard_error_or)
+  or_ci_upper_bound <- exp(log(odds_ratio) + 1.96 * standard_error_or)
+  
+  ci <- paste0(or_ci_lower_bound, "-", or_ci_upper_bound )
+  return(ci)
+}
+
 #' Filter mutations based on VAF and effect
 #'
 #' @param maf_df a data frame of a maf file or subset of one. Minimally includes
@@ -155,10 +172,7 @@ coocurrence <- function(gene_sample_df,
       odds_ratio = (mut11 * mut00) / (mut10 * mut01),
       cooccur_sign = ifelse(odds_ratio > 1, 1, -1)
       ) %>%
-    dplyr::mutate(
-      standard_error_or = sqrt(1/mut11 + 1/mut00 + 1/mut10 + 1/mut01),
-      or_ci_lower_bound = exp(log(odds_ratio) - 1.96 * standard_error_or),
-      or_ci_upper_bound = exp(log(odds_ratio) + 1.96 * standard_error_or)) %>%
+    dplyr::mutate(ci=calc_ci(mut11, mut10, mut01, mut00, odds_ratio)) %>% 
     dplyr::rowwise() %>%
     dplyr::mutate(p = row_fisher(mut11, mut10, mut01, mut00)) %>%
     dplyr::ungroup() %>%
