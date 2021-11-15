@@ -13,7 +13,7 @@ date: 2021
 There are multiple "disease labels" in the `pbta-histologies.tsv` file, including (from most broad to most narrow) `broad_histology`, `cancer_group`, and `harmonized_diagnosis`.
 For context, it is helpful to note that an individual `cancer_group` will be nested under a single `broad_histology` and that `cancer_group` is a shorter form of `harmonized_diagnosis` with the following edits:
 
-- Removed Other, Benign tumor and Dysplasia/Gliosis, Dysplasia/Gliosis-Glial-neuronal tumor NOS removed from `cancer_group`
+- Other, Benign tumor and Dysplasia/Gliosis, Dysplasia/Gliosis-Glial-neuronal tumor NOS removed from `cancer_group`
 - Neurofibroma/Plexiform;Other updated to Neurofibroma/Plexiform
 - Non-germinomatous germ cell tumor;Teratoma updated to Teratoma
 - Anaplastic (malignant) meningioma, Meningothelial meningioma and Clear cell meningioma updated to Meningioma
@@ -126,6 +126,8 @@ broad_histology_df <- data.frame(
                           "#b2502d"),
   stringsAsFactors = FALSE
 )
+# value for "other" histologies
+broad_histology_other_hex <- "#808080"
 ```
 
 Now to create a legend with `legend()` (h/t [this StackOverflow answer](https://stackoverflow.com/questions/48966645/how-can-i-create-a-legend-without-a-plot-in-r/48966924))
@@ -185,6 +187,8 @@ cancer_group_df <- data.frame(
                        "#b33000"),
   stringsAsFactors = FALSE
 )
+# Value for "other" groups
+cancer_group_other_hex <- "#b5b5b5"
 ```
 
 And again, we'll create a legend with `legend()`
@@ -201,7 +205,7 @@ mtext("Cancer Group", at = 0.0625, cex = 1)
 
 ### Output
 
-We can create a data frame that contains both palettes with a series of left joins, where we will then fill the NA values with a single (gray) hex code per column (`#808080` for `broad_histology`, `#d3d3d3` for `cancer_group`.)
+We can create a data frame that contains both palettes with a series of left joins, where we will then fill the NA values with a single (gray) hex code per column (`r broad_histology_other_hex` for `broad_histology`, `r cancer_group_other_hex` for `cancer_group`.)
 
 ```{r}
 palette_df <- histologies_df %>%
@@ -216,8 +220,8 @@ palette_df <- histologies_df %>%
   # Add cancer group palette
   left_join(cancer_group_df, by = "cancer_group") %>%
   # Fill all other values with gray colors
-  replace_na(list(broad_histology_hex = "#808080", 
-                  cancer_group_hex = "#b5b5b5")) %>%
+  replace_na(list(broad_histology_hex = broad_histology_other_hex,
+                  cancer_group_hex = cancer_group_other_hex)) %>%
   # The exception being - if cancer_group == NA, so should cancer_group_hex!
   mutate(cancer_group_hex = if_else(is.na(cancer_group), 
                                     NA_character_, 
@@ -239,10 +243,10 @@ We'll add a couple columns for legend-making convenience.
 
 ```{r}
 palette_df <- palette_df %>%
-  mutate(broad_histology_display = if_else(broad_histology_hex == "#808080",
+  mutate(broad_histology_display = if_else(broad_histology_hex == broad_histology_other_hex,
                                            "Other",
                                            broad_histology),
-         cancer_group_display = if_else(cancer_group_hex == "#b5b5b5",
+         cancer_group_display = if_else(cancer_group_hex == cancer_group_other_hex,
                                         "Other",
                                         cancer_group))
 ```
@@ -357,7 +361,7 @@ palette_df <- palette_df %>%
   # When there's an oncoprint group and a specific cancer group display color,
   # use the cancer group display color as the oncoprint color
   mutate(oncoprint_hex = if_else(
-    cancer_group_hex != "#b5b5b5" & !is.na(oncoprint_group),
+    cancer_group_hex != cancer_group_other_hex & !is.na(oncoprint_group),
     cancer_group_hex,
     oncoprint_hex
   ),
