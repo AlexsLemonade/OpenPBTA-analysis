@@ -196,8 +196,8 @@ legend_ordering <- list(
     "Pleomorphic xanthoastrocytoma"
   ),
   hgat = c(
-    "High-grade glioma astrocytoma",
     "Diffuse midline glioma",
+    "High-grade glioma astrocytoma",
     "Oligodendroglioma"
   ),
   embryonal = c(
