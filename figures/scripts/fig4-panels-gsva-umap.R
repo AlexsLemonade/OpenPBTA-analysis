@@ -62,13 +62,6 @@ palette_mapping_df <- histologies_df %>%
   mutate(broad_histology_display = forcats::fct_reorder(broad_histology_display,
                                                         broad_histology_order))
 
-# histology_label_mapping <- readr::read_tsv(
-#   file.path(palette_dir, "histology_label_color_table.tsv")) %>%
-#   # Select just the columns we will need for plotting
-#   dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>%
-#   # Reorder display_group based on display_order
-#   dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
-
 # Palette for GSVA scores
 divergent_palette <- read_tsv(file.path(palette_dir,
                                         "divergent_color_palette.tsv"))
