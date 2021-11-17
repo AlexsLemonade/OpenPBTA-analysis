@@ -106,6 +106,8 @@ p <- merge %>%
   ylab("# SV Breaks") 
 p
 ggsave(file.path(plots_dir, "count_chromothripsis_cnv_and_sv_breaks_scatterplot.png"), p)
+# Also save a PDF version, to be used as a single panel in a multipanel figure
+ggsave(file.path(plots_dir, "count_chromothripsis_cnv_and_sv_breaks_scatterplot.pdf"), p)
 ```
 
 #### Stripchart: Chromothripsis regions vs. CNV breaks
@@ -139,3 +141,9 @@ p <- merge %>%
 p
 ggsave(file.path(plots_dir, "count_chromothripsis_sv_breaks_stripchart.png"), p)
 ``` 
+
+### Session Info
+
+```{r}
+sessionInfo()
+```
