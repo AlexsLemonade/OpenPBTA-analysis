@@ -72,8 +72,8 @@ broad_histology_palette <- color_palette_df %>%
   dplyr::select(broad_histology, broad_histology_hex) %>%
   dplyr::distinct() %>%
   dplyr::filter(complete.cases(.))
-col_broad <- colors$broad_histology_hex
-names(col_broad) <- colors$broad_histology
+col_broad <- broad_histology_palette$broad_histology_hex
+names(col_broad) <- broad_histology_palette$broad_histology
 
 ## boxplot of TP53 scores by broad histology
 broad_histology_plot <- ggplot(tp53_hist_for_broad,
