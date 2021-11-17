@@ -84,12 +84,8 @@ chromoth_cancer_group_df <- chromo_per_sample_df %>%
   mutate(prop = `TRUE` / cancer_group_size) %>%
   mutate(labels = paste0(`TRUE`, " / ", cancer_group_size)) %>%
   ungroup(cancer_group) %>%
-  filter(cancer_group_size >= 3 & !is.na(cancer_group)) # Only keep groups with >=3 tumors
-
-# Reorder cancer_group based on proportion and remove any cancer groups with
-# no instances of chromothripsis
-chromoth_cancer_group_df <- chromoth_cancer_group_df  %>%
-  filter(prop > 0) %>%
+  filter(cancer_group_size >= 3 & !is.na(cancer_group)) %>% # Only keep groups with >=3 tumors
+  # Reorder cancer_group based on proportion
   mutate(cancer_group = fct_reorder(cancer_group, prop))
 
 #### Plotting ------------------------------------------------------------------
@@ -101,7 +97,7 @@ theme_set(theme_pubr())
 plot_options <- list(
   ylim(c(0, 1)),
   xlab(NULL),
-  ylab("Proportion of Tumors"),
+  ylab("Proportion of Tumors with Chromothripsis Events"),
   theme(axis.text.x = element_text(angle = 45, hjust = 0.95))
 )
 
