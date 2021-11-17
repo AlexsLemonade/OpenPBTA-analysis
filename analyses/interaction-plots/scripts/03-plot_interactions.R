@@ -29,7 +29,6 @@
 # Load libraries:
 library(optparse)
 library(ggplot2)
-library(ggpattern)
 library(patchwork)
 
 # define options
