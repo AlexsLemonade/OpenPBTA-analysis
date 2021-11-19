@@ -36,7 +36,7 @@ subtypes <- histology_df %>%
 subtype_table <- subtypes %>%
   dplyr::group_by(broad_histology, molecular_subtype) %>%
   tally() %>%
-  readr::write_tsv(file.path(results_dir, "subtypes-n.tsv"))
+  readr::write_tsv(file.path(results_dir, "Table1-molecular-subtypes.tsv"))
 
 ```
 
@@ -45,7 +45,7 @@ subtype_table <- subtypes %>%
 ```{r v21 histology as excel}
 
 openxlsx::write.xlsx(histology_df, 
-                     file.path(results_dir, "OpenPBTA_histologies_v21.xlsx"),
+                     file.path(results_dir, "TableS1-histologies.xlsx"),
                      overwrite=TRUE)
 
 ```
@@ -55,13 +55,15 @@ openxlsx::write.xlsx(histology_df,
 ```{r s2 DNA results part 1}
 
 # read in tmb all file, select and rename columns
-tmb_all <- readr::read_tsv(file.path(data_dir, "tcga-snv-mutation-tmb-all.tsv")) %>%
+tmb_all <- readr::read_tsv(file.path(data_dir, "pbta-snv-mutation-tmb-all.tsv")) %>%
   dplyr::select(Tumor_Sample_Barcode, tmb) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>% 
   dplyr::rename(Tmb_all = tmb)
 
 # read in tmb coding file, select and rename columns
-tmb_coding <- readr::read_tsv(file.path(data_dir, "tcga-snv-mutation-tmb-coding.tsv")) %>%
+tmb_coding <- readr::read_tsv(file.path(data_dir, "pbta-snv-mutation-tmb-coding.tsv")) %>%
   dplyr::select(Tumor_Sample_Barcode, tmb) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>% 
   dplyr::rename(Tmb_coding = tmb)
 
 # combine files
@@ -72,7 +74,8 @@ tmb_combined <- full_join(tmb_all, tmb_coding)
 ```{r s2 DNA results part 2}
 # read in the file
 cosmic_mut_df <- readr::read_tsv("../analyses/mutational-signatures/results/cosmic_signatures_results.tsv") %>%
-  dplyr::select(Tumor_Sample_Barcode, signature, mut_per_mb)
+  dplyr::select(Tumor_Sample_Barcode, signature, mut_per_mb) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode)
 
 # get wide format
 cosmic_mut_wide <- cosmic_mut_df %>%
@@ -82,7 +85,7 @@ cosmic_mut_wide <- cosmic_mut_df %>%
 unique_cosmic_sig <- cosmic_mut_df %>% 
   pull(signature) %>% unique()
 cosmic_mut_wide <- cosmic_mut_wide %>%
-  dplyr::select(c(Tumor_Sample_Barcode, all_of(unique_cosmic_sig)))
+  dplyr::select(c(Kids_First_Biospecimen_ID, all_of(unique_cosmic_sig)))
 
 ```
 
@@ -90,7 +93,8 @@ cosmic_mut_wide <- cosmic_mut_wide %>%
 ```{r s2 DNA results part 3}
 # read in the file
 alexandrov_mut_df <- readr::read_tsv("../analyses/mutational-signatures/results/nature_signatures_results.tsv") %>%
-  dplyr::select(Tumor_Sample_Barcode, signature, mut_per_mb)
+  dplyr::select(Tumor_Sample_Barcode, signature, mut_per_mb) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode)
 
 # get wide format
 alexandrov_mut_wide <- alexandrov_mut_df %>%
@@ -100,7 +104,7 @@ alexandrov_mut_wide <- alexandrov_mut_df %>%
 unique_alex_sig <- alexandrov_mut_df %>% 
   pull(signature) %>% unique()
 alexandrov_mut_wide <- alexandrov_mut_wide %>%
-  dplyr::select(c(Tumor_Sample_Barcode, all_of(unique_alex_sig)))
+  dplyr::select(c(Kids_First_Biospecimen_ID, all_of(unique_alex_sig)))
 ```
 
 ### CNS mutational signatures
@@ -108,27 +112,26 @@ alexandrov_mut_wide <- alexandrov_mut_wide %>%
 cns_mut_list <- readRDS("../analyses/mutational-signatures/results/fitted_cns_signature_exposures.RDS")
 cns_mean <- cns_mut_list[["mean"]] %>%
   as.data.frame() %>%
-  tibble::rownames_to_column("Tumor_Sample_Barcode")
+  tibble::rownames_to_column("Kids_First_Biospecimen_ID")
 
 ```
 
 ### Chromothripsis regions per sample
 ```{r s2 DNA results part 5}
-chromothripsis_region_df <- readr::read_tsv("../analyses/chromothripsis/results/chromothripsis_summary_per_sample.txt") %>%
-  dplyr::rename(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID)
+chromothripsis_region_df <- readr::read_tsv("../analyses/chromothripsis/results/chromothripsis_summary_per_sample.txt") 
 
 ```
 
 ### combine S2 table
 ```{r s2 DNA results combined}
 list_s2_table <- list(tmb = tmb_combined,
-                     cosmic_mut = cosmic_mut_wide,
-                     alexandrov_mut = alexandrov_mut_wide,
-                     cnv_mut = cns_mean,
-                     chromothripsis=chromothripsis_region_df
+                     cosmic_mut_sigs = cosmic_mut_wide,
+                     alexandrov_mut_sigs = alexandrov_mut_wide,
+                     cns_denovo_mut_sigs = cns_mean,
+                     chromothripsis_events = chromothripsis_region_df
                      )
 openxlsx::write.xlsx(list_s2_table, 
-                     file.path(results_dir, "tableS2_DNA_results_table.xlsx"),
+                     file.path(results_dir, "TableS2-DNA-results-table.xlsx"),
                      overwrite=TRUE)
 ```
 
@@ -139,15 +142,35 @@ openxlsx::write.xlsx(list_s2_table,
 tp53_scores <- readr::read_tsv("../analyses/tp53_nf1_score/results/tp53_altered_status.tsv")
 
 # get extend scores file
-telomerase_scores_polya <- readr::read_tsv("../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_counts.txt") %>%
+telomerase_scores_polya_count <- readr::read_tsv("../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_counts.txt") %>%
   dplyr::select(SampleID, NormEXTENDScores) %>% 
-  dplyr::rename(Kids_First_Biospecimen_ID_RNA = SampleID)
-  
-telomerase_scores_stranded <- readr::read_tsv("../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt") %>%
-  dplyr::select(SampleID, NormEXTENDScores) %>% 
-  dplyr::rename(Kids_First_Biospecimen_ID_RNA = SampleID)
+  dplyr::rename(Kids_First_Biospecimen_ID_RNA = SampleID,
+                NormEXTENDScores_counts = NormEXTENDScores)
 
-telomerase_scores_combined <- bind_rows(telomerase_scores_polya, telomerase_scores_stranded)
+telomerase_scores_polya_fpkm <-
+  readr::read_tsv("../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_FPKM.txt") %>%
+  dplyr::select(SampleID, NormEXTENDScores) %>% 
+  dplyr::rename(Kids_First_Biospecimen_ID_RNA = SampleID,
+                NormEXTENDScores_fpkm = NormEXTENDScores)
+
+telomerase_scores_polya_combined <- full_join(telomerase_scores_polya_count,
+                                              telomerase_scores_polya_fpkm)
+  
+telomerase_scores_stranded_count <- readr::read_tsv("../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_counts.txt") %>%
+  dplyr::select(SampleID, NormEXTENDScores) %>% 
+  dplyr::rename(Kids_First_Biospecimen_ID_RNA = SampleID,
+                NormEXTENDScores_counts = NormEXTENDScores)
+
+telomerase_scores_stranded_fpkm <- readr::read_tsv("../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt") %>%
+  dplyr::select(SampleID, NormEXTENDScores) %>% 
+  dplyr::rename(Kids_First_Biospecimen_ID_RNA = SampleID,
+                NormEXTENDScores_fpkm = NormEXTENDScores)
+
+telomerase_scores_stranded_combined <- full_join(telomerase_scores_stranded_count,
+                                                 telomerase_scores_stranded_fpkm)
+
+telomerase_scores_combined <- bind_rows(telomerase_scores_polya_combined,
+                                        telomerase_scores_stranded_combined)
 
 ```
 
@@ -157,7 +180,7 @@ list_s3_table <- list(tp53_scores = tp53_scores,
                       telomerase_scores = telomerase_scores_combined
                       )
 openxlsx::write.xlsx(list_s3_table, 
-                     file.path(results_dir, "tableS3_RNA_results_table.xlsx"), 
+                     file.path(results_dir, "TableS3-RNA-results-table.xlsx"), 
                      overwrite=TRUE)
 
 ```
