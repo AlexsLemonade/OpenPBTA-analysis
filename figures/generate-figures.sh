@@ -68,17 +68,6 @@ bash ${analyses_dir}/interaction-plots/01-create-interaction-plots.sh
 # Copy the main figure to final directory
 cp ${analyses_dir}/interaction-plots/plots/combined_top50.pdf pdfs/fig3/panels/mutation_cooccurrence_figure.pdf
 
-#####################
-## Chromothripsis
-
-# Run the module
-bash ${analyses_dir}/chromothripsis/run-chromothripsis.sh
-
-# Copy over panel from chromothripsis module
-cp ${analyses_dir}/chromothripsis/plots/04-breakpoint-data/count_chromothripsis_cnv_and_sv_breaks_scatterplot.pdf pdfs/fig3/panels/count_chromothripsis_cnv_and_sv_breaks_scatterplot.pdf
-
-# Run the Rscript that creates the barplot using the most recent color palette
-Rscript --vanilla scripts/fig3-chromothripsis-barplot.R
 
 #####################
 ## Chromothripsis
