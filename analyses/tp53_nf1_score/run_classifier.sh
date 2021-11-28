@@ -28,16 +28,16 @@ POLYA=${OPENPBTA_POLYAPLOT:-1}
 
 data_dir="../../data"
 scratch_dir="../../scratch"
-# cds gencode bed file  
+# cds gencode bed file
 cds_file="${scratch_dir}/gencode.v27.primary_assembly.annotation.bed"
 snvconsensus_file="${data_dir}/pbta-snv-consensus-mutation.maf.tsv.gz"
 cnvconsensus_file="${data_dir}/consensus_seg_annotated_cn_autosomes.tsv.gz"
 
 if [[ RUN_FOR_SUBTYPING == "0" ]]
 then
-   histology_file="../../data/pbta-histologies.tsv" 
-else 
-   histology_file="../../data/pbta-histologies-base.tsv"  
+   histology_file="../../data/pbta-histologies.tsv"
+else
+   histology_file="../../data/pbta-histologies-base.tsv"
 fi
 
 
@@ -65,7 +65,7 @@ else
    # expression files for prediction
    collapsed_stranded="../collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
    collapsed_polya="../collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
-fi   
+fi
 
 # Skip poly-A steps in CI
 if [ "$POLYA" -gt "0" ]; then
@@ -105,5 +105,7 @@ Rscript 07-plot-roc.R
 # create violin plots of TP53 scores across molecular subtypes per broad histology
 Rscript 08-compare-molecularsubtypes-tp53scores.R
 
+# create boxplots by broad histology, cancer group
+Rscript 09-compare-histologies.R
 
 
