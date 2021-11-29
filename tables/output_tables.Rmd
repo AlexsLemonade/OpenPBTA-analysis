@@ -43,10 +43,11 @@ subtype_table <- subtypes %>%
 ## Table S1: V21 histologies table
 
 ```{r v21 histology as excel}
-
-openxlsx::write.xlsx(histology_df, 
-                     file.path(results_dir, "TableS1-histologies.xlsx"),
-                     overwrite=TRUE)
+histology_df %>%
+  mutate_all(as.character) %>% 
+  replace(is.na(.), "NA") %>%
+  openxlsx::write.xlsx(file.path(results_dir, "TableS1-histologies.xlsx"),
+                        overwrite=TRUE)
 
 ```
 
@@ -58,7 +59,7 @@ openxlsx::write.xlsx(histology_df,
 tmb_all <- readr::read_tsv(file.path(data_dir, "pbta-snv-mutation-tmb-all.tsv")) %>%
   dplyr::select(Tumor_Sample_Barcode, tmb) %>%
   dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>% 
-  dplyr::rename(Tmb_all = tmb)
+  dplyr::rename(Tmb_all = tmb) 
 
 # read in tmb coding file, select and rename columns
 tmb_coding <- readr::read_tsv(file.path(data_dir, "pbta-snv-mutation-tmb-coding.tsv")) %>%
@@ -67,7 +68,9 @@ tmb_coding <- readr::read_tsv(file.path(data_dir, "pbta-snv-mutation-tmb-coding.
   dplyr::rename(Tmb_coding = tmb)
 
 # combine files
-tmb_combined <- full_join(tmb_all, tmb_coding)
+tmb_combined <- full_join(tmb_all, tmb_coding)  %>%
+  mutate_all(as.character) %>% 
+  replace(is.na(.), "NA")
 ```
 
 ### COSMIC mutational signatures
@@ -104,7 +107,7 @@ alexandrov_mut_wide <- alexandrov_mut_df %>%
 unique_alex_sig <- alexandrov_mut_df %>% 
   pull(signature) %>% unique()
 alexandrov_mut_wide <- alexandrov_mut_wide %>%
-  dplyr::select(c(Kids_First_Biospecimen_ID, all_of(unique_alex_sig)))
+  dplyr::select(c(Kids_First_Biospecimen_ID, all_of(unique_alex_sig))) 
 ```
 
 ### CNS mutational signatures
@@ -112,13 +115,13 @@ alexandrov_mut_wide <- alexandrov_mut_wide %>%
 cns_mut_list <- readRDS("../analyses/mutational-signatures/results/fitted_cns_signature_exposures.RDS")
 cns_mean <- cns_mut_list[["mean"]] %>%
   as.data.frame() %>%
-  tibble::rownames_to_column("Kids_First_Biospecimen_ID")
+  tibble::rownames_to_column("Kids_First_Biospecimen_ID")  
 
 ```
 
 ### Chromothripsis regions per sample
 ```{r s2 DNA results part 5}
-chromothripsis_region_df <- readr::read_tsv("../analyses/chromothripsis/results/chromothripsis_summary_per_sample.txt") 
+chromothripsis_region_df <- readr::read_tsv("../analyses/chromothripsis/results/chromothripsis_summary_per_sample.txt")  
 
 ```
 
@@ -139,7 +142,9 @@ openxlsx::write.xlsx(list_s2_table,
 ### read in and process files
 ```{r s3 RNA results table}
 # get tp53 scores 
-tp53_scores <- readr::read_tsv("../analyses/tp53_nf1_score/results/tp53_altered_status.tsv")
+tp53_scores <- readr::read_tsv("../analyses/tp53_nf1_score/results/tp53_altered_status.tsv") %>%
+  mutate_all(as.character) %>% 
+  replace(is.na(.), "NA")
 
 # get extend scores file
 telomerase_scores_polya_count <- readr::read_tsv("../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_counts.txt") %>%
@@ -170,7 +175,9 @@ telomerase_scores_stranded_combined <- full_join(telomerase_scores_stranded_coun
                                                  telomerase_scores_stranded_fpkm)
 
 telomerase_scores_combined <- bind_rows(telomerase_scores_polya_combined,
-                                        telomerase_scores_stranded_combined)
+                                        telomerase_scores_stranded_combined)  %>%
+  mutate_all(as.character) %>% 
+  replace(is.na(.), "NA")
 
 ```
 
