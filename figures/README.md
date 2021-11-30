@@ -72,69 +72,77 @@ Scripts that are exclusively for creating publication-ready plots are available 
 ### Color Palettes 
 
 This project has a set of unified color palettes.
-There are 5 sets of hex color keys to be used for all final figures, stored as 5 TSV files in the `figures/palettes` folder.
+There are 6 sets of hex color keys to be used for all final figures, stored as 6 TSV files in the `figures/palettes` folder.
 `hex_codes` contains the colors to be passed to your plotting code and `color_names` contains short descriptors of each color (e.g. `gradient_1`, or `divergent_neutral`).
-Each palette contains an `na_color` that is the same color in all palettes.
+
+Palettes for numeric or binary data contain an `na_color` that is uniform across palettes.
 This color should be used for all `NA` values.
 `na_color` is always the last value in the  palette.
 If `na_color` is not needed or is supplied separately to a plotting function, you can use a `dplyr::filter(hex_code != "na_color")` to remove `na_color`.
 
 To see a summary of what colors are used for histology labeling, see [`mapping-histology-labels.nb.html`](./mapping-histology-labels.nb.html)
 
-| Palette File Name | HEX color key | Color Notes | Variable application |
-|--------------|--------------------|-----------|----------------------|
-|`gradient_col_palette.tsv`| <br>gradient_0:![f7f7f7](https://placehold.it/150x40/f7f7f7/000000?text=f7f7f7) <br>gradient_1:![f7fcf5](https://placehold.it/150x40/f7fcf5/000000?text=f7fcf5) <br>gradient_2:![e5f5e0](https://placehold.it/150x40/e5f5e0/000000?text=e5f5e0) <br>gradient_3:![c7e9c0](https://placehold.it/150x40/c7e9c0/000000?text=c7e9c0) <br>gradient_4:![a1d99b](https://placehold.it/150x40/a1d99b/FFFFFF?text=a1d99b) <br>gradient_5:![74c476](https://placehold.it/150x40/74c476/FFFFFF?text=74c476) <br>gradient_6:![41ab5d](https://placehold.it/150x40/41ab5d/FFFFFF?text=41ab5d) <br>gradient_7:![238b45](https://placehold.it/150x40/238b45/FFFFFF?text=238b45) <br>gradient_8:![006d2c](https://placehold.it/150x40/006d2c/FFFFFF?text=006d2c) <br>gradient_9:![00441b](https://placehold.it/150x40/00441b/FFFFFF?text=00441b) <br>na_color:![f1f1f1](https://placehold.it/150x40/f1f1f1/000000?text=f1f1f1)|10 hex_codes where gradient_0 is for an absolute `0` but may need to be removed from the palette depending on the application|For numeric data being plotted e.g. tumor mutation burden|
-|`divergent_col_palette.tsv`|<br>divergent_low_5:![053061](https://placehold.it/150x40/053061/FFFFFF?text=053061) <br>divergent_low_4:![2166ac](https://placehold.it/150x40/2166ac/FFFFFF?text=2166ac) <br>divergent_low_3:![4393c3](https://placehold.it/150x40/4393c3/FFFFFF?text=4393c3) <br>divergent_low_2:![92c5de](https://placehold.it/150x40/92c5de/FFFFFF?text=92c5de) <br>divergent_low_1:![d1e5f0](https://placehold.it/150x40/d1e5f0/FFFFFF?text=d1e5f0) <br>divergent_neutral:![f7f7f7](https://placehold.it/150x40/f7f7f7/FFFFFF?text=f7f7f7) <br>divergent_high_1:![fddbc7](https://placehold.it/150x40/fddbc7/FFFFFF?text=fddbc7) <br>divergent_high_2:![f4a582](https://placehold.it/150x40/f4a582/FFFFFF?text=f4a582) <br>divergent_high_3:![d6604d](https://placehold.it/150x40/d6604d/FFFFFF?text=d6604d) <br>divergent_high_4:![b2182b](https://placehold.it/150x40/b2182b/FFFFFF?text=b2182b) <br>divergent_high_5:![67001f](https://placehold.it/150x40/67001f/FFFFFF?text=67001f) <br>na_color:![f1f1f1](https://placehold.it/150x40/f1f1f1/FFFFFF?text=f1f1f1)|12 hex codes where the numbers in the name indicate distance from `divergent_neutral`.|For data has that is bidirectional e.g. Amplification/Deletion values like `seg.mean`|
-|`binary_col_palette.tsv` |<br>binary_1:![2166ac](https://placehold.it/150x40/2166ac/FFFFFF?text=2166ac) <br>binary_2:![b2182b](https://placehold.it/150x40/b2182b/FFFFFF?text=b2182b) <br>na_color:![f1f1f1](https://placehold.it/150x40/f1f1f1/000000?text=f1f1f1)|A vector of two hex codes|For binary variables e.g. presence/absence or Amp/Del as statuses|
-| `oncoprint_color_palette.tsv` | <br>Missense_Mutation:![35978f](https://placehold.it/150x40/35978f/FFFFFF?text=35978f) <br>Nonsense_Mutation:![000000](https://placehold.it/150x40/000000/FFFFFF?text=000000) <br>Frame_Shift_Del:![56B4E9](https://placehold.it/150x40/56B4E9/FFFFFF?text=56B4E9) <br>Frame_Shift_Ins:![FFBBFF](https://placehold.it/150x40/FFBBFF/FFFFFF?text=FFBBFF) <br>Splice_Site:![F0E442](https://placehold.it/150x40/F0E442/FFFFFF?text=F0E442) <br>Translation_Start_Site:![191970](https://placehold.it/150x40/191970/FFFFFF?text=191970) <br>Nonstop_Mutation:![545454](https://placehold.it/150x40/545454/FFFFFF?text=545454) <br>In_Frame_Del:![CAE1FF](https://placehold.it/150x40/CAE1FF/FFFFFF?text=CAE1FF) <br>In_Frame_Ins:![FFE4E1](https://placehold.it/150x40/FFE4E1/FFFFFF?text=FFE4E1) <br>Stop_Codon_Ins:![CC79A7](https://placehold.it/150x40/CC79A7/FFFFFF?text=CC79A7) <br>Start_Codon_Del:![56B4E9](https://placehold.it/150x40/56B4E9/FFFFFF?text=56B4E9) <br>Fusion:![7B68EE](https://placehold.it/150x40/7B68EE/FFFFFF?text=7B68EE) <br>Multi_Hit:![00F021](https://placehold.it/150x40/00F021/FFFFFF?text=00F021) <br>Hom_Deletion:![313695](https://placehold.it/150x40/313695/FFFFFF?text=313695) <br>Hem_Deletion:![abd9e9](https://placehold.it/150x40/abd9e9/FFFFFF?text=abd9e9) <br>amplification:![c51b7d](https://placehold.it/150x40/c51b7d/FFFFFF?text=c51b7d) <br>loss:![0072B2](https://placehold.it/150x40/0072B2/FFFFFF?text=0072B2) <br>gain:![D55E00](https://placehold.it/150x40/D55E00/FFFFFF?text=D55E00) <br>High_Level_Gain:![FF0000](https://placehold.it/150x40/FF0000/FFFFFF?text=FF0000) <br>Multi_Hit_Fusion:![CD96CD](https://placehold.it/150x40/CD96CD/FFFFFF?text=CD96CD) | A named vector of hex codes assigned to each `short_histology` and to each `CNV`, `SNV` and `Fusion` category | For plotting an oncoprint figure, this vector provides hex codes for `CNV`, `SNV`, and `Fusion` categories |
-| `tumor_descriptor_palette.tsv` | <br> Initial CNS Tumor:	![709AE1FF](https://placehold.it/150x40/35978f/FFFFFF?text=709AE1FF)  <br> Progressive	![075149FF](https://placehold.it/150x40/35978f/FFFFFF?text=709AE1FF) <br> Progressive Disease Post-Mortem	![075149FF](https://placehold.it/150x40/35978f/FFFFFF?text=075149FF)
-<br> Recurrence	![FD8CC1FF](https://placehold.it/150x40/35978f/FFFFFF?text=FD8CC1FF) <br> Second Malignancy	![FD7446FF](https://placehold.it/150x40/35978f/FFFFFF?text=FD7446FF) | A named vector of hex codes assigned to each `tumor_descriptor` | For plotting in sample distribution, this vector provides color for tumor descriptor categories |
+| Palette File Name | Color Notes | Variable application |
+|--------------|-----------|----------------------|
+|`gradient_col_palette.tsv` | 10 hex_codes where gradient_0 is for an absolute `0` but may need to be removed from the palette depending on the application| For numeric data being plotted e.g., tumor mutation burden |
+|`divergent_col_palette.tsv` | 12 hex codes where the numbers in the name indicate distance from `divergent_neutral`. | For data has that is bidirectional e.g., Amplification/Deletion values like `seg.mean`|
+|`binary_col_palette.tsv` | A vector of two hex codes | For binary variables e.g., presence/absence or Amp/Del as statuses |
+| `oncoprint_color_palette.tsv` | A named vector of hex codes assigned to each `short_histology` and to each `CNV`, `SNV` and `Fusion` category | For plotting an oncoprint figure, this vector provides hex codes for specific alterations |
+| `tumor_descriptor_palette.tsv` | A named vector of hex codes assigned to each `tumor_descriptor` | For plotting sample distributions, this vector provides color for tumor descriptor categories |
+|`broad_histology_cancer_group_palette.tsv` | Contains multiple columns having to do with the display by disease label (i.e., `broad_histology` or `cancer_group`) | To be used for any plots that require coloring by `broad_histology` or `cancer_group`; please see `figures/mapping-histology-labels.Rmd` for more information |
 
-### Color coding examples in R
+_⚠️ `histology_label_color_table.tsv` is a deprecated version of the palettes used for `broad_histology` and `cancer_group`._ 
+_It has been retained, for the moment, to prevent the introduction of breaking changes to multiple analysis modules._
+_It is not to be used for any future development and the relationships between individual biospecimens and disease labels may be out of date._
 
-#### Example 1) Color coding by histologies
+#### Updating color palettes
 
-**Step 1)** Read in color palette and select the pertinent columns
+The non-histologies color palette TSV files are created by running `scripts/color_palettes.R`, which can be called by `Rscript scripts/color_palettes.R`.
+Hex codes for the palettes are hard-coded in this script.
+Do not manually edit palette TSV files.
+The script can be called from anywhere in this repository (will look for the `.git` file).
+The hex codes table in `figures/README.md` and its swatches should also be updated by using the `swatches_table` function at the end of the script and copy and pasting this function's output to the appropriate place in the table.
 
-There are some extra columns in `histology_label_color_table.tsv` that you don't need for plotting per se but are more record-keeping purposes. 
-With the code chunk below, you can import the columns you need (For example: `Kids_First_Biospecimen_ID, display_group, display_order, hex_codes` or `Kids_First_Biospecimen_ID, cancer_group, cancer_group_order, cancer_group_hex_codes` and then do a factor reorder to make sure the `display_group` (or `cancer_group`)is in the order declared by `display_order` (`cancer_group_order`). 
+The histology color palette file is created by running `Rscript -e "rmarkdown::render('figures/mapping-histology-labels.Rmd', clean = TRUE)"`.
 
-```r
-# Import standard color palettes for project
-histology_label_mapping <- readr::read_tsv(
-  file.path(figures_dir, "palettes", "histology_label_color_table.tsv")
-  ) %>% 
-  # Select just the columns we will need for plotting
-  dplyr::select(Kids_First_Biospecimen_ID, display_group, display_order, hex_codes) %>% 
-  # Reorder display_group based on display_order
-  dplyr::mutate(display_group = forcats::fct_reorder(display_group, display_order))
-```
+#### Examples palette usage in R
 
-**Step 2)** Use `dplyr::inner_join` using `Kids_First_Biospecimen_ID` to join by so you can add on the `hex_codes` and `display_group` for each biospecimen. 
-`display_order` specifies what order the `display_group`s should be displayed.
+##### Example 1) Color coding by disease label in `ggplot2`
 
-```r
-# Read in the metadata
-metadata <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
-  dplyr::inner_join(histology_label_mapping, by = "Kids_First_Biospecimen_ID")
-```
+**Step 1)** Read in color palette file and create a named vector of hex codes
 
-**Step 4)** Make your plot and use the `hex_codes` and `display_group` columns.  
-
-Using the `ggplot2::scale_fill_identity()` or `ggplot2::scale_color_identity()` allows you to supply the `hex_codes` column from a color palette to `ggplot2` with a `fill` or `color` argument respectively.
-For base R plots, you should be able to supply the `hex_codes` column as your `col` argument.
-`display_group` should be used as the labels in the plot.
+Here's an example for `cancer_group`, specifically:
 
 ```r
-metadata %>%
-  dplyr::group_by(display_group, hex_codes) %>%
-  dplyr::summarize(count = dplyr::n()) %>%
-  ggplot2::ggplot(ggplot2::aes(x = display_group, y = count, fill = hex_codes)) +
-  ggplot2::geom_bar(stat = "identity") +
-  ggplot2::scale_fill_identity()
+# Get palette for cancer group
+cancer_group_palette <- readr::read_tsv(
+  "figures/palettes/broad_histology_cancer_group_palette.tsv")
+) %>%
+  dplyr::select(cancer_group, cancer_group_hex) %>%
+  # Remove NA values -- a cancer group hex value will be NA only if the
+  # cancer group is NA
+  dplyr::filter(complete.cases(.))
+
+# Make color palette suitable for use with ggplot
+annotation_colors <- cancer_group_palette$cancer_group_hex
+names(annotation_colors) <- cancer_group_palette$cancer_group  
 ```
 
-#### Example 2) Color coding by numeric data
+**Step 2)** Make your ggplot using the named vector as a manual palette
+
+You will be able to use the named vector with `ggplot2` functions such as `scale_fill_manual()` or `scale_, like so:
+
+```r
+ggplot2::ggplot(
+  ggplot2::aes(x = cancer_group,
+               y = y_value, 
+               fill = cancer_group)
+) +
+  geom_boxplot() +
+  scale_fill_manual(values = annotation_colors)
+```
+
+##### Example 2) Color coding by numeric data
 
 **Step 1)** Import the palette.
 
@@ -169,6 +177,7 @@ gradient_col_val <- seq(from = min(df$variable), to = max(df$variable),
 col_fun <- circlize::colorRamp2(gradient_col_val,
                                 gradient_col_palette$hex_codes)
 ```
+
 **Step 3)** Apply to numeric data, or supply to your plotting code.  
 
 This step depends on how your main plotting function would like the data supplied.
@@ -190,16 +199,6 @@ ComplexHeatmap::Heatmap(
 )
 ```
 
-#### Updating color palettes
-
-The non-histologies color palette TSV files are created by running `scripts/color_palettes.R`, which can be called by `Rscript scripts/color_palettes.R`.
-Hex codes for the palettes are hard-coded in this script.
-The script can be called from anywhere in this repository (will look for the `.git` file).
-The hex codes table in `figures/README.md` and its swatches should also be updated by using the `swatches_table` function at the end of the script and copy and pasting this function's output to the appropriate place in the table.
-
-The histology color palette file is created by running `Rscript -e "rmarkdown::render('figures/mapping-histology-labels.Rmd', clean = TRUE)"`.
-
-
 ### Overall figure theme
 
 In general, we will use the `ggpubr` package with `ggtheme = theme_pubr())` and color palette `simpsons` from package `ggsci` since it has 16 levels and can accommodate the levels in groups such as `molecular_subtype`.
@@ -211,7 +210,6 @@ scales::show_col(ggsci::pal_simpsons("springfield")(16))
 ```
 
 For 2+ group comparisons, we will use violin or boxplots with jitter.
-
 
 ### Statistics
 
