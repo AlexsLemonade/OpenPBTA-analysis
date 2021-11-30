@@ -4,6 +4,29 @@ This directory contains the code required to generate individual panels for main
 It is designed such that a single shell script will run all required data processing or analysis steps prior to plotting.
 There are two main strategies for creating individual panels: 1. scripts that are exclusively created for publication-ready display (located in `figures/scripts`) or 2. copying publication-ready plots that are generated within a given analysis module (i.e., `analyses`) to the correct location in `figures/`.
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+  - [Running the figure generation script](#running-the-figure-generation-script)
+      - [1. Obtain the current dataset.](#1-obtain-the-current-dataset)
+      - [2. Set up an up-to-date project Docker container.](#2-set-up-an-up-to-date-project-docker-container)
+      - [3. Run the bash script that generates the figures (`scripts/generate-figures.sh`).](#3-run-the-bash-script-that-generates-the-figures-scriptsgenerate-figuressh)
+  - [Adding or updating figures](#adding-or-updating-figures)
+    - [Individual panels and where to find them](#individual-panels-and-where-to-find-them)
+    - [Compiled multipanel figures](#compiled-multipanel-figures)
+    - [Documenting individual figures & scripts](#documenting-individual-figures--scripts)
+  - [Figure Guidelines](#figure-guidelines)
+    - [Color Palettes](#color-palettes)
+      - [Updating color palettes](#updating-color-palettes)
+      - [Examples palette usage in R](#examples-palette-usage-in-r)
+        - [Example 1) Color coding by disease label in `ggplot2`](#example-1-color-coding-by-disease-label-in-ggplot2)
+        - [Example 2) Color coding by numeric data](#example-2-color-coding-by-numeric-data)
+    - [Overall figure theme](#overall-figure-theme)
+    - [Statistics](#statistics)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Running the figure generation script
 
 Follow these steps to refresh all publication-ready figures.
