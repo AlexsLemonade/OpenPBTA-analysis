@@ -1,6 +1,12 @@
+# Figures
+
+This directory contains the code required to generate individual panels for main and supplemental display items.
+It is designed such that a single shell script will run all required data processing or analysis steps prior to plotting.
+There are two main strategies for creating individual panels: 1. scripts that are exclusively created for publication-ready display (located in `figures/scripts`) or 2. copying publication-ready plots that are generated within a given analysis module (i.e., `analyses`) to the correct location in `figures/`.
+
 ## Running the figure generation script
 
-Steps to refresh all publication-ready figures.
+Follow these steps to refresh all publication-ready figures.
 All steps assume your current directory is the top of this repository.
 
 #### 1. Obtain the current dataset.
@@ -23,7 +29,9 @@ docker run \
 ```
 You may choose to use [`docker exec`](https://docs.docker.com/engine/reference/commandline/exec/) to interact with the container from there or if you'd prefer the RStudio interface, you can navigate to `localhost:8787` and enter username `rstudio` and the password you set with the `run` command above.
 
-#### 3. Run the bash script that generates the figures (`scripts/run-figures.sh`).
+#### 3. Run the bash script that generates the figures (`scripts/generate-figures.sh`).
+
+_⚠️ This requires 256GB of RAM to run successfully! You can set `RUN_LOCAL=1` for local testing that skips the RAM-intensive consensus SNV analyses._
 
 This script runs **_all_** the intermediate steps needed to generate figures starting with the original data files.
 
@@ -31,26 +39,37 @@ This script runs **_all_** the intermediate steps needed to generate figures sta
 bash figures/generate-figures.sh
 ```
 
-Figures are saved to the `figures/pngs` folder and will be linked to the accompanying manuscript repository [`AlexsLemonade/OpenPBTA-manuscript`](https://github.com/AlexsLemonade/OpenPBTA-manuscript/).
+In some cases, the shell script will copy plots to the appropriate locations in the `figures/` directory.
 
-## Summary for each figure
+## Adding or updating figures
 
-Each figure has its own script stored in the `figures/scripts`.
-All are called by the main bash script `figures/run-figures.sh`.
-However, we list information about the resources, intermediate steps, and [PBTA data files](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/doc/data-formats.md#pbta-data-files) required for generating each figure below for convenience.
+All figures need to adhere to [the guidelines in this README](#figure-guidelines) and need to be generated, including any upstream steps, via `figures/generate-figures.sh`.
+This section includes details for file organization and guidelines that are not covered in the section on style.
 
-| Figure | Individual script | Notes on requirements | Linked analysis modules | PBTA data files consumed |
-|--------|--------|------------------|-------------------------|-----------------------------|
-| Figure 1 | No individual script | No high RAM requirements | [`sample-distribution-analysis`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/sample-distribution-analysis) |  `pbta-histologies.tsv` |
-| Figure 2 | [`scripts/fig2-mutational-landscape.R`](./scripts/fig2-mutational-landscape.R) | 256GB of RAM are needed due to the run_caller_consensus_analysis-pbta.sh handling of large MAF files|[`snv-callers`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers) <br> [`mutational-signatures`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/mutational-signatures) |  `pbta-snv-lancet.vep.maf.gz` <br> `pbta-snv-mutect2.vep.maf.gz` <br> `pbta-snv-strelka2.vep.maf.gz` <br> `pbta-snv-vardict.vep.maf.gz` <br> `tcga-snv-lancet.vep.maf.gz` <br> `tcga-snv-mutect2.vep.maf.gz` <br> `tcga-snv-strelka2.vep.maf.gz` |
-| CN status heatmap | [`analyses/copy_number_consensus_call/run_consensus_call.sh`](./analyses/copy_number_consensus_call/run_consensus_call.sh) and [`analyses/cnv-chrom-plot/cn_status_heatmap.Rmd`](./analyses/cnv-chrom-plot/cn_status_heatmap.Rmd) | No high RAM requirements | [`cnv-chrom-plot`](./analyses/cnv-chrom-plot) |  `pbta-cnv-controlfreec.tsv.gz` <br> `pbta-sv-manta.tsv.gz` <br> `pbta-cnv-cnvkit.seg.gz` |
-| Figure 3 | No individual script <br> ([`analyses/focal-cn-file-preparation/run-prepare-cn.sh`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/focal-cn-file-preparation/run-prepare-cn.sh) and [`analyses/oncoprint-landscape/run-oncoprint.sh`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/oncoprint-landscape/run-oncoprint.sh) scripts are used)              | 24GB of RAM are needed due to the `run-prepare-cn.sh` handling of large copy number files | [`focal-cn-file-preparation`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/focal-cn-file-preparation) <br> [`oncoprint-landscape`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/oncoprint-landscape) | `pbta-histologies.tsv` <br> `pbta-snv-consensus-mutation.maf.tsv.gz` <br> `pbta-fusion-putative-oncogenic.tsv` <br> `consensus_seg_annotated_cn_autosomes.tsv.gz` <br> `independent-specimens.wgs.primary-plus.tsv` |
-| Transcriptomic overview | [scripts/transcriptomic-overview.R](./scripts/transcriptomic-overiew.R) | Due to the GSVA steps, we recommend ~32 GB of RAM for generating this figure | [`transcriptomic-dimension-reduction`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/transcriptomic-dimension-reduction) <br> [`collapse-rnaseq`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/collapse-rnaseq) <br> [`gene-set-enrichment-analysis`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/gene-set-enrichment-analysis) <br> [`immune-deconv`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/immune-deconv) | `pbta-histologies.tsv` <br> `pbta-gene-expression-rsem-fpkm.stranded.rds` |
-| Mutation co-occurrence | No individual script <br> ([`analyses/interaction-plots/01-create-interaction-plots.sh`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/interaction-plots/01-create-interaction-plots.sh) is used) |  No high RAM requirements | [`interaction-plots`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/interaction-plots) |`independent-specimens.wgs.primary-plus.tsv` <br> `pbta-snv-consensus-mutation.maf.tsv.gz`  |
-| Telomerase activities | [scripts/TelomeraseActivitites.R](./scripts/TelomeraseActivitites.R)|  No high RAM requirements |[`telomerase-activity-prediction`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/telomerase-activity-prediction/) | `pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds` <br> `pbta-gene-expression-rsem-fpkm-collapsed.polya.rds` <br> `pbta-gene-counts-rsem-expected_count-collapsed.stranded.rds` <br> `pbta-gene-counts-rsem-expected_count-collapsed.polya.rds` <br> `pbta-histologies.tsv`
+### Individual panels and where to find them
 
+Individual panels, including any standalone legends, should be saved as **PDFs** in `figures/pdfs/<figure>/panels`.
+Each figure has its own subdirectory within `figures/pdfs`; individual panels for Figure 1 would be saved in `figures/pdfs/fig1/panels`, for Figure 2 in `figures/pdfs/fig2/panels` and so on and so forth.  
 
-## Color Palette Usage
+### Compiled multipanel figures
+
+Multipanel figures are compiled with Adobe Illustrator and saved as PDFs in their respective subdirectories.
+For example, the compiled, PDF version of Figure 4 is saved as `figures/pdf/fig4/figure4.pdf`.
+(Original `.ai` files are available in Google Drive and can be shared as necessary -- contact @jaclyn-taroni!)
+
+PNG versions of figures are exported using the PDF file and saved to the `figures/pngs` folder.
+PNGs version can be linked in the accompanying manuscript repository [`AlexsLemonade/OpenPBTA-manuscript`](https://github.com/AlexsLemonade/OpenPBTA-manuscript/).
+
+### Documenting individual figures & scripts
+
+Each figure should include its own associated README in the appropriate PDF subdirectory, e.g., the documentation for Figure 4 can be found in `figures/pdfs/fig4/README.md`.
+That README should detail what analysis modules or individual scripts are required to generate the individual panels for that figure.
+
+Scripts that are exclusively for creating publication-ready plots are available in `figures/scripts` and should be documented, including their input files, in the `figures/scripts/README.md`.
+
+## Figure Guidelines
+
+### Color Palettes 
 
 This project has a set of unified color palettes.
 There are 5 sets of hex color keys to be used for all final figures, stored as 5 TSV files in the `figures/palettes` folder.
@@ -71,7 +90,7 @@ To see a summary of what colors are used for histology labeling, see [`mapping-h
 | `tumor_descriptor_palette.tsv` | <br> Initial CNS Tumor:	![709AE1FF](https://placehold.it/150x40/35978f/FFFFFF?text=709AE1FF)  <br> Progressive	![075149FF](https://placehold.it/150x40/35978f/FFFFFF?text=709AE1FF) <br> Progressive Disease Post-Mortem	![075149FF](https://placehold.it/150x40/35978f/FFFFFF?text=075149FF)
 <br> Recurrence	![FD8CC1FF](https://placehold.it/150x40/35978f/FFFFFF?text=FD8CC1FF) <br> Second Malignancy	![FD7446FF](https://placehold.it/150x40/35978f/FFFFFF?text=FD7446FF) | A named vector of hex codes assigned to each `tumor_descriptor` | For plotting in sample distribution, this vector provides color for tumor descriptor categories |
 
-## Color coding examples in R
+### Color coding examples in R
 
 #### Example 1) Color coding by histologies
 
@@ -171,7 +190,7 @@ ComplexHeatmap::Heatmap(
 )
 ```
 
-### Updating color palettes
+#### Updating color palettes
 
 The non-histologies color palette TSV files are created by running `scripts/color_palettes.R`, which can be called by `Rscript scripts/color_palettes.R`.
 Hex codes for the palettes are hard-coded in this script.
@@ -186,6 +205,7 @@ The histology color palette file is created by running `Rscript -e "rmarkdown::r
 In general, we will use the `ggpubr` package with `ggtheme = theme_pubr())` and color palette `simpsons` from package `ggsci` since it has 16 levels and can accommodate the levels in groups such as `molecular_subtype`.
 
 To view the palette:
+
 ```r
 scales::show_col(ggsci::pal_simpsons("springfield")(16))
 ```
