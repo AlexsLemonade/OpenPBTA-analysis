@@ -43,6 +43,13 @@ subtype_table <- subtypes %>%
 ## Table S1: V21 histologies table
 
 ```{r v21 histology as excel}
+# add back the new samples with `MB, To be classified"
+histology_df <- histology_df %>% 
+  dplyr::mutate(molecular_subtype = case_when(
+    Kids_First_Biospecimen_ID %in% c("BS_3J4T2YYW", "BS_7F07M7JG", "BS_AG0BZN6F", "BS_HZNKSQ17", "BS_V6HKXX1Z", "BS_WP9J88EB", "BS_YYAPSA5P") ~ "MB, To be classified", 
+    TRUE ~ molecular_subtype
+  ))
+
 histology_df %>%
   mutate_all(as.character) %>% 
   replace(is.na(.), "NA") %>%
