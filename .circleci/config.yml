@@ -21,10 +21,6 @@ jobs:
           command: ./scripts/run_in_ci.sh bash scripts/check-python.sh
 
       - run:
-          name: High level histology grouping for plot labels
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('figures/mapping-histology-labels.Rmd', clean = TRUE)"
-
-      - run:
           name: Sample Distribution Analyses
           command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
 
@@ -178,8 +174,8 @@ jobs:
           command: ./scripts/run_in_ci.sh bash analyses/comparative-RNASeq-analysis/run-comparative-RNAseq.sh
 
       - run:
-          name: Process SV file
-          command: ./scripts/run_in_ci.sh Rscript analyses/chromothripsis/01-process-sv-file.R
+          name: Chromothripsis
+          command: ./scripts/run_in_ci.sh bash analyses/chromothripsis/run-chromothripsis.sh
 
 #      - run:
 #          name: Oncoprint plotting
@@ -202,24 +198,12 @@ jobs:
           command: OPENPBTA_TESTING=1 OPENPBTA_BASE_SUBTYPING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh"
 
       - run:
-          name: Add Shatterseek
-          command: ./scripts/run_in_ci.sh Rscript analyses/chromothripsis/02-run-shatterseek-and-classify-confidence.R
-
-      - run:
           name: Telomerase activity
           command: ./scripts/run_in_ci.sh bash analyses/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
 
       - run:
           name: GISTIC Results Comparison
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/compare-gistic/run-compare-gistic.sh
-
-      - run:
-          name: Visualize chromothripsis by histology
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/chromothripsis/03-plot-chromothripsis-by-histology.Rmd', clean = TRUE)"
-
-      - run:
-          name: Visualize chromothripsis results with breakpoint data
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/chromothripsis/04-plot-chromothripsis-and-breakpoint-data.Rmd', clean = TRUE)"
 
 
          ################################
