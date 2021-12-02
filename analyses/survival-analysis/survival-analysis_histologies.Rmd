@@ -112,8 +112,8 @@ meta_indep <- meta_indep %>%
 
 Quantiles overall
 ```{r}
-#meta_indep <- meta_indep %>%
- # filter(short_histology != "HGAT")
+meta_indep <- meta_indep %>%
+  filter(short_histology != "HGAT")
 
 tp53_quantiles <- quantile(meta_indep$tp53_score, probs = seq(0, 1, 0.25))
 telomerase_quantiles<- quantile(meta_indep$telomerase_score, probs = seq(0, 1, 0.25))
@@ -122,6 +122,14 @@ telomerase_quantiles<- quantile(meta_indep$telomerase_score, probs = seq(0, 1, 0
 
 Create groupings for scores
 ```{r}
+# using 0.5 as a cutoff
+meta_indep$tp53_0.5 <- ifelse(meta_indep$tp53_score > 0.5, "tp53 high",
+                     ifelse(meta_indep$tp53_score <= 0.5, "tp53 low",NA))
+
+# using 0.5 as a cutoff
+meta_indep$tel_0.5 <- ifelse(meta_indep$telomerase_score > 0.5, "telomerase high",
+                     ifelse(meta_indep$telomerase_score <= 0.5, "telomerase low",NA))
+
 # tp53 strict
 meta_indep$tp53_strict <- ifelse(meta_indep$tp53_score > tp53_quantiles[[4]], "tp53_high",
                                           ifelse(meta_indep$tp53_score >= tp53_quantiles[[2]] & meta_indep$tp53_score <= tp53_quantiles[[4]], "tp53_mid",
@@ -163,7 +171,7 @@ meta_indep$pheno_extremes <- ifelse(meta_indep$tp53_score > tp53_quantiles[[4]] 
 ```
 Set phenotypes to loop through
 ```{r}
-phenotypes <- c("tp53_strict", "tel_strict", "pheno_0.5", "pheno_strict", "pheno_extremes")
+phenotypes <- c("tp53_0.5", "tel_0.5", "tp53_strict", "tel_strict", "pheno_0.5", "pheno_strict", "pheno_extremes")
 ```
 
 Run on all PBTA and HGAT only
@@ -181,11 +189,13 @@ meta_hgat <- meta_indep %>%
 meta_no_hgat <- meta_indep %>%
   filter(short_histology != "HGAT")
 as.data.frame(table(meta_indep$short_histology))
+
 #prefix <- "all-pbta"
-prefix <- "hgat"
+#prefix <- "hgat"
+prefix <- "no-hgat"
 
 for (each in phenotypes) {
-kap_fit <- survival_analysis(meta_hgat,
+kap_fit <- survival_analysis(meta_no_hgat,
                              ind_var = each,
                              test = "kap.meier",
                              metadata_sample_col = "Kids_First_Biospecimen_ID_RNA"
