@@ -54,9 +54,10 @@ You may choose to use [`docker exec`](https://docs.docker.com/engine/reference/c
 
 #### 3. Run the bash script that generates the figures (`scripts/generate-figures.sh`).
 
-_⚠️ This requires 256GB of RAM to run successfully! You can set `RUN_LOCAL=1` for local testing that skips the RAM-intensive consensus SNV analyses._
+_⚠️ This requires 64GB of RAM to run successfully! You can set `RUN_LOCAL=1` for local testing that skips the RAM-intensive steps._
 
-This script runs **_all_** the intermediate steps needed to generate figures starting with the original data files.
+This script runs **_all_** the intermediate steps needed to generate figures starting with the files in the data release.
+Earlier versions of this script ran the consensus SNV modules, but the consensus SNV files are included in the data download and the downstream modules use the files in the `data/` directory, so this is no longer necessary.
 
 ```bash
 bash figures/generate-figures.sh
