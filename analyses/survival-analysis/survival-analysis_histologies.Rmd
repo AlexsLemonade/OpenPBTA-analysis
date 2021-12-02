@@ -1,0 +1,236 @@
+---
+title: "Survival Analysis for TP53 and telomerase phenotypes"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Jo Lynne Rokita for D3B
+date: 2021
+params:
+  plot_ci: TRUE
+---
+  
+  **Purpose:** 
+  
+  Runs survival analysis for TP53 and telomerase phenotypes. This module was most recently run on release-v21-20210820/pbta-histologies.tsv 
+
+## Usage 
+
+Uses a wrapper function (`survival_analysis`) from utils folder. 
+
+## Setup
+
+#### Packages and functions
+
+Read in set up script.
+
+```{r Set up library}
+# This script contains a wrapper function that can conduct the survival analyses
+library(tidyverse)
+source(file.path("util", "survival_models.R"))
+
+# Magrittr pipe
+`%>%` <- dplyr::`%>%`
+```
+
+#### Set up files and directories
+
+Set up output directories. 
+
+```{r Set up directories}
+data_dir <- file.path("..", "..", "data")
+analysis_dir <- file.path("..", "..", "analyses")
+figure_dir <- file.path("..", "..", "figures")
+results_dir <- "results"
+plots_dir <- "plots"
+```
+
+Make output directories.
+
+```{r Make output directories}
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir)
+}
+```
+
+Declare input file paths and useful variables
+
+```{r Set input file paths}
+hist_file <- file.path(data_dir, "pbta-histologies.tsv")
+indep_file <- file.path(data_dir,
+                        "independent-specimens.rnaseq.primary-plus-stranded.tsv")
+tp53_file <- file.path(analysis_dir, 
+                       "tp53_nf1_score/results/tp53_altered_status.tsv")
+
+# only use stranded since tp53 scores for polyA did not have good accuracy
+tel_stranded_file <- file.path(analysis_dir,
+                        "telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt")
+
+# color palette
+color_file <- file.path(figure_dir, "palettes/broad_histology_cancer_group_palette.tsv")
+
+# Number of participants required to consider a histology in survival analysis
+n_participants <- 3
+```
+
+## Import the metadata
+
+```{r Read in metadata}
+# read in histologies file
+indep_rna <- readr::read_tsv(indep_file)
+
+histologies <- readr::read_tsv(hist_file, guess_max = 10000) %>%
+  dplyr::filter(composition=="Solid Tissue" & tumor_descriptor == "Initial CNS Tumor") %>%
+  select(sample_id, broad_histology, short_histology, cancer_group, molecular_subtype, OS_status, OS_days, PFS_days) %>%
+  distinct()
+
+# read in tp53 scores
+tp53_scores <- readr::read_tsv(tp53_file)%>%
+  mutate(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID_DNA) %>%
+  select(Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA, sample_id, tp53_score)
+
+# read in telomerase scores
+tel_scores <- readr::read_tsv(tel_stranded_file) %>%
+  mutate(Kids_First_Biospecimen_ID_RNA = SampleID,
+         telomerase_score = NormEXTENDScores) %>%
+  select(Kids_First_Biospecimen_ID_RNA, telomerase_score)
+
+# meta_indepine metadata, remove cell lines and samples without RNA-Seq since both classifiers' results use RNA-Seq
+# independent use primary plus rna-seq samples
+meta_indep <- tp53_scores %>%
+  left_join(tel_scores) %>%
+  left_join(histologies) %>%
+  dplyr::filter(!is.na(Kids_First_Biospecimen_ID_RNA))
+
+meta_indep <- meta_indep %>%
+  filter(Kids_First_Biospecimen_ID_RNA %in% indep_rna$Kids_First_Biospecimen_ID)
+
+```
+
+Quantiles overall
+```{r}
+#meta_indep <- meta_indep %>%
+ # filter(short_histology != "HGAT")
+
+tp53_quantiles <- quantile(meta_indep$tp53_score, probs = seq(0, 1, 0.25))
+telomerase_quantiles<- quantile(meta_indep$telomerase_score, probs = seq(0, 1, 0.25))
+```
+
+
+Create groupings for scores
+```{r}
+# tp53 strict
+meta_indep$tp53_strict <- ifelse(meta_indep$tp53_score > tp53_quantiles[[4]], "tp53_high",
+                                          ifelse(meta_indep$tp53_score >= tp53_quantiles[[2]] & meta_indep$tp53_score <= tp53_quantiles[[4]], "tp53_mid",
+                            ifelse(meta_indep$tp53_score <= tp53_quantiles[[2]], "tp53_low", NA)))
+table(meta_indep$tp53_strict)
+
+# tel strict
+meta_indep$tel_strict <- ifelse(meta_indep$telomerase_score > telomerase_quantiles[[4]], "telomerase_high",
+                                          ifelse(meta_indep$telomerase_score >=  telomerase_quantiles[[2]] & meta_indep$telomerase_score <= telomerase_quantiles[[4]], "telomerase_mid",
+                            ifelse(meta_indep$telomerase_score <= telomerase_quantiles[[2]], "telomerase_low", NA)))
+table(meta_indep$tel_strict)
+
+
+# using 0.5 as a cutoff
+meta_indep$pheno_0.5 <- ifelse(meta_indep$tp53_score > 0.5 & meta_indep$telomerase_score > 0.5, "tp53_high telomerase_high",
+                     ifelse(meta_indep$tp53_score > 0.5 &  meta_indep$telomerase_score <= 0.5, "tp53_high telomerase_low",
+                            ifelse(meta_indep$tp53_score <= 0.5 &  meta_indep$telomerase_score > 0.5, "tp53_low telomerase_high",
+                                   ifelse(meta_indep$tp53_score <= 0.5 &  meta_indep$telomerase_score <= 0.5, "tp53_low telomerase_low",
+                                          NA))))
+table(meta_indep$pheno_0.5)
+
+# using strict cutoffs
+meta_indep$pheno_strict <- ifelse(meta_indep$tp53_score > tp53_quantiles[[4]] & meta_indep$telomerase_score > telomerase_quantiles[[4]], "tp53_high telomerase_high",
+                     ifelse(meta_indep$tp53_score > tp53_quantiles[[4]] &  meta_indep$telomerase_score <= telomerase_quantiles[[2]], "tp53_high telomerase_low",
+                            ifelse(meta_indep$tp53_score <= tp53_quantiles[[3]] &  meta_indep$telomerase_score > telomerase_quantiles[[4]], "tp53_low telomerase_high",
+                                   ifelse(meta_indep$tp53_score <= tp53_quantiles[[2]] &  meta_indep$telomerase_score <= telomerase_quantiles[[2]], "tp53_low telomerase_low",
+                                          ifelse(meta_indep$tp53_score >= tp53_quantiles[[2]] & meta_indep$tp53_score <= tp53_quantiles[[4]] &  meta_indep$telomerase_score <= telomerase_quantiles[[2]], "tp53_mid telomerase_low",
+                                                 ifelse(meta_indep$tp53_score <= tp53_quantiles[[2]] &  meta_indep$telomerase_score >= telomerase_quantiles[[2]] & meta_indep$telomerase_score <= telomerase_quantiles[[4]], "tp53_low telomerase_mid",
+                                                        "tp53 tel mid"))))))
+
+table(meta_indep$pheno_strict)
+
+### without mid
+meta_indep$pheno_extremes <- ifelse(meta_indep$tp53_score > tp53_quantiles[[4]] & meta_indep$telomerase_score > telomerase_quantiles[[4]], "tp53_high telomerase_high",
+                     ifelse(meta_indep$tp53_score > tp53_quantiles[[4]] &  meta_indep$telomerase_score <= telomerase_quantiles[[2]], "tp53_high telomerase_low",
+                            ifelse(meta_indep$tp53_score <= tp53_quantiles[[3]] &  meta_indep$telomerase_score > telomerase_quantiles[[4]], "tp53_low telomerase_high",
+                                   ifelse(meta_indep$tp53_score <= tp53_quantiles[[2]] &  meta_indep$telomerase_score <= telomerase_quantiles[[2]], "tp53_low telomerase_low", NA))))
+
+```
+Set phenotypes to loop through
+```{r}
+phenotypes <- c("tp53_strict", "tel_strict", "pheno_0.5", "pheno_strict", "pheno_extremes")
+```
+
+Run on all PBTA and HGAT only
+## Kaplan-Meier
+
+The [Kaplan-Meier](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3059453/) 
+survival curve shows the probability of survival over time.
+
+```{r Kaplan Meier}
+
+# let's look at HGAT
+meta_all <- meta_indep
+meta_hgat <- meta_indep %>%
+  filter(short_histology == "HGAT")
+meta_no_hgat <- meta_indep %>%
+  filter(short_histology != "HGAT")
+as.data.frame(table(meta_indep$short_histology))
+#prefix <- "all-pbta"
+prefix <- "hgat"
+
+for (each in phenotypes) {
+kap_fit <- survival_analysis(meta_hgat,
+                             ind_var = each,
+                             test = "kap.meier",
+                             metadata_sample_col = "Kids_First_Biospecimen_ID_RNA"
+)
+
+# median and 0.95CI survival days
+kap_fit$model
+
+#`survminer` package comes with a convenient plotting function which uses `ggplot2` arguments. 
+#It requires the original Kaplain-Meier `survfit` object, so we will extract that with `$model`.
+surv_plot <- survminer::ggsurvplot(kap_fit$model,
+                                   pval = TRUE,
+                                   data = kap_fit$original_data,
+                                   risk.table = TRUE,
+                                   xlim = c(0, 8000),
+                                   break.time.by = 1000,
+                                   ggtheme = theme_pubr(),
+                                   risk.table.y.text.col = TRUE,
+                                   risk.table.y.text = FALSE,
+                                   palette = phenotype
+                                   #color = phenotype,
+                                   #palette = "Paired"
+
+)
+
+surv_plot$plot <- surv_plot$plot +
+  #ggtitle(paste0(ptitle)) +
+  theme(legend.position = "right")
+
+# Make this plot a meta_indep plot
+p <- cowplot::plot_grid(surv_plot[[1]], surv_plot[[2]], nrow = 2,
+                     rel_heights = c(4, 2))
+
+# Print it out here
+print(p)
+
+#Save the plot to a file. 
+ggsave(filename = file.path(plots_dir, paste(prefix, each, "KM.pdf", sep = "-")), plot = p)
+# Let's save the model for CI and median survival as well
+readr::write_tsv(surv_median(kap_fit$model), file.path(results_dir, paste(prefix, each, "model.tsv", sep = "-")))
+}
+```
+
+
+
+
+
+
