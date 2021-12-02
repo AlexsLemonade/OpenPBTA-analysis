@@ -112,8 +112,8 @@ meta_indep <- meta_indep %>%
 
 Quantiles overall
 ```{r}
-meta_indep <- meta_indep %>%
-  filter(short_histology != "HGAT")
+#meta_indep <- meta_indep %>%
+ # filter(short_histology != "HGAT")
 
 tp53_quantiles <- quantile(meta_indep$tp53_score, probs = seq(0, 1, 0.25))
 telomerase_quantiles<- quantile(meta_indep$telomerase_score, probs = seq(0, 1, 0.25))
@@ -131,14 +131,14 @@ meta_indep$tel_0.5 <- ifelse(meta_indep$telomerase_score > 0.5, "telomerase high
                      ifelse(meta_indep$telomerase_score <= 0.5, "telomerase low",NA))
 
 # tp53 strict
-meta_indep$tp53_strict <- ifelse(meta_indep$tp53_score > tp53_quantiles[[4]], "tp53_high",
-                                          ifelse(meta_indep$tp53_score >= tp53_quantiles[[2]] & meta_indep$tp53_score <= tp53_quantiles[[4]], "tp53_mid",
+meta_indep$tp53_strict <- ifelse(meta_indep$tp53_score >= tp53_quantiles[[4]], "tp53_high",
+                                          ifelse(meta_indep$tp53_score > tp53_quantiles[[2]] & meta_indep$tp53_score < tp53_quantiles[[4]], "tp53_mid",
                             ifelse(meta_indep$tp53_score <= tp53_quantiles[[2]], "tp53_low", NA)))
 table(meta_indep$tp53_strict)
 
 # tel strict
-meta_indep$tel_strict <- ifelse(meta_indep$telomerase_score > telomerase_quantiles[[4]], "telomerase_high",
-                                          ifelse(meta_indep$telomerase_score >=  telomerase_quantiles[[2]] & meta_indep$telomerase_score <= telomerase_quantiles[[4]], "telomerase_mid",
+meta_indep$tel_strict <- ifelse(meta_indep$telomerase_score >= telomerase_quantiles[[4]], "telomerase_high",
+                                          ifelse(meta_indep$telomerase_score >  telomerase_quantiles[[2]] & meta_indep$telomerase_score < telomerase_quantiles[[4]], "telomerase_mid",
                             ifelse(meta_indep$telomerase_score <= telomerase_quantiles[[2]], "telomerase_low", NA)))
 table(meta_indep$tel_strict)
 
@@ -152,21 +152,21 @@ meta_indep$pheno_0.5 <- ifelse(meta_indep$tp53_score > 0.5 & meta_indep$telomera
 table(meta_indep$pheno_0.5)
 
 # using strict cutoffs
-meta_indep$pheno_strict <- ifelse(meta_indep$tp53_score > tp53_quantiles[[4]] & meta_indep$telomerase_score > telomerase_quantiles[[4]], "tp53_high telomerase_high",
-                     ifelse(meta_indep$tp53_score > tp53_quantiles[[4]] &  meta_indep$telomerase_score <= telomerase_quantiles[[2]], "tp53_high telomerase_low",
-                            ifelse(meta_indep$tp53_score <= tp53_quantiles[[3]] &  meta_indep$telomerase_score > telomerase_quantiles[[4]], "tp53_low telomerase_high",
+meta_indep$pheno_strict <- ifelse(meta_indep$tp53_score >= tp53_quantiles[[4]] & meta_indep$telomerase_score >= telomerase_quantiles[[4]], "tp53_high telomerase_high",
+                     ifelse(meta_indep$tp53_score >= tp53_quantiles[[4]] &  meta_indep$telomerase_score <= telomerase_quantiles[[2]], "tp53_high telomerase_low",
+                            ifelse(meta_indep$tp53_score <= tp53_quantiles[[2]] &  meta_indep$telomerase_score >= telomerase_quantiles[[4]], "tp53_low telomerase_high",
                                    ifelse(meta_indep$tp53_score <= tp53_quantiles[[2]] &  meta_indep$telomerase_score <= telomerase_quantiles[[2]], "tp53_low telomerase_low",
-                                          ifelse(meta_indep$tp53_score >= tp53_quantiles[[2]] & meta_indep$tp53_score <= tp53_quantiles[[4]] &  meta_indep$telomerase_score <= telomerase_quantiles[[2]], "tp53_mid telomerase_low",
-                                                 ifelse(meta_indep$tp53_score <= tp53_quantiles[[2]] &  meta_indep$telomerase_score >= telomerase_quantiles[[2]] & meta_indep$telomerase_score <= telomerase_quantiles[[4]], "tp53_low telomerase_mid",
+                                          ifelse(meta_indep$tp53_score > tp53_quantiles[[2]] & meta_indep$tp53_score < tp53_quantiles[[4]] &  meta_indep$telomerase_score <= telomerase_quantiles[[2]], "tp53_mid telomerase_low",
+                                                 ifelse(meta_indep$tp53_score <= tp53_quantiles[[2]] &  meta_indep$telomerase_score > telomerase_quantiles[[2]] & meta_indep$telomerase_score < telomerase_quantiles[[4]], "tp53_low telomerase_mid",
                                                         "tp53 tel mid"))))))
 
 table(meta_indep$pheno_strict)
 
 ### without mid
-meta_indep$pheno_extremes <- ifelse(meta_indep$tp53_score > tp53_quantiles[[4]] & meta_indep$telomerase_score > telomerase_quantiles[[4]], "tp53_high telomerase_high",
-                     ifelse(meta_indep$tp53_score > tp53_quantiles[[4]] &  meta_indep$telomerase_score <= telomerase_quantiles[[2]], "tp53_high telomerase_low",
-                            ifelse(meta_indep$tp53_score <= tp53_quantiles[[3]] &  meta_indep$telomerase_score > telomerase_quantiles[[4]], "tp53_low telomerase_high",
-                                   ifelse(meta_indep$tp53_score <= tp53_quantiles[[2]] &  meta_indep$telomerase_score <= telomerase_quantiles[[2]], "tp53_low telomerase_low", NA))))
+meta_indep$pheno_extremes <- ifelse(meta_indep$tp53_score >= tp53_quantiles[[4]] & meta_indep$telomerase_score >= telomerase_quantiles[[4]], "tp53_high telomerase_high",
+                     ifelse(meta_indep$tp53_score >= tp53_quantiles[[4]] &meta_indep$telomerase_score <= telomerase_quantiles[[2]], "tp53_high telomerase_low",
+                            ifelse(meta_indep$tp53_score <= tp53_quantiles[[3]] & meta_indep$telomerase_score >= telomerase_quantiles[[4]], "tp53_low telomerase_high",
+                                   ifelse(meta_indep$tp53_score <= tp53_quantiles[[2]] & meta_indep$telomerase_score <= telomerase_quantiles[[2]], "tp53_low telomerase_low", NA))))
 
 ```
 Set phenotypes to loop through
@@ -191,11 +191,11 @@ meta_no_hgat <- meta_indep %>%
 as.data.frame(table(meta_indep$short_histology))
 
 #prefix <- "all-pbta"
-#prefix <- "hgat"
-prefix <- "no-hgat"
+prefix <- "hgat"
+#prefix <- "no-hgat"
 
 for (each in phenotypes) {
-kap_fit <- survival_analysis(meta_no_hgat,
+kap_fit <- survival_analysis(meta_hgat,
                              ind_var = each,
                              test = "kap.meier",
                              metadata_sample_col = "Kids_First_Biospecimen_ID_RNA"
