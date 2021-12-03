@@ -19,6 +19,25 @@ row_fisher <- function(w, x, y, z) {
   return(fisher$p.value)
 }
 
+#' Calculate confidence interval for odds ratio
+#' 
+#' Uses Haldane correction if any counts are zero
+#' @return CI of odds ratio 
+calc_ci <- function(mut11, mut10, mut01, mut00, odds_ratio){
+  if(any(mut11==0, mut10==0, mut01==0, mut00==0)){
+    adjusted_or <- (mut11 + 0.5)*(mut00 + 0.5)/((mut01 + 0.5)*(mut10 + 0.5))
+    standard_error_or <- sqrt(1/(mut11+0.5) + 1/(mut10+0.5) + 1/(mut01+0.5) + 1/(mut00+0.5))
+    or_ci_lower_bound <- min(exp(log(adjusted_or) - 1.96 * standard_error_or), odds_ratio)
+    or_ci_upper_bound <- max(exp(log(adjusted_or) + 1.96 * standard_error_or), odds_ratio)
+  } else {
+    standard_error_or <- sqrt(1/mut11 + 1/mut10 + 1/mut01 + 1/mut00)
+    or_ci_lower_bound <- exp(log(odds_ratio) - 1.96 * standard_error_or)
+    or_ci_upper_bound <- exp(log(odds_ratio) + 1.96 * standard_error_or)
+  }
+  ci <- paste0(or_ci_lower_bound, ",", or_ci_upper_bound)
+  return(ci)
+}
+
 #' Filter mutations based on VAF and effect
 #'
 #' @param maf_df a data frame of a maf file or subset of one. Minimally includes
@@ -96,8 +115,9 @@ filter_mutations <- function(maf_df,
 #'  `gene1`; `gene2` (gene names);
 #'  `mut11`; `mut10`; `mut01` (counts of mutations in each category of sharing:
 #'     `mut11`: both mutated; `mut10`: mutated in the first but not second gene, etc.);
-#'  `odds_ratio` (odds ratio for for co-occurence);
+#'  `odds_ratio` (odds ratio for co-occurence);
 #'  `cooccur_sign` (1 if co-occurence greater than by chance, -1 if less frequent than expected)
+#'  `odds_ratio_ci` (confidence interval for odds_ratio);
 #'  `p` (the fisher's exact test p value);
 #'  `q` (Benjamini-Hochberg adjusted p value);
 #'  `cooccur_score` (calculated as `cooccur_sign * -log10(p)`);
@@ -153,7 +173,8 @@ coocurrence <- function(gene_sample_df,
       cooccur_sign = ifelse(odds_ratio > 1, 1, -1)
       ) %>%
     dplyr::rowwise() %>%
-    dplyr::mutate(p = row_fisher(mut11, mut10, mut01, mut00)) %>%
+    dplyr::mutate(odds_ratio_ci = calc_ci(mut11, mut10, mut01, mut00, odds_ratio),
+                  p = row_fisher(mut11, mut10, mut01, mut00)) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(
       q = p.adjust(p, method = "BH"),
