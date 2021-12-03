@@ -154,7 +154,7 @@ names(annotation_colors) <- cancer_group_palette$cancer_group
 
 **Step 2)** Make your ggplot using the named vector as a manual palette
 
-You will be able to use the named vector with `ggplot2` functions such as `scale_fill_manual()` or `scale_, like so:
+You will be able to use the named vector with `ggplot2` functions such as `scale_fill_manual()` or `scale_color_manual()`, like so:
 
 ```r
 ggplot2::ggplot(
