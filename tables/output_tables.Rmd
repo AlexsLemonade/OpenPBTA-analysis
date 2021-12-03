@@ -3,14 +3,14 @@ title: "Tables output for manuscript"
 author: "Run Jin"
 date: "10/27/2021"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
-
+install.packages("openxlsx")
 library(tidyverse)
-
+library(openxlsx)
 ```
 
 ## Output Tables for OpenPBTA Manuscript
