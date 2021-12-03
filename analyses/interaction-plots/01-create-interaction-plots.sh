@@ -84,12 +84,12 @@ Rscript ${script_dir}/02-process_mutations.R \
 
 Rscript ${script_dir}/03-plot_interactions.R \
   --infile ${cooccur}.ALL.tsv \
-  --outfile ${plot}.ALL.png \
+  --outfile ${plot}.ALL.pdf \
   --disease_table ${gene_disease}.tsv \
-  --disease_plot ${disease_plot}.png \
-  --combined_plot ${combined_plot}.png \
+  --disease_plot ${disease_plot}.pdf \
+  --combined_plot ${combined_plot}.pdf \
   --plotsize 50
-    
+
 # now individual diseases
 for disease_id in "${!disease[@]}"; do
   echo $disease_id

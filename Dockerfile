@@ -34,7 +34,7 @@ RUN pip3 install \
   "Cython==0.29.15" \
   "setuptools==46.3.0" \
   "six==1.14.0" \
-  "wheel==0.34.2" 
+  "wheel==0.34.2"
 
 # Install java
 RUN apt-get -y --no-install-recommends install \
@@ -93,7 +93,8 @@ RUN ./install_bioc.r \
     rpart \
     rprojroot \
     survival \
-    viridis 
+    viridis \
+    openxlsx
 
 
 # Required for interactive sample distribution plots
@@ -127,11 +128,11 @@ RUN ./install_bioc.r \
     treemap \
     umap  \
     UpSetR \
-    VennDiagram 
+    VennDiagram
 
 # Install rjava
 RUN ./install_bioc.r \
-    rJava 
+    rJava
 
 # Need for survminer for doing survival analysis
 RUN ./install_bioc.r \
@@ -173,7 +174,7 @@ RUN ./install_bioc.r \
     glmnet \
     glmnetUtils \
     caret \
-    e1071 
+    e1071
 
 
 # bedr package & check to make sure binaries are available by loading
@@ -185,7 +186,7 @@ RUN ./install_bioc.r \
 # qdapRegex is for the fusion analysis
 RUN ./install_bioc.r \
     deconstructSigs \
-    qdapRegex 
+    qdapRegex
 
 # packages required for collapsing RNA-seq data by removing duplicated gene symbols
 RUN ./install_bioc.r \
@@ -230,7 +231,7 @@ RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true'), remote
 # Packages required for rna-seq-composition
 RUN ./install_bioc.r \
     EnvStats \
-    janitor 
+    janitor
 
 # Patchwork for plot compositions
 RUN R -e "remotes::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd46899f17197f9858bc5672e9f4')"
@@ -398,11 +399,11 @@ RUN R -e "remotes::install_github('d3b-center/annoFuse',ref = 'c6a2111b5949ca2aa
 # gmp, dependency for signature.tools.lib
 RUN apt-get -y --no-install-recommends install \
     libgmp-dev
-    
+
 # CNS signatures can be obtained from signature.tools.lib
 RUN R -e "remotes::install_github('Nik-Zainal-Group/signature.tools.lib', ref = '73e899c9090a215a76a307480bda76c241a4a489')"
-    
-    
+
+
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
 
