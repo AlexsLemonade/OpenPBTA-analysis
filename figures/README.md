@@ -89,7 +89,7 @@ PNGs version can be linked in the accompanying manuscript repository [`AlexsLemo
 Each figure should include its own associated README in the appropriate PDF subdirectory, e.g., the documentation for Figure 4 can be found in `figures/pdfs/fig4/README.md`.
 That README should detail what analysis modules or individual scripts are required to generate the individual panels for that figure.
 
-Scripts that are exclusively for creating publication-ready plots are available in `figures/scripts` and should be documented, including their input files, in the `figures/scripts/README.md`.
+Scripts that are exclusively for creating publication-ready plots are available in `figures/scripts` and should be documented in the `figures/scripts/README.md`.
 
 ## Figure Guidelines
 
