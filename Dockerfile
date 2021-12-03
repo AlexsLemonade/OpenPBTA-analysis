@@ -93,8 +93,7 @@ RUN ./install_bioc.r \
     rpart \
     rprojroot \
     survival \
-    viridis \
-    openxlsx
+    viridis 
 
 
 # Required for interactive sample distribution plots
