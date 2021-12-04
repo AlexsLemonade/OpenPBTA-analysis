@@ -132,7 +132,8 @@ oncoprint_col_palette <- c("#35978f",
                            "#CD96CD",
                            "#5ea4fe",
                            "#7CCBAC",
-                           "#FD8344")
+                           "#FD8344",
+                           "#006400")
 
 oncoprint_color_names <- c("Missense_Mutation",
                            "Nonsense_Mutation",
@@ -154,7 +155,8 @@ oncoprint_color_names <- c("Missense_Mutation",
                            "Multi_Hit_Fusion",
                            "Intron",
                            "5'Flank",
-                           "3'Flank")
+                           "3'Flank",
+                           "Complex_Event")
 
 # Format as data.frame
 oncoprint_df <- data.frame(color_names = oncoprint_color_names,
