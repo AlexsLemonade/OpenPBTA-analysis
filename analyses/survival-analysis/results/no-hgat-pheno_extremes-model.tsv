@@ -1,0 +1,5 @@
+strata	median	lower	upper
+pheno_extremes=tp53_high telomerase_high	3323	2276	NA
+pheno_extremes=tp53_high telomerase_low	NA	NA	NA
+pheno_extremes=tp53_low telomerase_high	2077	2066	NA
+pheno_extremes=tp53_low telomerase_low	NA	5890	NA
