@@ -208,3 +208,32 @@ survival_analysis <- function(metadata,
   # Return both the fit object and the table
   return(list(model = fit, table = table, original_data = ind_var_df))
 }
+
+############ this is the function that formats the metadata df for survival analysis 
+format_meta <- function(metadata, 
+                         os_days_col = "OS_days",
+                         os_status_col = "OS_status"){
+  # Pull out this data
+  os_status <- metadata %>%
+    dplyr::pull({{os_status_col}})
+  
+  # Reformat as a numeric variable where 1 = LIVING and 2 = DECEASED.
+  metadata <- metadata %>%
+    dplyr::mutate(
+      !!os_status_col := as.numeric(
+        factor(os_status, levels = c("LIVING", "DECEASED")))
+    )
+}
+
+############ this is the function that output BH adjusted statistics
+
+output_stats <- function(metadata,
+                         model,
+                         prefix){
+  sink(file=file.path(results_dir, paste0("BH_adjusted_stat_for_", prefix, ".txt")))
+  results<-pairwise_survdiff(formula = model, 
+                              data = metadata, 
+                              p.adjust.method = "BH", rho = 0) 
+  print(results)
+  sink()
+}

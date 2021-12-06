@@ -27,6 +27,7 @@ Read in set up script.
 ```{r Set up library}
 # This script contains a wrapper function that can conduct the survival analyses
 library(tidyverse)
+library(survminer)
 source(file.path("util", "survival_models.R"))
 source(file.path("util", "quantile_calc.R"))
 
@@ -207,7 +208,26 @@ for (each in phenotypes) {
 
 ```
 
+#### output statistics for paper writing 
 
+```{r}
+# first format the metadata to have appropriate OS_status column
+df_list <- lapply(df_list, format_meta)
+
+# define the formula
+model <- as.formula("survival::Surv(OS_days, OS_status) ~ pheno_0.5")
+
+for(i in 1:length(df_list)){
+  df_of_interest <- df_list[[i]]
+  prefix <- prefix_list[i]
+  
+  # use the formulat to output the stat files
+  output_stats(metadata=df_of_interest, 
+               model=model,
+               prefix=prefix)
+}
+
+```
 
 
 
