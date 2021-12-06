@@ -26,7 +26,7 @@ survival_analysis <- function(metadata,
   # Args:
   #   metadata: a data.frame that contains columns OS_status and OS_days to use
   #             for the survival model. This also assumes "LIVING" and "DECEASED"
-  #             are the two statuses. THis will be converted to a numeric variable
+  #             are the two statuses. This will be converted to a numeric variable
   #             for use with `survival` R functions. Samples with NAs are dropped.
   #   ind_var: a character string noting the name of the independent variable to
   #            test as a predictor for survival.
