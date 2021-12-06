@@ -26,35 +26,12 @@ scratch_dir="$BASEDIR/scratch"
 
 # Make output folders for all figures
 mkdir -p pngs
+mkdir -p pdfs
 
-#### Make sure histology_label_color_table.tsv is up to date
-
+#### Make sure color palettes are up-to-date
+Rscript --vanilla scripts/color_palettes.R
 Rscript -e "rmarkdown::render('mapping-histology-labels.Rmd', clean = TRUE)"
 
-################ Sample distribution
-# Run sample distribution analysis
-bash ${analyses_dir}/sample-distribution-analysis/run-sample-distribution.sh
-
-# Run the figure assembly
-Rscript --vanilla scripts/fig1-sample-distribution.R
-
-################ Mutational landscape figure
-if [ "$RUN_LOCAL" -lt "1" ]; then
-  # Run both SNV caller consensus scripts
-  # Note: This the PBTA consensus script requires at least 128 MB of RAM to run
-  # These scripts are intended to run from the base directory,
-  # so we will temporarily move there
-  cd $BASEDIR
-  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh
-  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh
-  cd $WORKDIR
-
-  # Run mutational signatures analysis
-  Rscript --vanilla -e "rmarkdown::render('../analyses/mutational-signatures/01-known_signatures.Rmd', clean = TRUE)"
-
-  # Run the figure assembly
-  Rscript --vanilla scripts/fig2-mutational-landscape.R
-fi
 
 ######################
 ## Interaction plots
@@ -72,7 +49,10 @@ cp ${analyses_dir}/interaction-plots/plots/combined_top50.pdf pdfs/fig3/panels/m
 #####################
 ## Chromothripsis
 
-# Run the module
+# The chromothripsis module uses breakpoint counts from this module
+bash ${analyses_dir}/chromosomal-instability/run_breakpoint_analysis.sh
+
+# Run the chromothripsis module
 bash ${analyses_dir}/chromothripsis/run-chromothripsis.sh
 
 # Create directory that will hold the relevant scatter plot from the chromothripsis module
