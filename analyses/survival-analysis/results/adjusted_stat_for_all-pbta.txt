@@ -3,13 +3,9 @@
 
 data:  metadata and pheno_0.5 
 
-                         tp53_high telomerase_high tp53_high telomerase_low
-tp53_high telomerase_low 5.6e-06                   -                       
-tp53_low telomerase_high 1.0000                    0.0016                  
-tp53_low telomerase_low  < 2e-16                   0.0033                  
-                         tp53_low telomerase_high
-tp53_high telomerase_low -                       
-tp53_low telomerase_high -                       
-tp53_low telomerase_low  9.8e-16                 
+                         tp53_high telomerase_high tp53_high telomerase_low tp53_low telomerase_high
+tp53_high telomerase_low 5.6e-06                   -                        -                       
+tp53_low telomerase_high 1.0000                    0.0016                   -                       
+tp53_low telomerase_low  < 2e-16                   0.0033                   9.8e-16                 
 
 P value adjustment method: bonferroni 
