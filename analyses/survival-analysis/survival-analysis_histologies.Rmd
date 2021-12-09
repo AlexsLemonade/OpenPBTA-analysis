@@ -31,8 +31,6 @@ library(survminer)
 source(file.path("util", "survival_models.R"))
 source(file.path("util", "quantile_calc.R"))
 
-# Magrittr pipe
-`%>%` <- dplyr::`%>%`
 ```
 
 #### Set up files and directories
