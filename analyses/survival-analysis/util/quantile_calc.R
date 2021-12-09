@@ -28,9 +28,9 @@ calc_groups <- function(meta_indep, tp53_quantiles, telomerase_quantiles){
         tp53_score > tp53_lower & tp53_score < tp53_upper ~ "tp53_mid",
         TRUE ~ NA_character_),
       tel_strict = dplyr::case_when(
-        telomerase_score >= telomerase_upper ~ "telomerase_high",
+        telomerase_score > telomerase_upper ~ "telomerase_high",
         telomerase_score <= telomerase_lower ~ "telomerase_low",
-        telomerase_score > telomerase_lower & telomerase_score < telomerase_upper ~ "telomerase_mid",
+        telomerase_score > telomerase_lower & telomerase_score <= telomerase_upper ~ "telomerase_mid",
         TRUE ~ NA_character_)
     )
       
