@@ -179,7 +179,6 @@ for (pheno in phenotypes) {
                                        ggtheme = theme_pubr(),
                                        risk.table.y.text.col = TRUE,
                                        risk.table.y.text = FALSE,
-                                       color = pheno,
                                        palette = "Paired")
     
     #Save the plot to a file. 
