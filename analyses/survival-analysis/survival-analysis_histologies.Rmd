@@ -137,8 +137,7 @@ phenotypes <- c("tp53_0.5", "tel_0.5", "tp53_strict", "tel_strict", "pheno_0.5",
 Run on all PBTA and HGAT only
 ## Kaplan-Meier
 
-The [Kaplan-Meier](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3059453/) 
-survival curve shows the probability of survival over time.
+The [Kaplan-Meier](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3059453/) survival curve shows the probability of survival over time.
 
 ```{r Kaplan Meier}
 
