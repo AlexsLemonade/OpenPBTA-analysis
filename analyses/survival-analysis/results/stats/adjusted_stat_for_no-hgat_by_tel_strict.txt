@@ -1,0 +1,10 @@
+
+	Pairwise comparisons using Log-Rank test 
+
+data:  metadata and tel_strict 
+
+               telomerase_high telomerase_low
+telomerase_low 4.4e-10         -             
+telomerase_mid 4.4e-11         0.35          
+
+P value adjustment method: bonferroni 

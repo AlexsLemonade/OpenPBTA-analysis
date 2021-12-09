@@ -1,0 +1,5 @@
+[1] "Error in survdiff.fit(y, groups, strata.keep, rho) : \n  There is only 1 group\n"
+attr(,"class")
+[1] "try-error"
+attr(,"condition")
+<simpleError in survdiff.fit(y, groups, strata.keep, rho): There is only 1 group>

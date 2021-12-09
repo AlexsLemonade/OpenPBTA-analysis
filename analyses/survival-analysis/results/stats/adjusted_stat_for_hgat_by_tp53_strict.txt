@@ -1,0 +1,10 @@
+
+	Pairwise comparisons using Log-Rank test 
+
+data:  metadata and tp53_strict 
+
+         tp53_high tp53_low
+tp53_low 0.76      -       
+tp53_mid 0.32      1.00    
+
+P value adjustment method: bonferroni 

@@ -1,0 +1,52 @@
+
+	Pairwise comparisons using Log-Rank test 
+
+data:  metadata and pheno_strict 
+
+                         tp53_high telomerase_high
+tp53_high telomerase_low 1.00000                  
+tp53_high telomerase_mid 0.01462                  
+tp53_low telomerase_high 1.00000                  
+tp53_low telomerase_low  0.00193                  
+tp53_low telomerase_mid  0.00018                  
+tp53_mid telomerase_high 1.00000                  
+tp53_mid telomerase_low  6.1e-07                  
+tp53_mid telomerase_mid  5.6e-07                  
+                         tp53_high telomerase_low tp53_high telomerase_mid
+tp53_high telomerase_low -                        -                       
+tp53_high telomerase_mid 0.00998                  -                       
+tp53_low telomerase_high 1.00000                  0.30547                 
+tp53_low telomerase_low  1.00000                  1.5e-08                 
+tp53_low telomerase_mid  1.00000                  9.6e-13                 
+tp53_mid telomerase_high 1.00000                  0.35318                 
+tp53_mid telomerase_low  1.00000                  < 2e-16                 
+tp53_mid telomerase_mid  1.00000                  < 2e-16                 
+                         tp53_low telomerase_high tp53_low telomerase_low
+tp53_high telomerase_low -                        -                      
+tp53_high telomerase_mid -                        -                      
+tp53_low telomerase_high -                        -                      
+tp53_low telomerase_low  0.00242                  -                      
+tp53_low telomerase_mid  0.00908                  1.00000                
+tp53_mid telomerase_high 1.00000                  0.00014                
+tp53_mid telomerase_low  5.5e-05                  1.00000                
+tp53_mid telomerase_mid  0.00133                  1.00000                
+                         tp53_low telomerase_mid tp53_mid telomerase_high
+tp53_high telomerase_low -                       -                       
+tp53_high telomerase_mid -                       -                       
+tp53_low telomerase_high -                       -                       
+tp53_low telomerase_low  -                       -                       
+tp53_low telomerase_mid  -                       -                       
+tp53_mid telomerase_high 1.9e-05                 -                       
+tp53_mid telomerase_low  1.00000                 5.1e-08                 
+tp53_mid telomerase_mid  1.00000                 3.5e-08                 
+                         tp53_mid telomerase_low
+tp53_high telomerase_low -                      
+tp53_high telomerase_mid -                      
+tp53_low telomerase_high -                      
+tp53_low telomerase_low  -                      
+tp53_low telomerase_mid  -                      
+tp53_mid telomerase_high -                      
+tp53_mid telomerase_low  -                      
+tp53_mid telomerase_mid  1.00000                
+
+P value adjustment method: bonferroni 

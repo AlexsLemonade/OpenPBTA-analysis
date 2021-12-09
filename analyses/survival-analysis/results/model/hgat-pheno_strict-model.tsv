@@ -1,6 +1,8 @@
 strata	median	lower	upper
-pheno_strict=tp53 tel mid	419	289	547
 pheno_strict=tp53_high telomerase_high	349	323	NA
+pheno_strict=tp53_high telomerase_mid	375	284	547
 pheno_strict=tp53_low telomerase_high	403	NA	NA
 pheno_strict=tp53_low telomerase_mid	1375	1003	NA
+pheno_strict=tp53_mid telomerase_high	492	222	NA
 pheno_strict=tp53_mid telomerase_low	NA	NA	NA
+pheno_strict=tp53_mid telomerase_mid	648	535	NA

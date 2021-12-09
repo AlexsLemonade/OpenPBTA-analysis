@@ -2,50 +2,59 @@
 
 # using 0.5 as a cutoff
 calc_groups <- function(meta_indep, tp53_quantiles, telomerase_quantiles){
-  meta_indep$tp53_0.5 <- ifelse(meta_indep$tp53_score > 0.5, "tp53 high",
-                                ifelse(meta_indep$tp53_score <= 0.5, "tp53 low",NA))
   
-  # using 0.5 as a cutoff
-  meta_indep$tel_0.5 <- ifelse(meta_indep$telomerase_score > 0.5, "telomerase high",
-                               ifelse(meta_indep$telomerase_score <= 0.5, "telomerase low",NA))
+  # extract the quantile infomration 
+  tp53_upper <- tp53_quantiles[[4]]
+  tp53_lower <- tp53_quantiles[[2]]
+  telomerase_upper <- telomerase_quantiles[[4]]
+  telomerase_lower <- telomerase_quantiles[[2]]
   
-  # tp53 strict
-  meta_indep$tp53_strict <- ifelse(meta_indep$tp53_score >= tp53_quantiles[[4]], "tp53_high",
-                                   ifelse(meta_indep$tp53_score > tp53_quantiles[[2]] & meta_indep$tp53_score < tp53_quantiles[[4]], "tp53_mid",
-                                          ifelse(meta_indep$tp53_score <= tp53_quantiles[[2]], "tp53_low", NA)))
-  table(meta_indep$tp53_strict)
+  meta_indep <- meta_indep %>%
+    dplyr::mutate(
+      # use 0.5 as a cutoff for tp53 score and telomerase score
+      tp53_0.5 = dplyr::case_when(
+        tp53_score > 0.5  ~ "tp53_high",
+        tp53_score <= 0.5 ~ "tp53_low", 
+        TRUE ~ NA_character_),
+      tel_0.5 = dplyr::case_when(
+        telomerase_score > 0.5  ~ "telomerase_high",
+        telomerase_score <= 0.5 ~ "telomerase_low",
+        TRUE ~ NA_character_),
+      
+      # for strict ones, 25th and 75th quantile is used
+      tp53_strict = dplyr::case_when(
+        tp53_score >= tp53_upper ~ "tp53_high",
+        tp53_score <= tp53_lower ~ "tp53_low",
+        tp53_score > tp53_lower & tp53_score < tp53_upper ~ "tp53_mid",
+        TRUE ~ NA_character_),
+      tel_strict = dplyr::case_when(
+        telomerase_score >= telomerase_upper ~ "telomerase_high",
+        telomerase_score <= telomerase_lower ~ "telomerase_low",
+        telomerase_score > telomerase_lower & telomerase_score < telomerase_upper ~ "telomerase_mid",
+        TRUE ~ NA_character_)
+    )
+      
   
-  # tel strict
-  meta_indep$tel_strict <- ifelse(meta_indep$telomerase_score >= telomerase_quantiles[[4]], "telomerase_high",
-                                  ifelse(meta_indep$telomerase_score >  telomerase_quantiles[[2]] & meta_indep$telomerase_score < telomerase_quantiles[[4]], "telomerase_mid",
-                                         ifelse(meta_indep$telomerase_score <= telomerase_quantiles[[2]], "telomerase_low", NA)))
-  table(meta_indep$tel_strict)
+  meta_indep <- meta_indep %>% 
+    # for pheno_0.5, this is a column where combined info from tp53_0.5 and tel_0.5 
+    dplyr::mutate(
+      pheno_0.5 = ifelse(is.na(tp53_0.5) | is.na(tel_0.5), NA, paste(tp53_0.5, tel_0.5))
+    ) 
+    
+  meta_indep <- meta_indep %>% 
+    # for pheno_strict, this is a column combining info about whether the sample falls into any extreme category 
+    # or locates in the middle for either tp53 or telomerase - basically tp53_strict and tel_strict combined
+    dplyr::mutate(
+      pheno_strict = ifelse(is.na(tp53_strict) | is.na(tel_strict), NA, paste(tp53_strict, tel_strict))
+    )
   
-  
-  # using 0.5 as a cutoff
-  meta_indep$pheno_0.5 <- ifelse(meta_indep$tp53_score > 0.5 & meta_indep$telomerase_score > 0.5, "tp53_high telomerase_high",
-                                 ifelse(meta_indep$tp53_score > 0.5 &  meta_indep$telomerase_score <= 0.5, "tp53_high telomerase_low",
-                                        ifelse(meta_indep$tp53_score <= 0.5 &  meta_indep$telomerase_score > 0.5, "tp53_low telomerase_high",
-                                               ifelse(meta_indep$tp53_score <= 0.5 &  meta_indep$telomerase_score <= 0.5, "tp53_low telomerase_low",
-                                                      NA))))
-  table(meta_indep$pheno_0.5)
-  
-  # using strict cutoffs
-  meta_indep$pheno_strict <- ifelse(meta_indep$tp53_score >= tp53_quantiles[[4]] & meta_indep$telomerase_score >= telomerase_quantiles[[4]], "tp53_high telomerase_high",
-                                    ifelse(meta_indep$tp53_score >= tp53_quantiles[[4]] &  meta_indep$telomerase_score <= telomerase_quantiles[[2]], "tp53_high telomerase_low",
-                                           ifelse(meta_indep$tp53_score <= tp53_quantiles[[2]] &  meta_indep$telomerase_score >= telomerase_quantiles[[4]], "tp53_low telomerase_high",
-                                                  ifelse(meta_indep$tp53_score <= tp53_quantiles[[2]] &  meta_indep$telomerase_score <= telomerase_quantiles[[2]], "tp53_low telomerase_low",
-                                                         ifelse(meta_indep$tp53_score > tp53_quantiles[[2]] & meta_indep$tp53_score < tp53_quantiles[[4]] &  meta_indep$telomerase_score <= telomerase_quantiles[[2]], "tp53_mid telomerase_low",
-                                                                ifelse(meta_indep$tp53_score <= tp53_quantiles[[2]] &  meta_indep$telomerase_score > telomerase_quantiles[[2]] & meta_indep$telomerase_score < telomerase_quantiles[[4]], "tp53_low telomerase_mid",
-                                                                       "tp53 tel mid"))))))
-  
-  table(meta_indep$pheno_strict)
-  
-  ### without mid
-  meta_indep$pheno_extremes <- ifelse(meta_indep$tp53_score >= tp53_quantiles[[4]] & meta_indep$telomerase_score >= telomerase_quantiles[[4]], "tp53_high telomerase_high",
-                                      ifelse(meta_indep$tp53_score >= tp53_quantiles[[4]] &meta_indep$telomerase_score <= telomerase_quantiles[[2]], "tp53_high telomerase_low",
-                                             ifelse(meta_indep$tp53_score <= tp53_quantiles[[3]] & meta_indep$telomerase_score >= telomerase_quantiles[[4]], "tp53_low telomerase_high",
-                                                    ifelse(meta_indep$tp53_score <= tp53_quantiles[[2]] & meta_indep$telomerase_score <= telomerase_quantiles[[2]], "tp53_low telomerase_low", NA))))
+  meta_indep <- meta_indep %>% 
+    # this is a column only retains info from pheno_strict when both tp53 and telomerase do not fall into mid category
+    dplyr::mutate(
+      pheno_extremes = dplyr::case_when(
+        !grepl("mid", pheno_strict) ~ pheno_strict, 
+        TRUE ~ NA_character_)
+    )
   
   ### get the results out 
   return(meta_indep)

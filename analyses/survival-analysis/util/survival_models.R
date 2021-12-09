@@ -229,11 +229,13 @@ format_meta <- function(metadata,
 
 output_stats <- function(metadata,
                          model,
-                         prefix){
-  sink(file=file.path(results_dir, paste0("adjusted_stat_for_", prefix, ".txt")))
-  results<-pairwise_survdiff(formula = model, 
-                              data = metadata, 
-                              p.adjust.method = "bonferroni", rho = 0) 
+                         prefix,
+                         pheno){
+  sink(file=file.path(stats_dir, paste0("adjusted_stat_for_", prefix, "_by_", pheno, ".txt")))
+  results<-try(pairwise_survdiff(formula = model, 
+                                 data = metadata, 
+                                 p.adjust.method = "bonferroni", 
+                                 rho = 0))
   print(results)
   sink()
 }

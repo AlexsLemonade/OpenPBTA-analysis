@@ -1,0 +1,15 @@
+
+	Pairwise comparisons using Log-Rank test 
+
+data:  metadata and pheno_extremes 
+
+                         tp53_high telomerase_high
+tp53_high telomerase_low 0.2492                   
+tp53_low telomerase_high 1.0000                   
+tp53_low telomerase_low  0.0051                   
+                         tp53_high telomerase_low tp53_low telomerase_high
+tp53_high telomerase_low -                        -                       
+tp53_low telomerase_high 0.2074                   -                       
+tp53_low telomerase_low  0.7598                   0.0015                  
+
+P value adjustment method: bonferroni 

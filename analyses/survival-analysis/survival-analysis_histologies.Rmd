@@ -41,7 +41,8 @@ Set up output directories.
 data_dir <- file.path("..", "..", "data")
 analysis_dir <- file.path("..", "..", "analyses")
 figure_dir <- file.path("..", "..", "figures")
-results_dir <- "results"
+results_dir <- "results/model"
+stats_dir <- "results/stats"
 plots_dir <- "plots"
 ```
 
@@ -53,6 +54,9 @@ if (!dir.exists(results_dir)) {
 }
 if (!dir.exists(plots_dir)) {
   dir.create(plots_dir)
+}
+if (!dir.exists(stats_dir)) {
+  dir.create(stats_dir)
 }
 ```
 
@@ -72,8 +76,6 @@ tel_stranded_file <- file.path(analysis_dir,
 # color palette
 color_file <- file.path(figure_dir, "palettes/broad_histology_cancer_group_palette.tsv")
 
-# Number of participants required to consider a histology in survival analysis
-n_participants <- 3
 ```
 
 ## Import the metadata
@@ -89,8 +91,7 @@ histologies <- readr::read_tsv(hist_file, guess_max = 10000) %>%
   distinct()
 
 # read in tp53 scores
-tp53_scores <- readr::read_tsv(tp53_file)%>%
-  mutate(Tumor_Sample_Barcode = Kids_First_Biospecimen_ID_DNA) %>%
+tp53_scores <- readr::read_tsv(tp53_file) %>%
   select(Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA, sample_id, tp53_score)
 
 # read in telomerase scores
@@ -108,7 +109,8 @@ meta_indep <- tp53_scores %>%
 
 ```
 
-Quantiles overall
+Caclulte the quantiles for both tp53 scores and telomarase scores. 
+These scores are used later on for classifying samples into different categories for survival analysis.
 ```{r}
 meta_indep_no_hgat <- meta_indep %>%
   filter(short_histology != "HGAT")
@@ -120,21 +122,27 @@ tp53_quantiles_no_hgat <- quantile(meta_indep_no_hgat$tp53_score, probs = seq(0,
 telomerase_quantiles_no_hgat <- quantile(meta_indep_no_hgat$telomerase_score, probs = seq(0, 1, 0.25))
 ```
 
+Create groupings for scores - basically, based on the TP53 and telomarase activity scores, additional columns are added indicating which group a particular sample fits in:
+- `tp53_0.5`: this columns indicates whether a sample is `tp53_high` or `tp53_low` based on whehter its TP53 score is over or below 0.5
+- `tel_0.5`: this columns indicates whether a sample is `telomerase_high` or `telomerase_low` based on whehter its telomerase score is over or below 0.5
+- `tp53_strict`: this columns indicates whether a sample is `tp53_high`, `tp53_mid`, or `tp53_low` based on whether they are above 75 quantile (`tp53_high`), below 25 quantile (`tp53_low`), or in between (`tp53_mid`)
+- `tel_strict`: this columns indicates whether a sample is `telomerase_high`, `telomerase_mid`, or `telomerase_low` based on whether they are above 75 quantile (`telomerase_high`), below 25 quantile (`telomerase_low`), or in between (`telomerase_mid`)
+- `pheno_0.5`: this column combines info from `tp53_0.5` and `tel_0.5`
+- `pheno_strict`: this column combines info from `tp53_strict` and `tel_strict`
+- `pheno_extremes`: this column only retains categorizations from `pheno_strict` column when the sample does not fit into `mid` group (between 25 and 75 percentile) for neither TP53 nor telomase scores
 
-Create groupings for scores
 ```{r}
 meta_indep <- calc_groups(meta_indep, tp53_quantiles, telomerase_quantiles)
 meta_indep_no_hgat <- calc_groups(meta_indep_no_hgat, tp53_quantiles_no_hgat, telomerase_quantiles_no_hgat)
 ```
 
-Set phenotypes to loop through. These are columns created by the `calc_groups` function.
+Set phenotypes to loop through. These are columns created by the `calc_groups` function. These columns, as described above, contain information about whether the sample has `high`, `mid` or `low` TP53/telomerase scores.
 ```{r}
 phenotypes <- c("tp53_0.5", "tel_0.5", "tp53_strict", "tel_strict", "pheno_0.5", "pheno_strict", "pheno_extremes")
 ```
 
-Run on all PBTA and HGAT only
 ## Kaplan-Meier
-
+Run KM survival analysis on all PBTA, HGAT only, and PBTA samples that are not HGAT.
 The [Kaplan-Meier](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3059453/) survival curve shows the probability of survival over time.
 
 ```{r Kaplan Meier}
@@ -158,9 +166,9 @@ for (pheno in phenotypes) {
     df_of_interest <- df_list[[i]]
     
     kap_fit <- survival_analysis(df_of_interest,
-                             ind_var = pheno,
-                             test = "kap.meier",
-                             metadata_sample_col = "Kids_First_Biospecimen_ID_RNA"
+                                 ind_var = pheno,
+                                 test = "kap.meier",
+                                 metadata_sample_col = "Kids_First_Biospecimen_ID_RNA"
     )
     
     # median and 0.95CI survival days
@@ -179,7 +187,8 @@ for (pheno in phenotypes) {
                                        ggtheme = theme_pubr(),
                                        risk.table.y.text.col = TRUE,
                                        risk.table.y.text = FALSE,
-                                       palette = "Paired")
+                                       palette = "Paired",
+                                       color = pheno)
     
     #Save the plot to a file. 
     pdf(file.path(plots_dir, paste(prefix, pheno, "KM.pdf", sep = "-")))
@@ -198,23 +207,29 @@ for (pheno in phenotypes) {
 # first format the metadata to have appropriate OS_status column
 df_list <- lapply(df_list, format_meta)
 
-# define the formula
-model <- as.formula("survival::Surv(OS_days, OS_status) ~ pheno_0.5")
-
+# iterate through all data frames with all the models
 for(i in 1:length(df_list)){
   df_of_interest <- df_list[[i]]
   prefix <- prefix_list[i]
   
-  # use the formula to output the stat files
-  output_stats(metadata=df_of_interest, 
-               model=model,
-               prefix=prefix)
+  for(j in 1:length(phenotypes)){
+    
+    pheno_of_interest <- phenotypes[j]
+    # define the formula
+    model <- as.formula(paste0("survival::Surv(OS_days, OS_status) ~ ", pheno_of_interest))
+    
+    # use the formula to output the stat files
+    output_stats(metadata=df_of_interest, 
+                 model=model,
+                 prefix=prefix,
+                 pheno=pheno_of_interest)
+  }
 }
 
 ```
 
 
-
+Print out the session info
 ```{r}
 sessionInfo()
 ```
