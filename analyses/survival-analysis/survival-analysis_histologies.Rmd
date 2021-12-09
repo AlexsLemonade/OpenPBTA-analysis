@@ -182,15 +182,8 @@ for (pheno in phenotypes) {
                                        color = pheno,
                                        palette = "Paired")
     
-   # surv_plot <- surv_plot +
-      #ggtitle(paste0(ptitle)) +
-    #  theme(legend.position = "right")
-    
-    # Print it out here
-    print(surv_plot, newpage = FALSE)
-    
     #Save the plot to a file. 
-    pdf(file.path(plots_dir, paste(prefix, pheno, "KM.pdf", sep = "-")), onefile=FALSE)
+    pdf(file.path(plots_dir, paste(prefix, pheno, "KM.pdf", sep = "-")))
     print(surv_plot, newpage = FALSE)
     dev.off()
     # Let's save the model for CI and median survival as well. Note: per this notebook, https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/32a81d2b5b307c5473c5dbb4408c9a64de40e7d5/analyses/survival-analysis/survival-analysis_HGG_DMG.Rmd#L129, NAs in the output are derived from skew in the underlying data.
