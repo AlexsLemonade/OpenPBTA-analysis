@@ -104,10 +104,7 @@ tel_scores <- readr::read_tsv(tel_stranded_file) %>%
 meta_indep <- tp53_scores %>%
   left_join(tel_scores) %>%
   left_join(histologies) %>%
-  dplyr::filter(!is.na(Kids_First_Biospecimen_ID_RNA))
-
-meta_indep <- meta_indep %>%
-  filter(Kids_First_Biospecimen_ID_RNA %in% indep_rna$Kids_First_Biospecimen_ID)
+  dplyr::filter(Kids_First_Biospecimen_ID_RNA %in% indep_rna$Kids_First_Biospecimen_ID)
 
 ```
 
