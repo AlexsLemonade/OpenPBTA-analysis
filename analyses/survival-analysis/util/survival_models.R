@@ -225,15 +225,15 @@ format_meta <- function(metadata,
     )
 }
 
-############ this is the function that output BH adjusted statistics
+############ this is the function that output Bonferroni adjusted statistics
 
 output_stats <- function(metadata,
                          model,
                          prefix){
-  sink(file=file.path(results_dir, paste0("BH_adjusted_stat_for_", prefix, ".txt")))
+  sink(file=file.path(results_dir, paste0("adjusted_stat_for_", prefix, ".txt")))
   results<-pairwise_survdiff(formula = model, 
                               data = metadata, 
-                              p.adjust.method = "BH", rho = 0) 
+                              p.adjust.method = "bonferroni", rho = 0) 
   print(results)
   sink()
 }
