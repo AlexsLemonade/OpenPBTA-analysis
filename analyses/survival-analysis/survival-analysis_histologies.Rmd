@@ -4,7 +4,7 @@ output:
   html_notebook:
     toc: TRUE
     toc_float: TRUE
-author: Jo Lynne Rokita for D3B
+author: Jo Lynne Rokita, Run Jin for D3B
 date: 2021
 params:
   plot_ci: TRUE
@@ -31,8 +31,6 @@ library(survminer)
 source(file.path("util", "survival_models.R"))
 source(file.path("util", "quantile_calc.R"))
 
-# Magrittr pipe
-`%>%` <- dplyr::`%>%`
 ```
 
 #### Set up files and directories
@@ -84,6 +82,7 @@ n_participants <- 3
 # read in histologies file
 indep_rna <- readr::read_tsv(indep_file)
 
+# remove cell lines by selecting only solid tissue
 histologies <- readr::read_tsv(hist_file, guess_max = 10000) %>%
   dplyr::filter(composition=="Solid Tissue" & tumor_descriptor == "Initial CNS Tumor") %>%
   select(sample_id, broad_histology, short_histology, cancer_group, molecular_subtype, OS_status, OS_days, PFS_days) %>%
@@ -100,15 +99,12 @@ tel_scores <- readr::read_tsv(tel_stranded_file) %>%
          telomerase_score = NormEXTENDScores) %>%
   select(Kids_First_Biospecimen_ID_RNA, telomerase_score)
 
-# meta_indepine metadata, remove cell lines and samples without RNA-Seq since both classifiers' results use RNA-Seq
+# remove samples without RNA-Seq since both classifiers' results use RNA-Seq
 # independent use primary plus rna-seq samples
 meta_indep <- tp53_scores %>%
   left_join(tel_scores) %>%
   left_join(histologies) %>%
-  dplyr::filter(!is.na(Kids_First_Biospecimen_ID_RNA))
-
-meta_indep <- meta_indep %>%
-  filter(Kids_First_Biospecimen_ID_RNA %in% indep_rna$Kids_First_Biospecimen_ID)
+  dplyr::filter(Kids_First_Biospecimen_ID_RNA %in% indep_rna$Kids_First_Biospecimen_ID)
 
 ```
 
@@ -131,7 +127,7 @@ meta_indep <- calc_groups(meta_indep, tp53_quantiles, telomerase_quantiles)
 meta_indep_no_hgat <- calc_groups(meta_indep_no_hgat, tp53_quantiles_no_hgat, telomerase_quantiles_no_hgat)
 ```
 
-Set phenotypes to loop through
+Set phenotypes to loop through. These are columns created by the `calc_groups` function.
 ```{r}
 phenotypes <- c("tp53_0.5", "tel_0.5", "tp53_strict", "tel_strict", "pheno_0.5", "pheno_strict", "pheno_extremes")
 ```
@@ -139,8 +135,7 @@ phenotypes <- c("tp53_0.5", "tel_0.5", "tp53_strict", "tel_strict", "pheno_0.5",
 Run on all PBTA and HGAT only
 ## Kaplan-Meier
 
-The [Kaplan-Meier](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3059453/) 
-survival curve shows the probability of survival over time.
+The [Kaplan-Meier](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3059453/) survival curve shows the probability of survival over time.
 
 ```{r Kaplan Meier}
 
@@ -156,14 +151,14 @@ prefix_list <- c("all-pbta","hgat","no-hgat")
 # define data frame list in the same order as prefix list 
 df_list <-list(meta_all, meta_hgat, meta_no_hgat)
   
-for (each in phenotypes) {
+for (pheno in phenotypes) {
   for(i in 1:length(prefix_list)){
     
     prefix <- prefix_list[i]
     df_of_interest <- df_list[[i]]
     
     kap_fit <- survival_analysis(df_of_interest,
-                             ind_var = each,
+                             ind_var = pheno,
                              test = "kap.meier",
                              metadata_sample_col = "Kids_First_Biospecimen_ID_RNA"
     )
@@ -172,8 +167,10 @@ for (each in phenotypes) {
     kap_fit$model
     
     #`survminer` package comes with a convenient plotting function which uses `ggplot2` arguments. 
-    #It requires the original Kaplain-Meier `survfit` object, so we will extract that with `$model`.
+    #It requires the original Kaplan-Meier `survfit` object, so we will extract that with `$model`.
     surv_plot <- survminer::ggsurvplot(kap_fit$model,
+                                       surv.plot.height = 0.7,
+                                       tables.height = 0.3,
                                        pval = TRUE,
                                        data = kap_fit$original_data,
                                        risk.table = TRUE,
@@ -182,27 +179,15 @@ for (each in phenotypes) {
                                        ggtheme = theme_pubr(),
                                        risk.table.y.text.col = TRUE,
                                        risk.table.y.text = FALSE,
-                                       palette = each
-                                       #color = phenotype,
-                                       #palette = "Paired"
-    
-    )
-    
-    surv_plot$plot <- surv_plot$plot +
-      #ggtitle(paste0(ptitle)) +
-      theme(legend.position = "right")
-    
-    # Make this plot a meta_indep plot
-    p <- cowplot::plot_grid(surv_plot[[1]], surv_plot[[2]], nrow = 2,
-                         rel_heights = c(4, 2))
-    
-    # Print it out here
-    print(p)
+                                       color = pheno,
+                                       palette = "Paired")
     
     #Save the plot to a file. 
-    ggsave(filename = file.path(plots_dir, paste(prefix, each, "KM.pdf", sep = "-")), plot = p)
-    # Let's save the model for CI and median survival as well
-    readr::write_tsv(surv_median(kap_fit$model), file.path(results_dir, paste(prefix, each, "model.tsv", sep = "-")))
+    pdf(file.path(plots_dir, paste(prefix, pheno, "KM.pdf", sep = "-")))
+    print(surv_plot, newpage = FALSE)
+    dev.off()
+    # Let's save the model for CI and median survival as well. Note: per this notebook, https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/32a81d2b5b307c5473c5dbb4408c9a64de40e7d5/analyses/survival-analysis/survival-analysis_HGG_DMG.Rmd#L129, NAs in the output are derived from skew in the underlying data.
+    readr::write_tsv(surv_median(kap_fit$model), file.path(results_dir, paste(prefix, pheno, "model.tsv", sep = "-")))
     }
   }
 
@@ -221,7 +206,7 @@ for(i in 1:length(df_list)){
   df_of_interest <- df_list[[i]]
   prefix <- prefix_list[i]
   
-  # use the formulat to output the stat files
+  # use the formula to output the stat files
   output_stats(metadata=df_of_interest, 
                model=model,
                prefix=prefix)
@@ -231,4 +216,6 @@ for(i in 1:length(df_list)){
 
 
 
-
+```{r}
+sessionInfo()
+```
