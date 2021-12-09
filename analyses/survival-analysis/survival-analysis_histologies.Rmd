@@ -82,6 +82,7 @@ n_participants <- 3
 # read in histologies file
 indep_rna <- readr::read_tsv(indep_file)
 
+# remove cell lines by selecting only solid tissue
 histologies <- readr::read_tsv(hist_file, guess_max = 10000) %>%
   dplyr::filter(composition=="Solid Tissue" & tumor_descriptor == "Initial CNS Tumor") %>%
   select(sample_id, broad_histology, short_histology, cancer_group, molecular_subtype, OS_status, OS_days, PFS_days) %>%
@@ -98,7 +99,7 @@ tel_scores <- readr::read_tsv(tel_stranded_file) %>%
          telomerase_score = NormEXTENDScores) %>%
   select(Kids_First_Biospecimen_ID_RNA, telomerase_score)
 
-# meta_indepine metadata, remove cell lines and samples without RNA-Seq since both classifiers' results use RNA-Seq
+# remove samples without RNA-Seq since both classifiers' results use RNA-Seq
 # independent use primary plus rna-seq samples
 meta_indep <- tp53_scores %>%
   left_join(tel_scores) %>%
