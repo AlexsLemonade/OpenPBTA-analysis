@@ -4,7 +4,7 @@ output:
   html_notebook:
     toc: TRUE
     toc_float: TRUE
-author: Jo Lynne Rokita for D3B
+author: Jo Lynne Rokita, Run Jin for D3B
 date: 2021
 params:
   plot_ci: TRUE
@@ -127,7 +127,7 @@ meta_indep <- calc_groups(meta_indep, tp53_quantiles, telomerase_quantiles)
 meta_indep_no_hgat <- calc_groups(meta_indep_no_hgat, tp53_quantiles_no_hgat, telomerase_quantiles_no_hgat)
 ```
 
-Set phenotypes to loop through
+Set phenotypes to loop through. These are columns created by the `calc_groups` function.
 ```{r}
 phenotypes <- c("tp53_0.5", "tel_0.5", "tp53_strict", "tel_strict", "pheno_0.5", "pheno_strict", "pheno_extremes")
 ```
@@ -216,7 +216,7 @@ for(i in 1:length(df_list)){
   df_of_interest <- df_list[[i]]
   prefix <- prefix_list[i]
   
-  # use the formulat to output the stat files
+  # use the formula to output the stat files
   output_stats(metadata=df_of_interest, 
                model=model,
                prefix=prefix)
