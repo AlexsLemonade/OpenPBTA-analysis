@@ -229,4 +229,6 @@ for(i in 1:length(df_list)){
 
 
 
-
+```{r}
+sessionInfo()
+```
