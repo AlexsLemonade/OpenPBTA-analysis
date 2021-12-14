@@ -122,9 +122,9 @@ jobs:
       #     name: Selection Strategy Comparison
       #     command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/selection-strategy-comparison/01-selection-strategies.rmd', params = list(neighbors = 2), clean = TRUE)"
 
-    #   - run:
-    #       name: TP53 NF1 classifier run
-    #       command: OPENPBTA_POLYAPLOT=0 ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"
+      - run:
+          name: TP53 NF1 classifier run
+          command: OPENPBTA_POLYAPLOT=0 ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"
 
 # This is deprecated
 #      - run:
@@ -197,9 +197,9 @@ jobs:
           name: Gene set enrichment analysis to generate GSVA scores FOR BASE SUBTYPING
           command: OPENPBTA_TESTING=1 OPENPBTA_BASE_SUBTYPING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh"
 
-    #   - run:
-    #       name: Telomerase activity
-    #       command: ./scripts/run_in_ci.sh bash analyses/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
+      - run:
+          name: Telomerase activity
+          command: ./scripts/run_in_ci.sh bash analyses/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
 
       - run:
           name: GISTIC Results Comparison
