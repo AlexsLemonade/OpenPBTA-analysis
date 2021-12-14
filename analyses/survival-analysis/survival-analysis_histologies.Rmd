@@ -138,7 +138,8 @@ meta_indep_no_hgat <- calc_groups(meta_indep_no_hgat, tp53_quantiles_no_hgat, te
 
 Set phenotypes to loop through. These are columns created by the `calc_groups` function. These columns, as described above, contain information about whether the sample has `high`, `mid` or `low` TP53/telomerase scores.
 ```{r}
-phenotypes <- c("tp53_0.5", "tel_0.5", "tp53_strict", "tel_strict", "pheno_0.5", "pheno_strict", "pheno_extremes")
+# phenotypes <- c("tp53_0.5", "tel_0.5", "tp53_strict", "tel_strict", "pheno_0.5", "pheno_strict", "pheno_extremes")
+phenotypes <- c("tp53_0.5", "tel_0.5", "tp53_strict", "tel_strict", "pheno_0.5", "pheno_strict")
 ```
 
 ## Kaplan-Meier
