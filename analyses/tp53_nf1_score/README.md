@@ -137,3 +137,12 @@ results
 └── tp53_scores_vs_molecular_subtype_Low-grade_astrocytic_tumor.tsv
 ```
 
+* `09-compare-histologies.R` creates boxplots comparing broad histology and cancer group.
+
+**Boxplots:**
+
+```
+plots
+├── tp53_broad_histology.pdf
+├── tp53_cancer_group.pdf
+```
