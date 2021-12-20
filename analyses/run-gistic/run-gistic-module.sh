@@ -45,36 +45,38 @@ else
   mkdir -p $alf_directory
 
   # These will be constant for every disease
-  consensus_segfile="../../data/pbta-cnv-consensus.seg.gz"
-  histologies_file="../../data/pbta-histologies.tsv"
-  filter_column="short_histology"
+  consensus_segfile="../copy_number_consensus_call/results/pbta-cnv-consensus.seg.gz"
+  if [[ RUN_FOR_SUBTYPING == "0" ]]
+   then
+    histologies_file="../../data/pbta-histologies.tsv"
+    filter_column="short_histology"
 
-  # borrowed from Josh Shapiro in analyses/interaction plot
-  # associative array of diseases to test; chosen by those that are most common
-  # in the openPBTA dataset
-  # all of these histologies have >100 WGS samples
-  declare -A disease
-  disease[LGAT]="LGAT"
-  disease[HGAT]="HGAT"
-  disease[Medulloblastoma]="Medulloblastoma"
+    # borrowed from Josh Shapiro in analyses/interaction plot
+    # associative array of diseases to test; chosen by those that are most common
+    # in the openPBTA dataset
+    # all of these histologies have >100 WGS samples
+    declare -A disease
+    disease[LGAT]="LGAT"
+    disease[HGAT]="HGAT"
+    disease[Medulloblastoma]="Medulloblastoma"
 
-  for disease_id in "${!disease[@]}"; do
-    echo "    $disease_id"
+    for disease_id in "${!disease[@]}"; do
+     echo "    $disease_id"
 
-    # generate a subset SEG file for this disease
-    array_list_file="${alf_directory}/${disease_id,,}-array-list.txt"
-    Rscript --vanilla scripts/generate-array-file.R \
+     # generate a subset SEG file for this disease
+     array_list_file="${alf_directory}/${disease_id,,}-array-list.txt"
+     Rscript --vanilla scripts/generate-array-file.R \
       --segfile $consensus_segfile \
       --metadata $histologies_file \
       --filter_column $filter_column \
       --filter_value ${disease[$disease_id]} \
       --output_file $array_list_file
 
-    ARRAYLIST=../${array_list_file} \
-    FILEPREFIX=$disease_id \
-    OUTPUTFOLDER=pbta-cnv-consensus-${disease_id,,}-gistic \
-    bash scripts/run-gistic-openpbta.sh
+     ARRAYLIST=../${array_list_file} \
+     FILEPREFIX=$disease_id \
+     OUTPUTFOLDER=pbta-cnv-consensus-${disease_id,,}-gistic \
+     bash scripts/run-gistic-openpbta.sh
 
-  done
-
+   done
+ fi
 fi

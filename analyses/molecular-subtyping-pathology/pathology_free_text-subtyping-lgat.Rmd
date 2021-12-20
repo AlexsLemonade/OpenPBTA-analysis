@@ -56,7 +56,8 @@ histologies_df <- readr::read_tsv(histologies_file, guess_max = 10000,
          sample_id, 
          pathology_diagnosis,
          pathology_free_text_diagnosis,
-         tumor_descriptor) 
+         tumor_descriptor,
+         Notes) 
   
 compiled_subtypes_df <- readr::read_tsv(compiled_subtypes_file)
 ```

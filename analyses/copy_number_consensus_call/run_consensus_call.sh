@@ -15,6 +15,8 @@ SCRATCHDIR=../../scratch/copy_consensus
 # make directories:
 mkdir -p $SCRATCHDIR
 mkdir -p results
+# remove any stray results from previous runs:
+rm -f results/*
 
 ## Run the python script to go from 1 big manta file, cnvkit file and freec file into 3 directories. 
 ## Each directory with individual sample files.

@@ -6,9 +6,9 @@ Laura Egolf ([@LauraEgolf](https://github.com/LauraEgolf/)), Yang Yang ([@yangya
 This module runs ShatterSeek, identifies chromothripsis regions, and visualizes the results.
 
 #### Inputs from data download
-* independent-specimens.wgs.primary-plus.tsv
-* pbta-sv-manta.tsv
-* pbta-cnv-consensus.seg
+- `independent-specimens.wgs.primary-plus.tsv`
+- `pbta-sv-manta.tsv`
+- `pbta-cnv-consensus.seg`
 
 #### Order of scripts in analysis
 `01-process-sv-file.R` : This script reformats SV files for ShatterSeek input.
@@ -16,6 +16,8 @@ This module runs ShatterSeek, identifies chromothripsis regions, and visualizes 
 `02-run-shatterseek-and-classify-confidence.R` : This script runs ShatterSeek and classifies chromothripsis regions as high or low confidence based on criteria recommended by the authors. 
 
 `03-plot-chromothripsis-by-histology.Rmd`: This script plots the proportion of tumors with chromothripsis across histology groups.
+
+`04-plot-chromothripsis-and-breakpoint-data.Rmd`: This script plots the chromothripsis results alongside breakpoint data from `analyses/chromosomal-instability/`.
 
 More scripts will be added for visualization.
 
@@ -32,4 +34,6 @@ More scripts will be added for visualization.
 - `any_regions` : Summary variable indicating whether a sample has no calls, >=1 low-confidence call, or >=1 high-confidence call
 
 #### Plots
-`plots/03-histology/*`: Proportion of tumors with chromothripsis across histology groups, with a breakdown by confidence level (high or low confidence chromothripsis) and by the number of chromothripsis regions observed
+`plots/03-histology/*`: Proportion of tumors with chromothripsis across histology groups, with a breakdown by confidence level (high or low confidence chromothripsis) and by the number of chromothripsis regions observed. (See also: `03-plot-chromothripsis-by-histology.html`)
+
+`plots/04-breakpoint-data/*`: Scatterplots/stripcharts showing the number of chromothripsis regions per sample alongside the breakpoint counts calculated from SV and CNV data in `analyses/chromosomal-instability/`. (See also: `04-plot-chromothripsis-and-breakpoint-data.html`)

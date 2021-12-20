@@ -1,2 +1,2 @@
-gene1	gene2	mut11	mut10	mut01	mut00	odds_ratio	cooccur_sign	p	q	cooccur_score
-NF2	SLC35A1	0	3	2	60	0	-1	1	1	0
+gene1	gene2	mut11	mut10	mut01	mut00	odds_ratio	cooccur_sign	odds_ratio_ci	p	q	cooccur_score	n_mutated_gene1	n_mutated_gene2	perc_mutated_gene1	perc_mutated_gene2	perc_cooccur	perc_mutexcl
+NF2	SLC35A1	0	3	2	60	0	-1	0,86.6943501296584	1	1	0	3	2	4.615384615384615	3.076923076923077	0	100

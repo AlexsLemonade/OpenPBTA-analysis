@@ -1,0 +1,4 @@
+variable	group1	group2	p.format	p.adj	p.signif	method
+tp53_score	all	EPN, ST RELA (N=29)	0.436	1		Wilcoxon
+tp53_score	all	EPN, PF A (N=3)	0.073	0.22		Wilcoxon
+tp53_score	all	EPN, ST YAP1 (N=4)	0.269	0.81		Wilcoxon

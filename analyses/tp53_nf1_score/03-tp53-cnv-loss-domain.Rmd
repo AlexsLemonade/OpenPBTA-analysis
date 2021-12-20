@@ -8,20 +8,24 @@ params:
     value: 0
     input: integer
 ---
-    
+
 In this script we will find CNV losses that overlap with TP53 domains:
- 
- - TAD = trans-activating domain (essential for function)
- - DBD = DNA-binding domain (residues 102–292)
- - TD = tetramerization domain (residues 326–356)
+
+- TAD = trans-activating domain (essential for function)
+- DBD = DNA-binding domain (residues 102–292)
+- TD = tetramerization domain (residues 326–356)
 
 We want to subset CNV calls where the domain are lost which will possibly	lead to loss of function to use for evaluation of TP53 inactivation score at a later step.
 
 ### Setup
 ```{r}
-library("ggpubr")
-library("ggthemes")
-library("tidyverse")
+suppressPackageStartupMessages({
+  library(ggpubr)
+  library(ggthemes)
+  library(tidyverse)
+  library(annoFuse)
+})
+
 
 # rootdir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
@@ -34,8 +38,6 @@ results_dir <- file.path(root_dir,
 if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
-
-
 ```
 
 ### Input files
@@ -96,7 +98,6 @@ score_polya_df <- read_tsv(file.path(results_dir, "pbta-gene-expression-rsem-fpk
 
 # merge classifier scores
 tp53_classifier_score <- rbind(score_stranded_df,score_polya_df)
-
 ```
 
 Generating genomics ranges for cnv and domain dataframes
@@ -119,7 +120,6 @@ domain_gr <- bioMartDataPfamTp53 %>%
   dplyr::rename(chr = chromosome_name, start = domain_start, end = domain_end) %>%
   GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE,
                                           starts.in.df.are.0based = FALSE)
-
 ```
 
 
@@ -157,7 +157,6 @@ annotated_cn <- data.frame(
 We want to check if classifier scores support CNV calls and if support from classifier (higher inactivation score) can be used to filter TP53 loss calls 
 
 ```{r}
-
 ggplot(annotated_cn, aes(x = factor(copy_number), y = tp53_score)) +
   geom_violin()+
   geom_jitter(alpha = 0.5, width = 0.2) +
@@ -166,7 +165,6 @@ ggplot(annotated_cn, aes(x = factor(copy_number), y = tp53_score)) +
   ggtitle("Distribution of scores across aberrations") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))+
   xlab("Copy number")
-
 ```
 
 Majority of TP53 losses have high tp53 inactivation classifier, let's save to file.
@@ -179,7 +177,6 @@ annotated_cn %>%
   dplyr::select(-tp53_score,-Kids_First_Biospecimen_ID) %>%
   unique() %>%
   write_tsv( file.path(results_dir,"loss_overlap_domains_tp53.tsv"))
-
 ```
 
 

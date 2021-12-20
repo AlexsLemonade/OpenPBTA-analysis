@@ -10,7 +10,7 @@ jobs:
 
       - run:
           name: Data Download
-          command: OPENPBTA_URL=https://open-pbta.s3.amazonaws.com/data OPENPBTA_RELEASE=testing ./scripts/run_in_ci.sh bash download-data.sh
+          command: OPENPBTA_URL=https://s3.amazonaws.com/d3b-openaccess-us-east-1-prd-pbta/data OPENPBTA_RELEASE=testing ./scripts/run_in_ci.sh bash download-data.sh
 
       - run:
           name: List Data Directory Contents
@@ -21,16 +21,9 @@ jobs:
           command: ./scripts/run_in_ci.sh bash scripts/check-python.sh
 
       - run:
-          name: High level histology grouping for plot labels
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('figures/mapping-histology-labels.Rmd', clean = TRUE)"
-
-      - run:
           name: Sample Distribution Analyses
           command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
 
-      - run:
-          name: Sample Distribution Figure
-          command: ./scripts/run_in_ci.sh Rscript figures/scripts/fig1-sample-distribution.R
 
       - run:
           name: Transcriptome dimensionality reduction
@@ -158,7 +151,7 @@ jobs:
 
       - run:
           name: Mutational Signatures
-          command: OPENPBTA_QUICK_MUTSIGS=1 ./scripts/run_in_ci.sh bash analyses/mutational-signatures/run_mutational_signatures.sh
+          command: OPENPBTA_QUICK_MUTSIGS=1 OPENPBTA_CNS_FIT_ONLY=0 ./scripts/run_in_ci.sh bash analyses/mutational-signatures/run_mutational_signatures.sh
 
 #      - run:
 #          name: Chromosomal instability breakpoints
@@ -181,8 +174,8 @@ jobs:
           command: ./scripts/run_in_ci.sh bash analyses/comparative-RNASeq-analysis/run-comparative-RNAseq.sh
 
       - run:
-          name: Process SV file
-          command: ./scripts/run_in_ci.sh Rscript analyses/chromothripsis/01-process-sv-file.R
+          name: Chromothripsis
+          command: ./scripts/run_in_ci.sh bash analyses/chromothripsis/run-chromothripsis.sh
 
 #      - run:
 #          name: Oncoprint plotting
@@ -205,10 +198,6 @@ jobs:
           command: OPENPBTA_TESTING=1 OPENPBTA_BASE_SUBTYPING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh"
 
       - run:
-          name: Add Shatterseek
-          command: ./scripts/run_in_ci.sh Rscript analyses/chromothripsis/02-run-shatterseek-and-classify-confidence.R
-
-      - run:
           name: Telomerase activity
           command: ./scripts/run_in_ci.sh bash analyses/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
 
@@ -216,9 +205,6 @@ jobs:
           name: GISTIC Results Comparison
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/compare-gistic/run-compare-gistic.sh
 
-      - run:
-          name: Visualize chromothripsis by histology
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/chromothripsis/03-plot-chromothripsis-by-histology.Rmd', clean = TRUE)"
 
          ################################
          #### Add your analysis here ####

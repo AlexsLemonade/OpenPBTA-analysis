@@ -1,2 +1,2 @@
-gene1	gene2	mut11	mut10	mut01	mut00	odds_ratio	cooccur_sign	p	q	cooccur_score
-NF2	MYH4	2	5	0	12	Inf	1	0.1228070175438596	0.1228070175438596	0.9107768156582348
+gene1	gene2	mut11	mut10	mut01	mut00	odds_ratio	cooccur_sign	odds_ratio_ci	p	q	cooccur_score	n_mutated_gene1	n_mutated_gene2	perc_mutated_gene1	perc_mutated_gene2	perc_cooccur	perc_mutexcl
+NF2	MYH4	2	5	0	12	Inf	1	0.464247663303955,Inf	0.1228070175438596	0.1228070175438596	0.9107768156582348	7	2	36.8421052631579	10.526315789473685	28.571428571428573	71.42857142857143
