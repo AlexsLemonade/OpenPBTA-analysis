@@ -1,0 +1,202 @@
+---
+title: "Survival analysis by TP53 and telomerase activity"
+output: html_notebook
+---
+
+This notebook will do the following survival analysis
+1. Univariant analysis 
+- TP53 classifier score (as a continuous variable)
+- EXTEND score (as a continuous variable)
+- Cancer group, removing cancer groups with less than 10 samples
+- HGG vs. non-HGG
+
+2. Multivariant analysis
+- TP53 classifier score, EXTEND score and whatever disease label we determine is appropriate
+
+3. Plots
+- Probably a forest plot will be generated to display the information.
+
+## Setup
+
+#### Packages and functions
+
+Read in set up script.
+
+```{r Set up library}
+library(survival)
+library(dplyr)
+library(ggplot2)
+```
+
+#### Set up files and directories
+
+Set up output directories. 
+
+```{r Set up directories}
+data_dir <- file.path("..", "..", "data")
+analysis_dir <- file.path("..", "..", "analyses")
+figure_dir <- file.path("..", "..", "figures")
+
+results_dir <- "results"
+plots_dir <- "plots"
+```
+
+Make output directories.
+
+```{r Make output directories}
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir)
+}
+```
+
+## Declare the direcotry for all the data to be used 
+
+```{r define data path}
+metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+indep_file <- file.path(data_dir,
+                         "independent-specimens.rnaseq.primary-plus-stranded.tsv")
+tp53_file <- file.path(analysis_dir, 
+                        "tp53_nf1_score/results/tp53_altered_status.tsv")
+# only use stranded since tp53 scores for polyA did not have good accuracy
+tel_stranded_file <- file.path(analysis_dir,
+                         "telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt")
+# color palette
+ color_file <- file.path(figure_dir, "palettes/broad_histology_cancer_group_palette.tsv")
+```
+
+## Import the metadata
+
+```{r Read in metadata}
+# read in histologies file
+indep_rna <- readr::read_tsv(indep_file)
+
+# remove cell lines by selecting only solid tissue
+histologies <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
+ dplyr::filter(composition=="Solid Tissue" & tumor_descriptor == "Initial CNS Tumor") %>%
+ select(sample_id, broad_histology, short_histology, cancer_group, molecular_subtype, OS_status, OS_days, PFS_days) %>%
+ distinct()
+
+# read in tp53 scores
+tp53_scores <- readr::read_tsv(tp53_file) %>%
+ select(Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA, sample_id, tp53_score)
+
+# read in telomerase scores
+tel_scores <- readr::read_tsv(tel_stranded_file) %>%
+ mutate(Kids_First_Biospecimen_ID_RNA = SampleID,
+        telomerase_score = NormEXTENDScores) %>%
+ select(Kids_First_Biospecimen_ID_RNA, telomerase_score)
+
+# remove samples without RNA-Seq since both classifiers' results use RNA-Seq
+# independent use primary plus rna-seq samples
+meta_indep <- tp53_scores %>%
+  left_join(tel_scores) %>%
+  left_join(histologies) %>%
+  dplyr::filter(Kids_First_Biospecimen_ID_RNA %in% indep_rna$Kids_First_Biospecimen_ID) %>%
+  # recode the categories
+  dplyr::mutate(OS_status_fixed = case_when(
+    OS_status == "LIVING" ~ 0,
+    OS_status == "DECEASED" ~1
+ ))
+
+```
+ 
+## Cox Regression 
+
+### TP53 scores & Telomerase score - results
+```{r Run Cox regression model for tp53 and telomerase}
+# run the model with different covariates
+for(ind_var in c("tp53_score", "telomerase_score")){
+  model <- paste0("survival::Surv(OS_days, OS_status_fixed) ~ ", ind_var)
+  
+  fit <- survival::coxph(
+        formula(model),
+        data = meta_indep
+      )
+  # generate output
+  table <- broom::tidy(fit) 
+  
+  # Save the table data in a TSV
+  readr::write_tsv(table, file.path(results_dir, paste0("cox_reg_results_per_", ind_var, ".tsv")))
+  
+  print(table)
+}
+
+```
+
+## Log Rank analysis 
+
+### Categorical variable cancer group and HGG or not 
+```{r}
+# separate into HGG or non-HGG
+meta_indep <- meta_indep %>% 
+  dplyr::mutate(hgg_group = case_when(
+    short_histology == "HGAT" ~ "HGAT",
+    short_histology != "HGAT" ~ "non-HGAT"
+  ))
+
+# filter to contain only samples in short histology that that have >=10 samples
+meta_indep_sh_filtered <- meta_indep %>% 
+  dplyr::group_by(short_histology) %>% 
+  dplyr::mutate(n_cg = n()) %>% 
+  dplyr::filter(n_cg >=10) 
+
+```
+
+### Generate output for categorical files 
+```{r}
+ind_var_list <- c("hgg_group", "short_histology")
+meta_data_list <- list(meta_indep, meta_indep_sh_filtered)
+
+for(i in 1:length(ind_var_list)){
+  ind_var <- ind_var_list[i]
+  meta_data <- meta_data_list[[i]]
+  
+  # define model
+  model <- paste0("survival::Surv(OS_days, OS_status_fixed) ~ ", ind_var)
+  
+  # run survival analysis
+  fit <- survival::survdiff(formula(model),
+                            data = meta_data)
+  # Obtain p value for Chi-Squared stat
+  fit$p.value <- pchisq(fit$chisq, df = 1, lower = FALSE)
+  
+  print(fit)
+  # save the output
+  saveRDS(fit, file.path(results_dir, paste0("log_rank_survival_per_", ind_var, ".RDS")))
+  
+  # generate plots fit
+  fit_plot <- survfit(formula(model), data = meta_data)
+  plot_coxph <- survminer::ggsurvplot(fit_plot,
+                                      data=meta_data,                                
+                                      pval = TRUE, 
+                                      conf.int = TRUE,
+                                      risk.table = TRUE, # Add risk table
+                                      risk.table.col = "strata", # Change risk table color by groups
+                                      linetype = "strata", # Change line type by groups
+                                      surv.median.line = "hv", # Specify median survival
+                                      ggtheme = theme_bw()) # Change ggplot2 theme
+  
+  # Make this plot a combined plot
+  surv_plot_coxph <- cowplot::plot_grid(plot_coxph[[1]], 
+                                        plot_coxph[[2]], 
+                                        nrow = 2, 
+                                        rel_heights = c(2.5, 1))
+  
+  print(surv_plot_coxph)
+  
+  # Save the plot
+  cowplot::save_plot(filename = file.path(plots_dir, paste0("coxph_survival_per_", ind_var, ".png")), plot = surv_plot_coxph)
+}
+
+```
+
+
+
+## Session Info
+
+```{r Print session info}
+sessionInfo()
+```
