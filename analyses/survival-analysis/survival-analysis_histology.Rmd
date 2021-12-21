@@ -104,12 +104,30 @@ meta_indep <- tp53_scores %>%
 
 ```
  
-## Cox Regression 
+### Categorical variable cancer group and HGG or not 
+```{r}
+# separate into HGG or non-HGG
+meta_indep <- meta_indep %>% 
+  dplyr::mutate(hgg_group = case_when(
+    cancer_group %in% c("High-grade glioma astrocytoma", "Diffuse midline glioma", "Diffuse intrinsic pontine glioma") ~ "HGAT",
+    !cancer_group %in% c("High-grade glioma astrocytoma", "Diffuse midline glioma", "Diffuse intrinsic pontine glioma") ~ "non-HGAT"
+  ))
 
+# filter to contain only samples in short histology that that have >=10 samples
+meta_indep <- meta_indep %>% 
+  dplyr::group_by(cancer_group) %>% 
+  dplyr::mutate(n_cg = n()) %>% 
+  dplyr::mutate(cancer_group_over10 = case_when(
+    n_cg >= 10 ~ cancer_group
+  ))
+
+```
+
+## Cox Regression 
 ### TP53 scores & Telomerase score - results
-```{r Run Cox regression model for tp53 and telomerase}
+```{r Run Cox regression model for tp53 and telomerase for all covariates}
 # run the model with different covariates
-for(ind_var in c("tp53_score", "telomerase_score")){
+for(ind_var in c("tp53_score", "telomerase_score", "cancer_group_over10", "hgg_group")){
   model <- paste0("survival::Surv(time = OS_days, event = OS_status_fixed) ~ ", ind_var)
   
   fit <- survival::coxph(
@@ -124,7 +142,7 @@ for(ind_var in c("tp53_score", "telomerase_score")){
   
   print(table)
   
-   # output the plot
+  # output the plot
   pdf(file.path(plots_dir, paste0("coxph_survival_per_", ind_var, ".pdf")))
   plot_coxph <- survminer::ggsurvplot(survfit(fit),
                                       data=meta_indep,
@@ -148,26 +166,6 @@ for(ind_var in c("tp53_score", "telomerase_score")){
 ```
 
 ## Log Rank analysis 
-
-### Categorical variable cancer group and HGG or not 
-```{r}
-# separate into HGG or non-HGG
-meta_indep <- meta_indep %>% 
-  dplyr::mutate(hgg_group = case_when(
-    cancer_group %in% c("High-grade glioma astrocytoma", "Diffuse midline glioma", "Diffuse intrinsic pontine glioma") ~ "HGAT",
-    !cancer_group %in% c("High-grade glioma astrocytoma", "Diffuse midline glioma", "Diffuse intrinsic pontine glioma") ~ "non-HGAT"
-  ))
-
-# filter to contain only samples in short histology that that have >=10 samples
-meta_indep <- meta_indep %>% 
-  dplyr::group_by(cancer_group) %>% 
-  dplyr::mutate(n_cg = n()) %>% 
-  dplyr::mutate(cancer_group_over10 = case_when(
-    n_cg >= 10 ~ cancer_group
-  ))
-
-```
-
 ### Generate output for categorical files 
 ```{r}
 ind_var_list <- c("hgg_group", "cancer_group_over10")
