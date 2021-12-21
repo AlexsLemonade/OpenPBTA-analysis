@@ -170,7 +170,9 @@ for(i in 1:length(ind_var_list)){
   # generate plots fit
   fit_plot <- survfit(formula(model), data = meta_data)
   plot_coxph <- survminer::ggsurvplot(fit_plot,
-                                      data=meta_data,                                
+                                      data=meta_data,
+                                      xlim = c(0, 5000),
+                                      break.time.by = 500,
                                       pval = TRUE, 
                                       conf.int = TRUE,
                                       risk.table = TRUE, # Add risk table
@@ -192,8 +194,6 @@ for(i in 1:length(ind_var_list)){
 }
 
 ```
-
-
 
 ## Session Info
 
