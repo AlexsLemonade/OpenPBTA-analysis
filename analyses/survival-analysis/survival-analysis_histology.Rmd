@@ -123,6 +123,26 @@ for(ind_var in c("tp53_score", "telomerase_score")){
   readr::write_tsv(table, file.path(results_dir, paste0("cox_reg_results_per_", ind_var, ".tsv")))
   
   print(table)
+  
+   # output the plot
+  pdf(file.path(plots_dir, paste0("coxph_survival_per_", ind_var, ".pdf")))
+  plot_coxph <- survminer::ggsurvplot(survfit(fit),
+                                      data=meta_indep,
+                                      xlim = c(0, 5000),
+                                      break.time.by = 500,
+                                      pval = TRUE, 
+                                      conf.int = TRUE,
+                                      risk.table = TRUE, # Add risk table
+                                      linetype = "strata", # Change line type by groups
+                                      surv.median.line = "hv", # Specify median survival
+                                      ggtheme = theme_bw())
+  print(ggpar(plot_coxph[[1]], font.legend=6, legend="right"))
+  print(ggpar(plot_coxph[[2]], font.legend=6))
+
+  dev.off()
+
+  print(ggpar(plot_coxph[[1]], font.legend=6, legend="right"))
+  print(ggpar(plot_coxph[[2]], font.legend=6))
 }
 
 ```
@@ -172,24 +192,24 @@ for(i in 1:length(ind_var_list)){
   fit_plot <- survfit(formula(model), data = meta_indep)
   
   # output the plot
-  pdf(file.path(plots_dir, paste0("coxph_survival_per_", ind_var, ".pdf")))
-  plot_coxph <- survminer::ggsurvplot(fit_plot,
-                                      data=meta_indep,
-                                      xlim = c(0, 5000),
-                                      break.time.by = 500,
-                                      pval = TRUE, 
-                                      conf.int = TRUE,
-                                      risk.table = TRUE, # Add risk table
-                                      linetype = "strata", # Change line type by groups
-                                      surv.median.line = "hv", # Specify median survival
-                                      ggtheme = theme_bw())
-  print(ggpar(plot_coxph[[1]], font.legend=6, legend="right"))
-  print(ggpar(plot_coxph[[2]], font.legend=6))
+  pdf(file.path(plots_dir, paste0("logrank_survival_per_", ind_var, ".pdf")))
+  plot_logrank <- survminer::ggsurvplot(fit_plot,
+                                        data=meta_indep,
+                                        xlim = c(0, 5000),
+                                        break.time.by = 500,
+                                        pval = TRUE, 
+                                        conf.int = TRUE,
+                                        risk.table = TRUE, # Add risk table
+                                        linetype = "strata", # Change line type by groups
+                                        surv.median.line = "hv", # Specify median survival
+                                        ggtheme = theme_bw())
+  print(ggpar(plot_logrank[[1]], font.legend=6, legend="right"))
+  print(ggpar(plot_logrank[[2]], font.legend=6))
 
   dev.off()
 
-  print(ggpar(plot_coxph[[1]], font.legend=6, legend="right"))
-  print(ggpar(plot_coxph[[2]], font.legend=6))
+  print(ggpar(plot_logrank[[1]], font.legend=6, legend="right"))
+  print(ggpar(plot_logrank[[2]], font.legend=6))
 }
 
 ```
