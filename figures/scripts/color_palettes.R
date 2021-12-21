@@ -133,7 +133,7 @@ oncoprint_col_palette <- c("#35978f",
                            "#5ea4fe",
                            "#7CCBAC",
                            "#FD8344",
-                           "#003600")
+                           "#571242")
 
 oncoprint_color_names <- c("Missense_Mutation",
                            "Nonsense_Mutation",
