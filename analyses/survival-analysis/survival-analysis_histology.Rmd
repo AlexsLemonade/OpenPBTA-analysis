@@ -185,7 +185,7 @@ for(i in 1:length(ind_var_list)){
   surv_plot_coxph <- cowplot::plot_grid(plot_coxph[[1]], 
                                         plot_coxph[[2]], 
                                         nrow = 2, 
-                                        rel_heights = c(2.5, 1))
+                                        rel_heights = c(2.5, 2.5))
   
   print(surv_plot_coxph)
   
