@@ -83,7 +83,7 @@ bash ${analyses_dir}/oncoprint-landscape/run-oncoprint.sh
 filenames=(primary_only primary-plus)
 
 # Create single panel PDFs and legends
-Rscript --vanilla figures/figures/scripts/fig2-oncoprint-landscape.R
+Rscript --vanilla scripts/fig2-oncoprint-landscape.R
 
 ####### Telomerase Activities
 
