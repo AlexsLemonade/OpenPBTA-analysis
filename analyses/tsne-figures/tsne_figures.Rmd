@@ -1,0 +1,131 @@
+---
+title: "TSNE figure generation"
+author: "Jo Lynne Rokita and Run Jin"
+date: "1/4/2022"
+output: html_notebook
+---
+
+### Load libraries
+```{r setup, include=FALSE}
+library(ggplot2)
+library(tidyverse)
+library(RColorBrewer)
+
+# set seed for sampling
+set.seed(2022)
+```
+
+### Define directory
+```{r}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data", "release-v21-20210820")
+analysis_dir <- file.path(root_dir, "analyses", "tsne-figures")
+
+# define output directory
+plots_dir <- file.path(analysis_dir, "plots")
+if(!dir.exists(plots_dir)){
+  dir.create(plots_dir, recursive = TRUE)
+}
+
+# source the function for generating plots
+source(file.path(analysis_dir, "utils", "generate_tsne_plot.R"))
+```
+
+### read in files
+```{r}
+# data file
+dat <- readRDS(file.path(root_dir, "analyses", 
+                         "transcriptomic-dimension-reduction", 
+                         "plots", "plot_data",
+                         "rsem_stranded_log_broad_histology_multiplot_list.RDS"))
+
+# histology file
+histology_df <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"), 
+                                guess_max = 10000)
+
+
+```
+
+### get UMAP results 
+```{r}
+# extract UMAP results
+umap_results <- dat$UMAP$data %>%
+  dplyr::select(Kids_First_Biospecimen_ID, X1, X2)
+umap_df <- umap_results %>%
+  dplyr::inner_join(histology_df) %>%
+  select(Kids_First_Biospecimen_ID, X1, X2, broad_histology, cancer_group, molecular_subtype)
+```
+
+### Get color palette
+```{r}
+# generate color list for heatmaps
+paired <- brewer.pal(n = 12, name = "Paired")
+dark <- brewer.pal(n = 8, name = "Dark2")
+col_vector <- c(paired, dark)
+
+```
+
+### Plot for HGG
+```{r plot hgg}
+# for HGG and DMG that has molecular subypte, keep the molecular subtype 
+# for anything else, recode them as `Other CNS Tumor`
+umap_df_hgg <- umap_df %>%
+  dplyr::mutate(subtypes_to_plot = case_when(
+    grepl("HGG", molecular_subtype) & !grepl("To be classified", molecular_subtype) ~ molecular_subtype,
+    grepl("DMG", molecular_subtype) & !grepl("To be classified", molecular_subtype) ~ molecular_subtype,
+    TRUE ~ "Other CNS tumor"
+  ))
+
+# save the plots and output in the console
+p <- generate_tsne_plot(umap_df_hgg, "hgg", col_vector)
+print(p)
+```
+
+### Plot for LGAT
+```{r plot lgat}
+# for LGG, we consider LGG, GNG and GNT all as LGG and we remove the prefixes to lumps groups together
+# for anything else, recode them as `Other CNS Tumor`
+umap_df_lgg <- umap_df %>%
+  dplyr::mutate(subtypes_to_plot = case_when(
+    grepl("LGG", molecular_subtype) & !grepl("To be classified", molecular_subtype) ~ gsub("LGG, ", "", molecular_subtype),
+    grepl("GNT", molecular_subtype) & !grepl("To be classified", molecular_subtype) ~ gsub("GNT, ", "", molecular_subtype),
+    grepl("GNG", molecular_subtype) & !grepl("To be classified", molecular_subtype) ~ gsub("GNG, ", "", molecular_subtype),
+    TRUE ~ "Other CNS tumor"
+  ))
+
+# save the plots and output in the console
+p <- generate_tsne_plot(umap_df_lgg, "lgg", col_vector)
+print(p)
+```
+
+### Plot for MB 
+```{r plot mb}
+# for MB, we keep subtypes that are not `To be classfied` and recode everything else as `Other CNS Tumor`
+umap_df_mb <- umap_df %>%
+  dplyr::mutate(subtypes_to_plot = case_when(
+    grepl("MB", molecular_subtype) & !grepl("To be classified", molecular_subtype) ~ molecular_subtype,
+    TRUE ~ "Other CNS tumor"
+  ))
+
+# save the plots and output in the console
+p <- generate_tsne_plot(umap_df_mb, "mb", col_vector)
+print(p)
+```
+
+### Plot for EPN
+```{r plot epn}
+# for EPN, we keep subtypes that are not `To be classfied` and recode everything else as `Other CNS Tumor`
+umap_df_epn <- umap_df %>%
+  dplyr::mutate(subtypes_to_plot = case_when(
+    grepl("EPN", molecular_subtype) & !grepl("To be classified", molecular_subtype) ~ molecular_subtype,
+    TRUE ~ "Other CNS tumor"
+  ))
+
+# save the plots and output in the console
+p <- generate_tsne_plot(umap_df_epn, "epn", col_vector)
+print(p)
+```
+```{r}
+sessionInfo()
+```
+
