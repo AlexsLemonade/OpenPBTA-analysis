@@ -77,13 +77,13 @@ color_file <- file.path(figure_dir, "palettes/broad_histology_cancer_group_palet
 indep_rna <- readr::read_tsv(indep_file)
 
 # read in color file 
-color_bh <- readr::read_tsv(color_file)
+color_bh <- readr::read_tsv(color_file) 
 
 # remove cell lines by selecting only solid tissue
 histologies <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
   dplyr::filter(composition=="Solid Tissue" & tumor_descriptor == "Initial CNS Tumor") %>%
   dplyr::left_join(color_bh) %>% 
-  dplyr::select(sample_id, broad_histology_display, cancer_group, OS_status, OS_days, PFS_days) %>%
+  dplyr::select(sample_id, broad_histology_display, oncoprint_group, cancer_group, OS_status, OS_days, PFS_days) %>%
   distinct()
 
 # read in tp53 scores
@@ -121,13 +121,17 @@ meta_indep <- meta_indep %>%
     !cancer_group %in% c("High-grade glioma astrocytoma", "Diffuse midline glioma", "Diffuse intrinsic pontine glioma") ~ "non-HGAT"
   ))
 
+# make non-HGAT the reference level
+meta_indep$hgg_group <- factor(meta_indep$hgg_group, levels = c("non-HGAT", "HGAT"))
+meta_indep$oncoprint_group <- factor(meta_indep$oncoprint_group, levels = c("Low-grade astrocytic tumor", "Diffuse astrocytic and oligodendroglial tumor", "Embryonal tumor", "Other CNS"))
+
 ```
 
 ## Cox Regression 
 ### TP53 scores & Telomerase score - results
 ```{r Run Cox regression model for tp53 and telomerase for all covariates}
 # run the model with different covariates
-for(ind_var in c("tp53_score", "telomerase_score", "broad_histology_display", "hgg_group")){
+for(ind_var in c("tp53_score", "telomerase_score", "broad_histology_display", "oncoprint_group", "hgg_group")){
   model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ", ind_var)
   
   fit <- survival::coxph(
@@ -168,7 +172,7 @@ for(ind_var in c("tp53_score", "telomerase_score", "broad_histology_display", "h
 ## Log Rank analysis 
 ### Generate output for categorical files 
 ```{r}
-ind_var_list <- c("hgg_group", "broad_histology_display")
+ind_var_list <- c("hgg_group", "broad_histology_display", "oncoprint_group")
 
 for(i in 1:length(ind_var_list)){
   ind_var <- ind_var_list[i]
@@ -216,7 +220,7 @@ for(i in 1:length(ind_var_list)){
 ### Two comparisons made are `tp53_score + telomerase_score + hgg_group` and `tp53_score + telomerase_score + broad_histology_display`
 
 ```{r}
-for(ind_var in c("tp53_score+telomerase_score+hgg_group", "tp53_score+telomerase_score+broad_histology_display")){
+for(ind_var in c("tp53_score+telomerase_score+hgg_group", "tp53_score+telomerase_score+broad_histology_display", "tp53_score+telomerase_score+oncoprint_group")){
   model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ", ind_var)
   
   fit <- survival::coxph(
@@ -238,13 +242,27 @@ for(ind_var in c("tp53_score+telomerase_score+hgg_group", "tp53_score+telomerase
 
 ```
 
-## Bivariate density plot of tp53 score and telomerase activity score
+## Bivariate density plot of tp53 score and telomerase activity score stratified by HGG group
 ```{r}
 
 tp53_vs_telomerase <- ggplot(meta_indep, aes(x = tp53_score, y = telomerase_score))
 tp53_vs_telomerase + 
   geom_density_2d(aes(color = hgg_group)) +
   labs(subtitle = "Density stratified by HGG group") +
+  xlim(-0.1,1.2) +
+  theme_bw()
+
+```
+
+## Bivariate density plot of tp53 score and telomerase activity score stratified by oncoprint group
+```{r}
+
+tp53_vs_telomerase <- meta_indep %>% 
+  dplyr::filter(!is.na(oncoprint_group)) %>%
+                  ggplot(aes(x = tp53_score, y = telomerase_score))
+tp53_vs_telomerase + 
+  geom_density_2d(aes(color = oncoprint_group)) +
+  labs(subtitle = "Density stratified by oncoprint group") +
   xlim(-0.1,1.2) +
   theme_bw()
 
