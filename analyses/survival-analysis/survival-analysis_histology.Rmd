@@ -66,8 +66,6 @@ tp53_file <- file.path(analysis_dir,
 # only use stranded since tp53 scores for polyA did not have good accuracy
 tel_stranded_file <- file.path(analysis_dir,
                          "telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt")
-# color palette
-color_file <- file.path(figure_dir, "palettes/broad_histology_cancer_group_palette.tsv")
 ```
 
 ## Import the metadata
@@ -76,14 +74,10 @@ color_file <- file.path(figure_dir, "palettes/broad_histology_cancer_group_palet
 # read in histologies file
 indep_rna <- readr::read_tsv(indep_file)
 
-# read in color file 
-color_bh <- readr::read_tsv(color_file) 
-
 # remove cell lines by selecting only solid tissue
 histologies <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
   dplyr::filter(composition=="Solid Tissue" & tumor_descriptor == "Initial CNS Tumor") %>%
-  dplyr::left_join(color_bh) %>% 
-  dplyr::select(sample_id, broad_histology_display, oncoprint_group, cancer_group, OS_status, OS_days, PFS_days) %>%
+  dplyr::select(sample_id, cancer_group, OS_status, OS_days, PFS_days) %>%
   distinct()
 
 # read in tp53 scores
@@ -123,7 +117,6 @@ meta_indep <- meta_indep %>%
 
 # make non-HGAT the reference level
 meta_indep$hgg_group <- factor(meta_indep$hgg_group, levels = c("non-HGAT", "HGAT"))
-meta_indep$oncoprint_group <- factor(meta_indep$oncoprint_group, levels = c("Low-grade astrocytic tumor", "Diffuse astrocytic and oligodendroglial tumor", "Embryonal tumor", "Other CNS"))
 
 ```
 
@@ -131,7 +124,7 @@ meta_indep$oncoprint_group <- factor(meta_indep$oncoprint_group, levels = c("Low
 ### TP53 scores & Telomerase score - results
 ```{r Run Cox regression model for tp53 and telomerase for all covariates}
 # run the model with different covariates
-for(ind_var in c("tp53_score", "telomerase_score", "broad_histology_display", "oncoprint_group", "hgg_group")){
+for(ind_var in c("tp53_score", "telomerase_score", "hgg_group")){
   model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ", ind_var)
   
   fit <- survival::coxph(
@@ -170,49 +163,47 @@ for(ind_var in c("tp53_score", "telomerase_score", "broad_histology_display", "o
 ```
 
 ## Log Rank analysis 
-### Generate output for categorical files 
+### Generate output for categorical files - only hgg group is used  
 ```{r}
-ind_var_list <- c("hgg_group", "broad_histology_display", "oncoprint_group")
+# define the independent variable that we are using for analyzing survival
+ind_var <- "hgg_group"
 
-for(i in 1:length(ind_var_list)){
-  ind_var <- ind_var_list[i]
+# define model
+model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ", ind_var)
 
-  # define model
-  model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ", ind_var)
-  
-  # run survival analysis
-  fit <- survival::survdiff(formula(model),
-                            data = meta_indep)
-  # Obtain p value for Chi-Squared stat
-  fit$p.value <- pchisq(fit$chisq, df = length(fit$n) - 1, lower = FALSE)
-  
-  print(fit)
-  # save the output
-  saveRDS(fit, file.path(results_dir, paste0("log_rank_survival_per_", ind_var, ".RDS")))
-  
-  # generate plots fit
-  fit_plot <- survfit(formula(model), data = meta_indep)
-  
-  # output the plot
-  pdf(file.path(plots_dir, paste0("logrank_survival_per_", ind_var, ".pdf")))
-  plot_logrank <- survminer::ggsurvplot(fit_plot,
-                                        data=meta_indep,
-                                        xlim = c(0, 14),
-                                        break.time.by = 1,
-                                        pval = TRUE, 
-                                        conf.int = TRUE,
-                                        risk.table = TRUE, # Add risk table
-                                        linetype = "strata", # Change line type by groups
-                                        surv.median.line = "hv", # Specify median survival
-                                        ggtheme = theme_bw())
-  print(ggpar(plot_logrank[[1]], font.legend=6, legend="right"))
-  print(ggpar(plot_logrank[[2]], font.legend=6))
+# run survival analysis
+fit <- survival::survdiff(formula(model),
+                          data = meta_indep)
+# Obtain p value for Chi-Squared stat
+fit$p.value <- pchisq(fit$chisq, df = length(fit$n) - 1, lower = FALSE)
 
-  dev.off()
+print(fit)
+# save the output
+saveRDS(fit, file.path(results_dir, paste0("log_rank_survival_per_", ind_var, ".RDS")))
 
-  print(ggpar(plot_logrank[[1]], font.legend=6, legend="right"))
-  print(ggpar(plot_logrank[[2]], font.legend=6))
-}
+# generate plots fit
+fit_plot <- survfit(formula(model), data = meta_indep)
+
+# output the plot
+pdf(file.path(plots_dir, paste0("logrank_survival_per_", ind_var, ".pdf")))
+plot_logrank <- survminer::ggsurvplot(fit_plot,
+                                      data=meta_indep,
+                                      xlim = c(0, 14),
+                                      break.time.by = 1,
+                                      pval = TRUE, 
+                                      conf.int = TRUE,
+                                      risk.table = TRUE, # Add risk table
+                                      linetype = "strata", # Change line type by groups
+                                      surv.median.line = "hv", # Specify median survival
+                                      ggtheme = theme_bw())
+print(ggpar(plot_logrank[[1]], font.legend=6, legend="right"))
+print(ggpar(plot_logrank[[2]], font.legend=6))
+
+dev.off()
+
+print(ggpar(plot_logrank[[1]], font.legend=6, legend="right"))
+print(ggpar(plot_logrank[[2]], font.legend=6))
+
 
 ```
 
@@ -220,26 +211,28 @@ for(i in 1:length(ind_var_list)){
 ### Two comparisons made are `tp53_score + telomerase_score + hgg_group` and `tp53_score + telomerase_score + broad_histology_display`
 
 ```{r}
-for(ind_var in c("tp53_score+telomerase_score+hgg_group", "tp53_score+telomerase_score+broad_histology_display", "tp53_score+telomerase_score+oncoprint_group")){
-  model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ", ind_var)
-  
-  fit <- survival::coxph(
-        formula(model),
-        data = meta_indep
-      )
-  # generate output
-  table <- broom::tidy(fit) 
-  
-  # Save the table data in a TSV
-  readr::write_tsv(table, file.path(results_dir, paste0("cox_reg_results_per_", ind_var, ".tsv")))
-  
-  print(table)
-  
-  # output the plot
-  forest_coxph <- survminer::ggforest(fit, data = meta_indep)
-  print(forest_coxph)
-}
+# define multi-variates that we are using for analyzing survival
+ind_var <- "tp53_score+telomerase_score+hgg_group"
 
+# define model
+model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ", ind_var)
+
+fit <- survival::coxph(
+      formula(model),
+      data = meta_indep
+    )
+# generate output
+table <- broom::tidy(fit) 
+
+# Save the table data in a TSV
+readr::write_tsv(table, file.path(results_dir, paste0("cox_reg_results_per_", ind_var, ".tsv")))
+
+print(table)
+
+# output the plot
+forest_coxph <- survminer::ggforest(fit, data = meta_indep)
+print(forest_coxph)
+  
 ```
 
 ## Bivariate density plot of tp53 score and telomerase activity score stratified by HGG group
@@ -254,19 +247,6 @@ tp53_vs_telomerase +
 
 ```
 
-## Bivariate density plot of tp53 score and telomerase activity score stratified by oncoprint group
-```{r}
-
-tp53_vs_telomerase <- meta_indep %>% 
-  dplyr::filter(!is.na(oncoprint_group)) %>%
-                  ggplot(aes(x = tp53_score, y = telomerase_score))
-tp53_vs_telomerase + 
-  geom_density_2d(aes(color = oncoprint_group)) +
-  labs(subtitle = "Density stratified by oncoprint group") +
-  xlim(-0.1,1.2) +
-  theme_bw()
-
-```
 
 ## Session Info
 
