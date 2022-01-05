@@ -32,6 +32,11 @@ mkdir -p pdfs
 Rscript --vanilla scripts/color_palettes.R
 Rscript -e "rmarkdown::render('mapping-histology-labels.Rmd', clean = TRUE)"
 
+################ Sample distribution
+# Run sample distribution analysis
+bash ${analyses_dir}/sample-distribution-analysis/run-sample-distribution.sh
+
+# TODO: Rscript for figure (related: https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1175)
 
 ######################
 ## Interaction plots
@@ -77,14 +82,8 @@ bash ${analyses_dir}/oncoprint-landscape/run-oncoprint.sh
 # Will create two plots - primary only and "primary plus" samples
 filenames=(primary_only primary-plus)
 
-for filename in "${filenames[@]}"; do
-
-  ## Run the `oncoprint-landscape` figure assembly script
-  Rscript --vanilla scripts/oncoprint-landscape.R \
-    --lead_filename ${filename} \
-    --png_name pngs/${filename}_oncoprint_landscape.png
-
-done
+# Create single panel PDFs and legends
+Rscript --vanilla scripts/fig2-oncoprint-landscape.R
 
 ####### Telomerase Activities
 
