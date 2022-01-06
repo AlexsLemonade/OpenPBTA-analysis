@@ -88,9 +88,11 @@ merge <- merge %>%
 ```{r}
 # Fit linear regression and create plot label
 fit <- lm(sv_breaks_count ~ cnv_breaks_count, data = merge)
+corr <- sqrt(summary(fit)$adj.r.squared)
+pval <- summary(fit)$coef[2,4]
 fit_label <- paste0("Linear Regression of SV breaks on CNV breaks:\n",
-                   "Adj R2=", signif(summary(fit)$adj.r.squared, 3),
-                     ", P=", signif(summary(fit)$coef[2,4], 3))
+                   "Adjusted R = ", signif(corr, 3),
+                     ", P = ", signif(pval, 3))
 fit_label_grob <- grobTree(textGrob(fit_label, x=0.99, y=0.95, hjust=1))
 
 # Create scatterplot
