@@ -59,8 +59,6 @@ if (!dir.exists(plots_dir)) {
 
 ```{r define data path}
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
-indep_file <- file.path(data_dir,
-                         "independent-specimens.rnaseq.primary-plus-stranded.tsv")
 tp53_file <- file.path(analysis_dir, 
                         "tp53_nf1_score/results/tp53_altered_status.tsv")
 # only use stranded since tp53 scores for polyA did not have good accuracy
@@ -71,9 +69,6 @@ tel_stranded_file <- file.path(analysis_dir,
 ## Import the metadata
 
 ```{r Read in metadata}
-# read in histologies file
-indep_rna <- readr::read_tsv(indep_file)
-
 # remove cell lines by selecting only solid tissue
 histologies <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
   dplyr::filter(composition=="Solid Tissue" & tumor_descriptor == "Initial CNS Tumor") %>%
@@ -90,12 +85,13 @@ tel_scores <- readr::read_tsv(tel_stranded_file) %>%
         telomerase_score = NormEXTENDScores) %>%
  select(Kids_First_Biospecimen_ID_RNA, telomerase_score)
 
-# remove samples without RNA-Seq since both classifiers' results use RNA-Seq
-# independent use primary plus rna-seq samples
+# combine tp53 scores and telomerase score to the dataframe
 meta_indep <- tp53_scores %>%
   left_join(tel_scores) %>%
   left_join(histologies) %>%
-  dplyr::filter(Kids_First_Biospecimen_ID_RNA %in% indep_rna$Kids_First_Biospecimen_ID) %>%
+  # remove samples without RNA-Seq since both classifiers' results use RNA-Seq
+  dplyr::filter(!is.na(Kids_First_Biospecimen_ID_RNA)) %>%
+  dplyr::distinct(sample_id, .keep_all=TRUE) %>%
   # recode the categories - 
   # DECEASED maps to a survival event status of 1, LIVING maps to a censored observation with value 0
   dplyr::mutate(OS_status_fixed = case_when(
@@ -229,10 +225,11 @@ readr::write_tsv(table, file.path(results_dir, paste0("cox_reg_results_per_", in
 
 print(table)
 
-# output the plot
+# printout the plot
 forest_coxph <- survminer::ggforest(fit, data = meta_indep)
 print(forest_coxph)
-  
+
+
 ```
 
 ## Bivariate density plot of tp53 score and telomerase activity score stratified by HGG group
