@@ -1,41 +1,29 @@
----
-title: "TSNE figure generation"
-author: "Jo Lynne Rokita and Run Jin"
-date: "1/4/2022"
-output: html_notebook
----
+# Run Jin and Jo Lynne Rokita 
+#
+# Generate figures with UMAP results 
 
 ### Load libraries
-```{r setup, include=FALSE}
 library(ggplot2)
 library(tidyverse)
-library(RColorBrewer)
-
-# set seed for sampling
-set.seed(2022)
-```
 
 ### Define directory
-```{r}
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data", "release-v21-20210820")
-analysis_dir <- file.path(root_dir, "analyses", "tsne-figures")
+figure_script_dir <- file.path(root_dir, "figures", "scripts")
+dim_red_dir <- file.path(root_dir, "analysis", "transcriptomic-dimension-reduction")
 
 # define output directory
-plots_dir <- file.path(analysis_dir, "plots")
+plots_dir <- file.path(root_dir, "figures", "pdfs", "supp")
 if(!dir.exists(plots_dir)){
   dir.create(plots_dir, recursive = TRUE)
 }
 
 # source the function for generating plots
-source(file.path(analysis_dir, "utils", "generate_tsne_plot.R"))
-```
+source(file.path(dim_red_dir, "util", "dimension-reduction-functions.R"))
 
 ### read in files
-```{r}
-# data file
-dat <- readRDS(file.path(root_dir, "analyses", 
-                         "transcriptomic-dimension-reduction", 
+# UMAP data file
+dat <- readRDS(file.path(dim_red_dir, 
                          "plots", "plot_data",
                          "rsem_stranded_log_broad_histology_multiplot_list.RDS"))
 
@@ -43,30 +31,16 @@ dat <- readRDS(file.path(root_dir, "analyses",
 histology_df <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"), 
                                 guess_max = 10000)
 
-
-```
-
 ### get UMAP results 
-```{r}
 # extract UMAP results
 umap_results <- dat$UMAP$data %>%
   dplyr::select(Kids_First_Biospecimen_ID, X1, X2)
 umap_df <- umap_results %>%
   dplyr::inner_join(histology_df) %>%
   select(Kids_First_Biospecimen_ID, X1, X2, broad_histology, cancer_group, molecular_subtype)
-```
 
-### Get color palette
-```{r}
-# generate color list for heatmaps
-paired <- brewer.pal(n = 12, name = "Paired")
-dark <- brewer.pal(n = 8, name = "Dark2")
-col_vector <- c(paired, dark)
-
-```
 
 ### Plot for HGG
-```{r plot hgg}
 # for HGG and DMG that has molecular subypte, keep the molecular subtype 
 # for anything else, recode them as `Other CNS Tumor`
 umap_df_hgg <- umap_df %>%
@@ -76,13 +50,20 @@ umap_df_hgg <- umap_df %>%
     TRUE ~ "Other CNS tumor"
   ))
 
-# save the plots and output in the console
-p <- generate_tsne_plot(umap_df_hgg, "hgg", col_vector)
+# save the figure
+p <- plot_dimension_reduction(umap_df_hgg,
+                              point_color = "mol_alt",
+                              point_shape = "subtype_code",
+                              x_label = "Dimension 1",
+                              y_label = "Dimension 2",
+                              alpha_value = 0.3,
+                              color_palette = NULL)
+# save the figures
+pdf(file.path(plots_dir, "supp_umap_hgg.pdf"))
 print(p)
-```
+dev.off()
 
 ### Plot for LGAT
-```{r plot lgat}
 # for LGG, we consider LGG, GNG and GNT all as LGG and we remove the prefixes to lumps groups together
 # for anything else, recode them as `Other CNS Tumor`
 umap_df_lgg <- umap_df %>%
@@ -93,13 +74,20 @@ umap_df_lgg <- umap_df %>%
     TRUE ~ "Other CNS tumor"
   ))
 
-# save the plots and output in the console
-p <- generate_tsne_plot(umap_df_lgg, "lgg", col_vector)
+# save the figure
+p <- plot_dimension_reduction(umap_df_lgg,
+                              point_color = subtypes_to_plot,
+                              x_label = "Dimension 1",
+                              y_label = "Dimension 2",
+                              alpha_value = 0.3,
+                              color_palette = NULL)
+# save the figures
+pdf(file.path(plots_dir, "supp_umap_lgg.pdf"))
 print(p)
-```
+dev.off()
+
 
 ### Plot for MB 
-```{r plot mb}
 # for MB, we keep subtypes that are not `To be classfied` and recode everything else as `Other CNS Tumor`
 umap_df_mb <- umap_df %>%
   dplyr::mutate(subtypes_to_plot = case_when(
@@ -107,13 +95,19 @@ umap_df_mb <- umap_df %>%
     TRUE ~ "Other CNS tumor"
   ))
 
-# save the plots and output in the console
-p <- generate_tsne_plot(umap_df_mb, "mb", col_vector)
+# save the plot
+p <- plot_dimension_reduction(umap_df_mb,
+                              point_color = subtypes_to_plot,
+                              x_label = "Dimension 1",
+                              y_label = "Dimension 2",
+                              alpha_value = 0.3,
+                              color_palette = NULL)
+# save the figure
+pdf(file.path(plots_dir, "supp_umap_mb.pdf"))
 print(p)
-```
+dev.off()
 
 ### Plot for EPN
-```{r plot epn}
 # for EPN, we keep subtypes that are not `To be classfied` and recode everything else as `Other CNS Tumor`
 umap_df_epn <- umap_df %>%
   dplyr::mutate(subtypes_to_plot = case_when(
@@ -122,10 +116,15 @@ umap_df_epn <- umap_df %>%
   ))
 
 # save the plots and output in the console
-p <- generate_tsne_plot(umap_df_epn, "epn", col_vector)
+p <- plot_dimension_reduction(umap_df_epn,
+                              point_color = subtypes_to_plot,
+                              x_label = "Dimension 1",
+                              y_label = "Dimension 2",
+                              alpha_value = 0.3,
+                              color_palette = NULL)
+# save the figure
+pdf(file.path(plots_dir, "supp_umap_epn.pdf"))
 print(p)
-```
-```{r}
-sessionInfo()
-```
+dev.off()
+
 

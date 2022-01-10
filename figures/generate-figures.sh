@@ -130,6 +130,9 @@ Rscript --vanilla -e "rmarkdown::render('${analyses_dir}/gene-set-enrichment-ana
 # Step that generates the GSVA, UMAP, and legend panels
 Rscript --vanilla scripts/fig4-panels-gsva-umap.R
 
+# Step that generates UMAP for molecular analysis 
+Rscript --vanilla scripts/supp-subtype-umap.R
+
 ####### CN Status Heatmap
 if [ "$RUN_LOCAL" -lt "1" ]; then
 # Run consensus CNV so we have a refreshed `pbta-cnv-consensus.seg.gz` file
