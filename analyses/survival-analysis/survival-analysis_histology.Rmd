@@ -91,6 +91,7 @@ meta_indep <- tp53_scores %>%
   left_join(histologies) %>%
   # remove samples without RNA-Seq since both classifiers' results use RNA-Seq
   dplyr::filter(!is.na(Kids_First_Biospecimen_ID_RNA)) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID_RNA) %>%
   dplyr::distinct(sample_id, .keep_all=TRUE) %>%
   # recode the categories - 
   # DECEASED maps to a survival event status of 1, LIVING maps to a censored observation with value 0
