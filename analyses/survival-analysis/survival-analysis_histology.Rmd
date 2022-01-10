@@ -73,17 +73,20 @@ tel_stranded_file <- file.path(analysis_dir,
 histologies <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
   dplyr::filter(composition=="Solid Tissue" & tumor_descriptor == "Initial CNS Tumor") %>%
   dplyr::select(sample_id, cancer_group, OS_status, OS_days, PFS_days) %>%
-  distinct()
+  distinct() %>%
+  dplyr::arrange(sample_id)
 
 # read in tp53 scores
 tp53_scores <- readr::read_tsv(tp53_file) %>%
- select(Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA, sample_id, tp53_score)
+  select(Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA, sample_id, tp53_score) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID_RNA)
 
 # read in telomerase scores
 tel_scores <- readr::read_tsv(tel_stranded_file) %>%
- mutate(Kids_First_Biospecimen_ID_RNA = SampleID,
+  dplyr::mutate(Kids_First_Biospecimen_ID_RNA = SampleID,
         telomerase_score = NormEXTENDScores) %>%
- select(Kids_First_Biospecimen_ID_RNA, telomerase_score)
+  dplyr::select(Kids_First_Biospecimen_ID_RNA, telomerase_score) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID_RNA)
 
 # combine tp53 scores and telomerase score to the dataframe
 meta_indep <- tp53_scores %>%
