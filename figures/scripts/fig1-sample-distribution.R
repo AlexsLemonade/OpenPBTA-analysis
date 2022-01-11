@@ -60,6 +60,12 @@ tumor_descriptor_df <- histologies_df %>%
   filter(sample_type != "Normal",
          !is.na(tumor_descriptor),
          !is.na(cancer_group)) %>%
+  # Only count each sample ID once, not once for every assay (i.e., specimen)
+  select(sample_id,
+         broad_histology,
+         cancer_group,
+         tumor_descriptor) %>%
+  distinct() %>%
   # Count needs to include the tumor_descriptor
   count(broad_histology,
         cancer_group,
@@ -165,71 +171,36 @@ broad_histologies <- palette_df %>%
 
 #### Tumor descriptor stacked bar plots ----------------------------------------
 
-create_descriptor_plot <- function(broad_histology_label) {
+descriptor_plot <- tumor_descriptor_df %>%
+  # Order based on display order
+  mutate(broad_histology_display = factor(broad_histology_display,
+                                          levels = broad_histologies)) %>%
+  ggplot(aes(x = cancer_group_label,  # includes n
+             y = proportion,
+             fill = tumor_descriptor)) +
+  geom_bar(color = "#000000", position = "fill", stat = "identity") +
+  scale_fill_manual(values = tumor_descriptor_palette) +
+  facet_wrap(~ broad_histology_display,
+             nrow = 3,
+             scales = "free_x") +
+  theme_pubr() +
+  theme(axis.text.x = element_text(angle = 90,
+                                   vjust = 0.5,
+                                   hjust = 1),
+        plot.title = element_text(hjust = 0.5,
+                                  face = "bold",
+                                  size = 9),
+        axis.title.x = element_text(size = 18),
+        axis.title.y = element_text(size = 18)) +
+  labs(x = "Cancer Group",
+       y = "Proportion",
+       fill = "Tumor Descriptor")
 
-  # Create a stacked bar plot that shows the proportion of tumors in a cancer
-  # group in each tumor descriptor category
-  descriptor_plot <- tumor_descriptor_df %>%
-    filter(broad_histology_display == broad_histology_label) %>%
-    ggplot(aes(x = cancer_group_label,  # includes n
-               y = proportion,
-               fill = tumor_descriptor)) +
-    geom_bar(color = "#000000", position = "fill", stat = "identity") +
-    scale_fill_manual(values = tumor_descriptor_palette) +
-    theme_pubr() +
-    theme(axis.text.x = element_text(angle = 90,
-                                     vjust = 0.5,
-                                     hjust = 1),
-          plot.title = element_text(hjust = 0.5,
-                                    face = "bold",
-                                    size = 9)) +
-    labs(x = "",
-         y = "Proportion",
-         title = broad_histology_label) +
-    guides(fill = FALSE)
-
-}
-
-# Apply to each broad histology display group
-descriptor_plot_list <- purrr::map(broad_histologies,
-                                   ~ create_descriptor_plot(.x))
-
-# Using wrap_plots() with all 12 yields some bad results, so here we break
-# things up into single rows with 4 columns -- this could maybe be more elegant!
-descriptor_grid_list <- list()
-descriptor_grid_list[[1]] <- patchwork::wrap_plots(descriptor_plot_list[1:4],
-                                                   ncol = 4)
-descriptor_grid_list[[2]] <- patchwork::wrap_plots(descriptor_plot_list[5:8],
-                                                   ncol = 4)
-descriptor_grid_list[[3]] <- patchwork::wrap_plots(descriptor_plot_list[9:12],
-                                                   ncol = 4)
-
-# Save each panel of four separately, the file names are numbered
-purrr::iwalk(descriptor_grid_list,
-             ~ ggsave(filename = file.path(
-                          main_output_dir,
-                          paste0("tumor_descriptor_proportion_panel_",
-                          .y, ".pdf")),
-                      plot = .x,
-                      width = 14,
-                      height = 7))
-
-# Save the legend separately
-as_ggplot(get_legend(
-  tumor_descriptor_df %>%
-    filter(broad_histology_display == "Diffuse astrocytic and oligodendroglial tumor") %>%
-    ggplot(aes(x = cancer_group,
-               y = proportion,
-               fill = tumor_descriptor)) +
-    geom_bar(color = "#000000", position = "fill", stat = "identity") +
-    scale_fill_manual(values = tumor_descriptor_palette) +
-    theme_classic() +
-    labs(fill = "Tumor Type")
-)) %>%
-  ggsave(filename = file.path(main_output_dir, "tumor_descriptor_legend.pdf"),
-         height = 3,
-         width = 4)
-
+ggsave(filename = file.path(main_output_dir,
+                            "tumor_descriptor_proportion_panel.pdf"),
+       plot = descriptor_plot,
+       width = 14,
+       height = 21)
 
 #### Assay types bar plots -----------------------------------------------------
 
