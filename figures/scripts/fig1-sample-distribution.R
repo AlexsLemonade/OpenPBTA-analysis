@@ -12,7 +12,6 @@
 library(tidyverse)
 library(ggpubr)
 library(ggpattern)
-library(patchwork)
 
 #### Directories ---------------------------------------------------------------
 
