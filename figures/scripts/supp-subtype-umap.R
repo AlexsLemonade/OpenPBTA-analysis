@@ -10,7 +10,7 @@ library(tidyverse)
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data", "release-v21-20210820")
 figure_script_dir <- file.path(root_dir, "figures", "scripts")
-dim_red_dir <- file.path(root_dir, "analysis", "transcriptomic-dimension-reduction")
+dim_red_dir <- file.path(root_dir, "analyses", "transcriptomic-dimension-reduction")
 
 # define output directory
 plots_dir <- file.path(root_dir, "figures", "pdfs", "supp")
@@ -52,11 +52,12 @@ umap_df_hgg <- umap_df %>%
 
 # save the figure
 p <- plot_dimension_reduction(umap_df_hgg,
-                              point_color = "mol_alt",
-                              point_shape = "subtype_code",
+                              point_color = "subtypes_to_plot",
                               x_label = "Dimension 1",
                               y_label = "Dimension 2",
                               alpha_value = 0.3,
+                              score1 = 2,
+                              score2 = 3,
                               color_palette = NULL)
 # save the figures
 pdf(file.path(plots_dir, "supp_umap_hgg.pdf"))
@@ -76,10 +77,12 @@ umap_df_lgg <- umap_df %>%
 
 # save the figure
 p <- plot_dimension_reduction(umap_df_lgg,
-                              point_color = subtypes_to_plot,
+                              point_color = "subtypes_to_plot",
                               x_label = "Dimension 1",
                               y_label = "Dimension 2",
                               alpha_value = 0.3,
+                              score1 = 2,
+                              score2 = 3,
                               color_palette = NULL)
 # save the figures
 pdf(file.path(plots_dir, "supp_umap_lgg.pdf"))
@@ -97,10 +100,12 @@ umap_df_mb <- umap_df %>%
 
 # save the plot
 p <- plot_dimension_reduction(umap_df_mb,
-                              point_color = subtypes_to_plot,
+                              point_color = "subtypes_to_plot",
                               x_label = "Dimension 1",
                               y_label = "Dimension 2",
                               alpha_value = 0.3,
+                              score1 = 2,
+                              score2 = 3,
                               color_palette = NULL)
 # save the figure
 pdf(file.path(plots_dir, "supp_umap_mb.pdf"))
@@ -117,10 +122,12 @@ umap_df_epn <- umap_df %>%
 
 # save the plots and output in the console
 p <- plot_dimension_reduction(umap_df_epn,
-                              point_color = subtypes_to_plot,
+                              point_color = "subtypes_to_plot",
                               x_label = "Dimension 1",
                               y_label = "Dimension 2",
                               alpha_value = 0.3,
+                              score1 = 2,
+                              score2 = 3,
                               color_palette = NULL)
 # save the figure
 pdf(file.path(plots_dir, "supp_umap_epn.pdf"))
