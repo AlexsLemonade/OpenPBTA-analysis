@@ -160,7 +160,8 @@ experimental_strategy_df <- cancer_group_counts_df %>%
   )) %>%
   select(-broad_histology_n) %>%
   left_join(experimental_strategy_df) %>%
-  select(-broad_histology)
+  select(-broad_histology) %>%
+  ungroup()
 
 # We'll order the panels by the display order in the palettes data frame
 broad_histologies <- palette_df %>%
@@ -223,69 +224,54 @@ spacing_key <- c(
   `DNA-Seq` = 0.05
 )
 
-# Custom function for creating the assay stacked bar plot for each broad
-# histology category/label
-create_assay_stacked_bar <- function(broad_histology_label) {
-  # Create a bar plot that shows the sample size, where the stacked pattern
-  # shows the experimental strategy
-  exp_strat_plot <- experimental_strategy_df %>%
-    filter(broad_histology_display == broad_histology_label) %>%
-    ggplot(aes(x = cancer_group,
-               y = n)) +
-    geom_bar_pattern(aes(fill = cancer_group,
-                         pattern = experimental_strategy),
-                     color = "#666666",
-                     pattern_fill = "#FFFFFF",
-                     pattern_color = "#333333",
-                     pattern_alpha = 1,
-                     stat = "identity") +
-    geom_text(aes(y = y_coord,
-                  label = cancer_group_n)) +
-    scale_fill_manual(values = cancer_group_palette) +
-    scale_pattern_manual(values =  pattern_key) +
-    scale_pattern_density_manual(values = density_key) +
-    scale_pattern_spacing_manual(values = spacing_key) +
-    theme_pubr() +
-    theme(axis.text.x = element_text(angle = 90,
-                                     vjust = 0.5,
-                                     hjust = 1),
-          plot.title = element_text(hjust = 0.5,
-                                    face = "bold",
-                                    size = 9)) +
-    labs(x = "",
-         y = "Sample Size",
-         title = broad_histology_label) +
-    guides(pattern = FALSE,
-           fill = FALSE,
-           color = FALSE)
 
-}
+# Create a bar plot that shows the sample size, where the stacked pattern
+# shows the experimental strategy
+exp_strat_plot <- experimental_strategy_df %>%
+  # Order based on display order
+  mutate(broad_histology_display = factor(broad_histology_display,
+                                          levels = broad_histologies)) %>%
+  ggplot(aes(x = cancer_group,
+             y = n)) +
+  geom_bar_pattern(aes(fill = cancer_group,
+                       pattern = experimental_strategy),
+                   color = "#666666",
+                   pattern_fill = "#FFFFFF",
+                   pattern_color = "#333333",
+                   pattern_alpha = 1,
+                   stat = "identity") +
+  geom_text(aes(y = y_coord,
+                label = cancer_group_n)) +
+  scale_fill_manual(values = cancer_group_palette) +
+  scale_pattern_manual(values =  pattern_key) +
+  scale_pattern_density_manual(values = density_key) +
+  scale_pattern_spacing_manual(values = spacing_key) +
+  theme_pubr() +
+  facet_wrap(~ broad_histology_display,
+             nrow = 3,
+             scales = "free") +
+  theme(axis.text.x = element_text(angle = 90,
+                                   vjust = 0.5,
+                                   hjust = 1),
+        plot.title = element_text(hjust = 0.5,
+                                  face = "bold",
+                                  size = 9),
+        axis.title.x = element_text(size = 18),
+        axis.title.y = element_text(size = 18)) +
+  labs(x = "Cancer Group",
+       y = "Sample Size") +
+  guides(fill = FALSE,
+         color = FALSE,
+         pattern = FALSE)
 
-# Apply to each broad histology display group
-assay_type_plot_list <- purrr::map(broad_histologies,
-                                   ~ create_assay_stacked_bar(.x))
+# Save the assay type plot as a supplemental panel
+ggsave(filename = file.path(supp_output_dir, "assay_type_stacked_panel.pdf"),
+       plot = exp_strat_plot,
+       width = 14,
+       height = 21)
 
-# Using wrap_plots() with all 12 yields some bad results, so here we break
-# things up into single rows with 4 columns -- this could maybe be more elegant!
-assay_grid_list <- list()
-assay_grid_list[[1]] <- patchwork::wrap_plots(assay_type_plot_list[1:4],
-                                              ncol = 4)
-assay_grid_list[[2]] <- patchwork::wrap_plots(assay_type_plot_list[5:8],
-                                              ncol = 4)
-assay_grid_list[[3]] <- patchwork::wrap_plots(assay_type_plot_list[9:12],
-                                              ncol = 4)
-
-# Save each panel of four separately, the file names are numbered
-purrr::iwalk(assay_grid_list,
-             ~ ggsave(filename = file.path(
-                        supp_output_dir,
-                        paste0("assay_type_stacked_panel_",
-                       .y, ".pdf")),
-               plot = .x,
-               width = 14,
-               height = 7))
-
-
+# We need a little ore control over this legend to make sure the patterns are
+# legible
 as_ggplot(get_legend(
   experimental_strategy_df %>%
     filter(broad_histology_display == "Diffuse astrocytic and oligodendroglial tumor") %>%
