@@ -70,22 +70,15 @@ tel_stranded_file <- file.path(analysis_dir,
 
 ```{r Read in metadata}
 # get primary tumor and remove cell lines
-histologies <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
-  dplyr::filter(composition=="Solid Tissue" & tumor_descriptor == "Initial CNS Tumor") %>%
-  dplyr::select(Kids_First_Participant_ID, sample_id, cancer_group, OS_status, OS_days, PFS_days, experimental_strategy, RNA_library) %>%
+histologies_rna <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
+  dplyr::filter(composition=="Solid Tissue" & 
+                  tumor_descriptor == "Initial CNS Tumor" &
+                  experimental_strategy == "RNA-Seq" & 
+                  RNA_library == "stranded") %>%
+  dplyr::rename(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID) %>% 
+  dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID_RNA, cancer_group, OS_status, OS_days, PFS_days) %>%
   distinct() %>%
-  dplyr::arrange(sample_id)
-
-# get independent participants with primary tumor, RNA-Seq that is stranded
-indep_participants <- histologies %>%
-  dplyr::filter(experimental_strategy == "RNA-Seq" & RNA_library == "stranded") %>%
-  pull(Kids_First_Participant_ID) %>% 
-  unique()
-
-# filter histologies to remove unnecessary columns 
-histologies <- histologies %>% 
-  dplyr::select(-c(experimental_strategy, RNA_library)) %>%
-  distinct()
+  dplyr::arrange(Kids_First_Biospecimen_ID_RNA)
 
 # read in tp53 scores
 tp53_scores <- readr::read_tsv(tp53_file) %>%
@@ -94,19 +87,15 @@ tp53_scores <- readr::read_tsv(tp53_file) %>%
 
 # read in telomerase scores
 tel_scores <- readr::read_tsv(tel_stranded_file) %>%
-  dplyr::mutate(Kids_First_Biospecimen_ID_RNA = SampleID,
-        telomerase_score = NormEXTENDScores) %>%
-  dplyr::select(Kids_First_Biospecimen_ID_RNA, telomerase_score) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID_RNA = SampleID,
+                telomerase_score = NormEXTENDScores) %>%
   dplyr::arrange(Kids_First_Biospecimen_ID_RNA)
 
 # combine tp53 scores and telomerase score to the dataframe
-meta_indep <- tp53_scores %>%
-  left_join(tel_scores) %>%
-  left_join(histologies) %>% 
-  # remove samples without RNA-Seq since both classifiers' results use RNA-Seq
-  dplyr::filter(!is.na(Kids_First_Biospecimen_ID_RNA)) %>%
+meta_indep <- histologies_rna %>%
+  left_join(tp53_scores) %>%
+  left_join(tel_scores) %>% 
   dplyr::arrange(Kids_First_Biospecimen_ID_RNA) %>%
-  dplyr::filter(Kids_First_Participant_ID %in% indep_participants) %>%
   dplyr::distinct(Kids_First_Participant_ID, .keep_all=TRUE) %>%
   # recode the categories - 
   # DECEASED maps to a survival event status of 1, LIVING maps to a censored observation with value 0
