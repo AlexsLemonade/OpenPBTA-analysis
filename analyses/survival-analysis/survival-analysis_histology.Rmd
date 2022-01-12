@@ -1,0 +1,256 @@
+---
+title: "Survival analysis by TP53 and telomerase activity"
+output: html_notebook
+---
+
+This notebook will do the following survival analysis
+
+1. Univariate analysis 
+- TP53 classifier score (as a continuous variable)
+- EXTEND score (as a continuous variable)
+- Broad histology specified in the color palette file
+- HGG vs. non-HGG
+
+2. Multivariate analysis
+- TP53 classifier score, EXTEND score and HGG group
+- TP53 classifier score, EXTEND score and broad histology specified in the color palette file
+
+3. Plots
+- Bivariate distribution of TP53 classifier score and EXTEND score in density plot stratified by HGAT status
+
+## Setup
+
+#### Packages and functions
+
+Read in set up script.
+
+```{r Set up library}
+library(survival)
+library(dplyr)
+library(ggplot2)
+library(ggpubr)
+```
+
+#### Set up files and directories
+
+Set up output directories. 
+
+```{r Set up directories}
+data_dir <- file.path("..", "..", "data")
+analysis_dir <- file.path("..", "..", "analyses")
+figure_dir <- file.path("..", "..", "figures")
+
+results_dir <- "results"
+plots_dir <- "plots"
+```
+
+Make output directories.
+
+```{r Make output directories}
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir)
+}
+```
+
+## Declare the direcotry for all the data to be used 
+
+```{r define data path}
+metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+tp53_file <- file.path(analysis_dir, 
+                        "tp53_nf1_score/results/tp53_altered_status.tsv")
+# only use stranded since tp53 scores for polyA did not have good accuracy
+tel_stranded_file <- file.path(analysis_dir,
+                         "telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt")
+```
+
+## Import the metadata
+
+```{r Read in metadata}
+# remove cell lines by selecting only solid tissue
+histologies <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
+  dplyr::filter(composition=="Solid Tissue" & tumor_descriptor == "Initial CNS Tumor") %>%
+  dplyr::select(sample_id, cancer_group, OS_status, OS_days, PFS_days) %>%
+  distinct() %>%
+  dplyr::arrange(sample_id)
+
+# read in tp53 scores
+tp53_scores <- readr::read_tsv(tp53_file) %>%
+  select(Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA, sample_id, tp53_score) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID_RNA)
+
+# read in telomerase scores
+tel_scores <- readr::read_tsv(tel_stranded_file) %>%
+  dplyr::mutate(Kids_First_Biospecimen_ID_RNA = SampleID,
+        telomerase_score = NormEXTENDScores) %>%
+  dplyr::select(Kids_First_Biospecimen_ID_RNA, telomerase_score) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID_RNA)
+
+# combine tp53 scores and telomerase score to the dataframe
+meta_indep <- tp53_scores %>%
+  left_join(tel_scores) %>%
+  left_join(histologies) %>%
+  # remove samples without RNA-Seq since both classifiers' results use RNA-Seq
+  dplyr::filter(!is.na(Kids_First_Biospecimen_ID_RNA)) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID_RNA) %>%
+  dplyr::distinct(sample_id, .keep_all=TRUE) %>%
+  # recode the categories - 
+  # DECEASED maps to a survival event status of 1, LIVING maps to a censored observation with value 0
+  dplyr::mutate(OS_status_fixed = case_when(
+    OS_status == "LIVING" ~ 0,
+    OS_status == "DECEASED" ~1
+ )) %>% 
+  dplyr::mutate(OS_years = OS_days / 365.25)
+
+```
+ 
+### Categorical variable cancer group and HGG or not 
+```{r}
+# separate into HGG or non-HGG
+meta_indep <- meta_indep %>% 
+  dplyr::mutate(hgg_group = case_when(
+    cancer_group %in% c("High-grade glioma astrocytoma", "Diffuse midline glioma", "Diffuse intrinsic pontine glioma") ~ "HGAT",
+    !cancer_group %in% c("High-grade glioma astrocytoma", "Diffuse midline glioma", "Diffuse intrinsic pontine glioma") ~ "non-HGAT"
+  ))
+
+# make non-HGAT the reference level
+meta_indep$hgg_group <- factor(meta_indep$hgg_group, levels = c("non-HGAT", "HGAT"))
+
+```
+
+## Cox Regression 
+### TP53 scores & Telomerase score - results
+```{r Run Cox regression model for tp53 and telomerase for all covariates}
+# run the model with different covariates
+for(ind_var in c("tp53_score", "telomerase_score", "hgg_group")){
+  model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ", ind_var)
+  
+  fit <- survival::coxph(
+        formula(model),
+        data = meta_indep
+      )
+  # generate output
+  table <- broom::tidy(fit) 
+  
+  # Save the table data in a TSV
+  readr::write_tsv(table, file.path(results_dir, paste0("cox_reg_results_per_", ind_var, ".tsv")))
+  
+  print(table)
+  
+  # output the plot
+  pdf(file.path(plots_dir, paste0("coxph_survival_per_", ind_var, ".pdf")))
+  plot_coxph <- survminer::ggsurvplot(survfit(fit),
+                                      data=meta_indep,
+                                      xlim = c(0, 14),
+                                      break.time.by = 1,
+                                      pval = TRUE, 
+                                      conf.int = TRUE,
+                                      risk.table = TRUE, # Add risk table
+                                      linetype = "strata", # Change line type by groups
+                                      surv.median.line = "hv", # Specify median survival
+                                      ggtheme = theme_bw())
+  print(ggpar(plot_coxph[[1]], font.legend=6, legend="right"))
+  print(ggpar(plot_coxph[[2]], font.legend=6))
+
+  dev.off()
+
+  print(ggpar(plot_coxph[[1]], font.legend=6, legend="right"))
+  print(ggpar(plot_coxph[[2]], font.legend=6))
+}
+
+```
+
+## Log Rank analysis 
+### Generate output for categorical files - only hgg group is used  
+```{r}
+# define the independent variable that we are using for analyzing survival
+ind_var <- "hgg_group"
+
+# define model
+model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ", ind_var)
+
+# run survival analysis
+fit <- survival::survdiff(formula(model),
+                          data = meta_indep)
+# Obtain p value for Chi-Squared stat
+fit$p.value <- pchisq(fit$chisq, df = length(fit$n) - 1, lower = FALSE)
+
+print(fit)
+# save the output
+saveRDS(fit, file.path(results_dir, paste0("log_rank_survival_per_", ind_var, ".RDS")))
+
+# generate plots fit
+fit_plot <- survfit(formula(model), data = meta_indep)
+
+# output the plot
+pdf(file.path(plots_dir, paste0("logrank_survival_per_", ind_var, ".pdf")))
+plot_logrank <- survminer::ggsurvplot(fit_plot,
+                                      data=meta_indep,
+                                      xlim = c(0, 14),
+                                      break.time.by = 1,
+                                      pval = TRUE, 
+                                      conf.int = TRUE,
+                                      risk.table = TRUE, # Add risk table
+                                      linetype = "strata", # Change line type by groups
+                                      surv.median.line = "hv", # Specify median survival
+                                      ggtheme = theme_bw())
+print(ggpar(plot_logrank[[1]], font.legend=6, legend="right"))
+print(ggpar(plot_logrank[[2]], font.legend=6))
+
+dev.off()
+
+print(ggpar(plot_logrank[[1]], font.legend=6, legend="right"))
+print(ggpar(plot_logrank[[2]], font.legend=6))
+
+
+```
+
+## Multivariate analysis 
+### Two comparisons made are `tp53_score + telomerase_score + hgg_group` and `tp53_score + telomerase_score + broad_histology_display`
+
+```{r}
+# define multi-variates that we are using for analyzing survival
+ind_var <- "tp53_score+telomerase_score+hgg_group"
+
+# define model
+model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ", ind_var)
+
+fit <- survival::coxph(
+      formula(model),
+      data = meta_indep
+    )
+# generate output
+table <- broom::tidy(fit) 
+
+# Save the table data in a TSV
+readr::write_tsv(table, file.path(results_dir, paste0("cox_reg_results_per_", ind_var, ".tsv")))
+
+print(table)
+
+# printout the plot
+forest_coxph <- survminer::ggforest(fit, data = meta_indep)
+print(forest_coxph)
+
+
+```
+
+## Bivariate density plot of tp53 score and telomerase activity score stratified by HGG group
+```{r}
+
+tp53_vs_telomerase <- ggplot(meta_indep, aes(x = tp53_score, y = telomerase_score))
+tp53_vs_telomerase + 
+  geom_density_2d(aes(color = hgg_group)) +
+  labs(subtitle = "Density stratified by HGG group") +
+  xlim(-0.1,1.2) +
+  theme_bw()
+
+```
+
+
+## Session Info
+
+```{r Print session info}
+sessionInfo()
+```

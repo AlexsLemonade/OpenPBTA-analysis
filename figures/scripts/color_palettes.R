@@ -97,7 +97,7 @@ divergent_df <- data.frame(color_names = divergent_color_names,
 # col_fun <- circlize::colorRamp2(divergent_col_val,
 #                                 divergent_col_palette)
 
-### 4) A binary color key which are the most extreme colors in the divergent color scale. 
+### 4) A binary color key which are the most extreme colors in the divergent color scale.
 binary_col_palette <- c("#2166ac",
                         "#b2182b",
                          na_color)
@@ -124,14 +124,16 @@ oncoprint_col_palette <- c("#35978f",
                            "#CC79A7",
                            "#56B4E9",
                            "#7B68EE",
-                           "#00F021",
+                           "#CCCCCC",
                            "#313695",
                            "#abd9e9",
+                           "#386db0",
                            "#c51b7d",
-                           "#0072B2",
-                           "#D55E00",
-                           "#FF0000",
-                           "#CD96CD")
+                           "#CD96CD",
+                           "#5ea4fe",
+                           "#7CCBAC",
+                           "#FD8344",
+                           "#571242")
 
 oncoprint_color_names <- c("Missense_Mutation",
                            "Nonsense_Mutation",
@@ -148,11 +150,13 @@ oncoprint_color_names <- c("Missense_Mutation",
                            "Multi_Hit",
                            "Hom_Deletion",
                            "Hem_Deletion",
-                           "amplification",
-                           "loss",
-                           "gain",
-                           "High_Level_Gain",
-                           "Multi_Hit_Fusion")
+                           "Del",
+                           "Amp",
+                           "Multi_Hit_Fusion",
+                           "Intron",
+                           "5'Flank",
+                           "3'Flank",
+                           "Complex_Event")
 
 # Format as data.frame
 oncoprint_df <- data.frame(color_names = oncoprint_color_names,
@@ -179,7 +183,7 @@ oncoprint_df <- data.frame(color_names = oncoprint_color_names,
   # Cat this out
   cat(swatches)
  }
- 
+
  # Format as data.frame
  tumor_descriptor_palette <- data.frame(color_names = c("Initial CNS Tumor",
                                                         "Progressive",
@@ -192,7 +196,7 @@ oncoprint_df <- data.frame(color_names = oncoprint_color_names,
                                                       "#FD8CC1FF",
                                                       "#FD7446FF")) %>%
    readr::write_tsv(file.path(output_dir, "tumor_descriptor_palette.tsv"))
- 
+
 #
 # Usage:
 # Put whichever color palette you are updating into function.
