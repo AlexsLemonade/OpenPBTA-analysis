@@ -93,8 +93,9 @@ tel_scores <- readr::read_tsv(tel_stranded_file) %>%
 
 # combine tp53 scores and telomerase score to the dataframe
 meta_indep <- histologies_rna %>%
-  left_join(tp53_scores) %>%
-  left_join(tel_scores) %>% 
+  # add tp53 and telomerase scores by matching Kids_First_Biospecimen_ID_RNA
+  left_join(tp53_scores, by = "Kids_First_Biospecimen_ID_RNA") %>%
+  left_join(tel_scores, by = "Kids_First_Biospecimen_ID_RNA") %>% 
   dplyr::arrange(Kids_First_Biospecimen_ID_RNA) %>%
   dplyr::distinct(Kids_First_Participant_ID, .keep_all=TRUE) %>%
   # recode the categories - 
@@ -210,7 +211,7 @@ print(ggpar(plot_logrank[[2]], font.legend=6))
 ```
 
 ## Multivariate analysis 
-### Two comparisons made are `tp53_score + telomerase_score + hgg_group` and `tp53_score + telomerase_score + broad_histology_display`
+### Comparison made is `tp53_score + telomerase_score + hgg_group` 
 
 ```{r}
 # define multi-variates that we are using for analyzing survival
@@ -237,6 +238,51 @@ print(forest_coxph)
 
 
 ```
+
+### Further we want to separate to HGAT and non-HGAT and see how tp53 and telomerase affect survival in each group
+```{r}
+# get two separate groups
+meta_indep_hgg <- meta_indep %>% dplyr::filter(hgg_group == "HGAT")
+meta_indep_non_hgg <- meta_indep %>% dplyr::filter(hgg_group == "non-HGAT")
+
+# define a list to iterate through
+meta_list <- list(meta_indep_hgg, meta_indep_non_hgg)
+names(meta_list) <- c("hgg", "non_hgg")
+
+# define multi-variates that we are using for analyzing survival
+ind_var <- "tp53_score+telomerase_score"
+# define model
+model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ", ind_var)
+
+for(i in 1:length(meta_list)){
+  # find the meta file
+  meta_df <- meta_list[[i]]
+  
+  fit <- survival::coxph(
+      formula(model),
+      data = meta_df
+    )
+  # generate output
+  table <- broom::tidy(fit) 
+  
+  #names of subgroup
+  subgroup <- names(meta_list[i])
+  
+  # Save the table data in a TSV
+  readr::write_tsv(table, file.path(results_dir, paste0("cox_reg_results_per_", ind_var, "_in_", subgroup, ".tsv")))
+  
+  print(table)
+  
+  # printout the plot
+  forest_coxph <- survminer::ggforest(fit, data = meta_df)
+  print(forest_coxph)
+}
+
+
+```
+
+
+
 
 ## Bivariate density plot of tp53 score and telomerase activity score stratified by HGG group
 ```{r}
