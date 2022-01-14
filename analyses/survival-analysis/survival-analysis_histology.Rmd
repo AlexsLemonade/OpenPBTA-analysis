@@ -69,12 +69,16 @@ tel_stranded_file <- file.path(analysis_dir,
 ## Import the metadata
 
 ```{r Read in metadata}
-# remove cell lines by selecting only solid tissue
-histologies <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
-  dplyr::filter(composition=="Solid Tissue" & tumor_descriptor == "Initial CNS Tumor") %>%
-  dplyr::select(sample_id, cancer_group, OS_status, OS_days, PFS_days) %>%
+# get primary tumor and remove cell lines
+histologies_rna <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
+  dplyr::filter(composition=="Solid Tissue" & 
+                  tumor_descriptor == "Initial CNS Tumor" &
+                  experimental_strategy == "RNA-Seq" & 
+                  RNA_library == "stranded") %>%
+  dplyr::rename(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID) %>% 
+  dplyr::select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID_RNA, cancer_group, OS_status, OS_days, PFS_days) %>%
   distinct() %>%
-  dplyr::arrange(sample_id)
+  dplyr::arrange(Kids_First_Biospecimen_ID_RNA)
 
 # read in tp53 scores
 tp53_scores <- readr::read_tsv(tp53_file) %>%
@@ -83,19 +87,17 @@ tp53_scores <- readr::read_tsv(tp53_file) %>%
 
 # read in telomerase scores
 tel_scores <- readr::read_tsv(tel_stranded_file) %>%
-  dplyr::mutate(Kids_First_Biospecimen_ID_RNA = SampleID,
-        telomerase_score = NormEXTENDScores) %>%
-  dplyr::select(Kids_First_Biospecimen_ID_RNA, telomerase_score) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID_RNA = SampleID,
+                telomerase_score = NormEXTENDScores) %>%
   dplyr::arrange(Kids_First_Biospecimen_ID_RNA)
 
 # combine tp53 scores and telomerase score to the dataframe
-meta_indep <- tp53_scores %>%
-  left_join(tel_scores) %>%
-  left_join(histologies) %>%
-  # remove samples without RNA-Seq since both classifiers' results use RNA-Seq
-  dplyr::filter(!is.na(Kids_First_Biospecimen_ID_RNA)) %>%
+meta_indep <- histologies_rna %>%
+  # add tp53 and telomerase scores by matching Kids_First_Biospecimen_ID_RNA
+  left_join(tp53_scores, by = "Kids_First_Biospecimen_ID_RNA") %>%
+  left_join(tel_scores, by = "Kids_First_Biospecimen_ID_RNA") %>% 
   dplyr::arrange(Kids_First_Biospecimen_ID_RNA) %>%
-  dplyr::distinct(sample_id, .keep_all=TRUE) %>%
+  dplyr::distinct(Kids_First_Participant_ID, .keep_all=TRUE) %>%
   # recode the categories - 
   # DECEASED maps to a survival event status of 1, LIVING maps to a censored observation with value 0
   dplyr::mutate(OS_status_fixed = case_when(
@@ -104,6 +106,7 @@ meta_indep <- tp53_scores %>%
  )) %>% 
   dplyr::mutate(OS_years = OS_days / 365.25)
 
+nrow(meta_indep)
 ```
  
 ### Categorical variable cancer group and HGG or not 
@@ -208,7 +211,7 @@ print(ggpar(plot_logrank[[2]], font.legend=6))
 ```
 
 ## Multivariate analysis 
-### Two comparisons made are `tp53_score + telomerase_score + hgg_group` and `tp53_score + telomerase_score + broad_histology_display`
+### Comparison made is `tp53_score + telomerase_score + hgg_group` 
 
 ```{r}
 # define multi-variates that we are using for analyzing survival
@@ -235,6 +238,51 @@ print(forest_coxph)
 
 
 ```
+
+### Further we want to separate to HGAT and non-HGAT and see how tp53 and telomerase affect survival in each group
+```{r}
+# get two separate groups
+meta_indep_hgg <- meta_indep %>% dplyr::filter(hgg_group == "HGAT")
+meta_indep_non_hgg <- meta_indep %>% dplyr::filter(hgg_group == "non-HGAT")
+
+# define a list to iterate through
+meta_list <- list(meta_indep_hgg, meta_indep_non_hgg)
+names(meta_list) <- c("hgg", "non_hgg")
+
+# define multi-variates that we are using for analyzing survival
+ind_var <- "tp53_score+telomerase_score"
+# define model
+model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ", ind_var)
+
+for(i in 1:length(meta_list)){
+  # find the meta file
+  meta_df <- meta_list[[i]]
+  
+  fit <- survival::coxph(
+      formula(model),
+      data = meta_df
+    )
+  # generate output
+  table <- broom::tidy(fit) 
+  
+  #names of subgroup
+  subgroup <- names(meta_list[i])
+  
+  # Save the table data in a TSV
+  readr::write_tsv(table, file.path(results_dir, paste0("cox_reg_results_per_", ind_var, "_in_", subgroup, ".tsv")))
+  
+  print(table)
+  
+  # printout the plot
+  forest_coxph <- survminer::ggforest(fit, data = meta_df)
+  print(forest_coxph)
+}
+
+
+```
+
+
+
 
 ## Bivariate density plot of tp53 score and telomerase activity score stratified by HGG group
 ```{r}
