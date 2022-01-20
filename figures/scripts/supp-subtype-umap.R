@@ -38,23 +38,14 @@ umap_df <- umap_results %>%
   select(Kids_First_Biospecimen_ID, X1, X2, broad_histology, cancer_group, molecular_subtype)
 
 # possible colors for the palette
-subtype_palette <- c("#4d2635",
-                     "#bf0099",
-                     "#ff40d9",
-                     "#ffccf5",
-                     "#4d0d85",
-                     "#b08ccf",
-                     "#a340ff",
-                     "#2200ff",
-                     "#058aff",
-                     "#8c8cff",
-                     "#000080",
-                     "#2db398",
-                     "#9fbf60",
-                     "#614e01",
-                     "#e6ac39",
-                     "#ab7200",
-                     "#b33000")
+palette_OkabeIto <- c("#E69F00", 
+                      "#56B4E9", 
+                      "#009E73", 
+                      "#F0E442", 
+                      "#0072B2", 
+                      "#D55E00", 
+                      "#CC79A7", 
+                      "#999999")
 
 ### Plot for HGG
 # for HGG and DMG that has molecular subypte, keep the molecular subtype 
@@ -92,7 +83,7 @@ p <- plot_dimension_reduction(umap_df_hgg,
                               alpha_value = 0.7,
                               score1 = 2,
                               score2 = 3,
-                              color_palette = c(sample(subtype_palette, 4), "#656565", "#a9a9a9"))
+                              color_palette = c(sample(palette_OkabeIto, 4), "#656565", "#a9a9a9"))
 # save the figures
 pdf(file.path(plots_dir, "supp_umap_hgg.pdf"))
 print(p)
@@ -121,39 +112,44 @@ umap_df_lgg <- umap_df %>%
     grepl("-germline", subtypes_to_plot) & !grepl("-somatic", subtypes_to_plot) ~ gsub("-germline", "", subtypes_to_plot),
     grepl("-somatic, NF1-germline", subtypes_to_plot) ~ gsub("-somatic, NF1-germline", "", subtypes_to_plot),
     TRUE ~ subtypes_to_plot
+  )) %>% 
+  group_by(lgat_subtypes) %>% 
+  dplyr::mutate(sample_n = n()) %>% 
+  dplyr::mutate(colored_subtype = case_when(
+    sample_n < 10 ~ "Other LGAT subtypes", 
+    TRUE ~ lgat_subtypes
+  )) %>% 
+  dplyr::mutate(labels_subtype = case_when(
+    sample_n < 10 ~ lgat_subtypes,
+    TRUE ~ NA_character_
   ))
 
 # reorder the levels for plotting
 umap_df_lgg$cdkn_status <- factor(umap_df_lgg$cdkn_status, levels = c("not altered",
                                                                       "altered"))
 
-umap_df_lgg$lgat_subtypes <- factor(umap_df_lgg$lgat_subtypes, levels = c("BRAF V600E",
-                                                                          "FGFR",
-                                                                          "H3",
-                                                                          "IDH",
-                                                                          "KIAA1549-BRAF",
-                                                                          "KIAA1549-BRAF, other MAPK",
-                                                                          "MYB/MYBL1",
-                                                                          "NF1",
-                                                                          "NF1, FGFR",
-                                                                          "other MAPK",
-                                                                          "other MAPK, FGFR",
-                                                                          "other MAPK, IDH",
-                                                                          "RTK",
-                                                                          "wildtype",
-                                                                          "To be classified",
-                                                                          "Other CNS tumor"))
+umap_df_lgg$colored_subtype <- factor(umap_df_lgg$colored_subtype, levels = c("BRAF V600E",
+                                                                              "KIAA1549-BRAF",
+                                                                              "NF1",
+                                                                              "other MAPK",
+                                                                              "RTK",
+                                                                              "wildtype",
+                                                                              "Other LGAT subtypes",
+                                                                              "To be classified",
+                                                                              "Other CNS tumor"))
+# generate a plot
+p <- ggplot(umap_df_lgg, aes(x = X1,
+                             y = X2,
+                             color = colored_subtype,
+                             shape = cdkn_status)) +
+  ggplot2::scale_color_manual(values = c(sample(palette_OkabeIto, 6), "#000000", "#656565", "#a9a9a9")) + 
+  ggplot2::geom_point(alpha = 0.7) +
+  ggplot2::labs(x = "Dimension 1", y = "Dimension 2") +
+  ggplot2::theme_bw() + 
+  ggrepel::geom_text_repel(aes(label = labels_subtype),
+                           size = 2)
+
 # save the figure
-p <- plot_dimension_reduction(umap_df_lgg,
-                              point_color = "lgat_subtypes",
-                              point_shape = "cdkn_status",
-                              x_label = "Dimension 1",
-                              y_label = "Dimension 2",
-                              alpha_value = 0.7,
-                              score1 = 2,
-                              score2 = 3,
-                              color_palette = c(sample(subtype_palette, 14), "#656565", "#a9a9a9"))
-# save the figures
 pdf(file.path(plots_dir, "supp_umap_lgg.pdf"))
 print(p)
 dev.off()
@@ -182,7 +178,7 @@ p <- plot_dimension_reduction(umap_df_mb,
                               alpha_value = 0.7,
                               score1 = 2,
                               score2 = 3,
-                              color_palette = c(sample(subtype_palette, 4), "#656565", "#a9a9a9"))
+                              color_palette = c(sample(palette_OkabeIto, 4), "#656565", "#a9a9a9"))
 # save the figure
 pdf(file.path(plots_dir, "supp_umap_mb.pdf"))
 print(p)
@@ -211,7 +207,7 @@ p <- plot_dimension_reduction(umap_df_epn,
                               alpha_value = 0.7,
                               score1 = 2,
                               score2 = 3,
-                              color_palette = c(sample(subtype_palette, 4), "#656565", "#a9a9a9"))
+                              color_palette = c(sample(palette_OkabeIto, 4), "#656565", "#a9a9a9"))
 # save the figure
 pdf(file.path(plots_dir, "supp_umap_epn.pdf"))
 print(p)
