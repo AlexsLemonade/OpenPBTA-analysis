@@ -403,6 +403,8 @@ RUN apt-get -y --no-install-recommends install \
 # CNS signatures can be obtained from signature.tools.lib
 RUN R -e "remotes::install_github('Nik-Zainal-Group/signature.tools.lib', ref = '73e899c9090a215a76a307480bda76c241a4a489')"
 
+# Patterned geoms
+RUN R -e "remotes::install_github('coolbutuseless/ggpattern', ref = '390e13fead028ba240eae9293a5ef422df02bc8e')"
 
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
