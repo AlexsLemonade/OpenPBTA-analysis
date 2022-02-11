@@ -57,7 +57,9 @@ We should perform some minimal checking to make sure the provided release is _at
 ```{r}
 minimum_allowed_release <- 21
 release_version <- as.numeric(stringr::str_match(params$release, "-v(\\d+)-")[[2]])
-stopifnot(release_version >= minimum_allowed_release)
+if (release_version < minimum_allowed_release) {
+  stop("This notebook should only be used with data release version 21 or above.")
+}
 ```
 
 ### Directories and Files
