@@ -3,13 +3,11 @@ jobs:
   run_analyses:
     machine:
       image: ubuntu-2004:202201-02
+      docker_layer_caching: true
     resource_class: large
     working_directory: ~/OpenPBTA-analysis
     steps:
       - checkout
-      
-      - setup_remote_docker:
-          docker_layer_caching: true
 
       - run:
           name: Data Download
