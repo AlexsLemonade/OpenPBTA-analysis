@@ -63,7 +63,7 @@ fit1 <- sigfit::fit_signatures(counts = sigs_input,
                                seed = 42, 
                                model = "poisson") # Highly similar performance to nmf and MUCH more efficient
 
-fit1_exposures <- sigfit::retrieve_pars(fit, par = "exposures") # extract exposures for saving
+fit1_exposures <- sigfit::retrieve_pars(fit1, par = "exposures") # extract exposures for saving
 readr::write_rds(fit1_exposures, sigfit_fitted_file, compress = "gz")
 
 # Use deconstructSigs to determine exposures to known CNS and save -------------------------
