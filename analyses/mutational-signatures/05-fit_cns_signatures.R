@@ -1,6 +1,7 @@
 # Load libraries -------------------------------------------
 library(optparse)
 library(signature.tools.lib) # contains the signal signatures
+`%>%` <- dplyr::`%>%`
 
 # Set up command line options -------------------------------
 option_list <- list(
