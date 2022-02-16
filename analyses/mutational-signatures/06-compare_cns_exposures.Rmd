@@ -24,7 +24,7 @@ analysis_path <- file.path(proj_root_path, "analyses", "mutational-signatures")
 
 # Fitted files:
 sigfit_fitted_file <- file.path(analysis_path, "results", "fitted_exposures_signal-cns_sigfit.rds")
-decon_fitted_file  <- file.path(analysis_path, "results", "fitted_exposures_signal-cns-deconstructSigs.RDS")
+decon_fitted_file  <- file.path(analysis_path, "results", "fitted_exposures_signal-cns_deconstructSigs.rds")
 
 ```
 
@@ -43,19 +43,19 @@ decon_rds <- readr::read_rds(decon_fitted_file)
 
 # sigfit mean exposures into a tibble
 sigfit_mean <- sigfit_rds$mean
-sigfit_mean %>%
+sigfit_exposures <- sigfit_mean %>%
   as.data.frame() %>%
   tibble::rownames_to_column("sample_id") %>%
   tibble::as_tibble()  %>%
-  dplyr::mutate(type = "sigfit") -> sigfit_exposures
+  dplyr::mutate(type = "sigfit")
 
 
 # deconstructSigs means exposures into a tibble
-lapply(decon_rds, "[[", "weights") -> decon_mean
-do.call(rbind, decon_mean) %>%
+decon_mean <- lapply(decon_rds, "[[", "weights")
+decon_exposures <- do.call(rbind, decon_mean) %>%
   tibble::rownames_to_column("sample_id") %>%
   tibble::as_tibble() %>%
-  dplyr::mutate(type = "decon") -> decon_exposures
+  dplyr::mutate(type = "decon")
 ```
 
 
@@ -65,19 +65,19 @@ Now we compare the results of the two methods. Overall, they are reasonable cons
 ```{r compare-methods}
 
 # wrangle to combine data
-dplyr::full_join(sigfit_exposures, decon_exposures) %>%
+data_compare_types <- dplyr::full_join(sigfit_exposures, decon_exposures) %>%
   tidyr::gather(-sample_id, -type, key = "signature", value = "weight") %>%
-  tidyr::spread(key = "type", value = "weight") -> data_compare_types
+  tidyr::spread(key = "type", value = "weight") 
 
 # Create a second column for sigfit FILTERED to recommended >0.01 lower bound
 lower_bound <- sigfit_rds$lower_95 
-lower_bound %>%
+data_compare_types <- lower_bound %>%
   as.data.frame() %>%
   tibble::rownames_to_column("sample_id") %>%
   tibble::as_tibble() %>%
   tidyr::gather(-sample_id, key = "signature", value = "sigfit_lb") %>%
   dplyr::right_join(data_compare_types) %>%
-  dplyr::mutate(sigfit_lb_OK = sigfit_lb >= 0.01) -> data_compare_types
+  dplyr::mutate(sigfit_lb_OK = sigfit_lb >= 0.01)
 
 ```
 
@@ -111,8 +111,8 @@ If we _do_ change the `sigfit` according to 0.01 lower bound recommendation, we 
 
 ```{r scatter2}
 
-data_compare_types %>%
-  dplyr::mutate(sigfit = dplyr::if_else(sigfit_lb_OK, sigfit, 0)) -> data_compare_types_filter
+data_compare_types_filter <- data_compare_types %>%
+  dplyr::mutate(sigfit = dplyr::if_else(sigfit_lb_OK, sigfit, 0))
 
 data_compare_types_filter %>%
   ggplot2::ggplot() + 

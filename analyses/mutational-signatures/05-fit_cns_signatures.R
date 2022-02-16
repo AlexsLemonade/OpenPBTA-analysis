@@ -35,7 +35,7 @@ analysis_path <- file.path(proj_root_path, "analyses", "mutational-signatures")
 maf_file <- file.path(proj_root_path, "data", "pbta-snv-consensus-mutation.maf.tsv.gz") # We consider _all_ WGS and WES mutations here
 # Output files:
 sigfit_fitted_file <- file.path(analysis_path, "results", "fitted_exposures_signal-cns_sigfit.rds")
-decon_fitted_file  <- file.path(analysis_path, "results", "fitted_exposures_signal-cns-deconstructSigs.RDS")
+decon_fitted_file  <- file.path(analysis_path, "results", "fitted_exposures_signal-cns_deconstructSigs.rds")
 
 # Load CNS signatures 
 refsig_cns_matrix <- t( getOrganSignatures("CNS") )
