@@ -190,11 +190,11 @@ oncoprint_df <- data.frame(color_names = oncoprint_color_names,
                                                         "Progressive Disease Post-Mortem",
                                                         "Recurrence",
                                                         "Second Malignancy"),
-                                        hex_codes = c("#709AE1FF",
-                                                      "#38736DFF",
-                                                      "#05403AFF",
-                                                      "#FD8CC1FF",
-                                                      "#FD7446FF")) %>%
+                                        hex_codes = c("#709AE1",
+                                                      "#38736D",
+                                                      "#05403A",
+                                                      "#FD8CC1",
+                                                      "#FD7446")) %>%
    readr::write_tsv(file.path(output_dir, "tumor_descriptor_palette.tsv"))
 
 #
