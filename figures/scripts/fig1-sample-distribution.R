@@ -39,11 +39,6 @@ palette_df <- read_tsv(file.path(figures_dir,
                                  "palettes",
                                  "broad_histology_cancer_group_palette.tsv"))
 
-# Tumor palette, with updated names to keep track
-#tumor_palette <- read_tsv("figures/palettes/tumor_descriptor_palette.tsv") %>% 
-#  rename(tumor_descriptor = color_names, 
-#         tumor_descriptor_hex = hex_codes)
-
 # Tumor descriptor palette as a named vector
 tumor_descriptor_palette <- read_tsv(file.path(figures_dir,
                                                "palettes",
