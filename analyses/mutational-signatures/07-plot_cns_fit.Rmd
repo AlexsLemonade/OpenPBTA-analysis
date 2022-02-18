@@ -1,0 +1,297 @@
+---
+title: "Visualization of CNS signature fitting with `deconstructSigs`"
+author: "SJ Spielman"
+date: "2022"
+output:
+  html_notebook:
+    toc: true
+---
+
+<br><br><br><br>
+
+#### Files and paths
+
+
+```{r setup}
+`%>%` <- dplyr::`%>%`
+
+proj_root_path  <- file.path( rprojroot::find_root(rprojroot::has_dir(".git")) )
+analysis_path   <- file.path(proj_root_path, "analyses", "mutational-signatures")
+plot_path       <- file.path(analysis_path, "plots", "cns")
+if (!dir.exists(plot_path)) {
+  dir.create(plot_path, recursive = TRUE)
+}
+
+# Input files
+fitted_file    <- file.path(analysis_path, "results", "fitted_exposures_signal-cns_deconstructSigs.rds")
+maf_file       <- file.path(proj_root_path, "data", "pbta-snv-consensus-mutation.maf.tsv.gz")
+wgs_bed_file   <- file.path(proj_root_path, "data", "WGS.hg38.strelka2.unpadded.bed")
+wxs_bed_file   <- file.path(proj_root_path, "data", "WXS.hg38.100bp_padded.bed")
+meta_file      <- file.path(proj_root_path, "data", "pbta-histologies.tsv")
+
+histology_palette_file   <- file.path(proj_root_path, "figures", "palettes", "broad_histology_cancer_group_palette.tsv")
+gradient_palette_file    <- file.path(proj_root_path, "figures", "palettes", "gradient_color_palette.tsv")
+
+# Output plots
+bubble_plot_file <- file.path(analysis_path, "plots", "cns", "bubble_plot.pdf")
+exposure_barplot_file <- file.path(analysis_path, "plots", "cns", "exposures_barplot.pdf")
+samples_barplot_file <- file.path(analysis_path, "plots", "cns", "samples_barplot.pdf")
+
+# The real signature names: https://signal.mutationalsignatures.com/explore/studyTissueType/1-6
+signal_names <- c("11", "1", "N6", "8", "MMR2", "18", "19", "3") # In order A, B, C...
+
+```
+
+```{r read_prep_data, warning=FALSE}
+
+# Read in mutation file and count all mutations
+maf <- data.table::fread(maf_file, data.table = FALSE)
+sigs_input <- deconstructSigs::mut.to.sigs.input(
+  mut.ref = maf,
+  sample.id = "Tumor_Sample_Barcode",
+  chr = "Chromosome",
+  pos = "Start_Position",
+  ref = "Reference_Allele",
+  alt = "Allele",
+  bsg = BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
+)
+
+# Read in BED files and calculate WG/XS size for mutation per Mb
+wgs_bed <- readr::read_tsv(wgs_bed_file, col_names=FALSE)
+wgs_size <- sum(wgs_bed[, 3] - wgs_bed[, 2]) 
+wxs_bed <- readr::read_tsv(wxs_bed_file, col_names=FALSE)
+wxs_size <- sum(wxs_bed[, 3] - wxs_bed[, 2]) 
+
+
+# Read in metadata and palette files
+meta <- readr::read_tsv(meta_file, guess_max = 10000)
+palette_df <- readr::read_tsv(histology_palette_file) 
+gradient_palette_df <- readr::read_tsv(gradient_palette_file)
+
+
+# Read in exposures from CNS signature fitting and tibble it up
+raw_exposures <- readr::read_rds(fitted_file)
+decon_mean <- lapply(raw_exposures, "[[", "weights")
+exposures <- do.call(rbind, decon_mean) %>%
+  tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
+  tibble::as_tibble() %>%
+  tidyr::gather(-Kids_First_Biospecimen_ID, key = "signature", value = "exposure")
+
+
+```
+
+```{r get_counts_exposures}
+
+# Wrangle data together to calculate mutations per sample per Mb across signatures
+total_mutations_per_sample <- sigs_input %>%
+  tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
+  tidyr::gather(-Kids_First_Biospecimen_ID, key = "mutation", value = "count") %>%
+  dplyr::group_by(Kids_First_Biospecimen_ID) %>%
+  dplyr::summarize(total_mutation_count = sum(count))
+
+df_signature_mutations_per_mb <- exposures %>%
+  dplyr::left_join(total_mutations_per_sample, 
+                   by = "Kids_First_Biospecimen_ID") %>%
+  dplyr::left_join(meta) %>%
+  dplyr::filter(experimental_strategy %in% c("WGS", "WXS")) %>%
+  dplyr::mutate(genome_size = dplyr::if_else(experimental_strategy == "WGS", wgs_size, wxs_size),
+                # total mutations in the genome (confirmed - sample # per sample)
+                mutations_per_mb = total_mutation_count/(genome_size/10^6), 
+                mutations_per_mb_per_signature = mutations_per_mb * exposure) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, signature, exposure, mutations_per_mb_per_signature, mutations_per_mb, broad_histology, cancer_group, tumor_descriptor) %>%
+  dplyr::left_join(palette_df) %>%
+  dplyr::select(-dplyr::contains("oncoprint"))
+
+```
+<br><br>
+
+### Bubble plot
+
+
+
+```{r bubbleplot, fig.width = 6.5, fig.height = 5}
+ 
+
+data_bubble_plot <- df_signature_mutations_per_mb %>%
+  dplyr::group_by(broad_histology_display, signature) %>%
+  dplyr::summarize(
+      # Proportion of samples with signature
+      proportion_of_samples = sum(mutations_per_mb_per_signature > 0) / dplyr::n(),
+      # Median/mean number of mutations in each group for samples with non-zero exposure
+      median_mutations_per_mb = median(mutations_per_mb_per_signature[mutations_per_mb_per_signature != 0]),     #median(mutations_per_mb_per_signature),
+      mean_mutations_per_mb = mean(mutations_per_mb_per_signature[mutations_per_mb_per_signature != 0])      #mean(mutations_per_mb_per_signature)
+    ) %>%
+  dplyr::ungroup() %>%
+  dplyr::left_join(
+    palette_df %>%
+      dplyr::select(dplyr::contains("broad_histology"))
+  ) %>%
+  dplyr::mutate(broad_histology_display = stringr::str_wrap(broad_histology_display, 20),
+                broad_histology_display = forcats::fct_reorder(broad_histology_display, broad_histology_order),
+                signature = forcats::fct_rev(signature))
+
+
+bubble_plot_median <- data_bubble_plot %>%
+  ggplot2::ggplot() + 
+  ggplot2::aes(x = broad_histology_display,
+      y = signature,
+      fill = median_mutations_per_mb, # MEDIAN!
+      size = proportion_of_samples) + 
+  ggplot2::geom_point(color = "black", pch = 21) + 
+  ggplot2::scale_fill_gradientn(
+    colors = gradient_palette_df$hex_codes[3:8], # the colors 1:2 are too light, and 9 is na_color
+    limits = c(0,0.15), breaks = c(0, 0.05, 0.1, 0.15)
+  ) +
+  ggplot2::scale_x_discrete(position = "top") +
+  ggplot2::scale_y_discrete(labels = signal_names) + 
+  ggplot2::labs(
+    x = "Broad histology group",
+    y = "RefSig Adult CNS Signature", 
+    fill = "Median mutations\nper Mb",
+    size = "Proportion of samples\nwith exposure"
+  ) +
+  ggpubr::theme_pubr() +
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(angle = 40, hjust = -.01, size = ggplot2::rel(0.9)),
+    legend.key.size = ggplot2::unit(.4, "cm"),
+    legend.text = ggplot2::element_text(size = 7),# weird export error when rel. graphics engine gets mad.
+    legend.title = ggplot2::element_text(size = 9),
+    legend.position = "bottom"
+  ) +
+  ggplot2::guides(
+    fill = ggplot2::guide_colorbar(
+      ticks = FALSE,
+      barheight = 0.6, 
+      barwidth = 5 # if we make this wider, it makes the font fit without making font too small
+    )
+  )
+
+bubble_plot_median
+
+ggplot2::ggsave(bubble_plot_file, bubble_plot_median, width = 7, height = 5)
+```
+
+<br><br>
+
+### Exposure barplot across broad histologies
+
+To color by signature group, we use the `simpsons` palette from `ggsci`, as [described](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/figures#overall-figure-theme). _However_, because some pairs of colors are challening to distinguish in the first 8 colors of the palette, we take the first 6 and the last 2 simpsons colors. 
+
+
+```{r, fig.width = 8, fig.height = 5}
+
+# The two pairs in the first 8 of this palette have highly similar colors, so we want to avoid that.
+signal_simpsons <- c(
+  "#FED439FF",
+  "#709AE1FF", 
+  "#8A9197FF",
+  "#D2AF81FF",
+  "#FD7446FF",
+  "#D5E4A2FF",
+  ###############
+  "#1A9993FF",
+  "#FD8CC1FF"
+)
+
+exposure_barplot <- df_signature_mutations_per_mb %>%
+  dplyr::group_by(broad_histology_display, signature) %>%
+  dplyr::summarize(median_exposure = median(exposure)) %>%
+  dplyr::ungroup() %>%
+  dplyr::inner_join(
+    dplyr::select(palette_df, 
+           broad_histology_display, 
+           broad_histology_order)
+  ) %>%
+  dplyr::mutate(broad_histology_display = stringr::str_wrap(broad_histology_display, 25), 
+                broad_histology_display = forcats::fct_reorder(broad_histology_display,
+                                                             broad_histology_order), 
+                signature = forcats::fct_rev(signature)) %>%
+  dplyr::distinct() %>%
+  ggplot2::ggplot() + 
+  ggplot2::aes(x = broad_histology_display,
+      y = median_exposure, 
+      fill = signature) +
+  ggplot2::geom_col() +
+  ggplot2::labs(
+    x = "Broad histology group",
+    y = "Median signature exposure\nacross samples"
+  ) +
+  ggplot2::scale_fill_manual(values = signal_simpsons, 
+                             labels = signal_names, 
+                             name = "RefSig Signature") + 
+  ggpubr::theme_pubr() + 
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(angle = 40, hjust=0.95, size = ggplot2::rel(0.65))
+  )
+
+exposure_barplot
+
+ggplot2::ggsave(exposure_barplot_file, exposure_barplot, width = 8, height = 5)
+```
+
+
+<br><br>
+
+### Mutation counts for top n most mutated samples in the PBTA
+
+```{r make_top_n}
+top_n <- 10
+top_n_data <- total_mutations_per_sample %>%
+  dplyr::arrange(-total_mutation_count) %>%
+  dplyr::distinct() %>%
+  dplyr::slice(1:top_n) %>%
+  dplyr::left_join(df_signature_mutations_per_mb) %>%
+  dplyr::mutate(signature = forcats::fct_rev(signature), 
+                Kids_First_Biospecimen_ID = forcats::fct_reorder(Kids_First_Biospecimen_ID, 
+                                                                 total_mutation_count, 
+                                                                 .desc=TRUE))
+```
+
+Here is the information about these top *n* (10) samples:
+
+```{r top_n_histologies}
+# What are their histologies?
+top_n_data %>%
+  dplyr::select(Kids_First_Biospecimen_ID, 
+                broad_histology_display, 
+                cancer_group_display, 
+                tumor_descriptor,
+                total_mutation_count) %>%
+  dplyr::distinct() %>%
+  dplyr::arrange(-total_mutation_count)
+```
+
+
+
+
+And the associated barplot:
+```{r viz_top_n, fig.width = 8, fig.height = 5}
+samples_barplot <- top_n_data %>%
+  ggplot2::ggplot() + 
+  ggplot2::aes(x = Kids_First_Biospecimen_ID, 
+               y = mutations_per_mb_per_signature, 
+               fill = signature) + 
+  ggplot2::geom_col() + 
+  ggplot2::labs(
+    x = "Tumor Sample ID of Most Mutated Samples",
+    y = "Mutations per Mb"
+  ) +
+  ggplot2::scale_fill_manual(values = signal_simpsons, 
+                             labels = signal_names, 
+                             name = "RefSig Signature") + 
+  ggpubr::theme_pubr() + 
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(angle = 40, hjust=0.95, size = ggplot2::rel(0.65))
+  )
+
+samples_barplot
+
+ggplot2::ggsave(samples_barplot_file, samples_barplot, width = 8, height = 5)
+```
+
+
+### Session info
+
+```{r sessioninfo}
+sessionInfo()
+```
