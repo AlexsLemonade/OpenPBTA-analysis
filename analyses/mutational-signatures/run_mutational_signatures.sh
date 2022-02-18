@@ -47,5 +47,5 @@ Rscript --vanilla 05-fit_cns_signatures.R  \
 Rscript -e "rmarkdown::render('06-compare_cns_exposures.Rmd', clean = TRUE)"
 
 
-# Visualize results from chosen method
-Rscript -e "rmarkdown::render('07-plot_cns_fit.Rmd', clean = TRUE)"
+# Visualize results from deconstructSigs fitting
+Rscript -e "rmarkdown::render('07-plot_cns_fit.Rmd', clean = TRUE)""
