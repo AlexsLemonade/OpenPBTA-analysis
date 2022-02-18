@@ -10,7 +10,7 @@ and [Alexandrov et al, 2013](https://www.ncbi.nlm.nih.gov/pubmed/23945592) for a
 + Conduct `de novo` signature extraction from WGS samples using [`sigfit`](https://github.com/kgori/sigfit), including goodness-of-fit analyses to determine optimal parameters.
   + This analysis requires up to 16 GB RAM.
 
-+ Evaluate known (adult) CNS signatures, as identified in [Degasperi et al, 2020](https://doi.org/10.1038/s43018-020-0027-5) in WGS samples using [`sigfit`](https://github.com/kgori/sigfit).
++ Evaluate known (adult) CNS signatures, as identified in [Degasperi et al, 2020](https://doi.org/10.1038/s43018-020-0027-5) in WGS samples. This is first done with both [`deconstructSigs::whichSignatures()`](https://github.com/raerose01/deconstructSigs) and [`sigfit::fit_signatures()`](https://github.com/kgori/sigfit) to see consistency among methods. Given broad consistency, the faster method (`deconstructSigs::whichSignatures()`) is used in the end.
 
 
 ## Usage
@@ -35,12 +35,15 @@ bash run-mutational-signatures.sh
 
 + The Rmd `04-analyze_de_novo.Rmd` analyzes the results from *de novo* signature extraction. This file knits to an HTML (`04-analyze_de_novo.HTML`) which contains a **table** and description of extraction signatures.
 
-+ The script `05-fit_cns_signatures.R` determines the relative contributions of 8 known (adult) CNS signatures in the PBTA WGS data.
-  + This script saves the fitted CNS signature exposures in `results/fitted_cns_signature_exposures.RDS`.
++ The script `05-fit_cns_signatures.R` determines the relative contributions of 8 known (adult) CNS signatures in the PBTA data (considers _both_ WES and WGS) using both [`deconstructSigs::whichSignatures()`](https://github.com/raerose01/deconstructSigs) and [`sigfit::fit_signatures()`](https://github.com/kgori/sigfit).
+  + This script saves the fitted CNS signature exposures in `results/fitted_exposures_signal-cns-deconstructSigs.RDS` and `results/fitted_exposures_signal-cns-sigfit.RDS`, named for which method is used. 
 
-+ The Rmd `06-analyze_cns_fit.Rmd` analyzes and visualizes the results from CNS signature fitting. 
-  Exposures are set to zero when the lower end of the Bayesian HPD interval < 0.01 ([ref](https://htmlpreview.github.io/?https://github.com/kgori/sigfit/blob/050c389bafd14090524fb4d97edc127d449a2d3b/doc/sigfit_vignette.html)).
-  + The knitted HTML contains several figures which are also separately exported to `plots/cns/`:
++ The Rmd `06-compare_cns_exposures.Rmd` performs a quick comparison of the `sigfit` and `deconstructSigs` results, and concludes to proceed with `deconstructSigs` exposures.
+  + As part of this, the `sigfit` exposures are set to zero when the lower end of the Bayesian HPD interval < 0.01 ([ref](https://htmlpreview.github.io/?https://github.com/kgori/sigfit/blob/050c389bafd14090524fb4d97edc127d449a2d3b/doc/sigfit_vignette.html)).
+  + Worth noting that `deconstructSigs` sets all exposures that are < 0.06 to 0. 
+
++ The Rmd `07-plot_cns_fit.Rmd` visualizes the `deconstructSigs` exposures from CNS signature fitting, specifically first by a) doing a quick comparison of results from the two methods, and then proceeding to visualize the chosen method (`deconstructSigs`).
+  + **TODO**: The knitted HTML contains several figures which are also separately exported to `plots/cns/`:
     + `mean_median_exposure_barplot.png` displays the mean and median exposures for CNS signatures for each of the main histology groups we consider in PBTA.
     + `top_10_samples_barplot.png` displays the relative signature exposures for the top-10 most mutated samples in the PBTA.
 

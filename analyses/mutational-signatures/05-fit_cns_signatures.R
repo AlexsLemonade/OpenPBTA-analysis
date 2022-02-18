@@ -3,6 +3,7 @@ library(optparse)
 library(signature.tools.lib) # contains the signal signatures
 `%>%` <- dplyr::`%>%`
 
+
 # Set up command line options -------------------------------
 option_list <- list(
   make_option(c("--abbreviated"),
@@ -37,6 +38,7 @@ maf_file <- file.path(proj_root_path, "data", "pbta-snv-consensus-mutation.maf.t
 sigfit_fitted_file <- file.path(analysis_path, "results", "fitted_exposures_signal-cns_sigfit.rds")
 decon_fitted_file  <- file.path(analysis_path, "results", "fitted_exposures_signal-cns_deconstructSigs.rds")
 
+
 # Load CNS signatures 
 refsig_cns_matrix <- t( getOrganSignatures("CNS") )
 
@@ -63,6 +65,7 @@ fit1 <- sigfit::fit_signatures(counts = sigs_input,
                                chains = 1, 
                                seed = 42, 
                                model = "poisson") # Highly similar performance to nmf and MUCH more efficient
+
 
 fit1_exposures <- sigfit::retrieve_pars(fit1, par = "exposures") # extract exposures for saving
 readr::write_rds(fit1_exposures, sigfit_fitted_file, compress = "gz")
