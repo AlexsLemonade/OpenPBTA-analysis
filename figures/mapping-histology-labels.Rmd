@@ -182,6 +182,23 @@ cancer_group_df <- data.frame(
                    "Neurofibroma Plexiform",
                    "Schwannoma",
                    "Craniopharyngioma"),
+  cancer_group_abbreviation = c("CPP",
+                                "DIPG",
+                                "DMG",
+                                "HGG",
+                                "ATRT",
+                                "CNS-ET",
+                                "MB",
+                                "Ependymoma",
+                                "Teratoma",
+                                "GG",
+                                "LGG",
+                                "Meningioma",
+                                "EWS",
+                                "DNET",
+                                "PNF",
+                                "Schwannoma",
+                                "CP"),
   cancer_group_hex = c("#4d2635",
                        "#bf0099",
                        "#ff40d9",
@@ -208,10 +225,18 @@ cancer_group_other_hex <- "#b5b5b5"
 And again, we'll create a legend with `legend()`
 
 ```{r}
+# Combine cancer groups with their abbreviations, WHEN an abbreviation exists for use in legend
+legend_names <- cancer_group_df %>%
+  mutate(cancer_group_legend = if_else(cancer_group == cancer_group_abbreviation,
+                                       cancer_group, 
+                                       as.character(glue::glue("{cancer_group} ({cancer_group_abbreviation})")))
+  ) %>%
+  pull(cancer_group_legend)
+
 plot(NULL, xaxt = "n", yaxt = "n", bty = "n", ylab = "", xlab = "", 
      xlim = 0:1, ylim = 0:1)
 legend("topleft", 
-       legend = c(cancer_group_df$cancer_group, "Other"),
+       legend = c(legend_names, "Other"),
        col = c(cancer_group_df$cancer_group_hex, cancer_group_other_hex),
        pch = 15, pt.cex = 1.5, cex = 0.75, bty = "n")
 mtext("Cancer Group", at = 0.0625, cex = 1)
