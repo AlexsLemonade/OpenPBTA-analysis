@@ -191,7 +191,7 @@ descriptor_plot <- data_descriptor_plot %>%
     fill = "Tumor descriptor"
   ) +
   ggpubr::theme_pubr() +
-  theme(axis.text.x = element_text(size = 7.5),
+  theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 0.8, vjust = 0.9),
         axis.text.y = element_text(size = 10),
         strip.text = element_text(size = 9))
 
@@ -200,7 +200,7 @@ ggsave(filename = file.path(main_output_dir,
                             "tumor_descriptor_proportion_panel.pdf"),
        plot = descriptor_plot,
        width = 12,
-       height = 4.5)
+       height = 5)
 
 
 #### Assay types bar plots -----------------------------------------------------
