@@ -182,7 +182,7 @@ cancer_group_df <- data.frame(
                    "Neurofibroma Plexiform",
                    "Schwannoma",
                    "Craniopharyngioma"),
-  cancer_group_abbreviation = c("CPP",
+  cancer_group_abbreviation <- c("CPP",
                                 "DIPG",
                                 "DMG",
                                 "HGG",
