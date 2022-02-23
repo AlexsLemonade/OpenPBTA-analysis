@@ -1,4 +1,4 @@
-# JN Taroni for ALSF CCDL 2021
+# JN Taroni and SJ Spielman for ALSF CCDL 2021-2022
 #
 # Create panels for representing sample distribution:
 #   - Cancer group
@@ -39,51 +39,19 @@ palette_df <- read_tsv(file.path(figures_dir,
                                  "palettes",
                                  "broad_histology_cancer_group_palette.tsv"))
 
-# Will mostly be using the cancer group palette
-cancer_group_palette <- palette_df$cancer_group_hex
-names(cancer_group_palette) <- palette_df$cancer_group
-
 # Tumor descriptor palette as a named vector
 tumor_descriptor_palette <- read_tsv(file.path(figures_dir,
                                                "palettes",
                                                "tumor_descriptor_palette.tsv")) %>%
   tibble::deframe()
 
+# Will mostly be using the cancer group palette
+cancer_group_palette <- palette_df$cancer_group_hex
+names(cancer_group_palette) <- palette_df$cancer_group
+
+
 
 #### Prep data for plotting ----------------------------------------------------
-
-## Tumor descriptor proportion stacked bar plot ##
-# Calculate the proportion of each tumor descriptor category for a cancer group
-tumor_descriptor_df <- histologies_df %>%
-  # Remove the Normal samples
-  filter(sample_type != "Normal",
-         !is.na(tumor_descriptor),
-         !is.na(cancer_group)) %>%
-  # Only count each sample ID once, not once for every assay (i.e., specimen)
-  select(sample_id,
-         broad_histology,
-         cancer_group,
-         tumor_descriptor) %>%
-  distinct() %>%
-  # Count needs to include the tumor_descriptor
-  count(broad_histology,
-        cancer_group,
-        tumor_descriptor) %>%
-  # Need to drop tumor_descriptor to calculate the proportion
-  group_by(broad_histology,
-           cancer_group) %>%
-  # Calculate the proportion
-  mutate(proportion = n / sum(n),
-         # The x-axis labels should show the total number of samples
-         cancer_group_label = str_c(cancer_group,
-                                    " (n = ",
-                                    sum(n),
-                                    ")")) %>%
-  inner_join(select(palette_df,
-                    broad_histology,
-                    broad_histology_display),
-             by = "broad_histology") %>%
-  distinct()
 
 ## Stacked bar plot that shows the assay types ##
 experimental_strategy_df <- histologies_df %>%
@@ -171,36 +139,69 @@ broad_histologies <- palette_df %>%
 
 #### Tumor descriptor stacked bar plots ----------------------------------------
 
-descriptor_plot <- tumor_descriptor_df %>%
-  # Order based on display order
-  mutate(broad_histology_display = factor(broad_histology_display,
-                                          levels = broad_histologies)) %>%
-  ggplot(aes(x = cancer_group_label,  # includes n
-             y = proportion,
-             fill = tumor_descriptor)) +
-  geom_bar(color = "#000000", position = "fill", stat = "identity") +
-  scale_fill_manual(values = tumor_descriptor_palette) +
-  facet_wrap(~ broad_histology_display,
-             nrow = 3,
-             scales = "free_x") +
-  theme_pubr() +
-  theme(axis.text.x = element_text(angle = 90,
-                                   vjust = 0.5,
-                                   hjust = 1),
-        plot.title = element_text(hjust = 0.5,
-                                  face = "bold",
-                                  size = 9),
-        axis.title.x = element_text(size = 18),
-        axis.title.y = element_text(size = 18)) +
-  labs(x = "Cancer Group",
-       y = "Proportion",
-       fill = "Tumor Descriptor")
+# a little more data prep - 
+data_descriptor_plot <- histologies_df %>% 
+  select(sample_id, 
+         broad_histology,
+         cancer_group, 
+         tumor_descriptor) %>%
+  # Drop benign tumors and pre-cancerous lesions (i.e., NA in cancer_group)
+  drop_na(cancer_group) %>% 
+  # Join in display names and hex!
+  inner_join(
+    select(palette_df,
+           broad_histology,
+           broad_histology_hex,
+           broad_histology_display, 
+           broad_histology_order),
+    by = "broad_histology") %>%
+  inner_join(
+    select(palette_df,
+           cancer_group,
+           cancer_group_display,
+           cancer_group_abbreviation),
+    by = "cancer_group") %>%
+  distinct() 
 
+# The NAs in `cancer_group_abbreviation` should _all_ be associated with a cancer_display_group "Other" if we've joined up correctly - 
+abbr_check <- data_descriptor_plot %>%
+  filter(is.na(cancer_group_abbreviation)) %>%
+  pull(cancer_group_display)
+if (!(all(abbr_check == "Other"))) stop("Wrangling bug setting cancer group abbreviations.")
+
+#make the plot
+descriptor_plot <- data_descriptor_plot %>%
+  mutate(
+    cancer_group_abbreviation = if_else(is.na(cancer_group_abbreviation), "Other", cancer_group_abbreviation),
+    bh_strip = stringr::str_wrap(broad_histology_display, 25),
+    bh_strip = forcats::fct_reorder(bh_strip, broad_histology_order),
+    abbr = forcats::fct_relevel(cancer_group_abbreviation, "Other", after=Inf)
+  ) %>%
+  ggplot() + 
+  aes(x = abbr,
+      fill = tumor_descriptor) + 
+  geom_bar(color = "black", size = 0.25) + 
+  scale_fill_manual(values = tumor_descriptor_palette) + 
+  facet_wrap(~bh_strip, 
+             scales = "free", 
+             nrow = 2) +
+  labs(
+    x = "Cancer group",
+    y = "Number of samples", 
+    fill = "Tumor descriptor"
+  ) +
+  ggpubr::theme_pubr() +
+  theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 0.8, vjust = 0.9),
+        axis.text.y = element_text(size = 10),
+        strip.text = element_text(size = 9))
+
+#Save!
 ggsave(filename = file.path(main_output_dir,
                             "tumor_descriptor_proportion_panel.pdf"),
        plot = descriptor_plot,
-       width = 14,
-       height = 21)
+       width = 12,
+       height = 5)
+
 
 #### Assay types bar plots -----------------------------------------------------
 
