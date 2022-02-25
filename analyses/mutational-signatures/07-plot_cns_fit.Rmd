@@ -5,6 +5,8 @@ date: "2022"
 output:
   html_notebook:
     toc: true
+editor_options: 
+  chunk_output_type: inline
 ---
 
 <br><br><br><br>
@@ -36,7 +38,7 @@ gradient_palette_file    <- file.path(proj_root_path, "figures", "palettes", "gr
 bubble_plot_file <- file.path(analysis_path, "plots", "cns", "bubble_plot.pdf")
 exposure_barplot_file <- file.path(analysis_path, "plots", "cns", "exposures_barplot.pdf")
 samples_barplot_file <- file.path(analysis_path, "plots", "cns", "samples_barplot.pdf")
-
+exposures_boxplot_file <- file.path(analysis_path, "plots", "cns", "exposures_boxplot.pdf")
 # The real signature names: https://signal.mutationalsignatures.com/explore/studyTissueType/1-6
 signal_names <- c("11", "1", "N6", "8", "MMR2", "18", "19", "3") # In order A, B, C...
 
@@ -173,68 +175,103 @@ ggplot2::ggsave(bubble_plot_file, bubble_plot_median, width = 7, height = 5)
 
 <br><br>
 
-### Exposure barplot across broad histologies
 
-To color by signature group, we use the `simpsons` palette from `ggsci`, as [described](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/figures#overall-figure-theme). _However_, because some pairs of colors are challening to distinguish in the first 8 colors of the palette, we take the first 6 and the last 2 simpsons colors. 
+### Boxplot of exposures across cancer groups we want to include
 
+The decimals in the image represent the fraction of samples in the cancer group that were exposed to the given signature. Only samples with non-zero exposures are used in boxplots.
 
-```{r, fig.width = 8, fig.height = 5}
-
-# The two pairs in the first 8 of this palette have highly similar colors, so we want to avoid that.
-signal_simpsons <- c(
-  "#FED439FF",
-  "#709AE1FF", 
-  "#8A9197FF",
-  "#D2AF81FF",
-  "#FD7446FF",
-  "#D5E4A2FF",
-  ###############
-  "#1A9993FF",
-  "#FD8CC1FF"
+```{r boxplot, fig.width = 13, fig.height = 4}
+cancer_groups_to_plot <- c(
+  "Diffuse midline glioma",
+  "Low-grade glioma astrocytoma",
+  "Craniopharyngioma",
+  "High-grade glioma astrocytoma",
+  "Ganglioglioma",
+  "Medulloblastoma",
+  "Meningioma",
+  "Ependymoma",
+  "Schwannoma",
+  "Dysembryoplastic neuroepithelial tumor"
 )
 
-exposure_barplot <- df_signature_mutations_per_mb %>%
-  dplyr::group_by(broad_histology_display, signature) %>%
-  dplyr::summarize(median_exposure = median(exposure)) %>%
+
+
+
+exposure_counts <- df_signature_mutations_per_mb %>%
+  dplyr::filter(cancer_group_display %in% cancer_groups_to_plot) %>% 
+  # COUNT of samples with(out) exposure for labeling
+  dplyr::group_by(cancer_group_display, signature) %>%
+  dplyr::summarize(total = dplyr::n(),
+                   with_exposure = round(sum(exposure > 0)/dplyr::n(), 2)) %>%
   dplyr::ungroup() %>%
-  dplyr::inner_join(
-    dplyr::select(palette_df, 
-           broad_histology_display, 
-           broad_histology_order)
-  ) %>%
-  dplyr::mutate(broad_histology_display = stringr::str_wrap(broad_histology_display, 25), 
-                broad_histology_display = forcats::fct_reorder(broad_histology_display,
-                                                             broad_histology_order), 
-                signature = forcats::fct_rev(signature)) %>%
-  dplyr::distinct() %>%
-  ggplot2::ggplot() + 
-  ggplot2::aes(x = broad_histology_display,
-      y = median_exposure, 
-      fill = signature) +
-  ggplot2::geom_col() +
-  ggplot2::labs(
-    x = "Broad histology group",
-    y = "Median signature exposure\nacross samples"
-  ) +
-  ggplot2::scale_fill_manual(values = signal_simpsons, 
-                             labels = signal_names, 
-                             name = "RefSig Signature") + 
-  ggpubr::theme_pubr() + 
-  ggplot2::theme(
-    axis.text.x = ggplot2::element_text(angle = 40, hjust=0.95, size = ggplot2::rel(0.65))
+  dplyr::mutate(
+    cancer_group_display2 = as.character(glue::glue("{cancer_group_display}\n(n={total})"))
   )
 
-exposure_barplot
 
-ggplot2::ggsave(exposure_barplot_file, exposure_barplot, width = 8, height = 5)
+
+display2_hex <- palette_df %>%
+  dplyr::inner_join(exposure_counts) %>%
+  dplyr::select(cancer_group_hex, cancer_group_display2) %>%
+  dplyr::distinct()
+
+
+cancer_group_palette <- display2_hex$cancer_group_hex
+names(cancer_group_palette) <- display2_hex$cancer_group_display
+
+
+exposures_boxplot <- df_signature_mutations_per_mb %>%
+  dplyr::select(cancer_group_display, cancer_group_hex, signature, exposure) %>%
+  dplyr::filter(exposure > 0) %>%
+  dplyr::inner_join(exposure_counts) %>%
+  ggplot2::ggplot() + 
+  ggplot2::aes(x = signature, 
+               y = exposure,
+               fill = cancer_group_display) + 
+  ggplot2::geom_boxplot(
+    outlier.size = 0.2,
+    size = 0.4
+  ) +
+  ggplot2::geom_text(
+    data = exposure_counts,
+    ggplot2::aes(label = with_exposure),
+    y = 1.15,
+    size = 3
+  ) +
+  ggplot2::facet_wrap(~cancer_group_display, nrow = 2) +
+  ggplot2::scale_fill_manual(values = cancer_group_palette) + 
+  ggplot2::scale_x_discrete(labels = signal_names) +
+  ggplot2::scale_y_continuous(limits = c(0, 1.2), 
+                              breaks = c(0, 0.25, 0.5, 0.75, 1.0)) +
+  ggplot2::labs(
+    x = "RefSig signature",
+    y = "Signature weight for exposed samples"
+  ) +
+  ggpubr::theme_pubr() + 
+  cowplot::panel_border() +
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(size = 8.5),
+    axis.text.y = ggplot2::element_text(size = 10),
+    axis.title = ggplot2::element_text(size = 12),
+    strip.text = ggplot2::element_text(size = 8.5),
+    legend.position = "none"
+  )
+
+exposures_boxplot
+
+ggplot2::ggsave(exposures_boxplot_file, exposures_boxplot, width = 13, height = 4)
+  
+
 ```
-
 
 <br><br>
 
 ### Mutation counts for top n most mutated samples in the PBTA
 
+
+
 ```{r make_top_n}
+
 top_n <- 10
 top_n_data <- total_mutations_per_sample %>%
   dplyr::arrange(-total_mutation_count) %>%
@@ -248,6 +285,8 @@ top_n_data <- total_mutations_per_sample %>%
 ```
 
 Here is the information about these top *n* (10) samples:
+
+
 
 ```{r top_n_histologies}
 # What are their histologies?
@@ -266,6 +305,21 @@ top_n_data %>%
 
 And the associated barplot:
 ```{r viz_top_n, fig.width = 8, fig.height = 5}
+
+# The two pairs in the first 8 of this palette have highly similar colors, so we want to avoid that.
+signal_simpsons <- c(
+  "#FED439FF",
+  "#709AE1FF", 
+  "#8A9197FF",
+  "#D2AF81FF",
+  "#FD7446FF",
+  "#D5E4A2FF",
+  ###############
+  "#1A9993FF",
+  "#FD8CC1FF"
+)
+
+
 samples_barplot <- top_n_data %>%
   ggplot2::ggplot() + 
   ggplot2::aes(x = Kids_First_Biospecimen_ID, 
