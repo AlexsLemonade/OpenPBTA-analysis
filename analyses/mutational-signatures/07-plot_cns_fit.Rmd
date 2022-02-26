@@ -203,21 +203,17 @@ exposure_counts <- df_signature_mutations_per_mb %>%
   dplyr::group_by(cancer_group_display, signature) %>%
   dplyr::summarize(total = dplyr::n(),
                    with_exposure = round(sum(exposure > 0)/dplyr::n(), 2)) %>%
-  dplyr::ungroup() %>%
-  dplyr::mutate(
-    cancer_group_display2 = as.character(glue::glue("{cancer_group_display}\n(n={total})"))
-  )
+  dplyr::ungroup()
 
 
-
-display2_hex <- palette_df %>%
+display_hex <- palette_df %>%
   dplyr::inner_join(exposure_counts) %>%
-  dplyr::select(cancer_group_hex, cancer_group_display2) %>%
+  dplyr::select(cancer_group_hex, cancer_group_display) %>%
   dplyr::distinct()
 
 
-cancer_group_palette <- display2_hex$cancer_group_hex
-names(cancer_group_palette) <- display2_hex$cancer_group_display
+cancer_group_palette <- display_hex$cancer_group_hex
+names(cancer_group_palette) <- display_hex$cancer_group_display
 
 
 exposures_boxplot <- df_signature_mutations_per_mb %>%
