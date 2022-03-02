@@ -39,6 +39,7 @@ bubble_plot_file <- file.path(analysis_path, "plots", "cns", "bubble_plot.pdf")
 exposure_barplot_file <- file.path(analysis_path, "plots", "cns", "exposures_barplot.pdf")
 samples_barplot_file <- file.path(analysis_path, "plots", "cns", "samples_barplot.pdf")
 exposures_boxplot_file <- file.path(analysis_path, "plots", "cns", "exposures_boxplot.pdf")
+jitter_file <- file.path(analysis_path, "plots", "cns", "jitter_mutations_mb.pdf")
 # The real signature names: https://signal.mutationalsignatures.com/explore/studyTissueType/1-6
 signal_names <- c("11", "1", "N6", "8", "MMR2", "18", "19", "3") # In order A, B, C...
 
@@ -277,6 +278,74 @@ ggplot2::ggsave(exposures_boxplot_file, exposures_sina_boxplot, width = 11, heig
 ```
 
 <br><br>
+
+
+### Barplot of median counts
+
+```{r barplot1, fig.width = 14, fig.height = 4.5}
+barplot_data <- df_signature_mutations_per_mb %>%
+  dplyr::filter(cancer_group %in% cancer_groups_to_plot) %>%
+  dplyr::group_by(cancer_group_display, signature) %>%
+  dplyr::summarize(
+      # Proportion of samples with signature
+      proportion_of_samples = sum(mutations_per_mb_per_signature > 0) / dplyr::n(),
+      # Median/mean number of mutations in each group for samples with non-zero exposure
+      # TODO: I think the "for samples with non-zero exposure" is only suitable when we show proportions also. 
+      median_mutations_per_mb = median(mutations_per_mb_per_signature[mutations_per_mb_per_signature != 0]),     #median(mutations_per_mb_per_signature),
+      mean_mutations_per_mb = mean(mutations_per_mb_per_signature[mutations_per_mb_per_signature != 0])      #mean(mutations_per_mb_per_signature)
+    ) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(cancer_group_display_wrap = stringr::str_wrap(cancer_group_display, 20))
+
+hex_labels2 <- barplot_data %>%
+  dplyr::select(cancer_group_display, cancer_group_display_wrap) %>%
+  dplyr::inner_join(
+    dplyr::select(palette_df, cancer_group_display, cancer_group_hex)
+  ) %>%
+  dplyr::distinct() 
+
+# Grab named hex to incorporate into plot
+cancer_hex <- hex_labels2$cancer_group_hex
+names(cancer_hex) <- hex_labels2$cancer_group_display
+
+
+# This does not work.
+barplot_data %>%
+  ggplot2::ggplot() + 
+  ggplot2::aes(x = cancer_group_display_wrap,
+               y = median_mutations_per_mb, 
+               fill = signature) + 
+  ggplot2::geom_col(color = "black", size = 0.5) + 
+  ggpubr::theme_pubr() + 
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(angle = 40, hjust = 0.5),
+  ) -> bad_counts_plot
+
+ggplot2::ggsave(file.path("plots", "cns", "bad_counts_plot.pdf"), bad_counts_plot, width = 10, height = 5 )
+
+# Does this work?
+df_signature_mutations_per_mb %>%
+  dplyr::filter(cancer_group %in% cancer_groups_to_plot) %>%
+  ggplot2::ggplot() + 
+  ggplot2::aes(x = signature,
+               y = mutations_per_mb_per_signature, color = signature) + 
+  ggplot2::geom_jitter(size = 0.7, width = 0.1) + 
+  ggplot2::facet_wrap(~cancer_group_display, nrow=2, scales = "free") + 
+  ggplot2::scale_color_discrete(labels = signal_names) +
+  ggplot2::scale_x_discrete(labels = signal_names) +
+  ggpubr::theme_pubr() +
+  ggplot2::theme(
+    legend.position = "none"
+  ) -> jitter_mutations_per_mb
+
+ggplot2::ggsave(jitter_file, jitter_mutations_per_mb, width = 12, height = 4.5)
+
+
+```
+
+
+
+
 
 ### Mutation counts for top n most mutated samples in the PBTA
 
