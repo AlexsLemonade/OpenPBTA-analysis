@@ -402,8 +402,10 @@ barplot_data %>%
 
 
 library(patchwork) # move if we use it
-p1 / p2
+ps <- p1 / p2
 
+
+ggplot2::ggsave(file.path("plots", "cns", "barplot_concept_counts.pdf"), ps, width = 13, height = 7)
 
 
 
