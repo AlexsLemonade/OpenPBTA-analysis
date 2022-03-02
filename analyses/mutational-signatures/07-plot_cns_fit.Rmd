@@ -291,8 +291,12 @@ barplot_data <- df_signature_mutations_per_mb %>%
       proportion_of_samples = sum(mutations_per_mb_per_signature > 0) / dplyr::n(),
       # Median/mean number of mutations in each group for samples with non-zero exposure
       # TODO: I think the "for samples with non-zero exposure" is only suitable when we show proportions also. 
-      median_mutations_per_mb = median(mutations_per_mb_per_signature[mutations_per_mb_per_signature != 0]),     #median(mutations_per_mb_per_signature),
-      mean_mutations_per_mb = mean(mutations_per_mb_per_signature[mutations_per_mb_per_signature != 0])      #mean(mutations_per_mb_per_signature)
+      median_mutations_per_mb_all = median(mutations_per_mb_per_signature),
+      median_mutations_per_mb_exposed = median(mutations_per_mb_per_signature[mutations_per_mb_per_signature != 0]),
+      q1_mutation_per_mb_all = quantile(median_mutations_per_mb_all, 0.25),
+      q3_mutation_per_mb_all = quantile(median_mutations_per_mb_all, 0.75),
+      q1_mutation_per_mb_exposed  = quantile(median_mutations_per_mb_exposed , 0.25),
+      q3_mutation_per_mb_exposed  = quantile(median_mutations_per_mb_exposed , 0.75)
     ) %>%
   dplyr::ungroup() %>%
   dplyr::mutate(cancer_group_display_wrap = stringr::str_wrap(cancer_group_display, 20))
@@ -306,7 +310,7 @@ hex_labels2 <- barplot_data %>%
 
 # Grab named hex to incorporate into plot
 cancer_hex <- hex_labels2$cancer_group_hex
-names(cancer_hex) <- hex_labels2$cancer_group_display
+names(cancer_hex) <- hex_labels2$cancer_group_display_wrap
 
 
 # This does not work.
@@ -339,6 +343,68 @@ df_signature_mutations_per_mb %>%
   ) -> jitter_mutations_per_mb
 
 ggplot2::ggsave(jitter_file, jitter_mutations_per_mb, width = 12, height = 4.5)
+```
+
+
+One more round of bar plots:
+
+
+```{r bar_attempts, fig.height = 8, fig.width = 14}
+
+
+# One more...
+barplot_data %>%
+  ggplot2::ggplot() + 
+  ggplot2::aes(x = signature, 
+      y = median_mutations_per_mb_all, 
+      fill = cancer_group_display_wrap) + 
+  ggplot2::geom_col(color = "black", size = 0.3) + 
+  ggplot2::geom_errorbar(
+    ggplot2::aes(
+      ymin = q1_mutation_per_mb_all, 
+      ymax = q3_mutation_per_mb_all
+    ),
+    width = 0.2
+  ) +
+  ggplot2::facet_wrap(~cancer_group_display_wrap, nrow = 2, scales = "free_y") +
+  ggplot2::scale_color_discrete(labels = signal_names) +
+  ggplot2::scale_x_discrete(labels = signal_names) +
+  ggplot2::scale_fill_manual(values = cancer_hex) +
+  ggpubr::theme_pubr() +
+  ggplot2::theme(
+    legend.position = "none"
+  ) + ggplot2::ggtitle("All samples, including unexposed") -> p1
+
+
+barplot_data %>%
+  ggplot2::ggplot() + 
+  ggplot2::aes(x = signature, 
+      y = median_mutations_per_mb_exposed, 
+      fill = cancer_group_display_wrap) + 
+  ggplot2::geom_col(color = "black", size = 0.3) + 
+  ggplot2::geom_errorbar(
+    ggplot2::aes(
+      ymin = q1_mutation_per_mb_exposed, 
+      ymax = q3_mutation_per_mb_exposed
+    ),
+    width = 0.2
+  ) +
+  ggplot2::facet_wrap(~cancer_group_display_wrap, nrow = 2, scales = "free_y") +
+  ggplot2::scale_color_discrete(labels = signal_names) +
+  ggplot2::scale_x_discrete(labels = signal_names) +
+  ggplot2::scale_fill_manual(values = cancer_hex) +
+  ggpubr::theme_pubr() +
+  ggplot2::theme(
+    legend.position = "none"
+  ) + ggplot2::ggtitle("ONLY exposed samples") -> p2
+
+
+
+
+library(patchwork) # move if we use it
+p1 / p2
+
+
 
 
 ```
