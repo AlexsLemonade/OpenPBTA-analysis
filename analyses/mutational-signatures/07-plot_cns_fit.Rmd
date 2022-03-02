@@ -178,9 +178,12 @@ ggplot2::ggsave(bubble_plot_file, bubble_plot_median, width = 7, height = 5)
 
 ### Boxplot of exposures across cancer groups we want to include
 
-The decimals in the image represent the fraction of samples in the cancer group that were exposed to the given signature. Only samples with non-zero exposures are used in boxplots.
+<!-- The decimals in the image represent the fraction of samples in the cancer group that were exposed to the given signature. Only samples with non-zero exposures are used in boxplots. -->
 
-```{r boxplot, fig.width = 13, fig.height = 4}
+_All_ samples are included in these sina plots.
+
+
+```{r boxplot, fig.width = 11, fig.height = 4.5}
 cancer_groups_to_plot <- c(
   "Diffuse midline glioma",
   "Low-grade glioma astrocytoma",
@@ -195,8 +198,6 @@ cancer_groups_to_plot <- c(
 )
 
 
-
-
 exposure_counts <- df_signature_mutations_per_mb %>%
   dplyr::filter(cancer_group_display %in% cancer_groups_to_plot) %>% 
   # COUNT of samples with(out) exposure for labeling
@@ -206,56 +207,71 @@ exposure_counts <- df_signature_mutations_per_mb %>%
   dplyr::ungroup()
 
 
-display_hex <- palette_df %>%
+labels_hex <- palette_df %>%
   dplyr::inner_join(exposure_counts) %>%
   dplyr::select(cancer_group_hex, cancer_group_display) %>%
-  dplyr::distinct()
-
-
-cancer_group_palette <- display_hex$cancer_group_hex
-names(cancer_group_palette) <- display_hex$cancer_group_display
-
-
-exposures_boxplot <- df_signature_mutations_per_mb %>%
-  dplyr::select(cancer_group_display, cancer_group_hex, signature, exposure) %>%
-  dplyr::filter(exposure > 0) %>%
+  dplyr::distinct() %>%
   dplyr::inner_join(exposure_counts) %>%
+  dplyr::mutate(
+    cancer_group_display_n = stringr::str_wrap(
+      glue::glue("{cancer_group_display} (N={total})"),
+      30)
+  ) %>%
+  dplyr::select(cancer_group_display_n, cancer_group_hex, total) %>%
+  dplyr::distinct() %>%
+  # factor cancer groups in order of number of samples
+  dplyr::mutate(cancer_group_display_n = forcats::fct_reorder(cancer_group_display_n, total, .desc=T)) 
+
+# Grab named hex to incorporate into plot
+cancer_hex <- labels_hex$cancer_group_hex
+names(cancer_hex) <- labels_hex$cancer_group_display_n 
+
+
+exposures_sina_boxplot <- df_signature_mutations_per_mb %>%
+  # keep cancer_group_hex for joining
+  dplyr::select(cancer_group_hex, signature, exposure) %>%
+  # should we rm 0's?
+  #dplyr::filter(exposure > 0) %>%
+  dplyr::inner_join(labels_hex) %>%
   ggplot2::ggplot() + 
   ggplot2::aes(x = signature, 
                y = exposure,
-               fill = cancer_group_display) + 
-  ggplot2::geom_boxplot(
-    outlier.size = 0.2,
-    size = 0.4
-  ) +
-  ggplot2::geom_text(
-    data = exposure_counts,
-    ggplot2::aes(label = with_exposure),
-    y = 1.15,
-    size = 3
-  ) +
-  ggplot2::facet_wrap(~cancer_group_display, nrow = 2) +
-  ggplot2::scale_fill_manual(values = cancer_group_palette) + 
+               color = cancer_group_hex) + 
+  ggforce::geom_sina(size = 0.7) + # ADD GGFORCE TO DOCKER!!!!!!!!!!!!!!
+  ggplot2::geom_boxplot(outlier.size = 0, 
+                        size = 0.3, 
+                        color = "black", 
+                        alpha = 0,
+                        # remove wiskers
+                        coef = 0) +
+ # ggplot2::geom_text(
+ #   data = exposure_counts,
+ #   ggplot2::aes(label = with_exposure),
+ #   y = 1.15,
+ #   size = 3
+ # ) +
+  ggplot2::facet_wrap(~cancer_group_display_n, nrow = 2) +
+  ggplot2::scale_color_identity() + #fill_manual(values = cancer_group_palette) + 
   ggplot2::scale_x_discrete(labels = signal_names) +
   ggplot2::scale_y_continuous(limits = c(0, 1.2), 
                               breaks = c(0, 0.25, 0.5, 0.75, 1.0)) +
   ggplot2::labs(
     x = "RefSig signature",
-    y = "Signature weight for exposed samples"
+    y = "Signature weights across samples"
   ) +
   ggpubr::theme_pubr() + 
   cowplot::panel_border() +
   ggplot2::theme(
-    axis.text.x = ggplot2::element_text(size = 8.5),
+    axis.text.x = ggplot2::element_text(size = 7.5),
     axis.text.y = ggplot2::element_text(size = 10),
     axis.title = ggplot2::element_text(size = 12),
     strip.text = ggplot2::element_text(size = 8.5),
     legend.position = "none"
   )
 
-exposures_boxplot
+exposures_sina_boxplot
 
-ggplot2::ggsave(exposures_boxplot_file, exposures_boxplot, width = 13, height = 4)
+ggplot2::ggsave(exposures_boxplot_file, exposures_sina_boxplot, width = 11, height = 4.5)
   
 
 ```
