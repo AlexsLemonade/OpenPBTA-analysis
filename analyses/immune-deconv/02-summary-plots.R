@@ -24,8 +24,8 @@ option_list <- list(
 
 # parse parameters
 opt <- parse_args(OptionParser(option_list = option_list))
-deconvout <- "results/deconv-output.RData" #opt$input
-output_dir <- "plots/" #opt$output_dir
+deconvout <- opt$input
+output_dir <- opt$output_dir
 deconv_output <- readr::read_rds(deconvout)
 
 

@@ -28,6 +28,7 @@ histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"),
 # Here we'll set up the file names used throughout
 umap_pdf <- file.path(output_dir, "umap_panel.pdf")
 gsva_pdf <- file.path(output_dir, "gsva_panel.pdf")
+deconv_pdf <- file.path(output_dir, "immune_deconv_panel.pdf")
 legend_pdf <- file.path(output_dir, "broad_histology_legend.pdf")
 
 #### Color palettes ------------------------------------------------------------
@@ -222,6 +223,122 @@ gsva_heatmap <- Heatmap(
 pdf(gsva_pdf, width = 5.75, height = 5)
 draw(gsva_heatmap, heatmap_legend_side = "bottom")
 dev.off()
+
+
+#### Immune deconvolution ---------------------------------------------------------------
+
+# This analysis considered _both_ stranded and polya, 
+# so we need to wrangle a bit more specifically to prepare for heatmap
+
+# A new color mappings for stranded and polya
+palette_mapping_df <- histologies_df %>%
+  # RNA-Seq samples only, *****BOTH****** polya and stranded
+  filter(experimental_strategy == "RNA-Seq") %>%
+  # Identifiers
+  select(Kids_First_Biospecimen_ID,
+         Kids_First_Participant_ID,
+         sample_id,
+         broad_histology,
+         cancer_group) %>%
+  # Add in hex codes & display grouping
+  left_join(histology_label_mapping,
+            by = c("broad_histology", "cancer_group")) %>%
+  select(Kids_First_Biospecimen_ID,
+         broad_histology_display,
+         broad_histology_hex,
+         broad_histology_order) %>%
+  mutate(broad_histology_display = forcats::fct_reorder(broad_histology_display,
+                                                        broad_histology_order))
+                                                        
+# Analysis paths and data                                                                                                         broad_histology_order))
+deconv_dir <- file.path(
+  analyses_dir,
+  "immune-deconv",
+  "results"
+)
+
+# Data - need to load, and creates variable `deconv_output`
+deconv_output_file <- file.path(deconv_dir, "deconv-output.RData")
+load(deconv_output_file)
+                        
+                    
+# Prepare immune scores for heatmap, including normalization with cell types
+deconv_matrix <- as_tibble(deconv_output) %>%
+  select(-display_group, -method, -molecular_subtype) %>%
+  filter(!str_detect(cell_type, "score")) %>%
+  full_join( # use full, not inner
+    select(histology_label_mapping, broad_histology, broad_histology_display)
+  ) %>%
+  group_by(cell_type) %>% # we want to normalize within biological groups, NOT samples
+  # Normalize with scale() and z-scores for options if we want to change this
+  mutate(scaled = scale(fraction), 
+         zscore = (fraction -  mean(fraction))/ sd(fraction)) %>%
+  # modify this mutate to change options:
+  mutate(score_to_use = zscore) %>%
+  ungroup() %>%
+  select(cell_type, sample, score_to_use) %>%
+  distinct() %>%
+  spread(key = sample, value = score_to_use) %>%
+  column_to_rownames("cell_type") %>%
+  as.matrix()
+
+# NOTE:
+# fivenum(deconv_matrix)
+#[1] -1.902852956 -0.375620332 -0.139271522  0.002413132   47.912638453
+
+
+# Ensure appropriate order
+deconv_ordered_bsids <- palette_mapping_df %>%
+  arrange(broad_histology_order) %>%
+  pull(Kids_First_Biospecimen_ID)
+deconv_matrix <- deconv_matrix[, deconv_ordered_bsids]
+
+
+# Prepare heatmap annotation
+deconv_annotation_df <- palette_mapping_df %>%
+  select(Kids_First_Biospecimen_ID, 
+         broad_histology_display,
+         broad_histology_order) %>%
+  column_to_rownames("Kids_First_Biospecimen_ID")
+deconv_annotation_df <- deconv_annotation_df[deconv_ordered_bsids, ] %>%
+  select(-broad_histology_order,
+         broad_histology = broad_histology_display)
+
+# Prepare colors
+divergent_col_val <- seq(from = -2,
+                         to = 5, # TODO: what about big outliers? We have 
+                         length.out = nrow(divergent_palette))
+deconv_col_fun <- circlize::colorRamp2(divergent_col_val,
+                                       divergent_palette$hex_codes)
+
+# set up heatmap annotation
+complex_annotation_deconv <- HeatmapAnnotation(
+  df = as.data.frame(deconv_annotation_df),
+  name = "Broad Histology",
+  col = list("broad_histology" = annotation_colors),
+  na_col = na_color$hex_codes,
+  annotation_name_side = "left",
+  show_legend = FALSE
+)
+
+# let's gooooo
+deconv_heatmap <- Heatmap(
+  deconv_matrix,
+  col = deconv_col_fun,
+  name = "Z-scores",
+  na_col = na_color$hex_codes,
+  show_column_names = FALSE,
+  cluster_columns = FALSE,
+  row_names_gp = grid::gpar(fontsize = 5),
+  top_annotation = complex_annotation_deconv,
+  heatmap_legend_param = list(direction = "horizontal")
+) 
+
+pdf(deconv_pdf, width = 5.75, height = 5)
+draw(deconv_heatmap, heatmap_legend_side = "bottom")
+dev.off()
+
+
 
 #### display_group legend ----------------------------------------------------
 
