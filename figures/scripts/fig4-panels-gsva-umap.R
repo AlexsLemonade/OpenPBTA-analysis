@@ -270,15 +270,11 @@ deconv_matrix <- as_tibble(deconv_output) %>%
     select(histology_label_mapping, broad_histology, broad_histology_display)
   ) %>%
   group_by(cell_type) %>% # we want to normalize within biological groups, NOT samples
-  # Normalize with scale() and z-scores for options if we want to change this
-  mutate(scaled = scale(fraction), 
-         zscore = (fraction -  mean(fraction))/ sd(fraction)) %>%
-  # modify this mutate to change options:
-  mutate(score_to_use = zscore) %>%
+  mutate(zscore = (fraction -  mean(fraction))/ sd(fraction)) %>%
   ungroup() %>%
-  select(cell_type, sample, score_to_use) %>%
+  select(cell_type, sample, zscore) %>%
   distinct() %>%
-  spread(key = sample, value = score_to_use) %>%
+  spread(key = sample, value = zscore) %>%
   column_to_rownames("cell_type") %>%
   as.matrix()
 
