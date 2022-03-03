@@ -26,7 +26,7 @@ option_list <- list(
 opt <- parse_args(OptionParser(option_list = option_list))
 deconvout <- opt$input
 output_dir <- opt$output_dir
-deconv_output <- readr::read_rds(deconvout)
+load(deconvout)
 
 
 # deconvolution method, which should only be xCell
