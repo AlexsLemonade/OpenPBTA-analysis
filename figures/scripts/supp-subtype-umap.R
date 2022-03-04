@@ -3,12 +3,17 @@
 # Generate figures with UMAP results 
 
 ### Load libraries
-library(ggplot2)
 library(tidyverse)
+
+### Define variables 
+release_used <- "release-v21-20210820"
+other_cns_color <- "#a9a9a9"
+to_be_classified_color <- "#656565"
+other_lgat_color <- "#000000"
 
 ### Define directory
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-data_dir <- file.path(root_dir, "data", "release-v21-20210820")
+data_dir <- file.path(root_dir, "data", release_used)
 figure_script_dir <- file.path(root_dir, "figures", "scripts")
 dim_red_dir <- file.path(root_dir, "analyses", "transcriptomic-dimension-reduction")
 
@@ -83,7 +88,9 @@ p <- plot_dimension_reduction(umap_df_hgg,
                               alpha_value = 0.7,
                               score1 = 2,
                               score2 = 3,
-                              color_palette = c("#a9a9a9", "#656565", palette_OkabeIto %>% c(1,3,5,7)))
+                              color_palette = c(other_cns_color, 
+                                                to_be_classified_color, 
+                                                palette_OkabeIto %>% c(1,3,5,7)))
 # save the figures
 pdf(file.path(plots_dir, "supp_umap_hgg.pdf"))
 print(p)
@@ -143,7 +150,10 @@ p <- plot_dimension_reduction(umap_df_lgg,
                               alpha_value = 0.7,
                               score1 = 2,
                               score2 = 3,
-                              color_palette = c("#a9a9a9", "#656565", "#000000", palette_OkabeIto %>% c(1,2,3,5,7,8)))
+                              color_palette = c(other_cns_color, 
+                                                to_be_classified_color, 
+                                                other_lgat_color, 
+                                                palette_OkabeIto %>% c(1,2,3,5,7,8)))
 
 # save the figure
 pdf(file.path(plots_dir, "supp_umap_lgg.pdf"))
@@ -174,7 +184,9 @@ p <- plot_dimension_reduction(umap_df_mb,
                               alpha_value = 0.7,
                               score1 = 2,
                               score2 = 3,
-                              color_palette = c("#a9a9a9", "#656565", palette_OkabeIto %>% c(2,4,6,8)))
+                              color_palette = c(other_cns_color, 
+                                                to_be_classified_color, 
+                                                palette_OkabeIto %>% c(2,4,6,8)))
 # save the figure
 pdf(file.path(plots_dir, "supp_umap_mb.pdf"))
 print(p)
@@ -203,7 +215,9 @@ p <- plot_dimension_reduction(umap_df_epn,
                               alpha_value = 0.7,
                               score1 = 2,
                               score2 = 3,
-                              color_palette = c("#a9a9a9", "#656565", palette_OkabeIto %>% c(1,3,6,8)))
+                              color_palette = c(other_cns_color, 
+                                                to_be_classified_color, 
+                                                palette_OkabeIto %>% c(1,3,6,8)))
 # save the figure
 pdf(file.path(plots_dir, "supp_umap_epn.pdf"))
 print(p)
