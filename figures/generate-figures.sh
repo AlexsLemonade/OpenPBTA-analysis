@@ -30,7 +30,7 @@ mkdir -p pdfs
 
 #### Make sure color palettes are up-to-date
 Rscript --vanilla scripts/color_palettes.R
-Rscript -e "rmarkdown::render('mapping-histology-labels.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('mapping-histology-labels.Rmd', clean = TRUE, params = list(release = 'release-v21-20210820'))"
 
 ################ Sample distribution
 # Run sample distribution analysis
