@@ -68,7 +68,7 @@ as_tibble(deconv_output) %>%
         (str_detect(cell_type, "micro"))) %>%
   #mutate(score = str_replace(cell_type, " score", "")) %>%
   select(-cell_type) %>%
-  full_join( # use full, not inner
+  inner_join( 
     select(histology_label_mapping, broad_histology, broad_histology_display, cancer_group, cancer_group_display)
   ) %>%
   drop_na() %>%
@@ -110,62 +110,47 @@ cell_type_names = tibble(
 )
 
 
+hgat_epn_cancer_groups <- c("Ependymoma", "High-grade glioma astrocytoma", "Diffuse midline glioma", "Diffuse intrinsic pontine glioma")
+
+
 as_tibble(deconv_output) %>%
   select(-display_group, -method) %>%
-  filter(!str_detect(cell_type, "score")) %>%
-  full_join( # use full, not inner
-    select(histology_label_mapping, broad_histology, broad_histology_display, cancer_group, cancer_group_display)
-  ) %>%
-  ungroup() -> data
-
-data %>% 
-  drop_na() %>%
-  filter(cancer_group_display != "Other") %>%
-  group_by(cancer_group_display, molecular_subtype, cell_type) %>%
-  #summarize(cov = sd(fraction)/mean(fraction)) %>%
+  #filter(!str_detect(cell_type, "score")) %>%
+  filter(cell_type == "immune score" | str_detect(cell_type, "CD8+")) %>%
+  rename(Kids_First_Biospecimen_ID = sample) %>%
+  inner_join(histologies_df) %>%
   ungroup() %>%
-  ggplot() + 
-  aes(x = fraction) + geom_histogram() + 
-  facet_grid(rows = vars(cancer_group_display), 
-             cols = vars(cell_type), scales = "free")
-    
-
-# all the cell types
-data %>%
-  select(cell_type) %>%
-  distinct() %>%
-  arrange(cell_type) %>%
-  pull() -> all_cell_types
-
-
-# Note: there are 35 samples without a molecular subtype
-data %>%
-  drop_na(cancer_group_display, molecular_subtype) %>%
-  filter(cancer_group_display != "Other") %>%
+  filter(cancer_group %in% hgat_epn_cancer_groups) %>%
+  drop_na(molecular_subtype) %>%
+  select(cell_type, molecular_subtype, Kids_First_Biospecimen_ID, cancer_group, fraction) %>%
   inner_join(
-    select(histology_label_mapping, cancer_group_display, cancer_group_hex)
+    select(histology_label_mapping, cancer_group, cancer_group_display, cancer_group_hex)
   ) %>%
   # use their cell types, but NOT NK since everything is at 0 except 1 outlier. Not interesting.
   #inner_join(cell_type_names, by = "cell_type") %>%
   #filter(cell_type_name != "NK") %>%
-  ## OR!! let's cycle through and find good ones
-  #filter(cell_type %in% all_cell_types[1:8]) %>%
   mutate(cell_type = str_wrap(cell_type, 15)) %>%
+  #filter(str_detect(cell_type, "T cell CD8+")) %>%
   ggplot() + 
-    aes(x = molecular_subtype, y = zscore, color = cancer_group_hex) + 
-    #stat_summary(size = 0.1) + 
-    geom_jitter(size = 0.25, width = 0.1) + 
-  geom_hline(yintercept = 0, alpha = 0.2) +
+    aes(x = molecular_subtype, y = fraction, color = cancer_group_hex) + 
+    #stat_summary() + 
+    geom_boxplot(outlier.shape=NA, color = "black", size = 0.25) + 
+    geom_jitter(size = rel(0.75), width = 0.1) + 
   scale_color_identity() + 
-    facet_grid(rows = vars(cell_type), scales = "free") +
+  facet_grid(rows = vars(cell_type),
+             #cols = vars(molecular_subtype),
+             scales = "free") +
   ggpubr::theme_pubr() + 
   cowplot::panel_border() +
   theme(
-    axis.text.x = element_text(size = 6, angle = 90, hjust =1),
-    axis.text.y = element_text(size = 6),
+    axis.text.x = element_text(size = 6, angle= 90, hjust = 1),
+    axis.text.y = element_text(size = 8),
     strip.text.x = element_text(size = 7),
-    strip.text.y = element_text(size = 5)
-  ) -> woah
+    strip.text.y = element_text(size = 7)
+  ) -> plot_option
 
-ggsave("woah-zscore.pdf", woah, height = 25, width = 15)
+
+ggsave(file.path(output_dir, "temporary_box-jitter.pdf"), 
+       plot_option,
+       width = 10, height = 6)
 
