@@ -295,8 +295,9 @@ barplot_data <- df_signature_mutations_per_mb %>%
       median_mutations_per_mb_exposed = median(mutations_per_mb_per_signature[mutations_per_mb_per_signature != 0]),
       q1_mutation_per_mb_all = quantile(median_mutations_per_mb_all, 0.25),
       q3_mutation_per_mb_all = quantile(median_mutations_per_mb_all, 0.75),
-      q1_mutation_per_mb_exposed  = quantile(median_mutations_per_mb_exposed , 0.25),
-      q3_mutation_per_mb_exposed  = quantile(median_mutations_per_mb_exposed , 0.75)
+      # na.rm=T for CI
+      q1_mutation_per_mb_exposed  = quantile(median_mutations_per_mb_exposed , 0.25, na.rm=T),
+      q3_mutation_per_mb_exposed  = quantile(median_mutations_per_mb_exposed , 0.75, na.rm=T)
     ) %>%
   dplyr::ungroup() %>%
   dplyr::mutate(cancer_group_display_wrap = stringr::str_wrap(cancer_group_display, 20))
@@ -317,7 +318,7 @@ names(cancer_hex) <- hex_labels2$cancer_group_display_wrap
 barplot_data %>%
   ggplot2::ggplot() + 
   ggplot2::aes(x = cancer_group_display_wrap,
-               y = median_mutations_per_mb, 
+               y = median_mutations_per_mb_all, 
                fill = signature) + 
   ggplot2::geom_col(color = "black", size = 0.5) + 
   ggpubr::theme_pubr() + 
