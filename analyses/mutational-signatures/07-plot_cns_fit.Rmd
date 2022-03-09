@@ -36,13 +36,11 @@ gradient_palette_file    <- file.path(proj_root_path, "figures", "palettes", "gr
 
 # Output plots
 exposure_barplot_file <- file.path(analysis_path, "plots", "cns", "exposures_per_sample_barplot.pdf")
-samples_barplot_file <- file.path(analysis_path, "plots", "cns", "samples_barplot.pdf")
 exposures_boxplot_file <- file.path(analysis_path, "plots", "cns", "exposures_boxplot.pdf")
-jitter_file <- file.path(analysis_path, "plots", "cns", "jitter_mutations_mb.pdf")
 
 # The real signature names: https://signal.mutationalsignatures.com/explore/studyTissueType/1-6
 signal_names <- c("11", "1", "N6", "8", "MMR2", "18", "19", "3") # In order A, B, C...
-
+signal_order <- c("1", "3", "8", "11", "18", "19", "N6", "MMR2")
 ```
 
 ```{r read_prep_data, warning=FALSE}
@@ -72,14 +70,17 @@ palette_df <- readr::read_tsv(histology_palette_file)
 gradient_palette_df <- readr::read_tsv(gradient_palette_file)
 
 
+
 # Read in exposures from CNS signature fitting and tibble it up
 raw_exposures <- readr::read_rds(fitted_file)
 decon_mean <- lapply(raw_exposures, "[[", "weights")
 exposures <- do.call(rbind, decon_mean) %>%
   tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
   tibble::as_tibble() %>%
-  tidyr::gather(-Kids_First_Biospecimen_ID, key = "signature", value = "exposure")
-
+  tidyr::gather(-Kids_First_Biospecimen_ID, key = "signature", value = "exposure") %>%
+  # signal order
+  dplyr::mutate(signature = as.character(factor(signature, labels = signal_names)), 
+                signature = forcats::fct_relevel(signature, signal_order))
 
 ```
 
@@ -131,6 +132,7 @@ cancer_groups_to_plot <- c(
 )
 
 
+# counting for labeling
 exposure_counts <- df_signature_mutations_per_mb %>%
   dplyr::filter(cancer_group_display %in% cancer_groups_to_plot) %>% 
   # COUNT of samples with(out) exposure for labeling
@@ -138,7 +140,6 @@ exposure_counts <- df_signature_mutations_per_mb %>%
   dplyr::summarize(total = dplyr::n(),
                    with_exposure = round(sum(exposure > 0)/dplyr::n(), 2)) %>%
   dplyr::ungroup()
-
 
 labels_hex <- palette_df %>%
   dplyr::inner_join(exposure_counts) %>%
@@ -155,6 +156,8 @@ labels_hex <- palette_df %>%
   # factor cancer groups in order of number of samples
   dplyr::mutate(cancer_group_display_n = forcats::fct_reorder(cancer_group_display_n, total, .desc=T)) 
 
+
+  
 # Grab named hex to incorporate into plot
 cancer_hex <- labels_hex$cancer_group_hex
 names(cancer_hex) <- labels_hex$cancer_group_display_n 
@@ -163,7 +166,7 @@ names(cancer_hex) <- labels_hex$cancer_group_display_n
 exposures_sina_boxplot <- df_signature_mutations_per_mb %>%
   # keep cancer_group_hex for joining
   dplyr::select(cancer_group_hex, signature, exposure) %>%
-  # should we rm 0's?
+  # do NOT remove 0's!
   #dplyr::filter(exposure > 0) %>%
   dplyr::inner_join(labels_hex) %>%
   ggplot2::ggplot() + 
@@ -177,15 +180,8 @@ exposures_sina_boxplot <- df_signature_mutations_per_mb %>%
                         alpha = 0,
                         # remove wiskers
                         coef = 0) +
- # ggplot2::geom_text(
- #   data = exposure_counts,
- #   ggplot2::aes(label = with_exposure),
- #   y = 1.15,
- #   size = 3
- # ) +
   ggplot2::facet_wrap(~cancer_group_display_n, nrow = 2) +
-  ggplot2::scale_color_identity() + #fill_manual(values = cancer_group_palette) + 
-  ggplot2::scale_x_discrete(labels = signal_names) +
+  ggplot2::scale_color_identity() + 
   ggplot2::scale_y_continuous(limits = c(0, 1.2), 
                               breaks = c(0, 0.25, 0.5, 0.75, 1.0)) +
   ggplot2::labs(
@@ -212,217 +208,33 @@ ggplot2::ggsave(exposures_boxplot_file, exposures_sina_boxplot, width = 11, heig
 <br><br>
 
 
-### Barplot of median counts
+### Barplot of sample exposures faceted across cancer groups
 
-```{r barplot1, fig.width = 14, fig.height = 4.5}
-barplot_data <- df_signature_mutations_per_mb %>%
-  dplyr::filter(cancer_group %in% cancer_groups_to_plot) %>%
-  dplyr::group_by(cancer_group_display, signature) %>%
-  dplyr::summarize(
-      # Proportion of samples with signature
-      proportion_of_samples = sum(mutations_per_mb_per_signature > 0) / dplyr::n(),
-      # Median/mean number of mutations in each group for samples with non-zero exposure
-      # TODO: I think the "for samples with non-zero exposure" is only suitable when we show proportions also. 
-      median_mutations_per_mb_all = median(mutations_per_mb_per_signature),
-      median_mutations_per_mb_exposed = median(mutations_per_mb_per_signature[mutations_per_mb_per_signature != 0]),
-      q1_mutation_per_mb_all = quantile(median_mutations_per_mb_all, 0.25),
-      q3_mutation_per_mb_all = quantile(median_mutations_per_mb_all, 0.75),
-      # na.rm=T for CI
-      q1_mutation_per_mb_exposed  = quantile(median_mutations_per_mb_exposed , 0.25, na.rm=T),
-      q3_mutation_per_mb_exposed  = quantile(median_mutations_per_mb_exposed , 0.75, na.rm=T)
-    ) %>%
-  dplyr::ungroup() %>%
-  dplyr::mutate(cancer_group_display_wrap = stringr::str_wrap(cancer_group_display, 20))
+```{r barplot1, fig.width = 12, fig.height = 9}
 
-hex_labels2 <- barplot_data %>%
-  dplyr::select(cancer_group_display, cancer_group_display_wrap) %>%
-  dplyr::inner_join(
-    dplyr::select(palette_df, cancer_group_display, cancer_group_hex)
-  ) %>%
-  dplyr::distinct() 
-
-# Grab named hex to incorporate into plot
-cancer_hex <- hex_labels2$cancer_group_hex
-names(cancer_hex) <- hex_labels2$cancer_group_display_wrap
-
-
-# This does not work.
-barplot_data %>%
-  ggplot2::ggplot() + 
-  ggplot2::aes(x = cancer_group_display_wrap,
-               y = median_mutations_per_mb_all, 
-               fill = signature) + 
-  ggplot2::geom_col(color = "black", size = 0.5) + 
-  ggpubr::theme_pubr() + 
-  ggplot2::theme(
-    axis.text.x = ggplot2::element_text(angle = 40, hjust = 0.5),
-  ) -> bad_counts_plot
-
-ggplot2::ggsave(file.path("plots", "cns", "bad_counts_plot.pdf"), bad_counts_plot, width = 10, height = 5 )
-
-# Does this work?
-df_signature_mutations_per_mb %>%
-  dplyr::filter(cancer_group %in% cancer_groups_to_plot) %>%
-  ggplot2::ggplot() + 
-  ggplot2::aes(x = signature,
-               y = mutations_per_mb_per_signature, color = signature) + 
-  ggplot2::geom_jitter(size = 0.7, width = 0.1) + 
-  ggplot2::facet_wrap(~cancer_group_display, nrow=2, scales = "free") + 
-  ggplot2::scale_color_discrete(labels = signal_names) +
-  ggplot2::scale_x_discrete(labels = signal_names) +
-  ggpubr::theme_pubr() +
-  ggplot2::theme(
-    legend.position = "none"
-  ) -> jitter_mutations_per_mb
-
-ggplot2::ggsave(jitter_file, jitter_mutations_per_mb, width = 12, height = 4.5)
-```
-
-
-One more round of bar plots:
-
-
-```{r bar_attempts, fig.height = 8, fig.width = 14}
-
-
-# One more...
-barplot_data %>%
-  ggplot2::ggplot() + 
-  ggplot2::aes(x = signature, 
-      y = median_mutations_per_mb_all, 
-      fill = cancer_group_display_wrap) + 
-  ggplot2::geom_col(color = "black", size = 0.3) + 
-  ggplot2::geom_errorbar(
-    ggplot2::aes(
-      ymin = q1_mutation_per_mb_all, 
-      ymax = q3_mutation_per_mb_all
-    ),
-    width = 0.2
-  ) +
-  ggplot2::facet_wrap(~cancer_group_display_wrap, nrow = 2, scales = "free_y") +
-  ggplot2::scale_color_discrete(labels = signal_names) +
-  ggplot2::scale_x_discrete(labels = signal_names) +
-  ggplot2::scale_fill_manual(values = cancer_hex) +
-  ggpubr::theme_pubr() +
-  ggplot2::theme(
-    legend.position = "none"
-  ) + ggplot2::ggtitle("All samples, including unexposed") -> p1
-
-
-barplot_data %>%
-  ggplot2::ggplot() + 
-  ggplot2::aes(x = signature, 
-      y = median_mutations_per_mb_exposed, 
-      fill = cancer_group_display_wrap) + 
-  ggplot2::geom_col(color = "black", size = 0.3) + 
-  ggplot2::geom_errorbar(
-    ggplot2::aes(
-      ymin = q1_mutation_per_mb_exposed, 
-      ymax = q3_mutation_per_mb_exposed
-    ),
-    width = 0.2
-  ) +
-  ggplot2::facet_wrap(~cancer_group_display_wrap, nrow = 2, scales = "free_y") +
-  ggplot2::scale_color_discrete(labels = signal_names) +
-  ggplot2::scale_x_discrete(labels = signal_names) +
-  ggplot2::scale_fill_manual(values = cancer_hex) +
-  ggpubr::theme_pubr() +
-  ggplot2::theme(
-    legend.position = "none"
-  ) + ggplot2::ggtitle("ONLY exposed samples") -> p2
-
-
-
-
-library(patchwork) # move if we use it
-ps <- p1 / p2
-
-
-ggplot2::ggsave(file.path("plots", "cns", "barplot_concept_counts.pdf"), ps, width = 13, height = 7)
-
-
-
-```
-
-
-
-
-
-### Mutation counts for top n most mutated samples in the PBTA
-
-
-
-```{r make_top_n}
-
-top_n <- 10
-top_n_data <- total_mutations_per_sample %>%
-  dplyr::arrange(-total_mutation_count) %>%
-  dplyr::distinct() %>%
-  dplyr::slice(1:top_n) %>%
-  dplyr::left_join(df_signature_mutations_per_mb) %>%
-  dplyr::mutate(signature = forcats::fct_rev(signature), 
-                Kids_First_Biospecimen_ID = forcats::fct_reorder(Kids_First_Biospecimen_ID, 
-                                                                 total_mutation_count, 
-                                                                 .desc=TRUE))
-```
-
-Here is the information about these top *n* (10) samples:
-
-
-
-```{r top_n_histologies}
-# What are their histologies?
-top_n_data %>%
-  dplyr::select(Kids_First_Biospecimen_ID, 
-                broad_histology_display, 
-                cancer_group_display, 
-                tumor_descriptor,
-                total_mutation_count) %>%
-  dplyr::distinct() %>%
-  dplyr::arrange(-total_mutation_count)
-```
-
-
-
-
-And the associated barplot:
-```{r viz_top_n, fig.width = 8, fig.height = 5}
-
-# The two pairs in the first 8 of this palette have highly similar colors, so we want to avoid that.
-signal_simpsons <- c(
-  "#FED439FF",
-  "#709AE1FF", 
-  "#8A9197FF",
-  "#D2AF81FF",
-  "#FD7446FF",
-  "#D5E4A2FF",
-  ###############
-  "#1A9993FF",
-  "#FD8CC1FF"
-)
-
-
-samples_barplot <- top_n_data %>%
-  ggplot2::ggplot() + 
+sample_exposures_barplot <- df_signature_mutations_per_mb %>%
+  # keep cancer_group_hex for joining
+  dplyr::select(cancer_group_hex, signature, exposure, Kids_First_Biospecimen_ID) %>%
+  dplyr::inner_join(labels_hex) %>%
+  ggplot2::ggplot() +
   ggplot2::aes(x = Kids_First_Biospecimen_ID, 
-               y = mutations_per_mb_per_signature, 
+               y = exposure, 
                fill = signature) + 
   ggplot2::geom_col() + 
-  ggplot2::labs(
-    x = "Tumor Sample ID of Most Mutated Samples",
-    y = "Mutations per Mb"
-  ) +
-  ggplot2::scale_fill_manual(values = signal_simpsons, 
-                             labels = signal_names, 
-                             name = "RefSig Signature") + 
+  ggplot2::labs(x = "Sample", y = "Signature exposure", fill = "RegSig Signature") + 
+  colorblindr::scale_fill_OkabeIto() + 
+  ggplot2::facet_wrap(~cancer_group_display_n, scales = "free_x", nrow = 5) + 
   ggpubr::theme_pubr() + 
   ggplot2::theme(
-    axis.text.x = ggplot2::element_text(angle = 40, hjust=0.95, size = ggplot2::rel(0.65))
+    axis.text.x = ggplot2::element_blank(),
+    axis.ticks.x = ggplot2::element_blank(),
+    axis.title = ggplot2::element_text(size = ggplot2::rel(1.125))
   )
 
-samples_barplot
 
-ggplot2::ggsave(samples_barplot_file, samples_barplot, width = 8, height = 5)
+sample_exposures_barplot
+ggplot2::ggsave(exposure_barplot_file, sample_exposures_barplot, width = 12, height = 9)
+  
 ```
 
 
