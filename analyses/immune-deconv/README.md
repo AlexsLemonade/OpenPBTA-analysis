@@ -1,6 +1,6 @@
 ## Immune Deconvolution
 
-**Module authors:** Komal Rathi ([@komalsrathi](https://github.com/komalsrathi))
+**Module authors:** Komal Rathi ([@komalsrathi](https://github.com/komalsrathi)) and Stephanie J. Spielman 
 
 ### Description
 
@@ -9,7 +9,10 @@ The package `immunedeconv`, provides six deconvolution (and similar) methods: xC
 
 ### Method selection
 
-We chose xCell as the method of choice because it: 
+We use two methods: xCell and quanTIseq. 
+
+
+We chose xCell because it: 
 1) is the most comprehensive deconvolution method and is able to deconvolute the maximum number of immune and non-immune cell types 
 2) is highly robust against background predictions and 
 3) can reliably identify the presence of immune cells at low abundances (0-1% infiltration depending on the immune cell type).
@@ -17,6 +20,9 @@ We chose xCell as the method of choice because it:
 xCell outputs immune scores as arbitrary scores that represent cell type abundance. 
 Importantly, these scores may be compared between samples (inter-sample comparisons), but _may not_ be compared across cell types or cancer types, as described in the [`immunedeconv` documentation](https://icbi-lab.github.io/immunedeconv/articles/immunedeconv.html#interpretation-of-scores). This is in part because xCell is actually a signature-based method and not a deconvolution method, as is described in the [xCell Publication](https://doi.org/10.1186/s13059-017-1349-1):
 > Unlike signature-based methods, which output independent enrichment scores per cell type, the output from deconvolution-based methods is the inferred proportions of the cell types in the mixture.
+
+Therefore, we also use `quanTIseq` as a complementary method. Although `quanTIseq` looks at fewer cell types, the scores can be interpreted as absolute fractions, thereby allowing comparison _both_ across samples and cell types.
+
 
 
 ### Analysis scripts
@@ -32,14 +38,16 @@ pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds
 
 2. Function
 
-This script deconvolutes immune cell types using `xCell`.
+This script deconvolutes immune cell types using the specified method, one of `xCell` or `quanTIseq`.
 
 3. Output: 
 
-`results/deconv-output.RData`
+```
+results/xcell_deconv-output.rds
+results/quantiseq_deconv-output.rds
+```
 
-The results in the RData object are predicted immune scores per cell type per input sample. 
-These scores are not actual cell fractions but arbitrary scores which can be compared within samples, across samples and/or between various cancer types. 
+The results in the RDS files object are predicted immune scores per cell type per input sample, for each of the two methods respectively.
 Depending on the user requirement, the output can be used to create various visualizations. 
 
 
