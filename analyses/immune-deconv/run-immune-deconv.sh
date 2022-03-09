@@ -20,19 +20,24 @@ cd "$script_directory" || exit
 mkdir -p results
 mkdir -p plots
 
+# Shared input files
+POLYA='../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds'
+STRANDED='../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds'
+CLIN='../../data/pbta-histologies.tsv'
+
 # generate deconvolution output for poly-A and stranded datasets using xCell
 Rscript --vanilla 01-immune-deconv.R \
---polyaexprs '../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds' \
---strandedexprs '../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds' \
---clin '../../data/pbta-histologies.tsv' \
+--polyaexprs $POLYA \
+--strandedexprs $STRANDED \
+--clin $CLIN \
 --method 'xcell' \
 --outputfile 'results/xcell_deconv-output.rds' 
 
 # generate deconvolution output for poly-A and stranded datasets using quanTIseq
 Rscript --vanilla 01-immune-deconv.R \
---polyaexprs '../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds' \
---strandedexprs '../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds' \
---clin '../../data/pbta-histologies.tsv' \
+--polyaexprs $POLYA \
+--strandedexprs $STRANDED \
+--clin $CLIN \
 --method 'quantiseq' \
 --outputfile 'results/quantiseq_deconv-output.rds' 
 
