@@ -1,4 +1,4 @@
-# Author: Komal S. Rathi
+# Author: Komal S. Rathi and Stephanie J. Spielman
 # Function:
 # Script to perform immune characterization using immunedeconv, uses xCell by default.
 
@@ -21,7 +21,7 @@ option_list <- list(
               default = "xcell",
               help = "Deconvolution Method"),
   make_option(c("-o","--outputfile"), type = "character",
-              help = "Deconv Output (.RData)")
+              help = "Deconv Output (.RDS)")
 )
 
 # Example Run:
@@ -30,17 +30,17 @@ option_list <- list(
 # --strandedexprs '../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds' \
 # --clin '../../data/pbta-histologies.tsv' \
 # --method 'xcell' \
-# --outputfile 'results/deconv-output.RData'
+# --outputfile 'results/deconv-output-xcell.RDS'
 
 # parse parameters
 opt <- parse_args(OptionParser(option_list = option_list))
 polya <- opt$polyaexprs
 stranded <- opt$strandedexprs
 clin_file <- opt$clin
-deconv_method <- opt$method
+deconv_method <- tolower(opt$method) # immunedeconv requires lower case
 output_file <- opt$outputfile
 
-#### Check model parameter - must be in deconvolution_methods (immunedeconv accepted options)
+#### Check model parameter - must be in deconvolution_methods (an immmunedeconv variable)
 if (!is.null(deconv_method)){
   if (!(deconv_method %in% deconvolution_methods)) {
     stop( paste(c("Specified method not available. Must be one of the following: ", deconvolution_methods), collapse=" ") )
@@ -75,6 +75,10 @@ deconv <- function(expr_input, clin_file, method) {
     dplyr::select(Kids_First_Biospecimen_ID, broad_histology, display_group, molecular_subtype)
 
   # deconvolute using specified method
+  # Note, for quanTIseq, defaults are ok: 
+  #### Default is `tumor = TRUE`, which is what we want
+  #### Default is `scale_mRNA = TRUE`. This performs correction of cell-type-specific mRNA content bias.
+  #### we want to keep scale_mRNA = TRUE since we are NOT working with simulated data
   res <- deconvolute(gene_expression = as.matrix(expr_input), method = method)
   res$method <- names(grep(method, deconvolution_methods, value = TRUE)) # assign method name
 
@@ -87,13 +91,11 @@ deconv <- function(expr_input, clin_file, method) {
   return(res)
 }
 
-# Deconvolute using xCell for poly-a and stranded datasets
+# Deconvolute using specified method for poly-a and stranded datasets
 expr_input <- c("polya", "stranded")
 combo <- expand.grid(expr_input, deconv_method, stringsAsFactors = F) 
 deconv_output <- apply(combo, 1, FUN = function(x) deconv(expr_input = x[1], clin_file = clin_file, method = x[2]))
 deconv_output <- do.call(rbind.data.frame, deconv_output)
 
-# save output to RData object
-print("Writing output to file..")
-save(deconv_output, file = output_file)
-print("Done!")
+# save output to RDS file
+write_rds(deconv_output, output_file)

@@ -26,7 +26,16 @@ Rscript --vanilla 01-immune-deconv.R \
 --strandedexprs '../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds' \
 --clin '../../data/pbta-histologies.tsv' \
 --method 'xcell' \
---outputfile 'results/deconv-output.RData'
+--outputfile 'results/xcell_deconv-output.rds' 
+
+# generate deconvolution output for poly-A and stranded datasets using quanTIseq
+Rscript --vanilla 01-immune-deconv.R \
+--polyaexprs '../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds' \
+--strandedexprs '../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds' \
+--clin '../../data/pbta-histologies.tsv' \
+--method 'quantiseq' \
+--outputfile 'results/quantiseq_deconv-output.rds' 
+
 
 echo "Deconvolution finished..."
 echo "Create summary plots"
