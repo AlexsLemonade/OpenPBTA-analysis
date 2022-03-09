@@ -38,10 +38,4 @@ Rscript --vanilla 01-immune-deconv.R \
 
 
 echo "Deconvolution finished..."
-echo "Create summary plots"
-
-# Now, run the script to generate heatmaps of average normalized immune scores for xCell, stratified by histology and by molecular subtype
-Rscript --vanilla 02-summary-plots.R \
---input 'results/deconv-output.RData' \
---output_dir 'plots'
 
