@@ -88,8 +88,8 @@ merge <- merge %>%
 ```{r}
 # Fit linear regression and create plot label
 result <- cor.test(merge$sv_breaks_count, merge$cnv_breaks_count)
-	corr <- result$estimate
-	pval <-  result$p.value
+corr <- result$estimate
+pval <-  result$p.value
 label <- paste0("Linear Regression of SV breaks on CNV breaks:\n",
                    "Adjusted R = ", signif(corr, 3),
                      ", P = ", signif(pval, 3))
