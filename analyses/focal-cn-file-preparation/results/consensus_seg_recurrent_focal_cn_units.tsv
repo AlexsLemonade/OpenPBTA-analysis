@@ -802,7 +802,6 @@ region	status	short_histology	count	region_type
 1q21.3	gain	Medulloblastoma	5	cytoband
 1q21.3	gain	Meningioma	4	cytoband
 1q22	gain	All	59	cytoband
-1q22	gain	Embryonal tumor	4	cytoband
 1q22	gain	Ependymoma	12	cytoband
 1q22	gain	HGAT	24	cytoband
 1q22	gain	Medulloblastoma	6	cytoband
@@ -987,7 +986,7 @@ region	status	short_histology	count	region_type
 22q11.22	loss	All	36	cytoband
 22q11.22	loss	ATRT	4	cytoband
 22q11.22	loss	Ependymoma	8	cytoband
-22q11.22	loss	LGAT	5	cytoband
+22q11.22	loss	LGAT	4	cytoband
 22q11.22	loss	Meningioma	7	cytoband
 22q11.22	loss	Schwannoma	4	cytoband
 22q11.23	loss	All	49	cytoband
@@ -1657,6 +1656,7 @@ region	status	short_histology	count	region_type
 6q27	loss	HGAT	8	cytoband
 7p	gain	All	59	arm
 7p	gain	Ependymoma	6	arm
+7p	gain	GNT	4	arm
 7p	gain	HGAT	12	arm
 7p	gain	LGAT	13	arm
 7p	gain	Medulloblastoma	16	arm
@@ -2374,6 +2374,7 @@ ALG1	loss	All	6	gene
 ALG12	gain	All	4	gene
 ALG12	loss	All	26	gene
 ALG12	gain	HGAT	4	gene
+ALG12	loss	LGAT	4	gene
 ALG12	loss	Meningioma	8	gene
 ALG8	gain	All	5	gene
 ALG8	loss	All	6	gene
@@ -2868,6 +2869,7 @@ BRCA1	loss	All	7	gene
 BRCA1	gain	Medulloblastoma	4	gene
 BRCA1	loss	HGAT	4	gene
 BRD1	loss	All	28	gene
+BRD1	loss	LGAT	4	gene
 BRD1	loss	Meningioma	8	gene
 BRD7	gain	All	5	gene
 BRD7	loss	All	4	gene
@@ -3050,6 +3052,7 @@ C22orf15	loss	ATRT	5	gene
 C22orf24	loss	All	5	gene
 C22orf31	loss	All	8	gene
 C22orf34	loss	All	28	gene
+C22orf34	loss	LGAT	4	gene
 C22orf34	loss	Meningioma	8	gene
 C22orf39	gain	All	7	gene
 C22orf39	loss	All	52	gene
@@ -3891,6 +3894,7 @@ CREBZF	loss	All	10	gene
 CRELD2	gain	All	4	gene
 CRELD2	loss	All	24	gene
 CRELD2	gain	HGAT	4	gene
+CRELD2	loss	LGAT	4	gene
 CRELD2	loss	Meningioma	8	gene
 CREM	loss	All	6	gene
 CREM	loss	HGAT	4	gene
@@ -5150,7 +5154,6 @@ GNAT3	gain	All	4	gene
 GNAZ	gain	All	4	gene
 GNAZ	loss	All	16	gene
 GNAZ	loss	ATRT	4	gene
-GNAZ	loss	LGAT	4	gene
 GNAZ	loss	Meningioma	4	gene
 GNB1	loss	All	14	gene
 GNB1	loss	Meningioma	4	gene
@@ -5716,6 +5719,7 @@ IL12RB1	gain	All	5	gene
 IL17REL	gain	All	4	gene
 IL17REL	loss	All	23	gene
 IL17REL	gain	HGAT	4	gene
+IL17REL	loss	LGAT	4	gene
 IL17REL	loss	Meningioma	8	gene
 IL25	gain	All	5	gene
 IL25	loss	All	6	gene
@@ -7078,7 +7082,7 @@ LOC105375787	gain	HGAT	4	gene
 LOC105376199	loss	All	4	gene
 LOC105376291	gain	All	27	gene
 LOC105376291	gain	HGAT	4	gene
-LOC105376291	gain	LGAT	7	gene
+LOC105376291	gain	LGAT	8	gene
 LOC105376654	gain	All	4	gene
 LOC105376654	loss	All	11	gene
 LOC105376654	loss	Ependymoma	4	gene
@@ -7886,6 +7890,7 @@ MIR365B	gain	All	6	gene
 MIR3666	gain	All	5	gene
 MIR3667	gain	All	4	gene
 MIR3667	loss	All	28	gene
+MIR3667	loss	LGAT	4	gene
 MIR3667	loss	Meningioma	8	gene
 MIR3668	loss	All	4	gene
 MIR3668	loss	Ependymoma	4	gene
@@ -8399,6 +8404,7 @@ MIR6817	loss	Meningioma	4	gene
 MIR6821	gain	All	5	gene
 MIR6821	loss	All	24	gene
 MIR6821	gain	HGAT	4	gene
+MIR6821	loss	LGAT	4	gene
 MIR6821	loss	Meningioma	8	gene
 MIR6823	loss	All	4	gene
 MIR6824	loss	All	4	gene
@@ -8530,6 +8536,7 @@ MKS1	gain	All	4	gene
 MLC1	gain	All	4	gene
 MLC1	loss	All	22	gene
 MLC1	gain	HGAT	4	gene
+MLC1	loss	LGAT	4	gene
 MLC1	loss	Meningioma	7	gene
 MLF2	gain	All	5	gene
 MLIP	gain	All	4	gene
@@ -8579,6 +8586,7 @@ MOV10	loss	All	4	gene
 MOV10L1	gain	All	4	gene
 MOV10L1	loss	All	21	gene
 MOV10L1	gain	HGAT	4	gene
+MOV10L1	loss	LGAT	4	gene
 MOV10L1	loss	Meningioma	7	gene
 MOXD2P	gain	All	4	gene
 MPDU1	loss	All	4	gene
@@ -9706,6 +9714,7 @@ PILRB	gain	All	4	gene
 PIM3	gain	All	5	gene
 PIM3	loss	All	24	gene
 PIM3	gain	HGAT	4	gene
+PIM3	loss	LGAT	4	gene
 PIM3	loss	Meningioma	8	gene
 PINX1	gain	All	15	gene
 PINX1	loss	All	14	gene
@@ -10030,16 +10039,16 @@ PRR9	gain	HGAT	8	gene
 PRRT2	loss	All	9	gene
 PRRT2	loss	Medulloblastoma	4	gene
 PRSS1	gain	All	77	gene
-PRSS1	gain	DNET	8	gene
 PRSS1	gain	Ependymoma	9	gene
 PRSS1	gain	Ganglioglioma	7	gene
+PRSS1	gain	GNT	8	gene
 PRSS1	gain	HGAT	9	gene
 PRSS1	gain	LGAT	20	gene
 PRSS1	gain	Meningioma	7	gene
 PRSS2	gain	All	78	gene
-PRSS2	gain	DNET	8	gene
 PRSS2	gain	Ependymoma	9	gene
 PRSS2	gain	Ganglioglioma	7	gene
+PRSS2	gain	GNT	8	gene
 PRSS2	gain	HGAT	9	gene
 PRSS2	gain	LGAT	21	gene
 PRSS2	gain	Meningioma	7	gene
@@ -10656,7 +10665,6 @@ RSPH1	loss	All	5	gene
 RSPH14	gain	All	4	gene
 RSPH14	loss	All	16	gene
 RSPH14	loss	ATRT	4	gene
-RSPH14	loss	LGAT	4	gene
 RSPH14	loss	Meningioma	4	gene
 RSPO4	gain	All	5	gene
 RSPO4	loss	All	6	gene
@@ -11991,10 +11999,10 @@ TAOK1	gain	All	6	gene
 TAOK2	loss	All	8	gene
 TAPBPL	gain	All	5	gene
 TARP	gain	All	56	gene
-TARP	gain	DNET	5	gene
 TARP	gain	Ependymoma	4	gene
+TARP	gain	GNT	7	gene
 TARP	gain	HGAT	6	gene
-TARP	gain	LGAT	21	gene
+TARP	gain	LGAT	20	gene
 TARP	gain	Medulloblastoma	4	gene
 TARP	gain	Meningioma	4	gene
 TARS2	gain	All	36	gene
@@ -12677,6 +12685,7 @@ TTLL6	gain	All	7	gene
 TTLL8	gain	All	4	gene
 TTLL8	loss	All	23	gene
 TTLL8	gain	HGAT	4	gene
+TTLL8	loss	LGAT	4	gene
 TTLL8	loss	Meningioma	8	gene
 TTLL9	gain	All	14	gene
 TTYH1	gain	All	4	gene
@@ -13235,6 +13244,7 @@ ZBED3-AS1	loss	HGAT	4	gene
 ZBED4	gain	All	4	gene
 ZBED4	loss	All	27	gene
 ZBED4	gain	HGAT	4	gene
+ZBED4	loss	LGAT	4	gene
 ZBED4	loss	Meningioma	8	gene
 ZBED5	gain	All	5	gene
 ZBED5	loss	All	8	gene
