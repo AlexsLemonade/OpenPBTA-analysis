@@ -63,7 +63,7 @@ merge <- chromoth_per_sample %>%
 
 Define plot theme:
 ```{r}
-theme_set(theme_light())
+theme_set(ggpubr::theme_pubr())
 ```
 
 Define color scale for # chromothripsis regions:
