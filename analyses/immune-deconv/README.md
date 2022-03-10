@@ -21,7 +21,7 @@ xCell outputs immune scores as arbitrary scores that represent cell type abundan
 Importantly, these scores may be compared between samples (inter-sample comparisons), but _may not_ be compared across cell types or cancer types, as described in the [`immunedeconv` documentation](https://icbi-lab.github.io/immunedeconv/articles/immunedeconv.html#interpretation-of-scores). This is in part because xCell is actually a signature-based method and not a deconvolution method, as is described in the [xCell Publication](https://doi.org/10.1186/s13059-017-1349-1):
 > Unlike signature-based methods, which output independent enrichment scores per cell type, the output from deconvolution-based methods is the inferred proportions of the cell types in the mixture.
 
-Therefore, we also use `quanTIseq` as a complementary method. Although `quanTIseq` looks at fewer cell types, the scores can be interpreted as absolute fractions, thereby allowing comparison _both_ across samples and cell types.
+Therefore, we also use `quanTIseq` as a complementary method. Although `quanTIseq` looks at fewer cell types, the scores can be interpreted as absolute fractions, thereby allowing comparison _both_ across samples and cell types, [as described](https://icbi-lab.github.io/immunedeconv/articles/immunedeconv.html#interpretation-of-scores)
 
 
 
