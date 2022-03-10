@@ -180,3 +180,8 @@ annotated_cn %>%
 ```
 
 
+## Session Info 
+
+```{r}
+sessionInfo()
+```
