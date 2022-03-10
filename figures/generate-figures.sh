@@ -30,7 +30,7 @@ mkdir -p pdfs
 
 #### Make sure color palettes are up-to-date
 Rscript --vanilla scripts/color_palettes.R
-Rscript -e "rmarkdown::render('mapping-histology-labels.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('mapping-histology-labels.Rmd', clean = TRUE, params = list(release = 'release-v21-20210820'))"
 
 ################ Sample distribution
 # Run sample distribution analysis
@@ -129,6 +129,9 @@ Rscript --vanilla -e "rmarkdown::render('${analyses_dir}/gene-set-enrichment-ana
 
 # Step that generates the GSVA, UMAP, and legend panels
 Rscript --vanilla scripts/fig4-panels-gsva-umap.R
+
+# Step that generates UMAP for molecular analysis 
+Rscript --vanilla scripts/supp-subtype-umap.R
 
 ####### CN Status Heatmap
 if [ "$RUN_LOCAL" -lt "1" ]; then
