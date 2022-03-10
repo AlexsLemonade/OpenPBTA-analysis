@@ -141,6 +141,7 @@ exposure_counts <- df_signature_mutations_per_mb %>%
                    with_exposure = round(sum(exposure > 0)/dplyr::n(), 2)) %>%
   dplyr::ungroup()
 
+# Create labeling for cancer groups that is wrapped and contains (N)
 labels_hex <- palette_df %>%
   dplyr::inner_join(exposure_counts) %>%
   dplyr::select(cancer_group_hex, cancer_group_display) %>%
@@ -304,14 +305,26 @@ df_signature_mutations_per_mb %>%
   
 ```
 
-Which samples specifically are those with extremely high mutations in these signatures? Mostly HGG.
+Which samples specifically are those with extremely high mutations in these signatures? Mostly HGG, which are all H3 wildtype without a particular tp53 pattern.
 
 ```{r}
-df_signature_mutations_per_mb %>%
+highly_mutated <- df_signature_mutations_per_mb %>%
   dplyr::arrange(-mutations_per_mb_per_signature) %>%
   dplyr::filter(mutations_per_mb_per_signature > 1) %>%
-  dplyr::select(Kids_First_Biospecimen_ID, cancer_group_display, mutations_per_mb_per_signature) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, cancer_group_display, mutations_per_mb_per_signature) 
+
+# Which samples are highly mutated?
+highly_mutated %>%
   dplyr::count(cancer_group_display) %>%
+  dplyr::arrange(-n) %>%
+  knitr::kable()
+
+# What are their molecular subtypes?
+highly_mutated %>%
+  dplyr::inner_join(
+    dplyr::select(meta, Kids_First_Biospecimen_ID, molecular_subtype)
+  ) %>%
+  dplyr::count(molecular_subtype) %>%
   dplyr::arrange(-n) %>%
   knitr::kable()
 ```
