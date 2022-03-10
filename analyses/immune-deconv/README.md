@@ -42,20 +42,6 @@ The results in the RData object are predicted immune scores per cell type per in
 These scores are not actual cell fractions but arbitrary scores which can be compared within samples, across samples and/or between various cancer types. 
 Depending on the user requirement, the output can be used to create various visualizations. 
 
-#### 02-summary-plots.R 
-
-1. Input
-
-`results/deconv-output.RData`
-
-2. Function:
-
-This script creates heatmaps from predicted immune scores.
-
-3. Output
-
-* `plots/heatmap_xCell_by_histology.pdf`: heatmap of average immune scores per cell type per histology stratified by brain and non-brain tumors.
-* `plots/heatmap_xCell_by_molecular_subtype.pdf`: heatmap of average immune scores per cell type per molecular subtype per histology.
 
 ### Running the analysis
 
