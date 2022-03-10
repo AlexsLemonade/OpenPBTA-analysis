@@ -29,7 +29,6 @@ CLIN='../../data/pbta-histologies.tsv'
 Rscript --vanilla 01-immune-deconv.R \
 --polyaexprs $POLYA \
 --strandedexprs $STRANDED \
---clin $CLIN \
 --method 'xcell' \
 --outputfile 'results/xcell_deconv-output.rds' 
 
@@ -37,10 +36,9 @@ Rscript --vanilla 01-immune-deconv.R \
 Rscript --vanilla 01-immune-deconv.R \
 --polyaexprs $POLYA \
 --strandedexprs $STRANDED \
---clin $CLIN \
 --method 'quantiseq' \
 --outputfile 'results/quantiseq_deconv-output.rds' 
 
 
-echo "Deconvolution finished..."
+echo "Deconvolution finished."
 
