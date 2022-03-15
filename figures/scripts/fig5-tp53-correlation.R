@@ -44,7 +44,19 @@ tp53_extend <- tp53_extend %>%
   dplyr::select(sample_id, Kids_First_Biospecimen_ID_RNA, tp53_score, NormEXTENDScores_fpkm) %>%
   dplyr::left_join(histologies_df_palette %>% 
                      dplyr::select(sample_id, cancer_group_display)) %>%
-  distinct()
+  dplyr::filter(!is.na(cancer_group_display)) %>%
+  distinct() %>%
+  group_by(cancer_group_display) %>%
+  dplyr::mutate(pval = cor.test(NormEXTENDScores_fpkm, 
+                                tp53_score, 
+                                method="pearson")$p.value) %>%
+  dplyr::mutate(correlation = cor.test(NormEXTENDScores_fpkm, 
+                                       tp53_score,
+                                       method="pearson")$estimate) 
+# run correction 
+ntest <- length(unique(tp53_extend$cancer_group_display))
+tp53_extend <- tp53_extend %>% 
+  dplyr::mutate(adj_pval = pval / ntest) 
 
 ### Save the plot
 pdf(file.path(output_dir, "tp53_vs_extend_corr.pdf"))
@@ -55,11 +67,12 @@ p <- ggplot(data = tp53_extend ,
   xlab("NormEXTEND Scores") + 
   ylab("TP53 Scores") + 
   geom_smooth(method=lm, se=TRUE) + 
-  stat_cor(method = "pearson", label.x = 0.05, label.y = 1, size = 2.5) + 
   theme(axis.text.x = element_text(size = 8), axis.title.x = element_text(size = 10),
         axis.text.y = element_text(size = 8), axis.title.y = element_text(size = 10),
         strip.text.x = element_text(size = 5)) +
-  facet_wrap(~cancer_group_display)
+  facet_wrap(~cancer_group_display) + 
+  geom_text(aes(y = 1.2, x = 0.2, label = paste0("R = ", round(correlation, 3))), size = 2) + 
+  geom_text(aes(y = 1.1, x = 0.3, label = paste0("adj.pval = ", round(adj_pval, 3))), size = 2) 
 print(p)
 dev.off()
 
@@ -73,7 +86,20 @@ tp53_break <- tp53_break %>%
   dplyr::select(sample_id, Kids_First_Biospecimen_ID_DNA, tp53_score, breaks_density) %>%
   dplyr::left_join(histologies_df_palette %>% 
                      dplyr::select(sample_id, cancer_group_display)) %>%
-  distinct()
+  dplyr::filter(!is.na(cancer_group_display)) %>% 
+  dplyr::filter(!is.na(breaks_density)) %>%
+  distinct() %>%
+  group_by(cancer_group_display) %>%
+  dplyr::mutate(pval = cor.test(breaks_density, 
+                                tp53_score, 
+                                method="pearson")$p.value) %>%
+  dplyr::mutate(correlation = cor.test(breaks_density, 
+                                       tp53_score,
+                                       method="pearson")$estimate) 
+# run correction 
+ntest <- length(unique(tp53_break$cancer_group_display))
+tp53_break <- tp53_break %>% 
+  dplyr::mutate(adj_pval = pval / ntest) 
 
 ### Save the plot
 pdf(file.path(output_dir, "tp53_vs_breakpoint_den_corr.pdf"))
@@ -83,10 +109,11 @@ p2 <- ggplot(data = tp53_break,
   xlab("Breakpoint Density") + 
   ylab("TP53 Scores") + 
   geom_smooth(method=lm, se=TRUE) + 
-  stat_cor(method = "pearson", label.x = 0.01, label.y = 1, size = 2.5) + 
   theme(axis.text.x = element_text(size = 8), axis.title.x = element_text(size = 10),
         axis.text.y = element_text(size = 8), axis.title.y = element_text(size = 10),
         strip.text.x = element_text(size = 5)) +
-  facet_wrap(~cancer_group_display)
+  facet_wrap(~cancer_group_display) + 
+  geom_text(aes(y = 1.2, x = 0.03, label = paste0("R = ", round(correlation, 3))), size = 2) + 
+  geom_text(aes(y = 1.1, x = 0.04, label = paste0("adj.pval = ", round(adj_pval, 3))), size = 2) 
 print(p2)
 dev.off()
