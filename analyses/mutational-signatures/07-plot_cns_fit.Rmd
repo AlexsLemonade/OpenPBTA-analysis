@@ -30,9 +30,13 @@ maf_file       <- file.path(proj_root_path, "data", "pbta-snv-consensus-mutation
 wgs_bed_file   <- file.path(proj_root_path, "data", "WGS.hg38.strelka2.unpadded.bed")
 wxs_bed_file   <- file.path(proj_root_path, "data", "WXS.hg38.100bp_padded.bed")
 meta_file      <- file.path(proj_root_path, "data", "pbta-histologies.tsv")
+tmb_all_file    <- file.path(proj_root_path, "data", "pbta-snv-consensus-mutation-tmb-all.tsv")
+tmb_coding_file <- file.path(proj_root_path, "data", "pbta-snv-consensus-mutation-tmb-coding.tsv")
+
 
 histology_palette_file   <- file.path(proj_root_path, "figures", "palettes", "broad_histology_cancer_group_palette.tsv")
-tumor_palette_file <- file.path(proj_root_path, "figures", "palettes", "tumor_descriptor_palette.tsv")
+binary_palette_file <- file.path(proj_root_path, "figures", "palettes", "binary_color_palette.tsv")
+
 
 # Output plots
 exposure_barplot_file <- file.path(analysis_path, "plots", "cns", "exposures_per_sample_barplot.pdf")
@@ -67,9 +71,8 @@ wxs_size <- sum(wxs_bed[, 3] - wxs_bed[, 2])
 # Read in metadata and palette files
 meta <- readr::read_tsv(meta_file, guess_max = 10000)
 palette_df <- readr::read_tsv(histology_palette_file) 
-tumor_palette_df <- readr::read_tsv(tumor_palette_file)
-
-
+binary_df <- readr::read_tsv(binary_palette_file)
+binary_colors <- binary_df$hex_codes[binary_df$color_names != "na_color"]
 
 # Read in exposures from CNS signature fitting and tibble it up
 raw_exposures <- readr::read_rds(fitted_file)
@@ -82,6 +85,19 @@ exposures <- do.call(rbind, decon_mean) %>%
   dplyr::mutate(signature = as.character(factor(signature, labels = signal_names)), 
                 signature = forcats::fct_relevel(signature, signal_order))
 
+
+# Prepare TMB data
+tmb_all <- readr::read_tsv(tmb_all_file)
+tmb_coding <- readr::read_tsv(tmb_coding_file)
+
+tmb_data <- tmb_coding %>% 
+  dplyr::rename(coding_tmb = tmb) %>%
+  dplyr::select(Tumor_Sample_Barcode, coding_tmb) %>%
+  dplyr::inner_join(
+    dplyr::select(tmb_all,
+                  Tumor_Sample_Barcode, tmb)
+  ) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode)
 ```
 
 ```{r get_counts_exposures}
@@ -248,34 +264,181 @@ ggplot2::ggsave(exposure_barplot_file, sample_exposures_barplot, width = 12, hei
 ```
 
 
+
 <br><br>
 
-### Explore tumor descriptor and number of mutations
+### MMR2 signature
 
-The plots below show relationships among tumor descriptor and number of mutations across signatures, with the first plot also showing across cancer groups.
+Which samples have MMR ~ 1, and are these hypermutators? The resulting table shows all samples with MMR2 exposure >= 0.95 and associated TMB (`tmb`) as well as coding-only TMB (`coding_tmb`).
+
+```{r mmr2}
+mmr2_samples <- df_signature_mutations_per_mb %>%
+  dplyr::filter(signature == "MMR2", exposure >= 0.95) 
+
+# What are the groups? HGG and Other
+mmr2_samples$cancer_group_display
 
 
-```{r tumor_descriptor_signatures, fig.width = 12, fig.height = 4}
-tumor_colors <- tumor_palette_df$hex_codes
-names(tumor_colors) <- tumor_palette_df$color_names
+tmb_data %>%
+  dplyr::filter(Kids_First_Biospecimen_ID %in% mmr2_samples$Kids_First_Biospecimen_ID) %>% 
+  knitr::kable()
+
+# And how do the overall tmb distributions look?
+summary(tmb_data$coding_tmb)
+summary(tmb_data$tmb)
+
+```
+
+<br><br>
+
+### Signature 1 presence
+
+For discussion, see [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1227).
+
+We see four highly mutated samples, all of which are HGG. For each, <50% of the exposure is derived from signature 1.
 
 
-df_signature_mutations_per_mb %>%
+
+```{r sig1_prop_tmb, fig.width = 8, fig.height =4}
+
+
+
+sig1_exposure_proportions <- df_signature_mutations_per_mb %>%
+  dplyr::select(Kids_First_Biospecimen_ID, signature, exposure, cancer_group_display) %>%
+  tidyr::spread(key = signature, value = exposure) %>%
+  tidyr::gather(-c(Kids_First_Biospecimen_ID, cancer_group_display), 
+                key = "signature", value = "exposure") %>%
+  dplyr::group_by(Kids_First_Biospecimen_ID, cancer_group_display) %>%
+  # Sum of all exposures (not necessarily 1!)
+  dplyr::summarize(total_exposure = sum(exposure)) %>%
+  # Now figure out the proportion of that from signature 1
   dplyr::inner_join(
+    # Join a column that has signature 1 exposure
+    dplyr::filter(df_signature_mutations_per_mb, signature == 1) %>%
+      dplyr::select(Kids_First_Biospecimen_ID, sig1_exposure = exposure)
+  ) %>%
+  dplyr::mutate(prop_sig1 = sig1_exposure/total_exposure) %>%
+  dplyr::select(-total_exposure, -sig1_exposure) %>%
+  # relevant cancer groups for figure
+ dplyr::filter(cancer_group_display %in% cancer_groups_to_plot)
+
+
+
+prop_tmb_all <- sig1_exposure_proportions %>%
+  dplyr::inner_join(tmb_data) %>%
+  ggplot2::ggplot() + 
+  ggplot2::aes(
+    x = prop_sig1, 
+    y = tmb, 
+    color = cancer_group_display
+  ) +
+  ggplot2::labs(
+    x = "Porportion of exposure from signature 1", 
+    y = "TMB (all mutations)"
+  ) +
+  ggplot2::geom_point() +
+  ggpubr::theme_pubr()
+
+prop_tmb_coding <- sig1_exposure_proportions %>%
+  dplyr::inner_join(tmb_data) %>%
+  ggplot2::ggplot() + 
+  ggplot2::aes(
+    x = prop_sig1, 
+    y = coding_tmb, 
+    color = cancer_group_display
+  ) +
+  ggplot2::labs(
+    x = "Porportion of exposure from signature 1", 
+    y = "TMB (*coding* mutations)"
+  ) +
+  ggplot2::geom_point() +
+  ggpubr::theme_pubr()
+
+prop_tmb_all 
+prop_tmb_coding
+
+
+
+```
+
+
+We can also see how proportion of signature 1 exposure looks across tumor descriptors. We color by molecular subtype as well. I don't love the plot below.
+
+```{r sig1_prop_tumordesc, fig.width = 15, fig.height =4}
+
+
+# Is there a relationship specifically within
+sig1_exposure_proportions %>%
+  dplyr::inner_join(
+    dplyr::select(meta, Kids_First_Biospecimen_ID, tumor_descriptor, molecular_subtype)
+  ) %>%
+  # only looking at HGG and MB 
+  dplyr::filter(cancer_group_display %in% c("High-grade glioma astrocytoma", "Medulloblastoma")) %>%
+  tidyr::drop_na(molecular_subtype) %>%
+  ggplot2::ggplot() + 
+  ggplot2::aes(
+    x = tumor_descriptor, 
+    y = prop_sig1,
+    color = molecular_subtype
+  ) + 
+  ggplot2::geom_jitter(width = 0.2) + 
+  ggplot2::facet_wrap(~cancer_group_display) +
+  ggsci::scale_color_simpsons()
+```
+ 
+
+
+<br><br>
+
+### Explore tumor descriptor and signature 1 presence
+
+This plot shows the proportion of samples with and without signature 1 exposure, stratified by cancer group and tumor descriptor. We do see for HGG and MB trending proportions of signature 1 absence in progressive compared to initial tumor. Sample sizes for each grouping are shown below the plot, specifically for HGG and MB.
+
+```{r tumor_descriptor_signatures, fig.width = 12, fig.height = 6}
+sig1_presence_tumor <- sig1_exposure_proportions %>%
+  dplyr::mutate(sig1_present = ifelse(prop_sig1 > 0, TRUE, FALSE)) %>%
+    dplyr::inner_join(
     dplyr::select(meta, Kids_First_Biospecimen_ID, tumor_descriptor)
   ) %>%
-  dplyr::select(cancer_group_hex, signature, exposure, mutations_per_mb_per_signature, tumor_descriptor, Kids_First_Biospecimen_ID) %>%
-  dplyr::inner_join(labels_hex) %>%
-  dplyr::filter(tumor_descriptor != "Unavailable") %>%
+  dplyr::filter(tumor_descriptor != "Unavailable") 
+
+
+sig1_presence_tumor %>%
+  #dplyr::filter(cancer_group_display %in% c("High-grade glioma astrocytoma", "Medulloblastoma")) %>%
+  dplyr::group_by(tumor_descriptor, cancer_group_display) %>%
+  dplyr::summarize(total = dplyr::n(),
+                   sig1_present_prop = sum(sig1_present)/total,
+                   sig1_absent_prop = 1-sig1_present_prop) %>%
+  dplyr::select(-total) %>%
+  tidyr::gather(dplyr::contains("sig1"), 
+                key = type,
+                value = prop) %>%
+  dplyr::mutate(td = stringr::str_wrap(tumor_descriptor, 20)) %>%
   ggplot2::ggplot() + 
-  ggplot2::aes(x = signature, y = mutations_per_mb_per_signature, color = tumor_descriptor) + 
-  ggplot2::geom_jitter(size = 0.8, width = 0.2, alpha = 0.6 ) + 
-  ggplot2::scale_color_manual(values = tumor_colors) +
-  ggplot2::facet_wrap(~cancer_group_display_n, scales="free_y",nrow=2) + 
-  ggpubr::theme_pubr() +
+  ggplot2::aes(
+    x = td,
+    y = prop,
+    fill = type
+  ) + 
+  ggplot2::geom_col() + 
+  ggplot2::facet_wrap(~cancer_group_display, nrow = 2) + 
+  ggplot2::scale_fill_manual(values= binary_colors, 
+                             labels = c("Signature 1 Absent", "Signature 1 Present"), 
+                             name = "") +
+  ggpubr::theme_pubr() + 
   ggplot2::theme(
-    axis.text.x = ggplot2::element_text(size = 8)
+    axis.text.x = ggplot2::element_text(size = 8, angle = 90), 
+    strip.text = ggplot2::element_text(size = 8) 
   )
+
+# How many samples are there in each grouping?
+sig1_presence_tumor %>%
+  dplyr::ungroup() %>%
+  dplyr::count(tumor_descriptor, cancer_group_display) %>%
+  dplyr::filter(cancer_group_display %in% c("High-grade glioma astrocytoma", "Medulloblastoma")) %>%
+  tidyr::spread( tumor_descriptor, n) %>%
+  knitr::kable()
+
 ```
 The plot below has an inset to zoom in to the majority of mutations with signature burdens <=1. 
 
