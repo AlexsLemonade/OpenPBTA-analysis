@@ -26,9 +26,6 @@ if (!dir.exists(plot_path)) {
 
 # Input files
 fitted_file    <- file.path(analysis_path, "results", "fitted_exposures_signal-cns_deconstructSigs.rds")
-maf_file       <- file.path(proj_root_path, "data", "pbta-snv-consensus-mutation.maf.tsv.gz")
-wgs_bed_file   <- file.path(proj_root_path, "data", "WGS.hg38.strelka2.unpadded.bed")
-wxs_bed_file   <- file.path(proj_root_path, "data", "WXS.hg38.100bp_padded.bed")
 meta_file      <- file.path(proj_root_path, "data", "pbta-histologies.tsv")
 tmb_all_file    <- file.path(proj_root_path, "data", "pbta-snv-consensus-mutation-tmb-all.tsv")
 tmb_coding_file <- file.path(proj_root_path, "data", "pbta-snv-consensus-mutation-tmb-coding.tsv")
@@ -36,54 +33,48 @@ tmb_coding_file <- file.path(proj_root_path, "data", "pbta-snv-consensus-mutatio
 
 histology_palette_file   <- file.path(proj_root_path, "figures", "palettes", "broad_histology_cancer_group_palette.tsv")
 binary_palette_file <- file.path(proj_root_path, "figures", "palettes", "binary_color_palette.tsv")
-
+tumor_palette_file <-  file.path(proj_root_path, "figures", "palettes", "tumor_descriptor_palette.tsv")
 
 # Output plots
-exposure_barplot_file <- file.path(analysis_path, "plots", "cns", "exposures_per_sample_barplot.pdf")
-exposures_boxplot_file <- file.path(analysis_path, "plots", "cns", "exposures_boxplot.pdf")
+exposures_sample_barplot_file <- file.path(analysis_path, "plots", "cns", "exposures_per_sample_barplot.pdf")
+exposures_sina_IQR_file <- file.path(analysis_path, "plots", "cns", "exposures_sina_IQR.pdf")
+exposures_presence_barplot_file <- file.path(analysis_path, "plots", "cns", "exposures_presence_barplot.pdf")
 
 # The real signature names: https://signal.mutationalsignatures.com/explore/studyTissueType/1-6
-signal_names <- c("11", "1", "N6", "8", "MMR2", "18", "19", "3") # In order A, B, C...
-signal_order <- c("1", "3", "8", "11", "18", "19", "N6", "MMR2")
+signature_names_df <- tibble::tibble(
+  signature = factor(
+    c("11", "1", "N6", "8", "MMR2", "18", "19", "3", "Other"), 
+    levels = c("1", "3", "8", "11", "18", "19", "N6", "MMR2", "Other")),
+  cns_names   = c(paste0("CNS_",LETTERS[1:8]), "Other")
+)
 ```
 
+First, we read in data and prepare exposures and TMB information.
+
 ```{r read_prep_data, warning=FALSE}
-
-# Read in mutation file and count all mutations
-maf <- data.table::fread(maf_file, data.table = FALSE)
-sigs_input <- deconstructSigs::mut.to.sigs.input(
-  mut.ref = maf,
-  sample.id = "Tumor_Sample_Barcode",
-  chr = "Chromosome",
-  pos = "Start_Position",
-  ref = "Reference_Allele",
-  alt = "Allele",
-  bsg = BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
-)
-
-# Read in BED files and calculate WG/XS size for mutation per Mb
-wgs_bed <- readr::read_tsv(wgs_bed_file, col_names=FALSE)
-wgs_size <- sum(wgs_bed[, 3] - wgs_bed[, 2]) 
-wxs_bed <- readr::read_tsv(wxs_bed_file, col_names=FALSE)
-wxs_size <- sum(wxs_bed[, 3] - wxs_bed[, 2]) 
-
 
 # Read in metadata and palette files
 meta <- readr::read_tsv(meta_file, guess_max = 10000)
 palette_df <- readr::read_tsv(histology_palette_file) 
 binary_df <- readr::read_tsv(binary_palette_file)
 binary_colors <- binary_df$hex_codes[binary_df$color_names != "na_color"]
+tumor_df <- readr::read_tsv(tumor_palette_file)
 
-# Read in exposures from CNS signature fitting and tibble it up
+
+# Read in exposures from CNS signature fitting and tibble it up, including the "unknown" weight
 raw_exposures <- readr::read_rds(fitted_file)
-decon_mean <- lapply(raw_exposures, "[[", "weights")
-exposures <- do.call(rbind, decon_mean) %>%
+decon_weights <- lapply(raw_exposures, "[[", "weights")
+exposures_wide <- do.call(rbind, decon_weights) %>%
   tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
-  tibble::as_tibble() %>%
-  tidyr::gather(-Kids_First_Biospecimen_ID, key = "signature", value = "exposure") %>%
-  # signal order
-  dplyr::mutate(signature = as.character(factor(signature, labels = signal_names)), 
-                signature = forcats::fct_relevel(signature, signal_order))
+  tibble::as_tibble() 
+
+unknown_weights <- lapply(raw_exposures, "[[", "unknown")
+unknown_weights_array <- do.call(rbind, unknown_weights)
+exposures <- exposures_wide %>%
+  # use "Other" for unknown
+  dplyr::mutate(Other = unknown_weights_array[,1]) %>%
+  # key is column name in signature_names_df
+  tidyr::gather(-Kids_First_Biospecimen_ID, key = "cns_names", value = "exposure") 
 
 
 # Prepare TMB data
@@ -100,40 +91,11 @@ tmb_data <- tmb_coding %>%
   dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode)
 ```
 
-```{r get_counts_exposures}
 
-# Wrangle data together to calculate mutations per sample per Mb across signatures
-total_mutations_per_sample <- sigs_input %>%
-  tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
-  tidyr::gather(-Kids_First_Biospecimen_ID, key = "mutation", value = "count") %>%
-  dplyr::group_by(Kids_First_Biospecimen_ID) %>%
-  dplyr::summarize(total_mutation_count = sum(count))
+Now we prepare the data for visualization, including merging data frames and further setting up palettes.
 
-df_signature_mutations_per_mb <- exposures %>%
-  dplyr::left_join(total_mutations_per_sample, 
-                   by = "Kids_First_Biospecimen_ID") %>%
-  dplyr::left_join(meta) %>%
-  dplyr::filter(experimental_strategy %in% c("WGS", "WXS")) %>%
-  dplyr::mutate(genome_size = dplyr::if_else(experimental_strategy == "WGS", wgs_size, wxs_size),
-                # total mutations in the genome (confirmed - sample # per sample)
-                mutations_per_mb = total_mutation_count/(genome_size/10^6), 
-                mutations_per_mb_per_signature = mutations_per_mb * exposure) %>%
-  dplyr::select(Kids_First_Biospecimen_ID, signature, exposure, mutations_per_mb_per_signature, mutations_per_mb, broad_histology, cancer_group, tumor_descriptor) %>%
-  dplyr::left_join(palette_df) %>%
-  dplyr::select(-dplyr::contains("oncoprint"))
-
-```
-
-<br><br>
-
-
-### Sina/IQR of exposures across cancer groups we want to include
-
-
-_All_ samples are included in these sina plots.
-
-
-```{r boxplot, fig.width = 11, fig.height = 4.5}
+```{r merge_data}
+# Cancer groups we are showing in figure 4
 cancer_groups_to_plot <- c(
   "Diffuse midline glioma",
   "Low-grade glioma astrocytoma",
@@ -147,45 +109,56 @@ cancer_groups_to_plot <- c(
   "Dysembryoplastic neuroepithelial tumor"
 )
 
-
-# counting for labeling
-exposure_counts <- df_signature_mutations_per_mb %>%
-  dplyr::filter(cancer_group_display %in% cancer_groups_to_plot) %>% 
-  # COUNT of samples with(out) exposure for labeling
-  dplyr::group_by(cancer_group_display, signature) %>%
-  dplyr::summarize(total = dplyr::n(),
-                   with_exposure = round(sum(exposure > 0)/dplyr::n(), 2)) %>%
-  dplyr::ungroup()
-
-# Create labeling for cancer groups that is wrapped and contains (N)
-labels_hex <- palette_df %>%
-  dplyr::inner_join(exposure_counts) %>%
-  dplyr::select(cancer_group_hex, cancer_group_display) %>%
-  dplyr::distinct() %>%
-  dplyr::inner_join(exposure_counts) %>%
-  dplyr::mutate(
-    cancer_group_display_n = stringr::str_wrap(
-      glue::glue("{cancer_group_display} (N={total})"),
-      30)
+# Join input dataframes together
+results_df <- exposures %>% 
+  # Merge with metadata
+  dplyr::inner_join(
+    meta %>%
+      dplyr::select(Kids_First_Biospecimen_ID, broad_histology, cancer_group, tumor_descriptor)
   ) %>%
-  dplyr::select(cancer_group_display_n, cancer_group_hex, total) %>%
+  # Grab the cancer group DISPLAY specifically (needed for joining later)
+  dplyr::inner_join(
+      dplyr::select(palette_df, cancer_group, cancer_group_display)
+  ) %>%
+  # no longer need cancer_group
+  dplyr::select(-cancer_group) %>%
+  # Retain only cancer groups for these visualizations
+  dplyr::filter(cancer_group_display %in% cancer_groups_to_plot) %>%
+  # Merge with correct signal names (already factored and ordered)
+  dplyr::inner_join(signature_names_df)  %>%
+  dplyr::select(-cns_names) # remove signature column 
+
+# We need to create a new scheme for labeling that shows wrapped cancer groups with `(n=X)`
+results_df <- results_df %>%
+  dplyr::count(cancer_group_display, signature) %>%
+  dplyr::select(-signature) %>%
   dplyr::distinct() %>%
-  # factor cancer groups in order of number of samples
-  dplyr::mutate(cancer_group_display_n = forcats::fct_reorder(cancer_group_display_n, total, .desc=T)) 
+  dplyr::inner_join(
+      dplyr::select(palette_df, dplyr::contains("cancer_group"))
+  ) %>%
+  dplyr::select(cancer_group_display, n, cancer_group_hex) %>%
+  # Create wrapped with (n=X) factor column for cancer groups
+  dplyr::mutate(cancer_group_display_n = stringr::str_wrap(glue::glue("{cancer_group_display} (N={n})"), 30),
+                cancer_group_display_n = forcats::fct_reorder(cancer_group_display_n, n, .desc=T)) %>%
+  dplyr::inner_join(results_df)
 
 
-  
-# Grab named hex to incorporate into plot
-cancer_hex <- labels_hex$cancer_group_hex
-names(cancer_hex) <- labels_hex$cancer_group_display_n 
+```
+
+<br><br>
 
 
-exposures_sina_boxplot <- df_signature_mutations_per_mb %>%
-  # keep cancer_group_hex for joining
-  dplyr::select(cancer_group_hex, signature, exposure) %>%
-  # do NOT remove 0's!
-  #dplyr::filter(exposure > 0) %>%
-  dplyr::inner_join(labels_hex) %>%
+### Sina/IQR of exposures across cancer groups 
+
+
+_All_ samples are included in these sina plots, which show the distribution of exposures for each signature across samples in each cancer group.
+
+
+```{r boxplot, fig.width = 14, fig.height = 4.5}
+
+exposures_sina_boxplot <- results_df %>%
+  # Should we visualize Unknown here also?
+  #dplyr::filter(signature != "Unknown") %>%
   ggplot2::ggplot() + 
   ggplot2::aes(x = signature, 
                y = exposure,
@@ -208,7 +181,8 @@ exposures_sina_boxplot <- df_signature_mutations_per_mb %>%
   ggpubr::theme_pubr() + 
   cowplot::panel_border() +
   ggplot2::theme(
-    axis.text.x = ggplot2::element_text(size = 7.5),
+    # angle needed to fit "Other" category
+    axis.text.x = ggplot2::element_text(size = 7.5, angle = 45, hjust = 1),
     axis.text.y = ggplot2::element_text(size = 10),
     axis.title = ggplot2::element_text(size = 12),
     strip.text = ggplot2::element_text(size = 8.5),
@@ -217,37 +191,69 @@ exposures_sina_boxplot <- df_signature_mutations_per_mb %>%
 
 exposures_sina_boxplot
 
-ggplot2::ggsave(exposures_boxplot_file, exposures_sina_boxplot, width = 11, height = 4.5)
-  
+ggplot2::ggsave(exposures_sina_IQR_file, exposures_sina_boxplot, width = 12, height = 5)
 
 ```
+
+
+### Barplots of proportions of samples that are _unexposed_ 
+
+Notably, the "rug" of 0's in each distribution represents samples which are unexposed to the given signature. 
+It's useful to get a clear sense of the proportion of samples that are totally unexposed.
+We do _not_ include "Other" in this plot. 
+
+```{r proportion, fig.width = 12, fig.height = 5}
+exposures_proportions <- results_df %>%
+  # remove "other" - not useful to know if samples are unexposed to signatures that aren't even present.
+  dplyr::filter(signature != "Other") %>%
+  dplyr::group_by(cancer_group_display_n, cancer_group_hex, signature) %>%
+  dplyr::summarize(percent_exposed = sum(exposure > 0)/dplyr::n()) %>%
+  ggplot2::ggplot() + 
+  ggplot2::aes(x = signature, y = percent_exposed, fill = cancer_group_hex) + 
+  ggplot2::geom_col(color = "black") +
+  ggplot2::facet_wrap(~cancer_group_display_n, nrow = 2) + 
+  ggplot2::scale_fill_identity() +
+  ggplot2::labs(x = "RefSig Signature", 
+                y = "Percent of samples exposed to signature") +
+  ggpubr::theme_pubr() +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(size = 8))
+
+exposures_proportions
+
+ggplot2::ggsave(exposures_presence_barplot_file, exposures_proportions, width = 12, height = 5)
+
+```
+
 
 <br><br>
 
 
 ### Barplot of sample exposures faceted across cancer groups
 
+This plot shows the literal exposures for each samples.
+We order plots by sample 1, and we include the unknown proportion so everything has the same height. 
+In this case, "Unknown" specifically means mutations that were not assigned to the specific 8 CNS signatures examined, but are associated (if at all) with a different signature.
+
 ```{r barplot1, fig.width = 12, fig.height = 9}
 
 # Make a column for exposure of interest to order samples by
-samples_in_order <- df_signature_mutations_per_mb %>%
+samples_in_order <- results_df %>%
   dplyr::filter(signature == 1) %>%
   dplyr::select(exposure, Kids_First_Biospecimen_ID) %>%
   dplyr::arrange(-exposure) %>%
   dplyr::pull(Kids_First_Biospecimen_ID)
 
 
-sample_exposures_barplot <- df_signature_mutations_per_mb %>%
-  # keep cancer_group_hex for joining
-  dplyr::select(cancer_group_hex, signature, exposure, Kids_First_Biospecimen_ID) %>%
-  dplyr::inner_join(labels_hex) %>%
+sample_exposures_barplot <- results_df %>%
   dplyr::mutate(Kids_First_Biospecimen_ID = factor(Kids_First_Biospecimen_ID, levels = samples_in_order)) %>%
   ggplot2::ggplot() +
   ggplot2::aes(x = Kids_First_Biospecimen_ID, 
                y = exposure, 
                fill = signature) + 
-  ggplot2::geom_col() + 
-  ggplot2::labs(x = "Sample", y = "Signature exposure", fill = "RegSig Signature") + 
+  ggplot2::geom_col(color = "black", size = 0.05) + 
+  ggplot2::labs(x = "Sample", y = "Signature exposure", fill = "RefSig Signature") + 
+  # Only 1:8 palette. The "Other" gets filled as white by including `color="black"` in the geom
+  # There will be a warning about palette size and the warning is OK because ^^
   colorblindr::scale_fill_OkabeIto() + 
   ggplot2::facet_wrap(~cancer_group_display_n, scales = "free_x", nrow = 5) + 
   ggpubr::theme_pubr() + 
@@ -257,9 +263,8 @@ sample_exposures_barplot <- df_signature_mutations_per_mb %>%
     axis.title = ggplot2::element_text(size = ggplot2::rel(1.125))
   )
 
-
 sample_exposures_barplot
-ggplot2::ggsave(exposure_barplot_file, sample_exposures_barplot, width = 12, height = 9)
+ggplot2::ggsave(exposures_sample_barplot_file, sample_exposures_barplot, width = 12, height = 9)
   
 ```
 
@@ -267,258 +272,161 @@ ggplot2::ggsave(exposure_barplot_file, sample_exposures_barplot, width = 12, hei
 
 <br><br>
 
-### MMR2 signature
+### Explore: MMR2 signature and mutation burden
 
-Which samples have MMR ~ 1, and are these hypermutators? The resulting table shows all samples with MMR2 exposure >= 0.95 and associated TMB (`tmb`) as well as coding-only TMB (`coding_tmb`).
+Which samples have MMR ~ 1, and are these hypermutators? 
+This analysis is discussed [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1227#issuecomment-1064493652).
 
-```{r mmr2}
-mmr2_samples <- df_signature_mutations_per_mb %>%
-  dplyr::filter(signature == "MMR2", exposure >= 0.95) 
+Note that this visualiation is strictly exploratory and not exported. 
 
-# What are the groups? HGG and Other
-mmr2_samples$cancer_group_display
+We do **not** observe that samples with high MMR2 exposure have high mutational burdens. We do see that the majority of all such samples are subtyped as HGG, H3 wildtype.
+
+```{r mmr2, fig.width = 10, fig.height = 3}
+top_mmr2 <- results_df %>%
+  dplyr::filter(signature == "MMR2") %>%
+  dplyr::select(exposure, Kids_First_Biospecimen_ID, cancer_group_display) %>%
+  dplyr::distinct() %>%
+  dplyr::arrange(-exposure) %>%
+  dplyr::inner_join(tmb_data) %>%
+  tidyr::gather(dplyr::contains("tmb"), key = "tmb_type", value = "tmb")
 
 
-tmb_data %>%
-  dplyr::filter(Kids_First_Biospecimen_ID %in% mmr2_samples$Kids_First_Biospecimen_ID) %>% 
+# We see in this visualization that very few samples are >0.5 MMR2 exposure,
+# and that the samples with extremely high mutation counts are NOT the same as those with high MMR2 exposure
+top_mmr2 %>%
+  ggplot2::ggplot() + 
+  ggplot2::aes(x = exposure, y = tmb, fill = cancer_group_display) +
+  ggplot2::geom_point(shape = 21, color ="black") + 
+  ggsci::scale_fill_simpsons() +
+  ggplot2::labs(x = "Exposure to MMR2") +
+  ggplot2::facet_wrap(~tmb_type, scales = "free_y")
+
+# What are the specific samples that are > MMR2 exposure 0.75? (Since so few samples are this high, we can view this more below ~1.)
+top_mmr2 %>%
+  dplyr::filter(exposure >= 0.75) %>%
+  dplyr::select(-dplyr::contains("tmb")) %>%
+  dplyr::distinct() %>%
+  dplyr::inner_join(
+    meta %>%
+      dplyr::select(Kids_First_Biospecimen_ID, molecular_subtype)
+  ) %>%
   knitr::kable()
 
-# And how do the overall tmb distributions look?
-summary(tmb_data$coding_tmb)
-summary(tmb_data$tmb)
+
 
 ```
 
 <br><br>
 
-### Signature 1 presence
+### Explore: Signature 1 presence
 
-For discussion, see [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1227).
 
-We see four highly mutated samples, all of which are HGG. For each, <50% of the exposure is derived from signature 1.
+Is there a relationship between the presence of signature 1 in a given sample, and either i) its molecular subtype, or ii) its tumor descriptor?
+Because signature 1 is a "normal" signature, we might expect that samples without signature 1 are more progressive/relapse and/or are associated with a specific subtype. 
+For background discussion, see [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1227).
+
+We see somewhat of a relationship here, but the data sets are highly imbalanced across categories (include 0 and other very low counts), so the statistics are not extremely reliable.
 
 
 
 ```{r sig1_prop_tmb, fig.width = 8, fig.height =4}
-
-
-
-sig1_exposure_proportions <- df_signature_mutations_per_mb %>%
-  dplyr::select(Kids_First_Biospecimen_ID, signature, exposure, cancer_group_display) %>%
-  tidyr::spread(key = signature, value = exposure) %>%
-  tidyr::gather(-c(Kids_First_Biospecimen_ID, cancer_group_display), 
-                key = "signature", value = "exposure") %>%
-  dplyr::group_by(Kids_First_Biospecimen_ID, cancer_group_display) %>%
-  # Sum of all exposures (not necessarily 1!)
-  dplyr::summarize(total_exposure = sum(exposure)) %>%
-  # Now figure out the proportion of that from signature 1
-  dplyr::inner_join(
-    # Join a column that has signature 1 exposure
-    dplyr::filter(df_signature_mutations_per_mb, signature == 1) %>%
-      dplyr::select(Kids_First_Biospecimen_ID, sig1_exposure = exposure)
-  ) %>%
-  dplyr::mutate(prop_sig1 = sig1_exposure/total_exposure) %>%
-  dplyr::select(-total_exposure, -sig1_exposure) %>%
-  # relevant cancer groups for figure
- dplyr::filter(cancer_group_display %in% cancer_groups_to_plot)
-
-
-
-prop_tmb_all <- sig1_exposure_proportions %>%
-  dplyr::inner_join(tmb_data) %>%
-  ggplot2::ggplot() + 
-  ggplot2::aes(
-    x = prop_sig1, 
-    y = tmb, 
-    color = cancer_group_display
-  ) +
-  ggplot2::labs(
-    x = "Porportion of exposure from signature 1", 
-    y = "TMB (all mutations)"
-  ) +
-  ggplot2::geom_point() +
-  ggpubr::theme_pubr()
-
-prop_tmb_coding <- sig1_exposure_proportions %>%
-  dplyr::inner_join(tmb_data) %>%
-  ggplot2::ggplot() + 
-  ggplot2::aes(
-    x = prop_sig1, 
-    y = coding_tmb, 
-    color = cancer_group_display
-  ) +
-  ggplot2::labs(
-    x = "Porportion of exposure from signature 1", 
-    y = "TMB (*coding* mutations)"
-  ) +
-  ggplot2::geom_point() +
-  ggpubr::theme_pubr()
-
-prop_tmb_all 
-prop_tmb_coding
-
-
-
-```
-
-
-We can also see how proportion of signature 1 exposure looks across tumor descriptors. We color by molecular subtype as well. I don't love the plot below.
-
-```{r sig1_prop_tumordesc, fig.width = 15, fig.height =4}
-
-
-# Is there a relationship specifically within
-sig1_exposure_proportions %>%
+cancer_groups_of_interest <- c("High-grade glioma astrocytoma", "Medulloblastoma")
+# Grab signature1 exposures. 
+sig1_exposures <- results_df %>%
+  # Since exposures sum to 1 **including unknown**, we just need sig 1's exposure
+  dplyr::filter(signature == 1) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, 
+                sig1_proportion = exposure, 
+                cancer_group_display) %>%
+  # create indicator column of absence/presence
+  dplyr::mutate(sig1_present = ifelse(sig1_proportion == 0, "Absent", "Present"),
+                # Present should be first level
+                sig1_present = forcats::fct_relevel(sig1_present, "Present")) %>%
+  # merge in tumor descriptor and subtype information
   dplyr::inner_join(
     dplyr::select(meta, Kids_First_Biospecimen_ID, tumor_descriptor, molecular_subtype)
   ) %>%
-  # only looking at HGG and MB 
-  dplyr::filter(cancer_group_display %in% c("High-grade glioma astrocytoma", "Medulloblastoma")) %>%
-  tidyr::drop_na(molecular_subtype) %>%
-  ggplot2::ggplot() + 
-  ggplot2::aes(
-    x = tumor_descriptor, 
-    y = prop_sig1,
-    color = molecular_subtype
-  ) + 
-  ggplot2::geom_jitter(width = 0.2) + 
-  ggplot2::facet_wrap(~cancer_group_display) +
-  ggsci::scale_color_simpsons()
+  # filter only to cancer groups of interest for this analysis
+  dplyr::filter(cancer_group_display %in% cancer_groups_of_interest)
+```
+
+Now, we can make contingency tables and compare signature 1 absence/presence with i) subtypes and ii) descriptors. We run some $\chi^2$-squared tests, **but** there are many low counts in these tables (and some 0!) _so we need to take these tests with a very very big boulder of salt._
+
+```{r contingency_tables}
+
+# Subtypes:
+table(sig1_exposures$molecular_subtype, sig1_exposures$sig1_present)
+chisq.test(table(sig1_exposures$molecular_subtype, sig1_exposures$sig1_present))
+
+# Tumor descriptor:
+table(sig1_exposures$tumor_descriptor, sig1_exposures$sig1_present)
+chisq.test(table(sig1_exposures$tumor_descriptor, sig1_exposures$sig1_present))
 ```
  
+We can also explore this using the signature 1 exposure directly instead of a binary absence/presence indicator, specifically across cancer groups of interest, and then specifically within `HGG, H3 wildtype` subtype samples because there is (mostly) enough data to do some light comparison across groups. There is somewhat of a trend here, but sample sizes are small that it's not very robust to perform robust statistics across groupings.
+
+Note that these figures are strictly exploratory and not exported. 
 
 
-<br><br>
 
-### Explore tumor descriptor and signature 1 presence
+```{r sig1_jitter, fig.width = 8, fig.height = 4}
 
-This plot shows the proportion of samples with and without signature 1 exposure, stratified by cancer group and tumor descriptor. We do see for HGG and MB trending proportions of signature 1 absence in progressive compared to initial tumor. Sample sizes for each grouping are shown below the plot, specifically for HGG and MB.
+# Grab the tumor descriptor colors
+tumor_colors <- tumor_df$hex_codes
+names(tumor_colors) <- tumor_df$color_names
 
-```{r tumor_descriptor_signatures, fig.width = 12, fig.height = 6}
-sig1_presence_tumor <- sig1_exposure_proportions %>%
-  dplyr::mutate(sig1_present = ifelse(prop_sig1 > 0, TRUE, FALSE)) %>%
-    dplyr::inner_join(
-    dplyr::select(meta, Kids_First_Biospecimen_ID, tumor_descriptor)
-  ) %>%
-  dplyr::filter(tumor_descriptor != "Unavailable") 
-
-
-sig1_presence_tumor %>%
-  #dplyr::filter(cancer_group_display %in% c("High-grade glioma astrocytoma", "Medulloblastoma")) %>%
-  dplyr::group_by(tumor_descriptor, cancer_group_display) %>%
-  dplyr::summarize(total = dplyr::n(),
-                   sig1_present_prop = sum(sig1_present)/total,
-                   sig1_absent_prop = 1-sig1_present_prop) %>%
-  dplyr::select(-total) %>%
-  tidyr::gather(dplyr::contains("sig1"), 
-                key = type,
-                value = prop) %>%
-  dplyr::mutate(td = stringr::str_wrap(tumor_descriptor, 20)) %>%
+# First we can display proportions and tumor desriptor, across cancer display groups
+sig1_exposures %>%
   ggplot2::ggplot() + 
-  ggplot2::aes(
-    x = td,
-    y = prop,
-    fill = type
-  ) + 
-  ggplot2::geom_col() + 
-  ggplot2::facet_wrap(~cancer_group_display, nrow = 2) + 
-  ggplot2::scale_fill_manual(values= binary_colors, 
-                             labels = c("Signature 1 Absent", "Signature 1 Present"), 
-                             name = "") +
+  ggplot2::aes(x = tumor_descriptor, 
+               y = sig1_proportion, 
+               color = tumor_descriptor) + 
+  ggplot2::geom_jitter(width = 0.2, alpha = 0.5, size = 2) + 
+  # light guiding line representing 0 exposure
+  ggplot2::geom_hline(yintercept = 0, size = 0.15) + 
+  ggplot2::scale_color_manual(values = tumor_colors) +
+  # add in mean guiding point
+  ggplot2::stat_summary(color = "black") + 
+  ggplot2::facet_wrap(~cancer_group_display,nrow = 1) +
+  ggplot2::labs(
+    x = "Tumor descriptor",
+    y = "Signature 1 Exposure"
+  ) +
   ggpubr::theme_pubr() + 
   ggplot2::theme(
-    axis.text.x = ggplot2::element_text(size = 8, angle = 90), 
-    strip.text = ggplot2::element_text(size = 8) 
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, size = 8),
+    legend.position = "none"
   )
 
-# How many samples are there in each grouping?
-sig1_presence_tumor %>%
-  dplyr::ungroup() %>%
-  dplyr::count(tumor_descriptor, cancer_group_display) %>%
-  dplyr::filter(cancer_group_display %in% c("High-grade glioma astrocytoma", "Medulloblastoma")) %>%
-  tidyr::spread( tumor_descriptor, n) %>%
-  knitr::kable()
-
-```
-The plot below has an inset to zoom in to the majority of mutations with signature burdens <=1. 
-
-
-```{r fig.width = 15, fig.height = 4}
-
-df_signature_mutations_per_mb %>%
-  dplyr::inner_join(
-    dplyr::select(meta, Kids_First_Biospecimen_ID, tumor_descriptor)
-  ) %>%
-  dplyr::filter(tumor_descriptor != "Unavailable") %>%
-  dplyr::mutate(tumor_descriptor = ifelse(
-    stringr::str_detect(tumor_descriptor, "Mortem"), 
-    "Progressive PM", 
-    tumor_descriptor)
-  ) %>% 
+# We can also viz specifically HGG, H3 wildtype samples which have sample sizes that are able to be visualized
+sig1_exposures %>%
+  dplyr::filter(stringr::str_detect(molecular_subtype, "wildtype")) %>%
   ggplot2::ggplot() + 
-  ggplot2::aes(x = tumor_descriptor, y = mutations_per_mb_per_signature, color = signature) + 
-  ggplot2::geom_jitter(position = ggplot2::position_jitterdodge(jitter.width = 0.1)) + 
-  colorblindr::scale_color_OkabeIto() + 
-  # Zoom in on y-axis
-  ggforce::facet_zoom(y = mutations_per_mb_per_signature <= 5) + 
+  ggplot2::aes(x = tumor_descriptor, 
+               y = sig1_proportion, 
+               color = tumor_descriptor) + 
+  ggplot2::geom_jitter(width = 0.2, alpha = 0.5, size = 2) + 
+  # light guiding line representing 0 exposure
+  ggplot2::geom_hline(yintercept = 0, size = 0.15) + 
+  ggplot2::scale_color_manual(values = tumor_colors) +
+  # add in mean guiding point
+  ggplot2::stat_summary(color = "black") + 
+  ggplot2::facet_wrap(~molecular_subtype,nrow = 1) +
+  ggplot2::labs(
+    x = "Tumor descriptor",
+    y = "Signature 1 Exposure"
+  ) +
   ggpubr::theme_pubr() + 
   ggplot2::theme(
-    axis.text.x = ggplot2::element_text(size = 8)
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, size = 8),
+    legend.position = "none"
   )
-  
-```
-
-Which samples specifically are those with extremely high mutations in these signatures? Mostly HGG, which are all H3 wildtype without a particular tp53 pattern.
-
-```{r}
-highly_mutated <- df_signature_mutations_per_mb %>%
-  dplyr::arrange(-mutations_per_mb_per_signature) %>%
-  dplyr::filter(mutations_per_mb_per_signature > 1) %>%
-  dplyr::select(Kids_First_Biospecimen_ID, cancer_group_display, mutations_per_mb_per_signature) 
-
-# Which samples are highly mutated?
-highly_mutated %>%
-  dplyr::count(cancer_group_display) %>%
-  dplyr::arrange(-n) %>%
-  knitr::kable()
-
-# What are their molecular subtypes?
-highly_mutated %>%
-  dplyr::inner_join(
-    dplyr::select(meta, Kids_First_Biospecimen_ID, molecular_subtype)
-  ) %>%
-  dplyr::count(molecular_subtype) %>%
-  dplyr::arrange(-n) %>%
-  knitr::kable()
-```
-<br><br>
-
-
-
-### Explore exposure proportions
-
-The barplot below shows the proportion of samples with non-zero exposures to each signature. This is effectively the number of non-zero points in the sina/IQR plot.
-
-```{r proportion, fig.width = 12, fig.height = 5}
-df_signature_mutations_per_mb %>%
-  dplyr::group_by(cancer_group_display, signature) %>%
-  dplyr::summarize(percent_exposed = sum(exposure > 0)/dplyr::n()) %>%
-  dplyr::filter(cancer_group_display %in% cancer_groups_to_plot) %>%
-  ggplot2::ggplot() + 
-  ggplot2::aes(x = cancer_group_display, y = percent_exposed) + 
-  ggplot2::geom_col() +
-  ggplot2::facet_wrap(~signature, nrow = 2) + 
-  ggplot2::scale_fill_identity() +
-  ggplot2::labs(y = "Percent of samples exposed to signature") +
-  ggpubr::theme_pubr() +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, size = 7, hjust=1))
 
 
 ```
 
 
 
-<br><br>
 
 ### Session info
 
