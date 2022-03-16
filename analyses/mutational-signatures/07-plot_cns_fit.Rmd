@@ -247,7 +247,7 @@ sample_exposures_barplot <- df_signature_mutations_per_mb %>%
                y = exposure, 
                fill = signature) + 
   ggplot2::geom_col() + 
-  ggplot2::labs(x = "Sample", y = "Signature exposure", fill = "RegSig Signature") + 
+  ggplot2::labs(x = "Sample", y = "Signature exposure", fill = "RefSig Signature") + 
   colorblindr::scale_fill_OkabeIto() + 
   ggplot2::facet_wrap(~cancer_group_display_n, scales = "free_x", nrow = 5) + 
   ggpubr::theme_pubr() + 
