@@ -39,6 +39,9 @@ tumor_palette_file <-  file.path(proj_root_path, "figures", "palettes", "tumor_d
 exposures_sample_barplot_file <- file.path(analysis_path, "plots", "cns", "exposures_per_sample_barplot.pdf")
 exposures_sina_IQR_file <- file.path(analysis_path, "plots", "cns", "exposures_sina_IQR.pdf")
 exposures_presence_barplot_file <- file.path(analysis_path, "plots", "cns", "exposures_presence_barplot.pdf")
+signature1_tumor_cancergroups_file <- file.path(analysis_path, "plots", "cns", "signature1_tumor-descriptor_cancer-groups.pdf")
+signature1_tumor_molecularsubtypes_file <- file.path(analysis_path, "plots", "cns", "signature1_tumor-descriptor_molecular-subtypes.pdf")
+
 
 # The real signature names: https://signal.mutationalsignatures.com/explore/studyTissueType/1-6
 signature_names_df <- tibble::tibble(
@@ -393,7 +396,6 @@ chisq.test(table(sig1_exposures$tumor_descriptor, sig1_exposures$sig1_present))
  
 We can also explore this using the signature 1 exposure directly instead of a binary absence/presence indicator, specifically across cancer groups of interest, and then specifically within `HGG, H3 wildtype` subtype samples because there is (mostly) enough data to do some light comparison across groups. There is somewhat of a trend here, but sample sizes are small that it's not very robust to perform robust statistics across groupings.
 
-Note that these figures are strictly exploratory and not exported. 
 
 
 
@@ -404,7 +406,7 @@ tumor_colors <- tumor_df$hex_codes
 names(tumor_colors) <- tumor_df$color_names
 
 # First we can display proportions and tumor desriptor, across cancer display groups
-sig1_exposures %>%
+sig1_tumor_cancergroups <- sig1_exposures %>%
   ggplot2::ggplot() + 
   ggplot2::aes(x = tumor_descriptor, 
                y = sig1_proportion, 
@@ -432,7 +434,7 @@ subtypes <- sig1_exposures %>%
   dplyr::filter(n >= 15) %>%
   dplyr::pull(molecular_subtype)
 
-sig1_exposures %>%
+sig1_tumor_molsubs <- sig1_exposures %>%
   dplyr::filter(molecular_subtype %in% subtypes) %>%
   tidyr::drop_na(molecular_subtype) %>%
   ggplot2::ggplot() + 
@@ -456,6 +458,15 @@ sig1_exposures %>%
     strip.text = ggplot2::element_text(size = 6),
     legend.position = "none"
   )
+
+# Plot the plots
+sig1_tumor_cancergroups
+sig1_tumor_molsubs
+
+# Save the plots
+ggplot2::ggsave(signature1_tumor_cancergroups_file, sig1_tumor_cancergroups, width = 12, height = 6)
+ggplot2::ggsave(signature1_tumor_molecularsubtypes_file, sig1_tumor_molsubs, width = 12, height = 6)
+
 
 ```
 
