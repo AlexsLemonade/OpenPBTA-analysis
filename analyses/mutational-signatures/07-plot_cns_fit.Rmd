@@ -7,6 +7,8 @@ output:
     toc: true
 editor_options: 
   chunk_output_type: inline
+params:
+  is_ci: 0
 ---
 
 <br><br><br><br>
@@ -401,72 +403,75 @@ We can also explore this using the signature 1 exposure directly instead of a bi
 
 ```{r sig1_jitter, fig.width = 12, fig.height = 6}
 
-# Grab the tumor descriptor colors
-tumor_colors <- tumor_df$hex_codes
-names(tumor_colors) <- tumor_df$color_names
-
-# First we can display proportions and tumor desriptor, across cancer display groups
-sig1_tumor_cancergroups <- sig1_exposures %>%
-  ggplot2::ggplot() + 
-  ggplot2::aes(x = tumor_descriptor, 
-               y = sig1_proportion, 
-               color = tumor_descriptor) + 
-  ggplot2::geom_jitter(width = 0.2, alpha = 0.5, size = 2) + 
-  # light guiding line representing 0 exposure
-  ggplot2::geom_hline(yintercept = 0, size = 0.15) + 
-  ggplot2::scale_color_manual(values = tumor_colors) +
-  # add in mean guiding point
-  ggplot2::stat_summary(color = "black") + 
-  ggplot2::facet_wrap(~cancer_group_display_n,nrow = 2) +
-  ggplot2::labs(
-    x = "Tumor descriptor",
-    y = "Signature 1 Exposure"
-  ) +
-  ggpubr::theme_pubr() + 
-  ggplot2::theme(
-    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, size = 8),
-    legend.position = "none"
-  )
-
-# We can also viz with molecular subtypes, focusing only on subtypes with decent sample sizes. For now let's say N=15.
-subtypes <- sig1_exposures %>%
-  dplyr::count(molecular_subtype) %>%
-  dplyr::filter(n >= 15) %>%
-  dplyr::pull(molecular_subtype)
-
-sig1_tumor_molsubs <- sig1_exposures %>%
-  dplyr::filter(molecular_subtype %in% subtypes) %>%
-  tidyr::drop_na(molecular_subtype) %>%
-  ggplot2::ggplot() + 
-  ggplot2::aes(x = tumor_descriptor, 
-               y = sig1_proportion, 
-               color = tumor_descriptor) + 
-  ggplot2::geom_jitter(width = 0.2, alpha = 0.5, size = 1) + 
-  # light guiding line representing 0 exposure
-  ggplot2::geom_hline(yintercept = 0, size = 0.15) + 
-  ggplot2::scale_color_manual(values = tumor_colors) +
-  # add in mean guiding point
-  ggplot2::stat_summary(color = "black", size = 0.25) + 
-  ggplot2::facet_wrap(~molecular_subtype,nrow = 3) +
-  ggplot2::labs(
-    x = "Tumor descriptor",
-    y = "Signature 1 Exposure"
-  ) +
-  ggpubr::theme_pubr() + 
-  ggplot2::theme(
-    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, size = 6),
-    strip.text = ggplot2::element_text(size = 6),
-    legend.position = "none"
-  )
-
-# Plot the plots
-sig1_tumor_cancergroups
-sig1_tumor_molsubs
-
-# Save the plots
-ggplot2::ggsave(signature1_tumor_cancergroups_file, sig1_tumor_cancergroups, width = 12, height = 6)
-ggplot2::ggsave(signature1_tumor_molecularsubtypes_file, sig1_tumor_molsubs, width = 12, height = 6)
-
+# This chunk should NOT run in CI. 
+if (!(params$is_ci == 1)) {
+   
+  # Grab the tumor descriptor colors
+  tumor_colors <- tumor_df$hex_codes
+  names(tumor_colors) <- tumor_df$color_names
+  
+  # First we can display proportions and tumor desriptor, across cancer display groups
+  sig1_tumor_cancergroups <- sig1_exposures %>%
+    ggplot2::ggplot() + 
+    ggplot2::aes(x = tumor_descriptor, 
+                 y = sig1_proportion, 
+                 color = tumor_descriptor) + 
+    ggplot2::geom_jitter(width = 0.2, alpha = 0.5, size = 2) + 
+    # light guiding line representing 0 exposure
+    ggplot2::geom_hline(yintercept = 0, size = 0.15) + 
+    ggplot2::scale_color_manual(values = tumor_colors) +
+    # add in mean guiding point
+    ggplot2::stat_summary(color = "black") + 
+    ggplot2::facet_wrap(~cancer_group_display_n,nrow = 2) +
+    ggplot2::labs(
+      x = "Tumor descriptor",
+      y = "Signature 1 Exposure"
+    ) +
+    ggpubr::theme_pubr() + 
+    ggplot2::theme(
+      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, size = 8),
+      legend.position = "none"
+    )
+  
+  # We can also viz with molecular subtypes, focusing only on subtypes with decent sample sizes. For now let's say N=15.
+  subtypes <- sig1_exposures %>%
+    dplyr::count(molecular_subtype) %>%
+    dplyr::filter(n >= 15) %>%
+    dplyr::pull(molecular_subtype)
+  
+  sig1_tumor_molsubs <- sig1_exposures %>%
+    dplyr::filter(molecular_subtype %in% subtypes) %>%
+    tidyr::drop_na(molecular_subtype) %>%
+    ggplot2::ggplot() + 
+    ggplot2::aes(x = tumor_descriptor, 
+                 y = sig1_proportion, 
+                 color = tumor_descriptor) + 
+    ggplot2::geom_jitter(width = 0.2, alpha = 0.5, size = 1) + 
+    # light guiding line representing 0 exposure
+    ggplot2::geom_hline(yintercept = 0, size = 0.15) + 
+    ggplot2::scale_color_manual(values = tumor_colors) +
+    # add in mean guiding point
+    ggplot2::stat_summary(color = "black", size = 0.25) + 
+    ggplot2::facet_wrap(~molecular_subtype,nrow = 3) +
+    ggplot2::labs(
+      x = "Tumor descriptor",
+      y = "Signature 1 Exposure"
+    ) +
+    ggpubr::theme_pubr() + 
+    ggplot2::theme(
+      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, size = 6),
+      strip.text = ggplot2::element_text(size = 6),
+      legend.position = "none"
+    )
+  
+  # Plot the plots
+  print(sig1_tumor_cancergroups)
+  print(sig1_tumor_molsubs)
+  
+  # Save the plots
+  ggplot2::ggsave(signature1_tumor_cancergroups_file, sig1_tumor_cancergroups, width = 12, height = 6)
+  ggplot2::ggsave(signature1_tumor_molecularsubtypes_file, sig1_tumor_molsubs, width = 12, height = 6)
+}
 
 ```
 

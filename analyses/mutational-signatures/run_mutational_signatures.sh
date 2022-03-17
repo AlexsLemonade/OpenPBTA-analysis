@@ -48,4 +48,4 @@ Rscript -e "rmarkdown::render('06-compare_cns_exposures.Rmd', clean = TRUE)"
 
 
 # Visualize results from deconstructSigs fitting
-Rscript -e "rmarkdown::render('07-plot_cns_fit.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('07-plot_cns_fit.Rmd', clean = TRUE, params = list(is_ci = ${ABBREVIATED_MUTSIGS}))"

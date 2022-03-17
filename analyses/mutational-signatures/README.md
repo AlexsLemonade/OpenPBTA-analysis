@@ -48,7 +48,13 @@ This file knits to an HTML (`04-analyze_de_novo.HTML`) which contains a **table*
   + Worth noting that `deconstructSigs` sets all exposures that are < 0.06 to 0. 
 
 + The Rmd `07-plot_cns_fit.Rmd` visualizes the `deconstructSigs` exposures from CNS signature fitting.
-  + **TODO**: The knitted HTML contains several figures which are also separately exported to `plots/cns/`:
+  + The knitted HTML contains several figures which are also separately exported to `plots/cns/`:
+  + `exposures_per_sample_barplot.pdf`, Signature exposures across samples
+  + `exposures_presence_barplot.pdf`, Proportion of samples exposed to signatures
+  + `exposures_sina_IQR.pdf`, Signature exposures across cancer groups
+  + `signature1_tumor-descriptor_cancer-groups.pdf`, Signature 1 exposure across tumor descriptors and cancer groups
+  + `signature1_tumor-descriptor_molecular-subtypes.pdf`, Signature 1 exposure across tumor descriptors and molecular subtypes
+  
 
 
 
@@ -87,11 +93,20 @@ OpenPBTA-analysis
 │           │   │   ├── seed_<RANDOM SEED>_model_<EXTRACTION MODEL>.png
 │           │   │   └── ...
 │           └── cns
-│           │   ├── TODO!!!!!
-│           │   └── TODO!!!!!
-
+│           │   ├── exposures_per_sample_barplot.pdf
+│           │   ├── exposures_presence_barplot.pdf
+│           │   ├── exposures_sina_IQR.pdf
+│           │   ├── signature1_tumor-descriptor_cancer-groups.pdf
+│           │   └── signature1_tumor-descriptor_molecular-subtypes.pdf
 ├── data
 ```
+
+
+
+  
+  
+  
+  
 
 ## Summary of custom functions
 
