@@ -164,7 +164,7 @@ _All_ samples are included in these sina plots, which show the distribution of e
 
 exposures_sina_boxplot <- results_df %>%
   # we DO visualize unknown also, but in case...
-  #dplyr::filter(signature != "Unknown") %>%
+  #dplyr::filter(signature != "Other") %>%
   ggplot2::ggplot() + 
   ggplot2::aes(x = signature, 
                y = exposure,
@@ -236,9 +236,10 @@ ggplot2::ggsave(exposures_presence_barplot_file, exposures_proportions, width = 
 
 ### Barplot of sample exposures faceted across cancer groups
 
-This plot shows the literal exposures for each samples.
+This plot shows the signature exposures for each sample. 
+Each bar represents one sample, with fills representing the different signatures.
 We order plots by sample 1, and we include the unknown proportion so everything has the same height. 
-In this case, "Unknown" specifically means mutations that were not assigned to the specific 8 CNS signatures examined, but are associated (if at all) with a different signature.
+In this case, "Other" specifically means mutations that were not assigned to the specific 8 CNS signatures examined, but are associated (if at all) with a different signature.
 
 ```{r barplot1, fig.width = 12, fig.height = 9}
 
@@ -257,7 +258,7 @@ sample_exposures_barplot <- results_df %>%
                y = exposure, 
                fill = signature) + 
   ggplot2::geom_col(color = "black", size = 0.05) + 
-  ggplot2::labs(x = "Sample", y = "Signature exposure", fill = "RefSig Signature") + 
+  ggplot2::labs(x = "Sample", y = "Signature weight", fill = "RefSig Signature") + 
   # Only 1:8 palette. The "Other" gets filled as white by including `color="black"` in the geom
   # There will be a warning about palette size and the warning is OK because ^^
   colorblindr::scale_fill_OkabeIto() + 
@@ -347,8 +348,7 @@ results_df %>%
   dplyr::select(Kids_First_Biospecimen_ID, cancer_group_display, exposure, signature) %>%
   dplyr::inner_join(subtypes) %>%
   dplyr::group_by(Kids_First_Biospecimen_ID) %>%
-  tidyr::spread(signature, exposure) %>%
-  knitr::kable()
+  tidyr::spread(signature, exposure) 
 
 
 ```
@@ -425,7 +425,7 @@ if (!(params$is_ci == 1)) {
     ggplot2::facet_wrap(~cancer_group_display_n,nrow = 2) +
     ggplot2::labs(
       x = "Tumor descriptor",
-      y = "Signature 1 Exposure"
+      y = "Signature 1 Weight"
     ) +
     ggpubr::theme_pubr() + 
     ggplot2::theme(
@@ -455,7 +455,7 @@ if (!(params$is_ci == 1)) {
     ggplot2::facet_wrap(~molecular_subtype,nrow = 3) +
     ggplot2::labs(
       x = "Tumor descriptor",
-      y = "Signature 1 Exposure"
+      y = "Signature 1 Weight"
     ) +
     ggpubr::theme_pubr() + 
     ggplot2::theme(
