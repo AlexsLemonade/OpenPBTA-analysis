@@ -45,7 +45,7 @@ This file knits to an HTML (`04-analyze_de_novo.HTML`) which contains a **table*
 
 + The Rmd `06-compare_cns_exposures.Rmd` performs a quick comparison of the `sigfit` and `deconstructSigs` results, and concludes to proceed with `deconstructSigs` exposures.
   + As part of this, the `sigfit` exposures are set to zero when the lower end of the Bayesian HPD interval < 0.01 ([ref](https://htmlpreview.github.io/?https://github.com/kgori/sigfit/blob/050c389bafd14090524fb4d97edc127d449a2d3b/doc/sigfit_vignette.html)).
-  + Worth noting that `deconstructSigs` sets all exposures that are < 0.06 to 0. 
+  + `deconstructSigs` sets all exposures that are < 0.06 to 0. 
 
 + The Rmd `07-plot_cns_fit.Rmd` visualizes the `deconstructSigs` exposures from CNS signature fitting.
   + The knitted HTML contains several figures which are also separately exported to `plots/cns/`:
