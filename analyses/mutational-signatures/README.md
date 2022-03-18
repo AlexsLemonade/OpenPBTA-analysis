@@ -98,7 +98,7 @@ OpenPBTA-analysis
 │           │   ├── exposures_sina_IQR.pdf
 │           │   ├── signature1_tumor-descriptor_cancer-groups.pdf
 │           │   └── signature1_tumor-descriptor_molecular-subtypes.pdf
-├── data
+└── data
 ```
 
 
