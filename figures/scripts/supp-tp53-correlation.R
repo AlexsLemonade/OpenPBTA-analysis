@@ -14,7 +14,7 @@ breakpoint_den_dir <- file.path(analyses_dir, "chromosomal-instability", "breakp
 cg_display_dir <- file.path(root_dir, "figures", "palettes")
 
 ## Define output directory
-output_dir <- file.path(root_dir, "figures", "pdfs", "fig5", "correlation_plots")
+output_dir <- file.path(root_dir, "figures", "pdfs", "supp", "correlation_plots")
 if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
 }
