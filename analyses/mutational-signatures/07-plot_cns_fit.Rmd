@@ -283,7 +283,7 @@ ggplot2::ggsave(exposures_sample_barplot_file, sample_exposures_barplot, width =
 Which samples have MMR ~ 1, and are these hypermutators? 
 This analysis is discussed [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1227#issuecomment-1064493652).
 
-Note that this visualiation is strictly exploratory and not exported. 
+Note that this visualization is strictly exploratory and not exported. 
 
 We do **not** observe that samples with high MMR2 exposure have high mutational burdens. We do see that the majority of all such samples are subtyped as HGG, H3 wildtype.
 
