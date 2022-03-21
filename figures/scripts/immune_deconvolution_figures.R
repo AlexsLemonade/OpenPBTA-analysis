@@ -35,13 +35,15 @@ quantiseq_file <- file.path(deconv_dir, "quantiseq_deconv-output.rds")
 # Load the data
 quantiseq <- read_rds(quantiseq_file)
 
-
-
-# Two versions of jitter/box of fractions across cell types and molecular subtypes -----------
-
 # Define output files 
 subtype_facet_file <- file.path(output_dir, "cell_types-molecular_subtypes-v1.pdf")
 celltype_facet_file <- file.path(output_dir, "cell_types-molecular_subtypes-v2.pdf")
+barplot_file <- file.path(output_dir, "cell_types_barplot.pdf")
+
+
+
+
+# Two versions of jitter/box of fractions across cell types and molecular subtypes -----------
 
 
 cancer_groups_of_interest <- c("High-grade glioma astrocytoma", "Ependymoma", "Medulloblastoma")
@@ -100,6 +102,34 @@ celltype_facet <- plot_data %>%
 ggsave(subtype_facet_file, subtype_facet, width = 10, height = 5)
 ggsave(celltype_facet_file, celltype_facet, width = 10, height = 5)
   
+
+
+# Barplots of the samples, ordered in order of uncharacterized
+sample_order <- plot_data %>%
+  filter(cell_type == "uncharacterized cell") %>%
+  arrange(score) %>% 
+  pull(sample) 
+
+
+barplot <- plot_data %>%
+  # arrange samples
+  mutate(sample = fct_relevel(sample, sample_order)) %>%
+  filter(cell_type != "uncharacterized cell") %>%
+  ggplot() + 
+  aes(x = sample, y = score, fill = cell_type) + 
+  geom_col(color = "black", size = 0.25) + 
+  facet_wrap(~molecular_subtype, nrow = 3, scale = "free") +
+  labs(x = "Sample", 
+       y = "Cell type fraction", 
+       fill = "Cell type") +
+  ggsci::scale_fill_simpsons() +
+  theme(axis.text.x = element_blank(), 
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_text(size = rel(0.8))) 
+  
+
+
+
 
 
 
