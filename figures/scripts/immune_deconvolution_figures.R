@@ -42,7 +42,6 @@ barplot_file <- file.path(output_dir, "cell_types_barplot.pdf")
 
 
 
-
 # Two versions of jitter/box of fractions across cell types and molecular subtypes -----------
 
 
@@ -117,7 +116,7 @@ barplot <- plot_data %>%
   filter(cell_type != "uncharacterized cell") %>%
   ggplot() + 
   aes(x = sample, y = score, fill = cell_type) + 
-  geom_col(color = "black", size = 0.25) + 
+  geom_col(color = "black", size = 0.1) + 
   facet_wrap(~molecular_subtype, nrow = 3, scale = "free") +
   labs(x = "Sample", 
        y = "Cell type fraction", 
@@ -127,7 +126,7 @@ barplot <- plot_data %>%
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = rel(0.8))) 
   
-
+ggsave(barplot_file, barplot, width = 10, height = 4.5)
 
 
 
