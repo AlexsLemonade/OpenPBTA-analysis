@@ -553,3 +553,9 @@ tp53_alterations_score_wide %>%
   write_tsv(file.path(results_dir,"tp53_altered_status.tsv"))
 
 ```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
