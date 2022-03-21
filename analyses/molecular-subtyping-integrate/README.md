@@ -12,11 +12,12 @@ bash run-subtyping-integrate.sh
 ### Module contents
 
 `01-integrate-subtyping.Rmd` integrates results from compiled results in `compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` to `pbta-histologies-base.tsv`
+To assign `cancer_group`, we follow a two-step procedure:
+1) remove molecular subtype information from `harmonized_diagnosis`
+2) did additional modifications based on the subtype-stripped diagnosis
 
-`cancer_group` column is assigned with the following steps: 
-1. For samples without subtypes assigned to `harmonized_diagnosis`, `cancer_group` equals `harmonized_diagnosis`. 
-These `cancer_group` are:
-
+1. The following `cancer_group` do not have molecular subtypes information and hence, `cancer_group` is first identified as `harmonized_diagnosis` in step 1).
+These `cancer_group` (without additional modification on step 2) yet) are:
 ```
 Adamantinomatous craniopharyngioma
 Adenoma
@@ -31,7 +32,7 @@ Choroid plexus carcinoma
 Choroid plexus cyst
 Choroid plexus papilloma
 Clear cell meningioma
-CNS Burkitt's lymphoma
+CNS Burkitt’s lymphoma
 CNS neuroblastoma
 Craniopharyngioma
 Diffuse fibrillary astrocytoma
@@ -80,7 +81,8 @@ Schwannoma
 Subependymal Giant Cell Astrocytoma
 Teratoma
 ```
-2. For samples with subtypes in `harmonized_diagnosis`, `cancer_group` equals `harmonized_diagnosis` without molecular subtypes information. And all relevant `cancer_group` are:
+2. The following `cancer_group` have molecular subtypes information and hence, `cancer_group` is first identified as `harmonized_diagnosis` without subtype after step 1).
+These `cancer_group` (after molecular subtype removal without additional modification from step 2) yet) are:
 ```
 Benign tumor
 Chordoma
@@ -101,9 +103,9 @@ Rosette-forming glioneuronal tumor
 Subependymal Giant Cell Astrocytoma
 ```
 
-3. Additionally, the following cancer groups undergo additional modifications. 
+3. After step 1), we made additional modifications as step 2).
+| cancer group pre-modification (with or without subtype removal) | final cancer group used | 
 |-----------|----------------|
-| cancer group pre-modification | final cancer group used | 
 | Adamantinomatous craniopharyngioma | Craniopharyngioma |
 | Anaplastic (malignant) meningioma | Meningioma |
 | Atypical meningioma | Meningioma |
@@ -128,5 +130,3 @@ Subependymal Giant Cell Astrocytoma
 | Neurofibroma/Plexiform | Neurofibroma Plexiform |
 | Neurofibroma/Plexiform;Other | Neurofibroma Plexiform |
 | Non-germinomatous germ cell tumor;Teratoma | Teratoma | 
-
-
