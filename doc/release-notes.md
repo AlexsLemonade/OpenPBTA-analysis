@@ -1,6 +1,6 @@
 # release notes
 ## current release
-### release-v20-20210726
+### release-v21-20210820
 - release date: 2021-08-20
 - status: available
 - changes:
@@ -12,7 +12,7 @@
 - folder structure
 ```
 data
-└── release-v19-20210423
+└── release-v21-20210820
     ├── consensus_seg_annotated_cn_autosomes.tsv.gz
     ├── consensus_seg_annotated_cn_x_and_y.tsv.gz
     ├── data-files-description.md
@@ -121,7 +121,7 @@ data
 - folder structure
 ```
 data
-└── release-v19-20210423
+└── release-v20-20210726
     ├── consensus_seg_annotated_cn_autosomes.tsv.gz
     ├── consensus_seg_annotated_cn_x_and_y.tsv.gz
     ├── data-files-description.md
