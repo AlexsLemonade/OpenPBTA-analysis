@@ -6,14 +6,19 @@ output: html_notebook
 This notebook will do the following survival analysis
 
 1. Univariate analysis 
+a) cox regression method
 - TP53 classifier score (as a continuous variable)
 - EXTEND score (as a continuous variable)
-- Broad histology specified in the color palette file
+- HGG vs. non-HGG
+b) log rank method
 - HGG vs. non-HGG
 
-2. Multivariate analysis
-- TP53 classifier score, EXTEND score and HGG group
-- TP53 classifier score, EXTEND score and broad histology specified in the color palette file
+2. Multivariate analysis - all using cox regression
+a) overall comparison with 3 covariates
+- TP53 classifier score, EXTEND score and HGG vs. non-HGG
+b) sub-population comparison with 2 covariates
+- HGG group: TP53 classifier score and EXTEND score
+- non-HGG group: TP53 classifier score and EXTEND score
 
 3. Plots
 - Bivariate distribution of TP53 classifier score and EXTEND score in density plot stratified by HGAT status
