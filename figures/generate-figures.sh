@@ -143,3 +143,11 @@ fi
 Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.Rmd',
                               clean = TRUE, params = list(final_figure=TRUE))"
 
+
+
+######## Mutational signatures
+# Copy the figure to final directory
+cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_sina_IQR.pdf  pdfs/fig3/panels/mutational_signatures_exposuures.pdf
+
+
+
