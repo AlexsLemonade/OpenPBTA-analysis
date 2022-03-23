@@ -75,6 +75,25 @@ histology_select %>%
   knitr::kable()
 ```
 
+### output tables for matching
+```{r}
+# after step 1 match
+histology_select %>% 
+  dplyr::select(cancer_group_pre_mod,
+                cancer_group) %>%
+  distinct() %>%
+  dplyr::arrange(cancer_group) %>% 
+  readr::write_tsv("results/cancer_group_post_subtype_removal_match.tsv")
+
+# before step 1 match
+histology_select %>% 
+  dplyr::select(harmonized_diagnosis,
+                cancer_group) %>%
+  distinct() %>%
+  dplyr::arrange(cancer_group) %>% 
+  readr::write_tsv("results/cancer_group_harmonized_diag_match.tsv")
+```
+
 ## generate session info
 ```{r}
 sessionInfo()
