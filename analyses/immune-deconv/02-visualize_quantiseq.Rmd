@@ -205,11 +205,11 @@ pdl1_distributions_plot <- ggplot(pdl1_cd8) +
   facet_wrap(~cancer_group_display, nrow = 2, scales = "free") +
   scale_color_identity() +
   labs(x = "Molecular subtype of sample",
-       y = "Log2 expression of PDL1") +
+       y = "Log2 expression (FPKM) of PDL1") +
   ggpubr::theme_pubr() + 
   theme(axis.text.x = element_text(hjust = 1, 
-                                   size = rel(0.7), 
-                                   angle = 45)) 
+                                   size = rel(0.6), 
+                                   angle = 90)) 
 
 pdl1_distributions_plot
 
