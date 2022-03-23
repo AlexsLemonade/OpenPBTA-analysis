@@ -99,7 +99,8 @@ data
     └── whole_exome_agilent_plus_tcga_6k.targetIntervals.bed
 ``` 
 
-##archived release
+## archived release
+### release-v20-20210726
 - release date : 2021-07-26
 - status: availale
 - changes:
@@ -207,7 +208,6 @@ data
     ├── whole_exome_agilent_plus_tcga_6k.targetIntervals.Gh38.bed
     └── whole_exome_agilent_plus_tcga_6k.targetIntervals.bed
 ``` 
-
 
 ## archived release
 ### release-v19-20210423
