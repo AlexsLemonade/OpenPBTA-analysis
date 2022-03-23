@@ -490,13 +490,6 @@ png(file.path(plots_dir, "cn_status_heatmap.png"),
     res = 800, width = 8.5, height = 11.5, units = "in")
 ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom")
 dev.off()
-
-# And as PDF
-pdf(file.path(plots_dir, "cn_status_heatmap.pdf"),
-    width = 8.5, 
-    height = 11.5)
-ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom")
-dev.off()
 ```
 
 # Session Info
