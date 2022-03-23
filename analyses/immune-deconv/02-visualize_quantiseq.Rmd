@@ -104,7 +104,7 @@ subtypes_of_interest <- palette_mapping_df %>%
   pull(molecular_subtype)
 
 
-# Now, filter to relevant samples and removed uncharacterized fractions
+# Now, filter to relevant samples and remove uncharacterized fractions
 quantiseq_subset <- quantiseq %>%
   left_join(palette_mapping_df, by = c("sample" = "Kids_First_Biospecimen_ID")) %>%
   filter(molecular_subtype %in% subtypes_of_interest, 
