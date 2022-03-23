@@ -160,7 +160,7 @@ ggsave(subtypes_celltypes_plot_file, subtypes_celltypes_plot, width = 8, height 
 
 ### Visualize PDL1 (CD274) expression
 
-In [this](https://www.tandfonline.com/doi/full/10.1080/2162402X.2018.1462430) reference, high levels of both CD8+ and PDL1 can mean good candidate for immunotherapy, and high levels of PDL1 with low levels of CD8+ in has been associated with poor prognosis.
+In [this](https://www.tandfonline.com/doi/full/10.1080/2162402X.2018.1462430) reference, high levels of both CD8+ and PDL1 can mean good candidate for immunotherapy, and high levels of PDL1 with low levels of CD8+ have been associated with poor prognosis.
 
 In our data, CD8+ fractions are very low, at most 1.5% in an HGG H3 WT sample. Distributions of CD8+ fractions also show extremely low variance, _except_ for MB subtypes (relatively speaking). Therefore, we examine here the relationship between expression and fraction for MB specifically.
 
