@@ -1,0 +1,199 @@
+---
+title: "Survival analysis by TP53 and telomerase activity"
+output: html_notebook
+---
+
+This notebook will do the following multivariate survival analyses:
+1. Multivariate analysis using immune cell types (minus uncharacterized), PDL1 expression, and cancer group as covariates
+2. Multivariate analysis for each cancer group, using immune cell types (minus uncharacterized), PDL1 expression, and molecular subtype as covariates
+
+## Setup
+
+#### Packages
+
+```{r Set up library}
+library(survival)
+library(dplyr)
+library(ggplot2)
+library(ggpubr)
+```
+
+#### Establish directories
+```{r}
+# define directories
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+input_dir <- file.path(root_dir, "analyses", "immune-deconv")
+analysis_dir <- file.path(root_dir, "analyses", "survival-analysis")
+
+results_dir <- file.path(analysis_dir, "results")
+if(!dir.exists(results_dir)){
+  dir.create(results_dir)
+}
+```
+
+#### Read in required files
+```{r}
+# Read in analysis data
+quantiseq <- readRDS(file.path(input_dir, "results", "quantiseq_deconv-output.rds")) %>%
+  # remove uncharacterized
+  dplyr::filter(cell_type != "uncharacterized cell")
+polya <- readRDS(file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"))
+stranded <- readRDS(file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
+
+# Read in histology file
+histology_df <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
+
+```
+
+#### filter to cancer group of interest 
+```{r}
+# define cancer group of interest
+cancer_groups_of_interest <- c("High-grade glioma astrocytoma", 
+                              "Diffuse midline glioma",
+                              "Low-grade glioma astrocytoma", 
+                              "Ependymoma", 
+                              "Medulloblastoma")
+
+# filter to cancer group of interest 
+histologies_df_filtered <- histology_df %>%
+  # RNA-Seq samples only
+  dplyr::filter(experimental_strategy == "RNA-Seq",
+                composition=="Solid Tissue",
+                tumor_descriptor == "Initial CNS Tumor",
+                cancer_group %in% cancer_groups_of_interest) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, Kids_First_Participant_ID, cancer_group, OS_status, OS_days, molecular_subtype) %>%
+  distinct() %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID)
+
+```
+
+#### Add immune information
+```{r}
+# filter to samples of interest
+quantiseq_subset <- quantiseq %>%
+  dplyr::filter(sample %in% histologies_df_filtered$Kids_First_Biospecimen_ID) %>%
+  dplyr::mutate(cell_type_modi = gsub(" ", "_", cell_type),
+                cell_type_modi = gsub("\\+", "", cell_type_modi),
+                cell_type_modi = gsub("\\(", "", cell_type_modi),
+                cell_type_modi = gsub("\\)", "", cell_type_modi),
+                cell_type_modi = gsub("\\-", "_", cell_type_modi)) %>%
+  dplyr::mutate() %>%
+  dplyr::select(-cell_type)
+
+# spread the results
+quantiseq_subset_spread <- quantiseq_subset %>%
+  tidyr::spread(cell_type_modi, score) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID = sample) %>%
+  dplyr::left_join(histologies_df_filtered) %>%
+  dplyr::select(-method)
+```
+
+#### Add RNA-Seq expression
+```{r}
+# get poly-A samples
+polya_samples <- quantiseq_subset_spread %>%
+  dplyr::filter(library == "polya") %>%
+  pull(Kids_First_Biospecimen_ID)
+
+# get stranded samples
+stranded_samples <- quantiseq_subset_spread %>%
+  dplyr::filter(library == "stranded") %>%
+  pull(Kids_First_Biospecimen_ID)
+
+# get CD274 expression for polya
+polya_cd274 <- polya %>%
+  dplyr::select(all_of(polya_samples)) %>%
+  tibble::rownames_to_column("gene_symbol") %>%
+  dplyr::filter(gene_symbol == "CD274") %>%
+  tibble::column_to_rownames("gene_symbol") %>% 
+  t() %>% as.data.frame() %>%
+  tibble::rownames_to_column("Kids_First_Biospecimen_ID")
+
+# get CD274 expression for stranded
+stranded_cd274 <- stranded %>%
+  dplyr::select(all_of(stranded_samples)) %>%
+  tibble::rownames_to_column("gene_symbol") %>%
+  dplyr::filter(gene_symbol == "CD274") %>%
+  tibble::column_to_rownames("gene_symbol") %>% 
+  t() %>% as.data.frame() %>%
+  tibble::rownames_to_column("Kids_First_Biospecimen_ID")
+  
+# combine stranded and polya
+combined_cd274 <- bind_rows(polya_cd274, stranded_cd274)
+
+# add expression to quantiseq results
+combined_df <- quantiseq_subset_spread %>%
+  dplyr::left_join(combined_cd274)
+```
+
+#### get distinct sample
+```{r}
+# get distinct results 
+combined_df_distinct <- combined_df %>%
+  dplyr::distinct(Kids_First_Participant_ID, .keep_all=TRUE) %>%
+  # recode the categories - 
+  # DECEASED maps to a survival event status of 1, LIVING maps to a censored observation with value 0
+  dplyr::mutate(OS_status_fixed = case_when(
+    OS_status == "LIVING" ~ 0,
+    OS_status == "DECEASED" ~1
+ )) %>% 
+  dplyr::mutate(OS_years = OS_days / 365.25) 
+
+```
+
+#### Run multivariate analysis for all cancer groups
+```{r}
+# find all immune cell types 
+immune_cells <- quantiseq_subset %>% pull(cell_type_modi) %>% unique() %>%
+  paste0(collapse = "+")
+
+# define model
+model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ",
+                immune_cells, 
+                "+cancer_group+CD274")
+
+fit <- survival::coxph(formula(model),
+                       data = combined_df_distinct)
+# generate output
+table <- broom::tidy(fit) 
+
+# Save the table data in a TSV
+readr::write_tsv(table, file.path(results_dir, "cox_reg_results_5cgs.tsv"))
+
+print(table)
+
+# printout the plot
+forest_coxph <- survminer::ggforest(fit, data = combined_df_distinct)
+print(forest_coxph)
+```
+
+#### Run multivariate analysis for individual cancer group
+```{r}
+for(cg_each in cancer_groups_of_interest){
+  # filter to the cancer group of interset 
+  combined_df_distinct_each <- combined_df_distinct %>%
+    dplyr::filter(cancer_group == cg_each)
+  
+  # define model
+  model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ",
+                  immune_cells, 
+                  "+molecular_subtype+CD274")
+  
+  fit <- survival::coxph(formula(model),
+                         data = combined_df_distinct_each)
+  # generate output
+  table <- broom::tidy(fit) 
+  
+  # Save the table data in a TSV
+  readr::write_tsv(table, file.path(results_dir, paste0("cox_reg_results_in_", cg_each, ".tsv")))
+  
+  print(table)
+  
+  # printout the plot
+  forest_coxph <- survminer::ggforest(fit, data = combined_df_distinct_each)
+  print(forest_coxph)
+}
+
+```
+
