@@ -42,3 +42,7 @@ Rscript --vanilla 01-immune-deconv.R \
 
 echo "Deconvolution finished."
 
+
+# Perform visualization
+Rscript -e "rmarkdown::render('02-visualize_quantiseq.Rmd', clean = TRUE)"
+
