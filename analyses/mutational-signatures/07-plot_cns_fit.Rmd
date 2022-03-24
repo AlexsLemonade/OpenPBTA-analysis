@@ -55,7 +55,7 @@ signature_names_df <- tibble::tibble(
 )
 ```
 
-First, we read in data and prepare exposures and TMB information.
+First, we read in data and prepare exposures.
 
 ```{r read_prep_data, warning=FALSE}
 
@@ -82,19 +82,6 @@ exposures <- exposures_wide %>%
   # key is column name in signature_names_df
   tidyr::gather(-Kids_First_Biospecimen_ID, key = "cns_names", value = "exposure") 
 
-
-# Prepare TMB data
-tmb_all <- readr::read_tsv(tmb_all_file)
-tmb_coding <- readr::read_tsv(tmb_coding_file)
-
-tmb_data <- tmb_coding %>% 
-  dplyr::rename(coding_tmb = tmb) %>%
-  dplyr::select(Tumor_Sample_Barcode, coding_tmb) %>%
-  dplyr::inner_join(
-    dplyr::select(tmb_all,
-                  Tumor_Sample_Barcode, tmb)
-  ) %>%
-  dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode)
 ```
 
 
