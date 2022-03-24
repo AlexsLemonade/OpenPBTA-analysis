@@ -53,7 +53,9 @@ metadata <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max = 10
   # Select what is needed
   select(contains("cancer_group"), 
                 Kids_First_Biospecimen_ID, 
-                tumor_ploidy)
+                tumor_ploidy) %>%
+  # remove "Other"
+  filter(cancer_group != "Other")
 
 
 ### Set up chromosomal sizes for making bins. 
@@ -147,9 +149,7 @@ cancer_group_counts <- metadata %>%
   count(cancer_group_display, name = "cancer_group_n") %>%
   mutate(
     cancer_group_display = fct_reorder(cancer_group_display, cancer_group_n, .desc=T), 
-    # make "other" last
-    cancer_group_display = fct_relevel(cancer_group_display, "Other", after=Inf),
-    # and now relabel
+    # and now make the label
     cancer_group_display_n = glue::glue("{cancer_group_display} (N = {cancer_group_n})")
   ) %>%
   # arrange so we're in the right order
@@ -170,8 +170,6 @@ samples_for_heatmap <- metadata %>%
   ) %>%
   mutate(
     cancer_group_display = fct_reorder(cancer_group_display, cancer_group_n, .desc=T), 
-    # make "other" last
-    cancer_group_display = fct_relevel(cancer_group_display, "Other", after=Inf),
     # and now relabel
     cancer_group_display = factor(cancer_group_display, labels = cancer_group_counts$cancer_group_display_n)
   ) %>%
@@ -208,7 +206,7 @@ hist_text <- ComplexHeatmap::anno_mark(
   labels = levels(samples_for_heatmap$cancer_group_display),
   which = "row",
   side = "right",
-  labels_gp = grid::gpar(cex = 0.65),
+  labels_gp = grid::gpar(cex = 0.6),
   link_width = grid::unit(15, "mm")
 )
 
@@ -255,7 +253,7 @@ heatmap <- ComplexHeatmap::Heatmap(
 )
 
 # Save heatmap.
-pdf(figure_s3b_file, width = 9, height = 10)
+pdf(figure_s3b_file, width = 11, height = 8.5) # 11 width to read chr labels
 ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom")
 dev.off()
 
