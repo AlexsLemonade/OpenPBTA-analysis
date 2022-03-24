@@ -1,6 +1,20 @@
 # J. Taroni for ALSF CCDL 2022
 # Counts alterations per cancer group to be reported in the manuscript text.
+# These are counts for oncoprint plots that use genes of interest lists.
+# The mappings between cancer groups and genes of interest lists in available in
+# data/cancer_group_goi_list_mapping.tsv in this module, which is read in 
+# directly, rather than passed in via an argument. Data files need to have been
+# processed with 01-map-to-sample-id.R. The resulting tables are output into
+# tables/cancer_group_counts/<subdirectory>, where <subdirectory> is set via an
+# argument.
 #
+# USAGE: 
+#  Rscript --vanilla 04-alteration-counts-by-cancer-group.R \
+#    --maf_file ../../scratch/oncoprint_files/primary_only_maf.tsv \
+#    --cnv_file ../../scratch/oncoprint_files/primary_only_cnv.tsv \
+#    --fusion_file ../../scratch/oncoprint_files/primary_only_fusions.tsv \
+#    --metadata_file ../../data/pbta-histologies.tsv
+#    --subdirectory primary_only
 
 
 #### Set Up --------------------------------------------------------------------
@@ -146,7 +160,7 @@ for (cg in cancer_group_goi_df$cancer_group) {
   # Error in read.maf(maf = maf_df, clinicalData = metadata, cnTable = cnv_df,  :
   # No non-synonymous mutations found
   # Thanks SO: https://stackoverflow.com/questions/49966585/using-trycatch-function-of-r-in-a-loop
-  prep_maf_success <- tryCatch(
+  cg_maf_object <- tryCatch(
     prepare_maf_object(
       maf_df = filtered_maf_df,
       cnv_df = filtered_cnv_df,
@@ -156,18 +170,13 @@ for (cg in cancer_group_goi_df$cancer_group) {
     error = function(e) { return(0) }
   )
   
-  
-  # If prepare_maf_object() above threw an error, skip to the next cancer group
-  if (class(prep_maf_success) == "numeric") { 
-    next 
-  } else {
-    cg_maf_object <- prep_maf_success
-    rm(prep_maf_success)
-  }
+  # If prepare_maf_object() above threw an error, cg_maf_object will be 0 and
+  # we want to skip to the next cancer group
+  if (is.numeric(cg_maf_object)) next 
 
   # Sometimes there will be no non-synonymous variants and subsetMaf() will
   # throw an error
-  subset_success <- tryCatch(
+  filtered_maf_object <- tryCatch(
     subsetMaf(
       maf = cg_maf_object,
       tsb = filtered_metadata_df$Tumor_Sample_Barcode,
@@ -177,14 +186,9 @@ for (cg in cancer_group_goi_df$cancer_group) {
     error = function(e) { return(0) }
   )
 
-  # If subsetMaf() above threw an error, skip to the next cancer group
-  if (class(subset_success) == "numeric") { 
-    next 
-  } else {
-    # Else use the ouptut as filtered ma
-    filtered_maf_object <- subset_success
-    rm(subset_success)
-  }
+  # If subsetMaf() above threw an error, filtered_maf_object will be 0 and
+  # we want to skip to the next cancer group
+  if (is.numeric(filtered_maf_object)) next 
 
   # Get top mutated genes per this subset object
   gene_sum <- mafSummary(filtered_maf_object)$gene.summary
