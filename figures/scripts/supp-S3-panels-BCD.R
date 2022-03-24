@@ -25,21 +25,15 @@ figure_s3d_file <- file.path(supp_figures_dir, "supp_figS3-D.pdf")
 ## Figure S3B ----------------------------
 # Adapted from https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/cnv-chrom-plot/cn_status_heatmap.Rmd
 
-# Source custom functions and define paths for this figure
+# Define paths for this figure
 original_dir <- file.path(analyses_dir, "cnv-chrom-plot")
 cnv_dir <- file.path(analyses_dir, "copy_number_consensus_call", "results")
 
-source(file.path(original_dir, "util", "bin-coverage.R"))
-
-# Set cutoffs
-length_max <- 1e7 # The max length of a segment to use the data.
-frac_uncallable <- 0.75 # Set minimum percentage of a bin that should be callable to report data.
-frac_threshold <- 0.75 # Absolute fraction needed for a bin to be called a particular status
-min_group_size <- 2 # Any groups smaller than this will be added into the `Other` group for the resulting heatmap
+# Import bin calls
+bin_calls_df <- read_tsv(file.path(original_dir, "results", "cn_status_bp_per_bin.tsv"))
 
 # Import color palettes
-histology_label_mapping <- readr::read_tsv(file.path(palettes_dir, "broad_histology_cancer_group_palette.tsv"))# %>% 
- # select(contains("cancer_group")) 
+histology_label_mapping <- readr::read_tsv(file.path(palettes_dir, "broad_histology_cancer_group_palette.tsv"))
 
 # array of the three hex codes
 divergent_col_hex <- readr::read_tsv(
@@ -62,63 +56,6 @@ metadata <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max = 10
                 tumor_ploidy)
 
 
-### Set up consensus copy number data
-# Read in the segment copy number data
-seg_data <- data.table::fread(
-  file.path(
-    cnv_dir,
-    "pbta-cnv-consensus.seg.gz"
-  ),
-  data.table = FALSE
-)
-
-# Set up the status for each consensus segment. 
-seg_data <- seg_data %>%
-  # Join the histology column to this data
-  inner_join(
-    select(
-      metadata,
-      Kids_First_Biospecimen_ID,
-      cancer_group_display,
-      tumor_ploidy
-    ),
-    by = c("ID" = "Kids_First_Biospecimen_ID")
-  ) %>%
-  # Reformat the chromosome variable to drop the "chr"
-  mutate(chrom = factor(gsub("chr", "", chrom),
-                               levels = c(1:22, "X", "Y")
-  )) %>%
-  # Recode the copy number status based on ploidy
-  mutate(status = case_when(
-    # when the copy number is less than inferred ploidy, mark this as a loss
-    copy.num < tumor_ploidy ~ "loss",
-    # if copy number is higher than ploidy, mark as a gain
-    copy.num > tumor_ploidy ~ "gain",
-    copy.num == tumor_ploidy ~ "neutral"
-  )) %>%
-  # Remove sex chromosomes
-  filter(
-    !(chrom %in% c("X", "Y", "M")),
-    !is.na(status)
-  )
-
-
-# Set up seg data as GenomicRanges. 
-seg_ranges <- GenomicRanges::GRanges(
-  seqnames = seg_data$chrom,
-  ranges = IRanges::IRanges(
-    start = seg_data$loc.start,
-    end = seg_data$loc.end
-  ),
-  status = seg_data$status,
-  histology = seg_data$cancer_group,
-  biospecimen = seg_data$ID
-)
-
-# Filter out segments that are longer than our cutoff. 
-filtered_seg_ranges <- seg_ranges[which(seg_ranges@ranges@width < length_max)]
-
-
 ### Set up chromosomal sizes for making bins. 
 chr_sizes <- read_tsv(file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed"),
                              col_names = c("chrom", "start", "end")
@@ -131,63 +68,19 @@ chr_sizes <- read_tsv(file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed"),
   filter(!(chrom %in% c("X", "Y", "M")))
 
 
+
+
+
+########### Set up heatmap annotation objects
+
+
 # Make chromosome size named vector for Heatmap annotation
 chr_sizes_vector <- chr_sizes$end
 names(chr_sizes_vector) <- chr_sizes$chrom
 
+# Get a vector of the biospecimen IDs we use in the heatmap
+sample_ids <- bin_calls_df$biospecimen_id
 
-### Set up uncallable regions data 
-uncallable_bed <- readr::read_tsv(
-  file.path(
-    analyses_dir,
-    "copy_number_consensus_call",
-    "ref",
-    "cnv_excluded_regions.bed"
-  ),
-  col_names = c("chrom", "start", "end")
-) %>%
-  # Reformat the chromosome variable to drop the "chr"
-  mutate(chrom = factor(gsub("chr", "", chrom),
-                               levels = c(1:22, "X", "Y")
-  )) %>%
-  filter(
-    # Drop CNVs that don't have chromosome labels
-    !is.na(chrom),
-    # Drop sex chromosomes
-    !(chrom %in% c("X", "Y", "M"))
-  )
-
-
-# Set up uncallable regions as GenomicRanges. 
-uncallable_ranges <- GenomicRanges::GRanges(
-  seqnames = uncallable_bed$chrom,
-  ranges = IRanges::IRanges(
-    start = uncallable_bed$start,
-    end = uncallable_bed$end
-  )
-)
-
-
-## Call bin CN statuses for each sample
-
-# Set up binned genome ranges. 
-
-# Set up bins of ~1Mb size
-bins <- GenomicRanges::tileGenome(
-  chr_sizes_vector,
-  tilewidth = 1e6
-)
-# Uncompress these ranges
-bins <- unlist(bins)
-
-# Get a vector of the biospecimen IDs
-sample_ids <- unique(seg_data$ID)
-
-# Read in the calculation file
-bin_calls_df <- read_tsv(file.path(original_dir, "results", "cn_status_bp_per_bin.tsv"))
-
-
-## Set up heatmap annotation objects
 
 # Make color key. 
 color_key <- structure(
@@ -196,8 +89,15 @@ color_key <- structure(
 )
 
 
+### Make chromosome labeling `HeatmapAnnotation` object
 
-### Make column annotation object
+# First, set up bins of ~1Mb size and uncompress
+bins <- GenomicRanges::tileGenome(
+  chr_sizes_vector,
+  tilewidth = 1e6
+)
+bins <- unlist(bins)
+# use to set up chrs
 chrs <- paste0("chr", S4Vectors::decode(bins@seqnames))
 chrs <- factor(chrs, levels = paste0("chr", 1:22))
 
@@ -210,10 +110,6 @@ chr_start <- match(unique(chrs), chrs)
 chr_end <- chr_start + summary(chrs)
 mid_points <- floor((chr_start + chr_end) / 2)
 
-
-# Make chromosomal labeling `HeatmapAnnotation` object.
-
-
 # Make text labels for chromosome text
 chr_text <- ComplexHeatmap::anno_mark(
   at = mid_points,
@@ -225,7 +121,7 @@ chr_text <- ComplexHeatmap::anno_mark(
 )
 
 # Create the Heatmap annotation object
-chr_annot <- ComplexHeatmap::HeatmapAnnotation(
+chr_annot <- HeatmapAnnotation(
   df = data.frame(chrs),
   col = list(chrs = chr_colors),
   name = "",
@@ -241,53 +137,66 @@ chr_annot <- ComplexHeatmap::HeatmapAnnotation(
 # Get the histologies for the samples in this set and order them by histology
 
 # Figure out cancer group counts, where NA display groups are _excluded_
-histologies <- metadata %>%
+cancer_group_counts <- metadata %>%
   drop_na(cancer_group_display) %>%
   # No other ? TODO!
-  filter(cancer_group_display != "Other") %>%
+  #filter(cancer_group_display != "Other") %>%
   # IDs of interest 
-  filter(Kids_First_Biospecimen_ID %in% bin_calls_df$biospecimen_id) %>%
-  # count, arrange, and factors for ordering
+  filter(Kids_First_Biospecimen_ID %in% sample_ids) %>%
+  # count and create new label. we run factor code to ensure the right order
   count(cancer_group_display, name = "cancer_group_n") %>%
-  arrange(-cancer_group_n) %>%
-  # set an order column
-  mutate(cancer_group_order = 1:n()) %>%
-  inner_join(metadata) %>%
-  # have to filter again after the join...
-  filter(Kids_First_Biospecimen_ID %in% bin_calls_df$biospecimen_id) %>%
-  # new column for display where N's are given
-  mutate(cancer_group_display_n = glue::glue("{cancer_group_display} (N = {cancer_group_n})")) %>%
-  # keep only columns we need moving forward
-  select(Kids_First_Biospecimen_ID, 
-         cancer_group_display_n, #labels
-         cancer_group_order,  #order
-         # color
-         cancer_group_hex) %>%
- # Reorder display based on order
- mutate(cancer_group_display_n = forcats::fct_reorder(cancer_group_display_n, cancer_group_order)) %>%
- # Make sure they rows also in cancer_group_order
- arrange(cancer_group_display_n) %>%
- # Store as rownames
- column_to_rownames("Kids_First_Biospecimen_ID") %>%
- # We don't want this to actually be displayed on the heatmap though
- select(-cancer_group_order)
+  mutate(
+    cancer_group_display = fct_reorder(cancer_group_display, cancer_group_n, .desc=T), 
+    # make "other" last
+    cancer_group_display = fct_relevel(cancer_group_display, "Other", after=Inf),
+    # and now relabel
+    cancer_group_display_n = glue::glue("{cancer_group_display} (N = {cancer_group_n})")
+  ) %>%
+  # arrange so we're in the right order
+  arrange(cancer_group_display)
 
+samples_for_heatmap <- metadata %>%
+  # again, filter to IDs of interest
+  filter(Kids_First_Biospecimen_ID %in% sample_ids) %>%
+  select(Kids_First_Biospecimen_ID, 
+         cancer_group_display, # display names needed for factoring
+         cancer_group_hex) %>%
+  inner_join(
+    select(
+      cancer_group_counts,
+      cancer_group_n,
+      cancer_group_display
+    )
+  ) %>%
+  mutate(
+    cancer_group_display = fct_reorder(cancer_group_display, cancer_group_n, .desc=T), 
+    # make "other" last
+    cancer_group_display = fct_relevel(cancer_group_display, "Other", after=Inf),
+    # and now relabel
+    cancer_group_display = factor(cancer_group_display, labels = cancer_group_counts$cancer_group_display_n)
+  ) %>%
+  # Make sure the rows are also in cancer_group_order
+  arrange(cancer_group_display) %>%
+  # Store as rownames
+  column_to_rownames("Kids_First_Biospecimen_ID") %>%
+  # remove coumn
+  select(-cancer_group_n)
  
 # Make a color key that's formatted for ComplexHeatmap
 # Get a distinct version of the color keys
-histologies_color_key_df <- histologies %>%
-  dplyr::select(cancer_group_display_n, cancer_group_hex) %>%
+cancer_color_key_df <- samples_for_heatmap %>%
+  dplyr::select(cancer_group_display, cancer_group_hex) %>%
   dplyr::distinct()
 
 # Make color key specific to these samples
-histologies_color_key <- histologies_color_key_df$cancer_group_hex
-names(histologies_color_key) <- histologies_color_key_df$cancer_group_display_n
+cancer_color_key <- cancer_color_key_df$cancer_group_hex
+names(cancer_color_key) <- cancer_color_key_df$cancer_group_display
 
 # Get coordinate start positions
-hist_start <- match(names(histologies_color_key), histologies$cancer_group_display_n)
+hist_start <- match(names(cancer_color_key), samples_for_heatmap$cancer_group_display)
 
 # Get coordinate end positions for each histology group
-hist_end <- hist_start + summary(histologies$cancer_group_display_n)
+hist_end <- hist_start + summary(samples_for_heatmap$cancer_group_display)
 
 # Get mid points of 
 mid_points <- floor((hist_start + hist_end) /2)
@@ -296,7 +205,7 @@ mid_points <- floor((hist_start + hist_end) /2)
 # Make text labels for chromosome text
 hist_text <- ComplexHeatmap::anno_mark(
   at = mid_points,
-  labels = levels(histologies$cancer_group_display_n),
+  labels = levels(samples_for_heatmap$cancer_group_display),
   which = "row",
   side = "right",
   labels_gp = grid::gpar(cex = 0.65),
@@ -305,8 +214,8 @@ hist_text <- ComplexHeatmap::anno_mark(
 
 # Create the Heatmap annotation object
 hist_annot <- ComplexHeatmap::HeatmapAnnotation(
-  df = data.frame(histologies),
-  col = list(display_group = histologies_color_key),
+  df = data.frame(samples_for_heatmap %>% select(-cancer_group_hex)), # select out to avoid a double!
+  col = list(cancer_group_display = cancer_color_key),
   which = "row",
   show_annotation_name = FALSE,
   show_legend = FALSE,
@@ -320,8 +229,8 @@ bin_calls_mat <- bin_calls_df %>%
   tibble::column_to_rownames("biospecimen_id") %>%
   as.matrix()
 # Ensure that this matrix is in the same order as the annotation and double check order
-bin_calls_mat <- bin_calls_mat[rownames(histologies), ]
-if (all.equal(rownames(bin_calls_mat), rownames(histologies)) != TRUE) {
+bin_calls_mat <- bin_calls_mat[rownames(samples_for_heatmap), ]
+if (all.equal(rownames(bin_calls_mat), rownames(samples_for_heatmap)) != TRUE) {
   stop("Bad data processing for Figure S2 Panel B")
 }
  
@@ -330,7 +239,7 @@ heatmap <- ComplexHeatmap::Heatmap(
   bin_calls_mat,
   name = "CN status",
   col = color_key,
-  row_split = histologies$cancer_group_display_n,
+  row_split = samples_for_heatmap$cancer_group_display,
   cluster_columns = FALSE,
   cluster_rows = FALSE,
   rect_gp = grid::gpar(col = "black", lwd = .0005),
@@ -345,36 +254,10 @@ heatmap <- ComplexHeatmap::Heatmap(
   row_title = NULL
 )
 
-
-# Print out heatmap. 
+# Save heatmap.
+pdf(figure_s3b_file, width = 9, height = 10)
 ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+dev.off()
 
 ## Figure S3C-D ---------------------------
 # originally from https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/chromothripsis/04-plot-chromothripsis-and-breakpoint-data.Rmd
