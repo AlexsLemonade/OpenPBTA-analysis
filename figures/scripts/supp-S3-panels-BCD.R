@@ -299,11 +299,9 @@ merged_data <- chromoth_per_sample %>%
 ##### Figure S3C
 fig_s3c <- merged_data %>%
   ggplot(aes(x = count_regions_any_conf_truncated, 
-             y = cnv_breaks_count, 
-             color = count_regions_any_conf_truncated)) +
-  geom_jitter(width = 0.3, alpha = 0.9) +
+             y = cnv_breaks_count)) +
+  geom_jitter(width = 0.3, alpha = 0.6) +
   geom_boxplot(color = "black", alpha = 0, outlier.shape=NA) +
-  ggsci::scale_color_simpsons() +
   theme(legend.position = "none") +
   xlab("Number of Chromothripsis Regions") + 
   ylab("Number of CNV Breaks") 
@@ -312,11 +310,9 @@ ggsave(figure_s3c_file, fig_s3c, width = 5, height = 3)
 #### Figure S3D
 fig_s3d <- merged_data %>%
   ggplot(aes(x = count_regions_any_conf_truncated, 
-             y = sv_breaks_count, 
-             color = count_regions_any_conf_truncated)) +
-  geom_jitter(width = 0.3, alpha = 0.9) +
+             y = sv_breaks_count)) +
+  geom_jitter(width = 0.3, alpha = 0.6) +
   geom_boxplot(color = "black", alpha = 0, outlier.shape=NA) +
-  ggsci::scale_color_simpsons() +
   theme(legend.position = "none") +
   xlab("Number of Chromothripsis Regions") + 
   ylab("Number of SV Breaks") 
