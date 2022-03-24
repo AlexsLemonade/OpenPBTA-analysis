@@ -250,3 +250,8 @@ if (nrow(sv_with_lowexpr) == 0) {
 }
 ```
 
+## Session Info
+
+```{r}
+sessionInfo()
+```

@@ -130,6 +130,9 @@ Rscript --vanilla -e "rmarkdown::render('${analyses_dir}/gene-set-enrichment-ana
 # Step that generates the GSVA, UMAP, and legend panels
 Rscript --vanilla scripts/fig4-panels-gsva-umap.R
 
+# Step that generates UMAP for molecular analysis 
+Rscript --vanilla scripts/supp-subtype-umap.R
+
 ####### CN Status Heatmap
 if [ "$RUN_LOCAL" -lt "1" ]; then
 # Run consensus CNV so we have a refreshed `pbta-cnv-consensus.seg.gz` file
@@ -139,4 +142,12 @@ fi
 # Run CN status heatmap but use parameter so file is saved to figures folder
 Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.Rmd',
                               clean = TRUE, params = list(final_figure=TRUE))"
+
+
+
+######## Mutational signatures
+# Copy the figure to final directory
+cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_sina_IQR.pdf  pdfs/fig3/panels/mutational_signatures_exposures.pdf
+
+
 

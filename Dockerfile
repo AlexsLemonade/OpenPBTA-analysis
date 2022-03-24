@@ -406,6 +406,12 @@ RUN R -e "remotes::install_github('Nik-Zainal-Group/signature.tools.lib', ref = 
 # Patterned geoms
 RUN R -e "remotes::install_github('coolbutuseless/ggpattern', ref = '390e13fead028ba240eae9293a5ef422df02bc8e')"
 
+
+# ggforce for mutational-signatures sina plots
+RUN ./install_bioc.r \
+    ggforce
+
+
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
 
