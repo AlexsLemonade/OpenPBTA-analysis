@@ -196,7 +196,26 @@ for(cg_each in cancer_groups_of_interest){
 
 ```
 
-#### Run multivariate analysis for individual cancer group parsed by molecular subtype
+#### Run multivariate analysis for individual cancer group parsed by molecular subtypes
+```{r}
+for(cg_each in cancer_groups_of_interest){
+  # filter to the cancer group of interset 
+  combined_df_distinct_each <- combined_df_distinct %>%
+    dplyr::filter(cancer_group == cg_each)
+  
+  # define model
+  model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ",
+                  immune_cells, 
+                  "+molecular_subtype+CD274")
+  
+  fit <- survival::coxph(formula(model),
+                         data = combined_df_distinct_each)
+  # generate output
+  print(summary(fit))
+}
+```
+
+#### Try removing inf variables + plot out - however, only DMG worked
 ```{r}
 for(cg_each in c("Diffuse midline glioma")){
   # filter to the cancer group of interset 
@@ -257,23 +276,3 @@ for(cg_each in c("Diffuse midline glioma")){
 }
 
 ```
-
-#### Run multivariate analysis for individual cancer group
-```{r}
-for(cg_each in cancer_groups_of_interest){
-  # filter to the cancer group of interset 
-  combined_df_distinct_each <- combined_df_distinct %>%
-    dplyr::filter(cancer_group == cg_each)
-  
-  # define model
-  model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ",
-                  immune_cells, 
-                  "+molecular_subtype+CD274")
-  
-  fit <- survival::coxph(formula(model),
-                         data = combined_df_distinct_each)
-  # generate output
-  print(summary(fit))
-}
-```
-
