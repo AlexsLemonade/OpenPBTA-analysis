@@ -111,6 +111,7 @@ If we _do_ change the `sigfit` according to 0.01 lower bound recommendation, we 
 
 ```{r scatter2}
 
+
 data_compare_types_filter <- data_compare_types %>%
   dplyr::mutate(sigfit = dplyr::if_else(sigfit_lb_OK, sigfit, 0))
 
