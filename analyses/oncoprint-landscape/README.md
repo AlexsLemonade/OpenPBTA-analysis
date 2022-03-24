@@ -16,6 +16,8 @@ bash run-oncoprint.sh
 
 ### Folder content
 
+* `00-prepare-goi-lists.R` prepares genes of interest (GOI) lists from `data/oncoprint-goi-lists-OpenPBTA.tsv`, as well as a table that maps between cancer groups and the relevant GOI list. 
+All output is in `data/` (within this module).
 * `01-map-to-sample_id.R` prepares MAF, focal CN (from the "most focal" output of the `focal-cn-file-preparation` module), and standardized fusion files for use with `01-plot-oncoprint.R`. 
   * The `Tumor_Sample_Barcode` column in the output corresponds to the `sample_id` column in the histologies file
   * We remove ambiguous `sample_id` -- i.e., where there are more than two tumor biospecimens that map to the same sample identifier.
