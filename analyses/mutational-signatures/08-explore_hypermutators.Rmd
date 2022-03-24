@@ -67,11 +67,12 @@ GitHub references:
 
 Which samples have high 3, 18, and/or MMR2, and are these hypermutators? 
 
-Note that this visualization is strictly exploratory and not exported. 
+Note that this visualization is strictly exploratory and not exported.  
 
 We do **not** observe that samples with high MMR2 or signature 3 exposure have high mutational burdens. 
 Moreover, the hypermutators (all are HGG) are unexposed to signature 3 entirely. 
 Notably, three of the hypermutators have >=50% exposure to signature 18. 
+
 
 ```{r tmb_sigs, fig.width = 10, fig.height = 4}
 sigs_of_interest <- c(3, 18, "MMR2")
@@ -89,6 +90,7 @@ tmb_sigs_df %>%
   ggplot2::geom_point(shape = 21, color ="black") + 
   # guiding line for majority of signature exposure, >=0.5
   ggplot2::geom_vline(xintercept = 0.5, color = "red") +
+  # gives a warning because insufficient colors - but OK since points of interest are colored!
   colorblindr::scale_fill_OkabeIto() +
   ggplot2::labs(x = "Exposure to given signature") +
   ggplot2::facet_grid(tmb_type ~ signature, scales = "free")
@@ -96,6 +98,8 @@ tmb_sigs_df %>%
 
 
 Do the hypermutators also show dysregulated TP53?
+
+We define hypermutant samples as > 10 Mut/Mb, and ultrahypermutant samples as >100 Mut/Mb, from reference [Campbell et al., 2017](https://doi.org/10.1016/j.cell.2017.09.048).
 
 The output below shows hypermutator samples and...
 
