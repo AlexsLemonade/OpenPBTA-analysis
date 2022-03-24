@@ -6,9 +6,6 @@
 library(dplyr)
 library(maftools)
 
-# Get `magrittr` pipe
-`%>%` <- dplyr::`%>%`
-
 #### Directories and Files -----------------------------------------------------
 
 # Detect the ".git" folder -- this will in the project root directory.
@@ -74,7 +71,7 @@ opt <- optparse::parse_args(opt_parser)
 
 # Read in metadata
 metadata <- readr::read_tsv(opt$metadata_file, guess_max = 10000) %>%
-  dplyr::rename(Tumor_Sample_Barcode = sample_id)
+  rename(Tumor_Sample_Barcode = sample_id)
 
 # Read in MAF file
 maf_df <- data.table::fread(opt$maf_file,
@@ -83,7 +80,7 @@ maf_df <- data.table::fread(opt$maf_file,
 
 if (!opt$include_introns) {
   maf_df <- maf_df %>%
-    dplyr::filter(Variant_Classification != "Intron")
+    filter(Variant_Classification != "Intron")
 }
 
 # Read in cnv file
@@ -113,44 +110,44 @@ other_cns_histologies <- c(
 )
 
 tumor_barcodes_to_include <- metadata %>%
-  dplyr::filter(broad_histology %in% c(
+  filter(broad_histology %in% c(
     other_cns_histologies,
     "Low-grade astrocytic tumor",
     "Embryonal tumor",
     "Diffuse astrocytic and oligodendroglial tumor"
   )) %>%
-  dplyr::pull(Tumor_Sample_Barcode)
+  pull(Tumor_Sample_Barcode)
 
 # Filter data files to only include the relevant samples & then pull the IDs
 # We're only counting IDs that are present in the relevant file using this
 # approach.
 maf_filtered_ids <- maf_df %>%
-  dplyr::filter(Tumor_Sample_Barcode %in% tumor_barcodes_to_include) %>%
-  dplyr::pull(Tumor_Sample_Barcode)
+  filter(Tumor_Sample_Barcode %in% tumor_barcodes_to_include) %>%
+  pull(Tumor_Sample_Barcode)
 
 # CNV alterations
 cnv_filtered_ids <- cnv_df %>%
-  dplyr::filter(Tumor_Sample_Barcode %in% tumor_barcodes_to_include) %>%
-  dplyr::pull(Tumor_Sample_Barcode)
+  filter(Tumor_Sample_Barcode %in% tumor_barcodes_to_include) %>%
+  pull(Tumor_Sample_Barcode)
 
 # Fusion alterations
 fusion_filtered_ids <- fusion_df %>%
-  dplyr::filter(Tumor_Sample_Barcode %in% tumor_barcodes_to_include) %>%
-  dplyr::pull(Tumor_Sample_Barcode)
+  filter(Tumor_Sample_Barcode %in% tumor_barcodes_to_include) %>%
+  pull(Tumor_Sample_Barcode)
 
 # Take the union of filtered IDs
 filtered_ids <- union(maf_filtered_ids, cnv_filtered_ids ) %>% 
   union(fusion_filtered_ids)
 
 sample_counts_df <- metadata %>%
-  dplyr::filter(Tumor_Sample_Barcode %in% filtered_ids,
-                !is.na(broad_histology)) %>%
-  dplyr::select(Tumor_Sample_Barcode, broad_histology) %>%
-  dplyr::mutate(broad_histology = dplyr::case_when(
+  filter(Tumor_Sample_Barcode %in% filtered_ids,
+         !is.na(broad_histology)) %>%
+  select(Tumor_Sample_Barcode, broad_histology) %>%
+  mutate(broad_histology = case_when(
     broad_histology %in% other_cns_histologies ~ "Other CNS",
     TRUE ~ broad_histology
   )) %>%
-  dplyr::distinct() %>%
+  distinct() %>%
   count(broad_histology)
 
 output_file_path <- file.path(results_dir, opt$output_file)
