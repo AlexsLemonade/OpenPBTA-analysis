@@ -117,5 +117,12 @@ for filename in "${filenames[@]}"; do
     --metadata_file "${histologies_file}" \
     --output_file "${filename}_sample_n_in_oncoprint.tsv"
 
+  Rscript --vanilla 04-alteration-counts-by-cancer-group.R \
+    --maf_file "${intermediate_directory}/${filename}_maf.tsv" \
+    --cnv_file "${intermediate_directory}/${filename}_cnv.tsv" \
+    --fusion_file "${intermediate_directory}/${filename}_fusions.tsv" \
+    --metadata_file "${histologies_file}" \
+    --subdirectory "${filename}"
+
 done
 
