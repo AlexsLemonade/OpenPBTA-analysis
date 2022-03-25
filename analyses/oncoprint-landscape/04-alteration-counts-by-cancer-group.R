@@ -38,8 +38,7 @@ module_dir <- file.path(root_dir, "analyses", "oncoprint-landscape")
 source(
   file.path(
     root_dir,
-    "analyses",
-    "oncoprint-landscape",
+    module_dir,
     "util",
     "oncoplot-functions.R"
   )
