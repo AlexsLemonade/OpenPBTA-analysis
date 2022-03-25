@@ -76,7 +76,7 @@ Individual panels, including any standalone legends, intended for the main text 
 Each figure has its own subdirectory within `figures/pdfs`; individual panels for Figure 1 would be saved in `figures/pdfs/fig1/panels`, for Figure 2 in `figures/pdfs/fig2/panels` and so on and so forth.  
 
 Similarly, panels and standalone legends intended for the supplementary materials should be saved as **PDFs** in `figures/pdfs/supp/<figure>/panels`. 
-As for main text figures, individual panels for Figure S1 would be saved in `figures/pdfs/figs1/panels`, and so on.
+As for main text figures, individual panels for Figure S1 would be saved in `figures/pdfs/supp/figs1/panels`, and so on.
 
 ### Compiled multipanel figures
 
