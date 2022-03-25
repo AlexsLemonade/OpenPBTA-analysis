@@ -27,5 +27,3 @@ All output is in `data/` (within this module).
 * `03-oncoprint-n-count-table.R` counts the number of samples that enter oncoprint plotting (with or without alterations in genes of interest) for each broad histology group.
 The output is in `tables/`.
 * `04-alteration-counts-by-cancer-group.R` summarizes the alterations input into the oncoprint plotting, when genes of interest (GOI) lists are used, for each cancer group (with non-synonymous mutations after subsetting) separately and outputs this to the `tables/cancer_group_counts/` directory.
-
-_No longer used in any analysis:_ Gene lists in `driver-lists` were obtained from https://github.com/marislab/create-pptc-pdx-oncoprints/tree/2c9ed2a2331bcef3003d6aa25a130485d76a3535/data.

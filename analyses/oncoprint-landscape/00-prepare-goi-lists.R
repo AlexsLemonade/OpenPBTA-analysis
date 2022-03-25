@@ -6,8 +6,7 @@
 #
 # Chante Bethell for CCDL 2021
 #
-# # #### USAGE
-# This script is intended to be sourced in the script as follows:
+# USAGE:
 # 
 # Rscript --vanilla 00-prepare-goi-lists.R
 

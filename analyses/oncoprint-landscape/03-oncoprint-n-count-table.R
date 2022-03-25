@@ -91,6 +91,7 @@ fusion_df <- readr::read_tsv(opt$fusion_file)
 
 #### Set up oncoprint counts ---------------------------------------------------
 
+# Broad histologies that fall under "Other CNS" for oncoprint purposes
 other_cns_histologies <- c(
   "Ependymal tumor",
   "Tumors of sellar region",
@@ -109,13 +110,17 @@ other_cns_histologies <- c(
   "Other tumor"
 )
 
+# All broad histologies we want to generate sample counts for
+broad_histologies_included <- c(
+  other_cns_histologies,
+  "Low-grade astrocytic tumor",
+  "Embryonal tumor",
+  "Diffuse astrocytic and oligodendroglial tumor"
+)
+
+# Sample IDs to include
 tumor_barcodes_to_include <- metadata %>%
-  filter(broad_histology %in% c(
-    other_cns_histologies,
-    "Low-grade astrocytic tumor",
-    "Embryonal tumor",
-    "Diffuse astrocytic and oligodendroglial tumor"
-  )) %>%
+  filter(broad_histology %in% broad_histologies_included) %>%
   pull(Tumor_Sample_Barcode)
 
 # Filter data files to only include the relevant samples & then pull the IDs
@@ -139,6 +144,7 @@ fusion_filtered_ids <- fusion_df %>%
 filtered_ids <- union(maf_filtered_ids, cnv_filtered_ids ) %>% 
   union(fusion_filtered_ids)
 
+# Create the table of counts
 sample_counts_df <- metadata %>%
   filter(Tumor_Sample_Barcode %in% filtered_ids,
          !is.na(broad_histology)) %>%
@@ -150,5 +156,6 @@ sample_counts_df <- metadata %>%
   distinct() %>%
   count(broad_histology)
 
+# Write to file
 output_file_path <- file.path(results_dir, opt$output_file)
 readr::write_tsv(sample_counts_df, output_file_path)
