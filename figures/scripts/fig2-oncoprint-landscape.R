@@ -18,7 +18,7 @@ dir.create(main_output_dir, recursive = TRUE, showWarnings = FALSE)
 
 # The supplemental figure (this will be the Other CNS cancer groups without
 # their own )
-supp_output_dir <- file.path(figure_dir, "supp")
+supp_output_dir <- file.path(figure_dir, "supp", "fig3")
 dir.create(supp_output_dir, recursive = TRUE, showWarnings = FALSE)
 
 # Oncoprint directory
