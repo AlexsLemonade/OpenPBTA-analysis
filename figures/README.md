@@ -75,7 +75,8 @@ This section includes details for file organization and guidelines that are not 
 Individual panels, including any standalone legends, intended for the main text should be saved as **PDFs** in `figures/pdfs/<figure>/panels`.
 Each figure has its own subdirectory within `figures/pdfs`; individual panels for Figure 1 would be saved in `figures/pdfs/fig1/panels`, for Figure 2 in `figures/pdfs/fig2/panels` and so on and so forth.  
 
-Similarly, panels and standalone legends intended for the supplementary materials should be saved as **PDFs** in `figures/pdfs/supp/<figure>/panels`. As for main text figures, individual panels for Figure S1 would be saved in `figures/pdfs/figs1/panels`, and so on.
+Similarly, panels and standalone legends intended for the supplementary materials should be saved as **PDFs** in `figures/pdfs/supp/<figure>/panels`. 
+As for main text figures, individual panels for Figure S1 would be saved in `figures/pdfs/figs1/panels`, and so on.
 
 ### Compiled multipanel figures
 
@@ -91,7 +92,8 @@ PNGs version can be linked in the accompanying manuscript repository [`AlexsLemo
 Each figure should include its own associated README in the appropriate PDF subdirectory, e.g., the documentation for Figure 4 can be found in `figures/pdfs/fig4/README.md`.
 That README should detail what analysis modules or individual scripts are required to generate the individual panels for that figure.
 
-Scripts that are exclusively for creating publication-ready plots are available in `figures/scripts` and should be documented in the `figures/scripts/README.md`.
+Scripts that are exclusively for creating publication-ready plots, both main text and supplementary, are available in `figures/scripts` and should be documented in the `figures/scripts/README.md`.
+
 
 ## Figure Guidelines
 
