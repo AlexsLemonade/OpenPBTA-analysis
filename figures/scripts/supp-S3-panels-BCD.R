@@ -15,7 +15,10 @@ analyses_dir <- file.path(root_dir, "analyses")
 scratch_dir <- file.path(root_dir, "scratch")
 figure_dir <- file.path(root_dir, "figures")
 palettes_dir <- file.path(figure_dir, "palettes")
-supp_figures_dir <- file.path(figure_dir, "pdfs", "supp")
+supp_figures_dir <- file.path(figure_dir, "pdfs", "supp", "fig3")
+if(!dir.exists(supp_figures_dir)){
+  dir.create(supp_figures_dir, recursive = TRUE)
+}
 
 ## Define output files
 figure_s3b_file <- file.path(supp_figures_dir, "supp_figS3-B.pdf")
