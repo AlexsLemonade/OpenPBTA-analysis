@@ -482,7 +482,7 @@ Print out heatmap.
 ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom")
 ```
 
-Save to PNG and PDF. 
+Save to PNG. 
 
 ```{r}
 # Save plot as PNG
