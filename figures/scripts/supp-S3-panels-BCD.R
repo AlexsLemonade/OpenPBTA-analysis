@@ -52,20 +52,20 @@ metadata <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max = 10
   left_join(histology_label_mapping, by = "cancer_group") %>%
   # Select what is needed
   select(contains("cancer_group"), 
-                Kids_First_Biospecimen_ID, 
-                tumor_ploidy) %>%
+         Kids_First_Biospecimen_ID) %>%
   # remove "Other"
   filter(cancer_group != "Other")
 
 
 ### Set up chromosomal sizes for making bins. 
-chr_sizes <- read_tsv(file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed"),
-                             col_names = c("chrom", "start", "end")
-) %>%
+chr_sizes <- read_tsv(
+  file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed"),
+  col_names = c("chrom", "start", "end")
+  ) %>%
   # Reformat the chromosome variable to drop the "chr"
   mutate(chrom = factor(gsub("chr", "", chrom),
-                               levels = c(1:22, "X", "Y", "M")
-  )) %>%
+                        levels = c(1:22, "X", "Y", "M"))
+  ) %>%
   # Remove sex chromosomes
   filter(!(chrom %in% c("X", "Y", "M")))
 
@@ -110,11 +110,11 @@ names(chr_colors) <- unique(chrs)
 # Get coordinate start, end, midpoint positions
 chr_start <- match(unique(chrs), chrs)
 chr_end <- chr_start + summary(chrs)
-mid_points <- floor((chr_start + chr_end) / 2)
+mid_points_chr <- floor((chr_start + chr_end) / 2)
 
 # Make text labels for chromosome text
 chr_text <- ComplexHeatmap::anno_mark(
-  at = mid_points,
+  at = mid_points_chr,
   labels = levels(chrs),
   which = "column",
   side = "bottom",
@@ -141,8 +141,6 @@ chr_annot <- HeatmapAnnotation(
 # Figure out cancer group counts, where NA display groups are _excluded_
 cancer_group_counts <- metadata %>%
   drop_na(cancer_group_display) %>%
-  # No other ? TODO!
-  #filter(cancer_group_display != "Other") %>%
   # IDs of interest 
   filter(Kids_First_Biospecimen_ID %in% sample_ids) %>%
   # count and create new label. we run factor code to ensure the right order
@@ -197,12 +195,12 @@ hist_start <- match(names(cancer_color_key), samples_for_heatmap$cancer_group_di
 hist_end <- hist_start + summary(samples_for_heatmap$cancer_group_display)
 
 # Get mid points of histology group for labels
-mid_points <- floor((hist_start + hist_end) /2)
+mid_points_hist <- floor((hist_start + hist_end) /2)
 
 
 # Make text labels for chromosome text
 hist_text <- ComplexHeatmap::anno_mark(
-  at = mid_points,
+  at = mid_points_hist,
   labels = levels(samples_for_heatmap$cancer_group_display),
   which = "row",
   side = "right",
