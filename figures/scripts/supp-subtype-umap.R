@@ -18,7 +18,7 @@ figure_script_dir <- file.path(root_dir, "figures", "scripts")
 dim_red_dir <- file.path(root_dir, "analyses", "transcriptomic-dimension-reduction")
 
 # define output directory as pdfs/supp/fig5 because these panels are figure S5A-D
-plots_dir <- file.path(root_dir, "figures", "pdfs", "supp", "fig5")
+plots_dir <- file.path(root_dir, "figures", "pdfs", "supp", "fig5", "panels")
 if(!dir.exists(plots_dir)){
   dir.create(plots_dir, recursive = TRUE)
 }
