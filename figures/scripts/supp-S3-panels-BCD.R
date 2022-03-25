@@ -196,7 +196,7 @@ hist_start <- match(names(cancer_color_key), samples_for_heatmap$cancer_group_di
 # Get coordinate end positions for each histology group
 hist_end <- hist_start + summary(samples_for_heatmap$cancer_group_display)
 
-# Get mid points of 
+# Get mid points of histology group for labels
 mid_points <- floor((hist_start + hist_end) /2)
 
 
