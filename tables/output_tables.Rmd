@@ -8,7 +8,6 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-install.packages("openxlsx")
 library(tidyverse)
 library(openxlsx)
 ```
@@ -80,46 +79,9 @@ tmb_combined <- full_join(tmb_all, tmb_coding)  %>%
   replace(is.na(.), "NA")
 ```
 
-### COSMIC mutational signatures
-```{r s2 DNA results part 2}
-# read in the file
-cosmic_mut_df <- readr::read_tsv("../analyses/mutational-signatures/results/cosmic_signatures_results.tsv") %>%
-  dplyr::select(Tumor_Sample_Barcode, signature, mut_per_mb) %>%
-  dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode)
-
-# get wide format
-cosmic_mut_wide <- cosmic_mut_df %>%
-  spread(signature, mut_per_mb ) 
-
-# order the columns
-unique_cosmic_sig <- cosmic_mut_df %>% 
-  pull(signature) %>% unique()
-cosmic_mut_wide <- cosmic_mut_wide %>%
-  dplyr::select(c(Kids_First_Biospecimen_ID, all_of(unique_cosmic_sig)))
-
-```
-
-### Alexandrov mutational signatures
-```{r s2 DNA results part 3}
-# read in the file
-alexandrov_mut_df <- readr::read_tsv("../analyses/mutational-signatures/results/nature_signatures_results.tsv") %>%
-  dplyr::select(Tumor_Sample_Barcode, signature, mut_per_mb) %>%
-  dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode)
-
-# get wide format
-alexandrov_mut_wide <- alexandrov_mut_df %>%
-  spread(signature, mut_per_mb ) 
-
-# order the columns
-unique_alex_sig <- alexandrov_mut_df %>% 
-  pull(signature) %>% unique()
-alexandrov_mut_wide <- alexandrov_mut_wide %>%
-  dplyr::select(c(Kids_First_Biospecimen_ID, all_of(unique_alex_sig))) 
-```
-
 ### CNS mutational signatures
-```{r s2 DNA results part 4}
-cns_mut_list <- readRDS("../analyses/mutational-signatures/results/fitted_cns_signature_exposures.RDS")
+```{r s2 DNA results part 2}
+cns_mut_list <- readRDS("../analyses/mutational-signatures/results/fitted_exposures_signal-cns_sigfit.rds")
 cns_mean <- cns_mut_list[["mean"]] %>%
   as.data.frame() %>%
   tibble::rownames_to_column("Kids_First_Biospecimen_ID")  
@@ -127,7 +89,7 @@ cns_mean <- cns_mut_list[["mean"]] %>%
 ```
 
 ### Chromothripsis regions per sample
-```{r s2 DNA results part 5}
+```{r s2 DNA results part 3}
 chromothripsis_region_df <- readr::read_tsv("../analyses/chromothripsis/results/chromothripsis_summary_per_sample.txt")  
 
 ```
@@ -135,8 +97,6 @@ chromothripsis_region_df <- readr::read_tsv("../analyses/chromothripsis/results/
 ### combine S2 table
 ```{r s2 DNA results combined}
 list_s2_table <- list(tmb = tmb_combined,
-                     cosmic_mut_sigs = cosmic_mut_wide,
-                     alexandrov_mut_sigs = alexandrov_mut_wide,
                      cns_denovo_mut_sigs = cns_mean,
                      chromothripsis_events = chromothripsis_region_df
                      )
@@ -146,13 +106,16 @@ openxlsx::write.xlsx(list_s2_table,
 ```
 
 ## Table S3: RNA results table
-### read in and process files
-```{r s3 RNA results table}
+### TP53 scores
+```{r s3 RNA results table p1}
 # get tp53 scores 
 tp53_scores <- readr::read_tsv("../analyses/tp53_nf1_score/results/tp53_altered_status.tsv") %>%
   mutate_all(as.character) %>% 
   replace(is.na(.), "NA")
+```
 
+### Telomerase scores
+```{r s3 RNA results table p2}
 # get extend scores file
 telomerase_scores_polya_count <- readr::read_tsv("../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_counts.txt") %>%
   dplyr::select(SampleID, NormEXTENDScores) %>% 
@@ -188,10 +151,21 @@ telomerase_scores_combined <- bind_rows(telomerase_scores_polya_combined,
 
 ```
 
+### Telomerase scores
+```{r s3 RNA results table p3}
+# get quantiseq immune scores file
+quantiseq_immune <- readRDS("../analyses/immune-deconv/results/quantiseq_deconv-output.rds") %>%
+  dplyr::select(sample, score, cell_type) %>% 
+  dplyr::rename(Kids_First_Biospecimen_ID_RNA = sample) %>%
+  tidyr::spread(cell_type, score)
+```
+
+
 ### combine and output file
 ```{r s3 table combine and output}
 list_s3_table <- list(tp53_scores = tp53_scores,
-                      telomerase_scores = telomerase_scores_combined
+                      telomerase_scores = telomerase_scores_combined,
+                      quantiseq_immune = quantiseq_immune
                       )
 openxlsx::write.xlsx(list_s3_table, 
                      file.path(results_dir, "TableS3-RNA-results-table.xlsx"), 

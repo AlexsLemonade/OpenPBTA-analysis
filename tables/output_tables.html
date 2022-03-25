@@ -468,61 +468,9 @@ tmb_combined &lt;- full_join(tmb_all, tmb_coding)  %&gt;%
   replace(is.na(.), &quot;NA&quot;)</code></pre>
 <pre><code>## Joining, by = &quot;Kids_First_Biospecimen_ID&quot;</code></pre>
 </div>
-<div id="cosmic-mutational-signatures" class="section level3">
-<h3>COSMIC mutational signatures</h3>
-<pre class="r"><code># read in the file
-cosmic_mut_df &lt;- readr::read_tsv(&quot;../analyses/mutational-signatures/results/cosmic_signatures_results.tsv&quot;) %&gt;%
-  dplyr::select(Tumor_Sample_Barcode, signature, mut_per_mb) %&gt;%
-  dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode)</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   Tumor_Sample_Barcode = col_character(),
-##   experimental_strategy = col_character(),
-##   display_group = col_character(),
-##   signature = col_character(),
-##   num_mutations = col_double(),
-##   genome_size = col_double(),
-##   mut_per_mb = col_double()
-## )</code></pre>
-<pre class="r"><code># get wide format
-cosmic_mut_wide &lt;- cosmic_mut_df %&gt;%
-  spread(signature, mut_per_mb ) 
-
-# order the columns
-unique_cosmic_sig &lt;- cosmic_mut_df %&gt;% 
-  pull(signature) %&gt;% unique()
-cosmic_mut_wide &lt;- cosmic_mut_wide %&gt;%
-  dplyr::select(c(Kids_First_Biospecimen_ID, all_of(unique_cosmic_sig)))</code></pre>
-</div>
-<div id="alexandrov-mutational-signatures" class="section level3">
-<h3>Alexandrov mutational signatures</h3>
-<pre class="r"><code># read in the file
-alexandrov_mut_df &lt;- readr::read_tsv(&quot;../analyses/mutational-signatures/results/nature_signatures_results.tsv&quot;) %&gt;%
-  dplyr::select(Tumor_Sample_Barcode, signature, mut_per_mb) %&gt;%
-  dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode)</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   Tumor_Sample_Barcode = col_character(),
-##   experimental_strategy = col_character(),
-##   display_group = col_character(),
-##   signature = col_character(),
-##   num_mutations = col_double(),
-##   genome_size = col_double(),
-##   mut_per_mb = col_double()
-## )</code></pre>
-<pre class="r"><code># get wide format
-alexandrov_mut_wide &lt;- alexandrov_mut_df %&gt;%
-  spread(signature, mut_per_mb ) 
-
-# order the columns
-unique_alex_sig &lt;- alexandrov_mut_df %&gt;% 
-  pull(signature) %&gt;% unique()
-alexandrov_mut_wide &lt;- alexandrov_mut_wide %&gt;%
-  dplyr::select(c(Kids_First_Biospecimen_ID, all_of(unique_alex_sig))) </code></pre>
-</div>
 <div id="cns-mutational-signatures" class="section level3">
 <h3>CNS mutational signatures</h3>
-<pre class="r"><code>cns_mut_list &lt;- readRDS(&quot;../analyses/mutational-signatures/results/fitted_cns_signature_exposures.RDS&quot;)
+<pre class="r"><code>cns_mut_list &lt;- readRDS(&quot;../analyses/mutational-signatures/results/fitted_exposures_signal-cns_sigfit.rds&quot;)
 cns_mean &lt;- cns_mut_list[[&quot;mean&quot;]] %&gt;%
   as.data.frame() %&gt;%
   tibble::rownames_to_column(&quot;Kids_First_Biospecimen_ID&quot;)  </code></pre>
@@ -543,8 +491,6 @@ cns_mean &lt;- cns_mut_list[[&quot;mean&quot;]] %&gt;%
 <div id="combine-s2-table" class="section level3">
 <h3>combine S2 table</h3>
 <pre class="r"><code>list_s2_table &lt;- list(tmb = tmb_combined,
-                     cosmic_mut_sigs = cosmic_mut_wide,
-                     alexandrov_mut_sigs = alexandrov_mut_wide,
                      cns_denovo_mut_sigs = cns_mean,
                      chromothripsis_events = chromothripsis_region_df
                      )
@@ -555,8 +501,8 @@ openxlsx::write.xlsx(list_s2_table,
 </div>
 <div id="table-s3-rna-results-table" class="section level2">
 <h2>Table S3: RNA results table</h2>
-<div id="read-in-and-process-files" class="section level3">
-<h3>read in and process files</h3>
+<div id="tp53-scores" class="section level3">
+<h3>TP53 scores</h3>
 <pre class="r"><code># get tp53 scores 
 tp53_scores &lt;- readr::read_tsv(&quot;../analyses/tp53_nf1_score/results/tp53_altered_status.tsv&quot;) %&gt;%
   mutate_all(as.character) %&gt;% 
@@ -580,6 +526,9 @@ tp53_scores &lt;- readr::read_tsv(&quot;../analyses/tp53_nf1_score/results/tp53_
 ##   activating = col_double(),
 ##   tp53_altered = col_character()
 ## )</code></pre>
+</div>
+<div id="telomerase-scores" class="section level3">
+<h3>Telomerase scores</h3>
 <pre class="r"><code># get extend scores file
 telomerase_scores_polya_count &lt;- readr::read_tsv(&quot;../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_counts.txt&quot;) %&gt;%
   dplyr::select(SampleID, NormEXTENDScores) %&gt;% 
@@ -633,10 +582,19 @@ telomerase_scores_polya_count &lt;- readr::read_tsv(&quot;../analyses/telomerase
   mutate_all(as.character) %&gt;% 
   replace(is.na(.), &quot;NA&quot;)</code></pre>
 </div>
+<div id="telomerase-scores-1" class="section level3">
+<h3>Telomerase scores</h3>
+<pre class="r"><code># get quantiseq immune scores file
+quantiseq_immune &lt;- readRDS(&quot;../analyses/immune-deconv/results/quantiseq_deconv-output.rds&quot;) %&gt;%
+  dplyr::select(sample, score, cell_type) %&gt;% 
+  dplyr::rename(Kids_First_Biospecimen_ID_RNA = sample) %&gt;%
+  tidyr::spread(cell_type, score)</code></pre>
+</div>
 <div id="combine-and-output-file" class="section level3">
 <h3>combine and output file</h3>
 <pre class="r"><code>list_s3_table &lt;- list(tp53_scores = tp53_scores,
-                      telomerase_scores = telomerase_scores_combined
+                      telomerase_scores = telomerase_scores_combined,
+                      quantiseq_immune = quantiseq_immune
                       )
 openxlsx::write.xlsx(list_s3_table, 
                      file.path(results_dir, &quot;TableS3-RNA-results-table.xlsx&quot;), 
