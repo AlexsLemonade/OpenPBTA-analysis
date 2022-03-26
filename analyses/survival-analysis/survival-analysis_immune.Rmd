@@ -166,8 +166,7 @@ readr::write_tsv(table, file.path(results_dir, "cox_reg_results_5cgs.tsv"))
 print(table)
 
 # printout the plot
-forest_coxph <- survminer::ggforest(fit, data = combined_df_distinct, noDigits = 2,
-                                    main = paste0("Hazard Ratio for", cg_each))
+forest_coxph <- survminer::ggforest(fit, data = combined_df_distinct, noDigits = 2)
 print(forest_coxph)
 ```
 
@@ -194,6 +193,10 @@ for(cg_each in cancer_groups_of_interest){
   print(cg_each)
   print(table)
   print(summary(fit))
+  
+# printout the plot
+forest_coxph <- survminer::ggforest(fit, data = combined_df_distinct_each, noDigits = 2)
+print(forest_coxph)
 }
 ```
 
