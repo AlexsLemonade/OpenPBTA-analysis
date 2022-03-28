@@ -93,6 +93,7 @@ Each figure should include its own associated README in the appropriate PDF subd
 That README should detail what analysis modules or individual scripts are required to generate the individual panels for that figure.
 
 Scripts that are exclusively for creating publication-ready plots, both main text and supplementary, are available in `figures/scripts` and should be documented in the `figures/scripts/README.md`.
+Scripts that are _only_ used to create supplementary figures and do not export any main text figures should begin with the prefix `supp-`.
 
 
 ## Figure Guidelines
