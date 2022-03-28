@@ -29,8 +29,6 @@ if (!dir.exists(plot_path)) {
 # Input files
 fitted_file    <- file.path(analysis_path, "results", "fitted_exposures_signal-cns_deconstructSigs.rds")
 meta_file      <- file.path(proj_root_path, "data", "pbta-histologies.tsv")
-tmb_all_file    <- file.path(proj_root_path, "data", "pbta-snv-consensus-mutation-tmb-all.tsv")
-tmb_coding_file <- file.path(proj_root_path, "data", "pbta-snv-consensus-mutation-tmb-coding.tsv")
 
 
 histology_palette_file   <- file.path(proj_root_path, "figures", "palettes", "broad_histology_cancer_group_palette.tsv")
@@ -44,6 +42,9 @@ exposures_presence_barplot_file <- file.path(analysis_path, "plots", "cns", "exp
 signature1_tumor_cancergroups_file <- file.path(analysis_path, "plots", "cns", "signature1_tumor-descriptor_cancer-groups.pdf")
 signature1_tumor_molecularsubtypes_file <- file.path(analysis_path, "plots", "cns", "signature1_tumor-descriptor_molecular-subtypes.pdf")
 
+# Output result file which contains merged/prepped data for visualization, also used in the `08` notebooks
+results_df_file <- file.path("results", "deconstructsigs_exposures_merged.tsv")
+
 
 # The real signature names: https://signal.mutationalsignatures.com/explore/studyTissueType/1-6
 signature_names_df <- tibble::tibble(
@@ -54,7 +55,7 @@ signature_names_df <- tibble::tibble(
 )
 ```
 
-First, we read in data and prepare exposures and TMB information.
+First, we read in data and prepare exposures.
 
 ```{r read_prep_data, warning=FALSE}
 
@@ -81,19 +82,6 @@ exposures <- exposures_wide %>%
   # key is column name in signature_names_df
   tidyr::gather(-Kids_First_Biospecimen_ID, key = "cns_names", value = "exposure") 
 
-
-# Prepare TMB data
-tmb_all <- readr::read_tsv(tmb_all_file)
-tmb_coding <- readr::read_tsv(tmb_coding_file)
-
-tmb_data <- tmb_coding %>% 
-  dplyr::rename(coding_tmb = tmb) %>%
-  dplyr::select(Tumor_Sample_Barcode, coding_tmb) %>%
-  dplyr::inner_join(
-    dplyr::select(tmb_all,
-                  Tumor_Sample_Barcode, tmb)
-  ) %>%
-  dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode)
 ```
 
 
@@ -148,8 +136,12 @@ results_df <- results_df %>%
                 cancer_group_display_n = forcats::fct_reorder(cancer_group_display_n, n, .desc=T)) %>%
   dplyr::inner_join(results_df)
 
+# We also write `results_df` to a file since it will be used by the `08` notebooks.
+readr::write_tsv(results_df, results_df_file)
+
 
 ```
+
 
 <br><br>
 
@@ -275,83 +267,6 @@ ggplot2::ggsave(exposures_sample_barplot_file, sample_exposures_barplot, width =
   
 ```
 
-
-
-<br><br>
-
-### Explore: MMR2 signature and mutation burden
-
-Which samples have MMR ~ 1, and are these hypermutators? 
-This analysis is discussed [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1227#issuecomment-1064493652).
-
-Note that this visualization is strictly exploratory and not exported. 
-
-We do **not** observe that samples with high MMR2 exposure have high mutational burdens. We do see that the majority of all such samples are subtyped as HGG, H3 wildtype.
-
-```{r mmr2, fig.width = 10, fig.height = 3}
-top_mmr2 <- results_df %>%
-  dplyr::filter(signature == "MMR2") %>%
-  dplyr::select(exposure, Kids_First_Biospecimen_ID, cancer_group_display) %>%
-  dplyr::distinct() %>%
-  dplyr::arrange(-exposure) %>%
-  dplyr::inner_join(tmb_data) %>%
-  tidyr::gather(dplyr::contains("tmb"), key = "tmb_type", value = "tmb")
-
-
-# We see in this visualization that very few samples are >0.5 MMR2 exposure,
-# and that the samples with extremely high mutation counts are NOT the same as those with high MMR2 exposure
-top_mmr2 %>%
-  ggplot2::ggplot() + 
-  ggplot2::aes(x = exposure, y = tmb, fill = cancer_group_display) +
-  ggplot2::geom_point(shape = 21, color ="black") + 
-  ggsci::scale_fill_simpsons() +
-  ggplot2::labs(x = "Exposure to MMR2") +
-  ggplot2::facet_wrap(~tmb_type, scales = "free_y")
-
-# What are the specific samples that are > MMR2 exposure 0.75? (Since so few samples are this high, we can view this more below ~1.)
-top_mmr2 %>%
-  dplyr::filter(exposure >= 0.75) %>%
-  dplyr::select(-dplyr::contains("tmb")) %>%
-  dplyr::distinct() %>%
-  dplyr::inner_join(
-    meta %>%
-      dplyr::select(Kids_First_Biospecimen_ID, molecular_subtype)
-  ) %>%
-  knitr::kable()
-
-
-
-```
-
-##### Explore: High TMB signatures
-
-When exploring MMR2, we see that the four extremely mutated samples are _not_ dominantly exposed to MMR2. What are these samples, and what signatures are they exposed to?
-
-All four samples are High-grade glioma astrocytoma with subtype	`HGG, H3 wildtype`, and two are tp53 loss while the other two are tp53 activated.
-All of these samples have _no exposure_ to signatures 3, 8, or N6. Two of the samples (one tp53 loss and other tp53 activated) have no exposure to signature 19. 
-
-```{r hypermut}
-# Grab the IDs for the four samples
-hypermut_ids <- tmb_data %>%
-  dplyr::filter(tmb > 2) %>%
-  dplyr::pull(Kids_First_Biospecimen_ID)
-
-
-# What are their subtypes?
-subtypes <- meta %>%
-  dplyr::filter(Kids_First_Biospecimen_ID %in% hypermut_ids) %>%
-  dplyr::select(Kids_First_Biospecimen_ID, molecular_subtype) 
-
-# Table of merged information about these four samples:
-results_df %>% 
-  dplyr::filter(Kids_First_Biospecimen_ID %in% hypermut_ids) %>%
-  dplyr::select(Kids_First_Biospecimen_ID, cancer_group_display, exposure, signature) %>%
-  dplyr::inner_join(subtypes) %>%
-  dplyr::group_by(Kids_First_Biospecimen_ID) %>%
-  tidyr::spread(signature, exposure) 
-
-
-```
 <br><br>
 
 ### Explore: Signature 1 presence
@@ -365,7 +280,7 @@ We see somewhat of a relationship here, but the data sets are highly imbalanced 
 
 
 
-```{r sig1_prop_tmb, fig.width = 8, fig.height =4}
+```{r sig1_prop, fig.width = 8, fig.height =4}
 # Grab signature1 exposures. 
 sig1_exposures <- results_df %>%
   # Since exposures sum to 1 **including unknown**, we just need sig 1's exposure

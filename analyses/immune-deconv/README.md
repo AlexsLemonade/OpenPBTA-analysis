@@ -48,7 +48,14 @@ results/quantiseq_deconv-output.rds
 ```
 
 The results in the RDS files object are predicted immune scores per cell type per input sample, for each of the two methods respectively.
-Depending on the user requirement, the output can be used to create various visualizations. 
+
+
+#### 02-visualize_quantiseq.Rmd
+
+This notebook visualizes results from `quanTIseq` deconvolution and exports two figures:
+
++ `plots/cell_types-molecular_subtypes.pdf` visualizes the immune cell fractions across molecular subtypes of interest
++ `plots/PDL1_expressions_distributions.pdf` visualizes FPKM expression for the gene PDL1 across molecular subtypes of interest
 
 
 ### Running the analysis
