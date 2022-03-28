@@ -387,7 +387,13 @@ $(document).ready(function () {
 <pre class="r"><code>root_dir &lt;- rprojroot::find_root(rprojroot::has_dir(&quot;.git&quot;))
 working_dir &lt;- file.path(root_dir, &quot;tables&quot;)
 analyses_dir &lt;- file.path(root_dir, &quot;analyses&quot;)
-data_dir &lt;- file.path(root_dir, &quot;data&quot;, &quot;release-v21-20210820&quot;)
+
+# Define data_dir based on ci. The `testing` param covers if we are in CI where 1 is CI.
+if (params$testing == 1) {
+  data_dir_ci &lt;- file.path(root_dir, &quot;data&quot;)
+} else {
+  data_dir &lt;- file.path(root_dir, &quot;data&quot;, &quot;release-v21-20210820&quot;)
+}
 
 results_dir &lt;- file.path(working_dir, &quot;results&quot;)
 if(!dir.exists(results_dir)){
@@ -396,12 +402,18 @@ if(!dir.exists(results_dir)){
 
 
 # Define input files
+histology_file &lt;- file.path(data_dir, &quot;pbta-histologies.tsv&quot;)
 tmb_all_file &lt;- file.path(data_dir, &quot;pbta-snv-consensus-mutation-tmb-all.tsv&quot;)
 tmb_coding_file &lt;- file.path(data_dir, &quot;pbta-snv-consensus-mutation-tmb-coding.tsv&quot;)
 mutsigs_file &lt;- file.path(analyses_dir, &quot;mutational-signatures&quot;, &quot;results&quot;, &quot;deconstructsigs_exposures_merged.tsv&quot;)
 chromo_file &lt;- file.path(analyses_dir, &quot;chromothripsis&quot;, &quot;results&quot;, &quot;chromothripsis_summary_per_sample.txt&quot;)
 tp53_file &lt;- file.path(analyses_dir, &quot;tp53_nf1_score&quot;, &quot;results&quot;, &quot;tp53_altered_status.tsv&quot;)
 quantiseq_file &lt;- file.path(analyses_dir, &quot;immune-deconv&quot;, &quot;results&quot;, &quot;quantiseq_deconv-output.rds&quot;)
+telomerase_counts_polya_file &lt;- file.path(analyses_dir, &quot;telomerase-activity-prediction&quot;, &quot;results&quot;, &quot;TelomeraseScores_PTBAPolya_counts.txt&quot;)
+telomerase_counts_stranded_file &lt;- file.path(analyses_dir, &quot;telomerase-activity-prediction&quot;, &quot;results&quot;, &quot;TelomeraseScores_PTBAStranded_counts.txt&quot;)
+telomerase_fpkm_polya_file &lt;- file.path(analyses_dir, &quot;telomerase-activity-prediction&quot;, &quot;results&quot;, &quot;TelomeraseScores_PTBAPolya_FPKM.txt&quot;)
+telomerase_fpkm_stranded_file &lt;- file.path(analyses_dir, &quot;telomerase-activity-prediction&quot;, &quot;results&quot;, &quot;TelomeraseScores_PTBAStranded_FPKM.txt&quot;)
+
 
 # define output files and sheet names, when appropriate
 table_1_file &lt;- file.path(results_dir, &quot;Table1-molecular-subtypes.tsv&quot;)
@@ -411,7 +423,7 @@ table_s3_file &lt;- file.path(results_dir, &quot;TableS3-RNA-results-table.xlsx&
 </div>
 <div id="table-1-molecular-subtypes-determined-for-this-project" class="section level2">
 <h2>Table 1: Molecular subtypes determined for this project</h2>
-<pre class="r"><code>histology_df &lt;- read_tsv(file.path(data_dir, &quot;pbta-histologies.tsv&quot;), guess_max =10000)</code></pre>
+<pre class="r"><code>histology_df &lt;- read_tsv(histology_file, guess_max =10000)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   .default = col_character(),
@@ -444,11 +456,8 @@ histology_df %&gt;%
     &quot;MB, To be classified&quot;,
     molecular_subtype
   )) %&gt;%
-  # prepare for export to an excel
-  mutate_all(as.character) %&gt;% 
-  replace(is.na(.), &quot;NA&quot;) %&gt;%
-  # export
-  write.xlsx(table_s1_file, overwrite=TRUE)</code></pre>
+  # export with argument `keepNA=TRUE` so NAs come up as NAs and not blank cells
+  write.xlsx(table_s1_file, overwrite=TRUE, keepNA=TRUE)</code></pre>
 <pre><code>## Note: zip::zip() is deprecated, please use zip::zipr() instead</code></pre>
 </div>
 <div id="table-s2-dna-results-table" class="section level2">
@@ -484,13 +493,11 @@ tmb_coding &lt;- read_tsv(tmb_coding_file) %&gt;%
 ##   tmb = col_double()
 ## )</code></pre>
 <pre class="r"><code># combine files
-tmb_combined &lt;- full_join(tmb_all, tmb_coding) %&gt;%
-  mutate_all(as.character) %&gt;% 
-  replace(is.na(.), &quot;NA&quot;)</code></pre>
+tmb_combined &lt;- full_join(tmb_all, tmb_coding) </code></pre>
 <pre><code>## Joining, by = &quot;Kids_First_Biospecimen_ID&quot;</code></pre>
 </div>
-<div id="cns-mutational-signatures" class="section level3">
-<h3>CNS mutational signatures</h3>
+<div id="cns-mutational-signatures-with-deconstructsigs" class="section level3">
+<h3>CNS mutational signatures with <code>deconstructSigs</code></h3>
 <pre class="r"><code># use the deconstructSigs table, not the sigfit table, for consistency with main text
 # for convenience we can load the file deconstructsigs_exposures_merged.tsv which already has full sample information &quot;merged&quot; in _and_ uses the correct Signal RefSig names
 cns_mut_list &lt;- read_tsv(mutsigs_file)</code></pre>
@@ -534,24 +541,22 @@ cns_mut_list &lt;- read_tsv(mutsigs_file)</code></pre>
 <div id="combine-s2-table" class="section level3">
 <h3>combine S2 table</h3>
 <pre class="r"><code>list_s2_table &lt;- list(tumor_mutation_burden = tmb_combined,
-                      fitted_cns_mutational_signatures = cns_signatures,
+                      cns_mutational_signatures = cns_signatures,
                       chromothripsis_events = chromothripsis_region_df
                      )
 write.xlsx(list_s2_table, 
            table_s2_file,
-           overwrite=TRUE)</code></pre>
-<pre><code>## Warning in write.xlsx(list_s2_table, table_s2_file, overwrite = TRUE):
-## Truncating list names to 31 characters.</code></pre>
+           overwrite=TRUE, 
+           # NA as NA and not as blank cells
+           keepNA=TRUE)</code></pre>
 </div>
 </div>
 <div id="table-s3-rna-results-table" class="section level2">
 <h2>Table S3: RNA results table</h2>
-<div id="tp53-scores" class="section level3">
-<h3>TP53 scores</h3>
+<div id="tp553-scores" class="section level3">
+<h3>TP553 scores</h3>
 <pre class="r"><code># get tp53 scores 
-tp53_scores &lt;- read_tsv(tp53_file) %&gt;%
-  mutate_all(as.character) %&gt;% 
-  replace(is.na(.), &quot;NA&quot;)</code></pre>
+tp53_scores &lt;- read_tsv(tp53_file) </code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   sample_id = col_character(),
@@ -574,64 +579,62 @@ tp53_scores &lt;- read_tsv(tp53_file) %&gt;%
 </div>
 <div id="telomerase-scores" class="section level3">
 <h3>Telomerase scores</h3>
-<pre class="r"><code># get extend scores file
-telomerase_scores_polya_count &lt;-
-  read_tsv(&quot;../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_counts.txt&quot;) %&gt;%
-  select(SampleID, NormEXTENDScores) %&gt;% 
-  rename(Kids_First_Biospecimen_ID_RNA = SampleID,
-                NormEXTENDScores_counts = NormEXTENDScores)</code></pre>
+<pre class="r"><code># Function to process the telomerase files
+read_process_telomerase_file &lt;- function(file, new_column_name, library_type) {
+  read_tsv(file) %&gt;%
+    select(SampleID, NormEXTENDScores) %&gt;%
+    rename(Kids_First_Biospecimen_ID_RNA = SampleID,
+           !!new_column_name := NormEXTENDScores) %&gt;%
+    mutate(library = library_type)
+  
+}
+  
+# Read in and process all telomerase scores
+telomerase_scores_polya_count    &lt;- read_process_telomerase_file(telomerase_counts_polya_file, &quot;NormEXTENDScores_counts&quot;, &quot;polyA&quot;)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   SampleID = col_character(),
 ##   RawEXTENDScores = col_double(),
 ##   NormEXTENDScores = col_double()
 ## )</code></pre>
-<pre class="r"><code>telomerase_scores_polya_fpkm &lt;-
-  read_tsv(&quot;../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_FPKM.txt&quot;) %&gt;%
-  select(SampleID, NormEXTENDScores) %&gt;% 
-  rename(Kids_First_Biospecimen_ID_RNA = SampleID,
-                NormEXTENDScores_fpkm = NormEXTENDScores)</code></pre>
+<pre class="r"><code>telomerase_scores_stranded_count &lt;- read_process_telomerase_file(telomerase_counts_stranded_file, &quot;NormEXTENDScores_counts&quot;, &quot;stranded&quot;)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   SampleID = col_character(),
 ##   RawEXTENDScores = col_double(),
 ##   NormEXTENDScores = col_double()
 ## )</code></pre>
-<pre class="r"><code>telomerase_scores_polya_combined &lt;- full_join(telomerase_scores_polya_count,
-                                              telomerase_scores_polya_fpkm)</code></pre>
-<pre><code>## Joining, by = &quot;Kids_First_Biospecimen_ID_RNA&quot;</code></pre>
-<pre class="r"><code>telomerase_scores_stranded_count &lt;-
-  read_tsv(&quot;../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_counts.txt&quot;) %&gt;%
-  select(SampleID, NormEXTENDScores) %&gt;% 
-  rename(Kids_First_Biospecimen_ID_RNA = SampleID,
-                NormEXTENDScores_counts = NormEXTENDScores)</code></pre>
+<pre class="r"><code>telomerase_scores_polya_fpkm     &lt;- read_process_telomerase_file(telomerase_fpkm_polya_file, &quot;NormEXTENDScores_fpkm&quot;, &quot;polyA&quot;)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   SampleID = col_character(),
 ##   RawEXTENDScores = col_double(),
 ##   NormEXTENDScores = col_double()
 ## )</code></pre>
-<pre class="r"><code>telomerase_scores_stranded_fpkm &lt;-
-  read_tsv(&quot;../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt&quot;) %&gt;%
-  select(SampleID, NormEXTENDScores) %&gt;% 
-  rename(Kids_First_Biospecimen_ID_RNA = SampleID,
-                NormEXTENDScores_fpkm = NormEXTENDScores)</code></pre>
+<pre class="r"><code>telomerase_scores_stranded_fpkm  &lt;- read_process_telomerase_file(telomerase_fpkm_stranded_file, &quot;NormEXTENDScores_fpkm&quot;, &quot;stranded&quot;)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   SampleID = col_character(),
 ##   RawEXTENDScores = col_double(),
 ##   NormEXTENDScores = col_double()
 ## )</code></pre>
-<pre class="r"><code>telomerase_scores_stranded_combined &lt;- full_join(telomerase_scores_stranded_count,
-                                                 telomerase_scores_stranded_fpkm)</code></pre>
-<pre><code>## Joining, by = &quot;Kids_First_Biospecimen_ID_RNA&quot;</code></pre>
-<pre class="r"><code>telomerase_scores_combined &lt;- bind_rows(telomerase_scores_polya_combined,
-                                        telomerase_scores_stranded_combined)  %&gt;%
-  mutate_all(as.character) %&gt;% 
-  replace(is.na(.), &quot;NA&quot;)</code></pre>
+<pre class="r"><code># Combine all scores
+telomerase_scores_combined &lt;- 
+  full_join(telomerase_scores_stranded_count,
+          telomerase_scores_stranded_fpkm) %&gt;%
+  bind_rows(
+    full_join(telomerase_scores_polya_count,
+          telomerase_scores_polya_fpkm)
+  ) %&gt;%
+  # order columns
+  select(Kids_First_Biospecimen_ID_RNA,
+         contains(&quot;Norm&quot;), 
+         library)</code></pre>
+<pre><code>## Joining, by = c(&quot;Kids_First_Biospecimen_ID_RNA&quot;, &quot;library&quot;)</code></pre>
+<pre><code>## Joining, by = c(&quot;Kids_First_Biospecimen_ID_RNA&quot;, &quot;library&quot;)</code></pre>
 </div>
-<div id="telomerase-scores-1" class="section level3">
-<h3>Telomerase scores</h3>
+<div id="immune-deconvolution-with-quantiseq-scores" class="section level3">
+<h3>Immune deconvolution with <code>quanTIseq</code> scores</h3>
 <pre class="r"><code># get quantiseq immune scores file
 quantiseq_immune &lt;- read_rds(quantiseq_file) %&gt;%
   select(sample, score, cell_type) %&gt;% 
@@ -642,13 +645,12 @@ quantiseq_immune &lt;- read_rds(quantiseq_file) %&gt;%
 <h3>combine and output file</h3>
 <pre class="r"><code>list_s3_table &lt;- list(tp53_scores = tp53_scores,
                       telomerase_scores = telomerase_scores_combined,
-                      quantiseq_immune_deconvolution_fractions = quantiseq_immune
+                      quantiseq_fractions = quantiseq_immune
                       )
 write.xlsx(list_s3_table, 
            table_s3_file, 
-           overwrite=TRUE)</code></pre>
-<pre><code>## Warning in write.xlsx(list_s3_table, table_s3_file, overwrite = TRUE):
-## Truncating list names to 31 characters.</code></pre>
+           overwrite=TRUE, 
+           keepNA=TRUE)</code></pre>
 </div>
 <div id="print-out-session-info" class="section level3">
 <h3>print out session info</h3>

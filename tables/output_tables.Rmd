@@ -4,6 +4,8 @@ author: "Run Jin and Stephanie J. Spielman"
 date: "2021-2022"
 output:
   html_document: default
+params:
+  testing: 0
 ---
 
 ```{r setup, include=FALSE}
@@ -19,7 +21,13 @@ This Rmarkdown generates tables used in the manuscript, including both main text
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 working_dir <- file.path(root_dir, "tables")
 analyses_dir <- file.path(root_dir, "analyses")
-data_dir <- file.path(root_dir, "data", "release-v21-20210820")
+
+# Define data_dir based on ci. The `testing` param covers if we are in CI where 1 is CI.
+if (params$testing == 1) {
+  data_dir_ci <- file.path(root_dir, "data")
+} else {
+  data_dir <- file.path(root_dir, "data", "release-v21-20210820")
+}
 
 results_dir <- file.path(working_dir, "results")
 if(!dir.exists(results_dir)){
@@ -28,12 +36,18 @@ if(!dir.exists(results_dir)){
 
 
 # Define input files
+histology_file <- file.path(data_dir, "pbta-histologies.tsv")
 tmb_all_file <- file.path(data_dir, "pbta-snv-consensus-mutation-tmb-all.tsv")
 tmb_coding_file <- file.path(data_dir, "pbta-snv-consensus-mutation-tmb-coding.tsv")
 mutsigs_file <- file.path(analyses_dir, "mutational-signatures", "results", "deconstructsigs_exposures_merged.tsv")
 chromo_file <- file.path(analyses_dir, "chromothripsis", "results", "chromothripsis_summary_per_sample.txt")
 tp53_file <- file.path(analyses_dir, "tp53_nf1_score", "results", "tp53_altered_status.tsv")
 quantiseq_file <- file.path(analyses_dir, "immune-deconv", "results", "quantiseq_deconv-output.rds")
+telomerase_counts_polya_file <- file.path(analyses_dir, "telomerase-activity-prediction", "results", "TelomeraseScores_PTBAPolya_counts.txt")
+telomerase_counts_stranded_file <- file.path(analyses_dir, "telomerase-activity-prediction", "results", "TelomeraseScores_PTBAStranded_counts.txt")
+telomerase_fpkm_polya_file <- file.path(analyses_dir, "telomerase-activity-prediction", "results", "TelomeraseScores_PTBAPolya_FPKM.txt")
+telomerase_fpkm_stranded_file <- file.path(analyses_dir, "telomerase-activity-prediction", "results", "TelomeraseScores_PTBAStranded_FPKM.txt")
+
 
 # define output files and sheet names, when appropriate
 table_1_file <- file.path(results_dir, "Table1-molecular-subtypes.tsv")
@@ -44,7 +58,7 @@ table_s3_file <- file.path(results_dir, "TableS3-RNA-results-table.xlsx")
 
 ## Table 1: Molecular subtypes determined for this project
 ```{r table 1}
-histology_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max =10000)
+histology_df <- read_tsv(histology_file, guess_max =10000)
 
 histology_df %>%
   # remove rows to not include
@@ -71,11 +85,8 @@ histology_df %>%
     "MB, To be classified",
     molecular_subtype
   )) %>%
-  # prepare for export to an excel
-  mutate_all(as.character) %>% 
-  replace(is.na(.), "NA") %>%
-  # export
-  write.xlsx(table_s1_file, overwrite=TRUE)
+  # export with argument `keepNA=TRUE` so NAs come up as NAs and not blank cells
+  write.xlsx(table_s1_file, overwrite=TRUE, keepNA=TRUE)
 ```
 
 ## Table S2: DNA results table
@@ -95,12 +106,10 @@ tmb_coding <- read_tsv(tmb_coding_file) %>%
   rename(Tmb_coding = tmb)
 
 # combine files
-tmb_combined <- full_join(tmb_all, tmb_coding) %>%
-  mutate_all(as.character) %>% 
-  replace(is.na(.), "NA")
+tmb_combined <- full_join(tmb_all, tmb_coding) 
 ```
 
-### CNS mutational signatures
+### CNS mutational signatures with `deconstructSigs`
 ```{r s2 DNA results part 2}
 # use the deconstructSigs table, not the sigfit table, for consistency with main text
 # for convenience we can load the file deconstructsigs_exposures_merged.tsv which already has full sample information "merged" in _and_ uses the correct Signal RefSig names
@@ -129,64 +138,60 @@ chromothripsis_region_df <- readr::read_tsv(chromo_file)
 ### combine S2 table
 ```{r s2 DNA results combined}
 list_s2_table <- list(tumor_mutation_burden = tmb_combined,
-                      fitted_cns_mutational_signatures = cns_signatures,
+                      cns_mutational_signatures = cns_signatures,
                       chromothripsis_events = chromothripsis_region_df
                      )
 write.xlsx(list_s2_table, 
            table_s2_file,
-           overwrite=TRUE)
+           overwrite=TRUE, 
+           # NA as NA and not as blank cells
+           keepNA=TRUE)
 ```
 
+
 ## Table S3: RNA results table
-### TP53 scores
+
+### TP553 scores
 ```{r s3 RNA results table p1}
 # get tp53 scores 
-tp53_scores <- read_tsv(tp53_file) %>%
-  mutate_all(as.character) %>% 
-  replace(is.na(.), "NA")
+tp53_scores <- read_tsv(tp53_file) 
 ```
 
 ### Telomerase scores
 ```{r s3 RNA results table p2}
-# get extend scores file
-telomerase_scores_polya_count <-
-  read_tsv("../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_counts.txt") %>%
-  select(SampleID, NormEXTENDScores) %>% 
-  rename(Kids_First_Biospecimen_ID_RNA = SampleID,
-                NormEXTENDScores_counts = NormEXTENDScores)
-
-telomerase_scores_polya_fpkm <-
-  read_tsv("../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_FPKM.txt") %>%
-  select(SampleID, NormEXTENDScores) %>% 
-  rename(Kids_First_Biospecimen_ID_RNA = SampleID,
-                NormEXTENDScores_fpkm = NormEXTENDScores)
-
-telomerase_scores_polya_combined <- full_join(telomerase_scores_polya_count,
-                                              telomerase_scores_polya_fpkm)
+# Function to process the telomerase files
+read_process_telomerase_file <- function(file, new_column_name, library_type) {
+  read_tsv(file) %>%
+    select(SampleID, NormEXTENDScores) %>%
+    rename(Kids_First_Biospecimen_ID_RNA = SampleID,
+           !!new_column_name := NormEXTENDScores) %>%
+    mutate(library = library_type)
   
-telomerase_scores_stranded_count <-
-  read_tsv("../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_counts.txt") %>%
-  select(SampleID, NormEXTENDScores) %>% 
-  rename(Kids_First_Biospecimen_ID_RNA = SampleID,
-                NormEXTENDScores_counts = NormEXTENDScores)
+}
+  
+# Read in and process all telomerase scores
+telomerase_scores_polya_count    <- read_process_telomerase_file(telomerase_counts_polya_file, "NormEXTENDScores_counts", "polyA")
+telomerase_scores_stranded_count <- read_process_telomerase_file(telomerase_counts_stranded_file, "NormEXTENDScores_counts", "stranded")
+telomerase_scores_polya_fpkm     <- read_process_telomerase_file(telomerase_fpkm_polya_file, "NormEXTENDScores_fpkm", "polyA")
+telomerase_scores_stranded_fpkm  <- read_process_telomerase_file(telomerase_fpkm_stranded_file, "NormEXTENDScores_fpkm", "stranded")
 
-telomerase_scores_stranded_fpkm <-
-  read_tsv("../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt") %>%
-  select(SampleID, NormEXTENDScores) %>% 
-  rename(Kids_First_Biospecimen_ID_RNA = SampleID,
-                NormEXTENDScores_fpkm = NormEXTENDScores)
+# Combine all scores
+telomerase_scores_combined <- 
+  full_join(telomerase_scores_stranded_count,
+          telomerase_scores_stranded_fpkm) %>%
+  bind_rows(
+    full_join(telomerase_scores_polya_count,
+          telomerase_scores_polya_fpkm)
+  ) %>%
+  # order columns
+  select(Kids_First_Biospecimen_ID_RNA,
+         contains("Norm"), 
+         library)
 
-telomerase_scores_stranded_combined <- full_join(telomerase_scores_stranded_count,
-                                                 telomerase_scores_stranded_fpkm)
-
-telomerase_scores_combined <- bind_rows(telomerase_scores_polya_combined,
-                                        telomerase_scores_stranded_combined)  %>%
-  mutate_all(as.character) %>% 
-  replace(is.na(.), "NA")
 
 ```
 
-### Telomerase scores
+### Immune deconvolution with `quanTIseq` scores
 ```{r s3 RNA results table p3}
 # get quantiseq immune scores file
 quantiseq_immune <- read_rds(quantiseq_file) %>%
@@ -200,11 +205,12 @@ quantiseq_immune <- read_rds(quantiseq_file) %>%
 ```{r s3 table combine and output}
 list_s3_table <- list(tp53_scores = tp53_scores,
                       telomerase_scores = telomerase_scores_combined,
-                      quantiseq_immune_deconvolution_fractions = quantiseq_immune
+                      quantiseq_fractions = quantiseq_immune
                       )
 write.xlsx(list_s3_table, 
            table_s3_file, 
-           overwrite=TRUE)
+           overwrite=TRUE, 
+           keepNA=TRUE)
 
 ```
 

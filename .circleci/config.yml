@@ -280,7 +280,8 @@ jobs:
 
       - run:
          name: Compile manuscript tables
-         command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('tables/output_tables.Rmd', clean = TRUE)"
+         command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('tables/output_tables.Rmd', params = list(testing = 1), clean = TRUE)"
+
 
   deploy:
     machine:
