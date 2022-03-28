@@ -390,7 +390,7 @@ analyses_dir &lt;- file.path(root_dir, &quot;analyses&quot;)
 
 # Define data_dir based on ci. The `testing` param covers if we are in CI where 1 is CI.
 if (params$testing == 1) {
-  data_dir_ci &lt;- file.path(root_dir, &quot;data&quot;)
+  data_dir &lt;- file.path(root_dir, &quot;data&quot;)
 } else {
   data_dir &lt;- file.path(root_dir, &quot;data&quot;, &quot;release-v21-20210820&quot;)
 }
