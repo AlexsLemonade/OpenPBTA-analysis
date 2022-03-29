@@ -385,8 +385,8 @@ RUN install2.r --error --deps TRUE \
 # We're using the ref for the most recent release on GitHub (2.0.0)
 RUN R -e "remotes::install_github('stan-dev/rstantools', ref = 'd43bf9fb6120d40a60e708853e4b80cdb4689d19', dependencies = TRUE)"
 
-# Build arguments are according to the sigfit instructions
-RUN R -e "remotes::install_github('kgori/sigfit', ref = '209776ee1d2193ad4b682b2e2472f848bd7c67a6', build_vignettes = TRUE, build_opts = c('--no-resave-data', '--no-manual'), dependencies = TRUE)"
+# Build arguments are according to the sigfit instructions, with `build_vignettes=TRUE` removed
+RUN R -e "remotes::install_github('kgori/sigfit', ref = '209776ee1d2193ad4b682b2e2472f848bd7c67a6', build_opts = c('--no-resave-data', '--no-manual'), dependencies = TRUE)"
 
 # Package for kinase domain retention for fusions
 RUN ./install_bioc.r \
