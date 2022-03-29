@@ -23,10 +23,10 @@ working_dir <- file.path(root_dir, "tables")
 analyses_dir <- file.path(root_dir, "analyses")
 
 # Define data_dir based on ci. The `testing` param covers if we are in CI where 1 is CI.
-if (params$testing == 1) {
+if (params$release == "testing") {
   data_dir <- file.path(root_dir, "data")
 } else {
-  data_dir <- file.path(root_dir, "data", "release-v21-20210820")
+  data_dir <- file.path(root_dir, "data", params$release)
 }
 
 results_dir <- file.path(working_dir, "results")
