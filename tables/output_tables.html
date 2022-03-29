@@ -9,9 +9,8 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="Run Jin" />
+<meta name="author" content="Run Jin and Stephanie J. Spielman" />
 
-<meta name="date" content="2021-10-27" />
 
 <title>Tables output for manuscript</title>
 
@@ -376,27 +375,55 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Tables output for manuscript</h1>
-<h4 class="author">Run Jin</h4>
-<h4 class="date">10/27/2021</h4>
+<h4 class="author">Run Jin and Stephanie J. Spielman</h4>
+<h4 class="date">2021-2022</h4>
 
 </div>
 
 
 <div id="output-tables-for-openpbta-manuscript" class="section level2">
 <h2>Output Tables for OpenPBTA Manuscript</h2>
-<p>This is a Rmd files that record scripts for generating tables</p>
+<p>This Rmarkdown generates tables used in the manuscript, including both main text and supplementary material.</p>
 <pre class="r"><code>root_dir &lt;- rprojroot::find_root(rprojroot::has_dir(&quot;.git&quot;))
 working_dir &lt;- file.path(root_dir, &quot;tables&quot;)
-data_dir &lt;- file.path(root_dir, &quot;data&quot;, &quot;release-v21-20210820&quot;)
+analyses_dir &lt;- file.path(root_dir, &quot;analyses&quot;)
+
+# Define data_dir based on ci. The `testing` param covers if we are in CI where 1 is CI.
+if (params$release == &quot;testing&quot;) {
+  data_dir &lt;- file.path(root_dir, &quot;data&quot;)
+} else {
+  data_dir &lt;- file.path(root_dir, &quot;data&quot;, params$release)
+}
 
 results_dir &lt;- file.path(working_dir, &quot;results&quot;)
 if(!dir.exists(results_dir)){
   dir.create(results_dir, recursive=TRUE)
-}</code></pre>
+}
+
+
+# Define input files
+histology_file &lt;- file.path(data_dir, &quot;pbta-histologies.tsv&quot;)
+tmb_all_file &lt;- file.path(data_dir, &quot;pbta-snv-consensus-mutation-tmb-all.tsv&quot;)
+tmb_coding_file &lt;- file.path(data_dir, &quot;pbta-snv-consensus-mutation-tmb-coding.tsv&quot;)
+mutsigs_file &lt;- file.path(analyses_dir, &quot;mutational-signatures&quot;, &quot;results&quot;, &quot;deconstructsigs_exposures_merged.tsv&quot;)
+chromo_file &lt;- file.path(analyses_dir, &quot;chromothripsis&quot;, &quot;results&quot;, &quot;chromothripsis_summary_per_sample.txt&quot;)
+tp53_file &lt;- file.path(analyses_dir, &quot;tp53_nf1_score&quot;, &quot;results&quot;, &quot;tp53_altered_status.tsv&quot;)
+quantiseq_file &lt;- file.path(analyses_dir, &quot;immune-deconv&quot;, &quot;results&quot;, &quot;quantiseq_deconv-output.rds&quot;)
+telomerase_counts_polya_file &lt;- file.path(analyses_dir, &quot;telomerase-activity-prediction&quot;, &quot;results&quot;, &quot;TelomeraseScores_PTBAPolya_counts.txt&quot;)
+telomerase_counts_stranded_file &lt;- file.path(analyses_dir, &quot;telomerase-activity-prediction&quot;, &quot;results&quot;, &quot;TelomeraseScores_PTBAStranded_counts.txt&quot;)
+telomerase_fpkm_polya_file &lt;- file.path(analyses_dir, &quot;telomerase-activity-prediction&quot;, &quot;results&quot;, &quot;TelomeraseScores_PTBAPolya_FPKM.txt&quot;)
+telomerase_fpkm_stranded_file &lt;- file.path(analyses_dir, &quot;telomerase-activity-prediction&quot;, &quot;results&quot;, &quot;TelomeraseScores_PTBAStranded_FPKM.txt&quot;)
+
+
+# define output files and sheet names, when appropriate
+table_1_file &lt;- file.path(results_dir, &quot;Table1-molecular-subtypes.tsv&quot;)
+table_s1_file &lt;- file.path(results_dir, &quot;TableS1-histologies.xlsx&quot;)
+table_s2_file &lt;- file.path(results_dir, &quot;TableS2-DNA-results-table.xlsx&quot;)
+table_s3_file &lt;- file.path(results_dir, &quot;TableS3-RNA-results-table.xlsx&quot;)</code></pre>
 </div>
 <div id="table-1-molecular-subtypes-determined-for-this-project" class="section level2">
 <h2>Table 1: Molecular subtypes determined for this project</h2>
-<pre class="r"><code>histology_df &lt;- readr::read_tsv(file.path(data_dir, &quot;pbta-histologies.tsv&quot;), guess_max =10000)</code></pre>
+<pre class="r"><code>histology_df &lt;- read_tsv(histology_file, guess_max =10000)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   .default = col_character(),
@@ -407,27 +434,30 @@ if(!dir.exists(results_dir)){
 ##   tumor_ploidy = col_double()
 ## )</code></pre>
 <pre><code>## See spec(...) for full column specifications.</code></pre>
-<pre class="r"><code>subtypes &lt;- histology_df %&gt;%
-  dplyr::filter(!is.na(pathology_diagnosis) &amp; !is.na(molecular_subtype) &amp; !grepl(&quot;To be classified&quot;, molecular_subtype))
-subtype_table &lt;- subtypes %&gt;%
-  dplyr::group_by(broad_histology, molecular_subtype) %&gt;%
-  tally() %&gt;%
-  readr::write_tsv(file.path(results_dir, &quot;Table1-molecular-subtypes.tsv&quot;))</code></pre>
+<pre class="r"><code>histology_df %&gt;%
+  # remove rows to not include
+  filter(!is.na(pathology_diagnosis),
+         !is.na(molecular_subtype),
+         !grepl(&quot;To be classified&quot;, molecular_subtype)) %&gt;%
+  # Count broad histology and subtype combinations
+  count(broad_histology, molecular_subtype) %&gt;%
+  # export
+  write_tsv(table_1_file)</code></pre>
 </div>
 <div id="table-s1-v21-histologies-table" class="section level2">
 <h2>Table S1: V21 histologies table</h2>
-<pre class="r"><code># add back the new samples with `MB, To be classified&quot;
-histology_df &lt;- histology_df %&gt;% 
-  dplyr::mutate(molecular_subtype = case_when(
-    Kids_First_Biospecimen_ID %in% c(&quot;BS_3J4T2YYW&quot;, &quot;BS_7F07M7JG&quot;, &quot;BS_AG0BZN6F&quot;, &quot;BS_HZNKSQ17&quot;, &quot;BS_V6HKXX1Z&quot;, &quot;BS_WP9J88EB&quot;, &quot;BS_YYAPSA5P&quot;) ~ &quot;MB, To be classified&quot;, 
-    TRUE ~ molecular_subtype
-  ))
+<pre class="r"><code># Define array of samples that need to be classified 
+to_be_classified_samples &lt;- c(&quot;BS_3J4T2YYW&quot;, &quot;BS_7F07M7JG&quot;, &quot;BS_AG0BZN6F&quot;, &quot;BS_HZNKSQ17&quot;, &quot;BS_V6HKXX1Z&quot;, &quot;BS_WP9J88EB&quot;, &quot;BS_YYAPSA5P&quot;)
 
-histology_df %&gt;%
-  mutate_all(as.character) %&gt;% 
-  replace(is.na(.), &quot;NA&quot;) %&gt;%
-  openxlsx::write.xlsx(file.path(results_dir, &quot;TableS1-histologies.xlsx&quot;),
-                        overwrite=TRUE)</code></pre>
+histology_df %&gt;% 
+  # Update definitions of molecular subtype for TBD samples
+  mutate(molecular_subtype = ifelse(
+    Kids_First_Biospecimen_ID %in% to_be_classified_samples,
+    &quot;MB, To be classified&quot;,
+    molecular_subtype
+  )) %&gt;%
+  # export with argument `keepNA=TRUE` so NAs come up as NAs and not blank cells
+  write.xlsx(table_s1_file, overwrite=TRUE, keepNA=TRUE)</code></pre>
 <pre><code>## Note: zip::zip() is deprecated, please use zip::zipr() instead</code></pre>
 </div>
 <div id="table-s2-dna-results-table" class="section level2">
@@ -435,10 +465,10 @@ histology_df %&gt;%
 <div id="tmb" class="section level3">
 <h3>TMB</h3>
 <pre class="r"><code># read in tmb all file, select and rename columns
-tmb_all &lt;- readr::read_tsv(file.path(data_dir, &quot;pbta-snv-mutation-tmb-all.tsv&quot;)) %&gt;%
-  dplyr::select(Tumor_Sample_Barcode, tmb) %&gt;%
-  dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %&gt;% 
-  dplyr::rename(Tmb_all = tmb) </code></pre>
+tmb_all &lt;- read_tsv(tmb_all_file) %&gt;%
+  select(Tumor_Sample_Barcode, tmb) %&gt;%
+  rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %&gt;% 
+  rename(Tmb_all = tmb) </code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   Tumor_Sample_Barcode = col_character(),
@@ -449,10 +479,10 @@ tmb_all &lt;- readr::read_tsv(file.path(data_dir, &quot;pbta-snv-mutation-tmb-al
 ##   tmb = col_double()
 ## )</code></pre>
 <pre class="r"><code># read in tmb coding file, select and rename columns
-tmb_coding &lt;- readr::read_tsv(file.path(data_dir, &quot;pbta-snv-mutation-tmb-coding.tsv&quot;)) %&gt;%
-  dplyr::select(Tumor_Sample_Barcode, tmb) %&gt;%
-  dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %&gt;% 
-  dplyr::rename(Tmb_coding = tmb)</code></pre>
+tmb_coding &lt;- read_tsv(tmb_coding_file) %&gt;%
+  select(Tumor_Sample_Barcode, tmb) %&gt;%
+  rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %&gt;% 
+  rename(Tmb_coding = tmb)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   Tumor_Sample_Barcode = col_character(),
@@ -463,21 +493,41 @@ tmb_coding &lt;- readr::read_tsv(file.path(data_dir, &quot;pbta-snv-mutation-tmb
 ##   tmb = col_double()
 ## )</code></pre>
 <pre class="r"><code># combine files
-tmb_combined &lt;- full_join(tmb_all, tmb_coding)  %&gt;%
-  mutate_all(as.character) %&gt;% 
-  replace(is.na(.), &quot;NA&quot;)</code></pre>
+tmb_combined &lt;- full_join(tmb_all, tmb_coding) </code></pre>
 <pre><code>## Joining, by = &quot;Kids_First_Biospecimen_ID&quot;</code></pre>
 </div>
-<div id="cns-mutational-signatures" class="section level3">
-<h3>CNS mutational signatures</h3>
-<pre class="r"><code>cns_mut_list &lt;- readRDS(&quot;../analyses/mutational-signatures/results/fitted_exposures_signal-cns_sigfit.rds&quot;)
-cns_mean &lt;- cns_mut_list[[&quot;mean&quot;]] %&gt;%
-  as.data.frame() %&gt;%
-  tibble::rownames_to_column(&quot;Kids_First_Biospecimen_ID&quot;)  </code></pre>
+<div id="cns-mutational-signatures-with-deconstructsigs" class="section level3">
+<h3>CNS mutational signatures with <code>deconstructSigs</code></h3>
+<pre class="r"><code># use the deconstructSigs table, not the sigfit table, for consistency with main text
+# for convenience we can load the file deconstructsigs_exposures_merged.tsv which already has full sample information &quot;merged&quot; in _and_ uses the correct Signal RefSig names
+cns_mut_list &lt;- read_tsv(mutsigs_file)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   cancer_group_display = col_character(),
+##   n = col_double(),
+##   cancer_group_hex = col_character(),
+##   cancer_group_display_n = col_character(),
+##   Kids_First_Biospecimen_ID = col_character(),
+##   exposure = col_double(),
+##   broad_histology = col_character(),
+##   tumor_descriptor = col_character(),
+##   signature = col_character()
+## )</code></pre>
+<pre class="r"><code>cns_signatures &lt;- cns_mut_list %&gt;%
+  select(Kids_First_Biospecimen_ID, exposure, signature) %&gt;%
+  # label signatures more clearly as RefSig or other
+  mutate(signature = ifelse(
+    signature == &quot;Other&quot;, 
+    &quot;Other signatures&quot;,
+    glue::glue(&quot;RefSig_{signature}&quot;)
+  )) %&gt;%
+  spread(signature, exposure) %&gt;%
+  # order columns so &quot;Other&quot; is at the end
+  select(Kids_First_Biospecimen_ID, contains(&quot;RefSig&quot;), everything())</code></pre>
 </div>
 <div id="chromothripsis-regions-per-sample" class="section level3">
 <h3>Chromothripsis regions per sample</h3>
-<pre class="r"><code>chromothripsis_region_df &lt;- readr::read_tsv(&quot;../analyses/chromothripsis/results/chromothripsis_summary_per_sample.txt&quot;)  </code></pre>
+<pre class="r"><code>chromothripsis_region_df &lt;- readr::read_tsv(chromo_file)  </code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   Kids_First_Biospecimen_ID = col_character(),
@@ -490,23 +540,23 @@ cns_mean &lt;- cns_mut_list[[&quot;mean&quot;]] %&gt;%
 </div>
 <div id="combine-s2-table" class="section level3">
 <h3>combine S2 table</h3>
-<pre class="r"><code>list_s2_table &lt;- list(tmb = tmb_combined,
-                     cns_denovo_mut_sigs = cns_mean,
-                     chromothripsis_events = chromothripsis_region_df
+<pre class="r"><code>list_s2_table &lt;- list(tumor_mutation_burden = tmb_combined,
+                      cns_mutational_signatures = cns_signatures,
+                      chromothripsis_events = chromothripsis_region_df
                      )
-openxlsx::write.xlsx(list_s2_table, 
-                     file.path(results_dir, &quot;TableS2-DNA-results-table.xlsx&quot;),
-                     overwrite=TRUE)</code></pre>
+write.xlsx(list_s2_table, 
+           table_s2_file,
+           overwrite=TRUE, 
+           # NA as NA and not as blank cells
+           keepNA=TRUE)</code></pre>
 </div>
 </div>
 <div id="table-s3-rna-results-table" class="section level2">
 <h2>Table S3: RNA results table</h2>
-<div id="tp53-scores" class="section level3">
-<h3>TP53 scores</h3>
+<div id="tp553-scores" class="section level3">
+<h3>TP553 scores</h3>
 <pre class="r"><code># get tp53 scores 
-tp53_scores &lt;- readr::read_tsv(&quot;../analyses/tp53_nf1_score/results/tp53_altered_status.tsv&quot;) %&gt;%
-  mutate_all(as.character) %&gt;% 
-  replace(is.na(.), &quot;NA&quot;)</code></pre>
+tp53_scores &lt;- read_tsv(tp53_file) </code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   sample_id = col_character(),
@@ -529,76 +579,78 @@ tp53_scores &lt;- readr::read_tsv(&quot;../analyses/tp53_nf1_score/results/tp53_
 </div>
 <div id="telomerase-scores" class="section level3">
 <h3>Telomerase scores</h3>
-<pre class="r"><code># get extend scores file
-telomerase_scores_polya_count &lt;- readr::read_tsv(&quot;../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_counts.txt&quot;) %&gt;%
-  dplyr::select(SampleID, NormEXTENDScores) %&gt;% 
-  dplyr::rename(Kids_First_Biospecimen_ID_RNA = SampleID,
-                NormEXTENDScores_counts = NormEXTENDScores)</code></pre>
+<pre class="r"><code># Function to process the telomerase files
+read_process_telomerase_file &lt;- function(file, new_column_name, library_type) {
+  read_tsv(file) %&gt;%
+    select(SampleID, NormEXTENDScores) %&gt;%
+    rename(Kids_First_Biospecimen_ID_RNA = SampleID,
+           !!new_column_name := NormEXTENDScores) %&gt;%
+    mutate(library = library_type)
+  
+}
+  
+# Read in and process all telomerase scores
+telomerase_scores_polya_count    &lt;- read_process_telomerase_file(telomerase_counts_polya_file, &quot;NormEXTENDScores_counts&quot;, &quot;polyA&quot;)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   SampleID = col_character(),
 ##   RawEXTENDScores = col_double(),
 ##   NormEXTENDScores = col_double()
 ## )</code></pre>
-<pre class="r"><code>telomerase_scores_polya_fpkm &lt;-
-  readr::read_tsv(&quot;../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_FPKM.txt&quot;) %&gt;%
-  dplyr::select(SampleID, NormEXTENDScores) %&gt;% 
-  dplyr::rename(Kids_First_Biospecimen_ID_RNA = SampleID,
-                NormEXTENDScores_fpkm = NormEXTENDScores)</code></pre>
+<pre class="r"><code>telomerase_scores_stranded_count &lt;- read_process_telomerase_file(telomerase_counts_stranded_file, &quot;NormEXTENDScores_counts&quot;, &quot;stranded&quot;)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   SampleID = col_character(),
 ##   RawEXTENDScores = col_double(),
 ##   NormEXTENDScores = col_double()
 ## )</code></pre>
-<pre class="r"><code>telomerase_scores_polya_combined &lt;- full_join(telomerase_scores_polya_count,
-                                              telomerase_scores_polya_fpkm)</code></pre>
-<pre><code>## Joining, by = &quot;Kids_First_Biospecimen_ID_RNA&quot;</code></pre>
-<pre class="r"><code>telomerase_scores_stranded_count &lt;- readr::read_tsv(&quot;../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_counts.txt&quot;) %&gt;%
-  dplyr::select(SampleID, NormEXTENDScores) %&gt;% 
-  dplyr::rename(Kids_First_Biospecimen_ID_RNA = SampleID,
-                NormEXTENDScores_counts = NormEXTENDScores)</code></pre>
+<pre class="r"><code>telomerase_scores_polya_fpkm     &lt;- read_process_telomerase_file(telomerase_fpkm_polya_file, &quot;NormEXTENDScores_fpkm&quot;, &quot;polyA&quot;)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   SampleID = col_character(),
 ##   RawEXTENDScores = col_double(),
 ##   NormEXTENDScores = col_double()
 ## )</code></pre>
-<pre class="r"><code>telomerase_scores_stranded_fpkm &lt;- readr::read_tsv(&quot;../analyses/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt&quot;) %&gt;%
-  dplyr::select(SampleID, NormEXTENDScores) %&gt;% 
-  dplyr::rename(Kids_First_Biospecimen_ID_RNA = SampleID,
-                NormEXTENDScores_fpkm = NormEXTENDScores)</code></pre>
+<pre class="r"><code>telomerase_scores_stranded_fpkm  &lt;- read_process_telomerase_file(telomerase_fpkm_stranded_file, &quot;NormEXTENDScores_fpkm&quot;, &quot;stranded&quot;)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   SampleID = col_character(),
 ##   RawEXTENDScores = col_double(),
 ##   NormEXTENDScores = col_double()
 ## )</code></pre>
-<pre class="r"><code>telomerase_scores_stranded_combined &lt;- full_join(telomerase_scores_stranded_count,
-                                                 telomerase_scores_stranded_fpkm)</code></pre>
-<pre><code>## Joining, by = &quot;Kids_First_Biospecimen_ID_RNA&quot;</code></pre>
-<pre class="r"><code>telomerase_scores_combined &lt;- bind_rows(telomerase_scores_polya_combined,
-                                        telomerase_scores_stranded_combined)  %&gt;%
-  mutate_all(as.character) %&gt;% 
-  replace(is.na(.), &quot;NA&quot;)</code></pre>
+<pre class="r"><code># Combine all scores
+telomerase_scores_combined &lt;- 
+  full_join(telomerase_scores_stranded_count,
+          telomerase_scores_stranded_fpkm) %&gt;%
+  bind_rows(
+    full_join(telomerase_scores_polya_count,
+          telomerase_scores_polya_fpkm)
+  ) %&gt;%
+  # order columns
+  select(Kids_First_Biospecimen_ID_RNA,
+         contains(&quot;Norm&quot;), 
+         library)</code></pre>
+<pre><code>## Joining, by = c(&quot;Kids_First_Biospecimen_ID_RNA&quot;, &quot;library&quot;)</code></pre>
+<pre><code>## Joining, by = c(&quot;Kids_First_Biospecimen_ID_RNA&quot;, &quot;library&quot;)</code></pre>
 </div>
-<div id="telomerase-scores-1" class="section level3">
-<h3>Telomerase scores</h3>
+<div id="immune-deconvolution-with-quantiseq-scores" class="section level3">
+<h3>Immune deconvolution with <code>quanTIseq</code> scores</h3>
 <pre class="r"><code># get quantiseq immune scores file
-quantiseq_immune &lt;- readRDS(&quot;../analyses/immune-deconv/results/quantiseq_deconv-output.rds&quot;) %&gt;%
-  dplyr::select(sample, score, cell_type) %&gt;% 
-  dplyr::rename(Kids_First_Biospecimen_ID_RNA = sample) %&gt;%
-  tidyr::spread(cell_type, score)</code></pre>
+quantiseq_immune &lt;- read_rds(quantiseq_file) %&gt;%
+  select(sample, score, cell_type) %&gt;% 
+  rename(Kids_First_Biospecimen_ID_RNA = sample) %&gt;%
+  spread(cell_type, score)</code></pre>
 </div>
 <div id="combine-and-output-file" class="section level3">
 <h3>combine and output file</h3>
 <pre class="r"><code>list_s3_table &lt;- list(tp53_scores = tp53_scores,
                       telomerase_scores = telomerase_scores_combined,
-                      quantiseq_immune = quantiseq_immune
+                      quantiseq_fractions = quantiseq_immune
                       )
-openxlsx::write.xlsx(list_s3_table, 
-                     file.path(results_dir, &quot;TableS3-RNA-results-table.xlsx&quot;), 
-                     overwrite=TRUE)</code></pre>
+write.xlsx(list_s3_table, 
+           table_s3_file, 
+           overwrite=TRUE, 
+           keepNA=TRUE)</code></pre>
 </div>
 <div id="print-out-session-info" class="section level3">
 <h3>print out session info</h3>
@@ -622,24 +674,23 @@ openxlsx::write.xlsx(list_s3_table,
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] openxlsx_4.1.0.1 forcats_0.4.0    stringr_1.4.0    dplyr_1.0.7     
+##  [1] openxlsx_4.1.0.1 forcats_0.4.0    stringr_1.4.0    dplyr_0.8.3     
 ##  [5] purrr_0.3.2      readr_1.3.1      tidyr_0.8.3      tibble_2.1.3    
 ##  [9] ggplot2_3.2.0    tidyverse_1.2.1 
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] tidyselect_1.1.1 xfun_0.8         haven_2.1.1      lattice_0.20-38 
-##  [5] colorspace_1.4-1 vctrs_0.3.8      generics_0.0.2   htmltools_0.3.6 
-##  [9] yaml_2.2.0       utf8_1.1.4       rlang_0.4.12     pillar_1.6.4    
-## [13] glue_1.5.0       withr_2.1.2      DBI_1.0.0        modelr_0.1.4    
-## [17] readxl_1.3.1     lifecycle_1.0.1  munsell_0.5.0    gtable_0.3.0    
-## [21] cellranger_1.1.0 zip_2.0.3        rvest_0.3.4      evaluate_0.14   
-## [25] knitr_1.23       fansi_0.4.0      broom_0.5.2      Rcpp_1.0.1      
-## [29] scales_1.0.0     backports_1.1.4  jsonlite_1.6     hms_0.4.2       
-## [33] digest_0.6.20    stringi_1.4.3    rprojroot_1.3-2  grid_3.6.0      
-## [37] cli_1.1.0        tools_3.6.0      magrittr_1.5     lazyeval_0.2.2  
-## [41] crayon_1.3.4     pkgconfig_2.0.2  ellipsis_0.3.2   xml2_1.2.0      
-## [45] lubridate_1.7.4  assertthat_0.2.1 rmarkdown_1.13   httr_1.4.0      
-## [49] rstudioapi_0.10  R6_2.4.0         nlme_3.1-140     compiler_3.6.0</code></pre>
+##  [1] zip_2.0.3        Rcpp_1.0.1       cellranger_1.1.0 pillar_1.4.2    
+##  [5] compiler_3.6.0   tools_3.6.0      digest_0.6.20    lubridate_1.7.4 
+##  [9] jsonlite_1.6     evaluate_0.14    nlme_3.1-140     gtable_0.3.0    
+## [13] lattice_0.20-38  pkgconfig_2.0.2  rlang_0.4.0      cli_1.1.0       
+## [17] rstudioapi_0.10  yaml_2.2.0       haven_2.1.1      xfun_0.8        
+## [21] withr_2.1.2      xml2_1.2.0       httr_1.4.0       knitr_1.23      
+## [25] generics_0.0.2   hms_0.4.2        rprojroot_1.3-2  grid_3.6.0      
+## [29] tidyselect_0.2.5 glue_1.3.1       R6_2.4.0         readxl_1.3.1    
+## [33] rmarkdown_1.13   modelr_0.1.4     magrittr_1.5     backports_1.1.4 
+## [37] scales_1.0.0     htmltools_0.3.6  rvest_0.3.4      assertthat_0.2.1
+## [41] colorspace_1.4-1 stringi_1.4.3    lazyeval_0.2.2   munsell_0.5.0   
+## [45] broom_0.5.2      crayon_1.3.4</code></pre>
 </div>
 </div>
 
