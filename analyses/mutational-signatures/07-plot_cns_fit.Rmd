@@ -152,7 +152,7 @@ readr::write_tsv(results_df, results_df_file)
 _All_ samples are included in these sina plots, which show the distribution of exposures for each signature across samples in each cancer group.
 
 
-```{r boxplot, fig.width = 5, fig.height = 8}
+```{r boxplot, fig.width = 14, fig.height = 4.5}
 
 exposures_sina_boxplot <- results_df %>%
   # we DO visualize unknown also, but in case...
@@ -168,10 +168,11 @@ exposures_sina_boxplot <- results_df %>%
                         alpha = 0,
                         # remove whiskers
                         coef = 0) +
-  ggplot2::facet_wrap(~cancer_group_display_n, nrow = 5) +
+  ggplot2::facet_wrap(~cancer_group_display_n, nrow = 2) +
   ggplot2::scale_color_identity() + 
-  ggplot2::scale_y_continuous(limits = c(0, 1.2), 
-                              breaks = c(0, 0.25, 0.5, 0.75, 1.0)) +
+  # commenting out because 2 points are somehow removed..
+  #ggplot2::scale_y_continuous(limits = c(0, 1.2), 
+  #                            breaks = c(0, 0.25, 0.5, 0.75, 1.0)) +
   ggplot2::labs(
     x = "RefSig signature",
     y = "Signature weights across samples"
@@ -180,16 +181,15 @@ exposures_sina_boxplot <- results_df %>%
   cowplot::panel_border() +
   ggplot2::theme(
     # angle needed to fit "Other" category
-    axis.text.x = ggplot2::element_text(size = 7.5, angle = 45, hjust = 1),
-    axis.text.y = ggplot2::element_text(size = 9),
+    axis.text.x = ggplot2::element_text(size = 8.5, angle = 45, hjust = 1),
+    axis.text.y = ggplot2::element_text(size = 10),
     axis.title = ggplot2::element_text(size = 12),
     strip.text = ggplot2::element_text(size = 8.5),
     legend.position = "none"
   )
-
 exposures_sina_boxplot
 
-ggplot2::ggsave(exposures_sina_IQR_file, exposures_sina_boxplot, width = 5, height = 8)
+ggplot2::ggsave(exposures_sina_IQR_file, exposures_sina_boxplot, width = 12, height = 5)
 
 ```
 
