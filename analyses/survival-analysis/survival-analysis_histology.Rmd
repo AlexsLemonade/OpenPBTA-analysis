@@ -227,7 +227,7 @@ print(ggpar(plot_logrank[[2]], font.legend=6))
 
 ```{r}
 # define multi-variates that we are using for analyzing survival
-ind_var <- "tp53_score+telomerase_score+hgg_group"
+ind_var <- "tp53_score+telomerase_score+hgg_group+tp53_score:telomerase_score+hgg_group:tp53_score+hgg_group:telomerase_score"
 
 # define model
 model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ", ind_var)
@@ -262,7 +262,7 @@ meta_list <- list(meta_indep_hgg, meta_indep_non_hgg)
 names(meta_list) <- c("hgg", "non_hgg")
 
 # define multi-variates that we are using for analyzing survival
-ind_var <- "tp53_score+telomerase_score"
+ind_var <- "tp53_score+telomerase_score+tp53_score:telomerase_score"
 # define model
 model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ", ind_var)
 
