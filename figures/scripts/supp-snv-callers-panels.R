@@ -21,7 +21,6 @@ data_dir <- file.path(root_dir, "data")
 # Analysis directores
 analyses_dir <- file.path(root_dir, "analyses") 
 snv_callers_dir <- file.path(analyses_dir, "snv-callers")
-tmb_compare_dir <- file.path(analyses_dir, "tmb-compare")
 
 # Scratch directory
 scratch_dir <- file.path(root_dir, "scratch")
@@ -39,15 +38,6 @@ pbta_vaf_distribution_plot_pdf <- file.path(output_dir, "pbta_vaf_distribution_p
 tcga_vaf_distribution_plot_pdf <- file.path(output_dir, "tcga_vaf_distribution_plot.pdf")
 lancet_wxs_wgs_plot_pdf <- file.path(output_dir, "lancet_wxs_wgs_plot.pdf")
 
-#A: pbta-vaf_cor_matrix.png
-#B: pbta-vaf_distribution_plot.png
-#C: pbta-upset-plot.png
-#D: tcga-vaf-cor-matrix.png
-#E: tcga-vaf-distribution-plot.png
-#F: tcga-upset-plot.png
-#G:http://htmlpreview.github.io/?https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/lancet-wxs-tests/lancet-paired-WXS-WGS.nb.html
-#H/I are from tmb-compare
-
 
 ## Read in data and load items --------------------------------------------------------------
 
@@ -59,9 +49,6 @@ metadata <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"),
 # Binary palette
 binary_palette <- read_tsv(file.path(palette_dir,
                                      "binary_color_palette.tsv"))
-
-# Source function for the upset plots
-source(file.path(snv_callers_dir, "util", "upset_plot.R"))
 
 
 # Define columns to join by during data processing
@@ -88,35 +75,35 @@ for (dataset in c("tcga", "pbta")) {
   print("Loading database tables")
   # Read in database tables, retaining only columns we need
   strelka <- tbl(con, "strelka") %>% 
-    select(join_cols, "VAF") %>%
-    as.data.frame()
+    select(join_cols, "VAF")
   
   lancet <- tbl(con, "lancet") %>% 
-    select(join_cols, "VAF") %>%
-    as.data.frame()
+    select(join_cols, "VAF") 
   
   mutect <- tbl(con, "mutect") %>% 
-    select(join_cols, "VAF") %>%
-    as.data.frame()
+    select(join_cols, "VAF") 
   
-  # vardict is only PBTA
   if (dataset == "pbta") {
+    
+    # only PBTA has vardict
     vardict <- tbl(con, "vardict") %>% 
-      select(join_cols, "VAF") %>%
-      as.data.frame()
-    # TODO now that we converted above to DFs
+      select(join_cols, "VAF") 
+    
     # Source a script that will full join these and create `all_caller`
     print("Joining database tables")
     source(file.path(snv_callers_dir, "util", "full_join_callers.R"))
+    
+    # data frame and add column to keep track of the original rows/mutations
     all_caller_df <- all_caller %>% 
       as.data.frame() %>% 
       rowid_to_column("index") 
     
   } else if (dataset == "tcga") {
-    all_caller_df <- strelka %>%
-      dplyr::full_join(mutect, by = join_cols, 
+    # Need to `as.data.frame()` the TCGA ones since they are small enough to work with directly
+    all_caller_df <- as.data.frame(strelka) %>%
+      dplyr::full_join(as.data.frame(mutect), by = join_cols, 
                        suffix = c("_strelka", "_mutect")) %>%
-      dplyr::full_join(lancet, 
+      dplyr::full_join(as.data.frame(lancet), 
                        by = join_cols) %>% 
       dplyr::rename(VAF_lancet = VAF) %>% 
       # We'll use this to keep track of the original rows/mutations
@@ -129,7 +116,7 @@ for (dataset in c("tcga", "pbta")) {
   print("Preparing data for upset plot")
   detect_mat <- all_caller_df %>% 
     # Bring over VAF columns and the index
-    dplyr::select(dplyr::starts_with("VAF_")) %>% 
+    select(starts_with("VAF_")) %>% 
     as.matrix()
   
   # Store the indices as dimnames
@@ -137,20 +124,40 @@ for (dataset in c("tcga", "pbta")) {
   
   # Turn into detected or not
   detect_mat <- !is.na(detect_mat)
+
   
   # Plot from `detect_mat`
   print("Making upset plot")
+  # Set up a list how UpSetR wants it
+  detect_list <- list(
+    lancet = which(detect_mat[, "VAF_lancet"]),
+    mutect = which(detect_mat[, "VAF_mutect"]),
+    strelka = which(detect_mat[, "VAF_strelka"])
+  )
+  
+  # add vardict if pbta, and define a shared plot_file
   if (dataset == "pbta") {
-    # Note this function makes PNGs by default but can make PDFs too (in spite of name)
-    upset_png(detect_mat, 
-              plot_file_path = pbta_upset_pdf,
-              plot_file_type = "PDF")
-  } else if (dataset == "tcga") {
-    upset_png(detect_mat, 
-              plot_file_path = tcga_upset_pdf,
-              plot_file_type = "PDF",
-              has_vardict = FALSE)
+    # include vardict
+    detect_list[["vardict"]] <- which(detect_mat[, "VAF_vardict"])
+    plot_file <- pbta_upset_pdf 
+  } 
+  else if (dataset == "tcga") {
+    plot_file <- tcga_upset_pdf 
   }
+  
+  # Make plot and export to file
+  # don't use the print() statement from original notebook - this adds a blank page in the DPF
+  pdf(plot_file, width = 10, height = 5)
+  UpSetR::upset(
+    UpSetR::fromList(detect_list), 
+    order.by = "freq",
+    text.scale = 1.2,
+    point.size = 4,
+    mainbar.y.label = ""
+  )
+  dev.off()
+  
+  
   
   ## VAF distribution plots ------------------------------------------
   print("Making VAF distribution plot")
