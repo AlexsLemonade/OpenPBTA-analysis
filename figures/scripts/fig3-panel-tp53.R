@@ -169,14 +169,16 @@ tp53_plot_for_legend <- ggplot(tp53_plot_legend_df) +
   aes(x = cancer_group, y = tp53_score, shape = mutator_factor, fill = mutator_factor, color = mutator_factor) +
   geom_point(size =3) + 
   scale_shape_manual(name = "Mutator", values = c(19, 21, 21)) +
-  scale_color_manual(name = "Mutator",values = c("grey40", "black", "black")) +
-  scale_fill_manual(name = "Mutator", values = c("black", legend_colors["Hypermutant"], legend_colors["Ultrahypermutant"]))
+  scale_color_manual(name = "Mutator",values = c(unname(legend_colors["Normal"]), "black", "black")) + # for reasons (?) this apparently needs unname(). weird since fill doesnt
+  scale_fill_manual(name = "Mutator", values = c("black", legend_colors["Hypermutant"], legend_colors["Ultrahypermutant"])) +
+  # theme to remove gray background
+  ggpubr::theme_pubr()
   
   
 legend <- cowplot::get_legend(tp53_plot_for_legend)
 
 # Export legend
-pdf(tp53_legend_pdf, width = 3, height = 6)
+pdf(tp53_legend_pdf, width = 6, height = 3)
 cowplot::ggdraw(legend)
 dev.off()
 
