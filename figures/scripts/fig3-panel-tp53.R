@@ -171,8 +171,8 @@ tp53_plot_for_legend <- ggplot(tp53_plot_legend_df) +
   scale_shape_manual(name = "Mutator", values = c(19, 21, 21)) +
   scale_color_manual(name = "Mutator",values = c(unname(legend_colors["Normal"]), "black", "black")) + # for reasons (?) this apparently needs unname(). weird since fill doesnt
   scale_fill_manual(name = "Mutator", values = c("black", legend_colors["Hypermutant"], legend_colors["Ultrahypermutant"])) +
-  # theme to remove gray background
-  ggpubr::theme_pubr()
+  # theme to remove gray background. this strategy works
+  theme_classic()
   
   
 legend <- cowplot::get_legend(tp53_plot_for_legend)
