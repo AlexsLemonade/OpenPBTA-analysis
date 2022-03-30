@@ -73,7 +73,7 @@ join_cols <- c("Chromosome",
               "Variant_Classification")
 
 # Loop over the two datasets
-for (dataset in c("tcga")) { #, "pbta")) {
+for (dataset in c("tcga", "pbta")) {
   
   # Set up DB connection ------------------------------------------------
   db_file <- "snv_db.sqlite"
