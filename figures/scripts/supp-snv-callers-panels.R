@@ -74,7 +74,7 @@ join_cols <- c("Chromosome",
 
 # Loop over the two datasets
 for (dataset in c("tcga", "pbta")) {
-  
+  print(paste0("===================",dataset,"===================="))
   # Set up DB connection ------------------------------------------------
   db_file <- "snv_db.sqlite"
   if (dataset == "tcga") {
@@ -85,7 +85,7 @@ for (dataset in c("tcga", "pbta")) {
   
   
   # Load and process database tables ------------------------------------ 
-  
+  print("Loading database tables")
   # Read in database tables, retaining only columns we need
   strelka <- tbl(con, "strelka") %>% 
     select(join_cols, "VAF") %>%
@@ -106,13 +106,11 @@ for (dataset in c("tcga", "pbta")) {
       as.data.frame()
     # TODO now that we converted above to DFs
     # Source a script that will full join these and create `all_caller`
+    print("Joining database tables")
     source(file.path(snv_callers_dir, "util", "full_join_callers.R"))
     all_caller_df <- all_caller %>% 
       as.data.frame() %>% 
-      rowid_to_column("index") %>%
-      # Bring over VAF columns and the index
-      select(starts_with("VAF_")) %>% 
-      as.matrix()
+      rowid_to_column("index") 
     
   } else if (dataset == "tcga") {
     all_caller_df <- strelka %>%
@@ -128,6 +126,7 @@ for (dataset in c("tcga", "pbta")) {
   
   
   ## Upset plots -------------------------------------------------------
+  print("Preparing data for upset plot")
   detect_mat <- all_caller_df %>% 
     # Bring over VAF columns and the index
     dplyr::select(dplyr::starts_with("VAF_")) %>% 
@@ -140,6 +139,7 @@ for (dataset in c("tcga", "pbta")) {
   detect_mat <- !is.na(detect_mat)
   
   # Plot from `detect_mat`
+  print("Making upset plot")
   if (dataset == "pbta") {
     # Note this function makes PNGs by default but can make PDFs too (in spite of name)
     upset_png(detect_mat, 
@@ -153,6 +153,7 @@ for (dataset in c("tcga", "pbta")) {
   }
   
   ## VAF distribution plots ------------------------------------------
+  print("Making VAF distribution plot")
   vaf_df <- all_caller_df %>% 
     select(index, starts_with("VAF_"), Variant_Classification) %>%
     # Make long format
@@ -177,7 +178,7 @@ for (dataset in c("tcga", "pbta")) {
   
   
   ## VAF correlation plots --------------------------------------------
-  
+  print("Making VAF correlation plot")
   # Correlate VAFs across callers pbta
   cor_vaf <- all_caller_df %>% 
     select(starts_with("VAF_")) %>% 
@@ -204,7 +205,7 @@ for (dataset in c("tcga", "pbta")) {
   
   ## Lancet WXS/WGS plot for PBTA data only ------------------------------------------
   if (dataset == "pbta") {
-    
+    print("Making lancet WXS/WGS plot")
     # Retrieve all the participant IDs for participants that have both WGS and WXS data.
     matched_participants <- metadata %>%
       filter(experimental_strategy != "RNA-Seq") %>%
