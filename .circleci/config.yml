@@ -277,6 +277,12 @@ jobs:
          name: Scavenge back hotspots
          command: ./scripts/run_in_ci.sh bash analyses/hotspots-detection/run_overlaps_hotspot.sh
 
+
+      - run:
+         name: Compile manuscript tables
+         command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('tables/output_tables.Rmd', params = list(release = 'testing'), clean = TRUE)"
+
+
   deploy:
     machine:
       docker_layer_caching: true
