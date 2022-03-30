@@ -76,8 +76,8 @@ ggforest_new <- function(model, data = NULL,
   rangeplot <- rangeb
   # # make plot twice as wide as needed to create space for annotations
   # rangeplot[1] <- rangeplot[1] - .15 * diff(rangeb)
-  # # increase white space on right for p-vals:
-  rangeplot[2] <- rangeplot[2] + .05 * diff(rangeb)
+  # increase white space on right for p-vals:
+  # rangeplot[2] <- rangeplot[2] + .01 * diff(rangeb)
   
   width <- diff(rangeplot)
   # y-coordinates for labels:
