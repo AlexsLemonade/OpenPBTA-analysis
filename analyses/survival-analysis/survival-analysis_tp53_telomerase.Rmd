@@ -6,11 +6,11 @@ output: html_notebook
 This notebook will do the following survival analysis
 
 1. Univariate analysis 
-- HGG vs. non-HGG
+- Cancer group
 
 2. Multivariate analysis
-- TP53 classifier score, EXTEND score and cancer group
-- TP53 classifier score, EXTEND score and HGG group
+- TP53 classifier score, EXTEND score, and HGG group
+- Within each cancer group, TP53 classifier score and EXTEND score
 
 3. Plots
 - Bivariate distribution of TP53 classifier score and EXTEND score in density plot stratified by HGAT status
@@ -117,7 +117,8 @@ meta_indep <- histologies_rna %>%
 nrow(meta_indep)
 ```
  
-### Categorical variable cancer group and HGG or not 
+### Assign categorical variable for non-HGAT or HGAT and select cancer groups
+
 ```{r}
 # separate into HGG or non-HGG
 meta_indep <- meta_indep %>% 
@@ -137,7 +138,7 @@ meta_cg_subset <- meta_indep %>%
 ```
 
 ## Log Rank analysis 
-### Generate output for categorical files 
+### Generate output for categorical data (cancer group only, here) 
 ```{r}
 # define the independent variable that we are using for analyzing survival
 ind_var <- "cancer_group"
@@ -183,6 +184,10 @@ print(ggpar(plot_logrank[[2]], font.legend=6))
 
 ## Multivariate analysis 
 ### Comparison made is `tp53_score*telomerase_score*hgg_group` 
+Initially, I thought we could assess `tp53_score*telomerase_score*cancer_group` here, but the removal of LGG and Ganglioglioma patients resulted in removal of 308 patients, and hence affects telomerase and tp53 predictions. 
+Therefore, I think we should keep this as-is, but add the interaction, so that we can assess for all possible patients within the PBTA.
+
+Background on hazard ratios and output:
 "Hazard ratio above 1 indicates a covariate that is positively associated with the event probability, and thus negatively associated with the length of survival.
 
 In summary,
@@ -233,7 +238,7 @@ print(forest_coxph)
 ```
 
 
-### Further we want to separate into cancer groups and see how tp53 and telomerase affect survival in each group
+### Here, we ask how tp53 and telomerase affect survival within each cancer group
 ```{r}
 ## define multi-variates that we are using for analyzing survival
 ind_var <- "tp53_score*telomerase_score"
