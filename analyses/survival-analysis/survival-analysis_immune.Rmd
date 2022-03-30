@@ -5,7 +5,8 @@ output: html_notebook
 
 This notebook will do the following multivariate survival analyses:
 1. Multivariate analysis using immune cell types (minus uncharacterized), PDL1 expression, and cancer group as covariates
-2. Multivariate analysis for each cancer group, using immune cell types (minus uncharacterized), PDL1 expression, and molecular subtype as covariates
+2. Multivariate analysis for each cancer group, using immune cell types (minus uncharacterized) and PDL1 expression as covariates
+3. Multivariate analysis for each cancer group, using immune cell types (minus uncharacterized), PDL1 expression, and molecular subtype as covariates
 
 ## Setup
 
@@ -183,11 +184,6 @@ print(forest_coxph)
 
 
 #### Run multivariate analysis for each cancer group with gene expression and immune cells are covariates
-First, we print out the model summary for each cancer group and use just the immune cell types + CD274 expression as covariates. 
-Some of the covariates have inf/NA results and hence, the forest plots were not generated right. 
-Therefore, secondly, we find which terms have either inf or NA in covariates and remove those for plot generation.
-Thirdly, we print out the model summary again after the covariates removal.
-Lastly, we save figures if all covariates give finite results.
 
 ```{r}
 
@@ -229,11 +225,6 @@ for(cg_each in all_cancer_groups_of_interest){
 ```
 
 #### Run multivariate analysis for individual cancer group parsed by molecular subtypes
-First, we print out the model summary for each cancer group and use immune cell types + CD274 expression + molecular subtypes as covariates. 
-Some of the covariates have inf/NA results and hence, the forest plots were not generated right. 
-Therefore, secondly, we find which terms have either inf or NA in covariates and remove those for plot generation.
-Thirdly, we print out the model summary again after the covariates removal.
-Lastly, we generate figures if all covariates give finite results.
 
 ```{r}
 # define directory
@@ -267,6 +258,7 @@ for(cg_each in all_cancer_groups_of_interest){
                                data = combined_df_distinct_each,
                                noDigits = 2,
                                main = paste0("Hazard ratio for ", cg_each))
+  print(forest_coxph)
   ggsave(forest_coxph, file = file.path(plots_dir_molsubtype, paste0("ggforest_mol_subtype_", cg_each, ".pdf")))
   
 }

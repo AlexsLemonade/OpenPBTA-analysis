@@ -1,3 +1,8 @@
+# this is a function modified from the original ggforest 
+# It has two modifications:
+# 1. change the y axis range (main reason why plots don't plot is because the ranges are too big to be plotted)
+# 2. from the coefficient table, remomve any covaraites that are inf/NA so that they do not get plotted
+
 ggforest_new <- function(model, data = NULL,
                      main = "Hazard ratio", cpositions=c(0.02, 0.22, 0.4),
                      fontsize = 0.7, refLabel = "reference", noDigits=2) {
