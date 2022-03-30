@@ -6,6 +6,8 @@ output: html_notebook
 This notebook will do the following survival analysis
 
 1. Univariate analysis 
+- TP53 classifier score (as a continuous variable)
+- EXTEND score (as a continuous variable)
 - Cancer group
 
 2. Multivariate analysis
@@ -136,6 +138,28 @@ cancer_groups_of_interest <- c("Medulloblastoma", "Ependymoma", "High-grade glio
 meta_cg_subset <- meta_indep %>%
   filter(cancer_group %in% cancer_groups_of_interest)
 ```
+
+## Cox Regression 
+### TP53 scores & Telomerase score - results
+```{r Run Cox regression model for tp53 and telomerase for all covariates}
+# run the model with different covariates
+for(ind_var in c("tp53_score", "telomerase_score", "hgg_group", "cancer_group")){
+  model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ", ind_var)
+  
+  fit <- survival::coxph(
+        formula(model),
+        data = meta_indep
+      )
+  # generate output
+  table <- broom::tidy(fit) 
+  
+  # Save the table data in a TSV
+  readr::write_tsv(table, file.path(results_dir, paste0("cox_reg_results_per_", ind_var, ".tsv")))
+  
+  print(table)
+}
+```
+
 
 ## Log Rank analysis 
 ### Generate output for categorical data (cancer group only, here) 
