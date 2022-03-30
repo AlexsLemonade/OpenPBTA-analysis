@@ -3,18 +3,18 @@
 # 2020
 # CCDL - C. Savonen
 
-upset_png <- function(detect_mat, plot_file_path, subset_vector = NULL, has_vardict = TRUE) {
+upset_png <- function(detect_mat, plot_file_path, subset_vector = NULL, has_vardict = TRUE, plot_file_type = "PNG") {
   # Given a detection data frame, where each column represents a caller and contains a TRUE/FALSE 
   # for whether a mutation was detected, create an upset plot.
   #
   # Arguments: 
   # detect_mat: a matrix, where each column represents a caller and contains a TRUE/FALSE 
   #            for whether a mutation was detected. 
-  # plot_file_path: File path to where the plot will be saved to as png. 
+  # plot_file_path: File path to where the plot will be saved 
   # subset_vector: (Optional) a vector to be supplied to dplyr::filter() that will subset the
   #                detect_mat and create the upset plot from that subset.
   # has_vardict: Does detect_mat contain VarDict as well? TRUE/FALSE. Default is TRUE.
-  #
+  # plot_file_type: "PNG" or "PDF" indicating how to save the file
   # Output: An upset plot that represents the number of mutations detected by the combinations of callers
   
   if (!is.null(subset_vector[1])) {
@@ -34,8 +34,12 @@ upset_png <- function(detect_mat, plot_file_path, subset_vector = NULL, has_vard
     detect_list[["vardict"]] <- which(detect_mat[, "VAF_vardict"])
   }
   
-  # Save to PNG
-  png(file.path(plot_file_path), width = 1300, height = 900);
+  # Save to PNG or PDF
+  if (plot_file_type == "PNG") {
+    png(file.path(plot_file_path), width = 1300, height = 900);
+  } else if (plot_file_type == "PDF") {
+    pdf(file.path(plot_file_path), width = 13, height = 9);
+  }
   print(
     UpSetR::upset(
       UpSetR::fromList(detect_list), 
