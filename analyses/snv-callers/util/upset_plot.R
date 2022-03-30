@@ -38,13 +38,13 @@ upset_png <- function(detect_mat, plot_file_path, subset_vector = NULL, has_vard
   if (plot_file_type == "PNG") {
     png(file.path(plot_file_path), width = 1300, height = 900);
   } else if (plot_file_type == "PDF") {
-    pdf(file.path(plot_file_path), width = 13, height = 9);
+    pdf(file.path(plot_file_path), width = 12, height = 6);
   }
   print(
     UpSetR::upset(
       UpSetR::fromList(detect_list), 
       order.by = "freq",
-      text.scale = 2,
+      text.scale = ifelse(plot_file_type == "PNG", 2, 1.25), 
       point.size = 4,
       mainbar.y.label = "")
     );
