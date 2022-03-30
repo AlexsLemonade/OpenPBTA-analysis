@@ -6,14 +6,11 @@ output: html_notebook
 This notebook will do the following survival analysis
 
 1. Univariate analysis 
-- TP53 classifier score (as a continuous variable)
-- EXTEND score (as a continuous variable)
-- Broad histology specified in the color palette file
 - HGG vs. non-HGG
 
 2. Multivariate analysis
+- TP53 classifier score, EXTEND score and cancer group
 - TP53 classifier score, EXTEND score and HGG group
-- TP53 classifier score, EXTEND score and broad histology specified in the color palette file
 
 3. Plots
 - Bivariate distribution of TP53 classifier score and EXTEND score in density plot stratified by HGAT status
@@ -64,8 +61,7 @@ tp53_file <- file.path(analysis_dir,
                         "tp53_nf1_score/results/tp53_altered_status.tsv")
 tel_stranded_file <- file.path(analysis_dir,
                          "telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt")
-tel_polya_file <- file.path(analysis_dir,
-                         "telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_FPKM.txt")
+tel_polya_file <- file.path(analysis_dir, "telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_FPKM.txt")
 ```
 
 ## Import the metadata
@@ -133,62 +129,25 @@ meta_indep <- meta_indep %>%
 # make non-HGAT the reference level
 meta_indep$hgg_group <- factor(meta_indep$hgg_group, levels = c("non-HGAT", "HGAT"))
 
-```
+# select cancer groups with higher Ns - removed LGG and Ganglioglioma because LGG only has one deceased and all ganglio pts are living
+cancer_groups_of_interest <- c("Medulloblastoma", "Ependymoma", "High-grade glioma astrocytoma", "Atypical Teratoid Rhabdoid Tumor", "Craniopharyngioma", "Diffuse midline glioma")
 
-## Cox Regression 
-### TP53 scores & Telomerase score - results
-```{r Run Cox regression model for tp53 and telomerase for all covariates}
-# run the model with different covariates
-for(ind_var in c("tp53_score", "telomerase_score", "hgg_group")){
-  model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ", ind_var)
-  
-  fit <- survival::coxph(
-        formula(model),
-        data = meta_indep
-      )
-  # generate output
-  table <- broom::tidy(fit) 
-  
-  # Save the table data in a TSV
-  readr::write_tsv(table, file.path(results_dir, paste0("cox_reg_results_per_", ind_var, ".tsv")))
-  
-  print(table)
-  
-  # output the plot
-  pdf(file.path(plots_dir, paste0("coxph_survival_per_", ind_var, ".pdf")))
-  plot_coxph <- survminer::ggsurvplot(survfit(fit),
-                                      data=meta_indep,
-                                      xlim = c(0, 14),
-                                      break.time.by = 1,
-                                      pval = TRUE, 
-                                      conf.int = TRUE,
-                                      risk.table = TRUE, # Add risk table
-                                      linetype = "strata", # Change line type by groups
-                                      surv.median.line = "hv", # Specify median survival
-                                      ggtheme = theme_bw())
-  print(ggpar(plot_coxph[[1]], font.legend=6, legend="right"))
-  print(ggpar(plot_coxph[[2]], font.legend=6))
-
-  dev.off()
-
-  print(ggpar(plot_coxph[[1]], font.legend=6, legend="right"))
-  print(ggpar(plot_coxph[[2]], font.legend=6))
-}
-
+meta_cg_subset <- meta_indep %>%
+  filter(cancer_group %in% cancer_groups_of_interest)
 ```
 
 ## Log Rank analysis 
-### Generate output for categorical files - only hgg group is used  
+### Generate output for categorical files 
 ```{r}
 # define the independent variable that we are using for analyzing survival
-ind_var <- "hgg_group"
+ind_var <- "cancer_group"
 
 # define model
 model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ", ind_var)
 
 # run survival analysis
 fit <- survival::survdiff(formula(model),
-                          data = meta_indep)
+                          data = meta_cg_subset)
 # Obtain p value for Chi-Squared stat
 fit$p.value <- pchisq(fit$chisq, df = length(fit$n) - 1, lower = FALSE)
 
@@ -197,12 +156,12 @@ print(fit)
 saveRDS(fit, file.path(results_dir, paste0("log_rank_survival_per_", ind_var, ".RDS")))
 
 # generate plots fit
-fit_plot <- survfit(formula(model), data = meta_indep)
+fit_plot <- survfit(formula(model), data = meta_cg_subset)
 
 # output the plot
 pdf(file.path(plots_dir, paste0("logrank_survival_per_", ind_var, ".pdf")))
 plot_logrank <- survminer::ggsurvplot(fit_plot,
-                                      data=meta_indep,
+                                      data=meta_cg_subset,
                                       xlim = c(0, 14),
                                       break.time.by = 1,
                                       pval = TRUE, 
@@ -223,18 +182,40 @@ print(ggpar(plot_logrank[[2]], font.legend=6))
 ```
 
 ## Multivariate analysis 
-### Comparison made is `tp53_score + telomerase_score + hgg_group` 
+### Comparison made is `tp53_score*telomerase_score*hgg_group` 
+"Hazard ratio above 1 indicates a covariate that is positively associated with the event probability, and thus negatively associated with the length of survival.
 
+In summary,
+
+HR = 1: No effect
+HR < 1: Reduction in the hazard
+HR > 1: Increase in Hazard" 
+
+The Cox regression results can be interpreted as follow:
+_Statistical significance._ The column marked “z” gives the Wald statistic value. It corresponds to the ratio of each regression coefficient to its standard error (z = coef/se(coef)). The wald statistic evaluates, whether the beta (β) coefficient of a given variable is statistically significantly different from 0. From the output above, we can conclude that the variable sex have highly statistically significant coefficients.
+
+_The regression coefficients._ The second feature to note in the Cox model results is the the sign of the regression coefficients (coef). A positive sign means that the hazard (risk of death) is higher, and thus the prognosis worse, for subjects with higher values of that variable. The variable sex is encoded as a numeric vector. 1: male, 2: female. The R summary for the Cox model gives the hazard ratio (HR) for the second group relative to the first group, that is, female versus male. The beta coefficient for sex = -0.53 indicates that females have lower risk of death (lower survival rates) than males, in these data.
+
+_Hazard ratios._ The exponentiated coefficients (exp(coef) = exp(-0.53) = 0.59), also known as hazard ratios, give the effect size of covariates. For example, being female (sex=2) reduces the hazard by a factor of 0.59, or 41%. Being female is associated with good prognostic.
+
+_Confidence intervals of the hazard ratios._ The summary output also gives upper and lower 95% confidence intervals for the hazard ratio (exp(coef)), lower 95% bound = 0.4237, upper 95% bound = 0.816.
+
+_Global statistical significance of the model._ Finally, the output gives p-values for three alternative tests for overall significance of the model: The likelihood-ratio test, Wald test, and score logrank statistics. These three methods are asymptotically equivalent. For large enough N, they will give similar results. For small N, they may differ somewhat. The Likelihood ratio test has better behavior for small sample sizes, so it is generally preferred.
+
+
+Below, HR = exp(coeff) 
+
+([ref](http://www.sthda.com/english/wiki/cox-proportional-hazards-model))
 ```{r}
 # define multi-variates that we are using for analyzing survival
-ind_var <- "tp53_score+telomerase_score+hgg_group+tp53_score:telomerase_score+hgg_group:tp53_score+hgg_group:telomerase_score"
+ind_var <- "tp53_score*telomerase_score*hgg_group"
 
 # define model
 model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ", ind_var)
 
 fit <- survival::coxph(
       formula(model),
-      data = meta_indep
+      data = meta_indep,
     )
 # generate output
 table <- broom::tidy(fit) 
@@ -251,45 +232,37 @@ print(forest_coxph)
 
 ```
 
-### Further we want to separate to HGAT and non-HGAT and see how tp53 and telomerase affect survival in each group
+
+### Further we want to separate into cancer groups and see how tp53 and telomerase affect survival in each group
 ```{r}
-# get two separate groups
-meta_indep_hgg <- meta_indep %>% dplyr::filter(hgg_group == "HGAT")
-meta_indep_non_hgg <- meta_indep %>% dplyr::filter(hgg_group == "non-HGAT")
+## define multi-variates that we are using for analyzing survival
+ind_var <- "tp53_score*telomerase_score"
 
-# define a list to iterate through
-meta_list <- list(meta_indep_hgg, meta_indep_non_hgg)
-names(meta_list) <- c("hgg", "non_hgg")
-
-# define multi-variates that we are using for analyzing survival
-ind_var <- "tp53_score+telomerase_score+tp53_score:telomerase_score"
 # define model
 model <- paste0("survival::Surv(time = OS_years, event = OS_status_fixed) ~ ", ind_var)
 
-for(i in 1:length(meta_list)){
+for(each in cancer_groups_of_interest){
   # find the meta file
-  meta_df <- meta_list[[i]]
+  meta_df <- meta_cg_subset %>%
+    filter(cancer_group == each)
   
   fit <- survival::coxph(
       formula(model),
-      data = meta_df
+      data = meta_df,
     )
-  # generate output
-  table <- broom::tidy(fit) 
-  
-  #names of subgroup
-  subgroup <- names(meta_list[i])
-  
-  # Save the table data in a TSV
-  readr::write_tsv(table, file.path(results_dir, paste0("cox_reg_results_per_", ind_var, "_in_", subgroup, ".tsv")))
-  
-  print(table)
-  
-  # printout the plot
-  forest_coxph <- survminer::ggforest(fit, data = meta_df)
-  print(forest_coxph)
-}
+# generate output
+table <- broom::tidy(fit) 
 
+# Save the table data in a TSV
+readr::write_tsv(table, file.path(results_dir, paste0("cox_reg_results_per_", ind_var,"_", each, ".tsv")))
+
+print(table)
+
+# printout the plot
+forest_coxph <- survminer::ggforest(fit, data = meta_df,
+                                    main = paste0("Hazard Ratio for ", each))
+print(forest_coxph)
+}
 
 ```
 
