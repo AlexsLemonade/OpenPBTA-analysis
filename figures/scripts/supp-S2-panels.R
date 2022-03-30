@@ -3,7 +3,7 @@
 # Makes pdf panels for supplementary Figure S2
 
 library(tidyverse)
-library(ComplexHeatmap)
+
 
 # Directories -------------------------------------------------------------------
 # Establish base dir
@@ -46,13 +46,13 @@ lancet_wxs_wgx_plot_pdf <- file.path(output_dir, "lancet_wxs_wgx_plot.pdf")
 #E: tcga-vaf-distribution-plot.png
 #F: tcga-upset-plot.png
 #G:http://htmlpreview.github.io/?https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/lancet-wxs-tests/lancet-paired-WXS-WGS.nb.html
-
+#H/I are from tmb-compare
 
 
 ## Read in data and load items --------------------------------------------------------------
 
 # Source function for the upset plots
-source(file.path(analyses_dir, "util", "upset_plot.R"))
+source(file.path(snv_callers_dir, "util", "upset_plot.R"))
 
 # Read in clinical data
 histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"),
@@ -75,20 +75,20 @@ join_cols = c("Chromosome",
 
 
 # Read in database tables, retaining only columns we need
-strelka <- tbl(con, "strelka") %>% 
+strelka <- tbl(con_pbta, "strelka") %>% 
   select(join_cols, "VAF")
 
-lancet <- tbl(con, "lancet") %>% 
+lancet <- tbl(con_pbta, "lancet") %>% 
   select(join_cols, "VAF")
 
-mutect <- tbl(con, "mutect") %>% 
+mutect <- tbl(con_pbta, "mutect") %>% 
   select(join_cols, "VAF")
 
-vardict <- tbl(con, "vardict") %>% 
+vardict <- tbl(con_pbta, "vardict") %>% 
   select(join_cols, "VAF")
 
 # Source a script that will full join these and create `all_caller`
-source(file.path("util", "full_join_callers.R"))
+source(file.path(snv_callers_dir, "util", "full_join_callers.R"))
 
 
 all_caller_df <- all_caller %>% 
@@ -104,16 +104,10 @@ dimnames(detect_mat)[[1]] <- all_caller_df$index
 # Turn into detected or not
 detect_mat <- !is.na(detect_mat)
 
-
-## PBTA Upset Plot ------------------------
-#A: pbta-vaf_cor_matrix.png
-#B: pbta-vaf_distribution_plot.png
-#C: pbta-upset-plot.png
-#D: tcga-vaf-cor-matrix.png
-#E: tcga-vaf-distribution-plot.png
-#F: tcga-upset-plot.png
-#G:http://htmlpreview.github.io/?https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/lancet-wxs-tests/lancet-paired-WXS-WGS.nb.html
-
+# Plot from `detect_mat`
+upset_png(detect_mat, 
+          plot_file_path = pbta_upset_pdf,
+          plot_file_type = "PDF")
 
 
 
