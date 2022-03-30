@@ -1,6 +1,6 @@
 # J. Taroni for ALSF CCDL 2019
-# This script processes MAF, focal CN (from focal-cn-file-preparation),
-# standardized fusion files and prepares them for oncoprint plotting.
+# This script processes MAF, CNV, fusion files and prepares them for oncoprint 
+# plotting.
 #
 # NOTES:
 #   * The `Tumor_Sample_Barcode` will now corresponds to the `sample_id` column
@@ -12,10 +12,12 @@
 #
 # EXAMPLE USAGE:
 #
-# Rscript --vanilla 00-map-to-participant.R \
-#   --maf_file snv-consensus_11122019/consensus_mutation.maf.tsv \
-#   --cnv_file ../focal-cn-file-preparation/results/controlfreec_annotated_cn_autosomes.tsv.gz \
-#   --fusion_file ../../scratch/arriba.tsv \
+# Rscript --vanilla 01-map-to-sample-id.R \
+#   --maf_file ../../data/pbta-snv-consensus-mutation.maf.tsv.gz \
+#   --hotspots_maf_file ../../data/pbta-snv-scavenged-hotspots.maf.tsv.gz \
+#   --cnv_autosomes_file ../../data/consensus_seg_annotated_cn_autosomes.tsv.gz \
+#   --cnv_xy_file ../../data/consensus_seg_annotated_cn_x_and_y.tsv.gz \
+#   --fusion_file ../../data/pbta-fusion-putative-oncogenic.tsv \
 #   --metadata_file ../../data/pbta-histologies.tsv \
 #   --output_directory ../../scratch/oncoprint_files \
 #   --filename_lead "primary_only" \
