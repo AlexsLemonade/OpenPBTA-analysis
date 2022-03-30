@@ -16,6 +16,7 @@ library(survival)
 library(dplyr)
 library(ggplot2)
 library(ggpubr)
+
 ```
 
 #### Establish directories
@@ -25,19 +26,27 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 input_dir <- file.path(root_dir, "analyses", "immune-deconv")
 analysis_dir <- file.path(root_dir, "analyses", "survival-analysis")
+source(file.path(analysis_dir, "util", "ggforest_new.R"))
 
 results_dir <- file.path(analysis_dir, "results")
 if(!dir.exists(results_dir)){
   dir.create(results_dir)
 }
+
+plots_dir <- file.path(analysis_dir, "plots")
+if(!dir.exists(plots_dir)){
+  dir.create(plots_dir)
+}
 ```
 
 #### Read in required files
 ```{r}
-# Read in analysis data
+# Read in quantiseq immune deconvoluted scores file 
 quantiseq <- readRDS(file.path(input_dir, "results", "quantiseq_deconv-output.rds")) %>%
   # remove uncharacterized
   dplyr::filter(cell_type != "uncharacterized cell")
+
+# Read in gene expression files - both poly-A and stranded samples
 polya <- readRDS(file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"))
 stranded <- readRDS(file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
 
@@ -48,12 +57,12 @@ histology_df <- readr::read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
 
 #### filter to cancer group of interest 
 ```{r}
-# define cancer group of interest
-cancer_groups_of_interest <- c("High-grade glioma astrocytoma", 
-                              "Diffuse midline glioma",
-                              "Low-grade glioma astrocytoma", 
-                              "Ependymoma", 
-                              "Medulloblastoma")
+# Filter to all cancer groups of interest 
+all_cancer_groups_of_interest <- c("High-grade glioma astrocytoma", 
+                                   "Diffuse midline glioma",
+                                   "Low-grade glioma astrocytoma", 
+                                   "Ependymoma", 
+                                   "Medulloblastoma")
 
 # filter to cancer group of interest 
 histologies_df_filtered <- histology_df %>%
@@ -61,7 +70,7 @@ histologies_df_filtered <- histology_df %>%
   dplyr::filter(experimental_strategy == "RNA-Seq",
                 composition=="Solid Tissue",
                 tumor_descriptor == "Initial CNS Tumor",
-                cancer_group %in% cancer_groups_of_interest) %>%
+                cancer_group %in% all_cancer_groups_of_interest) %>%
   dplyr::select(Kids_First_Biospecimen_ID, Kids_First_Participant_ID, cancer_group, OS_status, OS_days, PFS_days, molecular_subtype) %>%
   distinct() %>%
   dplyr::arrange(Kids_First_Biospecimen_ID)
@@ -103,7 +112,7 @@ stranded_samples <- quantiseq_subset_spread %>%
 
 # get CD274 expression for polya
 polya_cd274 <- polya %>%
-  dplyr::select(polya_samples) %>%
+  dplyr::select(all_of(polya_samples)) %>%
   tibble::rownames_to_column("gene_symbol") %>%
   dplyr::filter(gene_symbol == "CD274") %>%
   tibble::column_to_rownames("gene_symbol") %>% 
@@ -112,7 +121,7 @@ polya_cd274 <- polya %>%
 
 # get CD274 expression for stranded
 stranded_cd274 <- stranded %>%
-  dplyr::select(stranded_samples) %>%
+  dplyr::select(all_of(stranded_samples)) %>%
   tibble::rownames_to_column("gene_symbol") %>%
   dplyr::filter(gene_symbol == "CD274") %>%
   tibble::column_to_rownames("gene_symbol") %>% 
@@ -141,7 +150,9 @@ combined_df_distinct <- combined_df %>%
      OS_status == "DECEASED" ~1
  )) %>% 
   #use PFS for LGG and OS for others
-  dplyr::mutate(surv_years = ifelse(cancer_group == "Low-grade glioma astrocytoma", as.numeric(PFS_days)/365.25, as.numeric(OS_days)/365.25))
+  dplyr::mutate(surv_years = ifelse(cancer_group == "Low-grade glioma astrocytoma", as.numeric(PFS_days)/365.25, as.numeric(OS_days)/365.25)) %>%
+  dplyr::mutate(PFS_status = ifelse(PFS_days < OS_days, 1, 0)) %>%
+  dplyr::mutate(surv_status = ifelse(cancer_group == "Low-grade glioma astrocytoma", PFS_status, OS_status_fixed))
 ```
 
 #### Run multivariate analysis for all cancer groups
@@ -151,7 +162,7 @@ immune_cells <- quantiseq_subset %>% pull(cell_type_modi) %>% unique() %>%
   paste0(collapse = "+")
 
 # define model
-model <- paste0("survival::Surv(time = surv_years, event = OS_status_fixed) ~ ",
+model <- paste0("survival::Surv(time = surv_years, event = surv_status) ~ ",
                 immune_cells, 
                 "+cancer_group+CD274")
 
@@ -172,14 +183,27 @@ print(forest_coxph)
 
 
 #### Run multivariate analysis for each cancer group with gene expression and immune cells are covariates
-Low grade gliomas all return Inf, so remove from cancer groups of interest 
+First, we print out the model summary for each cancer group and use just the immune cell types + CD274 expression as covariates. 
+Some of the covariates have inf/NA results and hence, the forest plots were not generated right. 
+Therefore, secondly, we find which terms have either inf or NA in covariates and remove those for plot generation.
+Thirdly, we print out the model summary again after the covariates removal.
+Lastly, we save figures if all covariates give finite results.
+
 ```{r}
-for(cg_each in cancer_groups_of_interest){
+
+# define directory
+plots_dir_immune <- file.path(plots_dir, "immune_cells")
+if(!dir.exists(plots_dir_immune)){
+  dir.create(plots_dir_immune)
+}
+
+for(cg_each in all_cancer_groups_of_interest){
   # filter to the cancer group of interset 
   combined_df_distinct_each <- combined_df_distinct %>%
     dplyr::filter(cancer_group == cg_each)
-      # define model
-  model <- paste0("survival::Surv(time = surv_years, event = OS_status_fixed) ~ ",
+      
+  # define model
+  model <- paste0("survival::Surv(time = surv_years, event = surv_status) ~ ",
                   immune_cells, 
                   "+CD274")
   
@@ -189,165 +213,62 @@ for(cg_each in cancer_groups_of_interest){
   table <- broom::tidy(fit) 
   
   # Save the table data in a TSV
-  readr::write_tsv(table, file.path(results_dir, paste0("cox_reg_results_in_", cg_each, ".tsv")))
+  readr::write_tsv(table, file.path(results_dir, paste0("cox_reg_immune_in_", cg_each, ".tsv")))
   print(cg_each)
   print(table)
-  print(summary(fit))
   
-# printout the plot
-forest_coxph <- survminer::ggforest(fit, data = combined_df_distinct_each, noDigits = 2)
-print(forest_coxph)
-}
-```
-
-######## Remove the inifinity values
-```{r}
-# define cancer group of interest
-cancer_groups_of_interest <- c("High-grade glioma astrocytoma", 
-                              "Diffuse midline glioma",
-                              "Ependymoma", 
-                              "Medulloblastoma")
-
-for(cg_each in cancer_groups_of_interest){
-  # filter to the cancer group of interset 
-  combined_df_distinct_each <- combined_df_distinct %>%
-    dplyr::filter(cancer_group == cg_each)
-      # define model
-  model <- paste0("survival::Surv(time = surv_years, event = OS_status_fixed) ~ ",
-                  immune_cells, 
-                  "+CD274")
+  # save the plot
+  forest_coxph <- ggforest_new(fit,
+                               data = combined_df_distinct_each,
+                               noDigits = 2,
+                               main = paste0("Hazard Ratio for ", cg_each))
   
-  fit <- survival::coxph(formula(model),
-                         data = combined_df_distinct_each)
-  # generate output
-  table <- broom::tidy(fit)
-
- # to avoid not being able to generate figures, we have to remove the covariates that have Inf
-  valid_terms <- table %>%
-    # filter out infinite covariates
-    dplyr::filter(!is.infinite(conf.low),
-                  !is.infinite(conf.high)) %>%
-    dplyr::filter(!is.na(statistic)) %>%
-    # get the terms
-    pull(term)
-
-  # keep only valid terms
-  combined_df_distinct_each_filtered <- combined_df_distinct_each %>%
-    select(Kids_First_Biospecimen_ID, Kids_First_Participant_ID, cancer_group, molecular_subtype, valid_terms, OS_status_fixed, surv_years)
-
-  # build a model with just the valid covariate
-  valid_formula <- valid_terms %>% paste0(collapse = "+")
-
-  # define model
-  model <- paste0("survival::Surv(time = surv_years, event = OS_status_fixed) ~ ",
-                  valid_formula)
-
-  fit_new <- survival::coxph(formula(model),
-                         data = combined_df_distinct_each_filtered)
-
-  # # generate output
-  print(cg_each)
-   print(summary(fit_new))
-  # printout the plot
-  forest_coxph <- survminer::ggforest(fit_new, data = combined_df_distinct_each_filtered, 
-                                      noDigits = 2,
-                                      main = paste0("Hazard Ratio for ", cg_each))
   print(forest_coxph)
+  ggsave(forest_coxph, file = file.path(plots_dir_immune, paste0("ggforest_immune_", cg_each, ".pdf")))
 }
 ```
 
 #### Run multivariate analysis for individual cancer group parsed by molecular subtypes
-All EPN subtypes have INF upper CI, so remove this cancer group from the subtype analysis
+First, we print out the model summary for each cancer group and use immune cell types + CD274 expression + molecular subtypes as covariates. 
+Some of the covariates have inf/NA results and hence, the forest plots were not generated right. 
+Therefore, secondly, we find which terms have either inf or NA in covariates and remove those for plot generation.
+Thirdly, we print out the model summary again after the covariates removal.
+Lastly, we generate figures if all covariates give finite results.
+
 ```{r}
-for(cg_each in cancer_groups_of_interest){
-  # filter to the cancer group of interset 
-  combined_df_distinct_each <- combined_df_distinct %>%
-    dplyr::filter(cancer_group == cg_each)
-  
-  # define model
-  model <- paste0("survival::Surv(time = surv_years, event = OS_status_fixed) ~ ",
-                  immune_cells, 
-                  "+molecular_subtype+CD274")
-  
-  fit <- survival::coxph(formula(model),
-                         data = combined_df_distinct_each)
-  # generate output
-  print(summary(fit))
-  
-  # printout the plot
-  forest_coxph <- survminer::ggforest(fit_new, 
-                                      data = combined_df_distinct_each, noDigits = 2,
-                                      main = paste0("Hazard Ratio for ", cg_each))
-  print(forest_coxph)
+# define directory
+plots_dir_molsubtype <- file.path(plots_dir, "mol_subtype")
+if(!dir.exists(plots_dir_molsubtype)){
+  dir.create(plots_dir_molsubtype)
 }
-```
 
-#### Try removing inf variables + plot out
-```{r}
-# define cancer group of interest
-cancer_groups_of_interest <- c("High-grade glioma astrocytoma", 
-                              "Diffuse midline glioma",
-                              "Medulloblastoma")
-
-for(cg_each in cancer_groups_of_interest){
+for(cg_each in all_cancer_groups_of_interest){
   # filter to the cancer group of interset 
   combined_df_distinct_each <- combined_df_distinct %>%
     dplyr::filter(cancer_group == cg_each)
   
   # define model
-  model <- paste0("survival::Surv(time = surv_years, event = OS_status_fixed) ~ ",
+  model <- paste0("survival::Surv(time = surv_years, event = surv_status) ~ ",
                   immune_cells, 
                   "+molecular_subtype+CD274")
   
   fit <- survival::coxph(formula(model),
                          data = combined_df_distinct_each)
   # generate output
-  # print(summary(fit))
   table <- broom::tidy(fit)
-  
-  # to avoid not being able to generate figures, we have to remove the covariates that have Inf
-  valid_non_subtype <- table %>%
-    # get non subtype covariates
-    dplyr::filter(!grepl("molecular_subtype", term)) %>%
-    # filter out infinite covariates
-    dplyr::filter(!is.infinite(conf.low),
-                  !is.infinite(conf.high)) %>%
-    dplyr::filter(!is.na(statistic)) %>%
-    # get the terms
-    pull(term)
+  readr::write_tsv(table, file.path(results_dir, paste0("cox_reg_molsub_in_", cg_each, ".tsv")))
 
-  # we have to filter out subtypes that are infinite
-  subtypes_inf <- table %>%
-    # get non subtype covariates
-    dplyr::filter(grepl("molecular_subtype", term)) %>%
-    dplyr::filter(is.infinite(conf.low) |
-                  is.infinite(conf.high)) %>%
-    dplyr::filter(!is.na(statistic)) %>%
-    dplyr::mutate(term = gsub("molecular_subtype", "", term)) %>%
-    pull(term)
+  # generate output
+  print(cg_each)
+  print(table)
 
-  # filter out dataframe
-  combined_df_distinct_each_filtered <- combined_df_distinct_each %>%
-    dplyr::filter(!molecular_subtype %in% subtypes_inf)
-
-  # build a model with just the valid covariate
-  valid_non_subtype_formula <- valid_non_subtype %>% paste0(collapse = "+")
-
-  # define model
-  model <- paste0("survival::Surv(time = surv_years, event = OS_status_fixed) ~ ",
-                  valid_non_subtype_formula,
-                  "+molecular_subtype")
-
-  fit_new <- survival::coxph(formula(model),
-                         data = combined_df_distinct_each_filtered)
-  # # generate output
-   print(summary(fit_new))
   # printout the plot
-  forest_coxph <- survminer::ggforest(fit_new, 
-                                      data = combined_df_distinct_each_filtered, 
-                                      noDigits = 2,
-                                      main = paste0("Hazard ratio for ", cg_each))
-  print(forest_coxph)
+  forest_coxph <- ggforest_new(fit,
+                               data = combined_df_distinct_each,
+                               noDigits = 2,
+                               main = paste0("Hazard ratio for ", cg_each))
+  ggsave(forest_coxph, file = file.path(plots_dir_molsubtype, paste0("ggforest_mol_subtype_", cg_each, ".pdf")))
+  
 }
-
 ```
+
