@@ -129,6 +129,7 @@ tp53_tmb_boxplot <- ggplot(tp53_plot_df) +
     data = tp53_plot_df[tp53_plot_df$mutator == "Normal",],
     width = 0.15, 
     alpha = 0.7,
+    pch = 19,
     color = legend_colors["Normal"]
   ) +
   geom_jitter(
@@ -160,18 +161,23 @@ ggsave(tp53_pdf,
        width = 8, height = 5)
 
 # Make a legend for the grey/orange/red since this was not done with normal mapping
-# For convenience, use ComplexHeatmap functions for this
-tp53_legend <- ComplexHeatmap::Legend(
-  labels = names(legend_colors),
-  legend_gp = grid::gpar(fill = legend_colors), 
-  type = "points", 
-  pch = 21
-)
+# We have to make a "fake" plot for this to extraxt the legend from
+tp53_plot_legend_df <- tp53_plot_df %>%
+  mutate(mutator_factor = factor(mutator, levels=names(legend_colors)))
 
+tp53_plot_for_legend <- ggplot(tp53_plot_legend_df) + 
+  aes(x = cancer_group, y = tp53_score, shape = mutator_factor, fill = mutator_factor, color = mutator_factor) +
+  geom_point(size =3) + 
+  scale_shape_manual(name = "Mutator", values = c(19, 21, 21)) +
+  scale_color_manual(name = "Mutator",values = c("grey40", "black", "black")) +
+  scale_fill_manual(name = "Mutator", values = c("black", legend_colors["Hypermutant"], legend_colors["Ultrahypermutant"]))
+  
+  
+legend <- cowplot::get_legend(tp53_plot_for_legend)
 
 # Export legend
 pdf(tp53_legend_pdf, width = 3, height = 6)
-ComplexHeatmap::draw(tp53_legend)
+cowplot::ggdraw(legend)
 dev.off()
 
 
