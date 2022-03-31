@@ -18,27 +18,12 @@ if (!dir.exists(output_dir)) {
 # Data directory
 data_dir <- file.path(root_dir, "data")
 
-# Analysis directores
-analyses_dir <- file.path(root_dir, "analyses") 
-tmb_compare_dir <- file.path(analyses_dir, "tmb-compare")
-
-# Scratch directory
-scratch_dir <- file.path(root_dir, "scratch")
-
-# Palette directory
-palette_dir <- file.path(root_dir, "figures", "palettes")
-
 
 ## Define final PDF files ------------------------------------------------------
 pbta_tmb_cdf_pdf <- file.path(output_dir, "pbta_tmb_cdf_plot.pdf")
 tcga_tmb_cdf_pdf <- file.path(output_dir, "tcga_tmb_cdf_plot.pdf")
 
-## Read in data and load items --------------------------------------------------------------
-
-# source the custom function for plotting the CDF plot
-source(file.path(tmb_compare_dir, "util", "cdf-plot-function.R"))
-
-# Read in consensus data from pbta and tcga
+# Read in consensus data from pbta and tcga --------------------------------------------------------------
 tmb_pbta <- data.table::fread(file.path(
   data_dir,
   "pbta-snv-consensus-mutation-tmb-coding.tsv"
@@ -52,6 +37,67 @@ tmb_tcga <- data.table::fread(file.path(
   "tcga-snv-mutation-tmb-coding.tsv"
   )) %>%
   select(-region_size)
+
+# Prepare data for plotting ----------------------------------------------------
+prepare_data_for_plot <- function(df, min_samples = 5) {
+  df %>%
+    # We only really need these two variables
+    transmute(
+      short_histology = str_to_title(short_histology),
+      tmb = as.numeric(tmb)
+    ) %>%
+    # Group by specified column
+    group_by(short_histology) %>%
+    # Only keep groups with the specified minimum number of samples
+    filter(n() > min_samples) %>%
+    # Calculate group (short_histology) median
+    dplyr::mutate(
+      group_median = median(tmb, na.rm = TRUE),
+      group_rank = rank(tmb, ties.method = "first") / n(),
+      sample_size = paste0("n = ", n())
+    ) %>%
+    ungroup() %>%
+    mutate(short_histology = fct_reorder(short_histology, group_median))
+}
+
+# Run preparation function
+tmb_pbta_plot_df <- prepare_data_for_plot(tmb_pbta)
+tmb_tcga_plot_df <- prepare_data_for_plot(tmb_tcga)
+
+# Plot ------------------
+ggplot(tmb_pbta_plot_df) +
+  aes(
+    x = group_rank,
+    y = number
+  ) +
+  geom_point(color = "blue") +
+  # Add summary line for median
+  geom_segment(
+    x = 0, xend = 1, color = "grey",
+    aes(y = group_median, yend = group_median)
+  ) +
+  # Separate by histology
+  facet_wrap(~ group + sample_size, nrow = 1, strip.position = "bottom") +
+  labs(
+    x = "Short histology",
+    y = "Coding mutations per Mb"
+  ) +
+  # Transform to log10 make non-log y-axis labels
+  scale_y_continuous(
+    trans = "log1p",
+    limits = c(0, 400),
+    breaks = c(0, 3, 10, 30, 100, 300)
+  ) +
+  xlim(-1.2, 1.2) +
+  ggpubr::theme_pubr() +
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_blank(),
+    axis.ticks.x = ggplot2::element_blank(),
+    strip.placement = "outside",
+    strip.text = ggplot2::element_text(size = 10, angle = 90, hjust = 1),
+    strip.background = ggplot2::element_rect(fill = NA, color = NA)
+  ) 
+
 
 
 # Plot a CDF plot for each of pbta and tcga
