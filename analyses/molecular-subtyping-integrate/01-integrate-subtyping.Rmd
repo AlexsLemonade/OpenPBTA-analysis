@@ -205,7 +205,7 @@ histology<- histology %>%
 
 #### Write out table for `harmonized_diagnosis` -> `cancer_group` mapping
 
-To make it easy for people to examine the mapping between these two fields, we'll write out a table to `results/`.
+To make it easier for people to examine the mapping between these two fields, we'll write out a table to `results/`.
 We'll only include a subset of the mappings in the README (those that we think require the most explanation), so we'll save a separate table for that purpose.
 
 ```{r}
@@ -221,18 +221,18 @@ mapping_table <- histology %>%
   dplyr::distinct() %>%
   dplyr::filter(!is.na(harmonized_diagnosis)) %>%
   # This next step removes the subtypes from harmonized diagnosis
-  dplyr::mutate(cancer_group_pre_mod = str_extract(harmonized_diagnosis, 
-                                                   "[^,]*")) %>%
+  dplyr::mutate(stripped_subtype = str_extract(harmonized_diagnosis, 
+                                               "[^,]*")) %>%
   # generate column `has_subtype_removed` to indicate whether cancer group equals 
   # the harmonized diagnosis after stripping subtype
   dplyr::mutate(has_subtype_removed = case_when(
-    cancer_group_pre_mod == harmonized_diagnosis ~ "No",
+    stripped_subtype == harmonized_diagnosis ~ "No",
     TRUE ~ "Yes"
   )) %>%
   # generate column `additional_modifications` to indicate whether additional 
   # modifications were done after stripping subtype -- these go into the README!
   dplyr::mutate(additional_modification = case_when(
-    cancer_group_pre_mod == cancer_group ~ "No",
+    stripped_subtype == cancer_group ~ "No",
     TRUE ~ "Yes"
   )) %>%
   dplyr::arrange(cancer_group)
@@ -241,15 +241,15 @@ mapping_table <- histology %>%
 mapping_table %>%
   # This column will mostly be used in the README (our next step) -- will drop
   # it here to avoid confusion
-  dplyr::select(-cancer_group_pre_mod) %>%
+  dplyr::select(-stripped_subtype) %>%
   readr::write_tsv("results/harmonized_diagnosis_cancer_group_table.tsv")
 
 # Now specifically for the README, we'll want to display instances when 
-# additional modifications are made. We use the `cancer_group_pre_mod` column
+# additional modifications are made. We use the `stripped_subtype` column
 # because including the subtypes would muddy the picture in the README.
 mapping_table %>%
   dplyr::filter(additional_modification == "Yes") %>%
-  dplyr::select(stripped_subtype = cancer_group_pre_mod,
+  dplyr::select(stripped_subtype,
                 cancer_group) %>%
   dplyr::distinct() %>%
   dplyr::arrange(stripped_subtype) %>%
