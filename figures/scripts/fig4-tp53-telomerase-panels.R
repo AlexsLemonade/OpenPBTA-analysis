@@ -4,8 +4,6 @@
 
 library(tidyverse)
 
-
-
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
@@ -50,7 +48,7 @@ extend_scores <- read_tsv(file.path(telomerase_dir, "results", "TelomeraseScores
 tp53_roc_pdf <- file.path(output_dir, "tp53_roc_panel.pdf")
 tp53_scores_pdf <- file.path(output_dir, "tp53_scores_by_altered_panel.pdf") 
 tp53_expression_pdf <- file.path(output_dir, "tp53_expression_by_altered_panel.pdf") 
-
+forest_plot_pdf <- file.path(output_dir, "forest_survival_tp53_telomerase_hgg_panel.pdf") 
 
 ### ROC curve ----------------------------------------------
 
@@ -223,37 +221,94 @@ ggplot(extend_df) +
   aes(x = fct_reorder(cancer_group, NormEXTENDScores),
       y = NormEXTENDScores) + 
   geom_boxplot() + 
-  geom_jitter()
+  geom_jitter() + 
+  labs(
+    x = "Cancer group",
+    y = "Telomerase scores"
+  ) # update this to match TP53 style, and also move TP53 into this file
 
-tp53_extend %>%
-  gather(c(tp53_score, NormEXTENDScores), key = score_type, value = score) %>%
-  mutate(
-    score_type = if_else(str_detect(score_type, "tp53"), "TP53 Score", "Normalized EXTEND Score")
+
+## Hazard ratio plot ------------------------------------
+
+# Cancer groups defined as HGGs
+hgg_cancer_groups <- c("High-grade glioma astrocytoma", "Diffuse midline glioma", "Diffuse intrinsic pontine glioma") 
+hgg_levels <- c("non-HGAT", "HGAT")
+
+# Prepare data for survival analysis
+survival_data <- extend_scores %>%
+  select(-RawEXTENDScores) %>%
+  inner_join(
+    select(tp53_compare,
+           SampleID = Kids_First_Biospecimen_ID_RNA,
+           tp53_score
+    )
   ) %>%
-  ggplot() + 
-  aes(x = fct_reorder(broad_histology_display, broad_histology_order), 
-      y = score, 
-      fill = broad_histology_hex) + 
-  geom_violin(scale = "width", 
-              alpha = 0.4) + 
-  geom_jitter(width = 0.08, size = 0.15) +
-  facet_wrap(~score_type, nrow=2) +
-  labs(x = "Broad histology group",
-       y = "") +
-  scale_fill_identity() +
-  ggpubr::theme_pubr() + 
-  theme(
-    axis.text.x = element_text(angle = 90, size = 8, hjust=1)
+  # Now combine with histologies
+  inner_join(
+    select(histologies_df,
+           SampleID = Kids_First_Biospecimen_ID,
+           cancer_group, 
+           OS_status, 
+           OS_days
+    )
+  ) %>%
+  # remove samples without survival data
+  drop_na(OS_days) %>%
+  mutate(OS_years = OS_days / 365.25, # convert to survival years
+         # determine if HGG
+         hgg_group = ifelse(cancer_group %in% hgg_cancer_groups,
+                            hgg_levels[2], # second is HGAT 
+                            hgg_levels[1]), # first is non-HGAT
+         # ensures non-HGAT is the reference level
+         hgg_group = factor(hgg_group, levels = hgg_levels),
+         # Make OS_status numeric with LIVING=0, DECEASED=1
+         OS_status = ifelse(OS_status == "LIVING", 0, 1)
+
   )
+  
 
 
+# Perform cox regression - for now additive, but can change this
+fit <- survival::coxph(
+  formula(
+    "survival::Surv(time = OS_years, event = OS_status) ~ tp53_score + NormEXTENDScores + hgg_group"
+  ),
+  data = survival_data
+)
 
 
+survminer::ggforest(fit, data = survival_data)
 
+forest_data <- broom::tidy(fit) %>%
+  mutate(exp_estimate = exp(estimate),
+         exp_lb = exp(conf.low),
+         exp_ub = exp(conf.high)) %>%
+  mutate(term = case_when(
+    term == "tp53_score" ~ "TP53 Score",
+    term == "NormEXTENDScores" ~ "Telomerase score",
+    term == "hgg_groupHGAT" ~ "HGAT-positive status" #phrasing?
+  ))
 
+# Make plot with ggplot2 for less visual noise
+forest_plot <- ggplot(forest_data) +
+  aes(x = exp_estimate, 
+      y = term) + 
+  geom_point(pch = 15, size = 4) + 
+  geom_errorbarh(
+    aes(
+      xmin = exp_lb,
+      xmax = exp_ub
+    ),
+    height = 0.2
+  ) + 
+  labs(
+    y = "",
+    x = "Hazard ratio ± 95% CI"
+  ) + 
+  scale_x_log10(limits = c(1, 50)) + 
+  # is this useful?
+  geom_vline(xintercept = 1, color = "grey60") +
+  ggpubr::theme_pubr() + 
+  cowplot::background_grid() # easier to follow
 
-
-
-
-
-
+ggsave(forest_plot_pdf, forest_plot, width = 6, height = 3)
