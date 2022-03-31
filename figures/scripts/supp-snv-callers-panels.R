@@ -208,7 +208,7 @@ for (dataset in c("tcga", "pbta")) {
 	  print("saving TIFF")
     ggsave(file.path(output_dir, "pbta_vaf_cor_matrix.tiff"),
 	   cor_vaf,
-	   width = 6, height = 9, dpi = 300, 
+	   width = 9, height = 6, dpi = 300, 
 	   compression = "lzw")
     #ggsave(pbta_vaf_cor_matrix_pdf, cor_vaf, width = 6, height = 4)
   } else if (dataset == "tcga") {
