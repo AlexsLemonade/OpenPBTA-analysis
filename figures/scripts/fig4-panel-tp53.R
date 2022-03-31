@@ -1,6 +1,6 @@
 # S. Spielman for CCDL 2022
 #
-# Makes pdf panel of TP53 scores for inclusion in Figure 3
+# Makes pdf panel of TP53 scores with (ultra)hypermutators emphasized for inclusion in Figure 4
 
 library(tidyverse)
 
@@ -8,7 +8,7 @@ library(tidyverse)
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # Declare output directory
-output_dir <- file.path(root_dir, "figures", "pdfs", "fig3", "panels")
+output_dir <- file.path(root_dir, "figures", "pdfs", "fig4", "panels")
 if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
 }
