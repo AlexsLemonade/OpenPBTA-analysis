@@ -18,6 +18,14 @@ if (!dir.exists(output_dir)) {
 # Data directory
 data_dir <- file.path(root_dir, "data")
 
+# Read in clinical data
+metadata <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"),
+                     guess_max = 10000)
+
+# Read in histologies palette file
+histologies_palette_df <- read_tsv(file.path(root_dir, "figures", 
+                                             "palettes", "broad_histology_cancer_group_palette.tsv"))
+
 
 ## Define final PDF files ------------------------------------------------------
 pbta_tmb_cdf_pdf <- file.path(output_dir, "pbta_tmb_cdf_plot.pdf")
@@ -41,45 +49,113 @@ tmb_tcga <- data.table::fread(file.path(
 # Prepare data for plotting ----------------------------------------------------
 prepare_data_for_plot <- function(df, min_samples = 5) {
   df %>%
-    # We only really need these two variables
-    transmute(
-      short_histology = str_to_title(short_histology),
-      tmb = as.numeric(tmb)
+    as_tibble() %>%
+    select(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode,
+           tmb) %>%
+    inner_join(
+      select(metadata,
+             Kids_First_Biospecimen_ID,
+             cancer_group)
+      ) %>%
+    inner_join(
+      select(histologies_palette_df, 
+             contains("cancer_group")
+      )
     ) %>%
+    drop_na(cancer_group_display) %>%
     # Group by specified column
-    group_by(short_histology) %>%
+    group_by(cancer_group_display) %>%
     # Only keep groups with the specified minimum number of samples
     filter(n() > min_samples) %>%
-    # Calculate group (short_histology) median
-    dplyr::mutate(
-      group_median = median(tmb, na.rm = TRUE),
-      group_rank = rank(tmb, ties.method = "first") / n(),
+    # Calculate group median
+    mutate(
+      cancer_group_median = median(tmb, na.rm = TRUE),
+      cancer_group_rank = rank(tmb, ties.method = "first") / n(),
       sample_size = paste0("n = ", n())
     ) %>%
     ungroup() %>%
-    mutate(short_histology = fct_reorder(short_histology, group_median))
+    # Order cancer groups in frequency, but ensure Other is still last
+    mutate(cancer_group_display = str_wrap(cancer_group_display, 18),
+           cancer_group_display = fct_infreq(cancer_group_display),
+           # reverse since infreq does most --> least
+           cancer_group_display = fct_rev(cancer_group_display),
+           # move "Other" to the end
+           cancer_group_display = fct_relevel(cancer_group_display, "Other", after = Inf)
+    ) 
+}
+
+
+
+
+plot_tmb <- function(df, ylim, ybreaks) {
+  ggplot(df) +
+    aes(
+      x = cancer_group_rank,
+      y = tmb,
+      color = cancer_group_hex
+    ) +
+    geom_point() +
+    # Add summary line for median
+    geom_segment(
+      x = 0, xend = 1, color = "black",
+      aes(y = cancer_group_median, yend = cancer_group_median)
+    ) +
+    scale_color_identity() +
+    facet_wrap(~ cancer_group_display + sample_size, nrow = 1, strip.position = "bottom") +
+    labs(
+      x = "Cancer group",
+      y = "Coding mutations per Mb"
+    ) +
+    # Transform to log10 make non-log y-axis labels
+    scale_y_continuous(
+      trans = "log1p",
+      limits = ylim,
+      breaks = ybreaks
+    ) +
+    xlim(-1.2, 1.2) +
+    ggpubr::theme_pubr() +
+    ggplot2::theme(
+      axis.text.x = ggplot2::element_blank(),
+      axis.ticks.x = ggplot2::element_blank(),
+      strip.placement = "outside",
+      strip.text = ggplot2::element_text(size = 11, angle = 90, hjust = 1),
+      strip.background = ggplot2::element_rect(fill = NA, color = NA)
+    ) 
 }
 
 # Run preparation function
 tmb_pbta_plot_df <- prepare_data_for_plot(tmb_pbta)
-tmb_tcga_plot_df <- prepare_data_for_plot(tmb_tcga)
+tmb_tcga_plot_df <- prepare_data_for_plot(tmb_tcga) # BUG HERE
+
+
+plot_tmb(tmb_pbta_plot_df,
+         c(0, 400),
+         c(0, 3, 10, 30, 100, 300))
+
+
+plot_tmb(tmb_tcga_plot_df,
+         c(0, 400),
+         c(0, 3, 10, 30, 100, 300))
+
+
 
 # Plot ------------------
-ggplot(tmb_pbta_plot_df) +
+tmb_pbta_plot <- ggplot(tmb_pbta_plot_df) +
   aes(
-    x = group_rank,
-    y = number
+    x = cancer_group_rank,
+    y = tmb,
+    color = cancer_group_hex
   ) +
-  geom_point(color = "blue") +
+  geom_point() +
   # Add summary line for median
   geom_segment(
-    x = 0, xend = 1, color = "grey",
-    aes(y = group_median, yend = group_median)
+    x = 0, xend = 1, color = "black",
+    aes(y = cancer_group_median, yend = cancer_group_median)
   ) +
-  # Separate by histology
-  facet_wrap(~ group + sample_size, nrow = 1, strip.position = "bottom") +
+  scale_color_identity() +
+  facet_wrap(~ cancer_group_display + sample_size, nrow = 1, strip.position = "bottom") +
   labs(
-    x = "Short histology",
+    x = "Cancer group",
     y = "Coding mutations per Mb"
   ) +
   # Transform to log10 make non-log y-axis labels
@@ -94,50 +170,10 @@ ggplot(tmb_pbta_plot_df) +
     axis.text.x = ggplot2::element_blank(),
     axis.ticks.x = ggplot2::element_blank(),
     strip.placement = "outside",
-    strip.text = ggplot2::element_text(size = 10, angle = 90, hjust = 1),
+    strip.text = ggplot2::element_text(size = 11, angle = 90, hjust = 1),
     strip.background = ggplot2::element_rect(fill = NA, color = NA)
   ) 
 
-
-
-# Plot a CDF plot for each of pbta and tcga
-pbta_plot <- cdf_plot(
-  df = tmb_pbta,
-  plot_title = "PBTA",
-  num_col = "tmb",
-  group_col = "short_histology",
-  color = "#3BC8A2",
-  n_group = 5,
-  x_lim = c(-1.2, 1.2),
-  y_lim = c(0, 400),
-  x_lab = "",
-  y_lab = "Coding Mutations per Mb", 
-  breaks = c(0, 3, 10, 30, 100, 300)
-) +
-  ggpubr::theme_pubr() +
-  theme(
-    axis.text.x =  element_text(size = 7),
-    strip.text.x = element_text(size = 8)
-  )
-
-tcga_plot <- cdf_plot(
-  df = tmb_tcga,
-  plot_title = "TCGA (Adult)",
-  num_col = "tmb",
-  group_col = "short_histology",
-  color = "#630882",
-  n_group = 5,
-  x_lim = c(-1.2, 1.2),
-  y_lim = c(0, 400),
-  x_lab = "",
-  y_lab = "Coding Mutations per Mb",
-  breaks = c()
-) +
-  ggpubr::theme_pubr() +
-  theme(
-    axis.text.x =  element_text(size = 7),
-    strip.text.x = element_text(size = 9)
-  )
 
 # Export both plots
 ggsave(pbta_tmb_cdf_pdf, pbta_plot, width = 22, height = 4)
