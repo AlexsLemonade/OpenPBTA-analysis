@@ -140,8 +140,7 @@ for (dataset in c("tcga", "pbta")) {
     # include vardict
     detect_list[["vardict"]] <- which(detect_mat[, "VAF_vardict"])
     plot_file <- pbta_upset_pdf 
-  } 
-  else if (dataset == "tcga") {
+  } else if (dataset == "tcga") {
     plot_file <- tcga_upset_pdf 
   }
   
