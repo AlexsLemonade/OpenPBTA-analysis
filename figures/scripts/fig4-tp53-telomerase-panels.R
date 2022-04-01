@@ -53,8 +53,8 @@ tp53_scores_altered_pdf             <- file.path(output_dir, "tp53_scores_by_alt
 tp53_expression_altered_pdf         <- file.path(output_dir, "tp53_expression_by_altered_panel.pdf") 
 tp53_scores_cancergroups_pdf        <- file.path(output_dir, "tp53_scores_boxplot_panel.pdf")
 tp53_scores_cancergroups_legend_pdf <- file.path(output_dir, "tp53_scores_boxplot_legend.pdf")
-telomerase_scores_cancergroups_pdf      <- file.path(output_dir, "telomerase_scores_boxplot_panel.pdf")
-forest_plot_pdf                     <- file.path(output_dir, "forest_survival_tp53_telomerase_hgg_panel.pdf") 
+telomerase_scores_cancergroups_pdf  <- file.path(output_dir, "telomerase_scores_boxplot_panel.pdf")
+#forest_plot_pdf                     <- file.path(output_dir, "forest_survival_tp53_telomerase_hgg_panel.pdf") 
 
 
 
