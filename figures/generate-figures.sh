@@ -107,7 +107,7 @@ Rscript --vanilla ${analyses_dir}/telomerase-activity-prediction/01-run-EXTEND.R
 Rscript --vanilla ${analyses_dir}/telomerase-activity-prediction/01-run-EXTEND.R --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-counts-rsem-expected_count-collapsed.polya.rds --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_counts.txt
 
 # Build figures of telomerase activity
-Rscript --vanilla scripts/TelomeraseActivities.R
+Rscript --vanilla scripts/fig4-telomerase-activities.R
 
 ####### Transcriptomic overview
 
@@ -128,10 +128,20 @@ Rscript --vanilla ${analyses_dir}/gene-set-enrichment-analysis/01-conduct-gsea-a
 Rscript --vanilla -e "rmarkdown::render('${analyses_dir}/gene-set-enrichment-analysis/02-model-gsea.Rmd', clean = TRUE)"
 
 # Step that generates the GSVA, UMAP, and legend panels
-Rscript --vanilla scripts/fig4-panels-gsva-umap.R
+Rscript --vanilla scripts/fig5-panels-gsva-umap.R
 
-# Step that generates UMAP for molecular analysis 
-Rscript --vanilla scripts/supp-subtype-umap.R
+
+###### TP53 scores
+
+# Generate the tp53 scores boxplot for figure 3
+Rscript --vanilla scripts/fig3-panel-tp53.R
+
+
+####### Sample distributions
+
+# Generate sample distribution panel for Figure 1 and supplementary panels
+Rscript --vanilla scripts/fig1-sample-distribution.R
+
 
 ####### CN Status Heatmap
 if [ "$RUN_LOCAL" -lt "1" ]; then
@@ -148,6 +158,18 @@ Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.
 ######## Mutational signatures
 # Copy the figure to final directory
 cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_sina_IQR.pdf  pdfs/fig3/panels/mutational_signatures_exposures.pdf
+
+
+####### Supplementary figures
+
+# UMAP panels for supplementary figure 2 from molecular analysis 
+Rscript --vanilla scripts/supp-subtype-umap.R
+
+# Panels for supplementary figure 3
+Rscript --vanilla scripts/supp-S3-panels-BCD.R
+
+# TP53 correlation panel for supplementary figure 5
+Rscript --vanilla scripts/supp-tp53-correlation.R
 
 
 
