@@ -43,14 +43,22 @@ stranded_expression <- read_rds(file.path(data_dir,"pbta-gene-expression-rsem-fp
 # Read in EXTEND scores. We read Stranded FPKM here. 
 extend_scores <- read_tsv(file.path(telomerase_dir, "results", "TelomeraseScores_PTBAStranded_FPKM.txt"))
 
+# Read in TMB for highlighting points in boxplots
+tmb_coding_df <- read_tsv(file.path(data_dir, "pbta-snv-consensus-mutation-tmb-coding.tsv"))
+                            
 
 #### Define output PDF panels ----------------------------------------------------------------
-tp53_roc_pdf <- file.path(output_dir, "tp53_roc_panel.pdf")
-tp53_scores_pdf <- file.path(output_dir, "tp53_scores_by_altered_panel.pdf") 
-tp53_expression_pdf <- file.path(output_dir, "tp53_expression_by_altered_panel.pdf") 
-forest_plot_pdf <- file.path(output_dir, "forest_survival_tp53_telomerase_hgg_panel.pdf") 
+tp53_roc_pdf                        <- file.path(output_dir, "tp53_stranded_roc_panel.pdf")
+tp53_scores_altered_pdf             <- file.path(output_dir, "tp53_scores_by_altered_panel.pdf") 
+tp53_expression_altered_pdf         <- file.path(output_dir, "tp53_expression_by_altered_panel.pdf") 
+tp53_scores_cancergroups_pdf        <- file.path(output_dir, "tp53_scores_boxplot_panel.pdf")
+tp53_scores_cancergroups_legend_pdf <- file.path(output_dir, "tp53_scores_boxplot_legend.pdf")
+telomerase_scores_cancergroups_pdf      <- file.path(output_dir, "telomerase_scores_boxplot_panel.pdf")
+forest_plot_pdf                     <- file.path(output_dir, "forest_survival_tp53_telomerase_hgg_panel.pdf") 
 
-### ROC curve ----------------------------------------------
+
+
+### ROC curve ---------------------------------------------------------------------------------
 
 # Create data frame that will plot ROC
 roc_df <- bind_rows(tp53_roc_stranded, tp53_roc_stranded_shuff) %>%
@@ -94,7 +102,7 @@ ggsave(tp53_roc_pdf, roc_plot, width = 5, height = 5)
 
 
 
- ### TP53 scores and expression violin plots ---------------------------------
+ ### TP53 scores and expression violin plots -----------------------------------------------------------
 # We do not use color palettes since the color mappings will necessarily change across figures.
 # For all violin plots, we will just show `activated` and `loss` because `other` is 
 #    actually just **unclassified** and therefore not a robust comparison group
@@ -184,13 +192,16 @@ tp53_expression_plot <- ggplot(stranded_tp53) +
 
 
 # Export figures
-ggsave(tp53_scores_pdf, tp53_scores_plot, width = 6, height = 4)
-ggsave(tp53_expression_pdf, tp53_expression_plot, width = 6, height = 4)
+ggsave(tp53_scores_altered_pdf, tp53_scores_plot, width = 6, height = 4)
+ggsave(tp53_expression_altered_pdf, tp53_expression_plot, width = 6, height = 4)
 
 
-## Distributions of Extend scores --------------------------------
 
-# Define cancer groups to show in this plot
+
+## TP53 scores boxplots across cancer groups with mutators emphasized -------------------------------------------
+
+
+# Define cancer groups to show in this and the subsequent telomerase scores plot
 cancer_groups_to_plot <- c(
   "Diffuse midline glioma",
   "Low-grade glioma astrocytoma",
@@ -204,6 +215,126 @@ cancer_groups_to_plot <- c(
   "Dysembryoplastic neuroepithelial tumor"
 )
 
+# Cancer group wrap number of characters for labeling TP53 and Telomerase boxplots
+cg_wrap <- 20
+
+# Rename DNA column for joining purposes and select columns of interest
+tp53_scores_df_subset <- tp53_compare %>%
+  rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_DNA) %>%
+  select(Kids_First_Biospecimen_ID, 
+         tp53_score) %>%
+  distinct() %>%
+  # remove all NAs, which exist in IDs and tp53
+  drop_na()
+
+# Get coding samples of interest and annotate samples as normal, hyper, or ultra
+mutators <- tmb_coding_df %>%
+  # columns of interest
+  select(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode,
+         tmb) %>%
+  # keep only rows of interest
+  filter(Kids_First_Biospecimen_ID %in% tp53_scores_df_subset$Kids_First_Biospecimen_ID) %>%
+  # add a column about mutator
+  mutate(
+    mutator = case_when(
+      tmb < 10 ~ "Normal",
+      tmb >= 10 & tmb < 100 ~ "Hypermutant",
+      tmb >= 100 ~ "Ultrahypermutant")
+  )
+
+# Join data for visualization
+tp53_plot_df <- tp53_scores_df_subset %>%
+  inner_join(mutators, by="Kids_First_Biospecimen_ID") %>%
+  inner_join(
+    select(histologies_df, 
+           Kids_First_Biospecimen_ID,
+           cancer_group)
+  ) %>%
+  # filter to cancer groups and wrap for x-axis
+  filter(cancer_group %in% cancer_groups_to_plot) %>%
+  mutate(cancer_group = str_wrap(cancer_group, cg_wrap))
+
+
+## Make plot ans associated legend
+# Define colors to use
+legend_colors <- c(Normal      = "grey40",
+                   Hypermutant = "orange",
+                   Ultrahypermutant = "red")
+
+# Boxplot with overlayed jitter with colors "mapped" to `mutator`
+set.seed(9) # reproducible jitter to ensure we can see all N=6 points
+tp53_tmb_boxplot <- ggplot(tp53_plot_df) +
+  aes(
+    x = fct_reorder(cancer_group, tp53_score), # order cancer groups by tp53 score
+    y = tp53_score
+  ) +
+  geom_boxplot(
+    outlier.shape = NA, # no outliers
+    color = "grey20",    # dark grey color
+    size = 0.4 
+  ) +
+  # Separate out jitters so that the mutant layers are ON TOP OF normal
+  geom_jitter(
+    data = tp53_plot_df[tp53_plot_df$mutator == "Normal",],
+    width = 0.15, 
+    alpha = 0.7,
+    pch = 19,
+    color = legend_colors["Normal"]
+  ) +
+  geom_jitter(
+    data = tp53_plot_df[tp53_plot_df$mutator == "Hypermutant",],
+    width = 0.15, 
+    pch = 21,
+    size = 2.25,
+    fill = legend_colors["Hypermutant"]
+  ) +  
+  geom_jitter(
+    data = tp53_plot_df[tp53_plot_df$mutator == "Ultrahypermutant",],
+    width = 0.15, 
+    pch = 21,
+    size = 2.25,
+    fill = legend_colors["Ultrahypermutant"]
+  ) +  
+  labs(x = "Cancer group", 
+       y = "TP53 Score") +
+  # do we want an hline at 0.5? Might be useful guiding line but also add unnecessary visual noise
+  # geom_hline(yintercept = 0.5) +
+  ggpubr::theme_pubr() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust=1, size = rel(0.8))
+  )
+
+# Export plot
+ggsave(tp53_scores_cancergroups_pdf,
+       tp53_tmb_boxplot,
+       width = 8, height = 5)
+
+# Make a legend for the grey/orange/red since this was not done with normal mapping
+# We have to make a "fake" plot for this to extraxt the legend from
+tp53_plot_legend_df <- tp53_plot_df %>%
+  mutate(mutator_factor = factor(mutator, levels=names(legend_colors)))
+
+tp53_plot_for_legend <- ggplot(tp53_plot_legend_df) + 
+  aes(x = cancer_group, y = tp53_score, shape = mutator_factor, fill = mutator_factor, color = mutator_factor) +
+  geom_point(size =3) + 
+  scale_shape_manual(name = "Mutator", values = c(19, 21, 21)) +
+  scale_color_manual(name = "Mutator",values = c(unname(legend_colors["Normal"]), "black", "black")) + # for reasons (?) this apparently needs unname(). weird since fill doesnt
+  scale_fill_manual(name = "Mutator", values = c("black", legend_colors["Hypermutant"], legend_colors["Ultrahypermutant"])) +
+  # theme to remove gray background. this strategy works
+  theme_classic()
+
+
+legend <- cowplot::get_legend(tp53_plot_for_legend)
+
+# Export legend
+pdf(tp53_scores_cancergroups_legend_pdf, width = 6, height = 3)
+cowplot::ggdraw(legend)
+dev.off()
+
+
+## Distributions of Extend scores ------------------------------------------------------
+
+
 extend_df <- extend_scores %>%
   # rename column and keep only Norm
   select(Kids_First_Biospecimen_ID = SampleID, 
@@ -214,101 +345,128 @@ extend_df <- extend_scores %>%
            Kids_First_Biospecimen_ID,
            cancer_group)
   ) %>%
+  # join with palette
+  inner_join(
+    select(histologies_palette_df,
+           contains("cancer_group"))
+  ) %>%
   # filter to cancer groups of interest
-  filter(cancer_group %in% cancer_groups_to_plot)
+  filter(cancer_group %in% cancer_groups_to_plot) %>%
+  # wrap label
+  mutate(cancer_group_display = str_wrap(cancer_group_display, cg_wrap))
 
-ggplot(extend_df) +
-  aes(x = fct_reorder(cancer_group, NormEXTENDScores),
-      y = NormEXTENDScores) + 
+extend_boxplot <- ggplot(extend_df) +
+  aes(x = fct_reorder(cancer_group_display, NormEXTENDScores),
+      y = NormEXTENDScores, 
+      color = cancer_group_hex) + 
   geom_boxplot() + 
-  geom_jitter() + 
+  geom_boxplot(
+    outlier.shape = NA, # no outliers
+    color = "grey20",    # dark grey color
+    size = 0.4 
+  ) +
+  geom_jitter(alpha = 0.4, 
+              size = 1) + 
   labs(
     x = "Cancer group",
     y = "Telomerase scores"
-  ) # update this to match TP53 style, and also move TP53 into this file
-
-
-## Hazard ratio plot ------------------------------------
-
-# Cancer groups defined as HGGs
-hgg_cancer_groups <- c("High-grade glioma astrocytoma", "Diffuse midline glioma", "Diffuse intrinsic pontine glioma") 
-hgg_levels <- c("non-HGAT", "HGAT")
-
-# Prepare data for survival analysis
-survival_data <- extend_scores %>%
-  select(-RawEXTENDScores) %>%
-  inner_join(
-    select(tp53_compare,
-           SampleID = Kids_First_Biospecimen_ID_RNA,
-           tp53_score
-    )
-  ) %>%
-  # Now combine with histologies
-  inner_join(
-    select(histologies_df,
-           SampleID = Kids_First_Biospecimen_ID,
-           cancer_group, 
-           OS_status, 
-           OS_days
-    )
-  ) %>%
-  # remove samples without survival data
-  drop_na(OS_days) %>%
-  mutate(OS_years = OS_days / 365.25, # convert to survival years
-         # determine if HGG
-         hgg_group = ifelse(cancer_group %in% hgg_cancer_groups,
-                            hgg_levels[2], # second is HGAT 
-                            hgg_levels[1]), # first is non-HGAT
-         # ensures non-HGAT is the reference level
-         hgg_group = factor(hgg_group, levels = hgg_levels),
-         # Make OS_status numeric with LIVING=0, DECEASED=1
-         OS_status = ifelse(OS_status == "LIVING", 0, 1)
-
+  ) +
+  scale_color_identity() +
+  ggpubr::theme_pubr() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust=1, size = rel(0.8))
   )
-  
 
 
-# Perform cox regression - for now additive, but can change this
-fit <- survival::coxph(
-  formula(
-    "survival::Surv(time = OS_years, event = OS_status) ~ tp53_score + NormEXTENDScores + hgg_group"
-  ),
-  data = survival_data
-)
+# Export plot
+ggsave(telomerase_scores_cancergroups_pdf,
+       extend_boxplot,
+       width = 8, height = 5)
 
 
-survminer::ggforest(fit, data = survival_data)
 
-forest_data <- broom::tidy(fit) %>%
-  mutate(exp_estimate = exp(estimate),
-         exp_lb = exp(conf.low),
-         exp_ub = exp(conf.high)) %>%
-  mutate(term = case_when(
-    term == "tp53_score" ~ "TP53 Score",
-    term == "NormEXTENDScores" ~ "Telomerase score",
-    term == "hgg_groupHGAT" ~ "HGAT-positive status" #phrasing?
-  ))
-
-# Make plot with ggplot2 for less visual noise
-forest_plot <- ggplot(forest_data) +
-  aes(x = exp_estimate, 
-      y = term) + 
-  geom_point(pch = 15, size = 4) + 
-  geom_errorbarh(
-    aes(
-      xmin = exp_lb,
-      xmax = exp_ub
-    ),
-    height = 0.2
-  ) + 
-  labs(
-    y = "",
-    x = "Hazard ratio ± 95% CI"
-  ) + 
-  scale_x_log10(limits = c(1, 50)) + 
-  # is this useful?
-  geom_vline(xintercept = 1, color = "grey60") +
-  ggpubr::theme_pubr() + 
-  cowplot::background_grid() # easier to follow
-
-ggsave(forest_plot_pdf, forest_plot, width = 6, height = 3)
+# 
+# ## Hazard ratio plot ------------------------------------
+# 
+# # Cancer groups defined as HGGs
+# hgg_cancer_groups <- c("High-grade glioma astrocytoma", "Diffuse midline glioma", "Diffuse intrinsic pontine glioma") 
+# hgg_levels <- c("non-HGAT", "HGAT")
+# 
+# # Prepare data for survival analysis
+# survival_data <- extend_scores %>%
+#   select(-RawEXTENDScores) %>%
+#   inner_join(
+#     select(tp53_compare,
+#            SampleID = Kids_First_Biospecimen_ID_RNA,
+#            tp53_score
+#     )
+#   ) %>%
+#   # Now combine with histologies
+#   inner_join(
+#     select(histologies_df,
+#            SampleID = Kids_First_Biospecimen_ID,
+#            cancer_group, 
+#            OS_status, 
+#            OS_days
+#     )
+#   ) %>%
+#   # remove samples without survival data
+#   drop_na(OS_days) %>%
+#   mutate(OS_years = OS_days / 365.25, # convert to survival years
+#          # determine if HGG
+#          hgg_group = ifelse(cancer_group %in% hgg_cancer_groups,
+#                             hgg_levels[2], # second is HGAT 
+#                             hgg_levels[1]), # first is non-HGAT
+#          # ensures non-HGAT is the reference level
+#          hgg_group = factor(hgg_group, levels = hgg_levels),
+#          # Make OS_status numeric with LIVING=0, DECEASED=1
+#          OS_status = ifelse(OS_status == "LIVING", 0, 1)
+# 
+#   )
+#   
+# 
+# 
+# # Perform cox regression - FOR NOW additive model, but can change this when plot is finalized
+# fit <- survival::coxph(
+#   formula(
+#     "survival::Surv(time = OS_years, event = OS_status) ~ tp53_score + NormEXTENDScores + hgg_group"
+#   ),
+#   data = survival_data
+# )
+# 
+# 
+# survminer::ggforest(fit, data = survival_data)
+# 
+# forest_data <- broom::tidy(fit) %>%
+#   mutate(exp_estimate = exp(estimate),
+#          exp_lb = exp(conf.low),
+#          exp_ub = exp(conf.high)) %>%
+#   mutate(term = case_when(
+#     term == "tp53_score" ~ "TP53 Score",
+#     term == "NormEXTENDScores" ~ "Telomerase score",
+#     term == "hgg_groupHGAT" ~ "HGAT-positive status" #phrasing?
+#   ))
+# 
+# # Make plot with ggplot2 for less visual noise
+# forest_plot <- ggplot(forest_data) +
+#   aes(x = exp_estimate, 
+#       y = term) + 
+#   geom_point(pch = 15, size = 4) + 
+#   geom_errorbarh(
+#     aes(
+#       xmin = exp_lb,
+#       xmax = exp_ub
+#     ),
+#     height = 0.2
+#   ) + 
+#   labs(
+#     y = "",
+#     x = "Hazard ratio ± 95% CI"
+#   ) + 
+#   scale_x_log10(limits = c(1, 50)) + 
+#   # is this useful?
+#   geom_vline(xintercept = 1, color = "grey60") +
+#   ggpubr::theme_pubr() + 
+#   cowplot::background_grid() # easier to follow
+# 
+# ggsave(forest_plot_pdf, forest_plot, width = 6, height = 3)
