@@ -68,13 +68,24 @@ prepare_data_for_plot <- function(df, grouping_variable = NULL, min_samples = 5)
 
 # Function to plot shared layers of PBTA and TCGA plots
 # Note this isn't the entire plot due to tidyeval challenges with facet variables
-add_shared_layers <- function(plot) {
-  plot + 
+baseline_plot <- function(df, tcga_color = NULL) {
+  
+  # Start plot
+  p <-  ggplot(df) + 
     aes(
       x = group_rank,
       y = tmb
-    ) +
-    geom_point() +
+    ) 
+  
+  # Add point with or without color 
+  if (!(is.null(tcga_color))) {
+    p <- p + geom_point(color = tcga_color)
+  } else {
+    p <- p + geom_point(aes(color = cancer_group_hex))
+  }
+  
+  # Rest of plot
+  p + 
     # Add summary line for median
     geom_segment(
       x = 0, xend = 1, color = "black",
@@ -143,17 +154,13 @@ tmb_tcga_plot_df <- tmb_tcga %>%
   )
 
 # Plot the data ----------------------------------------------------------
-tmb_pbta_plot <- ggplot(tmb_pbta_plot_df, aes(color = cancer_group_hex)) %>%
-  add_shared_layers() +
+tmb_pbta_plot <- baseline_plot(tmb_pbta_plot_df) +
   facet_wrap(~cancer_group_display + sample_size, nrow = 1, strip.position = "bottom")  +
   scale_color_identity()
   
 
-tmb_tcga_plot <- ggplot(tmb_tcga_plot_df, aes(color = short_histology)) %>%
-  add_shared_layers() +
-  facet_wrap(~short_histology + sample_size, nrow = 1, strip.position = "bottom")  +
-  colorblindr::scale_color_OkabeIto()  
-
+tmb_tcga_plot <- baseline_plot(tmb_tcga_plot_df, tcga_color = "gray60") +
+  facet_wrap(~short_histology + sample_size, nrow = 1, strip.position = "bottom") 
 
 # Export both plots ---------------------------------
 ggsave(pbta_tmb_cdf_pdf, tmb_pbta_plot, width = 10, height = 6)
