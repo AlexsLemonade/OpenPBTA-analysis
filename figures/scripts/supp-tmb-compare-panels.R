@@ -46,139 +46,118 @@ tmb_tcga <- data.table::fread(file.path(
   )) %>%
   select(-region_size)
 
-# Prepare data for plotting ----------------------------------------------------
-prepare_data_for_plot <- function(df, min_samples = 5) {
+# Define functions ----------------------------------------------------
+
+# Function to calculate medians and ranks
+prepare_data_for_plot <- function(df, grouping_variable = NULL, min_samples = 5) {
   df %>%
-    as_tibble() %>%
-    select(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode,
-           tmb) %>%
-    inner_join(
-      select(metadata,
-             Kids_First_Biospecimen_ID,
-             cancer_group)
-      ) %>%
-    inner_join(
-      select(histologies_palette_df, 
-             contains("cancer_group")
-      )
-    ) %>%
-    drop_na(cancer_group_display) %>%
     # Group by specified column
-    group_by(cancer_group_display) %>%
+    group_by({{grouping_variable}}) %>%
     # Only keep groups with the specified minimum number of samples
     filter(n() > min_samples) %>%
     # Calculate group median
     mutate(
-      cancer_group_median = median(tmb, na.rm = TRUE),
-      cancer_group_rank = rank(tmb, ties.method = "first") / n(),
+      group_median = median(tmb, na.rm = TRUE),
+      group_rank = rank(tmb, ties.method = "first") / n(),
       sample_size = paste0("n = ", n())
     ) %>%
-    ungroup() %>%
-    # Order cancer groups in frequency, but ensure Other is still last
-    mutate(cancer_group_display = str_wrap(cancer_group_display, 18),
-           cancer_group_display = fct_infreq(cancer_group_display),
-           # reverse since infreq does most --> least
-           cancer_group_display = fct_rev(cancer_group_display),
-           # move "Other" to the end
-           cancer_group_display = fct_relevel(cancer_group_display, "Other", after = Inf)
-    ) 
+    ungroup() 
 }
 
 
 
-
-plot_tmb <- function(df, ylim, ybreaks) {
-  ggplot(df) +
+# Function to plot shared layers of PBTA and TCGA plots
+# Note this isn't the entire plot due to tidyeval challenges with facet variables
+add_shared_layers <- function(plot) {
+  plot + 
     aes(
-      x = cancer_group_rank,
-      y = tmb,
-      color = cancer_group_hex
+      x = group_rank,
+      y = tmb
     ) +
     geom_point() +
     # Add summary line for median
     geom_segment(
       x = 0, xend = 1, color = "black",
-      aes(y = cancer_group_median, yend = cancer_group_median)
-    ) +
-    scale_color_identity() +
-    facet_wrap(~ cancer_group_display + sample_size, nrow = 1, strip.position = "bottom") +
-    labs(
-      x = "Cancer group",
-      y = "Coding mutations per Mb"
-    ) +
-    # Transform to log10 make non-log y-axis labels
-    scale_y_continuous(
-      trans = "log1p",
-      limits = ylim,
-      breaks = ybreaks
+      aes(y = group_median, yend = group_median)
     ) +
     xlim(-1.2, 1.2) +
+    scale_y_continuous(
+      trans = "log1p",
+      limits = c(0, 400),
+      breaks = c(0, 3, 10, 30, 100, 300)
+    ) +
+    labs(
+      x = "", # "Cancer group",
+      y = "Coding mutations per Mb"
+    ) +
     ggpubr::theme_pubr() +
-    ggplot2::theme(
+    theme(
       axis.text.x = ggplot2::element_blank(),
       axis.ticks.x = ggplot2::element_blank(),
       strip.placement = "outside",
       strip.text = ggplot2::element_text(size = 11, angle = 90, hjust = 1),
-      strip.background = ggplot2::element_rect(fill = NA, color = NA)
+      strip.background = ggplot2::element_rect(fill = NA, color = NA),
+      legend.position = "none"
     ) 
 }
 
-# Run preparation function
-tmb_pbta_plot_df <- prepare_data_for_plot(tmb_pbta)
-tmb_tcga_plot_df <- prepare_data_for_plot(tmb_tcga) # BUG HERE
 
 
-plot_tmb(tmb_pbta_plot_df,
-         c(0, 400),
-         c(0, 3, 10, 30, 100, 300))
+# Prepare data for plotting --------------------------------------------------
 
-
-plot_tmb(tmb_tcga_plot_df,
-         c(0, 400),
-         c(0, 3, 10, 30, 100, 300))
-
-
-
-# Plot ------------------
-tmb_pbta_plot <- ggplot(tmb_pbta_plot_df) +
-  aes(
-    x = cancer_group_rank,
-    y = tmb,
-    color = cancer_group_hex
-  ) +
-  geom_point() +
-  # Add summary line for median
-  geom_segment(
-    x = 0, xend = 1, color = "black",
-    aes(y = cancer_group_median, yend = cancer_group_median)
-  ) +
-  scale_color_identity() +
-  facet_wrap(~ cancer_group_display + sample_size, nrow = 1, strip.position = "bottom") +
-  labs(
-    x = "Cancer group",
-    y = "Coding mutations per Mb"
-  ) +
-  # Transform to log10 make non-log y-axis labels
-  scale_y_continuous(
-    trans = "log1p",
-    limits = c(0, 400),
-    breaks = c(0, 3, 10, 30, 100, 300)
-  ) +
-  xlim(-1.2, 1.2) +
-  ggpubr::theme_pubr() +
-  ggplot2::theme(
-    axis.text.x = ggplot2::element_blank(),
-    axis.ticks.x = ggplot2::element_blank(),
-    strip.placement = "outside",
-    strip.text = ggplot2::element_text(size = 11, angle = 90, hjust = 1),
-    strip.background = ggplot2::element_rect(fill = NA, color = NA)
+# Combine tmb_pbta data with metadata and cancer group information
+tmb_pbta_plot_df <- tmb_pbta %>%
+  as_tibble() %>%
+  select(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode,
+         tmb) %>%
+  inner_join(
+    select(metadata,
+           Kids_First_Biospecimen_ID,
+           cancer_group)
+  ) %>%
+  inner_join(
+    select(histologies_palette_df, 
+           contains("cancer_group")
+    )
+  ) %>%
+  drop_na(cancer_group_display) %>%
+  # Perform calculations needed for plot
+  prepare_data_for_plot(grouping_variable = cancer_group_display) %>%
+  # Order cancer groups in frequency, but ensure Other is still last
+  mutate(cancer_group_display = str_wrap(cancer_group_display, 18),
+         cancer_group_display = fct_infreq(cancer_group_display),
+         # reverse since infreq does most --> least
+         cancer_group_display = fct_rev(cancer_group_display),
+         # move "Other" to the end
+         cancer_group_display = fct_relevel(cancer_group_display, "Other", after = Inf)
   ) 
 
+# Prepare tcga data
+tmb_tcga_plot_df <- tmb_tcga %>%
+  prepare_data_for_plot(grouping_variable = short_histology) %>%
+  # Order short_histology by ascending n (most n's the same except 1)
+  mutate(
+    short_histology = str_wrap(short_histology, 10),
+    short_histology = fct_infreq(short_histology),
+    short_histology = fct_rev(short_histology)
+  )
 
-# Export both plots
-ggsave(pbta_tmb_cdf_pdf, pbta_plot, width = 22, height = 4)
-ggsave(tcga_tmb_cdf_pdf, tcga_plot, width = 16, height = 4)
+# Plot the data ----------------------------------------------------------
+tmb_pbta_plot <- ggplot(tmb_pbta_plot_df, aes(color = cancer_group_hex)) %>%
+  add_shared_layers() +
+  facet_wrap(~cancer_group_display + sample_size, nrow = 1, strip.position = "bottom")  +
+  scale_color_identity()
+  
 
+tmb_tcga_plot <- ggplot(tmb_tcga_plot_df, aes(color = short_histology)) %>%
+  add_shared_layers() +
+  facet_wrap(~short_histology + sample_size, nrow = 1, strip.position = "bottom")  +
+  colorblindr::scale_color_OkabeIto()  
+
+
+# Export both plots ---------------------------------
+ggsave(pbta_tmb_cdf_pdf, tmb_pbta_plot, width = 10, height = 6)
+ggsave(tcga_tmb_cdf_pdf, tmb_tcga_plot, width = 10, height = 6.25)  # because labels are diff sizes, making this 6.25 matches the other plot at 6
 
 
 
