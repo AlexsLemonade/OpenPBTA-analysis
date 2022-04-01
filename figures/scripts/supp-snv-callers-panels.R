@@ -23,7 +23,7 @@ analyses_dir <- file.path(root_dir, "analyses")
 snv_callers_dir <- file.path(analyses_dir, "snv-callers")
 
 # Scratch directory
-scratch_dir <- file.path(root_dir, "scratch")
+scratch_dir <- file.path(root_dir, "scratch", "snv-callers-panels")
 
 # Palette directory
 palette_dir <- file.path(root_dir, "figures", "palettes")
