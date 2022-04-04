@@ -108,87 +108,99 @@ ggsave(tp53_roc_pdf, roc_plot, width = 5, height = 5)
 # We use ggplot instead of ggpubr because of jitter styling (ggpubr jitter point placement is deterministic)
 
 
-# remove "other" grouping from data so we only have 2 categories and 
-#  change to `activated` and `lost` for grammatical consistency
- tp53_compare_2cat <- tp53_compare %>%
-  filter(tp53_altered != "other") %>%
-  # change loss --> lost
-  mutate(tp53_altered = ifelse(
-    tp53_altered == "loss", "lost", "activated"
+# Function to plot both TP53 violin plots (score across altered and expression across altered)
+plot_tp53 <- function(df, pvalue_round, pvalue_y) {
+  # df: Assumes two columns: the variable of interest (either tp53_score, tp53_expression) is named tp53, and column tp53_altered with three values
+  # pvalue_round: digits to round the pvalue
+  # pvalue_y: y-axis coordinate of p-value annotation. Note that the x-axis coordinate is always the same
+  
+  # Perform test for variable without `other`
+  df_2cat <- filter(df, tp53_altered != "other")
+  pvalue <- round(
+    wilcox.test(tp53 ~ tp53_altered, data = df_2cat)$p.value,
+    pvalue_round)
+  
+  # Prepare stats df for median +/ IQR
+  stats_df <- df %>%
+    group_by(tp53_altered) %>%
+    summarize(
+      y = median(tp53, na.rm=TRUE),
+      ymin = quantile(tp53, 0.25, na.rm=TRUE),
+      ymax = quantile(tp53, 0.75, na.rm=TRUE)
+    )
+  
+  # Plot, with seed for jitter
+  set.seed(4)
+  ggplot(df) +
+    aes(x = tp53_altered, 
+        y = tp53) +
+    geom_violin() + 
+    geom_jitter(alpha = 0.25, # very light alpha to accomodate `other` category
+                width = 0.1, 
+                size = 1) + 
+    # Add median +/- IQR pointrange
+    geom_pointrange(data = stats_df, 
+                    aes(
+                      x = tp53_altered,
+                      y = y,
+                      ymin = ymin,
+                      ymax = ymax
+                    ),
+                    color = "firebrick", size = rel(0.6)
+    ) +
+    # Add p-value annotation right by the groups we compare
+    annotate("text", 
+             label = paste0("Wilcoxon P-value = ", pvalue), 
+             x = 1.5, y = pvalue_y, size = 3) +
+    ggpubr::theme_pubr() 
+}
+
+# change `loss` --> `lost` for grammatical consistency
+tp53_compare <- tp53_compare %>%
+  mutate(tp53_altered = case_when(
+    tp53_altered == "loss" ~ "lost", 
+    TRUE ~ tp53_altered
   ))
 
-# Perform test for TP53 scores
-scores_pvalue <- round(
-  wilcox.test(tp53_score ~ tp53_altered, data = tp53_compare_2cat)$p.value,
-  2)
-
-# Plot tp53 scores with P-value annotation
-set.seed(4)
-tp53_scores_plot <- ggplot(tp53_compare_2cat) +
-  aes(x = tp53_altered, 
-      y = tp53_score) +
-  geom_violin() + 
-  geom_jitter(alpha = 0.5, 
-              width = 0.2, 
-              size = 1) + 
-  # Add mean with stat_summary
-  stat_summary(color = "firebrick") + 
-  # Add p-value annotation
-  annotate("text", 
-           label = paste0("Wilcoxon P-value = ", scores_pvalue), 
-           x = 1, y = 1.2) +
-  labs(
-    x = "TP53 alteration status",
-    y = "TP53 score"
-  ) +
-  ggpubr::theme_pubr() 
-
-
-
-
+# Prepare expression data
 # subset to TP53
 subset_stranded <- t(stranded_expression)[,"TP53"]
-
 # Join STRANDED expression with tp53 alteration
 # Note that because this is stranded only, it has fewer data points.
-# TODO: Should the tp53 score figure also be just stranded? The ROC figure is also only just stranded.
 stranded_tp53 <- as.data.frame(subset_stranded) %>%
   rename(tp53_expression=subset_stranded) %>%
   rownames_to_column(var = "Kids_First_Biospecimen_ID_RNA") %>%
   # easier to work with
   as_tibble() %>%
-  inner_join(tp53_compare_2cat, by = "Kids_First_Biospecimen_ID_RNA") %>%
+  inner_join(tp53_compare, by = "Kids_First_Biospecimen_ID_RNA") %>%
   # keep only columns we need
   select(Kids_First_Biospecimen_ID_RNA, tp53_expression, tp53_altered) %>%
   distinct()
 
 
-# Perform test for TP53 expression
-expression_pvalue <- round(
-  wilcox.test(tp53_expression ~ tp53_altered, data = stranded_tp53)$p.value,
-  4)
-
-# Plot tp53 expression with P-value annotation
-# TODO: analyze with log'd y instead?
-set.seed(4)
-tp53_expression_plot <- ggplot(stranded_tp53) +
-  aes(x = tp53_altered, 
-      y = tp53_expression) +
-  geom_violin() + 
-  geom_jitter(alpha = 0.5, 
-              width = 0.2, 
-              size = 1.25) + 
-  # Add mean with stat_summary
-  stat_summary(color = "firebrick") + 
-  # Add p-value annotation
-  annotate("text", 
-           label = paste0("Wilcoxon P-value = ", expression_pvalue), 
-           x = 1, y = 75) +
+# Make the figures
+tp53_scores_plot <- tp53_compare %>%
+  rename(tp53 = tp53_score) %>%
+  ### ggplot
+  plot_tp53(pvalue_round = 2, 
+            pvalue_y = 1.05) +
+  # add labels for this plot
   labs(
-    x = "TP53 alteration status",
+    x = "TP53 altered status",
+    y = "TP53 score"
+  )
+
+
+tp53_expression_plot <- stranded_tp53 %>%
+  rename(tp53 = tp53_expression) %>%
+  ### ggplot
+  plot_tp53(pvalue_round = 4, 
+            pvalue_y = 80) +
+  # add labels for this plot
+  labs(
+    x = "TP53 altered status",
     y = "TP53 expression (FPKM)"
-  ) +
-  ggpubr::theme_pubr() 
+  )
 
 
 # Export figures
