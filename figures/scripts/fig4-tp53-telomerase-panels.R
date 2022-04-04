@@ -218,14 +218,13 @@ cancer_groups_to_plot <- c(
 # Cancer group wrap number of characters for labeling x-axis in boxplots
 cg_wrap <- 20
 
-
-# Get coding samples of interest and annotate samples as normal, hyper, or ultra
-mutators <- tmb_coding_df %>%
+# Create combined data frame of mutator information, tp53 scores, and telomerase scores (NormEXTENDScores)
+# Join tmb_coding_df with tp53_compare first, because both have DNA identifiers. 
+# Since tp53_compare also has the RNA identifier,then we can join with extend_scores
+tp53_telo_mutator_df <- tmb_coding_df %>%
   # columns of interest
-  select(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode,
+  select(Kids_First_Biospecimen_ID_DNA = Tumor_Sample_Barcode, # consistent naming for joining
          tmb) %>%
-  # keep only rows of interest
-  filter(Kids_First_Biospecimen_ID %in% tp53_scores_df_subset$Kids_First_Biospecimen_ID) %>%
   # add a column about mutator
   mutate(
     mutator = case_when(
@@ -233,84 +232,75 @@ mutators <- tmb_coding_df %>%
       tmb >= 10 & tmb < 100 ~ "Hypermutant",
       tmb >= 100 ~ "Ultra-hypermutant")
   ) %>%
-  # find RNA id version
+  # join with tp53_compare
   inner_join(
-    select(histologies_df, 
-             Kids_First_Biospecimen_ID)
+    select(tp53_compare,
+           Kids_First_Biospecimen_ID_DNA,
+           Kids_First_Biospecimen_ID_RNA,
+           tp53_score),
+    by = "Kids_First_Biospecimen_ID_DNA"
+  ) %>%
+  # rename RNA column for joining
+  rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA) %>%
+  # join with extend_scores using RNA column
+  inner_join(
+    select(extend_scores, 
+           Kids_First_Biospecimen_ID = SampleID, # rename for joining
+           telo_score = NormEXTENDScores
+    )
   )
 
-# Combine extend (telomerase) and tp53 scores
-extend_tp53_df <- extend_scores %>%
-  # consistenct naming for joining
-  select(Kids_First_Biospecimen_ID = SampleID,
-         NormEXTENDScores) %>%
-  # join with tp53
-  left_join(
-    select(tp53_compare,
-           # consistenct naming for joining
-           Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA,
-           tp53_score),
-    by = "Kids_First_Biospecimen_ID"
-  ) %>%
-  # join with metadata
-  inner_join(
-    select(histologies_df, 
-           Kids_First_Biospecimen_ID,
-           cancer_group)
-  ) %>%
-  # join with palette
-  inner_join(
-    select(histologies_palette_df,
-           cancer_group, 
-           cancer_group_display,
-           cancer_group_hex)
-  ) %>%
-  distinct() %>%
-  # filter to cancer groups of interest
-  filter(cancer_group %in% cancer_groups_to_plot) %>%
-  # join with mutator information
-  inner_join(mutators)
-  
   
 # Prepare combined data for visualization
-extend_tp53_plot_df <- extend_tp53_df %>%
-  # duplicate the tp53 scores column so we can eventually order can groups by it
-  mutate(tp53_score_forordering = tp53_score) %>%
-  # we want a single column for all scores so we can facet by scores
-  gather(NormEXTENDScores, tp53_score, 
-         key = "score_type", 
-         value = "score")
-  # wrap cancer group label
-  mutate(cancer_group_display = str_wrap(cancer_group_display, cg_wrap)) %>%
-  
-  
-
-
-# Join data for visualization
-tp53_plot_df <- tp53_scores_df_subset %>%
-  inner_join(mutators, by="Kids_First_Biospecimen_ID") %>%
+plot_df <- tp53_telo_mutator_df %>%
+  # add in histology information
   inner_join(
-    select(histologies_df, 
+    select(histologies_df,
            Kids_First_Biospecimen_ID,
            cancer_group)
   ) %>%
-  # filter to cancer groups and wrap for x-axis
+  # add in palette information
+  inner_join(
+    select(histologies_palette_df,
+           cancer_group,
+           cancer_group_display, 
+           cancer_group_hex)
+  ) %>%
+  # filter to cancer groups of interest
   filter(cancer_group %in% cancer_groups_to_plot) %>%
-  mutate(cancer_group = str_wrap(cancer_group, cg_wrap))
+  # duplicate the tp53 scores column so we can eventually order can groups by it
+  mutate(tp53_forordering = tp53_score) %>%
+  # we want a single column for all scores so we can facet by scores
+  # first, change naming for facet labels:
+  rename(`Telomerase score` = telo_score,
+         `TP53 score` = tp53_score) %>%
+  gather(contains("score"), 
+         key = "score_type", 
+         value = "score") %>%
+  # order TP53 on top
+  mutate(score_type = fct_relevel(score_type, "TP53 score")) %>%
+  # wrap cancer group label
+  mutate(cancer_group_display = str_wrap(cancer_group_display, cg_wrap))
 
 
-## Make plot ans associated legend
 # Define colors to use
 legend_colors <- c(Normal      = "grey40",
                    Hypermutant = "orange",
                    `Ultra-hypermutant` = "red")
+# Other plot parameters which need to be re-introduced in legend:
+normal_alpha <- 0.7
+normal_size <- 1.75
+mutator_size <- 2.25
+normal_pch <- 19
+mutator_pch <- 21
+jitter_width <- 0.15 # not in legend but often in main plot
 
 # Boxplot with overlayed jitter with colors "mapped" to `mutator`
-set.seed(9) # reproducible jitter to ensure we can see all N=6 points
-tp53_tmb_boxplot <- ggplot(tp53_plot_df) +
+set.seed(14) # reproducible jitter to ensure we can see all N=6 points in BOTH facets
+tp53_telo_tmb_boxplot <- ggplot(plot_df) +
   aes(
-    x = fct_reorder(cancer_group, tp53_score), # order cancer groups by tp53 score
-    y = tp53_score
+    x = fct_reorder(cancer_group_display, tp53_forordering), # order cancer groups by tp53 score
+    y = score
   ) +
   geom_boxplot(
     outlier.shape = NA, # no outliers
@@ -319,28 +309,30 @@ tp53_tmb_boxplot <- ggplot(tp53_plot_df) +
   ) +
   # Separate out jitters so that the mutant layers are ON TOP OF normal
   geom_jitter(
-    data = tp53_plot_df[tp53_plot_df$mutator == "Normal",],
-    width = 0.15, 
-    alpha = 0.7,
-    pch = 19,
+    data = plot_df[plot_df$mutator == "Normal",],
+    width = jitter_width, 
+    alpha = normal_alpha,
+    size = normal_size,
+    pch = normal_pch,
     color = legend_colors["Normal"]
   ) +
   geom_jitter(
-    data = tp53_plot_df[tp53_plot_df$mutator == "Hypermutant",],
-    width = 0.15, 
-    pch = 21,
-    size = 2.25,
+    data = plot_df[plot_df$mutator == "Hypermutant",],
+    width = jitter_width, 
+    pch = mutator_pch,
+    size = mutator_size,
     fill = legend_colors["Hypermutant"]
   ) +  
   geom_jitter(
-    data = tp53_plot_df[tp53_plot_df$mutator == "Ultrahypermutant",],
-    width = 0.15, 
-    pch = 21,
-    size = 2.25,
-    fill = legend_colors["Ultrahypermutant"]
+    data = plot_df[plot_df$mutator == "Ultra-hypermutant",],
+    width = jitter_width, 
+    pch = mutator_pch,
+    size = mutator_size,
+    fill = legend_colors["Ultra-hypermutant"]
   ) +  
   labs(x = "Cancer group", 
-       y = "TP53 Score") +
+       y = "Score") +
+  facet_wrap(~score_type, nrow = 2) +
   # do we want an hline at 0.5? Might be useful guiding line but also add unnecessary visual noise
   # geom_hline(yintercept = 0.5) +
   ggpubr::theme_pubr() +
@@ -349,21 +341,23 @@ tp53_tmb_boxplot <- ggplot(tp53_plot_df) +
   )
 
 # Export plot
-ggsave(tp53_scores_cancergroups_pdf,
-       tp53_tmb_boxplot,
-       width = 8, height = 5)
+ggsave(tp53_telomerase_scores_boxplot_pdf,
+       tp53_telo_tmb_boxplot,
+       width = 9, height = 6)
 
 # Make a legend for the grey/orange/red since this was not done with normal mapping
 # We have to make a "fake" plot for this to extraxt the legend from
-tp53_plot_legend_df <- tp53_plot_df %>%
+tp53_plot_legend_df <- plot_df %>%
   mutate(mutator_factor = factor(mutator, levels=names(legend_colors)))
 
 tp53_plot_for_legend <- ggplot(tp53_plot_legend_df) + 
-  aes(x = cancer_group, y = tp53_score, shape = mutator_factor, fill = mutator_factor, color = mutator_factor) +
+  aes(x = cancer_group, y = tmb, shape = mutator_factor, fill = mutator_factor, color = mutator_factor, size = mutator_factor, alpha = mutator_factor) +
   geom_point(size =3) + 
-  scale_shape_manual(name = "Mutator", values = c(19, 21, 21)) +
+  scale_size_manual(name = "Mutator", values = c(normal_size, mutator_size, mutator_size))+
+  scale_shape_manual(name = "Mutator", values = c(normal_pch, mutator_pch, mutator_pch)) +
+  scale_alpha_manual(name = "Mutator", values = c(normal_alpha, 1, 1))+
   scale_color_manual(name = "Mutator",values = c(unname(legend_colors["Normal"]), "black", "black")) + # for reasons (?) this apparently needs unname(). weird since fill doesnt
-  scale_fill_manual(name = "Mutator", values = c("black", legend_colors["Hypermutant"], legend_colors["Ultrahypermutant"])) +
+  scale_fill_manual(name = "Mutator", values = c("black", legend_colors["Hypermutant"], legend_colors["Ultra-hypermutant"])) +
   # theme to remove gray background. this strategy works
   theme_classic()
 
@@ -371,60 +365,9 @@ tp53_plot_for_legend <- ggplot(tp53_plot_legend_df) +
 legend <- cowplot::get_legend(tp53_plot_for_legend)
 
 # Export legend
-pdf(tp53_scores_cancergroups_legend_pdf, width = 6, height = 3)
+pdf(tp53_telomerase_scores_boxplot_legend_pdf, width = 6, height = 3)
 cowplot::ggdraw(legend)
 dev.off()
 
-
-## Distributions of Extend scores ------------------------------------------------------
-
-
-extend_df <- extend_scores %>%
-  # rename column and keep only Norm
-  select(Kids_First_Biospecimen_ID = SampleID, 
-         NormEXTENDScores) %>%
-  # join with metadata
-  inner_join(
-    select(histologies_df, 
-           Kids_First_Biospecimen_ID,
-           cancer_group)
-  ) %>%
-  # join with palette
-  inner_join(
-    select(histologies_palette_df,
-           contains("cancer_group"))
-  ) %>%
-  # filter to cancer groups of interest
-  filter(cancer_group %in% cancer_groups_to_plot) %>%
-  # wrap label
-  mutate(cancer_group_display = str_wrap(cancer_group_display, cg_wrap))
-
-extend_boxplot <- ggplot(extend_df) +
-  aes(x = fct_reorder(cancer_group_display, NormEXTENDScores),
-      y = NormEXTENDScores, 
-      color = cancer_group_hex) + 
-  geom_boxplot() + 
-  geom_boxplot(
-    outlier.shape = NA, # no outliers
-    color = "grey20",    # dark grey color
-    size = 0.4 
-  ) +
-  geom_jitter(alpha = 0.4, 
-              size = 1) + 
-  labs(
-    x = "Cancer group",
-    y = "Telomerase scores"
-  ) +
-  scale_color_identity() +
-  ggpubr::theme_pubr() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust=1, size = rel(0.8))
-  )
-
-
-# Export plot
-ggsave(telomerase_scores_cancergroups_pdf,
-       extend_boxplot,
-       width = 8, height = 5)
 
 
