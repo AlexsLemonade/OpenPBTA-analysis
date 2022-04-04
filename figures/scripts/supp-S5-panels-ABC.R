@@ -20,9 +20,9 @@ data_dir <- file.path(root_dir, "data")
 binary_palette_df <- read_tsv(file.path(root_dir, "figures", "palettes", "binary_color_palette.tsv"))
 
 ## Define output files
-figure_s5a_file <- file.path(output_dir, "supp_figS5-A.pdf") ## ROC curve
-figure_s5b_file <- file.path(output_dir, "supp_figS5-B.pdf") ## TERC vs normextend
-figure_s5c_file <- file.path(output_dir, "supp_figS5-C.pdf") ## TERT vs normextend
+roc_file <- file.path(output_dir, "supp_roc_tp53_polya.pdf") ## ROC curve
+terc_file <- file.path(output_dir, "supp_terc_normextend.pdf") ## TERC vs normextend
+tert_file <- file.path(output_dir, "supp_tert_normextend.pdf") ## TERT vs normextend
 
 
 
@@ -71,7 +71,7 @@ roc_plot <- ggplot(roc_df) +
         axis.text = element_text(size = rel(0.75)),
         axis.title = element_text(size = rel(0.75))
   )
-ggsave(figure_s5a_file, roc_plot, width = 5, height = 5) 
+ggsave(roc_file, roc_plot, width = 5, height = 5) 
 
 
 ## Figures S5B and S5C---------------------------------------------------
@@ -134,7 +134,7 @@ plot_extend_scatter <- function(plot_df, stats_df, gene_name, annotation_y) {
              label = stats_df$annotation[stats_df$gene == gene_name], 
              x = 0.2, 
              y = annotation_y,
-             size = 4) + 
+             size = 3) + 
     labs(x = "Telomerase score",
          y = paste0(gene_name, " FPKM")
     ) +
@@ -145,8 +145,8 @@ tert_plot <- plot_extend_scatter(extend_fpkm_df, stats_annotation_df, "TERT", 60
 terc_plot <- plot_extend_scatter(extend_fpkm_df, stats_annotation_df, "TERC", 325) #S5c
 
 
-ggsave(figure_s5b_file, tert_plot, width = 5, height = 5)
-ggsave(figure_s5c_file, terc_plot, width = 5, height = 5)
+ggsave(tert_file, tert_plot, width = 5, height = 4)
+ggsave(terc_file, terc_plot, width = 5, height = 4)
 
 
 
