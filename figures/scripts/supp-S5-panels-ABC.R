@@ -94,7 +94,8 @@ extend_fpkm_df <- stranded_expression %>%
            SampleID,
            NormEXTENDScores), 
     by = "SampleID"
-  )
+  ) %>%
+  mutate(FPKM = log(FPKM + 1))
 
 # Calculate stats
 extend_fpkm_lm <- function(df) {
@@ -136,13 +137,13 @@ plot_extend_scatter <- function(plot_df, stats_df, gene_name, annotation_y) {
              y = annotation_y,
              size = 3) + 
     labs(x = "Telomerase score",
-         y = paste0(gene_name, " FPKM")
+         y = paste0(gene_name, " log(FPKM)")
     ) +
     ggpubr::theme_pubr()
 }
 
-tert_plot <- plot_extend_scatter(extend_fpkm_df, stats_annotation_df, "TERT", 60) #S5b
-terc_plot <- plot_extend_scatter(extend_fpkm_df, stats_annotation_df, "TERC", 325) #S5c
+tert_plot <- plot_extend_scatter(extend_fpkm_df, stats_annotation_df, "TERT", 4.5) #S5b
+terc_plot <- plot_extend_scatter(extend_fpkm_df, stats_annotation_df, "TERC", 6) #S5c
 
 
 ggsave(tert_file, tert_plot, width = 5, height = 4)
