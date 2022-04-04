@@ -51,9 +51,8 @@ tmb_coding_df <- read_tsv(file.path(data_dir, "pbta-snv-consensus-mutation-tmb-c
 tp53_roc_pdf                        <- file.path(output_dir, "tp53_stranded_roc_panel.pdf")
 tp53_scores_altered_pdf             <- file.path(output_dir, "tp53_scores_by_altered_panel.pdf") 
 tp53_expression_altered_pdf         <- file.path(output_dir, "tp53_expression_by_altered_panel.pdf") 
-tp53_scores_cancergroups_pdf        <- file.path(output_dir, "tp53_scores_boxplot_panel.pdf")
-tp53_scores_cancergroups_legend_pdf <- file.path(output_dir, "tp53_scores_boxplot_legend.pdf")
-telomerase_scores_cancergroups_pdf  <- file.path(output_dir, "telomerase_scores_boxplot_panel.pdf")
+tp53_telomerase_scores_boxplot_pdf        <- file.path(output_dir, "tp53_telomerase_boxplots_panel.pdf") 
+tp53_telomerase_scores_boxplot_legend_pdf <- file.path(output_dir, "tp53_telomerase_boxplots_panel_legend.pdf")
 #forest_plot_pdf                     <- file.path(output_dir, "forest_survival_tp53_telomerase_hgg_panel.pdf") 
 
 
@@ -109,7 +108,8 @@ ggsave(tp53_roc_pdf, roc_plot, width = 5, height = 5)
 # We use ggplot instead of ggpubr because of jitter styling (ggpubr jitter point placement is deterministic)
 
 
-# remove "other" grouping from data so we only have 2 categories and change to `activated` and `lost` for grammatical consistency
+# remove "other" grouping from data so we only have 2 categories and 
+#  change to `activated` and `lost` for grammatical consistency
  tp53_compare_2cat <- tp53_compare %>%
   filter(tp53_altered != "other") %>%
   # change loss --> lost
@@ -198,10 +198,10 @@ ggsave(tp53_expression_altered_pdf, tp53_expression_plot, width = 6, height = 4)
 
 
 
-## TP53 scores boxplots across cancer groups with mutators emphasized -------------------------------------------
+## TP53 and telomerase scores boxplots across cancer groups with mutators emphasized -------------------------------------------
 
 
-# Define cancer groups to show in this and the subsequent telomerase scores plot
+# Define cancer groups to show in boxplots
 cancer_groups_to_plot <- c(
   "Diffuse midline glioma",
   "Low-grade glioma astrocytoma",
@@ -215,17 +215,9 @@ cancer_groups_to_plot <- c(
   "Dysembryoplastic neuroepithelial tumor"
 )
 
-# Cancer group wrap number of characters for labeling TP53 and Telomerase boxplots
+# Cancer group wrap number of characters for labeling x-axis in boxplots
 cg_wrap <- 20
 
-# Rename DNA column for joining purposes and select columns of interest
-tp53_scores_df_subset <- tp53_compare %>%
-  rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_DNA) %>%
-  select(Kids_First_Biospecimen_ID, 
-         tp53_score) %>%
-  distinct() %>%
-  # remove all NAs, which exist in IDs and tp53
-  drop_na()
 
 # Get coding samples of interest and annotate samples as normal, hyper, or ultra
 mutators <- tmb_coding_df %>%
@@ -239,8 +231,60 @@ mutators <- tmb_coding_df %>%
     mutator = case_when(
       tmb < 10 ~ "Normal",
       tmb >= 10 & tmb < 100 ~ "Hypermutant",
-      tmb >= 100 ~ "Ultrahypermutant")
+      tmb >= 100 ~ "Ultra-hypermutant")
+  ) %>%
+  # find RNA id version
+  inner_join(
+    select(histologies_df, 
+             Kids_First_Biospecimen_ID)
   )
+
+# Combine extend (telomerase) and tp53 scores
+extend_tp53_df <- extend_scores %>%
+  # consistenct naming for joining
+  select(Kids_First_Biospecimen_ID = SampleID,
+         NormEXTENDScores) %>%
+  # join with tp53
+  left_join(
+    select(tp53_compare,
+           # consistenct naming for joining
+           Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA,
+           tp53_score),
+    by = "Kids_First_Biospecimen_ID"
+  ) %>%
+  # join with metadata
+  inner_join(
+    select(histologies_df, 
+           Kids_First_Biospecimen_ID,
+           cancer_group)
+  ) %>%
+  # join with palette
+  inner_join(
+    select(histologies_palette_df,
+           cancer_group, 
+           cancer_group_display,
+           cancer_group_hex)
+  ) %>%
+  distinct() %>%
+  # filter to cancer groups of interest
+  filter(cancer_group %in% cancer_groups_to_plot) %>%
+  # join with mutator information
+  inner_join(mutators)
+  
+  
+# Prepare combined data for visualization
+extend_tp53_plot_df <- extend_tp53_df %>%
+  # duplicate the tp53 scores column so we can eventually order can groups by it
+  mutate(tp53_score_forordering = tp53_score) %>%
+  # we want a single column for all scores so we can facet by scores
+  gather(NormEXTENDScores, tp53_score, 
+         key = "score_type", 
+         value = "score")
+  # wrap cancer group label
+  mutate(cancer_group_display = str_wrap(cancer_group_display, cg_wrap)) %>%
+  
+  
+
 
 # Join data for visualization
 tp53_plot_df <- tp53_scores_df_subset %>%
@@ -259,7 +303,7 @@ tp53_plot_df <- tp53_scores_df_subset %>%
 # Define colors to use
 legend_colors <- c(Normal      = "grey40",
                    Hypermutant = "orange",
-                   Ultrahypermutant = "red")
+                   `Ultra-hypermutant` = "red")
 
 # Boxplot with overlayed jitter with colors "mapped" to `mutator`
 set.seed(9) # reproducible jitter to ensure we can see all N=6 points
