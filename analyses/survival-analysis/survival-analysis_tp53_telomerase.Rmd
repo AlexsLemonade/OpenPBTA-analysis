@@ -55,11 +55,9 @@ if (!dir.exists(plots_dir)) {
   dir.create(plots_dir)
 }
 
-source(
-  file.path(
-    util_dir,
-    "survival_models.R"
-))
+# Source functions used to build models
+source(file.path(util_dir,"survival_models.R"))
+source(file.path(util_dir,"survival_multivariate.R"))
 ```
 
 Set up file paths.
@@ -347,55 +345,8 @@ _Statistical significance._ The column marked "z" gives the Wald statistic value
 
 
 
-Note we can't use the `survival_analysis()` function here because of the multivariate nature of the terms; that function requires only ONE independent variable. Therefore we use a separate function defined here for the multivariate models:
+Note we can't use the `survival_analysis()` function here because of the multivariate nature of the terms; that function requires only ONE independent variable. Therefore we use a separate function for the multivariate models, defined in `util/survival_multivariate.R`. This function visualizes and prints the model results, and exports the fitted model as a TSV table. This function does not currently export the _plot_.
 
-```{r cox_multivariate}
-fit_plot_save_cox_multivariate <- function(df,    # data frame with the data (assumed NOT recoded)
-                                          terms, # string giving predictors
-                                          output_dir, 
-                                          filename = NULL, 
-                                          plot_title = NULL) {
-
-  # Recode OS_Status
-  df <- df %>%
-    mutate(OS_status = ifelse(OS_status == "LIVING", 0, 1))
-  
-  # Define and fit the model
-  model <- paste0("survival::Surv(time = OS_years, event = OS_status) ~ ", terms)
-  fit <- survival::coxph(
-    formula(model),
-    data = df
-  )
-  
-  tidy_fit <- broom::tidy(fit)
-  
-  # Save tidied fit
-  if (is.null(filename)) {
-    # do not include * in file names
-    filename <- paste0("cox_reg_results_per_", 
-                          stringr::str_replace_all(terms, "\\*", "-by-"),
-                          ".tsv")
-  } 
-  
-  readr::write_tsv(tidy_fit,
-                   file.path(results_dir, filename)
-                   ) 
-  
-  # Create visualization
-  if(is.null(plot_title)) {
-    plot_title <- terms
-  }
-  forest_coxph <- survminer::ggforest(fit, data = df, main = paste0("Hazard ratio for ", plot_title))
-
-  # Print the tidied fit and the plot
-  print(tidy_fit)
-  print(forest_coxph)
-
-}
-
-
-
-```
 
 #### TP53 score * Telomerase score * HGG group
 
