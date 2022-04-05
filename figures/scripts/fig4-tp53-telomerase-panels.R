@@ -103,22 +103,21 @@ ggsave(tp53_roc_pdf, roc_plot, width = 5, height = 5)
 
  ### TP53 scores and expression violin plots -----------------------------------------------------------
 # We do not use color palettes since the color mappings will necessarily change across figures.
-# For all violin plots, we will just show `activated` and `loss` because `other` is 
-#    actually just **unclassified** and therefore not a robust comparison group
 # We use ggplot instead of ggpubr because of jitter styling (ggpubr jitter point placement is deterministic)
 
 
 # Function to plot both TP53 violin plots (score across altered and expression across altered)
-plot_tp53 <- function(df, pvalue_round, pvalue_y) {
+plot_tp53 <- function(df, pvalue_y) {
   # df: Assumes two columns: the variable of interest (either tp53_score, tp53_expression) is named tp53, and column tp53_altered with three values
-  # pvalue_round: digits to round the pvalue
   # pvalue_y: y-axis coordinate of p-value annotation. Note that the x-axis coordinate is always the same
   
   # Perform test for variable without `other`
   df_2cat <- filter(df, tp53_altered != "other")
-  pvalue <- round(
-    wilcox.test(tp53 ~ tp53_altered, data = df_2cat)$p.value,
-    pvalue_round)
+  # Prepare for use with `stat_pvalue_manual()`
+  wilcox_df <- ggpubr::compare_means(tp53 ~ tp53_altered, 
+                             data = df_2cat,
+                             method = "wilcox.test") %>%
+    mutate(y.position = pvalue_y)
   
   # Prepare stats df for median +/ IQR
   stats_df <- df %>%
@@ -148,10 +147,11 @@ plot_tp53 <- function(df, pvalue_round, pvalue_y) {
                     ),
                     color = "firebrick", size = rel(0.6)
     ) +
-    # Add p-value annotation right by the groups we compare
-    annotate("text", 
-             label = paste0("Wilcoxon P-value = ", pvalue), 
-             x = 1.5, y = pvalue_y, size = 3) +
+    # Add p-value annotation with ggpubr
+    ggpubr::stat_pvalue_manual(
+      wilcox_df, 
+      label = "Wilcoxon P-value = {p.adj}"
+    ) +
     ggpubr::theme_pubr() 
 }
 
@@ -182,8 +182,7 @@ stranded_tp53 <- as.data.frame(subset_stranded) %>%
 tp53_scores_plot <- tp53_compare %>%
   rename(tp53 = tp53_score) %>%
   ### ggplot
-  plot_tp53(pvalue_round = 2, 
-            pvalue_y = 1.05) +
+  plot_tp53(pvalue_y = 1.05) +
   # add labels for this plot
   labs(
     x = "TP53 altered status",
@@ -194,8 +193,7 @@ tp53_scores_plot <- tp53_compare %>%
 tp53_expression_plot <- stranded_tp53 %>%
   rename(tp53 = tp53_expression) %>%
   ### ggplot
-  plot_tp53(pvalue_round = 4, 
-            pvalue_y = 80) +
+  plot_tp53(pvalue_y = 80) +
   # add labels for this plot
   labs(
     x = "TP53 altered status",
