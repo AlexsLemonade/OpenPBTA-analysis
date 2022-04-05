@@ -79,7 +79,7 @@ ggsave(roc_file, roc_plot, width = 5, height = 5)
 
 # Paths and data for this figure (and the next)
 telomerase_dir <- file.path(analyses_dir, "telomerase-activity-prediction")
-# straned data specifically:
+# stranded data specifically:
 extend_scores <- read_tsv(file.path(telomerase_dir, "results", "TelomeraseScores_PTBAStranded_FPKM.txt")) 
 stranded_expression <- read_rds(file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
 
