@@ -192,12 +192,14 @@ tp53_scores_plot <- tp53_compare %>%
 
 tp53_expression_plot <- stranded_tp53 %>%
   rename(tp53 = tp53_expression) %>%
+  # log transform
+  mutate(tp53 = log(tp53 + 1)) %>%
   ### ggplot
-  plot_tp53(pvalue_y = 80) +
+  plot_tp53(pvalue_y = 4.5) +
   # add labels for this plot
   labs(
     x = "TP53 altered status",
-    y = "TP53 expression (FPKM)"
+    y = "TP53 expression [log(FPKM)]"
   )
 
 
@@ -343,8 +345,6 @@ tp53_telo_tmb_boxplot <- ggplot(plot_df) +
   labs(x = "Cancer group", 
        y = "Score") +
   facet_wrap(~score_type, nrow = 2) +
-  # do we want an hline at 0.5? Might be useful guiding line but also add unnecessary visual noise
-  # geom_hline(yintercept = 0.5) +
   ggpubr::theme_pubr() +
   theme(
     axis.text.x = element_text(angle = 45, hjust=1, size = rel(0.8))
