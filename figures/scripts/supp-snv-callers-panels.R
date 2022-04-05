@@ -270,7 +270,7 @@ for (dataset in c("tcga", "pbta")) {
     
     ggsave(lancet_wxs_wgs_plot_pdf,
            vaf_plot,
-           width = 6, height = 4)
+           width = 4, height = 4)
   }
 
 
