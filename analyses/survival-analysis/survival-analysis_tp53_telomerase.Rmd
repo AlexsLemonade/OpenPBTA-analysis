@@ -364,7 +364,7 @@ fit_plot_save_cox_multivariate(meta_indep_hgg,
 for (cg in cancer_groups_of_interest_df$cancer_group) {
   cat("==============", cg, "==================")
   # filter to cancer group of interest
-  fit_data <- cancer_groups_of_interest_df %>% 
+  fit_data <- meta_indep %>% 
     filter(cancer_group == cg)
   
   # Define filename where model will be saved
@@ -373,7 +373,7 @@ for (cg in cancer_groups_of_interest_df$cancer_group) {
                      ".tsv")
   
   # Fit model
-  fit_plot_save_cox_multivariate(meta_indep, 
+  fit_plot_save_cox_multivariate(fit_data, 
                           "tp53_score*telomerase_score", 
                           results_dir, 
                           filename,
