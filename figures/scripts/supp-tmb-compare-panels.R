@@ -79,9 +79,9 @@ baseline_plot <- function(df, tcga_color = NULL) {
   
   # Add point with or without color 
   if (!(is.null(tcga_color))) {
-    p <- p + geom_point(color = tcga_color)
+    p <- p + geom_point(color = tcga_color, alpha = 0.7)
   } else {
-    p <- p + geom_point(aes(color = cancer_group_hex))
+    p <- p + geom_point(aes(color = cancer_group_hex), alpha = 0.7)
   }
   
   # Rest of plot
@@ -164,7 +164,7 @@ tmb_tcga_plot <- baseline_plot(tmb_tcga_plot_df, tcga_color = "gray60") +
 
 # Export both plots ---------------------------------
 ggsave(pbta_tmb_cdf_pdf, tmb_pbta_plot, width = 10, height = 6)
-ggsave(tcga_tmb_cdf_pdf, tmb_tcga_plot, width = 10, height = 6.25)  # because labels are diff sizes, making this 6.25 matches the other plot at 6
+ggsave(tcga_tmb_cdf_pdf, tmb_tcga_plot, width = 8, height = 6.25)  # because labels are diff sizes, making this 6.25 matches the other plot at 6
 
 
 
