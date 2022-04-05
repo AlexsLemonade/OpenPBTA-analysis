@@ -16,18 +16,22 @@ editor_options:
 ```{r setup}
 library(tidyverse)
 library(pheatmap)
+library(ggplot2)
+
 `%>%` <- dplyr::`%>%`
 
 proj_root_path  <- file.path( rprojroot::find_root(rprojroot::has_dir(".git")) )
 analysis_path   <- file.path(proj_root_path, "analyses")
-plot_path       <- file.path(analysis_path, "plots", "cns")
-
+plot_path       <- file.path(analysis_path, "mutational-signatures", "plots", "cns")
 
 # Input files
 fitted_file    <- file.path(analysis_path, "mutational-signatures", "results", "deconstructsigs_exposures_merged.tsv")
 meta_file      <- file.path(proj_root_path, "data", "pbta-histologies.tsv")
 tmb_all_file    <- file.path(proj_root_path, "data", "pbta-snv-consensus-mutation-tmb-all.tsv")
 tmb_coding_file <- file.path(proj_root_path, "data", "pbta-snv-consensus-mutation-tmb-coding.tsv")
+
+# Output file
+heatmap_file <- file.path(plot_path, "hypermutator_sigs_heatmap.pdf")
 ```
 
 First, we read in data and prepare TMB information.
@@ -186,7 +190,10 @@ anno <- tmb_coding %>%
   ) %>%
   right_join(soi_df, by = "Kids_First_Biospecimen_ID") %>%
   unique() %>%
-  select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, tumor_descriptor, Mutator) %>%
+  # mutate names for annotation
+  mutate(Patient = Kids_First_Participant_ID,
+         `Phase of Therapy` = tumor_descriptor) %>%
+  select(Patient, Kids_First_Biospecimen_ID, `Phase of Therapy`, Mutator) %>%
   as.data.frame()
 
 # set rownames to match matrix, remove BS_ID
@@ -200,17 +207,19 @@ ann_colors = list(
               Hypermutant = "orange",
               `Ultra-hypermutant` = "red"),
   # tumor descriptor colors from [palette](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/figures/palettes/tumor_descriptor_palette.tsv) 
-  tumor_descriptor = c(`Initial CNS Tumor` = "#709AE1", 
+  `Phase of Therapy` = c(`Initial CNS Tumor` = "#709AE1", 
                        `Progressive` = "#38736D"))
 # Make heatmap
-pheatmap(sigs[, c("1", "3", "8", "11", "18", "19", "MMR2", "N6")], 
+heat_plot <- pheatmap(sigs[, c("1", "3", "8", "11", "18", "19", "MMR2", "N6")], 
          cluster_rows = F, 
-         cluster_cols = F,
+         cluster_cols = F, 
          border_color = "white",
          color=colorRampPalette(c("#f1f1f1", "#67001f"))(50),
          gaps_row = c(2,3,5,6),
          annotation_row = anno,
          annotation_colors = ann_colors)
+
+ggsave(heatmap_file, heat_plot, width = 5, height = 4)
 
 ```
 
