@@ -111,26 +111,39 @@ plot_tp53 <- function(df, pvalue_y) {
   # df: Assumes two columns: the variable of interest (either tp53_score, tp53_expression) is named tp53, and column tp53_altered with three values
   # pvalue_y: y-axis coordinate of p-value annotation. Note that the x-axis coordinate is always the same
   
+  # seed for jitter
+  set.seed(4)
+  
+  # Count group sizes to use in x-axis labels. Use this data frame going forward
+  df_counts <- df %>%
+    group_by(tp53_altered) %>%
+    mutate(altered_counts = n()) %>%
+    ungroup() %>%
+    mutate(tp53_altered = glue::glue("{tp53_altered}\n(N = {altered_counts})"))
+  
+  
   # Perform test for variable without `other`
-  df_2cat <- filter(df, tp53_altered != "other")
+  df_2cat <- filter(df_counts, 
+                    !(str_detect(tp53_altered,"other")))
+                    
   # Prepare for use with `stat_pvalue_manual()`
   wilcox_df <- ggpubr::compare_means(tp53 ~ tp53_altered, 
                              data = df_2cat,
                              method = "wilcox.test") %>%
     mutate(y.position = pvalue_y)
   
+  
+
   # Prepare stats df for median +/ IQR
-  stats_df <- df %>%
+  stats_df <- df_counts %>%
     group_by(tp53_altered) %>%
     summarize(
       y = median(tp53, na.rm=TRUE),
       ymin = quantile(tp53, 0.25, na.rm=TRUE),
       ymax = quantile(tp53, 0.75, na.rm=TRUE)
     )
-  
-  # Plot, with seed for jitter
-  set.seed(4)
-  ggplot(df) +
+
+  ggplot(df_counts) +
     aes(x = tp53_altered, 
         y = tp53) +
     geom_violin() + 
@@ -153,6 +166,7 @@ plot_tp53 <- function(df, pvalue_y) {
       label = "Wilcoxon P-value = {p.adj}"
     ) +
     ggpubr::theme_pubr() 
+  
 }
 
 # change `loss` --> `lost` for grammatical consistency
