@@ -180,7 +180,9 @@ if (!(params$is_ci == 1)) {
     select(-broad_histology, -cancer_group_display_n, -n, -cancer_group_display, -cancer_group_hex, -tumor_descriptor) %>%
     filter(Kids_First_Biospecimen_ID %in% soi_df$Kids_First_Biospecimen_ID) %>%
     as.data.frame()
-  rownames(sigs) <- sigs$Kids_First_Biospecimen_ID
+  
+  # add spaces at the end of BS_ids to make a space between the heatmap and legend
+  rownames(sigs) <- paste0(sigs$Kids_First_Biospecimen_ID, "     ")
   
   sigs$Kids_First_Biospecimen_ID <- NULL
   sigs <- as.matrix(sigs)
@@ -205,7 +207,7 @@ if (!(params$is_ci == 1)) {
     as.data.frame() 
   
   # set rownames to match matrix, remove BS_ID
-  rownames(anno) <- anno$Kids_First_Biospecimen_ID
+  rownames(anno) <- paste0(anno$Kids_First_Biospecimen_ID, "     ")
   anno$Kids_First_Biospecimen_ID <- NULL
   
   
