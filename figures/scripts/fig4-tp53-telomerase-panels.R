@@ -370,9 +370,27 @@ ggsave(tp53_telomerase_scores_boxplot_pdf,
        width = 9, height = 6)
 
 # Make a legend for the grey/orange/red since this was not done with normal mapping
-# We have to make a "fake" plot for this to extraxt the legend from
+# We have to make a "fake" plot for this to extract the legend from
+
+# Count numbers of each category to show in legend
 tp53_plot_legend_df <- plot_df %>%
-  mutate(mutator_factor = factor(mutator, levels=names(legend_colors)))
+  # keep 1 category only for counting
+  filter(score_type == "TP53 score") %>%
+  # column to use for ordering mutator levels
+  mutate(mutator_order = case_when(
+    mutator == "Normal" ~ 1,
+    mutator == "Hypermutant" ~ 2,
+    mutator == "Ultra-hypermutant" ~ 3
+  )) %>%
+  # count
+  group_by(mutator) %>%
+  mutate(mutator_count = n()) %>%
+  ungroup() %>%
+  # update labeling with count information
+  mutate(mutator = glue::glue("{mutator} (N = {mutator_count})"),
+         mutator_factor = factor(mutator),
+         mutator_factor = fct_reorder(mutator_factor, mutator_order))
+
 
 legend_name <- "Mutation status"
 tp53_plot_for_legend <- ggplot(tp53_plot_legend_df) + 
@@ -381,8 +399,8 @@ tp53_plot_for_legend <- ggplot(tp53_plot_legend_df) +
   scale_size_manual(name = legend_name, values = c(normal_size, mutator_size, mutator_size))+
   scale_shape_manual(name = legend_name, values = c(normal_pch, mutator_pch, mutator_pch)) +
   scale_alpha_manual(name = legend_name, values = c(normal_alpha, 1, 1))+
-  scale_color_manual(name = legend_name,values = c(unname(legend_colors["Normal"]), "black", "black")) + # for reasons (?) this apparently needs unname(). weird since fill doesnt
-  scale_fill_manual(name = legend_name, values = c("black", legend_colors["Hypermutant"], legend_colors["Ultra-hypermutant"])) +
+  scale_color_manual(name = legend_name,values = c(unname(legend_colors["Normal"]), "black", "black")) + 
+  scale_fill_manual(name = legend_name, values = c("black", unname(legend_colors["Hypermutant"]), unname(legend_colors["Ultra-hypermutant"]))) +
   # theme to remove gray background. this strategy works
   theme_classic()
 
