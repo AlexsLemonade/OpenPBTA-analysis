@@ -374,14 +374,15 @@ ggsave(tp53_telomerase_scores_boxplot_pdf,
 tp53_plot_legend_df <- plot_df %>%
   mutate(mutator_factor = factor(mutator, levels=names(legend_colors)))
 
+legend_name <- "Mutation status"
 tp53_plot_for_legend <- ggplot(tp53_plot_legend_df) + 
   aes(x = cancer_group, y = tmb, shape = mutator_factor, fill = mutator_factor, color = mutator_factor, size = mutator_factor, alpha = mutator_factor) +
   geom_point(size =3) + 
-  scale_size_manual(name = "Mutator", values = c(normal_size, mutator_size, mutator_size))+
-  scale_shape_manual(name = "Mutator", values = c(normal_pch, mutator_pch, mutator_pch)) +
-  scale_alpha_manual(name = "Mutator", values = c(normal_alpha, 1, 1))+
-  scale_color_manual(name = "Mutator",values = c(unname(legend_colors["Normal"]), "black", "black")) + # for reasons (?) this apparently needs unname(). weird since fill doesnt
-  scale_fill_manual(name = "Mutator", values = c("black", legend_colors["Hypermutant"], legend_colors["Ultra-hypermutant"])) +
+  scale_size_manual(name = legend_name, values = c(normal_size, mutator_size, mutator_size))+
+  scale_shape_manual(name = legend_name, values = c(normal_pch, mutator_pch, mutator_pch)) +
+  scale_alpha_manual(name = legend_name, values = c(normal_alpha, 1, 1))+
+  scale_color_manual(name = legend_name,values = c(unname(legend_colors["Normal"]), "black", "black")) + # for reasons (?) this apparently needs unname(). weird since fill doesnt
+  scale_fill_manual(name = legend_name, values = c("black", legend_colors["Hypermutant"], legend_colors["Ultra-hypermutant"])) +
   # theme to remove gray background. this strategy works
   theme_classic()
 
