@@ -4,20 +4,20 @@ author: "SJ Spielman (CCDL) and Jo Lynne Rokita (D3B)"
 date: "2022"
 output:
   html_notebook:
-    toc: true
+  toc: true
 editor_options: 
   chunk_output_type: inline
 params:
   is_ci: 0
 ---
-
-
-#### Files and paths
-
-
+  
+  
+  #### Files and paths
+  
+  
 ```{r setup}
 library(tidyverse)
-library(pheatmap)
+library(ComplexHeatmap)
 library(colorblindr)
 
 `%>%` <- dplyr::`%>%`
@@ -68,17 +68,17 @@ tmb_data <- tmb_coding %>%
 
 
 <br><br>
-
-### Explore: Signatures 3, 18, and MMR2 and mutation burden
-
-GitHub references:
-
-+ https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1248
+  
+  ### Explore: Signatures 3, 18, and MMR2 and mutation burden
+  
+  GitHub references:
+  
+  + https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1248
 + https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1227
 
 Which samples have high 3, 18, and/or MMR2, and are these hypermutators? 
-
-Note that this visualization is strictly exploratory and not exported.  
+  
+  Note that this visualization is strictly exploratory and not exported.  
 
 We do **not** observe that samples with high MMR2 or signature 3 exposure have high mutational burdens. 
 Moreover, the hypermutators (all are HGG) are unexposed to signature 3 entirely. 
@@ -109,14 +109,14 @@ tmb_sigs_df %>%
 
 
 Do the hypermutators also show dysregulated TP53?
-
-We define hypermutant samples as > 10 Mut/Mb, and ultrahypermutant samples as >100 Mut/Mb, from reference [Campbell et al., 2017](https://doi.org/10.1016/j.cell.2017.09.048).
+  
+  We define hypermutant samples as > 10 Mut/Mb, and ultrahypermutant samples as >100 Mut/Mb, from reference [Campbell et al., 2017](https://doi.org/10.1016/j.cell.2017.09.048).
 
 The output below shows hypermutator samples and...
 
 + their molecular subtypes (which implicitly gives the cancer group)
-  + this also gives the **TP53 status**
-+ their tumor descriptor 
++ this also gives the **TP53 status**
+  + their tumor descriptor 
 + their _coding_ TMB
 + their exposures to all signatures (with those of interest appearing first: 3, 18, MMR2)
 
@@ -148,8 +148,8 @@ hypermutator_df
 ```
 
 A couple interesting observations in the table above:
-
-+ _No samples_ are exposed to signature 3, 8, or N6
+  
+  + _No samples_ are exposed to signature 3, 8, or N6
 
 + The DMG hypermutator sample (TMB=35.89) is mostly exposed to [signature 11](https://signal.mutationalsignatures.com/explore/referenceCancerSignature/40). This signature was thought to be associated with temozolomide, except that original evidence has not been reproduced. 
 
@@ -159,88 +159,98 @@ A couple interesting observations in the table above:
 ```{r}
 # This chunk should NOT run in CI. 
 if (!(params$is_ci == 1)) {
-
-
-# Create signature matrix for only patients withh hypermutant samples
-# Gather all BS_IDs (soi = "samples of interest"), whether hypermutant or not, for pts with hypermutant samples
-
-soi_df <- meta %>%
-  filter(Kids_First_Biospecimen_ID %in% hypermutator_df$Kids_First_Biospecimen_ID) %>%
-  select(Kids_First_Participant_ID) %>%
-  left_join(meta) %>%
-  #keep only WGS samples; remove normals and cell lines
-  filter(experimental_strategy == "WGS" & !is.na(pathology_diagnosis) & composition != "Derived Cell Line") %>%
-  select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, tumor_descriptor) %>%
-  unique() %>%
-  arrange(Kids_First_Participant_ID)
-         
-sigs <- exposures %>%
-  filter(signature != "Other") %>%
-  tidyr::spread(signature, exposure) %>%
-  select(-broad_histology, -cancer_group_display_n, -n, -cancer_group_display, -cancer_group_hex, -tumor_descriptor) %>%
-  filter(Kids_First_Biospecimen_ID %in% soi_df$Kids_First_Biospecimen_ID) %>%
-  as.data.frame()
-rownames(sigs) <- sigs$Kids_First_Biospecimen_ID
-
-sigs$Kids_First_Biospecimen_ID <- NULL
-sigs <- as.matrix(sigs)
-
-# Create annotation dataframe
-anno <- tmb_coding %>%
-  mutate(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>%
-  select(Kids_First_Biospecimen_ID, tmb) %>%
-  # add a column for mutation status
-  mutate(
-    `Mutation status` = case_when(
-      tmb < 10 ~ "Normal",
-      tmb >= 10 & tmb < 100 ~ "Hypermutant",
-      tmb >= 100 ~ "Ultra-hypermutant")
-  ) %>%
-  right_join(soi_df, by = "Kids_First_Biospecimen_ID") %>%
-  unique() %>%
-  # mutate names for annotation
-  mutate(Patient = Kids_First_Participant_ID,
-         `Phase of Therapy` = tumor_descriptor) %>%
-  select(Patient, Kids_First_Biospecimen_ID, `Phase of Therapy`, `Mutation status`) %>%
-  as.data.frame() 
-
-# set rownames to match matrix, remove BS_ID
-rownames(anno) <- anno$Kids_First_Biospecimen_ID
-anno$Kids_First_Biospecimen_ID <- NULL
-
-
-`Mutation staatus` = c(Normal = "grey40",
-              Hypermutant = "orange",
-              `Ultra-hypermutant` = "red")
-
-# Add tumor descriptor palette from dataframe
-td_palette_filtered <- td_palette %>%
-  filter(color_names %in% anno$`Phase of Therapy`)
-td_palette_col <- as.character(td_palette_filtered$hex_codes)
-names(td_palette_col) <- td_palette_filtered$color_names
-
-pt_palette <- colorRampPalette(palette_OkabeIto)(length(unique(anno$Patient)))
-names(pt_palette) <- unique(anno$Patient)
-
-# Specify colors
-ann_colors = list(
-  # mutator color from [this PR](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1280/files#diff-bc8134008706f38e7795b59696928058d123e44b4172df68105a26ad8aa0a398R298-R301) 
+  
+  
+  # Create signature matrix for only patients withh hypermutant samples
+  # Gather all BS_IDs (soi = "samples of interest"), whether hypermutant or not, for pts with hypermutant samples
+  
+  soi_df <- meta %>%
+    filter(Kids_First_Biospecimen_ID %in% hypermutator_df$Kids_First_Biospecimen_ID) %>%
+    select(Kids_First_Participant_ID) %>%
+    left_join(meta) %>%
+    #keep only WGS samples; remove normals and cell lines
+    filter(experimental_strategy == "WGS" & !is.na(pathology_diagnosis) & composition != "Derived Cell Line") %>%
+    select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, tumor_descriptor) %>%
+    unique() %>%
+    arrange(Kids_First_Participant_ID)
+  
+  sigs <- exposures %>%
+    filter(signature != "Other") %>%
+    tidyr::spread(signature, exposure) %>%
+    select(-broad_histology, -cancer_group_display_n, -n, -cancer_group_display, -cancer_group_hex, -tumor_descriptor) %>%
+    filter(Kids_First_Biospecimen_ID %in% soi_df$Kids_First_Biospecimen_ID) %>%
+    as.data.frame()
+  rownames(sigs) <- sigs$Kids_First_Biospecimen_ID
+  
+  sigs$Kids_First_Biospecimen_ID <- NULL
+  sigs <- as.matrix(sigs)
+  
+  # Create annotation dataframe
+  anno <- tmb_coding %>%
+    mutate(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>%
+    select(Kids_First_Biospecimen_ID, tmb) %>%
+    # add a column for mutation status
+    mutate(
+      `Mutation status` = case_when(
+        tmb < 10 ~ "Normal",
+        tmb >= 10 & tmb < 100 ~ "Hypermutant",
+        tmb >= 100 ~ "Ultra-hypermutant")
+    ) %>%
+    right_join(soi_df, by = "Kids_First_Biospecimen_ID") %>%
+    unique() %>%
+    # mutate names for annotation
+    mutate(Patient = Kids_First_Participant_ID,
+           `Phase of Therapy` = tumor_descriptor) %>%
+    select(Patient, Kids_First_Biospecimen_ID, `Phase of Therapy`, `Mutation status`) %>%
+    as.data.frame() 
+  
+  # set rownames to match matrix, remove BS_ID
+  rownames(anno) <- anno$Kids_First_Biospecimen_ID
+  anno$Kids_First_Biospecimen_ID <- NULL
+  
+  
   `Mutation status` = c(Normal = "grey40",
-              Hypermutant = "orange",
-              `Ultra-hypermutant` = "red"),
-  `Phase of Therapy` = td_palette_col,
-   Patient = pt_palette)
-# Make heatmap
-heat_plot <- pheatmap(sigs[, c("1", "3", "8", "11", "18", "19", "MMR2", "N6")], 
-         cluster_rows = F, 
-         cluster_cols = F, 
-         border_color = "white",
-         color=colorRampPalette(c("#f1f1f1", "#2166ac"))(50),
-         gaps_row = c(2,3,5,6),
-         annotation_row = anno,
-         annotation_colors = ann_colors)
+                         Hypermutant = "orange",
+                         `Ultra-hypermutant` = "red")
+  
+  # Add tumor descriptor palette from dataframe
+  td_palette_filtered <- td_palette %>%
+    filter(color_names %in% anno$`Phase of Therapy`)
+  td_palette_col <- as.character(td_palette_filtered$hex_codes)
+  names(td_palette_col) <- td_palette_filtered$color_names
+  
+  pt_palette <- colorRampPalette(palette_OkabeIto)(length(unique(anno$Patient)))
+  names(pt_palette) <- unique(anno$Patient)
+  
+  # Specify colors
+  ann_colors = list(
+    # mutator color from [this PR](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1280/files#diff-bc8134008706f38e7795b59696928058d123e44b4172df68105a26ad8aa0a398R298-R301) 
+    `Mutation status` = c(Normal = "grey40",
+                          Hypermutant = "orange",
+                          `Ultra-hypermutant` = "red"),
+    `Phase of Therapy` = td_palette_col,
+    Patient = pt_palette)
+  
+  # Heatmap annotation
+  row_anno = rowAnnotation(df = anno,
+                           col = ann_colors)
+  
+  # Make heatmap
+  heat_plot <- Heatmap(sigs[, c("1", "3", "8", "11", "18", "19", "MMR2", "N6")], 
+                       name = "Signature weights",
+                       col = colorRampPalette(c("#f1f1f1", "#2166ac"))(8),
+                       cluster_rows = FALSE,
+                       cluster_columns = FALSE,
+                       left_annotation = row_anno,
+                       rect_gp = gpar(col = "white"))
 
-ggsave(heatmap_file, heat_plot, width = 5, height = 4)
+  heat_plot
+  
+  # save heatmap 
+  pdf(heatmap_file, width = 5, height = 4)
+  print(heat_plot)
+  dev.off()
+
 }
 ```
 
