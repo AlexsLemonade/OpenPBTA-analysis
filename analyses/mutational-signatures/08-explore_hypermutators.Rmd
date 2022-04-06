@@ -7,6 +7,8 @@ output:
     toc: true
 editor_options: 
   chunk_output_type: inline
+params:
+  is_ci: 0
 ---
 
 
@@ -155,6 +157,10 @@ A couple interesting observations in the table above:
 
 ### Make heatmap for mutational signatures for patients with hypermutant tumors
 ```{r}
+# This chunk should NOT run in CI. 
+if (!(params$is_ci == 1)) {
+
+
 # Create signature matrix for only patients withh hypermutant samples
 # Gather all BS_IDs (soi = "samples of interest"), whether hypermutant or not, for pts with hypermutant samples
 
@@ -235,7 +241,7 @@ heat_plot <- pheatmap(sigs[, c("1", "3", "8", "11", "18", "19", "MMR2", "N6")],
          annotation_colors = ann_colors)
 
 ggsave(heatmap_file, heat_plot, width = 5, height = 4)
-
+}
 ```
 
 
