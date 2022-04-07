@@ -12,7 +12,7 @@ params:
 ---
   
   
-  #### Files and paths
+#### Files and paths
   
   
 ```{r setup}
@@ -33,8 +33,9 @@ tmb_all_file    <- file.path(proj_root_path, "data", "pbta-snv-consensus-mutatio
 tmb_coding_file <- file.path(proj_root_path, "data", "pbta-snv-consensus-mutation-tmb-coding.tsv")
 td_palette_file <- file.path(proj_root_path, "figures", "palettes", "tumor_descriptor_palette.tsv")
 
-# Output file
+# Output files
 heatmap_file <- file.path(plot_path, "hypermutator_sigs_heatmap.pdf")
+heatmap_legends_file <- file.path(plot_path, "hypermutator_sigs_heatmap_legends.pdf")
 ```
 
 First, we read in data and prepare TMB information.
@@ -235,25 +236,63 @@ if (!(params$is_ci == 1)) {
   
   # Heatmap annotation
   row_anno = rowAnnotation(df = anno,
-                           col = ann_colors)
+                           col = ann_colors, show_legend=FALSE)
   
-  # Make heatmap
+  # Make heatmap without legends
   heat_plot <- Heatmap(sigs[, c("1", "3", "8", "11", "18", "19", "MMR2", "N6")], 
                        name = "Signature weights",
                        col = colorRampPalette(c("#f1f1f1", "#2166ac"))(8),
                        cluster_rows = FALSE,
+                       show_row_names = FALSE,
+                       show_heatmap_legend=FALSE,
                        cluster_columns = FALSE,
                        left_annotation = row_anno,
-                       rect_gp = gpar(col = "white"))
-
+                       rect_gp = gpar(col = "white")
+  )
+  
   heat_plot
   
+  # Make separate legends to compile in Illustrator
+  patient_legend <- Legend(
+    labels = names(ann_colors$Patient),
+    legend_gp = gpar(fill = ann_colors$Patient),
+    title = "Patient"
+  )
+  
+  mutator_legend <- Legend(
+    labels = names(ann_colors$`Mutation status`),
+    legend_gp = gpar(fill = ann_colors$`Mutation status`),
+    title = "Mutation status"
+  )
+  
+  phase_legend <- Legend(
+    labels = names(ann_colors$`Phase of Therapy`),
+    legend_gp = gpar(fill = ann_colors$`Phase of Therapy`),
+    title = "Phase of Therapy"
+  )
+  
+  weights_legend <- color_mapping_legend(heat_plot@matrix_color_mapping, plot = FALSE, 
+                                         legend_direction = "horizontal")
+  
+  heat_legends <- packLegend(patient_legend,
+             mutator_legend,
+             phase_legend,
+             weights_legend,
+             direction = "horizontal",
+             column_gap = unit(0.75, "cm")
+  ) 
+
+  
   # save heatmap 
-  pdf(heatmap_file, width = 5, height = 4)
+  pdf(heatmap_file, width = 6.5, height = 4)
   print(heat_plot)
   dev.off()
 
-}
+  # save heatmap legends
+  pdf(heatmap_legends_file, width = 6.5, height = 2)
+  draw(heat_legends)
+  dev.off()  
+ }
 ```
 
 
