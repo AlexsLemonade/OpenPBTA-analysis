@@ -247,8 +247,9 @@ if (!(params$is_ci == 1)) {
                        show_heatmap_legend=FALSE,
                        cluster_columns = FALSE,
                        right_annotation = row_anno,
-                       rect_gp = gpar(col = "white")
-  )
+                       rect_gp = gpar(col = "white"),
+                       row_split = anno$Patient,
+                       row_title = NULL)
   
   heat_plot
   
