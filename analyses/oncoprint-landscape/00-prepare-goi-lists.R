@@ -1,13 +1,14 @@
 # Take in oncoprint-goi-lists-OpenPBTA.csv and create a goi file for each
-# column with associated genes of interest for each specified broad histology
+# column with associated genes of interest for each specified broad histology.
+# Also creates a table for mapping between cancer_group and the appropriate GOI
+# list.
 #
 #
 # Chante Bethell for CCDL 2021
 #
-# # #### USAGE
-# This script is intended to be sourced in the script as follows:
+# USAGE:
 # 
-# Rscript --vanilla 00-prepare-goi-lists.R \
+# Rscript --vanilla 00-prepare-goi-lists.R
 
 
 #### Set Up --------------------------------------------------------------------
@@ -55,3 +56,27 @@ for (col_iter in 1:ncol(all_goi_df)) {
     readr::write_tsv(output_file)
 
 }
+
+#### For specifically getting cancer group-specific counts of the alterations --
+# We will something that maps between cancer group and gene of interest list.
+# We'll also include the oncoprint_group from the palette to make inspection
+# easier.
+
+palette_df <- readr::read_tsv(file.path(root_dir, 
+                                        "figures", 
+                                        "palettes", 
+                                        "broad_histology_cancer_group_palette.tsv"))
+
+cg_df <- palette_df %>% 
+  select(oncoprint_group, cancer_group) %>% 
+  filter(!is.na(oncoprint_group)) %>%
+  mutate(goi_list_file = case_when(
+    oncoprint_group == "Other CNS" ~ "data/other_goi_list.tsv",
+    oncoprint_group == "Low-grade astrocytic tumor" ~ "data/lgat_goi_list.tsv",
+    oncoprint_group == "Embryonal tumor" ~ "data/embryonal-tumor_goi_list.tsv",
+    oncoprint_group == "Diffuse astrocytic and oligodendroglial tumor" ~ "data/hgat_goi_list.tsv",
+    TRUE ~ NA_character_
+  ))
+
+readr::write_tsv(cg_df, 
+                 file.path(data_dir, "cancer_group_goi_list_mapping.tsv"))

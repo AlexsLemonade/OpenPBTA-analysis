@@ -256,9 +256,10 @@ jobs:
           name: GISTIC proof of concept
           command: OPENPBTA_CI=1 ./scripts/run_in_ci.sh bash analyses/run-gistic/run-gistic-module.sh
 
-      - run:
-          name: TCGA Capture Kit Investigation
-          command: ./scripts/run_in_ci.sh bash analyses/tcga-capture-kit-investigation/run-investigation.sh
+    # Deprecated
+    #  - run:
+    #      name: TCGA Capture Kit Investigation
+    #      command: ./scripts/run_in_ci.sh bash analyses/tcga-capture-kit-investigation/run-investigation.sh
 
     # Deprecated - these results are not included in the final TMB results but were used for a comparison at one point
     # - run:
@@ -276,6 +277,12 @@ jobs:
       - run:
          name: Scavenge back hotspots
          command: ./scripts/run_in_ci.sh bash analyses/hotspots-detection/run_overlaps_hotspot.sh
+
+
+      - run:
+         name: Compile manuscript tables
+         command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('tables/output_tables.Rmd', params = list(release = 'testing'), clean = TRUE)"
+
 
   deploy:
     machine:
