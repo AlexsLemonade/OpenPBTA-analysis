@@ -136,6 +136,10 @@ Rscript --vanilla scripts/fig5-panels-gsva-umap.R
 # Generate the tp53 scores boxplot for figure 3
 Rscript --vanilla scripts/fig3-panel-tp53.R
 
+###### Hypermutator signatures
+# Copy the figure to final directory
+cp ${analyses_dir}/mutational-signatures/plots/cns/hypermutator_sigs_heatmap.pdf  pdfs/fig4/panels/hypermutator_sigs_heatmap.pdf
+cp ${analyses_dir}/mutational-signatures/plots/cns/hypermutator_sigs_heatmap_legends.pdf  pdfs/fig4/panels/hypermutator_sigs_heatmap_legends.pdf
 
 ####### Sample distributions
 

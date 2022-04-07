@@ -249,7 +249,9 @@ if (!(params$is_ci == 1)) {
                        right_annotation = row_anno,
                        rect_gp = gpar(col = "white"),
                        row_split = anno$Patient,
-                       row_title = NULL)
+                       row_title = NULL, 
+                       column_title = "RefSeq Mutational Signature", 
+                       column_title_side = "bottom")
   
   heat_plot
   
