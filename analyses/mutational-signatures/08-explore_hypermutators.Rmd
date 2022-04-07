@@ -241,12 +241,12 @@ if (!(params$is_ci == 1)) {
   # Make heatmap without legends
   heat_plot <- Heatmap(sigs[, c("1", "3", "8", "11", "18", "19", "MMR2", "N6")], 
                        name = "Signature weights",
-                       col = colorRampPalette(c("#f1f1f1", "#2166ac"))(8),
+                       col = colorRampPalette(c("#f1f1f1", "#2166ac"))(50),
                        cluster_rows = FALSE,
                        show_row_names = FALSE,
                        show_heatmap_legend=FALSE,
                        cluster_columns = FALSE,
-                       left_annotation = row_anno,
+                       right_annotation = row_anno,
                        rect_gp = gpar(col = "white")
   )
   
