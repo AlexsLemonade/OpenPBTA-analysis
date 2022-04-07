@@ -111,22 +111,23 @@ theme_set(theme_classic() +
     legend.text = element_text(size = 6)
   ))
 
-P1 <- ggplot(Stranded_Histology , aes(
-  x = fct_reorder(cancer_group, NormEXTENDScores_Stranded_FPKM, .desc = TRUE),
-  y = NormEXTENDScores_Stranded_FPKM
-)) +
-  geom_boxplot(
-    size = 0.2, notch = FALSE, outlier.size = 0, outlier.shape = NA,
-    aes(color = cancer_group, fill = cancer_group), alpha = 0.65
-  ) +
-  geom_jitter(shape = 16, cex = 0.2, aes(color = cancer_group),
-              alpha = 0.75) +
-  scale_fill_manual(values = annotation_colors, aesthetics = c("colour", "fill")) +
-  ylab("EXTEND Scores (Stranded FPKM)") +
-  xlab("Cancer Group")
-
-ggsave(plot = P1, telomerase_pdf, dpi = 1200, units = "in",
-       width = 8, height = 4)
+# Comment out old boxplot code. 
+# P1 <- ggplot(Stranded_Histology , aes(
+#   x = fct_reorder(cancer_group, NormEXTENDScores_Stranded_FPKM, .desc = TRUE),
+#   y = NormEXTENDScores_Stranded_FPKM
+# )) +
+#   geom_boxplot(
+#     size = 0.2, notch = FALSE, outlier.size = 0, outlier.shape = NA,
+#     aes(color = cancer_group, fill = cancer_group), alpha = 0.65
+#   ) +
+#   geom_jitter(shape = 16, cex = 0.2, aes(color = cancer_group),
+#               alpha = 0.75) +
+#   scale_fill_manual(values = annotation_colors, aesthetics = c("colour", "fill")) +
+#   ylab("EXTEND Scores (Stranded FPKM)") +
+#   xlab("Cancer Group")
+# 
+# ggsave(plot = P1, telomerase_pdf, dpi = 1200, units = "in",
+#        width = 8, height = 4)
 
 ## Figure for SI: scatterplots
 png(supplementary_telomerase_png, width = 4, height = 2, units = "in", res = 1200)
