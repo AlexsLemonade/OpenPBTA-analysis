@@ -419,7 +419,8 @@ telomerase_fpkm_stranded_file &lt;- file.path(analyses_dir, &quot;telomerase-act
 table_1_file &lt;- file.path(results_dir, &quot;Table1-molecular-subtypes.tsv&quot;)
 table_s1_file &lt;- file.path(results_dir, &quot;TableS1-histologies.xlsx&quot;)
 table_s2_file &lt;- file.path(results_dir, &quot;TableS2-DNA-results-table.xlsx&quot;)
-table_s3_file &lt;- file.path(results_dir, &quot;TableS3-RNA-results-table.xlsx&quot;)</code></pre>
+table_s3_file &lt;- file.path(results_dir, &quot;TableS3-RNA-results-table.xlsx&quot;)
+table_s4_file &lt;- file.path(results_dir, &quot;TableS4-Key-Resources-table.xlsx&quot;)</code></pre>
 </div>
 <div id="table-1-molecular-subtypes-determined-for-this-project" class="section level2">
 <h2>Table 1: Molecular subtypes determined for this project</h2>
@@ -649,6 +650,153 @@ quantiseq_immune &lt;- read_rds(quantiseq_file) %&gt;%
                       )
 write.xlsx(list_s3_table, 
            table_s3_file, 
+           overwrite=TRUE, 
+           keepNA=TRUE)</code></pre>
+</div>
+<div id="create-key-resources-table-s4" class="section level3">
+<h3>Create <code>Key Resources</code> table S4</h3>
+<pre class="r"><code># Sheet 1: R packages in Docker image
+r_packages &lt;- data.frame(installed.packages()[, c(1,3)]) %&gt;%
+  rename(`R Package` = &quot;Package&quot;)
+
+# Sheet 2: Python libraries in Docker image
+python_libraries &lt;- tribble(
+  ~Software,~Version,
+  &quot;Cython&quot;,&quot;0.29.15&quot;,
+  &quot;setuptools&quot;,&quot;46.3.0&quot;,
+  &quot;six&quot;,&quot;1.14.0&quot;,
+  &quot;wheel &quot;,&quot;0.34.2&quot;,
+  &quot;appdirs&quot;,&quot;1.4.4&quot;,
+  &quot;attrs&quot;,&quot;20.3.0&quot;,
+  &quot;backcall&quot;,&quot;0.2.0&quot;,
+  &quot;bleach&quot;,&quot;3.3.0&quot;,
+  &quot;bx-python&quot;,&quot;0.8.8&quot;,
+  &quot;certifi&quot;,&quot;2020.12.5&quot;,
+  &quot;chardet&quot;,&quot;4.0.0&quot;,
+  &quot;ConfigArgParse&quot;,&quot;1.4&quot;,
+  &quot;CrossMap&quot;,&quot;0.3.9&quot;,
+  &quot;cycler&quot;,&quot;0.10.0&quot;,
+  &quot;datrie&quot;,&quot;0.8.2&quot;,
+  &quot;decorator&quot;,&quot;4.4.2&quot;,
+  &quot;defusedxml&quot;,&quot;0.7.1&quot;,
+  &quot;docutils&quot;,&quot;0.16&quot;,
+  &quot;entrypoints&quot;,&quot;0.3&quot;,
+  &quot;gitdb&quot;,&quot;4.0.7&quot;,
+  &quot;GitPython&quot;,&quot;3.1.14&quot;,
+  &quot;idna&quot;,&quot;2.1&quot;,
+  &quot;importlib-metadata&quot;,&quot;2.1.1&quot;,
+  &quot;ipykernel&quot;,&quot;4.8.1&quot;,
+  &quot;ipython&quot;,&quot;7.9.0&quot;,
+  &quot;ipython-genutils&quot;,&quot;0.2.0&quot;,
+  &quot;jedi&quot;,&quot;0.17.2&quot;,
+  &quot;Jinja2&quot;,&quot;2.11.3&quot;,
+  &quot;jsonschema&quot;,&quot;3.2.0&quot;,
+  &quot;jupyter-client&quot;,&quot;6.1.12&quot;,
+  &quot;jupyter-core&quot;,&quot;4.6.3&quot;,
+  &quot;kiwisolver&quot;,&quot;1.1.0&quot;,
+  &quot;MarkupSafe&quot;,&quot;1.1.1&quot;,
+  &quot;matplotlib&quot;,&quot;3.0.3&quot;,
+  &quot;mistune&quot;,&quot;0.8.4&quot;,
+  &quot;mizani&quot;,&quot;0.5.4&quot;,
+  &quot;nbconvert&quot;,&quot;5.6.1&quot;,
+  &quot;nbformat&quot;,&quot;5.1.2&quot;,
+  &quot;notebook&quot;,&quot;6.0.0&quot;,
+  &quot;numpy&quot;,&quot;1.17.3&quot;,
+  &quot;packaging&quot;,&quot;20.9&quot;,
+  &quot;palettable&quot;,&quot;3.3.0&quot;,
+  &quot;pandas&quot;,&quot;0.25.3&quot;,
+  &quot;pandocfilters&quot;,&quot;1.4.3&quot;,
+  &quot;parso&quot;,&quot;0.7.1&quot;,
+  &quot;patsy&quot;,&quot;0.5.1&quot;,
+  &quot;pexpect&quot;,&quot;4.8.0&quot;,
+  &quot;pickleshare&quot;,&quot;0.7.5&quot;,
+  &quot;plotnine&quot;,&quot;0.3.0&quot;,
+  &quot;prometheus-client&quot;,&quot;0.9.0&quot;,
+  &quot;prompt-toolkit&quot;,&quot;2.0.10&quot;,
+  &quot;psutil&quot;,&quot;5.8.0&quot;,
+  &quot;ptyprocess&quot;,&quot;0.7.0&quot;,
+  &quot;pyarrow&quot;,&quot;0.16.0&quot;,
+  &quot;pybedtools&quot;,&quot;0.8.1&quot;,
+  &quot;pyBigWig&quot;,&quot;0.3.17&quot;,
+  &quot;Pygments&quot;,&quot;2.8.1&quot;,
+  &quot;pyparsing&quot;,&quot;2.4.5&quot;,
+  &quot;pyreadr&quot;,&quot;0.2.1&quot;,
+  &quot;pyrsistent&quot;,&quot;0.17.3&quot;,
+  &quot;pysam&quot;,&quot;0.15.4&quot;,
+  &quot;python-dateutil&quot;,&quot;2.8.1&quot;,
+  &quot;pytz&quot;,&quot;2019.3&quot;,
+  &quot;PyYAML&quot;,&quot;5.3.1&quot;,
+  &quot;pyzmq&quot;,&quot;20.0.0&quot;,
+  &quot;ratelimiter&quot;,&quot;1.2.0.post0&quot;,
+  &quot;requests&quot;,&quot;2.25.1&quot;,
+  &quot;rpy2&quot;,&quot;2.9.3&quot;,
+  &quot;scikit-learn&quot;,&quot;0.19.1&quot;,
+  &quot;scipy&quot;,&quot;1.3.2&quot;,
+  &quot;seaborn&quot;,&quot;0.8.1&quot;,
+  &quot;Send2Trash&quot;,&quot;1.5.0&quot;,
+  &quot;six&quot;,&quot;1.14.0&quot;,
+  &quot;smmap&quot;,&quot;4.0.0&quot;,
+  &quot;snakemake&quot;,&quot;5.8.1&quot;,
+  &quot;statsmodels&quot;,&quot;0.10.2&quot;,
+  &quot;terminado&quot;,&quot;0.8.3&quot;,
+  &quot;testpath&quot;,&quot;0.4.4&quot;,
+  &quot;tornado&quot;,&quot;6.1&quot;,
+  &quot;traitlets&quot;,&quot;4.3.3&quot;,
+  &quot;tzlocal&quot;,&quot;2.0.0&quot;,
+  &quot;urllib3&quot;,&quot;1.26.4&quot;,
+  &quot;wcwidth&quot;,&quot;0.2.5&quot;,
+  &quot;webencodings&quot;,&quot;0.5.1&quot;,
+  &quot;widgetsnbextension&quot;,&quot;2.0.0&quot;,
+  &quot;wrapt&quot;,&quot;1.12.1&quot;,
+  &quot;zipp&quot;,&quot;1.2.0&quot;
+)
+
+
+# Sheet 3: Command line software in Docker image
+cli_tools &lt;- tribble(
+~Software,~Version,~Source,
+&quot;bedtools&quot;,&quot;2.28.0&quot;,&quot;https://github.com/arq5x/bedtools2/&quot;,
+&quot;bedops&quot;,&quot;2.4.37&quot;,&quot;https://github.com/bedops/&quot;,
+&quot;HTSlib&quot;,&quot;1.9&quot;,&quot;https://github.com/samtools/htslib/&quot;,
+&quot;MCR&quot;,&quot;R2014a&quot;,&quot;https://www.mathworks.com/supportfiles/downloads/R2014a/&quot;,
+&quot;GISTIC2&quot;,&quot;2.0.23&quot;,&quot;ftp://ftp.broadinstitute.org/pub/GISTIC2.0/&quot;
+)
+
+
+
+# Sheet 4: Tools used in workflows
+workflow_tools &lt;- tribble(
+  ~&quot;Software&quot;, ~&quot;Version&quot;, ~&quot;Associated Workflow(s) or Script&quot;,
+  &quot;ControlFreeC&quot;,&quot;11.6&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_combined_somatic_wgs_cnv_wf.cwl&quot;,
+  &quot;CNVKit&quot;,&quot;0.9.3&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_combined_somatic_wgs_cnv_wf.cwl&quot;,
+  &quot;strekla2&quot;,&quot;2.9.3&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_strelka2_mutect2_manta_workflow.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-mutect2_strelka2-wf.cwl&quot;,
+  &quot;mutect2 (GATK)&quot;,&quot;4.1.1.0&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_strelka2_mutect2_manta_workflow.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-mutect2_strelka2-wf.cwl&quot;,
+  &quot;manta&quot;,&quot;1.4.0&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_strelka2_mutect2_manta_workflow.cwl&quot;,
+  &quot;STAR aligner&quot;,&quot;2.6.1d&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl&quot;,
+  &quot;rsem&quot;,&quot;1.3.1&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl&quot;,
+  &quot;STAR-Fusion&quot;,&quot;1.5.0&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl&quot;,
+  &quot;Arriba&quot;,&quot;1.1.0&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl&quot;,
+  &quot;bwa&quot;,&quot;0.7.17&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-wf.cwl&quot;,
+  &quot;sambamba&quot;,&quot;0.6.3&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-mendqc-wf.cwl&quot;,
+  &quot;GATK&quot;,&quot;4.0.3.0&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-wf.cwl&quot;,
+  &quot;lancet&quot;,&quot;1.0.7&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-lancet-wf.cwl&quot;,
+  &quot;UCSC-Treehouse MendQC&quot;,&quot;1.1.1&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-mendqc-wf.cwl&quot;,
+  &quot;GATK&quot;,&quot;4.0.12.0&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-mutect2_strelka2-wf.cwl&quot;,
+  &quot;VarDict Java v1.5.8&quot;,&quot;1.5.8&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-vardict-wf.cwl&quot;,
+  &quot;VEP&quot;,&quot;r93&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_annot_vcf_sub_wf.cwl&quot;,
+  &quot;bcftools&quot;,&quot;1.7&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_annot_vcf_sub_wf.cwl&quot;,
+  &quot;GISTIC&quot;,&quot;2.0.23&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/bash/run-gistic.sh ; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/bash/run_gistic_consensus.sh&quot;
+)
+
+
+# Combine and output
+list_s4_table &lt;- list(r_packages = r_packages,
+                      python_libraries = python_libraries,
+                      other_command_line_tools = cli_tools,
+                      workflow_repository_tools = workflow_tools
+                      )
+write.xlsx(list_s4_table, 
+           table_s4_file, 
            overwrite=TRUE, 
            keepNA=TRUE)</code></pre>
 </div>
