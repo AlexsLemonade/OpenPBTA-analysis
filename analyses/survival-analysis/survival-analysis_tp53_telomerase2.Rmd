@@ -19,13 +19,14 @@ This notebook will do the following survival analysis
 ## Setup
 
 #### Packages and functions
-
-
+https://cran.r-project.org/web/packages/survivalAnalysis/vignettes/multivariate.html
 ```{r libraries}
 library(survival)
 library(dplyr)
 library(ggplot2)
 library(ggpubr)
+library(tidytidbits)
+library(survivalAnalysis)
 ```
 
 #### Set up files and directories
@@ -58,6 +59,7 @@ if (!dir.exists(plots_dir)) {
 # Source functions used to build models
 source(file.path(util_dir,"survival_models.R"))
 source(file.path(util_dir,"survival_multivariate.R"))
+source(file.path(util_dir,"survival_multivariate2.R"))
 ```
 
 Set up file paths.
@@ -135,7 +137,7 @@ meta_indep <- histologies_rna %>%
 # Show the data we will use for analysis
 meta_indep
 ```
- 
+
 ### Create subsets of data for different models
 
 We create two new tibbles from `meta_indep`:
@@ -159,7 +161,7 @@ meta_indep_hgg <- meta_indep %>%
 
 ```{r find_cancer_groups_to_use}
 # Define cancer groups of interest with higher Ns
-# We want to only include groups that have at least THREE in EITHER category. 
+# We want to only include groups that have at least THREE in deceased category. 
 # Find them here:
 cancer_groups_of_interest_df <- meta_indep %>%
   tidyr::drop_na() %>%
@@ -167,8 +169,7 @@ cancer_groups_of_interest_df <- meta_indep %>%
   tidyr::spread(OS_status, n,
                 # any missing values (indicating 0 deceased or 0 living) should be 0, not NA
                 fill = 0) %>%
-  filter(DECEASED >= 3,
-         LIVING >= 3) 
+  filter(DECEASED >= 3) 
 # show result: there are four groups to keep
 cancer_groups_of_interest_df
 
@@ -217,21 +218,17 @@ fit_save_cox <- function(df, ind_variable, result_dir) {
 }
 
 ```
-
 #### TP53 
 
 
 ```{r cox_tp53}
 fit_save_cox(meta_indep, "tp53_score", results_dir)
 ```
-
-
 #### Telomerase score
 
 ```{r cox_telo}
 fit_save_cox(meta_indep, "telomerase_score", results_dir)
 ```
-
 
 ####  HGG group
 
@@ -242,11 +239,10 @@ fit_save_cox(meta_indep_hgg, "hgg_group", results_dir)
 
 #### Cancer group
 
+
 ```{r cox_cancer_group}
 fit_save_cox(meta_indep_cancer_groups, "cancer_group", results_dir)
 ```
-
-
 
 ## Log Rank analysis of cancer groups
 
@@ -314,7 +310,7 @@ dev.off()
 
 ### Comparison made is `tp53_score*telomerase_score*hgg_group` 
 
-Initially, it was planned to assess `tp53_score*telomerase_score*cancer_group` here, but the removal of LGG, Ganglioglioma, Craniopharyngioma, and DMG patients resulted in removal of 343 patients, and hence affects telomerase and tp53 predictions. Therefore this model will not be explored.
+Initially, it was planned to assess `tp53_score*telomerase_score*cancer_group` here, but the removal of LGG, Ganglioglioma, and Craniopharyngioma patients resulted in removal of 343 patients, and hence affects telomerase and tp53 predictions. Therefore this model will not be explored.
 
 <!--Therefore, I think we should keep this as-is, but add the interaction, so that we can assess for all possible patients within the PBTA.-->
 
@@ -349,16 +345,74 @@ Note we can't use the `survival_analysis()` function here because of the multiva
 #### TP53 score * Telomerase score * HGG group
 
 ```{r multivar-fit-3terms}
-fit_plot_save_cox_multivariate(meta_indep_hgg, 
-                          "tp53_score*telomerase_score*hgg_group", 
-                          results_dir)
+# without function
+covariates <- vars(tp53_score, telomerase_score, hgg_group)
+
+# just adding this to be similar to previous function, but structure in the survivalAnalysis package is now different
+cov <- "tp53_score*telomerase_score*hgg_group"
+
+covariate_names <- c(tp53_score="TP53 score",
+                     telomerase_score="Telomerase activity",
+                     `hgg_group:non-HGAT`="non-HGAT")
+
+ref_dict = c(hgg_group="non-HGAT")
+
+meta_indep_hgg <- meta_indep_hgg %>%
+  mutate(OS_status = ifelse(OS_status == "LIVING", 0, 1))
+
+result <- analyse_multivariate(meta_indep_hgg,
+                     vars(OS_years, OS_status),
+                       covariates = covariates,
+                       covariate_name_dict = covariate_names,
+                     reference_level_dict = ref_dict)
+
+result$summary
+print(result$summaryAsFrame)
+
+forest_plot(result,
+            factor_labeller = covariate_names,
+            endpoint_labeller = c(OS_years="OS"),
+            orderer = ~order(HR),
+            labels_displayed = c("endpoint", "factor", "n"),
+            ggtheme = ggplot2::theme_bw(base_size = 12),
+            relative_widths = c(1.5, 1.5, 1),
+            HR_x_breaks = c(0.25, 0.5, 0.75, 1, 1.5, 2))
+
 ```
 
+#### TP53 score * Telomerase score * HGG group - new function
+
+```{r multivar-fit-3terms new function}
+covariates <- vars(tp53_score, telomerase_score, hgg_group)
+
+# just adding this to be similar to previous function, but structure in the survivalAnalysis package is now different
+cov <- "tp53_score*telomerase_score*hgg_group"
+
+covariate_names <- c(tp53_score="TP53 score",
+                     telomerase_score="Telomerase activity",
+                     `hgg_group:non-HGAT`="non-HGAT")
+
+ref_dict = c(hgg_group="non-HGAT")
+
+fit_plot_save_cox_multivariate2(df = meta_indep_hgg, 
+                          terms = covariates,
+                          covariate_dict = covariate_names,
+                          ref_dict = ref_dict,
+                          output_dir = results_dir)
+```
 
 #### TP53 score * Telomerase score, for each cancer group.
 
 
 ```{r multivar-fit-2terms}
+# Define covariates
+cov <- "tp53_score*telomerase_score"
+
+covariates <- vars(tp53_score, telomerase_score)
+
+covariate_names <- c(tp53_score="TP53 score",
+                     telomerase_score="Telomerase activity")
+
 for (cg in cancer_groups_of_interest_df$cancer_group) {
   cat("==============", cg, "==================")
   # filter to cancer group of interest
@@ -366,40 +420,19 @@ for (cg in cancer_groups_of_interest_df$cancer_group) {
     filter(cancer_group == cg)
   
   # Define filename where model will be saved
-  filename <- paste0("cox_reg_results_per_tp53_score-by-telomerase_score_",
-                     stringr::str_replace_all(cg, " ","-"),
-                     ".tsv")
-  
+  filename <- paste0("SurvivalAnalysis_cox_reg_results_per_tp53_score-by-telomerase_score_",
+                     stringr::str_replace_all(cg," ","-"), ".tsv")  # Define filename where model will be saved
   # Fit model
-  fit_plot_save_cox_multivariate(fit_data, 
-                          "tp53_score*telomerase_score", 
-                          results_dir, 
-                          filename,
-                          paste("tp53*telomerase for ", cg) 
-                          )
+  fit_plot_save_cox_multivariate2(fit_data, 
+                          terms = covariates, 
+                          covariate_dict = covariate_names,
+                          output_dir = results_dir, 
+                          filename)
+  
 }
 
-
 ```
 
 
 
 
-## Bivariate density plot of tp53 score and telomerase activity score stratified by HGG group
-
-```{r}
-
-tp53_vs_telomerase <- ggplot(meta_indep_hgg, aes(x = tp53_score, y = telomerase_score))
-tp53_vs_telomerase + 
-  geom_density_2d(aes(color = hgg_group)) +
-  labs(subtitle = "Density stratified by HGG group") +
-  xlim(-0.1,1.2) +
-  theme_bw()
-```
-
-
-## Session Info
-
-```{r Print session info}
-sessionInfo()
-```
