@@ -231,6 +231,8 @@ for (dataset in c("tcga", "pbta")) {
       filter(Kids_First_Participant_ID %in% matched_participants) %>%
       pull(Kids_First_Biospecimen_ID)
 
+    n_participants <- length(matched_participants)
+    n_samples <- length(biospecimens)
     
     # Set up the Lancet data from the SQL database and only keep the biospecimens we identified.
     lancet <- tbl(con, "lancet") %>%
@@ -263,6 +265,7 @@ for (dataset in c("tcga", "pbta")) {
       scale_fill_manual(values = colors) +
       labs(
         title = "Lancet participants with WGS and WXS",
+        subtitle = glue::glue("{n_samples} samples from {n_participants} patients"),
         x = "Experimental Strategy",
         y = "VAF") +
       ggpubr::theme_pubr() +
