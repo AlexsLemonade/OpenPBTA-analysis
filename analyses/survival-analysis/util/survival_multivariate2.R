@@ -8,9 +8,9 @@ fit_plot_save_cox_multivariate2 <- function(df,    # data frame with the data (a
                                            ref_dict, # dictionary of covariate reference levels
                                            output_dir, 
                                            filename = NULL,
-                                           plot_title = NULL) {
+                                           plot_dir = NULL) {
   # df: A data frame that contains columns:
-  #   - `OS_status` with character values "LIVING" and "DECEASED"
+  #   - `OS_status` with character values "0" and "1"
   #   - `OS_years` giving survival time in years
   # terms: A string providing RHS of model equation, using terms that match column names in `df`
   # covariate_dict: dictionary mapping column names to readable names for table/plot
@@ -19,12 +19,8 @@ fit_plot_save_cox_multivariate2 <- function(df,    # data frame with the data (a
     # Example: ref_dict = c(hgg_group="non-HGAT")
   # output_dir: Output directory to save model result table in. 
   # filename: (Optional) Output file name for model result table. If nothing is given, it will be derived from model terms.
-  # plot_title: (Optional) A title for the plot that will be printed. If nothing is given, it will be derived from model terms.
+  # plot_dir: (Optional) Output folder for forest plot.
   # custom_x_breaks: (Optional) Custom x-axis breaks for HR plot (Default: c(0.25, 0.5, 0.75, 1, 1.5, 2)) - add this later
-  
-  # Recode OS_Status
-  df <- df %>%
-    mutate(OS_status = ifelse(OS_status == "LIVING", 0, 1))
   
   # Define and fit the model
   fit_result <- survivalAnalysis::analyse_multivariate(df,
@@ -47,8 +43,7 @@ fit_plot_save_cox_multivariate2 <- function(df,    # data frame with the data (a
   ) 
   
   # Create visualization
-  if(is.null(plot_title)) {
-    plot_title <- cov
+  if(is.null(plot_dir)) {
   }
   forest_coxph2 <- survivalAnalysis::forest_plot(fit_result,
                                                  factor_labeller = covariate_dict,
@@ -62,5 +57,9 @@ fit_plot_save_cox_multivariate2 <- function(df,    # data frame with the data (a
   # Print the tidied fit and the plot
   print(fit_result$summaryAsFrame)
   print(forest_coxph2)
+  
+  save_pdf(plot = forest_coxph2, 
+           folder = plot_dir, 
+           fileBaseName = paste0("HR_", cg, "_", cov))
   
 }
