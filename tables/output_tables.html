@@ -660,96 +660,26 @@ r_packages &lt;- data.frame(installed.packages()[, c(1,3)]) %&gt;%
   rename(`R Package` = &quot;Package&quot;)
 
 # Sheet 2: Python libraries in Docker image
+
+# libraries not included in `requirements.txt`
 python_libraries &lt;- tribble(
   ~Software,~Version,
-  &quot;Cython&quot;,&quot;0.29.15&quot;,
   &quot;setuptools&quot;,&quot;46.3.0&quot;,
   &quot;six&quot;,&quot;1.14.0&quot;,
-  &quot;wheel &quot;,&quot;0.34.2&quot;,
-  &quot;appdirs&quot;,&quot;1.4.4&quot;,
-  &quot;attrs&quot;,&quot;20.3.0&quot;,
-  &quot;backcall&quot;,&quot;0.2.0&quot;,
-  &quot;bleach&quot;,&quot;3.3.0&quot;,
-  &quot;bx-python&quot;,&quot;0.8.8&quot;,
-  &quot;certifi&quot;,&quot;2020.12.5&quot;,
-  &quot;chardet&quot;,&quot;4.0.0&quot;,
-  &quot;ConfigArgParse&quot;,&quot;1.4&quot;,
-  &quot;CrossMap&quot;,&quot;0.3.9&quot;,
-  &quot;cycler&quot;,&quot;0.10.0&quot;,
-  &quot;datrie&quot;,&quot;0.8.2&quot;,
-  &quot;decorator&quot;,&quot;4.4.2&quot;,
-  &quot;defusedxml&quot;,&quot;0.7.1&quot;,
-  &quot;docutils&quot;,&quot;0.16&quot;,
-  &quot;entrypoints&quot;,&quot;0.3&quot;,
-  &quot;gitdb&quot;,&quot;4.0.7&quot;,
-  &quot;GitPython&quot;,&quot;3.1.14&quot;,
-  &quot;idna&quot;,&quot;2.1&quot;,
-  &quot;importlib-metadata&quot;,&quot;2.1.1&quot;,
-  &quot;ipykernel&quot;,&quot;4.8.1&quot;,
-  &quot;ipython&quot;,&quot;7.9.0&quot;,
-  &quot;ipython-genutils&quot;,&quot;0.2.0&quot;,
-  &quot;jedi&quot;,&quot;0.17.2&quot;,
-  &quot;Jinja2&quot;,&quot;2.11.3&quot;,
-  &quot;jsonschema&quot;,&quot;3.2.0&quot;,
-  &quot;jupyter-client&quot;,&quot;6.1.12&quot;,
-  &quot;jupyter-core&quot;,&quot;4.6.3&quot;,
-  &quot;kiwisolver&quot;,&quot;1.1.0&quot;,
-  &quot;MarkupSafe&quot;,&quot;1.1.1&quot;,
-  &quot;matplotlib&quot;,&quot;3.0.3&quot;,
-  &quot;mistune&quot;,&quot;0.8.4&quot;,
-  &quot;mizani&quot;,&quot;0.5.4&quot;,
-  &quot;nbconvert&quot;,&quot;5.6.1&quot;,
-  &quot;nbformat&quot;,&quot;5.1.2&quot;,
-  &quot;notebook&quot;,&quot;6.0.0&quot;,
-  &quot;numpy&quot;,&quot;1.17.3&quot;,
-  &quot;packaging&quot;,&quot;20.9&quot;,
-  &quot;palettable&quot;,&quot;3.3.0&quot;,
-  &quot;pandas&quot;,&quot;0.25.3&quot;,
-  &quot;pandocfilters&quot;,&quot;1.4.3&quot;,
-  &quot;parso&quot;,&quot;0.7.1&quot;,
-  &quot;patsy&quot;,&quot;0.5.1&quot;,
-  &quot;pexpect&quot;,&quot;4.8.0&quot;,
-  &quot;pickleshare&quot;,&quot;0.7.5&quot;,
-  &quot;plotnine&quot;,&quot;0.3.0&quot;,
-  &quot;prometheus-client&quot;,&quot;0.9.0&quot;,
-  &quot;prompt-toolkit&quot;,&quot;2.0.10&quot;,
-  &quot;psutil&quot;,&quot;5.8.0&quot;,
-  &quot;ptyprocess&quot;,&quot;0.7.0&quot;,
-  &quot;pyarrow&quot;,&quot;0.16.0&quot;,
-  &quot;pybedtools&quot;,&quot;0.8.1&quot;,
-  &quot;pyBigWig&quot;,&quot;0.3.17&quot;,
-  &quot;Pygments&quot;,&quot;2.8.1&quot;,
-  &quot;pyparsing&quot;,&quot;2.4.5&quot;,
-  &quot;pyreadr&quot;,&quot;0.2.1&quot;,
-  &quot;pyrsistent&quot;,&quot;0.17.3&quot;,
-  &quot;pysam&quot;,&quot;0.15.4&quot;,
-  &quot;python-dateutil&quot;,&quot;2.8.1&quot;,
-  &quot;pytz&quot;,&quot;2019.3&quot;,
-  &quot;PyYAML&quot;,&quot;5.3.1&quot;,
-  &quot;pyzmq&quot;,&quot;20.0.0&quot;,
-  &quot;ratelimiter&quot;,&quot;1.2.0.post0&quot;,
-  &quot;requests&quot;,&quot;2.25.1&quot;,
-  &quot;rpy2&quot;,&quot;2.9.3&quot;,
-  &quot;scikit-learn&quot;,&quot;0.19.1&quot;,
-  &quot;scipy&quot;,&quot;1.3.2&quot;,
-  &quot;seaborn&quot;,&quot;0.8.1&quot;,
-  &quot;Send2Trash&quot;,&quot;1.5.0&quot;,
-  &quot;six&quot;,&quot;1.14.0&quot;,
-  &quot;smmap&quot;,&quot;4.0.0&quot;,
-  &quot;snakemake&quot;,&quot;5.8.1&quot;,
-  &quot;statsmodels&quot;,&quot;0.10.2&quot;,
-  &quot;terminado&quot;,&quot;0.8.3&quot;,
-  &quot;testpath&quot;,&quot;0.4.4&quot;,
-  &quot;tornado&quot;,&quot;6.1&quot;,
-  &quot;traitlets&quot;,&quot;4.3.3&quot;,
-  &quot;tzlocal&quot;,&quot;2.0.0&quot;,
-  &quot;urllib3&quot;,&quot;1.26.4&quot;,
-  &quot;wcwidth&quot;,&quot;0.2.5&quot;,
-  &quot;webencodings&quot;,&quot;0.5.1&quot;,
-  &quot;widgetsnbextension&quot;,&quot;2.0.0&quot;,
-  &quot;wrapt&quot;,&quot;1.12.1&quot;,
-  &quot;zipp&quot;,&quot;1.2.0&quot;
+  &quot;wheel &quot;,&quot;0.34.2&quot;
 )
+
+# parse `requirements.txt`
+python_requirements &lt;- read_tsv(
+  file.path(root_dir, &quot;requirements.txt&quot;), 
+  col_names = FALSE) %&gt;%
+  separate(X1, into = c(&quot;Software&quot;, &quot;Version&quot;), sep = &quot;==&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   X1 = col_character()
+## )</code></pre>
+<pre class="r"><code># merge `python_requirements` into `python_libraries`
+python_libraries &lt;- bind_rows(python_libraries, python_requirements)
 
 
 # Sheet 3: Command line software in Docker image
@@ -769,7 +699,7 @@ workflow_tools &lt;- tribble(
   ~&quot;Software&quot;, ~&quot;Version&quot;, ~&quot;Associated Workflow(s) or Script&quot;,
   &quot;ControlFreeC&quot;,&quot;11.6&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_combined_somatic_wgs_cnv_wf.cwl&quot;,
   &quot;CNVKit&quot;,&quot;0.9.3&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_combined_somatic_wgs_cnv_wf.cwl&quot;,
-  &quot;strekla2&quot;,&quot;2.9.3&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_strelka2_mutect2_manta_workflow.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-mutect2_strelka2-wf.cwl&quot;,
+  &quot;strelka2&quot;,&quot;2.9.3&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_strelka2_mutect2_manta_workflow.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-mutect2_strelka2-wf.cwl&quot;,
   &quot;mutect2 (GATK)&quot;,&quot;4.1.1.0&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_strelka2_mutect2_manta_workflow.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-mutect2_strelka2-wf.cwl&quot;,
   &quot;manta&quot;,&quot;1.4.0&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_strelka2_mutect2_manta_workflow.cwl&quot;,
   &quot;STAR aligner&quot;,&quot;2.6.1d&quot;,&quot;https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl&quot;,
