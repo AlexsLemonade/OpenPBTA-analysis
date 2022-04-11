@@ -1,4 +1,6 @@
 # TCGA brain tumor WXS capture kit investigation
+
+⚠️ **This module is deprecated.**
 This is an investigation of the TMB discrepancy between PBTA and TCGA data. 
 
 ## Background
