@@ -55,7 +55,9 @@ This file knits to an HTML (`04-analyze_de_novo.HTML`) which contains a **table*
   + `signature1_tumor-descriptor_cancer-groups.pdf`, Signature 1 exposure across tumor descriptors and cancer groups
   + `signature1_tumor-descriptor_molecular-subtypes.pdf`, Signature 1 exposure across tumor descriptors and molecular subtypes
   
-
++ The Rmd `08-explore_hypermutators.Rmd` investigates whether hyper-mutant and/or ultra-hypermutant samples have enrichment of signatures 3, 18, and/or MMR.
+  + We also asked whether these samples show dysregulated _TP53_.
+  + `hypermutator_sigs_heatmap.pdf`, heatmap of the 8 CNS signatures for patients who have hyper- or ultra-hypermutant tumors.
 
 
 ## Overall file structure
@@ -96,6 +98,7 @@ OpenPBTA-analysis
 │           │   ├── exposures_per_sample_barplot.pdf
 │           │   ├── exposures_presence_barplot.pdf
 │           │   ├── exposures_sina_IQR.pdf
+│           │   ├── hypermutator_sigs_heatmap.pdf
 │           │   ├── signature1_tumor-descriptor_cancer-groups.pdf
 │           │   └── signature1_tumor-descriptor_molecular-subtypes.pdf
 └── data
