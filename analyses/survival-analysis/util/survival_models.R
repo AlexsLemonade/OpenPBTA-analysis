@@ -265,7 +265,7 @@ fit_save_model <- function(df,
   }
   
   # Save model RDS
-  readr::write_rds(fit$fitted_multi, output_file)
+  readr::write_rds(fit$model, output_file)
   
   # Return the model fit table to be printed out
   fit$table
