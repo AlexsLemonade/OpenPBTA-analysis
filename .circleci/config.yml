@@ -223,9 +223,11 @@ jobs:
           name: SNV Caller Analysis
           command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-pbta.sh
 
-      - run:
-          name: Tumor mutation burden with TCGA
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tcga-pbta.Rmd', clean = TRUE)"
+
+    # Deprecated
+    #  - run:
+    #      name: Tumor mutation burden with TCGA
+    #      command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tcga-pbta.Rmd', clean = TRUE)"
 
       - run:
           name: Exploration of nonsynonymous filter
@@ -266,9 +268,11 @@ jobs:
     #     name: d3b TMB code
     #     command: ./scripts/run_in_ci.sh bash analyses/tmb-compare/TMB_d3b_code/run_tmb_d3b.sh
 
-      - run:
-          name: Compare TMB calculations
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tmb-calculations.Rmd', clean = TRUE)"
+
+    # Deprecated
+    #  - run:
+    #      name: Compare TMB calculations
+    #      command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tmb-calculations.Rmd', clean = TRUE)"
 
       - run:
           name: Run survival plots
