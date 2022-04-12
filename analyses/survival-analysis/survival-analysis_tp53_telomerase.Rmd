@@ -137,7 +137,7 @@ meta_indep_hgg <- meta_indep %>%
 
 ```{r find_cancer_groups_to_use}
 # Define cancer groups of interest with higher Ns
-# We want to only include groups that have at least THREE in EITHER category. 
+# We want to only include groups that have at least THREE in the DECEASED category. 
 # Find them here:
 cancer_groups_of_interest_df <- meta_indep %>%
   drop_na() %>%
