@@ -265,7 +265,9 @@ fit_save_model <- function(df,
   }
   
   # Save model RDS
-  readr::write_rds(fit$model, output_file)
+  readr::write_rds(fit$model, 
+                   # remove spaces in case (common for cancer groups)
+                   str_replace_all(output_file, " ", "-"))
   
   # Return the model fit table to be printed out
   fit$table
