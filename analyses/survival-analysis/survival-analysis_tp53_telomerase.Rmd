@@ -1,20 +1,14 @@
 ---
 title: "Survival analysis by TP53 and telomerase activity"
 authors: Run Jin (D3B), Jo Lynne Rokita (D3B), and Stephanie Spielman (CCDL)
-output: html_notebook
+output: 
+  html_notebook:
+    toc: true
+editor_options: 
+  chunk_output_type: inline
 ---
 
-This notebook will do the following survival analysis
-
-1. Univariate analysis with cox regression
-    - TP53 classifier score (as a continuous variable)
-    - EXTEND score (as a continuous variable)
-    - HGG group
-    - Cancer group
-
-2. Multivariate analysis with cox regression
-    - TP53 classifier score, EXTEND score, and HGG group
-    - TP53 classifier score and EXTEND score
+Note that for models that consider the `cancer_group` predictor or are performed separately for each cancer group *only consider cancer groups where `DECEASED >= 3`.* There are seven such groups.
 
 ## Setup
 
@@ -23,19 +17,19 @@ This notebook will do the following survival analysis
 
 ```{r libraries}
 library(survival)
-library(dplyr)
-library(ggplot2)
 library(ggpubr)
+library(tidyverse)
 ```
 
 #### Set up files and directories
 
-Set up output directories. 
+Set up input and output directories:
 
 ```{r Set up directories}
-data_dir <- file.path("..", "..", "data")
-analysis_dir <- file.path("..", "..", "analyses")
-figure_dir <- file.path("..", "..", "figures")
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+data_dir <- file.path(root_dir, "data")
+analysis_dir <- file.path(root_dir, "analyses")
 
 tp53_dir <- file.path(analysis_dir, "tp53_nf1_score")
 telomerase_dir <- file.path(analysis_dir, "telomerase-activity-prediction")
@@ -43,29 +37,30 @@ telomerase_dir <- file.path(analysis_dir, "telomerase-activity-prediction")
 results_dir <- "results"
 plots_dir <- "plots"
 util_dir <- "util"
-```
 
-Make output directories and source the util function file.
-
-```{r Make output directories}
 if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
 if (!dir.exists(plots_dir)) {
   dir.create(plots_dir)
 }
+```
 
-# Source functions used to build models
+Make output directories and source the util function file.
+
+```{r source_functions}
+# Source functions used to build and export models
 source(file.path(util_dir,"survival_models.R"))
-source(file.path(util_dir,"survival_multivariate.R"))
 ```
 
 Set up file paths.
 
-```{r define data path}
+```{r file_paths}
+
+# Define input files:
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
 
-# only use stranded since tp53 scores for polyA did not have good accuracy
+# These analyses consider only stranded libraries:
 tp53_file <- file.path(tp53_dir, 
                         "results", 
                         "tp53_altered_status.tsv")
@@ -73,51 +68,34 @@ tp53_file <- file.path(tp53_dir,
 tel_stranded_file <- file.path(telomerase_dir,
                                "results",
                                "TelomeraseScores_PTBAStranded_FPKM.txt")
-
-tel_polya_file <- file.path(telomerase_dir,
-                               "results",
-                               "TelomeraseScores_PTBAPolya_FPKM.txt")
-
-# Output plot files
-logrank_cancergroup_plot_file <- file.path(plots_dir,
-                                           "logrank_survival_per_cancer_group.pdf")
-
 ```
 
-## Import the metadata
+## Prepare data for modeling
+
+#### Import and process the metadata
 
 ```{r Read in metadata}
 # get primary tumor and remove cell lines
-histologies_rna <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
-  filter(composition=="Solid Tissue" & 
-                  tumor_descriptor == "Initial CNS Tumor" &
-                  experimental_strategy == "RNA-Seq" & 
+histologies_rna <- read_tsv(metadata_file, guess_max = 10000) %>%
+  filter(composition=="Solid Tissue",
+                  tumor_descriptor == "Initial CNS Tumor",
+                  experimental_strategy == "RNA-Seq", 
                   RNA_library == "stranded") %>%
   rename(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID) %>% 
   select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID_RNA, cancer_group, OS_status, OS_days, PFS_days) %>%
-  distinct() %>%
-  arrange(Kids_First_Biospecimen_ID_RNA)
+  distinct() 
 
 # read in tp53 scores
-tp53_scores <- readr::read_tsv(tp53_file) %>%
-  select(Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA, sample_id, tp53_score) %>%
+tp53_scores <- read_tsv(tp53_file) %>%
+  select(Kids_First_Biospecimen_ID_RNA, sample_id, tp53_score) %>%
+  distinct()
+
+# read in telomerase scores
+tel_scores <- read_tsv(tel_stranded_file) %>%
+  rename(Kids_First_Biospecimen_ID_RNA = SampleID,
+                telomerase_score = NormEXTENDScores) %>%
   arrange(Kids_First_Biospecimen_ID_RNA)
 
-# read in and combine telomerase scores and add in library column
-tel_scores_stranded <- readr::read_tsv(tel_stranded_file) %>%
-  rename(Kids_First_Biospecimen_ID_RNA = SampleID,
-                telomerase_score = NormEXTENDScores) %>%
-  arrange(Kids_First_Biospecimen_ID_RNA) %>%
-  mutate(library = "stranded")
-
-tel_scores_polya <- readr::read_tsv(tel_polya_file) %>%
-  rename(Kids_First_Biospecimen_ID_RNA = SampleID,
-                telomerase_score = NormEXTENDScores) %>%
-  arrange(Kids_First_Biospecimen_ID_RNA) %>%
-  mutate(library = "polya")
-
-# combine telomerase dfs
-tel_scores <- bind_rows(tel_scores_stranded, tel_scores_polya)
 
 # combine tp53 scores and telomerase score to the dataframe
 # note that we do not need to recode categories since the survival_models.R functions will take care of it
@@ -128,7 +106,7 @@ meta_indep <- histologies_rna %>%
   arrange(Kids_First_Biospecimen_ID_RNA) %>%
   distinct(Kids_First_Participant_ID, .keep_all=TRUE) %>%
   # remove samples without survival data
-  tidyr::drop_na(OS_days) %>%
+  drop_na(OS_days) %>%
   # convert to years
   mutate(OS_years = OS_days / 365.25)
 
@@ -136,7 +114,7 @@ meta_indep <- histologies_rna %>%
 meta_indep
 ```
  
-### Create subsets of data for different models
+#### Create subsets of data for different models
 
 We create two new tibbles from `meta_indep`:
 
@@ -162,25 +140,26 @@ meta_indep_hgg <- meta_indep %>%
 # We want to only include groups that have at least THREE in EITHER category. 
 # Find them here:
 cancer_groups_of_interest_df <- meta_indep %>%
-  tidyr::drop_na() %>%
+  drop_na() %>%
   count(cancer_group,OS_status) %>%
-  tidyr::spread(OS_status, n,
-                # any missing values (indicating 0 deceased or 0 living) should be 0, not NA
-                fill = 0) %>%
-  filter(DECEASED >= 3,
-         LIVING >= 3) 
-# show result: there are four groups to keep
+  spread(OS_status, n,
+         # any missing values (indicating 0 deceased or 0 living) should be 0, not NA
+         fill = 0) %>%
+  filter(DECEASED >= 3) 
+# show result: there are 7 groups to keep
 cancer_groups_of_interest_df
 
-
+# Subset to only the cancer groups with potentially suitable sample size
 meta_indep_cancer_groups <- meta_indep %>%
-  filter(cancer_group %in% cancer_groups_of_interest_df$cancer_group)
+  filter(cancer_group %in% cancer_groups_of_interest_df$cancer_group) %>%
+  # set reference level to Medulloblastoma
+  mutate(cancer_group = fct_relevel(cancer_group, "Medulloblastoma"))
 
 # How many patients got removed?
 nrow(meta_indep) - nrow(meta_indep_cancer_groups)
 ```
 
-## Cox Regressions with independent variables 
+## Univariate Models
 
  
 Here, we run a survival analyses for several _independent_ predictors, one at a time. We use cox regression for all analyses (including categorical), as demonstrated in `survival-analysis_template.Rmd`.
@@ -191,132 +170,77 @@ Here, we run a survival analyses for several _independent_ predictors, one at a 
 + `cancer_group` (categorical)
 
 
-First, we'll write a function to fit and save the models.
-```{r cox_function}
-fit_save_cox <- function(df, ind_variable, result_dir) {
 
-  # Fit the model
-  fit <- survival_analysis(
-    df,
-    ind_var = ind_variable,
-    test    = "cox.reg",
-    metadata_sample_col = "Kids_First_Biospecimen_ID_RNA",
-    os_days_col = "OS_years" # we want to use years, not days
-  )
-
-  # Save model
-  readr::write_tsv(fit$table, 
-                 file.path(
-                   results_dir, 
-                   paste0("cox_reg_results_per_", ind_variable, ".tsv")
-                   )
-                 ) 
-  
-  # Return the model table to be printed out
-  fit$table
-}
-
-```
-
-#### TP53 
+### TP53 
 
 
 ```{r cox_tp53}
-fit_save_cox(meta_indep, "tp53_score", results_dir)
+fit_save_model(meta_indep, 
+              "tp53_score", 
+             file.path(results_dir, "cox_terms_tp53.RDS"))
+
 ```
 
 
-#### Telomerase score
+### Telomerase score
 
 ```{r cox_telo}
-fit_save_cox(meta_indep, "telomerase_score", results_dir)
+fit_save_model(meta_indep, 
+              "telomerase_score", 
+             file.path(results_dir, "cox_terms_telomerase.RDS"))
 ```
 
 
-####  HGG group
+###  HGG group
 
+> non-HGAT is the reference level.
 
 ```{r cox_hgg}
-fit_save_cox(meta_indep_hgg, "hgg_group", results_dir)
+fit_save_model(meta_indep_hgg, 
+              "hgg_group", 
+             file.path(results_dir, "cox_terms_hgg_group.RDS"))
 ```
 
-#### Cancer group
+### Cancer group (cox)
+
+> MB is the reference level
 
 ```{r cox_cancer_group}
-fit_save_cox(meta_indep_cancer_groups, "cancer_group", results_dir)
+fit_save_model(meta_indep_cancer_groups, 
+               "cancer_group", 
+               file.path(results_dir, "cox_terms_cancer_group.RDS"))
 ```
 
 
 
-## Log Rank analysis of cancer groups
+### Cancer group (log rank)
 
-Here, we perform a log-rank analysis specifically for the `cancer_group` predictor. We also visualize the result and export the PDF. Note that we do not use the `survival_analysis` function here because of conflicting variables needed for visualization. 
+Here, we perform a log-rank analysis specifically for the `cancer_group` predictor, using data that only considers the 7 cancer groups determined to have suitable sample sizes (`DECEASED >= 3`). The output below shows:
 
-In the resulting model, we do not see a signficant difference between survival for MB and ependymoma. We also do not see a signficant different between ATRT and HGAT. However, we see a difference between (MB and ependymoma) and (ATRT and HGAT)
++ Table of model coefficients
++ Matrix of `Pairwise comparisons using Log-Rank test`, which shows which cancer groups are significantly different from one another
 
-```{r cancer_group_log_rank, fig.width = 14, fig.height = 6}
+Note that confidence intervals are so large that survival plots are not clearly legible, so we don't make that visualization here.
 
-# Prepare data for model
-meta_indep_cancer_groups_recoded <- meta_indep_cancer_groups %>%
-  # Add OS_years and make OS_status numeric
-  mutate(OS_years = OS_days / 365.25,
-         OS_status = ifelse(OS_status == "LIVING", 0, 1))
-           
+```{r cancer_group_log_rank}
 
-# Run model
-cg_fit_logrank <- survival::survdiff(
-  formula(
-    "survival::Surv(time = OS_years, event = OS_status) ~ cancer_group"
-  ),
-  data = meta_indep_cancer_groups_recoded
-)
+# Print model coefficients
+fit_save_model(meta_indep_cancer_groups,
+               "cancer_group",
+               file.path(results_dir,
+                         "log_rank_survival_per_cancer_group.RDS"),
+               test = "log.rank")
 
-# Obtain p value for Chi-Squared stat
-cg_fit_logrank$p.value <- pchisq(cg_fit_logrank$chisq, df = length(cg_fit_logrank$n) - 1, lower = FALSE)
 
-# Export model as RDS so P-value is included (P-values are not preserved from broom::tidy())
-readr::write_rds(cg_fit_logrank$model, 
-                 file.path(
-                   results_dir, 
-                   "log_rank_survival_per_cancer_group.RDS"
-                   )
-                 )
+# Compare pairwise with Bonferroni correction for multiple testing
+survminer::pairwise_survdiff(survival::Surv(time = OS_years, event = OS_status) ~ cancer_group,
+                             meta_indep_cancer_groups %>% mutate(OS_status = ifelse(OS_status == "LIVING", 0, 1)), 
+                             p.adjust.method = "bonferroni")
 
-# Visualize
-fit_plot_df <- survfit(
-  formula(cg_fit_logrank), 
-  data = meta_indep_cancer_groups_recoded)
-
-plot_logrank <- survminer::ggsurvplot(fit_plot_df,
-                                      data=meta_indep_cancer_groups_recoded,
-                                      xlim = c(0, 14),
-                                      break.time.by = 1,
-                                      pval = TRUE, 
-                                      conf.int = TRUE,
-                                      risk.table = TRUE, # Add risk table
-                                      linetype = "strata", # Change line type by groups
-                                      surv.median.line = "hv", # Specify median survival
-                                      ggtheme = ggpubr::theme_pubr(), # pubr theme
-                                      legend = "right", # legend on the right
-                                      # place p-value in more visible location
-                                      pval.coord  = c(12, 0.9)) 
-
-plot_logrank
-
-# Save to file
-pdf(logrank_cancergroup_plot_file, 
-    width = 14,height = 6)
-print(plot_logrank)
-dev.off()
 ```
 
-## Multivariate analysis 
+## Multivariate models 
 
-### Comparison made is `tp53_score*telomerase_score*hgg_group` 
-
-Initially, it was planned to assess `tp53_score*telomerase_score*cancer_group` here, but the removal of LGG, Ganglioglioma, Craniopharyngioma, and DMG patients resulted in removal of 343 patients, and hence affects telomerase and tp53 predictions. Therefore this model will not be explored.
-
-<!--Therefore, I think we should keep this as-is, but add the interaction, so that we can assess for all possible patients within the PBTA.-->
 
 Background on hazard ratios and output, from [ref](http://www.sthda.com/english/wiki/cox-proportional-hazards-model):
 
@@ -342,23 +266,43 @@ _Statistical significance._ The column marked "z" gives the Wald statistic value
 > Below, HR = exp(coeff) 
 
 
+### Interaction model: `tp53_score*telomerase_score*hgg_group` 
 
-Note we can't use the `survival_analysis()` function here because of the multivariate nature of the terms; that function requires only ONE independent variable. Therefore we use a separate function for the multivariate models, defined in `util/survival_multivariate.R`. This function visualizes and prints the model results, and exports the fitted model as a TSV table. This function does not currently export the _plot_.
+Interaction terms are generally not signifcant, except `tp53_score:telomerase_score` which is only marginally significant at `P=0.0358`. This result suggests an additive model is more appropriate.
 
+```{r multi_interaction_3terms}
+fit_save_model(meta_indep_hgg,    
+             "tp53_score*telomerase_score*hgg_group",
+             file.path(results_dir, "cox_interaction_terms_tp53_telomerase_hgg.RDS"),
+             "multivariate"
+            )
 
-#### TP53 score * Telomerase score * HGG group
-
-```{r multivar-fit-3terms}
-fit_plot_save_cox_multivariate(meta_indep_hgg, 
-                          "tp53_score*telomerase_score*hgg_group", 
-                          results_dir)
+  
 ```
 
 
-#### TP53 score * Telomerase score, for each cancer group.
 
+### Additive model: `tp53_score+telomerase_score+hgg_group` 
+
+
+
+```{r multi_additive_3terms}
+fit_save_model(meta_indep_hgg,    
+             "tp53_score+telomerase_score+hgg_group",
+             file.path(results_dir, "cox_additive_terms_tp53_telomerase_hgg.RDS"),
+             "multivariate")
+```
+
+
+
+### Additive models: ``tp53_score+telomerase_score` _for each cancer group_
+
+> Note the model for DIPG does not converge!
+> ONLY the EPN model shows significant effects for both `tp53_score` and `telomerase_score`, although CIs are fairly wide. The DPG model is marginally significant for `tp53_score` only.
 
 ```{r multivar-fit-2terms}
+base_filename <- "cox_per_cg_terms_tp53_telomerase.RDS" # all file names here will follow this convention
+
 for (cg in cancer_groups_of_interest_df$cancer_group) {
   cat("==============", cg, "==================")
   # filter to cancer group of interest
@@ -366,35 +310,19 @@ for (cg in cancer_groups_of_interest_df$cancer_group) {
     filter(cancer_group == cg)
   
   # Define filename where model will be saved
-  filename <- paste0("cox_reg_results_per_tp53_score-by-telomerase_score_",
-                     stringr::str_replace_all(cg, " ","-"),
-                     ".tsv")
+  filename <- file.path(
+    results_dir,
+    str_replace(base_filename, "cg", cg)
+  )
   
   # Fit model
-  fit_plot_save_cox_multivariate(fit_data, 
-                          "tp53_score*telomerase_score", 
-                          results_dir, 
-                          filename,
-                          paste("tp53*telomerase for ", cg) 
-                          )
+  fit_save_model(fit_data, 
+                 "tp53_score + telomerase_score", 
+                 filename, 
+                 model_type = "multivariate") %>% print()
 }
 
 
-```
-
-
-
-
-## Bivariate density plot of tp53 score and telomerase activity score stratified by HGG group
-
-```{r}
-
-tp53_vs_telomerase <- ggplot(meta_indep_hgg, aes(x = tp53_score, y = telomerase_score))
-tp53_vs_telomerase + 
-  geom_density_2d(aes(color = hgg_group)) +
-  labs(subtitle = "Density stratified by HGG group") +
-  xlim(-0.1,1.2) +
-  theme_bw()
 ```
 
 
