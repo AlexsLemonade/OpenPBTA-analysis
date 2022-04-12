@@ -172,8 +172,6 @@ Rscript --vanilla scripts/supp-subtype-umap.R
 # Panels for supplementary figure 3
 Rscript --vanilla scripts/supp-S3-panels-BCD.R
 
-# TP53 correlation panel for supplementary figure 5
-Rscript --vanilla scripts/supp-tp53-correlation.R
 
 
 
