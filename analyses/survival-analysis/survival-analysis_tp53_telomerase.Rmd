@@ -137,7 +137,7 @@ meta_indep_hgg <- meta_indep %>%
 
 ```{r find_cancer_groups_to_use}
 # Define cancer groups of interest with higher Ns
-# We want to only include groups that have at least THREE in EITHER category. 
+# We want to only include groups that have at least THREE in the DECEASED category. 
 # Find them here:
 cancer_groups_of_interest_df <- meta_indep %>%
   drop_na() %>%
@@ -298,7 +298,7 @@ fit_save_model(meta_indep_hgg,
 ### Additive models: ``tp53_score+telomerase_score` _for each cancer group_
 
 > Note the model for DIPG does not converge!
-> ONLY the EPN model shows significant effects for both `tp53_score` and `telomerase_score`, although CIs are fairly wide. The DPG model is marginally significant for `tp53_score` only.
+> ONLY the EPN model shows significant effects for both `tp53_score` and `telomerase_score`, although CIs are fairly wide. The DMG model is marginally significant for `tp53_score` only.
 
 ```{r multivar-fit-2terms}
 base_filename <- "cox_per_cg_terms_tp53_telomerase.RDS" # all file names here will follow this convention
