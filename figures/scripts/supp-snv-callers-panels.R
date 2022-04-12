@@ -230,9 +230,6 @@ for (dataset in c("tcga", "pbta")) {
     biospecimens <- metadata %>%
       filter(Kids_First_Participant_ID %in% matched_participants) %>%
       pull(Kids_First_Biospecimen_ID)
-
-    n_participants <- length(matched_participants)
-    n_samples <- length(biospecimens)
     
     # Set up the Lancet data from the SQL database and only keep the biospecimens we identified.
     lancet <- tbl(con, "lancet") %>%
@@ -250,6 +247,10 @@ for (dataset in c("tcga", "pbta")) {
       ) %>%
       filter(Tumor_Sample_Barcode %in% biospecimens) %>%
       as.data.frame()
+    
+    # Participant and sample counts
+    n_participants <- length(unique(lancet$Kids_First_Participant_ID))
+    n_samples <- length(unique(lancet$Tumor_Sample_Barcode))
     
     # Prep binary colors
     colors <- binary_palette$hex_codes[binary_palette$color_names != "na_color"]
