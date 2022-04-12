@@ -1793,32 +1793,11 @@ $(document).ready(function () {
 <h4>Packages and functions</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShzdXJ2aXZhbClcbmxpYnJhcnkoZ2dwdWJyKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShzdXJ2aXZhbClcbmxpYnJhcnkoZ2dwdWJyKVxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
 <pre class="r"><code>library(survival)
-library(ggpubr)</code></pre>
+library(ggpubr)
+library(tidyverse)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBnZ3Bsb3QyXG5SZWdpc3RlcmVkIFMzIG1ldGhvZCBvdmVyd3JpdHRlbiBieSAnZHBseXInOlxuICBtZXRob2QgICAgICAgICAgIGZyb21cbiAgcHJpbnQucm93d2lzZV9kZiAgICAgXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IG1hZ3JpdHRyXG4ifQ== -->
-<pre><code>Loading required package: ggplot2
-Registered S3 method overwritten by 'dplyr':
-  method           from
-  print.rowwise_df     
-Loading required package: magrittr</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
-<pre class="r"><code>library(tidyverse)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXHUwMDFiWzMwbeKUgOKUgCBcdTAwMWJbMW1BdHRhY2hpbmcgcGFja2FnZXNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2UgMS4yLjEg4pSA4pSAXHUwMDFiWzM5bVxuXHUwMDFiWzMwbVx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG10aWJibGUgXHUwMDFiWzMwbSAyLjEuMyAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bXB1cnJyICBcdTAwMWJbMzBtIDAuMy4yXG5cdTAwMWJbMzJt4pyUXHUwMDFiWzMwbSBcdTAwMWJbMzRtdGlkeXIgIFx1MDAxYlszMG0gMC44LjMgICAgIFx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG1kcGx5ciAgXHUwMDFiWzMwbSAwLjguM1xuXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bXJlYWRyICBcdTAwMWJbMzBtIDEuMy4xICAgICBcdTAwMWJbMzJt4pyUXHUwMDFiWzMwbSBcdTAwMWJbMzRtc3RyaW5nclx1MDAxYlszMG0gMS40LjBcblx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG10aWJibGUgXHUwMDFiWzMwbSAyLjEuMyAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bWZvcmNhdHNcdTAwMWJbMzBtIDAuNC4wXHUwMDFiWzM5bVxuXHUwMDFiWzMwbeKUgOKUgCBcdTAwMWJbMW1Db25mbGljdHNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2VfY29uZmxpY3RzKCkg4pSA4pSAXG5cdTAwMWJbMzFt4pyWXHUwMDFiWzMwbSBcdTAwMWJbMzRtdGlkeXJcdTAwMWJbMzBtOjpcdTAwMWJbMzJtZXh0cmFjdCgpXHUwMDFiWzMwbSAgIG1hc2tzIFx1MDAxYlszNG1tYWdyaXR0clx1MDAxYlszMG06OmV4dHJhY3QoKVxuXHUwMDFiWzMxbeKcllx1MDAxYlszMG0gXHUwMDFiWzM0bWRwbHlyXHUwMDFiWzMwbTo6XHUwMDFiWzMybWZpbHRlcigpXHUwMDFiWzMwbSAgICBtYXNrcyBcdTAwMWJbMzRtc3RhdHNcdTAwMWJbMzBtOjpmaWx0ZXIoKVxuXHUwMDFiWzMxbeKcllx1MDAxYlszMG0gXHUwMDFiWzM0bWRwbHlyXHUwMDFiWzMwbTo6XHUwMDFiWzMybWxhZygpXHUwMDFiWzMwbSAgICAgICBtYXNrcyBcdTAwMWJbMzRtc3RhdHNcdTAwMWJbMzBtOjpsYWcoKVxuXHUwMDFiWzMxbeKcllx1MDAxYlszMG0gXHUwMDFiWzM0bXB1cnJyXHUwMDFiWzMwbTo6XHUwMDFiWzMybXNldF9uYW1lcygpXHUwMDFiWzMwbSBtYXNrcyBcdTAwMWJbMzRtbWFncml0dHJcdTAwMWJbMzBtOjpzZXRfbmFtZXMoKVx1MDAxYlszOW1cbiJ9 -->
-<pre><code>[30m── [1mAttaching packages[22m ─────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──[39m
-[30m[32m✔[30m [34mtibble [30m 2.1.3     [32m✔[30m [34mpurrr  [30m 0.3.2
-[32m✔[30m [34mtidyr  [30m 0.8.3     [32m✔[30m [34mdplyr  [30m 0.8.3
-[32m✔[30m [34mreadr  [30m 1.3.1     [32m✔[30m [34mstringr[30m 1.4.0
-[32m✔[30m [34mtibble [30m 2.1.3     [32m✔[30m [34mforcats[30m 0.4.0[39m
-[30m── [1mConflicts[22m ────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-[31m✖[30m [34mtidyr[30m::[32mextract()[30m   masks [34mmagrittr[30m::extract()
-[31m✖[30m [34mdplyr[30m::[32mfilter()[30m    masks [34mstats[30m::filter()
-[31m✖[30m [34mdplyr[30m::[32mlag()[30m       masks [34mstats[30m::lag()
-[31m✖[30m [34mpurrr[30m::[32mset_names()[30m masks [34mmagrittr[30m::set_names()[39m</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -1856,11 +1835,6 @@ if (!dir.exists(plots_dir)) {
 <pre class="r"><code># Source functions used to build and export models
 source(file.path(util_dir,&quot;survival_models.R&quot;))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RhdGEudGFibGUnOlxuICBtZXRob2QgICAgICAgICAgIGZyb21cbiAgcHJpbnQuZGF0YS50YWJsZSAgICAgXG4ifQ== -->
-<pre><code>Registered S3 method overwritten by 'data.table':
-  method           from
-  print.data.table     </code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Set up file paths.</p>
@@ -2279,7 +2253,7 @@ NA</code></pre>
 </blockquote>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYmFzZV9maWxlbmFtZSA8LSBcImNveF9wZXJfY2dfdGVybXNfdHA1M190ZWxvbWVyYXNlLlJEU1wiICMgYWxsIGZpbGUgbmFtZXMgaGVyZSB3aWxsIGZvbGxvdyB0aGlzIGNvbnZlbnRpb25cblxuZm9yIChjZyBpbiBjYW5jZXJfZ3JvdXBzX29mX2ludGVyZXN0X2RmJGNhbmNlcl9ncm91cCkge1xuICBjYXQoXCI9PT09PT09PT09PT09PVwiLCBjZywgXCI9PT09PT09PT09PT09PT09PT1cIilcbiAgIyBmaWx0ZXIgdG8gY2FuY2VyIGdyb3VwIG9mIGludGVyZXN0XG4gIGZpdF9kYXRhIDwtIG1ldGFfaW5kZXAgJT4lIFxuICAgIGZpbHRlcihjYW5jZXJfZ3JvdXAgPT0gY2cpXG4gIFxuICAjIERlZmluZSBmaWxlbmFtZSB3aGVyZSBtb2RlbCB3aWxsIGJlIHNhdmVkXG4gIGZpbGVuYW1lIDwtIHN0cl9yZXBsYWNlKGJhc2VfZmlsZW5hbWUsIFwiY2dcIiwgY2cpXG4gIFxuICAjIEZpdCBtb2RlbFxuICBmaXRfc2F2ZV9tb2RlbChmaXRfZGF0YSwgXG4gICAgICAgICAgICAgICAgIFwidHA1M19zY29yZSArIHRlbG9tZXJhc2Vfc2NvcmVcIiwgXG4gICAgICAgICAgICAgICAgIGZpbGVuYW1lLCBcbiAgICAgICAgICAgICAgICAgbW9kZWxfdHlwZSA9IFwibXVsdGl2YXJpYXRlXCIpICU+JSBwcmludCgpXG59XG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYmFzZV9maWxlbmFtZSA8LSBcImNveF9wZXJfY2dfdGVybXNfdHA1M190ZWxvbWVyYXNlLlJEU1wiICMgYWxsIGZpbGUgbmFtZXMgaGVyZSB3aWxsIGZvbGxvdyB0aGlzIGNvbnZlbnRpb25cblxuZm9yIChjZyBpbiBjYW5jZXJfZ3JvdXBzX29mX2ludGVyZXN0X2RmJGNhbmNlcl9ncm91cCkge1xuICBjYXQoXCI9PT09PT09PT09PT09PVwiLCBjZywgXCI9PT09PT09PT09PT09PT09PT1cIilcbiAgIyBmaWx0ZXIgdG8gY2FuY2VyIGdyb3VwIG9mIGludGVyZXN0XG4gIGZpdF9kYXRhIDwtIG1ldGFfaW5kZXAgJT4lIFxuICAgIGZpbHRlcihjYW5jZXJfZ3JvdXAgPT0gY2cpXG4gIFxuICAjIERlZmluZSBmaWxlbmFtZSB3aGVyZSBtb2RlbCB3aWxsIGJlIHNhdmVkXG4gIGZpbGVuYW1lIDwtIGZpbGUucGF0aChcbiAgICByZXN1bHRzX2RpcixcbiAgICBzdHJfcmVwbGFjZShiYXNlX2ZpbGVuYW1lLCBcImNnXCIsIGNnKVxuICApXG4gIFxuICAjIEZpdCBtb2RlbFxuICBmaXRfc2F2ZV9tb2RlbChmaXRfZGF0YSwgXG4gICAgICAgICAgICAgICAgIFwidHA1M19zY29yZSArIHRlbG9tZXJhc2Vfc2NvcmVcIiwgXG4gICAgICAgICAgICAgICAgIGZpbGVuYW1lLCBcbiAgICAgICAgICAgICAgICAgbW9kZWxfdHlwZSA9IFwibXVsdGl2YXJpYXRlXCIpICU+JSBwcmludCgpXG59XG5gYGAifQ== -->
 <pre class="r"><code>base_filename &lt;- &quot;cox_per_cg_terms_tp53_telomerase.RDS&quot; # all file names here will follow this convention
 
 for (cg in cancer_groups_of_interest_df$cancer_group) {
@@ -2289,7 +2263,10 @@ for (cg in cancer_groups_of_interest_df$cancer_group) {
     filter(cancer_group == cg)
   
   # Define filename where model will be saved
-  filename &lt;- str_replace(base_filename, &quot;cg&quot;, cg)
+  filename &lt;- file.path(
+    results_dir,
+    str_replace(base_filename, &quot;cg&quot;, cg)
+  )
   
   # Fit model
   fit_save_model(fit_data, 
@@ -2382,7 +2359,7 @@ for (cg in cancer_groups_of_interest_df$cancer_group) {
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgICBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgICBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgICBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcbiBbMV0gc3Vydm1pbmVyXzAuNC40ICAgZm9yY2F0c18wLjQuMCAgICAgc3RyaW5ncl8xLjQuMCAgICAgZHBseXJfMC44LjMgICAgICAgcHVycnJfMC4zLjIgICAgICAgcmVhZHJfMS4zLjEgICAgICBcbiBbN10gdGlkeXJfMC44LjMgICAgICAgdGliYmxlXzIuMS4zICAgICAgdGlkeXZlcnNlXzEuMi4xICAgZ2dwdWJyXzAuMi4xICAgICAgbWFncml0dHJfMS41ICAgICAgZ2dwbG90Ml8zLjIuMCAgICBcblsxM10gc3Vydml2YWxfMi40NC0xLjFcblxubG9hZGVkIHZpYSBhIG5hbWVzcGFjZSAoYW5kIG5vdCBhdHRhY2hlZCk6XG4gWzFdIHpvb18xLjgtNiAgICAgICAgIHRpZHlzZWxlY3RfMC4yLjUgIHhmdW5fMC44ICAgICAgICAgIHNwbGluZXNfMy42LjAgICAgIGhhdmVuXzIuMS4xICAgICAgIGxhdHRpY2VfMC4yMC0zOCAgXG4gWzddIGNvbG9yc3BhY2VfMS40LTEgIGdlbmVyaWNzXzAuMC4yICAgIHN1cnZNaXNjXzAuNS41ICAgIHJsYW5nXzAuNC4wICAgICAgIHBpbGxhcl8xLjQuMiAgICAgIGdsdWVfMS4zLjEgICAgICAgXG5bMTNdIHdpdGhyXzIuMS4yICAgICAgIG1vZGVscl8wLjEuNCAgICAgIHJlYWR4bF8xLjMuMSAgICAgIG11bnNlbGxfMC41LjAgICAgIGdnc2lnbmlmXzAuNS4wICAgIGd0YWJsZV8wLjMuMCAgICAgXG5bMTldIGNlbGxyYW5nZXJfMS4xLjAgIHJ2ZXN0XzAuMy40ICAgICAgIGtuaXRyXzEuMjMgICAgICAgIGJyb29tXzAuNS4yICAgICAgIFJjcHBfMS4wLjEgICAgICAgIHh0YWJsZV8xLjgtNCAgICAgXG5bMjVdIGJhY2twb3J0c18xLjEuNCAgIHNjYWxlc18xLjAuMCAgICAgIGNtcHJza18yLjItOCAgICAgIGpzb25saXRlXzEuNiAgICAgIGttLmNpXzAuNS0yICAgICAgIGdyaWRFeHRyYV8yLjMgICAgXG5bMzFdIGhtc18wLjQuMiAgICAgICAgIHN0cmluZ2lfMS40LjMgICAgIEtNc3Vydl8wLjEtNSAgICAgIGdyaWRfMy42LjAgICAgICAgIHJwcm9qcm9vdF8xLjMtMiAgIGNsaV8xLjEuMCAgICAgICAgXG5bMzddIHRvb2xzXzMuNi4wICAgICAgIGxhenlldmFsXzAuMi4yICAgIGNyYXlvbl8xLjMuNCAgICAgIHBrZ2NvbmZpZ18yLjAuMiAgIE1hdHJpeF8xLjItMTcgICAgIGRhdGEudGFibGVfMS4xMi4yXG5bNDNdIHhtbDJfMS4yLjAgICAgICAgIGx1YnJpZGF0ZV8xLjcuNCAgIGFzc2VydHRoYXRfMC4yLjEgIGh0dHJfMS40LjAgICAgICAgIHJzdHVkaW9hcGlfMC4xMCAgIFI2XzIuNC4wICAgICAgICAgXG5bNDldIG5sbWVfMy4xLTE0MCAgICAgIGNvbXBpbGVyXzMuNi4wICAgXG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgICBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgICBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgICBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcbiBbMV0gc3Vydm1pbmVyXzAuNC40ICAgZm9yY2F0c18wLjQuMCAgICAgc3RyaW5ncl8xLjQuMCAgICAgZHBseXJfMC44LjMgICAgICAgcHVycnJfMC4zLjIgICAgICAgcmVhZHJfMS4zLjEgICAgICBcbiBbN10gdGlkeXJfMC44LjMgICAgICAgdGliYmxlXzIuMS4zICAgICAgdGlkeXZlcnNlXzEuMi4xICAgZ2dwdWJyXzAuMi4xICAgICAgbWFncml0dHJfMS41ICAgICAgZ2dwbG90Ml8zLjIuMCAgICBcblsxM10gc3Vydml2YWxfMi40NC0xLjFcblxubG9hZGVkIHZpYSBhIG5hbWVzcGFjZSAoYW5kIG5vdCBhdHRhY2hlZCk6XG4gWzFdIHpvb18xLjgtNiAgICAgICAgIHRpZHlzZWxlY3RfMC4yLjUgIHhmdW5fMC44ICAgICAgICAgIHNwbGluZXNfMy42LjAgICAgIGhhdmVuXzIuMS4xICAgICAgIGxhdHRpY2VfMC4yMC0zOCAgXG4gWzddIGNvbG9yc3BhY2VfMS40LTEgIGdlbmVyaWNzXzAuMC4yICAgIGh0bWx0b29sc18wLjMuNiAgIGJhc2U2NGVuY18wLjEtMyAgIHlhbWxfMi4yLjAgICAgICAgIHN1cnZNaXNjXzAuNS41ICAgXG5bMTNdIHJsYW5nXzAuNC4wICAgICAgIHBpbGxhcl8xLjQuMiAgICAgIGdsdWVfMS4zLjEgICAgICAgIHdpdGhyXzIuMS4yICAgICAgIG1vZGVscl8wLjEuNCAgICAgIHJlYWR4bF8xLjMuMSAgICAgXG5bMTldIG11bnNlbGxfMC41LjAgICAgIGdnc2lnbmlmXzAuNS4wICAgIGd0YWJsZV8wLjMuMCAgICAgIGNlbGxyYW5nZXJfMS4xLjAgIHJ2ZXN0XzAuMy40ICAgICAgIGV2YWx1YXRlXzAuMTQgICAgXG5bMjVdIGtuaXRyXzEuMjMgICAgICAgIGJyb29tXzAuNS4yICAgICAgIFJjcHBfMS4wLjEgICAgICAgIHh0YWJsZV8xLjgtNCAgICAgIGJhY2twb3J0c18xLjEuNCAgIHNjYWxlc18xLjAuMCAgICAgXG5bMzFdIGNtcHJza18yLjItOCAgICAgIGpzb25saXRlXzEuNiAgICAgIGttLmNpXzAuNS0yICAgICAgIGdyaWRFeHRyYV8yLjMgICAgIGRpZ2VzdF8wLjYuMjAgICAgIGhtc18wLjQuMiAgICAgICAgXG5bMzddIHN0cmluZ2lfMS40LjMgICAgIEtNc3Vydl8wLjEtNSAgICAgIGdyaWRfMy42LjAgICAgICAgIHJwcm9qcm9vdF8xLjMtMiAgIGNsaV8xLjEuMCAgICAgICAgIHRvb2xzXzMuNi4wICAgICAgXG5bNDNdIGxhenlldmFsXzAuMi4yICAgIGNyYXlvbl8xLjMuNCAgICAgIHBrZ2NvbmZpZ18yLjAuMiAgIE1hdHJpeF8xLjItMTcgICAgIHJzY29ubmVjdF8wLjguMTMgIGRhdGEudGFibGVfMS4xMi4yXG5bNDldIHhtbDJfMS4yLjAgICAgICAgIGx1YnJpZGF0ZV8xLjcuNCAgIHJtYXJrZG93bl8xLjEzICAgIGFzc2VydHRoYXRfMC4yLjEgIGh0dHJfMS40LjAgICAgICAgIHJzdHVkaW9hcGlfMC4xMCAgXG5bNTVdIFI2XzIuNC4wICAgICAgICAgIG5sbWVfMy4xLTE0MCAgICAgIGNvbXBpbGVyXzMuNi4wICAgXG4ifQ== -->
 <pre><code>R version 3.6.0 (2019-04-26)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Debian GNU/Linux 9 (stretch)
@@ -2405,14 +2382,15 @@ other attached packages:
 
 loaded via a namespace (and not attached):
  [1] zoo_1.8-6         tidyselect_0.2.5  xfun_0.8          splines_3.6.0     haven_2.1.1       lattice_0.20-38  
- [7] colorspace_1.4-1  generics_0.0.2    survMisc_0.5.5    rlang_0.4.0       pillar_1.4.2      glue_1.3.1       
-[13] withr_2.1.2       modelr_0.1.4      readxl_1.3.1      munsell_0.5.0     ggsignif_0.5.0    gtable_0.3.0     
-[19] cellranger_1.1.0  rvest_0.3.4       knitr_1.23        broom_0.5.2       Rcpp_1.0.1        xtable_1.8-4     
-[25] backports_1.1.4   scales_1.0.0      cmprsk_2.2-8      jsonlite_1.6      km.ci_0.5-2       gridExtra_2.3    
-[31] hms_0.4.2         stringi_1.4.3     KMsurv_0.1-5      grid_3.6.0        rprojroot_1.3-2   cli_1.1.0        
-[37] tools_3.6.0       lazyeval_0.2.2    crayon_1.3.4      pkgconfig_2.0.2   Matrix_1.2-17     data.table_1.12.2
-[43] xml2_1.2.0        lubridate_1.7.4   assertthat_0.2.1  httr_1.4.0        rstudioapi_0.10   R6_2.4.0         
-[49] nlme_3.1-140      compiler_3.6.0   </code></pre>
+ [7] colorspace_1.4-1  generics_0.0.2    htmltools_0.3.6   base64enc_0.1-3   yaml_2.2.0        survMisc_0.5.5   
+[13] rlang_0.4.0       pillar_1.4.2      glue_1.3.1        withr_2.1.2       modelr_0.1.4      readxl_1.3.1     
+[19] munsell_0.5.0     ggsignif_0.5.0    gtable_0.3.0      cellranger_1.1.0  rvest_0.3.4       evaluate_0.14    
+[25] knitr_1.23        broom_0.5.2       Rcpp_1.0.1        xtable_1.8-4      backports_1.1.4   scales_1.0.0     
+[31] cmprsk_2.2-8      jsonlite_1.6      km.ci_0.5-2       gridExtra_2.3     digest_0.6.20     hms_0.4.2        
+[37] stringi_1.4.3     KMsurv_0.1-5      grid_3.6.0        rprojroot_1.3-2   cli_1.1.0         tools_3.6.0      
+[43] lazyeval_0.2.2    crayon_1.3.4      pkgconfig_2.0.2   Matrix_1.2-17     rsconnect_0.8.13  data.table_1.12.2
+[49] xml2_1.2.0        lubridate_1.7.4   rmarkdown_1.13    assertthat_0.2.1  httr_1.4.0        rstudioapi_0.10  
+[55] R6_2.4.0          nlme_3.1-140      compiler_3.6.0   </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 </div>
