@@ -191,9 +191,12 @@ descriptor_plot <- data_descriptor_plot %>%
     fill = "Tumor descriptor"
   ) +
   ggpubr::theme_pubr() +
-  theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 0.8, vjust = 0.9),
-        axis.text.y = element_text(size = 10),
-        strip.text = element_text(size = 9))
+  theme(axis.text.x = element_text(size = 12, 
+                                   angle = 45, 
+                                   hjust = 0.8, 
+                                   vjust = 0.9),
+        axis.text.y = element_text(size = 12),
+        strip.text = element_text(size = 12))
 
 #Save!
 ggsave(filename = file.path(main_output_dir,
