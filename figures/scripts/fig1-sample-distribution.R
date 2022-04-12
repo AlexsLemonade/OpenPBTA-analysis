@@ -184,7 +184,7 @@ descriptor_plot <- data_descriptor_plot %>%
   scale_fill_manual(values = tumor_descriptor_palette) + 
   facet_wrap(~bh_strip, 
              scales = "free", 
-             nrow = 2) +
+             nrow = 3) +
   labs(
     x = "Cancer group",
     y = "Number of samples", 
@@ -199,8 +199,8 @@ descriptor_plot <- data_descriptor_plot %>%
 ggsave(filename = file.path(main_output_dir,
                             "tumor_descriptor_proportion_panel.pdf"),
        plot = descriptor_plot,
-       width = 12,
-       height = 5)
+       width = 10,
+       height = 12)
 
 
 #### Assay types bar plots -----------------------------------------------------
