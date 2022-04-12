@@ -164,6 +164,13 @@ Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.
 cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_sina_IQR.pdf  pdfs/fig3/panels/mutational_signatures_exposures.pdf
 
 
+######## Immune deconvolution with quanTIseq (5C)
+# run the immune-deconv module:
+bash ${analyses_dir}/immune-deconv/run-immune-deconv.sh
+# copy figure panel:
+cp ${analyses_dir}/immune-deconv/plots/cell_types-molecular_subtypes.pdf  pdfs/fig5/panels/quantiseq-cell_types-molecular_subtypes.pdf
+
+
 ####### Supplementary figures
 
 # UMAP panels for supplementary figure 2 from molecular analysis 
