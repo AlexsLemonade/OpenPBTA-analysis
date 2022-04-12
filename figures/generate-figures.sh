@@ -136,6 +136,10 @@ Rscript --vanilla scripts/fig5-panels-gsva-umap.R
 # Generate the tp53 scores boxplot for figure 3
 Rscript --vanilla scripts/fig3-panel-tp53.R
 
+###### Hypermutator signatures
+# Copy the figure to final directory
+cp ${analyses_dir}/mutational-signatures/plots/cns/hypermutator_sigs_heatmap.pdf  pdfs/fig4/panels/hypermutator_sigs_heatmap.pdf
+cp ${analyses_dir}/mutational-signatures/plots/cns/hypermutator_sigs_heatmap_legends.pdf  pdfs/fig4/panels/hypermutator_sigs_heatmap_legends.pdf
 
 ####### Sample distributions
 
@@ -160,6 +164,13 @@ Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.
 cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_sina_IQR.pdf  pdfs/fig3/panels/mutational_signatures_exposures.pdf
 
 
+######## Immune deconvolution with quanTIseq (5C)
+# run the immune-deconv module:
+bash ${analyses_dir}/immune-deconv/run-immune-deconv.sh
+# copy figure panel:
+cp ${analyses_dir}/immune-deconv/plots/cell_types-molecular_subtypes.pdf  pdfs/fig5/panels/quantiseq-cell_types-molecular_subtypes.pdf
+
+
 ####### Supplementary figures
 
 # UMAP panels for supplementary figure 2 from molecular analysis 
@@ -168,8 +179,6 @@ Rscript --vanilla scripts/supp-subtype-umap.R
 # Panels for supplementary figure 3
 Rscript --vanilla scripts/supp-S3-panels-BCD.R
 
-# TP53 correlation panel for supplementary figure 5
-Rscript --vanilla scripts/supp-tp53-correlation.R
 
 
 
