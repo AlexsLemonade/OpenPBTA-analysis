@@ -143,7 +143,7 @@ cancer_groups_of_interest_df <- meta_indep %>%
   drop_na() %>%
   count(cancer_group,OS_status) %>%
   spread(OS_status, n,
-         # any missing values (indicating 0 deceased or 0 living) should be 0, not NA
+         # When there are no events, record the event count as 0 instead of the default NA
          fill = 0) %>%
   filter(DECEASED >= 3) 
 # show result: there are 7 groups to keep
