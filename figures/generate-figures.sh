@@ -185,8 +185,8 @@ Rscript --vanilla scripts/supp-S3-panels-BCD.R
 
 
 # Copy Figure S4 panels (analysis module was run previously)
-cp ${analyses_dir}/mutational-signatures/plots/cns/signature1_tumor-descriptor_cancer-groups.pdf   pdfs/fig4/panels/
-cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_per_sample_barplot.pdf    pdfs/fig4/panels/
+cp ${analyses_dir}/mutational-signatures/plots/cns/signature1_tumor-descriptor_cancer-groups.pdf   pdfs/supp/figs4/panels/
+cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_per_sample_barplot.pdf    pdfs/supp/figs4/panels/
 
 
 
