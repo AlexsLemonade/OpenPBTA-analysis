@@ -176,7 +176,7 @@ tp53_compare <- tp53_compare %>%
     TRUE ~ tp53_altered
   ))
 
-# Prepare expression data
+# Prepare data for all plots - we want stranded ONLY
 # subset to TP53
 subset_stranded <- t(stranded_expression)[,"TP53"]
 # Join STRANDED expression with tp53 alteration
@@ -186,14 +186,15 @@ stranded_tp53 <- as.data.frame(subset_stranded) %>%
   rownames_to_column(var = "Kids_First_Biospecimen_ID_RNA") %>%
   # easier to work with
   as_tibble() %>%
+  # inner_join ensures stranded-only
   inner_join(tp53_compare, by = "Kids_First_Biospecimen_ID_RNA") %>%
   # keep only columns we need
-  select(Kids_First_Biospecimen_ID_RNA, tp53_expression, tp53_altered) %>%
+  select(Kids_First_Biospecimen_ID_RNA, tp53_expression, tp53_altered, tp53_score) %>%
   distinct()
 
 
 # Make the figures
-tp53_scores_plot <- tp53_compare %>%
+tp53_scores_plot <- stranded_tp53 %>%
   rename(tp53 = tp53_score) %>%
   ### ggplot
   plot_tp53(pvalue_y = 1.05) +
