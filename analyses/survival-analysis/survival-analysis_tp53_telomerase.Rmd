@@ -268,17 +268,19 @@ _Statistical significance._ The column marked "z" gives the Wald statistic value
 
 ### Interaction model: `tp53_score*telomerase_score*hgg_group` 
 
-Interaction terms are generally not signifcant, except `tp53_score:telomerase_score` which is only marginally significant at `P=0.0358`. This result suggests an additive model is more appropriate.
+
 
 ```{r multi_interaction_3terms}
-fit_save_model(meta_indep_hgg,    
+# we save this for the purpose of printing out a p-value below
+fitted <- fit_save_model(meta_indep_hgg,    
              "tp53_score*telomerase_score*hgg_group",
              file.path(results_dir, "cox_interaction_terms_tp53_telomerase_hgg.RDS"),
              "multivariate"
             )
-
+fitted
   
 ```
+Interaction terms are generally not significant, except `tp53_score:telomerase_score` which is only marginally significant at $P=`r fitted$p.value[fitted$term == "tp53_score:telomerase_score"]`$. This result suggests an additive model is more appropriate.
 
 
 
@@ -297,8 +299,11 @@ fit_save_model(meta_indep_hgg,
 
 ### Additive models: `tp53_score+telomerase_score` _for each cancer group_
 
-> Note the model for DIPG does not converge!
-> ONLY the EPN model shows significant effects for both `tp53_score` and `telomerase_score`, although CIs are fairly wide. The DMG model is marginally significant for `tp53_score` only.
+Note the model for DIPG does not converge! 
+
+ONLY the EPN model shows significant effects for both `tp53_score` and `telomerase_score`, although CIs are fairly wide. 
+
+The DMG model is marginally significant for `tp53_score` only.
 
 ```{r multivar-fit-2terms}
 base_filename <- "cox_per_cg_terms_tp53_telomerase.RDS" # all file names here will follow this convention
