@@ -137,6 +137,10 @@ Rscript --vanilla scripts/fig5-panels-gsva-umap.R
 Rscript --vanilla scripts/fig3-panel-tp53.R
 
 ###### Hypermutator signatures
+# Run the mutational-signatures module
+bash ${analyses_dir}/mutational-signatures/run_mutational_signatures.sh
+
+
 # Copy the figure to final directory
 cp ${analyses_dir}/mutational-signatures/plots/cns/hypermutator_sigs_heatmap.pdf  pdfs/fig4/panels/hypermutator_sigs_heatmap.pdf
 cp ${analyses_dir}/mutational-signatures/plots/cns/hypermutator_sigs_heatmap_legends.pdf  pdfs/fig4/panels/hypermutator_sigs_heatmap_legends.pdf
@@ -178,6 +182,12 @@ Rscript --vanilla scripts/supp-subtype-umap.R
 
 # Panels for supplementary figure 3
 Rscript --vanilla scripts/supp-S3-panels-BCD.R
+
+
+# Copy Figure S4 panels (analysis module was run previously)
+cp ${analyses_dir}/mutational-signatures/plots/cns/signature1_tumor-descriptor_cancer-groups.pdf   pdfs/supp/figs4/panels/
+cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_per_sample_barplot.pdf    pdfs/supp/figs4/panels/
+
 
 
 
