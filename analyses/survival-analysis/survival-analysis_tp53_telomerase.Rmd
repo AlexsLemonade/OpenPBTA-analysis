@@ -118,20 +118,20 @@ meta_indep
 
 We create two new tibbles from `meta_indep`:
 
-+ `meta_indep_hgg` which contains a new column `hgg_group` that contains levels (in order) `non-HGAT` and `HGAT` indicating whether it's an HGG sample
++ `meta_indep_hgg` which contains a new column `hgg_group` that contains levels (in order) `non-HGG` and `HGG` indicating whether it's an HGG sample
 + `meta_indep_cancers` which is subsetted to only certain cancer groups of interest that have suitable sample sizes which we find here.
 
 ```{r hgg_split}
 # Define HGG groups
 hgg_cancer_groups <- c("High-grade glioma astrocytoma", "Diffuse midline glioma", "Diffuse intrinsic pontine glioma") 
-hgg_levels <- c("non-HGAT", "HGAT")
+hgg_levels <- c("non-HGG", "HGG")
 
 # separate into HGG or non-HGG and make the new column a factor
 meta_indep_hgg <- meta_indep %>% 
    mutate(hgg_group = ifelse(cancer_group %in% hgg_cancer_groups,
-                             hgg_levels[2], # second is HGAT 
-                             hgg_levels[1]), # first is non-HGAT
-          hgg_group = factor(hgg_group, levels = hgg_levels) # ensures non-HGAT is the reference level
+                             hgg_levels[2], # second is HGG 
+                             hgg_levels[1]), # first is non-HGG
+          hgg_group = factor(hgg_group, levels = hgg_levels) # ensures non-HGG is the reference level
    )
 ```
 
@@ -193,7 +193,7 @@ fit_save_model(meta_indep,
 
 ###  HGG group
 
-> non-HGAT is the reference level.
+> non-HGG is the reference level.
 
 ```{r cox_hgg}
 fit_save_model(meta_indep_hgg, 
