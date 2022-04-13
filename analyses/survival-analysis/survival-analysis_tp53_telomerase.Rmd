@@ -295,7 +295,7 @@ fit_save_model(meta_indep_hgg,
 
 
 
-### Additive models: ``tp53_score+telomerase_score` _for each cancer group_
+### Additive models: `tp53_score+telomerase_score` _for each cancer group_
 
 > Note the model for DIPG does not converge!
 > ONLY the EPN model shows significant effects for both `tp53_score` and `telomerase_score`, although CIs are fairly wide. The DMG model is marginally significant for `tp53_score` only.
