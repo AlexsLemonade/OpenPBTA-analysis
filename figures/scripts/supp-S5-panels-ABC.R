@@ -146,8 +146,8 @@ tert_plot <- plot_extend_scatter(extend_fpkm_df, stats_annotation_df, "TERT", 4.
 terc_plot <- plot_extend_scatter(extend_fpkm_df, stats_annotation_df, "TERC", 6) #S5c
 
 
-ggsave(tert_file, tert_plot, width = 5, height = 4)
-ggsave(terc_file, terc_plot, width = 5, height = 4)
+ggsave(tert_file, tert_plot, width = 5, height = 5)
+ggsave(terc_file, terc_plot, width = 5, height = 5)
 
 
 
