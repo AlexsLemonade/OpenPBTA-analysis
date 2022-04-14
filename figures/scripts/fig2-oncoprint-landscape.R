@@ -1,6 +1,6 @@
-# JN Taroni for ALSF CCDL 2021
+# JN Taroni and SJ Spielman for ALSF CCDL 2021-2022
 #
-# Makes publication ready OncoPrint panels (PDFs)
+# Makes publication ready OncoPrint panels, specifically for primary-only (PDFs)
 
 #### Directories ---------------------------------------------------------------
 
@@ -131,7 +131,7 @@ maf_suffix <- "_maf.tsv"
 cnv_suffix <- "_cnv.tsv"
 fusion_suffix <- "_fusions.tsv"
 
-# Tiny function to make both lists of files
+# Tiny function to make lists of files
 create_data_input_list <- function(prefix) {
   list(
     maf = file.path(data_input_dir, paste0(prefix, maf_suffix)),
@@ -141,10 +141,12 @@ create_data_input_list <- function(prefix) {
 }
 
 # Create the data input file lists for both primary and primary-plus
+# Primary-plus is not currently used in main text, so commented out
 data_input_list <- list(
-  primary_only = create_data_input_list("primary_only"),
-  primary_plus = create_data_input_list("primary-plus")
+  primary_only = create_data_input_list("primary_only") #,
+  #primary_plus = create_data_input_list("primary-plus")
 )
+
 
 #### Metadata ------------------------------------------------------------------
 
@@ -180,10 +182,18 @@ cancer_group_palette <- group_palette_df %>%
 cancer_group_colors <- cancer_group_palette$oncoprint_hex
 names(cancer_group_colors) <- cancer_group_palette$cancer_group
 
+# For coloring male and female:
+binary_palette_df <- readr::read_tsv(
+  file.path(palette_dir, "binary_color_palette.tsv")
+)
+
+# this variable is used again to make the "Other CNS" legend
+germline_sex_estimate_colors <-  c("Male" = binary_palette_df$hex_codes[binary_palette_df$color_names == "binary_1"],
+                                   "Female" = binary_palette_df$hex_codes[binary_palette_df$color_names == "binary_2"])
+
 # Now format the color key object into a list
 annotation_colors <- list(cancer_group = cancer_group_colors,
-                          germline_sex_estimate = c("Male" = "#2166ac",
-                                                    "Female" = "#b2182b"))
+                          germline_sex_estimate = germline_sex_estimate_colors)
 
 #### Hardcoding legend ordering ------------------------------------------------
 # These reflect the cancer groups that are included, and their ordering, for
@@ -197,15 +207,13 @@ legend_ordering <- list(
   ),
   hgat = c(
     "Diffuse midline glioma",
-    "High-grade glioma astrocytoma",
-    "Oligodendroglioma"
+    "High-grade glioma astrocytoma"
   ),
   embryonal = c(
     "Medulloblastoma",
     "Atypical Teratoid Rhabdoid Tumor",
-    "Embryonal tumor with multilayer rosettes",
     "CNS Embryonal tumor",
-    "Ganglioneuroblastoma"
+    "Embryonal tumor with multilayer rosettes"
   ),
   other = c(
     "Ependymoma",
@@ -305,8 +313,9 @@ for (type_iter in seq_along(data_input_list)) {
       annotationColor = annotation_colors,
       bgCol = "#F5F5F5",
       drawRowBar = FALSE,
-      titleText = histology,
-      titleFontSize = 1.3,
+      showTitle = FALSE, # a legible font size is not possible to fit into margins
+      #titleText = histology,
+      #titleFontSize = 1.3,
       gene_mar = 10
     )
 
@@ -383,7 +392,7 @@ for (type_iter in seq_along(data_input_list)) {
 
       pdf(
         file.path(supp_output_dir, output_pdf),
-        width = 13.75,
+        width = 14, # a little wider, since legend was cut off
         height = 7.9
       )
 
@@ -398,14 +407,14 @@ for (type_iter in seq_along(data_input_list)) {
         annotationFontSize = 1.25,
         SampleNamefontSize = 1,
         annotationColor = list(cancer_group = supp_colors,
-                               germline_sex_estimate = c("Male" = "#2166ac",
-                                                         "Female" = "#b2182b")),
+                               germline_sex_estimate = germline_sex_estimate_colors),
         fontSize = 1,
         colors = oncoprint_palette,
         bgCol = "#F5F5F5",
         drawRowBar = FALSE,
-        titleText = histology,
-        titleFontSize = 1.3,
+        showTitle = FALSE, # a legible font size is not possible to fit into margins
+        #titleText = histology,
+        #titleFontSize = 1.3,
         gene_mar = 10
       )
 
