@@ -193,6 +193,20 @@ fitted
 
 Above, no effects are significant at P<0.01. Only one cell type, `T_cell_CD8`, is marginally significant ($P=`r fitted$p.value[fitted$term == "T_cell_CD8"]`$), but it's confidence interval is *huge* so the exact effect is challenging to discern.
 
+## Analysis: quantiseq cell type fractions and PDL-1  across entire cohort
+
+> No effects are significant
+
+```{r cox_cell_type_cd274}
+
+# saving so P-values can be programmatically grabbed
+fitted <- fit_save_model(combined_df_stranded,
+                         paste0(quantiseq_terms, "+CD274"),
+                         file.path(results_dir, "cox_terms_quantiseq.RDS"),
+                         model_type = "multivariate")
+fitted
+```
+
 ## Determine suitable cancer groups for analysis
 
 For cancer group analyses, we only want to consider groups with at least THREE DECEASED, again considering stranded only. We find those groups here:
