@@ -182,14 +182,9 @@ cancer_group_palette <- group_palette_df %>%
 cancer_group_colors <- cancer_group_palette$oncoprint_hex
 names(cancer_group_colors) <- cancer_group_palette$cancer_group
 
-# For coloring male and female:
-binary_palette_df <- readr::read_tsv(
-  file.path(palette_dir, "binary_color_palette.tsv")
-)
-
-# this variable is used again to make the "Other CNS" legend
-germline_sex_estimate_colors <-  c("Male" = binary_palette_df$hex_codes[binary_palette_df$color_names == "binary_1"],
-                                   "Female" = binary_palette_df$hex_codes[binary_palette_df$color_names == "binary_2"])
+# Define array of colors for sex estimates
+germline_sex_estimate_colors <- c("Male"   = "#2166ac",
+                                  "Female" = "#b2182b")
 
 # Now format the color key object into a list
 annotation_colors <- list(cancer_group = cancer_group_colors,
@@ -313,9 +308,8 @@ for (type_iter in seq_along(data_input_list)) {
       annotationColor = annotation_colors,
       bgCol = "#F5F5F5",
       drawRowBar = FALSE,
-      showTitle = FALSE, # a legible font size is not possible to fit into margins
-      #titleText = histology,
-      #titleFontSize = 1.3,
+      titleText = histology,
+      titleFontSize = 1.3,
       gene_mar = 10
     )
 
@@ -412,9 +406,8 @@ for (type_iter in seq_along(data_input_list)) {
         colors = oncoprint_palette,
         bgCol = "#F5F5F5",
         drawRowBar = FALSE,
-        showTitle = FALSE, # a legible font size is not possible to fit into margins
-        #titleText = histology,
-        #titleFontSize = 1.3,
+        titleText = histology,
+        titleFontSize = 1.3,
         gene_mar = 10
       )
 
