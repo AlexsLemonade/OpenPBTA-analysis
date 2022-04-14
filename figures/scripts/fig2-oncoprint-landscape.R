@@ -392,8 +392,8 @@ for (type_iter in seq_along(data_input_list)) {
 
       pdf(
         file.path(supp_output_dir, output_pdf),
-        width = 14, # a little wider, since legend was cut off
-        height = 7.9
+        width = 18, # wider to fit the full legend 
+        height = 10.35 # height to match increased width so this has the same aspect ratio as other oncoplots
       )
 
       oncoplot(
