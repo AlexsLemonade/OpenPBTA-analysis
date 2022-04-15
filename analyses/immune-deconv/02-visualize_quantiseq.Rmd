@@ -85,12 +85,7 @@ palette_mapping_df <- histologies_df %>%
   select(Kids_First_Biospecimen_ID,
          contains("broad_histology"), 
          contains("cancer_group"),
-         molecular_subtype)  %>%
-  # Add schwannoma & neurofibroma for plotting
-  mutate(molecular_subtype = case_when(cancer_group == "Schwannoma" ~ "Schwannoma",
-                                       cancer_group == "Neurofibroma Plexiform" ~ "Neurofibroma",
-                                       TRUE ~ as.character(molecular_subtype)))
-
+         molecular_subtype)
 
 #### Array of groups we want to visualize
 cancer_groups_of_interest <- c("High-grade glioma astrocytoma", 
