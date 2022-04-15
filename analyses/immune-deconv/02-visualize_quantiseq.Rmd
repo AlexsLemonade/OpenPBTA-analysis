@@ -44,6 +44,7 @@ stranded_file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.s
 
 
 # Define output files
+cg_celltypes_plot_file <- file.path(output_dir, "cell_types-cancer_groups.pdf")
 subtypes_celltypes_plot_file <- file.path(output_dir, "cell_types-molecular_subtypes.pdf")
 pdl1_distributions_plot_file  <- file.path(output_dir, "PDL1_expression_distributions.pdf")
 ```
@@ -84,14 +85,22 @@ palette_mapping_df <- histologies_df %>%
   select(Kids_First_Biospecimen_ID,
          contains("broad_histology"), 
          contains("cancer_group"),
-         molecular_subtype) 
+         molecular_subtype)  %>%
+  # Add schwannoma & neurofibroma for plotting
+  mutate(molecular_subtype = case_when(cancer_group == "Schwannoma" ~ "Schwannoma",
+                                       cancer_group == "Neurofibroma Plexiform" ~ "Neurofibroma",
+                                       TRUE ~ as.character(molecular_subtype)))
 
 
 #### Array of groups we want to visualize
 cancer_groups_of_interest <- c("High-grade glioma astrocytoma", 
+                               "Diffuse midline glioma",
                                "Low-grade glioma astrocytoma", 
+                               "Ganglioglioma",
                                "Ependymoma", 
-                               "Medulloblastoma")
+                               "Medulloblastoma",
+                               "Schwannoma",
+                               "Neurofibroma Plexiform")
  
 #### Prepare quanTIseq data --> `quantiseq_subset`
 
@@ -130,6 +139,43 @@ expression_pdl1 <- stranded %>%
   mutate(log2_expression = log(expression +1, 2)) %>%
   select(-expression)
 ```
+
+```{r cancer_groups_celltypes_plot, fig.width = 8, fig.height = 6}
+# Faceted plot of cancer groups, cell types. Jitter points are colored by cancer group.
+# First, find the cancer groups with >=15 samples to match other modules
+cg_of_interest <- palette_mapping_df %>%
+  count(cancer_group_display) %>%
+  filter(n >= 15) %>%
+  pull(cancer_group_display)
+
+
+# Now, filter to relevant samples and remove uncharacterized fractions
+quantiseq_subset2 <- quantiseq %>%
+  left_join(palette_mapping_df, by = c("sample" = "Kids_First_Biospecimen_ID")) %>%
+  filter(cancer_group %in% cg_of_interest & cell_type != "uncharacterized cell" & !is.na(cancer_group))
+
+cg_plot <- ggplot(quantiseq_subset2) +
+  aes(x = cell_type, y = score, color = cancer_group_hex) + 
+  geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
+  geom_jitter(width = 0.15, size = 0.75, alpha = 0.6) + 
+  # change to ncol if we want this *Wide*
+  facet_wrap(~cancer_group, ncol = 6) +
+  scale_color_identity() +
+  labs(
+    x = "Immune cell", 
+    y = "Estimated fraction in sample"
+  ) +
+  ggpubr::theme_pubr() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6),
+        axis.text.y = element_text(size = rel(0.7)),
+        strip.text = element_text(size = rel(0.7)))
+
+cg_plot
+
+ggsave(cg_celltypes_plot_file, cg_plot, width = 8, height = 6)
+```
+
+
 
 
 ### Visualize fraction distributions across cell types and molecular subtypes
