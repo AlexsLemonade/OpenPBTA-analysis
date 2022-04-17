@@ -1,6 +1,6 @@
 ---
 title: "Visualization of `quanTIseq` deconvolution results"
-author: "SJ Spielman"
+author: "SJ Spielman (ALSF CCDL) and Jo Lynne Rokita (D3b)"
 date: "2022"
 output:
   html_notebook:
@@ -144,12 +144,11 @@ cg_of_interest <- palette_mapping_df %>%
   filter(n >= 15) %>%
   pull(cancer_group_display)
 
-
 # Now, filter to relevant samples and remove uncharacterized fractions
 quantiseq_subset_cg <- quantiseq %>%
+  filter(cell_type != "uncharacterized cell") %>%
   left_join(palette_mapping_df, by = c("sample" = "Kids_First_Biospecimen_ID")) %>%
-  filter(cancer_group %in% cg_of_interest,
-         cell_type != "uncharacterized cell")
+  filter(cancer_group %in% cg_of_interest)
 
 # We need to create a new scheme for labeling that shows wrapped cancer groups with `(n=X)`
 quantiseq_subset_cg <- quantiseq_subset_cg %>%
