@@ -139,6 +139,7 @@ expression_pdl1 <- stranded %>%
 # Faceted plot of cancer groups, cell types. Jitter points are colored by cancer group.
 # First, find the cancer groups with >=15 samples to match other modules
 cg_of_interest <- palette_mapping_df %>%
+  filter(!is.na(cancer_group)) %>%
   count(cancer_group_display) %>%
   filter(n >= 15) %>%
   pull(cancer_group_display)
