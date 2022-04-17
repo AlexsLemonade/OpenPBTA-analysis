@@ -75,7 +75,7 @@ histology_df %>%
 ```
 
 ## Table 2: Patients with hypermutant or ultra-hypermutant tumors
-```{r table 1}
+```{r table 2}
 # Read in coding TMB file, merge with histologies data
 tmb_hist <- read_tsv(file.path(data_dir, "pbta-snv-consensus-mutation-tmb-coding.tsv")) %>%
     # rename TSB to Kids_First_Biospecimen_ID
