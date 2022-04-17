@@ -148,7 +148,8 @@ cg_of_interest <- palette_mapping_df %>%
 # Now, filter to relevant samples and remove uncharacterized fractions
 quantiseq_subset_cg <- quantiseq %>%
   left_join(palette_mapping_df, by = c("sample" = "Kids_First_Biospecimen_ID")) %>%
-  filter(cancer_group %in% cg_of_interest & cell_type != "uncharacterized cell" & !is.na(cancer_group))
+  filter(cancer_group %in% cg_of_interest,
+         cell_type != "uncharacterized cell")
 
 # We need to create a new scheme for labeling that shows wrapped cancer groups with `(n=X)`
 quantiseq_subset_cg <- quantiseq_subset_cg %>%
