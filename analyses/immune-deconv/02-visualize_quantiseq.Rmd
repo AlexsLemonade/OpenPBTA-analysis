@@ -1,6 +1,6 @@
 ---
 title: "Visualization of `quanTIseq` deconvolution results"
-author: "SJ Spielman"
+author: "SJ Spielman (ALSF CCDL) and Jo Lynne Rokita (D3b)"
 date: "2022"
 output:
   html_notebook:
@@ -44,6 +44,7 @@ stranded_file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.s
 
 
 # Define output files
+cg_celltypes_plot_file <- file.path(output_dir, "cell_types-cancer_groups.pdf")
 subtypes_celltypes_plot_file <- file.path(output_dir, "cell_types-molecular_subtypes.pdf")
 pdl1_distributions_plot_file  <- file.path(output_dir, "PDL1_expression_distributions.pdf")
 ```
@@ -84,14 +85,17 @@ palette_mapping_df <- histologies_df %>%
   select(Kids_First_Biospecimen_ID,
          contains("broad_histology"), 
          contains("cancer_group"),
-         molecular_subtype) 
-
+         molecular_subtype)
 
 #### Array of groups we want to visualize
 cancer_groups_of_interest <- c("High-grade glioma astrocytoma", 
+                               "Diffuse midline glioma",
                                "Low-grade glioma astrocytoma", 
+                               "Ganglioglioma",
                                "Ependymoma", 
-                               "Medulloblastoma")
+                               "Medulloblastoma",
+                               "Schwannoma",
+                               "Neurofibroma Plexiform")
  
 #### Prepare quanTIseq data --> `quantiseq_subset`
 
@@ -130,6 +134,69 @@ expression_pdl1 <- stranded %>%
   mutate(log2_expression = log(expression +1, 2)) %>%
   select(-expression)
 ```
+
+```{r cancer_groups_celltypes_plot, fig.width = 14, fig.height = 4.5}
+# Faceted plot of cancer groups, cell types. Jitter points are colored by cancer group.
+# First, find the cancer groups with >=15 samples to match other modules
+cg_of_interest <- palette_mapping_df %>%
+  filter(!is.na(cancer_group)) %>%
+  count(cancer_group_display) %>%
+  filter(n >= 15) %>%
+  pull(cancer_group_display)
+
+# Now, filter to relevant samples and remove uncharacterized fractions
+quantiseq_subset_cg <- quantiseq %>%
+  filter(cell_type != "uncharacterized cell") %>%
+  left_join(palette_mapping_df, by = c("sample" = "Kids_First_Biospecimen_ID")) %>%
+  filter(cancer_group %in% cg_of_interest)
+
+# We need to create a new scheme for labeling that shows wrapped cancer groups with `(n=X)`
+quantiseq_subset_cg <- quantiseq_subset_cg %>%
+  dplyr::count(cancer_group_display, cell_type) %>%
+  dplyr::select(-cell_type) %>%
+  dplyr::distinct() %>%
+  dplyr::inner_join(
+      dplyr::select(palette_df, dplyr::contains("cancer_group"))
+  ) %>%
+  dplyr::select(cancer_group_display, n, cancer_group_hex) %>%
+  # Create wrapped with (n=X) factor column for cancer groups
+  dplyr::mutate(cancer_group_display_n = stringr::str_wrap(glue::glue("{cancer_group_display} (N={n})"), 30),
+                cancer_group_display_n = forcats::fct_reorder(cancer_group_display_n, n, .desc=T)) %>%
+  dplyr::inner_join(quantiseq_subset_cg)
+
+# plot by cancer group
+cg_plot <- quantiseq_subset_cg %>%
+  ggplot2::ggplot() + 
+  aes(x = cell_type, y = score, color = cancer_group_hex) + 
+  geom_jitter(width = 0.15, size = 0.7, alpha = 0.6) + 
+  ggplot2::geom_boxplot(outlier.size = 0, 
+                        size = 0.3, 
+                        color = "black", 
+                        alpha = 0,
+                        # remove whiskers
+                        coef = 0) +
+  ggplot2::facet_wrap(~cancer_group_display_n, nrow = 2, scales = "free_y") +
+  ggplot2::scale_color_identity() + 
+  ggplot2::labs(
+    x = "Immune cell", 
+    y = "Estimated fraction in sample"
+  ) +
+  ggpubr::theme_pubr() + 
+  cowplot::panel_border() +
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(size = 8.5, angle = 45, hjust = 1),
+    axis.text.y = ggplot2::element_text(size = 10),
+    axis.title = ggplot2::element_text(size = 12),
+    strip.text = ggplot2::element_text(size = 8.5),
+    legend.position = "none"
+  )
+
+cg_plot
+
+ggsave(cg_celltypes_plot_file, cg_plot, width = 14, height = 4.5)
+```
+
+
 
 
 ### Visualize fraction distributions across cell types and molecular subtypes
