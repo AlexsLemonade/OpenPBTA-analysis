@@ -223,35 +223,22 @@ suitable_cancer_groups <- combined_df_stranded %>%
 suitable_cancer_groups
 ```
 
-For the molecular signatures survival analysis, we only want to consider cancer groups that contain at least THREE DECEASED in each molecular subtype on a per-cancer group basis. We find those groups here - **there are no such groups, so we do not consider molecular subtype here.**
+For molecular signatures analysis, we want to only consider cancer groups, of those identified above, that have more than 1 molecular subtype.
 
-```{r cancer_groups_subtype}
-# how many suitable molecular subtypes are there per cancer group?
-suitable_subtypes_n <- combined_df_stranded %>%
-  count(cancer_group, molecular_subtype, OS_status) %>%
-  drop_na() %>%
-  spread(OS_status, n,
-         # When there are no events, record the event count as 0 instead of the default NA
-         fill = 0) %>%
-  filter(DECEASED >= 3) %>%
-  count(cancer_group, name = "suitable_count")
-  
-# Does that match the total number of molecular subtypes for that cancer group, AND there are multiple subtypes?
-# If so, we can proceed to model it.
-suitable_cancer_groups_subtypes <- combined_df_stranded %>%
+```{r suitable_subtypes}
+combined_df_stranded %>%
+  filter(cancer_group %in% suitable_cancer_groups$cancer_group) %>%
   select(cancer_group, molecular_subtype) %>%
   distinct() %>%
-  # how many molecular subtypes does cancer group have?
+  # count number of subtypes
   count(cancer_group) %>%
-  # Are these cancer groups suitable? 
-  filter(cancer_group %in% suitable_subtypes_n$cancer_group) %>%
-  inner_join(suitable_subtypes_n) %>%
-  filter(n == suitable_count, 
-         n > 1) %>% 
-  pull(cancer_group)
+  filter(n > 1) -> suitable_subtypes
 
-suitable_cancer_groups_subtypes
+
+# n is how many subtypes the group has. There needs to be more than 1.
+suitable_subtypes
 ```
+
 
 
 ## Analysis: quantiseq cell type fractions and PDL-1 for each cancer group of interest
@@ -282,6 +269,39 @@ for (cg in suitable_cancer_groups$cancer_group) {
 }
 ```
 
+
+
+## Analysis: Differences among molecular subtypes within cancer groups
+
+> Models here are not robust. Due to insufficient data sizes, parameters converge with unreasonablely large CIs.
+
+```{r cell_type_cg_molecular}
+
+base_filename <- "cox_per_cg_terms_molecular-subtypes.RDS" # all file names here will follow this convention
+
+for (cg in suitable_subtypes$cancer_group) {
+  cat("==============", cg, "==================")
+  # filter to cancer group of interest
+  fit_data <- combined_df_stranded %>% 
+    filter(cancer_group == cg)
+  
+  # Define filename where model will be saved
+  filename <- file.path(
+    results_dir,
+    str_replace(base_filename, "cg", cg)
+  )
+  
+  # Print table of molecular subtype counts for context interpretting the model
+  fit_data %>%
+    count(molecular_subtype) %>% 
+    print()
+  
+  # Fit model
+  fit_save_model(fit_data, 
+                 "molecular_subtype", 
+                 filename) %>% print()
+}
+```
 
 #### Session Info
 
