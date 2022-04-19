@@ -423,6 +423,10 @@ survival_result <- readRDS(file.path(
   "cox_additive_terms_tp53_telomerase_hgg.RDS"
 ))
 
+# Get n and event info from glance outpout
+survival_n <- broom::glance(survival_result) %>%
+  select(n, nevent)
+
 # Convert survival model result to data frame, and exponentiate estimates/CIs to get HRs
 survival_df <- broom::tidy(survival_result) %>%
   mutate(estimate = exp(estimate),
@@ -460,7 +464,8 @@ forest_plot <- ggplot(survival_df) +
   ) +
   labs(
     x = "Hazard Ratio ± 95% CI",
-    y = "Coefficient"
+    y = "",
+    subtitle = glue::glue("N = {survival_n$n} with {survival_n$nevent} events")
   ) + 
   # Update term labels for pub-ready
   scale_y_discrete(
@@ -473,12 +478,65 @@ forest_plot <- ggplot(survival_df) +
   # log-scale the x-axis
   scale_x_log10() +
   ggpubr::theme_pubr() + 
+  theme(
+    plot.subtitle = element_text(face = "bold")
+  ) +
   # grid makes it easier to follow lines
   cowplot::background_grid()
   
 
+# Accompanying panel with sample sizes, P-values, etc.
+
+# prepare data for panel
+survival_df_spread <- survival_df %>%
+  mutate(
+    # Clean pvalues into labels. **Hardcoded**
+    p.value = case_when(
+      term == "tp53_score" ~ "P = 0.072",
+      term == "telomerase_score" ~ "P < 0.001",
+      term == "hgg_groupHGG" ~ "P < 0.001"
+    ),
+    # round to 2 digits and create single string with "hr (low-high)"
+    conf.low = round(conf.low, 2),
+    conf.high = round(conf.high, 2),
+    estimate = round(estimate, 2),
+    hr_ci = glue::glue("{estimate} ({conf.low} - {conf.high})")
+  ) %>%
+  select(term, hr_ci, p.value) %>%
+  # this throws a warning but it's ok
+  # format tibble for plotting
+  gather(hr_ci:p.value, key = "name", value = "value")
+
+labels_panel <- ggplot(survival_df_spread) +
+  aes(x = name, y = term, label = value) + 
+  geom_text(hjust = 0) +
+  labs(
+    # hack!
+    subtitle = paste0("                       ",
+                      "HR (95% CI)                 P-value")
+  ) +
+  ggpubr::theme_pubr() + 
+  # remove axes.
+  theme(
+    axis.title.x = element_blank(),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.line.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.y = element_blank(),
+    # -26 is as low as we can go before plot starts to get coverd
+    plot.margin = margin(6, 0, 36, -25, unit = "pt"),
+    plot.subtitle = element_text(face = "bold")
+  ) 
+    
+forest_panels <- cowplot::plot_grid(forest_plot, labels_panel, nrow = 1, rel_widths = c(1, 0.5))
+    
+
+
 # Export plot
-ggsave(survival_plot_pdf, forest_plot, width = 6, height = 2.5)
+ggsave(survival_plot_pdf, forest_panels, width = 11, height = 3)
 
 
 
