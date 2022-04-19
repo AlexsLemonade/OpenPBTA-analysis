@@ -210,7 +210,7 @@ fit_save_model(combined_df_stranded,
 > No effects are significant
 
 ```{r cox_hgg_cell_type_cd274}
-hgg_groups <- c("Oligodendroglioma", "High-grade glioma astrocytoma", "Diffuse midline glioma", "Diffuse intrinsic pontine glioma")
+hgg_groups <- c("High-grade glioma astrocytoma", "Diffuse midline glioma", "Diffuse intrinsic pontine glioma")
 hgg_df <- combined_df_stranded %>%
   filter(cancer_group %in% hgg_groups)
 
