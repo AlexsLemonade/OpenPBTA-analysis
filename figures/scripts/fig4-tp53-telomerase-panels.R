@@ -513,7 +513,7 @@ labels_panel <- ggplot(survival_df_spread) +
   labs(
     # hack!
     subtitle = paste0("                       ",
-                      "HR (95% CI)                 P-value")
+                      "HR (95% CI)                  P-value")
   ) +
   ggpubr::theme_pubr() + 
   # remove axes.
