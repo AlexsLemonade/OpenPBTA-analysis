@@ -449,7 +449,7 @@ forest_plot <- ggplot(survival_df) +
     size = 0.65
   ) + 
   geom_point(
-    size = 3,
+    size = 3.5,
     shape = 23
   ) +
   # Point fill based on sigificance
@@ -491,10 +491,10 @@ forest_plot <- ggplot(survival_df) +
 survival_df_spread <- survival_df %>%
   mutate(
     # Clean pvalues into labels. **Hardcoded**
-    p.value = case_when(
-      term == "tp53_score" ~ "P = 0.072",
-      term == "telomerase_score" ~ "P < 0.001",
-      term == "hgg_groupHGG" ~ "P < 0.001"
+    p_string = if_else(
+      p.value >= 0.001, 
+      paste0("P = ",round(p.value,3)),
+      "P < 0.001"
     ),
     # round to 2 digits and create single string with "hr (low-high)"
     conf.low = round(conf.low, 2),
@@ -502,10 +502,10 @@ survival_df_spread <- survival_df %>%
     estimate = round(estimate, 2),
     hr_ci = glue::glue("{estimate} ({conf.low} - {conf.high})")
   ) %>%
-  select(term, hr_ci, p.value) %>%
+  select(term, hr_ci, p_string) %>%
   # this throws a warning but it's ok
   # format tibble for plotting
-  gather(hr_ci:p.value, key = "name", value = "value")
+  gather(hr_ci:p_string, key = "name", value = "value")
 
 labels_panel <- ggplot(survival_df_spread) +
   aes(x = name, y = term, label = value) + 
