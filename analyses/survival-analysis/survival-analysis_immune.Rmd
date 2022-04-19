@@ -198,13 +198,10 @@ Above, no effects are significant at P<0.01. Only one cell type, `T_cell_CD8`, i
 > No effects are significant
 
 ```{r cox_cell_type_cd274}
-
-# saving so P-values can be programmatically grabbed
-fitted <- fit_save_model(combined_df_stranded,
-                         paste0(quantiseq_terms, "+CD274"),
-                         file.path(results_dir, "cox_terms_quantiseq.RDS"),
-                         model_type = "multivariate")
-fitted
+fit_save_model(combined_df_stranded,
+               paste0(quantiseq_terms, "+CD274"),
+               file.path(results_dir, "cox_terms_quantiseq.RDS"),
+               model_type = "multivariate")
 ```
 
 
@@ -217,12 +214,10 @@ hgg_groups <- c("Oligodendroglioma", "High-grade glioma astrocytoma", "Diffuse m
 hgg_df <- combined_df_stranded %>%
   filter(cancer_group %in% hgg_groups)
 
-# saving so P-values can be programmatically grabbed
-fitted <- fit_save_model(combined_df_stranded,
-                         paste0(quantiseq_terms, "+CD274"),
-                         file.path(results_dir, "cox_hgg_terms_quantiseq.RDS"),
-                         model_type = "multivariate")
-fitted
+fit_save_model(combined_df_stranded,
+               paste0(quantiseq_terms, "+CD274"),
+               file.path(results_dir, "cox_hgg_terms_quantiseq.RDS"),
+               model_type = "multivariate")
 ```
 
 
