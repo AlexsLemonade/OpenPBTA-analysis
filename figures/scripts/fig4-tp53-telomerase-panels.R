@@ -465,7 +465,7 @@ forest_plot <- ggplot(survival_df) +
   # Update term labels for pub-ready
   scale_y_discrete(
     labels = c(
-      "HGG group (HGG)",
+      "HGG group: HGG",
       "Telomerase score",
       "TP53 score"
     )
