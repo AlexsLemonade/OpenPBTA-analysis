@@ -490,7 +490,7 @@ forest_plot <- ggplot(survival_df) +
 # prepare data for panel
 survival_df_spread <- survival_df %>%
   mutate(
-    # Clean pvalues into labels. **Hardcoded**
+    # Clean pvalues into labels. 
     p_string = if_else(
       p.value >= 0.001, 
       paste0("P = ",round(p.value,3)),
