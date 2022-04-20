@@ -2951,32 +2951,12 @@ div.tocify {
 <p>Read in set up script.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShzdXJ2aXZhbClcbmxpYnJhcnkoZ2dwdWJyKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShzdXJ2aXZhbClcbmxpYnJhcnkoZ2dwdWJyKVxubGlicmFyeSh0aWR5dmVyc2UpXG5cbiMgVGhpcyBzY3JpcHQgY29udGFpbnMgYSB3cmFwcGVyIGZ1bmN0aW9uIHRoYXQgY2FuIGNvbmR1Y3QgdGhlIHN1cnZpdmFsIGFuYWx5c2VzXG5zb3VyY2UoZmlsZS5wYXRoKFwidXRpbFwiLCBcInN1cnZpdmFsX21vZGVscy5SXCIpKVxuXG4jIE1hZ3JpdHRyIHBpcGVcbmAlPiVgIDwtIGRwbHlyOjpgJT4lYFxuYGBgIn0= -->
 <pre class="r"><code>library(survival)
-library(ggpubr)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBnZ3Bsb3QyXG5GaW5kIG91dCB3aGF0J3MgY2hhbmdlZCBpbiBnZ3Bsb3QyIGF0IGh0dHBzOi8vZ2l0aHViLmNvbS90aWR5dmVyc2UvZ2dwbG90Mi9yZWxlYXNlcy5cbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogbWFncml0dHJcbiJ9 -->
-<pre><code>Loading required package: ggplot2
-Find out what's changed in ggplot2 at https://github.com/tidyverse/ggplot2/releases.
-Loading required package: magrittr</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
-<pre class="r"><code>library(tidyverse)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXHUwMDFiWzMwbeKUgOKUgCBcdTAwMWJbMW1BdHRhY2hpbmcgcGFja2FnZXNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2UgMS4yLjEg4pSA4pSAXHUwMDFiWzM5bVxuXHUwMDFiWzMwbVx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG10aWJibGUgXHUwMDFiWzMwbSAyLjEuMyAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bXB1cnJyICBcdTAwMWJbMzBtIDAuMy4yXG5cdTAwMWJbMzJt4pyUXHUwMDFiWzMwbSBcdTAwMWJbMzRtdGlkeXIgIFx1MDAxYlszMG0gMC44LjMgICAgIFx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG1kcGx5ciAgXHUwMDFiWzMwbSAwLjguM1xuXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bXJlYWRyICBcdTAwMWJbMzBtIDEuMy4xICAgICBcdTAwMWJbMzJt4pyUXHUwMDFiWzMwbSBcdTAwMWJbMzRtc3RyaW5nclx1MDAxYlszMG0gMS40LjBcblx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG10aWJibGUgXHUwMDFiWzMwbSAyLjEuMyAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bWZvcmNhdHNcdTAwMWJbMzBtIDAuNC4wXHUwMDFiWzM5bVxuXHUwMDFiWzMwbeKUgOKUgCBcdTAwMWJbMW1Db25mbGljdHNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2VfY29uZmxpY3RzKCkg4pSA4pSAXG5cdTAwMWJbMzFt4pyWXHUwMDFiWzMwbSBcdTAwMWJbMzRtdGlkeXJcdTAwMWJbMzBtOjpcdTAwMWJbMzJtZXh0cmFjdCgpXHUwMDFiWzMwbSAgIG1hc2tzIFx1MDAxYlszNG1tYWdyaXR0clx1MDAxYlszMG06OmV4dHJhY3QoKVxuXHUwMDFiWzMxbeKcllx1MDAxYlszMG0gXHUwMDFiWzM0bWRwbHlyXHUwMDFiWzMwbTo6XHUwMDFiWzMybWZpbHRlcigpXHUwMDFiWzMwbSAgICBtYXNrcyBcdTAwMWJbMzRtc3RhdHNcdTAwMWJbMzBtOjpmaWx0ZXIoKVxuXHUwMDFiWzMxbeKcllx1MDAxYlszMG0gXHUwMDFiWzM0bWRwbHlyXHUwMDFiWzMwbTo6XHUwMDFiWzMybWxhZygpXHUwMDFiWzMwbSAgICAgICBtYXNrcyBcdTAwMWJbMzRtc3RhdHNcdTAwMWJbMzBtOjpsYWcoKVxuXHUwMDFiWzMxbeKcllx1MDAxYlszMG0gXHUwMDFiWzM0bXB1cnJyXHUwMDFiWzMwbTo6XHUwMDFiWzMybXNldF9uYW1lcygpXHUwMDFiWzMwbSBtYXNrcyBcdTAwMWJbMzRtbWFncml0dHJcdTAwMWJbMzBtOjpzZXRfbmFtZXMoKVx1MDAxYlszOW1cbiJ9 -->
-<pre><code>[30m── [1mAttaching packages[22m ────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──[39m
-[30m[32m✔[30m [34mtibble [30m 2.1.3     [32m✔[30m [34mpurrr  [30m 0.3.2
-[32m✔[30m [34mtidyr  [30m 0.8.3     [32m✔[30m [34mdplyr  [30m 0.8.3
-[32m✔[30m [34mreadr  [30m 1.3.1     [32m✔[30m [34mstringr[30m 1.4.0
-[32m✔[30m [34mtibble [30m 2.1.3     [32m✔[30m [34mforcats[30m 0.4.0[39m
-[30m── [1mConflicts[22m ───────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-[31m✖[30m [34mtidyr[30m::[32mextract()[30m   masks [34mmagrittr[30m::extract()
-[31m✖[30m [34mdplyr[30m::[32mfilter()[30m    masks [34mstats[30m::filter()
-[31m✖[30m [34mdplyr[30m::[32mlag()[30m       masks [34mstats[30m::lag()
-[31m✖[30m [34mpurrr[30m::[32mset_names()[30m masks [34mmagrittr[30m::set_names()[39m</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUaGlzIHNjcmlwdCBjb250YWlucyBhIHdyYXBwZXIgZnVuY3Rpb24gdGhhdCBjYW4gY29uZHVjdCB0aGUgc3Vydml2YWwgYW5hbHlzZXNcbnNvdXJjZShmaWxlLnBhdGgoXCJ1dGlsXCIsIFwic3Vydml2YWxfbW9kZWxzLlJcIikpXG5cbiMgTWFncml0dHIgcGlwZVxuYCU+JWAgPC0gZHBseXI6OmAlPiVgXG5gYGAifQ== -->
-<pre class="r"><code># This script contains a wrapper function that can conduct the survival analyses
+library(ggpubr)
+library(tidyverse)
+
+# This script contains a wrapper function that can conduct the survival analyses
 source(file.path(&quot;util&quot;, &quot;survival_models.R&quot;))
 
 # Magrittr pipe
@@ -3212,9 +3192,12 @@ fit_save_model(metadata,
 <p>Why are we not seeing H3 K28 subtypes?</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY294cGgoU3VydihPU195ZWFycywgT1Nfc3RhdHVzKSB+IG1vbGVjdWxhcl9zdWJ0eXBlLCBtZXRhZGF0YV9yZWNvZGUpIFxuXG5gYGAifQ== -->
-<pre class="r"><code>coxph(Surv(OS_years, OS_status) ~ molecular_subtype, metadata_recode) 
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBEb3VibGUgY2hlY2sgdGhlIGZ1bmN0aW9uIGlzbid0IG1pc3NpbmcgdGhlbSAtIGdldCB0aGUgc2FtZSByZXN1bHQgYmVsb3dcbm1ldGFkYXRhX3JlY29kZSA8LSBtZXRhZGF0YSAlPiVcbiAgICAgIG11dGF0ZShPU19zdGF0dXMgPSBpZmVsc2UoT1Nfc3RhdHVzID09IFwiTElWSU5HXCIsIDAsIDEpKVxuXG5jb3hwaChTdXJ2KE9TX3llYXJzLCBPU19zdGF0dXMpIH4gbW9sZWN1bGFyX3N1YnR5cGUsIG1ldGFkYXRhX3JlY29kZSlcbmBgYCJ9 -->
+<pre class="r"><code># Double check the function isn't missing them - get the same result below
+metadata_recode &lt;- metadata %&gt;%
+      mutate(OS_status = ifelse(OS_status == &quot;LIVING&quot;, 0, 1))
+
+coxph(Surv(OS_years, OS_status) ~ molecular_subtype, metadata_recode)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiQ2FsbDpcbmNveHBoKGZvcm11bGEgPSBTdXJ2KE9TX3llYXJzLCBPU19zdGF0dXMpIH4gbW9sZWN1bGFyX3N1YnR5cGUsIFxuICAgIGRhdGEgPSBtZXRhZGF0YV9yZWNvZGUpXG5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvZWYgZXhwKGNvZWYpIHNlKGNvZWYpICAgICAgeiAgICAgICBwXG5tb2xlY3VsYXJfc3VidHlwZURNRywgSDMgSzI4LCBUUDUzIGFjdGl2YXRlZCAgMC42MDQzICAgIDEuODMwMCAgIDAuNDc4NCAgMS4yNjMgMC4yMDY1NlxubW9sZWN1bGFyX3N1YnR5cGVETUcsIEgzIEsyOCwgVFA1MyBsb3NzICAgICAgIDEuMTQ5OSAgICAzLjE1ODAgICAwLjM3MjcgIDMuMDg2IDAuMDAyMDNcbm1vbGVjdWxhcl9zdWJ0eXBlSEdHLCBIMyB3aWxkdHlwZSAgICAgICAgICAgIC0wLjczOTMgICAgMC40Nzc1ICAgMC40NzUzIC0xLjU1NSAwLjExOTg2XG5tb2xlY3VsYXJfc3VidHlwZUhHRywgSDMgd2lsZHR5cGUsIFRQNTMgbG9zcyAgMC4zMjQ5ICAgIDEuMzgzOSAgIDAuNDYxNyAgMC43MDQgMC40ODE1N1xuXG5MaWtlbGlob29kIHJhdGlvIHRlc3Q9MjIuMTEgIG9uIDQgZGYsIHA9MC4wMDAxOTFcbm49IDY2LCBudW1iZXIgb2YgZXZlbnRzPSA2MSBcbiJ9 -->
 <pre><code>Call:
@@ -3235,10 +3218,9 @@ n= 66, number of events= 61 </code></pre>
 <p>Pairwise comparisons show a signficant difference between “DMG, H3 K28, TP53 loss” and “DMG, H3 K28”, as well as between “HGG, H3 wildtype” and “DMG, H3 K28”.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFpcndpc2Vfc3VydmRpZmYoZm9ybXVsYSA9IFN1cnYoT1NfeWVhcnMsIE9TX3N0YXR1cykgfiBtb2xlY3VsYXJfc3VidHlwZSwgXG4gICAgICAgICAgICAgICAgICBkYXRhID0gbWV0YWRhdGFfcmVjb2RlKVxuXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFpcndpc2Vfc3VydmRpZmYoZm9ybXVsYSA9IFN1cnYoT1NfeWVhcnMsIE9TX3N0YXR1cykgfiBtb2xlY3VsYXJfc3VidHlwZSwgXG4gICAgICAgICAgICAgICAgICBkYXRhID0gbWV0YWRhdGFfcmVjb2RlKVxuYGBgIn0= -->
 <pre class="r"><code>pairwise_survdiff(formula = Surv(OS_years, OS_status) ~ molecular_subtype, 
-                  data = metadata_recode)
-</code></pre>
+                  data = metadata_recode)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiXG5cdFBhaXJ3aXNlIGNvbXBhcmlzb25zIHVzaW5nIExvZy1SYW5rIHRlc3QgXG5cbmRhdGE6ICBtZXRhZGF0YV9yZWNvZGUgYW5kIG1vbGVjdWxhcl9zdWJ0eXBlIFxuXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgRE1HLCBIMyBLMjggRE1HLCBIMyBLMjgsIFRQNTMgYWN0aXZhdGVkIERNRywgSDMgSzI4LCBUUDUzIGxvc3MgSEdHLCBIMyB3aWxkdHlwZVxuRE1HLCBIMyBLMjgsIFRQNTMgYWN0aXZhdGVkIDAuMTQ5NSAgICAgIC0gICAgICAgICAgICAgICAgICAgICAgICAgICAtICAgICAgICAgICAgICAgICAgICAgIC0gICAgICAgICAgICAgICBcbkRNRywgSDMgSzI4LCBUUDUzIGxvc3MgICAgICAwLjAwMjcgICAgICAwLjE1NTAgICAgICAgICAgICAgICAgICAgICAgLSAgICAgICAgICAgICAgICAgICAgICAtICAgICAgICAgICAgICAgXG5IR0csIEgzIHdpbGR0eXBlICAgICAgICAgICAgMC4xNTUwICAgICAgMC4xNDk1ICAgICAgICAgICAgICAgICAgICAgIDAuMDAyNyAgICAgICAgICAgICAgICAgLSAgICAgICAgICAgICAgIFxuSEdHLCBIMyB3aWxkdHlwZSwgVFA1MyBsb3NzIDAuNzU0NSAgICAgIDAuNzg3OSAgICAgICAgICAgICAgICAgICAgICAwLjE1NTAgICAgICAgICAgICAgICAgIDAuMTQ5NSAgICAgICAgICBcblxuUCB2YWx1ZSBhZGp1c3RtZW50IG1ldGhvZDogQkggXG4ifQ== -->
 <pre><code>
