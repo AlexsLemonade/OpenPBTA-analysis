@@ -135,7 +135,7 @@ kap_fit <- survival_analysis(metadata,
 # median and 0.95CI survival days
 kap_fit$model
 ```
-Note that upper 95% bounds (0.95UCL) which are denoted "NA" are the consequence of underlying skew in the data. The upper confidence limit is therefore not defined (or may be interpreted as infinity). This can be confirmed by plotting the output. Dashed lines represent upper and lower bounds. Because the upper bound for HGG H3 wildtype (blue) never reaches as low as 0.5 along the Y-axis (Survival), its upper bound is undefined. By contrast, the upper bound for DMB H3 K28 (red) *does* go below 0.5 and has an associated non-NA upper bound.
+Note that upper 95% bounds (0.95UCL) which are denoted "NA" are the consequence of underlying skew in the data. The upper confidence limit is therefore not defined (or may be interpreted as infinity).
 
 `survminer` package comes with a convenient plotting function which uses `ggplot2`
 arguments. 
@@ -175,12 +175,26 @@ cowplot::save_plot(filename = kap_meier_plot_file, plot = surv_plot_all_subtype,
 readr::write_tsv(surv_median(kap_fit$model), kap_meier_model_file)
 ```
 
+## Analysis: cox regression for HGG molecular subtypes
+We observe a significant poor prognostic effect of TP53 loss in tumors with H3 K28 mutations.
 
 ```{r cox hgg subtype}
+# Check Ns
+as.data.frame(table(metadata$OS_status, metadata$molecular_subtype))
+
+# Run model
 fit_save_model(metadata, 
                "molecular_subtype",
                file.path(results_dir, "cox_hgg_subtype.RDS"))
+```
 
+Why are we not seeing H3 K28 subtypes?
+```{r cox manual check}
+# Double check the function isn't missing them - get the same result below
+metadata_recode <- metadata %>%
+      mutate(OS_status = ifelse(OS_status == "LIVING", 0, 1))
+
+coxph(Surv(OS_years, OS_status) ~ molecular_subtype, metadata_recode) 
 ```
 
 
