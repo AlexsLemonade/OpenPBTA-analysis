@@ -205,22 +205,6 @@ fit_save_model(combined_df_stranded,
 ```
 
 
-## Analysis: quantiseq cell type fractions and PDL-1 for HGG 
-
-> No effects are significant
-
-```{r cox_hgg_cell_type_cd274}
-hgg_groups <- c("High-grade glioma astrocytoma", "Diffuse midline glioma", "Diffuse intrinsic pontine glioma")
-hgg_df <- combined_df_stranded %>%
-  filter(cancer_group %in% hgg_groups)
-
-fit_save_model(combined_df_stranded,
-               paste0(quantiseq_terms, "+CD274"),
-               file.path(results_dir, "cox_hgg_terms_quantiseq.RDS"),
-               model_type = "multivariate")
-```
-
-
 ## Determine suitable cancer groups for analysis
 
 For cancer group analyses, we only want to consider groups with at least THREE DECEASED, again considering stranded only. We find those groups here:
