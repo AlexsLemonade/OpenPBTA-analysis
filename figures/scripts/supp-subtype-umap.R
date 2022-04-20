@@ -145,7 +145,7 @@ umap_df_lgg$subtype <- factor(umap_df_lgg$colored_subtype, levels = c("Other CNS
                                                                               "wildtype"))
 
 # generate a plot
-p <- plot_dimension_reduction(umap_df_lgg,
+p <- plot_dimension_reduction(drop_na(umap_df_lgg), # drop NAs for legend
                               point_color = "subtype",
                               point_shape = "CDKN status",
                               x_label = "Dimension 1",

@@ -129,7 +129,9 @@ plot_extend_scatter <- function(plot_df, stats_df, gene_name, annotation_y) {
     ggplot() + 
     aes(x = NormEXTENDScores, 
         y = FPKM) + 
-    geom_point() + 
+    # All circular shapes (1, 16, 19, 20, 21) are appearing as greek letter lambdas during PDF panel compilation
+    # But, squares seem to work!
+    geom_point(shape = 15) + 
     geom_smooth(method = "lm") + 
     annotate("text", 
              label = stats_df$annotation[stats_df$gene == gene_name], 
