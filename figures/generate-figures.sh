@@ -190,5 +190,7 @@ cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_per_sample_barplot.
 
 
 
+# Copy S5 panel (analysis module was run previously)
+cp ${analyses_dir}/immune-deconv/plots/cell_types-molecular_subtypes.pdf pdfs/supp/figs5/panels/quantiseq-cell_types-molecular_subtypes.pdf
 
 
