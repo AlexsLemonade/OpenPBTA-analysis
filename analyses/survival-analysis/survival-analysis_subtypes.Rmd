@@ -5,7 +5,7 @@ output:
     toc: TRUE
     toc_float: TRUE
 author: C. Savonen for ALSF CCDL, Krutika Gaonkar for D3b, Jo Lynne Rokita for D3b
-date: 2019,, 2021
+date: 2019, 2021
 params:
   plot_ci: TRUE
 ---
@@ -194,9 +194,16 @@ Why are we not seeing H3 K28 subtypes?
 metadata_recode <- metadata %>%
       mutate(OS_status = ifelse(OS_status == "LIVING", 0, 1))
 
-coxph(Surv(OS_years, OS_status) ~ molecular_subtype, metadata_recode) 
+coxph(Surv(OS_years, OS_status) ~ molecular_subtype, metadata_recode)
 ```
 
+
+Pairwise comparisons show a signficant difference between "DMG, H3 K28, TP53 loss" and "DMG, H3 K28", as well as between "HGG, H3 wildtype" and "DMG, H3 K28".
+```{r cox pairwise}
+pairwise_survdiff(formula = Surv(OS_years, OS_status) ~ molecular_subtype, 
+                  data = metadata_recode)
+
+```
 
 
 
