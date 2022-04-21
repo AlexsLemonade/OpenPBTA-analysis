@@ -257,6 +257,7 @@ cli_tools <- tribble(
 # Sheet 4: Tools used in workflows
 workflow_tools <- tribble(
   ~"Software", ~"Version", ~"Associated Workflow(s) or Script",
+  "NGSCheckMate","1.3","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/bcf_call.cwl",
   "ControlFreeC","11.6","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_combined_somatic_wgs_cnv_wf.cwl",
   "CNVKit","0.9.3","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_combined_somatic_wgs_cnv_wf.cwl",
   "strelka2","2.9.3","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_strelka2_mutect2_manta_workflow.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-mutect2_strelka2-wf.cwl",
