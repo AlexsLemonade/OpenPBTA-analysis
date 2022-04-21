@@ -80,23 +80,25 @@ kap_meier_model_file <- file.path(results_dir, "logrank_hgg_subtypes.tsv")
 
 ```{r Read in metadata}
 # choose HGG samples
-# remove RNA-Seq because subtyping in HGG is from DNA abberations and samples where only RNA-Seq is available cannot be subtyped
 # remove cell-lines from this analysis as well
 metadata <- readr::read_tsv(
   metadata_file,
   col_types = readr::cols(
     molecular_subtype = readr::col_character())) %>%
   dplyr::filter(
-    experimental_strategy != "RNA-Seq" &
       broad_histology == "Diffuse astrocytic and oligodendroglial tumor" &
       composition=="Solid Tissue" &
       # remove oligo
       cancer_group != "Oligodendroglioma" &
       # remove samples with no OS data
-      !is.na(OS_days)) %>%
+      !is.na(OS_days) &
+      # remove To be classified samples
+      !grepl("To be classified", molecular_subtype)) %>%
   mutate(
     OS_years = OS_days / 365.25
-  )
+  ) %>%
+  # keep only relevant columns
+  select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, experimental_strategy, tumor_descriptor, molecular_subtype, OS_days, OS_years, OS_status)
 ```
 
 #### Using independent_primary if multiple subtypes per patient are found 
@@ -108,15 +110,26 @@ This way we subset the metadata to 1 single primary sample per patient ID
 independent_primary <- readr::read_tsv(independent_primary_file)
 
 # select only independent primary bs_ids to get overall survival
-metadata <- metadata %>%
+metadata_ind_dna <- metadata %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in%
-                  independent_primary$Kids_First_Biospecimen_ID)
+                  independent_primary$Kids_First_Biospecimen_ID) 
+
+# check whether any RNA pts not in DNA subset
+metadata_rna <- metadata %>%
+  filter(experimental_strategy == "RNA-Seq" & 
+           tumor_descriptor == "Initial CNS Tumor" & 
+           !is.na(OS_years)) %>%
+  unique()
+
+rna_pts_to_add <- setdiff(unique(metadata_rna$Kids_First_Participant_ID), metadata_ind_dna$Kids_First_Participant_ID)
+# nope
+
 
 # find molecular subtypes which have more than n_participants (3) participants
-filter_molecular_subtype <- metadata %>% group_by(molecular_subtype) %>% dplyr::tally() %>% dplyr::filter(n>n_participants)
+filter_molecular_subtype <- metadata_ind_dna %>% group_by(molecular_subtype) %>% dplyr::tally() %>% dplyr::filter(n>n_participants)
 
 # select only  that have more than n_participants (3) participants
-metadata <- metadata %>%
+metadata_ind_dna <- metadata_ind_dna %>%
   dplyr::filter(molecular_subtype %in%
                   filter_molecular_subtype$molecular_subtype)
 ```
@@ -126,7 +139,7 @@ The [Kaplan-Meier](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3059453/)
 survival curve shows the probability of survival over time.
 
 ```{r Kaplan Meier}
-kap_fit <- survival_analysis(metadata,
+kap_fit <- survival_analysis(metadata_ind_dna,
   ind_var = "molecular_subtype",
   test = "kap.meier",
   metadata_sample_col = "Kids_First_Biospecimen_ID"
@@ -179,10 +192,10 @@ We observe a significant poor prognostic effect of TP53 loss in tumors with H3 K
 
 ```{r cox hgg subtype}
 # Check Ns
-as.data.frame(table(metadata$OS_status, metadata$molecular_subtype))
+as.data.frame(table(metadata_ind_dna$OS_status, metadata_ind_dna$molecular_subtype))
 
 # Run model
-fit_save_model(metadata, 
+fit_save_model(metadata_ind_dna, 
                "molecular_subtype",
                file.path(results_dir, "cox_hgg_subtype.RDS"))
 ```
@@ -190,7 +203,7 @@ fit_save_model(metadata,
 Why are we not seeing H3 K28 subtypes?
 ```{r cox manual check}
 # Double check the function isn't missing them - get the same result below
-metadata_recode <- metadata %>%
+metadata_recode <- metadata_ind_dna %>%
       mutate(OS_status = ifelse(OS_status == "LIVING", 0, 1))
 
 fit <- coxph(Surv(OS_years, OS_status) ~ molecular_subtype, metadata_recode)
