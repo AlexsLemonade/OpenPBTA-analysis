@@ -119,7 +119,6 @@ filter_molecular_subtype <- metadata %>% group_by(molecular_subtype) %>% dplyr::
 metadata <- metadata %>%
   dplyr::filter(molecular_subtype %in%
                   filter_molecular_subtype$molecular_subtype)
-
 ```
 ## Kaplan-Meier for all HGG/DMG subtypes
 
@@ -194,7 +193,10 @@ Why are we not seeing H3 K28 subtypes?
 metadata_recode <- metadata %>%
       mutate(OS_status = ifelse(OS_status == "LIVING", 0, 1))
 
-coxph(Surv(OS_years, OS_status) ~ molecular_subtype, metadata_recode)
+fit <- coxph(Surv(OS_years, OS_status) ~ molecular_subtype, metadata_recode)
+fit 
+ggforest(fit)
+
 ```
 
 
