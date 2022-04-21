@@ -46,7 +46,7 @@ if (!dir.exists(plots_dir)) {
 }
 ```
 
-Make output directories and source the util function file.
+Source the util function file.
 
 ```{r source_functions}
 # Source functions used to build and export models
@@ -103,7 +103,7 @@ meta_indep <- histologies_rna %>%
   # add tp53 and telomerase scores by matching Kids_First_Biospecimen_ID_RNA
   left_join(tp53_scores, by = "Kids_First_Biospecimen_ID_RNA") %>%
   left_join(tel_scores, by = "Kids_First_Biospecimen_ID_RNA") %>% 
-  arrange(Kids_First_Biospecimen_ID_RNA) %>%
+  rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA) %>%
   distinct(Kids_First_Participant_ID, .keep_all=TRUE) %>%
   # remove samples without survival data
   drop_na(OS_days) %>%
