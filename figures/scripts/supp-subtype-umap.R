@@ -97,7 +97,7 @@ p <- p +
 
 # save the plot
 ggsave(file.path(plots_dir, "supp_umap_hgg.pdf"), 
-       p, width = 7, height = 6)
+       p, width = 5, height = 4)
 
 ### Plot for LGAT
 # for LGG, we consider LGG, GNG and GNT all as LGG and we remove the prefixes to lumps groups together
@@ -145,7 +145,7 @@ umap_df_lgg$subtype <- factor(umap_df_lgg$colored_subtype, levels = c("Other CNS
                                                                               "wildtype"))
 
 # generate a plot
-p <- plot_dimension_reduction(umap_df_lgg,
+p <- plot_dimension_reduction(drop_na(umap_df_lgg), # drop NAs for legend
                               point_color = "subtype",
                               point_shape = "CDKN status",
                               x_label = "Dimension 1",
@@ -164,7 +164,7 @@ p <- p +
 
 # save the figure
 ggsave(file.path(plots_dir, "supp_umap_lgg.pdf"), 
-       p, width = 7, height = 6)
+       p, width = 5, height = 4)
 
 ### Plot for MB 
 # for MB, we keep subtypes and recode everything else as `Other CNS Tumor`
@@ -195,7 +195,7 @@ p <- plot_dimension_reduction(umap_df_mb,
                                                 palette_OkabeIto %>% c(2,4,6,8)))
 # save the figure
 ggsave(file.path(plots_dir, "supp_umap_mb.pdf"), 
-       p, width = 7, height = 6)
+       p, width = 5, height = 4)
 
 
 ### Plot for EPN
@@ -226,6 +226,5 @@ p <- plot_dimension_reduction(umap_df_epn,
                                                 palette_OkabeIto %>% c(1,3,6,8)))
 # save the figure
 ggsave(file.path(plots_dir, "supp_umap_epn.pdf"), 
-       p, width = 7, height = 6)
-
+       p, width = 5, height = 4)
 
