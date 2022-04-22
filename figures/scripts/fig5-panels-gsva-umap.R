@@ -28,7 +28,8 @@ histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"),
 # Here we'll set up the file names used throughout
 umap_pdf <- file.path(output_dir, "umap_panel.pdf")
 gsva_pdf <- file.path(output_dir, "gsva_panel.pdf")
-legend_pdf <- file.path(output_dir, "broad_histology_legend.pdf")
+umap_legend_pdf <- file.path(output_dir, "broad_histology_legend.pdf") ## goes with UMAP
+gsva_legend_pdf <- file.path(output_dir, "cancer_group_legend.pdf")    ## does with GSVA
 
 #### Color palettes ------------------------------------------------------------
 
@@ -56,9 +57,12 @@ palette_mapping_df <- histologies_df %>%
   left_join(histology_label_mapping,
             by = c("broad_histology", "cancer_group")) %>%
   select(Kids_First_Biospecimen_ID,
+         # Keep both broad_histology for the UMAP legend, and cancer_group for the GSVA legend
          broad_histology_display,
          broad_histology_hex,
-         broad_histology_order) %>%
+         broad_histology_order,
+         cancer_group_display,
+         cancer_group_hex) %>%
   mutate(broad_histology_display = forcats::fct_reorder(broad_histology_display,
                                                         broad_histology_order))
 
@@ -82,16 +86,32 @@ divergent_palette  <- divergent_palette %>% filter(color_names != "na_color")
 # Get a distinct version of the color keys
 # This has already in essence been filtered to exclude categories that are
 # irrelevant to the samples being plotted
+# We do this for _both_ cancer group and broad histology colors, 
+# since each is used in a different plot
 broad_histology_color_df <- palette_mapping_df %>%
   dplyr::select(broad_histology_display, broad_histology_hex) %>%
-  dplyr::distinct()
+  dplyr::distinct() 
 
 # Make color key specific to these samples
-annotation_colors <- broad_histology_color_df$broad_histology_hex
-names(annotation_colors) <- broad_histology_color_df$broad_histology_display
+annotation_colors_bh<- broad_histology_color_df$broad_histology_hex
+names(annotation_colors_bh) <- broad_histology_color_df$broad_histology_display
 
-# Will no longer need this
+# And now for cancer group:
+cancer_group_color_df <- palette_mapping_df %>%
+  dplyr::select(cancer_group_display, cancer_group_hex) %>%
+  dplyr::distinct() %>%
+  # remove NA and "Other" displays
+  tidyr::drop_na() %>%
+  filter(cancer_group_display != "Other")
+
+# Make color key specific to these samples
+annotation_colors_cg<- cancer_group_color_df$cancer_group_hex
+names(annotation_colors_cg) <- cancer_group_color_df$cancer_group_display
+
+# Will no longer need these
 rm(broad_histology_color_df)
+rm(cancer_group_color_df)
+
 
 #### UMAP plot -----------------------------------------------------------------
 
@@ -119,7 +139,7 @@ umap_plot <- read_tsv(rsem_umap_file) %>%
                            x_label = "UMAP1",
                            y_label = "UMAP2",
                            alpha_value = 0.5,
-                           color_palette = annotation_colors) +
+                           color_palette = annotation_colors_bh) +
   ggpubr::theme_pubr() +
   theme(text = element_text(size = 10),
         legend.position = "none")
@@ -143,7 +163,7 @@ gsva_scores_file <- file.path(
 gsva_stats_file <- file.path(
   gsva_dir,
   "results",
-  "gsva_anova_stranded_display_group.tsv"
+  "gsva_anova_stranded_cancer_group.tsv"
 )
 
 gsva_scores_df <- read_tsv(gsva_scores_file)
@@ -174,33 +194,52 @@ divergent_col_val <- seq(from = min(gsva_scores_mat),
 gsva_col_fun <- circlize::colorRamp2(divergent_col_val,
                                      divergent_palette$hex_codes)
 
-# We're going to drop Other from this plot and make sure it is ordered by
-# broad histology display order
-gsva_ordered_bsids <- palette_mapping_df %>%
-  filter(broad_histology_display != "Other") %>%
-  arrange(broad_histology_order) %>%
+
+# Determine cancer group counts so we can have a variable to order rows by
+# But, we should keep "Other" at the _end_ regardless of counts
+palette_mapping_df_ordered <- palette_mapping_df %>%
+  # Remove NA and "Other" display groups
+  drop_na(cancer_group_display) %>%
+  filter(cancer_group_display != "Other") %>%
+  # Arrange in reverse order of counts and make that the cancer_group_order
+  count(cancer_group_display) %>%
+  # force "Other" to be zero so we can arrange by `n` and it's at the bottom
+  arrange(-n) %>%
+  # Now add the proper order.
+  mutate(cancer_group_order = 1:n()) %>%
+  # Not needed
+  select(-n) %>%
+  # Join back up
+  inner_join(palette_mapping_df)
+
+
+# Make sure it is ordered by cancer_group order, which is based on number of samples
+# Note: NA/"Other" groups are already removed above, so do not need to drop here
+gsva_ordered_bsids <- palette_mapping_df_ordered %>%
+  arrange(cancer_group_order) %>%
   pull(Kids_First_Biospecimen_ID)
 
 # Use the vector of biospecimen IDs to select and order samples for GSVA display
 gsva_scores_mat <- gsva_scores_mat[, gsva_ordered_bsids]
 
 # Create a data frame just for setting up the heatmap annotation
-gsva_annotation_df <- palette_mapping_df %>%
+gsva_annotation_df <- palette_mapping_df_ordered %>%
   select(Kids_First_Biospecimen_ID,
-         broad_histology_display,
-         broad_histology_order) %>%
+         cancer_group_display,
+         cancer_group_order) %>%
   filter(Kids_First_Biospecimen_ID %in% gsva_ordered_bsids) %>%
   column_to_rownames("Kids_First_Biospecimen_ID")
 gsva_annotation_df <- gsva_annotation_df[gsva_ordered_bsids, ] %>%
-  select(-broad_histology_order,  # Drop extraneous column
-         # Rename for display purposess
-         broad_histology = broad_histology_display)
+  select(-contains("broad_histology"),  # Drop extraneous columns
+         -cancer_group_order,
+         # Rename for display purposes
+         cancer_group = cancer_group_display)
 
 # Annotation bar intended for the top of the heatmap
 column_heatmap_annotation <- HeatmapAnnotation(
   df = as.data.frame(gsva_annotation_df),
-  name = "Broad Histology",
-  col = list("broad_histology" = annotation_colors),
+  name = "Cancer Group",
+  col = list("cancer_group" = annotation_colors_cg),
   na_col = na_color$hex_codes,
   annotation_name_side = "left",
   show_legend = FALSE
@@ -223,14 +262,35 @@ pdf(gsva_pdf, width = 5.75, height = 5)
 draw(gsva_heatmap, heatmap_legend_side = "bottom")
 dev.off()
 
-#### display_group legend ----------------------------------------------------
 
-# And now just the legend which will serve as the legend for the entire figure
+
+#### broad_histology legend ----------------------------------------------------
+
+# UMAP legend
 display_group_legend <- Legend(
-  labels = names(annotation_colors),
-  legend_gp = gpar(fill = annotation_colors)
+  labels = names(annotation_colors_bh),
+  legend_gp = gpar(fill = annotation_colors_bh)
 )
 
-pdf(legend_pdf, width = 3, height = 6)
+pdf(umap_legend_pdf, width = 3, height = 6)
 draw(display_group_legend)
 dev.off()
+
+
+
+#### cancer_group legend ----------------------------------------------------
+
+# Take the annotation_colors for this from the `palette_mapping_df_ordered` tibble since it is ordered properly there
+annotation_colors_cg_legend <- unique(palette_mapping_df_ordered$cancer_group_hex)
+names(annotation_colors_cg_legend) <- unique(palette_mapping_df_ordered$cancer_group_display)
+
+# GSVA legend
+display_group_legend <- Legend(
+  labels = names(annotation_colors_cg_legend),
+  legend_gp = gpar(fill = annotation_colors_cg_legend)
+)
+
+pdf(gsva_legend_pdf, width = 3, height = 6)
+draw(display_group_legend)
+dev.off()
+
