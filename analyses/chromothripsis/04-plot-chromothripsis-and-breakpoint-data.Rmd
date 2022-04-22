@@ -109,7 +109,8 @@ p <- merge %>%
 p
 ggsave(file.path(plots_dir, "count_chromothripsis_cnv_and_sv_breaks_scatterplot.png"), p)
 # Also save a PDF version, to be used as a single panel in a multipanel figure
-ggsave(file.path(plots_dir, "count_chromothripsis_cnv_and_sv_breaks_scatterplot.pdf"), p)
+ggsave(file.path(plots_dir, "count_chromothripsis_cnv_and_sv_breaks_scatterplot.pdf"), p, 
+       useDingbats=FALSE, height = 5.25, width = 7.75)
 ```
 
 #### Stripchart: Chromothripsis regions vs. CNV breaks
