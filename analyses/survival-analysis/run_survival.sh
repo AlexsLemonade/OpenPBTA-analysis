@@ -15,3 +15,6 @@ Rscript -e "rmarkdown::render('survival-analysis_HGG_DMG.Rmd')"
 
 # Build survival models to assess tp53, telomerase, cancer group, and HGG group effects
 Rscript -e "rmarkdown::render('survival-analysis_tp53_telomerase.Rmd')"
+
+# Build survival models to assess molecular subtype and immune cell fraction effects
+Rscript -e "rmarkdown::render('survival-analysis_immune.Rmd')"

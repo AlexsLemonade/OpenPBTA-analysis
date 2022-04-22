@@ -240,7 +240,7 @@ fit_save_model <- function(df,
       df,
       ind_var = terms,
       test    = "cox.reg",
-      metadata_sample_col = "Kids_First_Biospecimen_ID_RNA",
+      metadata_sample_col = "Kids_First_Biospecimen_ID",
       os_days_col = "OS_years" # we want to use years, not days
     )
   } else if (model_type == "multivariate") {
