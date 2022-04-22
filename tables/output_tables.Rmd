@@ -146,7 +146,7 @@ cns_regions <- tribble(
 )
 
 # Combine and output
-list_s1_table <- list(READme = readme,
+list_s1_table <- list(README = readme,
                       histologies_file = histologies_table,
                       CNS_region_definitions = cns_regions
                       )
