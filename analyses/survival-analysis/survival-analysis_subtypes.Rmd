@@ -194,7 +194,7 @@ Save the plot to a file.
 
 ```{r Save survival plot}
 # We can save the plot like a normal ggplot
-cowplot::save_plot(filename = kap_meier_plot_file, plot = surv_plot_all_subtype)
+cowplot::save_plot(filename = kap_meier_plot_file, plot = surv_plot_all_subtype, base_height = 5, base_width = 8)
 # Let's save the model for CI and median survial as well
 readr::write_tsv(surv_median(kap_fit$model), kap_meier_model_file)
 ```
