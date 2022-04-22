@@ -85,35 +85,37 @@ tmb_hist <- read_tsv(file.path(data_dir, "pbta-snv-consensus-mutation-tmb-coding
 
 # Gather all PT_IDs (poi = "patients of interest") for those with any hypermutant samples which are not cell lines
 poi <- tmb_hist %>%
-  # filter to the hypermutators which are not cell lines
-  dplyr::filter(tmb >= 10 & composition != "Derived Cell Line") %>%
+  # filter to the hypermutators
+  dplyr::filter(tmb >= 10) %>%
   pull(Kids_First_Participant_ID)
   
 # Gather all BS_IDs (soi = "samples of interest"), whether hypermutant or not, for pts with hypermutant samples
   soi_df <- tmb_hist %>%
     filter(Kids_First_Participant_ID %in% poi) %>%
     # Looks like there is a hypermutant metastatic NBL sample we had not caught previously, but let's remove here since we focus on CNS anyway
-    # keep only WGS samples; remove cell lines & metastases 
-    filter(experimental_strategy == "WGS" & composition != "Derived Cell Line" & short_histology != "Metastases") %>%
+    # keep only WGS samples; remove metastases 
+    filter(experimental_strategy == "WGS" & short_histology != "Metastases") %>%
     # add manual fields
     mutate(`Therapy post-biopsy` = case_when(
       Kids_First_Biospecimen_ID == "BS_VW4XN9Y7" ~ "Temozolomide, CCNU, Radiation",
       Kids_First_Biospecimen_ID == "BS_20TBZG09" ~ "Temozolomide, Irinotecan, Bevacizumab, Radiation",
       Kids_First_Biospecimen_ID == "BS_8AY2GM4G" ~ "Unknown",
-      Kids_First_Biospecimen_ID == "BS_P0QJ1QAH" ~ "Nivolumab",
+      Kids_First_Biospecimen_ID == "BS_85Q5P8GF" ~ "Temozolomide, Radiation",
+      sample_id == "7316-3058" ~ "Nivolumab",
       Kids_First_Biospecimen_ID == "BS_P3PF53V8" ~ "Temozolomide, Irinotecan, Radiation",
-      Kids_First_Biospecimen_ID == "BS_02YBZSBY" ~ "Unknown"
+      sample_id == "7316-2189" ~ "Unknown"
     ),
     # add Lynch syndrome
     cancer_predispositions = case_when(
       Kids_First_Biospecimen_ID == "BS_8AY2GM4G" ~ "NF-1, Lynch syndrome, pathogenic MSH6",
-      Kids_First_Biospecimen_ID == "BS_P0QJ1QAH" ~ "Lynch Syndrome, pathogenic MSH2",
-      Kids_First_Biospecimen_ID == "BS_02YBZSBY" ~ "Lynch Syndrome",
+      sample_id == "7316-3058" ~ "Lynch Syndrome, pathogenic MSH2",
+      sample_id == "7316-2189" ~ "Lynch Syndrome",
+      Kids_First_Biospecimen_ID == "BS_85Q5P8GF" ~"Lynch syndrome",
       TRUE ~ as.character(cancer_predispositions)),
       ) %>%
     # select relevant columns
-      select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, sample_id, tumor_descriptor, `Therapy post-biopsy`, cancer_predispositions, tmb, molecular_subtype) %>%
-    arrange(Kids_First_Participant_ID, tumor_descriptor)
+      select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, sample_id, tumor_descriptor, `Therapy post-biopsy`, cancer_predispositions, tmb, composition, molecular_subtype) %>%
+    arrange(Kids_First_Participant_ID, tumor_descriptor, composition)
 
 soi_df    
 
@@ -125,6 +127,7 @@ soi_df %>%
              `Phase of therapy` = tumor_descriptor,
              `Cancer predisposition(s)` = cancer_predispositions,
              TMB = tmb,
+             Composition = composition,
              `OpenPBTA molecular subtype` = molecular_subtype
              ) %>%
   write_tsv(table_2_file)
