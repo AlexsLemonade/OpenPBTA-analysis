@@ -100,7 +100,7 @@ p <- merge %>%
   arrange(count_regions_any_conf) %>%
     # Sort by number of chromothripsis calls so that the samples with chromothripsis are more visible
   ggplot(aes(x = cnv_breaks_count, y = sv_breaks_count, fill = as.factor(count_regions_any_conf))) +
-  geom_point(shape=21, size=2, color="black") + 
+  geom_point(shape=21, size=2, color="black", stroke = 0.25) + 
   scale_fill_manual(values=colors, name="# Chromothripsis\nRegions") +
   stat_smooth(aes(fill=NULL), method = "lm", col = "red", show.legend = FALSE) + 
   annotation_custom(label_grob) +
