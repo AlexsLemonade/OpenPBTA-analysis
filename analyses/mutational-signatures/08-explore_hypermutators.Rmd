@@ -25,6 +25,7 @@ library(colorblindr)
 proj_root_path  <- file.path( rprojroot::find_root(rprojroot::has_dir(".git")) )
 analysis_path   <- file.path(proj_root_path, "analyses")
 plot_path       <- file.path(analysis_path, "mutational-signatures", "plots", "cns")
+results_path       <- file.path(analysis_path, "mutational-signatures", "results")
 
 # Input files
 fitted_file    <- file.path(analysis_path, "mutational-signatures", "results", "deconstructsigs_exposures_merged.tsv")
@@ -37,6 +38,7 @@ bin_palette_file <- file.path(proj_root_path, "figures", "palettes", "binary_col
 # Output files
 heatmap_file <- file.path(plot_path, "hypermutator_sigs_heatmap.pdf")
 heatmap_legends_file <- file.path(plot_path, "hypermutator_sigs_heatmap_legends.pdf")
+sig_matrix_file <- file.path(results_path, "hypermutator_sig_matrix.tsv")
 ```
 
 First, we read in data and prepare TMB information.
@@ -188,7 +190,9 @@ if (!(params$is_ci == 1)) {
     tidyr::spread(signature, exposure) %>%
     select(-broad_histology, -cancer_group_display_n, -n, -cancer_group_display, -cancer_group_hex, -tumor_descriptor) %>%
     filter(Kids_First_Biospecimen_ID %in% soi_df$Kids_First_Biospecimen_ID) %>%
-    as.data.frame()
+    as.data.frame() %>%
+    arrange(Kids_First_Biospecimen_ID) %>%
+    write_tsv(sig_matrix_file)
   
   # add spaces at the end of BS_ids to make a space between the heatmap and legend
   rownames(sigs) <- paste0(sigs$Kids_First_Biospecimen_ID, "     ")
@@ -214,8 +218,9 @@ if (!(params$is_ci == 1)) {
            `Phase of Therapy` = tumor_descriptor,
            Composition = composition) %>%
     select(Patient, Kids_First_Biospecimen_ID, `Phase of Therapy`, Composition, `Mutation status`) %>%
-    as.data.frame() 
-  
+    as.data.frame() %>%
+    arrange(Kids_First_Biospecimen_ID)
+
   # set rownames to match matrix, remove BS_ID
   rownames(anno) <- paste0(anno$Kids_First_Biospecimen_ID, "     ")
   anno$Kids_First_Biospecimen_ID <- NULL
@@ -251,7 +256,7 @@ if (!(params$is_ci == 1)) {
                        name = "Signature weights",
                        col = colorRampPalette(c("#f1f1f1", "#2166ac"))(50),
                        cluster_rows = FALSE,
-                       show_row_names = FALSE,
+                       show_row_names = TRUE,
                        show_heatmap_legend=FALSE,
                        cluster_columns = FALSE,
                        right_annotation = row_anno,
