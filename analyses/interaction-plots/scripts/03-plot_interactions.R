@@ -273,6 +273,8 @@ disease_plot <- ggplot(
   scale_y_continuous(expand = c(0, 0.5, 0.1, 0)) +
   theme_classic() +
   theme(
+    axis.text.y = element_text(size = rel(1.3)),
+    axis.title.y = element_text(size = rel(1.225)),
     axis.text.x = element_text(
       angle = 90,
       hjust = 1,
@@ -280,7 +282,9 @@ disease_plot <- ggplot(
     ),
     legend.position = c(1,1),
     legend.justification = c(1,1),
-    legend.key.size = unit(1.5, "char"))
+    legend.key.size = unit(1.5, "char"),
+    legend.text = element_text(size = rel(0.85))
+  )
 
 if (!is.na(opts$disease_plot)){
   ggsave(opts$disease_plot, disease_plot)
