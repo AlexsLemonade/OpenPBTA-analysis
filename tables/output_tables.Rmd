@@ -1,6 +1,6 @@
 ---
 title: "Tables output for manuscript"
-author: "Run Jin and Stephanie J. Spielman"
+author: "Run Jin, Stephanie J. Spielman, and Jo Lynne Rokita"
 date: "2021-2022"
 output:
   html_document: default
@@ -76,18 +76,85 @@ histology_df %>%
 ## Table S1: V21 histologies table
 
 ```{r v21 histology as excel}
-# Define array of samples that need to be classified 
+# Sheet 1: README tab
+
+readme <- tribble(
+~`Histology column`,~Definition,~`Possible values`,
+"age_at_diagnosis_days","Patient age at diagnosis in days","numeric",
+"age_last_update_days","Patient age at the last clinical event/update in days","numeric",
+"aliquot_id","External aliquot identifier","variable",
+"broad_histology","Broad WHO 2016 classification of cancer type","text",
+"cancer_group","Harmonized cancer groupings for plots","text",
+"cancer_predispositions","Reported cancer predisposition syndromes","text",
+"CNS_region","Harmonized brain region based on `primary_site`","Hemispheric;Midline;Mixed;Optic
+pathway;Other;Posterior fossa;Spine;Suprasellar;Ventricles",
+"cohort","Scientific cohort","CBTN;PNOC",
+"cohort_participant_id","Scientific cohort participant ID","C#####-C######",
+"composition","Sample composition","Derived Cell Line;Not Reported;Peripheral Whole Blood;Saliva;Solid Tissue",
+"ethnicity","Patient reported ethnicity","text",
+"experimental_strategy","Sequencing strategy","WGS;WXS;RNA-Seq;Panel",
+"extent_of_tumor_resection","Amount of tumor resected at time of surgical event","Biopsy only;Partial resection;Gross/Near total resection;Not Reported;Unavailable",
+"germline_sex_estimate","Predicted sex of patient based on germline X and Y ratio calculation (described in methods)","Female;Male;Unknown",
+"harmonized_diagnosis","`integrated_diagnosis` if exists or updated and harmonized diagnosis using pathology_free_text_diagnosis information","text",
+"integrated_diagnosis","2016 WHO diagnosis integrated from pathology diagnosis and molecular subtyping","text",
+"Kids_First_Biospecimen_ID","KidsFirst biospecimen identifier","BS_########",
+"Kids_First_Participant_ID","KidsFirst patient identifier","PT_########",
+"molecular_subtype","Molecular subtype defined by WHO 2016 guidelines","text",
+"normal_fraction","Theta2 normal DNA fraction estimate","numeric",
+"Notes","Free text field describing changes from `pathology_diagnosis` to `integrated_diagnosis` or manner in which molecular_subtype was determined","text",
+"OS_days","Overall survival in days","numeric",
+"OS_status","Overall survival status","DECEASED;LIVING",
+"parent_aliquot_id","External identifier combining sample_id; sample_type; aliquot_id; sequencing_strategy for some samples","text",
+"pathology_diagnosis","Reported and/or harmonized patient diagnosis from pathology reports","text",
+"pathology_free_text_diagnosis","Free text patient diagnosis from pathology reports","text",
+"PFS_days","Progression-free survival in days","numeric",
+"primary_site","Bodily site(s) from which specimen was derived","text",
+"race","Patient reported race","text",
+"reported_gender","Patient reported gender","text",
+"RNA_library","Type of RNA-Sequencing library preparation","stranded;poly-A",
+"sample_id","External biospecimen identifier","variable",
+"sample_type","Broad sample type","Normal;Tumor",
+"seq_center","Sequencing center","BGI;BGI@CHOP Genome Center;Genomic Clinical Core at Sidra Medical and Research Center;NantOmics;The Translational Genomics Research Institute",
+"short_histology","Abbreviated `integrated_diagnosis` or `broad_histology` for plotting purposes","text",
+"tumor_descriptor","Phase of therapy from which tumor was derived","Initial CNS Tumor;Progressive Progressive Disease Post-Mortem;Recurrence;Second Malignancy;Unavailable",
+"tumor_fraction","Theta2 tumor DNA fraction estimate","numeric",
+"tumor_ploidy","Control-FREEC ploidy","numeric"
+)
+
+# Sheet 2: Define array of samples that need to be classified 
 to_be_classified_samples <- c("BS_3J4T2YYW", "BS_7F07M7JG", "BS_AG0BZN6F", "BS_HZNKSQ17", "BS_V6HKXX1Z", "BS_WP9J88EB", "BS_YYAPSA5P")
 
-histology_df %>% 
+histologies_table <- histology_df %>% 
   # Update definitions of molecular subtype for TBD samples
   mutate(molecular_subtype = ifelse(
     Kids_First_Biospecimen_ID %in% to_be_classified_samples,
     "MB, To be classified",
     molecular_subtype
-  )) %>%
-  # export with argument `keepNA=TRUE` so NAs come up as NAs and not blank cells
-  write.xlsx(table_s1_file, overwrite=TRUE, keepNA=TRUE)
+  ))
+
+# Sheet 3: CNS region definition
+cns_regions <- tribble(
+~CNS_region,~primary_site,
+"Hemispheric","Frontal Lobe;Temporal Lobe;Parietal Lobe;Occipital Lobe",
+"Midline","Pons/Brainstem;Brain Stem- Midbrain/Tectum;Brain Stem- Pons;Brain Stem-Medulla;Thalamus;Basal Ganglia;Hippocampus;Pineal Gland",
+"Spine","Spinal Cord- Cervical;Spinal Cord- Thoracic;Spinal Cord- Lumbar/Thecal Sac;Spine NOS",
+"Ventricles","Ventricles",
+"Posterior fossa","Cerebellum/Posterior Fossa",
+"Optic pathway","Optic Pathway",
+"Suprasellar","Suprasellar/Hypothalamic/Pituitary",
+"Other","Meninges/Dura;Other locations NOS;Skull;Cranial Nerves NOS;Brain"
+)
+
+# Combine and output
+list_s1_table <- list(READme = readme,
+                      histologies_file = histologies_table,
+                      CNS_region_definitions = cns_regions
+                      )
+write.xlsx(list_s1_table, 
+           table_s1_file, 
+           overwrite=TRUE, 
+           keepNA=TRUE)
+
 ```
 
 ## Table S2: DNA results table
