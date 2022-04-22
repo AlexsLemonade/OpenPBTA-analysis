@@ -32,6 +32,7 @@ meta_file      <- file.path(proj_root_path, "data", "pbta-histologies.tsv")
 tmb_all_file    <- file.path(proj_root_path, "data", "pbta-snv-consensus-mutation-tmb-all.tsv")
 tmb_coding_file <- file.path(proj_root_path, "data", "pbta-snv-consensus-mutation-tmb-coding.tsv")
 td_palette_file <- file.path(proj_root_path, "figures", "palettes", "tumor_descriptor_palette.tsv")
+bin_palette_file <- file.path(proj_root_path, "figures", "palettes", "binary_color_palette.tsv")
 
 # Output files
 heatmap_file <- file.path(plot_path, "hypermutator_sigs_heatmap.pdf")
@@ -41,8 +42,15 @@ heatmap_legends_file <- file.path(plot_path, "hypermutator_sigs_heatmap_legends.
 First, we read in data and prepare TMB information.
 
 ```{r read_prep_data, warning=FALSE}
-# Read in tumor descriptor palette
+# Read in tumor descriptor and palettes
 td_palette <- readr::read_tsv(td_palette_file)
+bin_palette <- readr::read_tsv(bin_palette_file) %>%
+  mutate(color_names = case_when(
+        color_names == "binary_1" ~ "Solid Tissue",
+        color_names == "binary_2" ~ "Derived Cell Line",
+        TRUE ~ as.character(color_names)))
+# remove na color row for annotations
+bin_palette <- bin_palette[!bin_palette$color_names == "na_color",]
 
 # Read in metadata
 meta <- readr::read_tsv(meta_file, guess_max = 10000)
@@ -169,9 +177,9 @@ if (!(params$is_ci == 1)) {
     filter(Kids_First_Biospecimen_ID %in% hypermutator_df$Kids_First_Biospecimen_ID) %>%
     select(Kids_First_Participant_ID) %>%
     left_join(meta) %>%
-    #keep only WGS samples; remove normals and cell lines
-    filter(experimental_strategy == "WGS" & !is.na(pathology_diagnosis) & composition != "Derived Cell Line") %>%
-    select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, tumor_descriptor) %>%
+    #keep only WGS samples; remove normals; keep cell lines
+    filter(experimental_strategy == "WGS" & !is.na(pathology_diagnosis)) %>%
+    select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, tumor_descriptor, composition) %>%
     unique() %>%
     arrange(Kids_First_Participant_ID)
   
@@ -203,18 +211,14 @@ if (!(params$is_ci == 1)) {
     unique() %>%
     # mutate names for annotation
     mutate(Patient = Kids_First_Participant_ID,
-           `Phase of Therapy` = tumor_descriptor) %>%
-    select(Patient, Kids_First_Biospecimen_ID, `Phase of Therapy`, `Mutation status`) %>%
+           `Phase of Therapy` = tumor_descriptor,
+           Composition = composition) %>%
+    select(Patient, Kids_First_Biospecimen_ID, `Phase of Therapy`, Composition, `Mutation status`) %>%
     as.data.frame() 
   
   # set rownames to match matrix, remove BS_ID
   rownames(anno) <- paste0(anno$Kids_First_Biospecimen_ID, "     ")
   anno$Kids_First_Biospecimen_ID <- NULL
-  
-  
-  `Mutation status` = c(Normal = "grey40",
-                         Hypermutant = "orange",
-                         `Ultra-hypermutant` = "red")
   
   # Add tumor descriptor palette from dataframe
   td_palette_filtered <- td_palette %>%
@@ -225,12 +229,16 @@ if (!(params$is_ci == 1)) {
   pt_palette <- colorRampPalette(palette_OkabeIto)(length(unique(anno$Patient)))
   names(pt_palette) <- unique(anno$Patient)
   
+  comp_palette <- as.character(bin_palette$hex_codes)
+  names(comp_palette) <- unique(anno$Composition)
+  
   # Specify colors
   ann_colors = list(
     # mutator color from [this PR](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1280/files#diff-bc8134008706f38e7795b59696928058d123e44b4172df68105a26ad8aa0a398R298-R301) 
     `Mutation status` = c(Normal = "grey40",
                           Hypermutant = "orange",
                           `Ultra-hypermutant` = "red"),
+    Composition = comp_palette,
     `Phase of Therapy` = td_palette_col,
     Patient = pt_palette)
   
@@ -274,12 +282,19 @@ if (!(params$is_ci == 1)) {
     title = "Phase of Therapy"
   )
   
+  comp_legend <- Legend(
+    labels = names(ann_colors$Composition),
+    legend_gp = gpar(fill = ann_colors$Composition),
+    title = "Composition"
+  )
+  
   weights_legend <- color_mapping_legend(heat_plot@matrix_color_mapping, plot = FALSE, 
                                          legend_direction = "horizontal")
   
   heat_legends <- packLegend(patient_legend,
              mutator_legend,
              phase_legend,
+             comp_legend,
              weights_legend,
              direction = "horizontal",
              column_gap = unit(0.75, "cm")
@@ -287,12 +302,12 @@ if (!(params$is_ci == 1)) {
 
   
   # save heatmap 
-  pdf(heatmap_file, width = 6.5, height = 4)
+  pdf(heatmap_file, width = 8, height = 4)
   print(heat_plot)
   dev.off()
 
   # save heatmap legends
-  pdf(heatmap_legends_file, width = 6.5, height = 2)
+  pdf(heatmap_legends_file, width = 8, height = 2)
   draw(heat_legends)
   dev.off()  
  }

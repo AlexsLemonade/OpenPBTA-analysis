@@ -83,10 +83,10 @@ tmb_hist <- read_tsv(file.path(data_dir, "pbta-snv-consensus-mutation-tmb-coding
   select(Kids_First_Biospecimen_ID, tmb) %>%
   left_join(histology_df) 
 
-# Gather all PT_IDs (poi = "patients of interest") for those with any hypermutant samples
+# Gather all PT_IDs (poi = "patients of interest") for those with any hypermutant samples which are not cell lines
 poi <- tmb_hist %>%
-  # filter to the hypermutators
-  dplyr::filter(tmb >= 10) %>%
+  # filter to the hypermutators which are not cell lines
+  dplyr::filter(tmb >= 10 & composition != "Derived Cell Line") %>%
   pull(Kids_First_Participant_ID)
   
 # Gather all BS_IDs (soi = "samples of interest"), whether hypermutant or not, for pts with hypermutant samples
@@ -100,7 +100,6 @@ poi <- tmb_hist %>%
       Kids_First_Biospecimen_ID == "BS_VW4XN9Y7" ~ "Temozolomide, CCNU, Radiation",
       Kids_First_Biospecimen_ID == "BS_20TBZG09" ~ "Temozolomide, Irinotecan, Bevacizumab, Radiation",
       Kids_First_Biospecimen_ID == "BS_8AY2GM4G" ~ "Unknown",
-      Kids_First_Biospecimen_ID == "BS_85Q5P8GF" ~ "Temozolomide, Radiation",
       Kids_First_Biospecimen_ID == "BS_P0QJ1QAH" ~ "Nivolumab",
       Kids_First_Biospecimen_ID == "BS_P3PF53V8" ~ "Temozolomide, Irinotecan, Radiation",
       Kids_First_Biospecimen_ID == "BS_02YBZSBY" ~ "Unknown"
@@ -108,7 +107,6 @@ poi <- tmb_hist %>%
     # add Lynch syndrome
     cancer_predispositions = case_when(
       Kids_First_Biospecimen_ID == "BS_8AY2GM4G" ~ "NF-1, Lynch syndrome, pathogenic MSH6",
-      Kids_First_Biospecimen_ID == "BS_85Q5P8GF" ~ "Lynch syndrome",
       Kids_First_Biospecimen_ID == "BS_P0QJ1QAH" ~ "Lynch Syndrome, pathogenic MSH2",
       Kids_First_Biospecimen_ID == "BS_02YBZSBY" ~ "Lynch Syndrome",
       TRUE ~ as.character(cancer_predispositions)),
