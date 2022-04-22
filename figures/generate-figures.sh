@@ -174,6 +174,9 @@ bash ${analyses_dir}/immune-deconv/run-immune-deconv.sh
 # copy figure panel:
 cp ${analyses_dir}/immune-deconv/plots/cell_types-cancer_groups.pdf  pdfs/fig5/panels/quantiseq-cell_types-cancer_groups.pdf
 
+###### Forest plot for 5D
+Rscript --vanilla scripts/fig5-forest-plot.R
+
 
 ####### Supplementary figures
 
@@ -192,5 +195,6 @@ cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_per_sample_barplot.
 
 # Copy S5 panel (analysis module was run previously)
 cp ${analyses_dir}/immune-deconv/plots/cell_types-molecular_subtypes.pdf pdfs/supp/figs5/panels/quantiseq-cell_types-molecular_subtypes.pdf
+
 
 
