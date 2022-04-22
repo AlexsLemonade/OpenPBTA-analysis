@@ -1,8 +1,9 @@
 ## Perform survival analysis for samples with 
 
-**Author of code and documentation:** [@runjin326](https://github.com/runjin326)
+**Module authors:** Run Jin [@runjin326](https://github.com/runjin326), Stephanie J. Spielman, Jo Lynne Rokita 
 
-In this module, we perform survival anlayses by Kaplan-Meier, log-rank or cox regression for samples in OpenPBTA, using different covariates. Detailed information about covariates and methods used can be found in module contents.
+In this module, we perform survival analyses by Kaplan-Meier, log-rank, and/or or cox regression for samples in OpenPBTA using different covariates. 
+Detailed information about covariates can be found below.
 
 
 ### Usage
@@ -12,28 +13,62 @@ bash run-survival.sh
 
 ### Module contents
 
-`survival-analysis_tempalte.Rmd` showed the usage of function `survival_analysis` to perform Kaplan-Meier, log-rank and cox regression survival analyses. 
+#### Function
+
+#### Scripts
+
+`survival-analysis_template.Rmd` showed the usage of function `survival_analysis` to perform Kaplan-Meier, log-rank and cox regression survival analyses. 
 Particularly, it demonstrated runninng Kaplan-Meier and log-rank survival analysis on categorial variable, using `germline_sex_estimate` as an example.
 It also demonstrated how to run cox regression survival analysis on continuous variable, using `tmb` (tumor mutation burden) as an example.
 
-`survival-analysis_HGG_DMG.Rmd` runs Kaplan-Meier survival analysis on two groups of samples: HGG, H3 wildtype and DMG, H3 K28. 
-Two visualizations were generated for the same analyis. 
+`survival-analysis_subtypes.Rmd` runs the following analyses:
+1. Univariate models
+- Kaplan-Meier survival analysis on HGG samples (minus oligodendrogliomas) by `molecular_subtype`
+- Cox regression univariate analysis on HGG samples (minus oligodendrogliomas) by `molecular_subtype`
 
-`survival-analysis_histology.Rmd` run the following analysis:
-1. Univariate analysis 
-a) cox regression method
+`survival-analysis_tp53_telomerase.Rmd` runs the following analysis:
+1. Univariate models 
 - TP53 classifier score (as a continuous variable)
-- EXTEND score (as a continuous variable)
-- HGG vs. non-HGG
-b) log rank method
-- HGG vs. non-HGG
+- telomerase score (EXTEND, as a continuous variable)
+- HGG group (HGG vs. non-HGG)
+- Cancer group (cox)
+- Cancer group (log rank)
 
-2. Multivariate analysis - all using cox regression
-a) overall comparison with 3 covariates
-- TP53 classifier score, EXTEND score and HGG vs. non-HGG
-b) sub-population comparison with 2 covariates
-- HGG group: TP53 classifier score and EXTEND score
-- non-HGG group: TP53 classifier score and EXTEND score
+2. Multivariate models
+- Interaction model: `TP53 classifier score * telomerase score * HGG group`
+- Additive model: `TP53 classifier score + telomerase score + HGG group`
+- Additive models: `TP53 classifier score + telomerase score` for each cancer group
 
-3. Plots
-- Bivariate distribution of TP53 classifier score and EXTEND score in density plot stratified by HGAT status
+3. Fit results are saved as `.RDS` files for each analysis
+
+`survival-analysis_immune.Rmd` runs the following analyses:
+1. Univariate models:
+- PD-L1 expression (stranded samples only)
+
+2. Multivariate models:
+- CD274 (PD-L1) expression, controlling for RNA library
+- quanTIseq immune cell fractions across entire PBTA cohort
+- quanTIseq immune cell fractions across entire PBTA cohort
+- quanTIseq immune cell fractions + CD274 expression across entire PBTA cohort
+- quanTIseq immune cell fractions + CD274 expression across suitable cancer groups (DECEASED N>=3)
+
+
+#### Output
+
+```
+results/*.rds
+plots/KM_hgg_subtypes.pdf
+```
+
+The RDS files contain survival model fit results.
+The Kaplan-meier curve for the log rank analysis of HGG by molecular subtype is saved as `KM_hgg_subtypes.pdf`
+
+
+
+
+
+
+
+
+
+
