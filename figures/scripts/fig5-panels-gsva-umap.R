@@ -100,7 +100,9 @@ names(annotation_colors_bh) <- broad_histology_color_df$broad_histology_display
 cancer_group_color_df <- palette_mapping_df %>%
   dplyr::select(cancer_group_display, cancer_group_hex) %>%
   dplyr::distinct() %>%
-  tidyr::drop_na() # remove NA displays
+  # remove NA and "Other" displays
+  tidyr::drop_na() %>%
+  filter(cancer_group_display != "Other")
 
 # Make color key specific to these samples
 annotation_colors_cg<- cancer_group_color_df$cancer_group_hex
@@ -195,13 +197,13 @@ gsva_col_fun <- circlize::colorRamp2(divergent_col_val,
 
 # Determine cancer group counts so we can have a variable to order rows by
 # But, we should keep "Other" at the _end_ regardless of counts
-# TODO: Should we actually remove "Other"?
 palette_mapping_df_ordered <- palette_mapping_df %>%
-  # Remove NA display groups
+  # Remove NA and "Other" display groups
   drop_na(cancer_group_display) %>%
+  filter(cancer_group_display != "Other") %>%
+  # Arrange in reverse order of counts and make that the cancer_group_order
   count(cancer_group_display) %>%
   # force "Other" to be zero so we can arrange by `n` and it's at the bottom
-  mutate(n = ifelse(cancer_group_display == "Other", 0, n)) %>%
   arrange(-n) %>%
   # Now add the proper order.
   mutate(cancer_group_order = 1:n()) %>%
@@ -211,9 +213,8 @@ palette_mapping_df_ordered <- palette_mapping_df %>%
   inner_join(palette_mapping_df)
 
 
-# We're going to drop NA from this plot and make sure it is ordered by
-# cancer_group order, which is based on number of samples
-# Note: NA groups are removed above, so do not need to drop here
+# Make sure it is ordered by cancer_group order, which is based on number of samples
+# Note: NA/"Other" groups are already removed above, so do not need to drop here
 gsva_ordered_bsids <- palette_mapping_df_ordered %>%
   arrange(cancer_group_order) %>%
   pull(Kids_First_Biospecimen_ID)
