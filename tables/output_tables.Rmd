@@ -114,7 +114,7 @@ poi <- tmb_hist %>%
       TRUE ~ as.character(cancer_predispositions)),
       ) %>%
     # select relevant columns
-      select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, sample_id, tumor_descriptor, `Therapy post-biopsy`, cancer_predispositions, tmb, composition, molecular_subtype) %>%
+      select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, sample_id, tumor_descriptor, composition, `Therapy post-biopsy`, cancer_predispositions, tmb, molecular_subtype) %>%
     arrange(Kids_First_Participant_ID, tumor_descriptor, composition)
 
 soi_df    
@@ -125,9 +125,9 @@ soi_df %>%
              `Kids First Biospecimen ID` = Kids_First_Biospecimen_ID,
              `CBTN ID` = sample_id,
              `Phase of therapy` = tumor_descriptor,
+              Composition = composition,
              `Cancer predisposition(s)` = cancer_predispositions,
              TMB = tmb,
-             Composition = composition,
              `OpenPBTA molecular subtype` = molecular_subtype
              ) %>%
   write_tsv(table_2_file)
