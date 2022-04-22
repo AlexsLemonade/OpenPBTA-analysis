@@ -259,7 +259,8 @@ disease_plot <- ggplot(
       y = mutant_samples,
       fill = disease_factor)) +
   geom_col(width = 0.7,
-           color = "#666666") +
+           color = "#666666", 
+           size = 0.15) +
   labs(
     x = "",
     y = "Samples with mutations",
@@ -282,7 +283,7 @@ disease_plot <- ggplot(
     ),
     legend.position = c(1,1),
     legend.justification = c(1,1),
-    legend.key.size = unit(1.5, "char"),
+    legend.key.size = unit(1, "char"),
     legend.text = element_text(size = rel(0.85))
   )
 
