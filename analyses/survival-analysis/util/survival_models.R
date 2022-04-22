@@ -1,8 +1,8 @@
 # Functions for conducting survival analyses
 #
-# C. Savonen for ALSF - CCDL
+# C. Savonen and SJ Spielman for ALSF - CCDL
 #
-# 2019
+# 2019, 2022
 #
 
 # Attach this package
@@ -207,4 +207,68 @@ survival_analysis <- function(metadata,
 
   # Return both the fit object and the table
   return(list(model = fit, table = table, original_data = ind_var_df))
+}
+
+
+
+
+
+# Function to fit and export a survival analysis. 
+# This function wraps the function `survival_analysis()` to perform and export a survival model
+fit_save_model <- function(df, 
+                           terms, 
+                           output_file, 
+                           model_type = "univariate", 
+                           test = "cox") {
+  # df: A data frame that contains columns:
+  #   - `OS_status` with character values "LIVING" and "DECEASED", or numeric values 0 and 1 respectively
+  #   - `OS_years` giving survival time in years
+  # terms: A string providing RHS of model equation. For univariate models, this should be a column in `df`. For multivariate models, this should contain the full RHS
+  # output_file: Path to RDS file where exported model should be saved
+  # model_type: String "univariate" or "multivariate", where default is "univariate"
+  # test: String indicating test, generally either "cox" or "log.rank"
+  
+  # Check model_type
+  if (!(model_type %in% c("univariate", "multivariate"))) {
+      stop("Must specify `model_type` as 'univariate' or 'multivariate'")
+  }
+  
+  
+  # Fit the model
+  if (model_type == "univariate") {
+    fit <- survival_analysis(
+      df,
+      ind_var = terms,
+      test    = "cox.reg",
+      metadata_sample_col = "Kids_First_Biospecimen_ID",
+      os_days_col = "OS_years" # we want to use years, not days
+    )
+  } else if (model_type == "multivariate") {
+    
+    # Recode OS_Status (for univariate, `survival_analysis()` does the recoding)
+    df <- df %>%
+      mutate(OS_status = ifelse(OS_status == "LIVING", 0, 1))
+    
+    # Fit model
+    fitted_multi <- survival::coxph(
+      formula(
+        paste0("survival::Surv(time = OS_years, event = OS_status) ~ ", terms)
+      ),
+      data = df
+    )
+    
+    # Set up list object to match parts of `survival_analysis()` output we need
+    fit <- list(
+      model = fitted_multi,
+      table = broom::tidy(fitted_multi)
+    )
+  }
+  
+  # Save model RDS
+  readr::write_rds(fit$model, 
+                   # remove spaces in case (common for cancer groups)
+                   str_replace_all(output_file, " ", "-"))
+  
+  # Return the model fit table to be printed out
+  fit$table
 }

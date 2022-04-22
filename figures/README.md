@@ -81,10 +81,11 @@ As for main text figures, individual panels for Figure S1 would be saved in `fig
 ### Compiled multipanel figures
 
 Multipanel figures are compiled with Adobe Illustrator and saved as PDFs in their respective subdirectories.
-For example, the compiled, PDF version of Figure 4 is saved as `figures/pdf/fig4/figure4.pdf`.
+For example, the compiled, PDF version of Figure 1 is saved as `figures/pdf/fig1/figure1.pdf`.
+Similarly for supplementary figures, the compiled PDF version of Figure S1 is saved as `figures/pdf/supp/figs1/figureS1.pdf`.
 (Original `.ai` files are available in Google Drive and can be shared as necessary -- contact @jaclyn-taroni!)
 
-PNG versions of figures are exported using the PDF file and saved to the `figures/pngs` folder.
+PNG versions of figures are exported using the PDF file and saved to the `figures/pngs/` folder.
 PNGs version can be linked in the accompanying manuscript repository [`AlexsLemonade/OpenPBTA-manuscript`](https://github.com/AlexsLemonade/OpenPBTA-manuscript/).
 
 ### Documenting individual figures & scripts

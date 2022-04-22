@@ -1,4 +1,4 @@
-# Run Jin and Jo Lynne Rokita 
+# Run Jin (D3b), Jo Lynne Rokita (D3b), and Stephanie Spielman (CCDL)
 #
 # Generate figures with UMAP results 
 
@@ -67,12 +67,12 @@ umap_df_hgg <- umap_df %>%
     TRUE ~ tp53_status
   ))
 
-# reorder the levels for plotting
-umap_df_hgg$tp53_status <- factor(umap_df_hgg$tp53_status, levels = c("TP53 unchanged",
+# reorder the levels for plotting, and set column names for legend
+umap_df_hgg$`TP53 status` <- factor(umap_df_hgg$tp53_status, levels = c("TP53 unchanged",
                                                                       "TP53 activated",
                                                                       "TP53 loss"))
 
-umap_df_hgg$hgat_subtypes <- factor(umap_df_hgg$hgat_subtypes, levels = c("Other CNS tumor",
+umap_df_hgg$subtype <- factor(umap_df_hgg$hgat_subtypes, levels = c("Other CNS tumor",
                                                                           "To be classified",
                                                                           "H3 wildtype",
                                                                           "H3 K28",
@@ -81,8 +81,8 @@ umap_df_hgg$hgat_subtypes <- factor(umap_df_hgg$hgat_subtypes, levels = c("Other
 
 # save the figure
 p <- plot_dimension_reduction(umap_df_hgg,
-                              point_color = "hgat_subtypes",
-                              point_shape = "tp53_status",
+                              point_color = "subtype",
+                              point_shape = "TP53 status",
                               x_label = "Dimension 1",
                               y_label = "Dimension 2",
                               alpha_value = 0.7,
@@ -91,10 +91,13 @@ p <- plot_dimension_reduction(umap_df_hgg,
                               color_palette = c(other_cns_color, 
                                                 to_be_classified_color, 
                                                 palette_OkabeIto %>% c(1,3,5,7)))
-# save the figures
-pdf(file.path(plots_dir, "supp_umap_hgg.pdf"))
-print(p)
-dev.off()
+# ensure that the subtype legend is second by adding guides
+p <- p + 
+  guides(shape = guide_legend(order = 1), color = guide_legend(order = 2))
+
+# save the plot
+ggsave(file.path(plots_dir, "supp_umap_hgg.pdf"), 
+       p, width = 5, height = 4)
 
 ### Plot for LGAT
 # for LGG, we consider LGG, GNG and GNT all as LGG and we remove the prefixes to lumps groups together
@@ -127,13 +130,13 @@ umap_df_lgg <- umap_df %>%
     TRUE ~ lgat_subtypes
   ))
 
-# reorder the levels for plotting
-umap_df_lgg$cdkn_status <- factor(umap_df_lgg$cdkn_status, levels = c("not altered",
+# reorder the levels for plotting, and set column names for legend
+umap_df_lgg$`CDKN status` <- factor(umap_df_lgg$cdkn_status, levels = c("not altered",
                                                                       "altered"))
 
-umap_df_lgg$colored_subtype <- factor(umap_df_lgg$colored_subtype, levels = c("Other CNS tumor",
+umap_df_lgg$subtype <- factor(umap_df_lgg$colored_subtype, levels = c("Other CNS tumor",
                                                                               "To be classified",
-                                                                              "Other LGAT subtypes",
+                                                                              "Other LGG subtypes",
                                                                               "BRAF V600E",
                                                                               "KIAA1549-BRAF",
                                                                               "NF1",
@@ -142,9 +145,9 @@ umap_df_lgg$colored_subtype <- factor(umap_df_lgg$colored_subtype, levels = c("O
                                                                               "wildtype"))
 
 # generate a plot
-p <- plot_dimension_reduction(umap_df_lgg,
-                              point_color = "colored_subtype",
-                              point_shape = "cdkn_status",
+p <- plot_dimension_reduction(drop_na(umap_df_lgg), # drop NAs for legend
+                              point_color = "subtype",
+                              point_shape = "CDKN status",
                               x_label = "Dimension 1",
                               y_label = "Dimension 2",
                               alpha_value = 0.7,
@@ -154,11 +157,14 @@ p <- plot_dimension_reduction(umap_df_lgg,
                                                 to_be_classified_color, 
                                                 other_lgat_color, 
                                                 palette_OkabeIto %>% c(1,2,3,5,7,8)))
+# ensure that the subtype legend is second by adding guides
+p <- p + 
+  guides(shape = guide_legend(order = 1), color = guide_legend(order = 2))
+
 
 # save the figure
-pdf(file.path(plots_dir, "supp_umap_lgg.pdf"))
-print(p)
-dev.off()
+ggsave(file.path(plots_dir, "supp_umap_lgg.pdf"), 
+       p, width = 5, height = 4)
 
 ### Plot for MB 
 # for MB, we keep subtypes and recode everything else as `Other CNS Tumor`
@@ -168,8 +174,8 @@ umap_df_mb <- umap_df %>%
     TRUE ~ "Other CNS tumor"
   ))
 
-# reorder the levels for plotting
-umap_df_mb$mb_subtypes <- factor(umap_df_mb$mb_subtypes, levels = c("Other CNS tumor",
+# reorder the levels for plotting, and update column name for legend
+umap_df_mb$subtype <- factor(umap_df_mb$mb_subtypes, levels = c("Other CNS tumor",
                                                                     "To be classified",
                                                                     "Group3",
                                                                     "Group4",
@@ -178,7 +184,7 @@ umap_df_mb$mb_subtypes <- factor(umap_df_mb$mb_subtypes, levels = c("Other CNS t
 
 # save the plot
 p <- plot_dimension_reduction(umap_df_mb,
-                              point_color = "mb_subtypes",
+                              point_color = "subtype",
                               x_label = "Dimension 1",
                               y_label = "Dimension 2",
                               alpha_value = 0.7,
@@ -188,9 +194,9 @@ p <- plot_dimension_reduction(umap_df_mb,
                                                 to_be_classified_color, 
                                                 palette_OkabeIto %>% c(2,4,6,8)))
 # save the figure
-pdf(file.path(plots_dir, "supp_umap_mb.pdf"))
-print(p)
-dev.off()
+ggsave(file.path(plots_dir, "supp_umap_mb.pdf"), 
+       p, width = 5, height = 4)
+
 
 ### Plot for EPN
 # for EPN, we keep subtypes and recode everything else as `Other CNS Tumor`
@@ -200,8 +206,8 @@ umap_df_epn <- umap_df %>%
     TRUE ~ "Other CNS tumor"
   ))
 
-# reorder the levels for plotting
-umap_df_epn$epn_subtypes <- factor(umap_df_epn$epn_subtypes, levels = c("Other CNS tumor",
+# reorder the levels for plotting, and update column name for legend
+umap_df_epn$subtype <- factor(umap_df_epn$epn_subtypes, levels = c("Other CNS tumor",
                                                                         "To be classified",
                                                                         "ST RELA",
                                                                         "ST YAP1",
@@ -209,7 +215,7 @@ umap_df_epn$epn_subtypes <- factor(umap_df_epn$epn_subtypes, levels = c("Other C
                                                                         "H3 K28"))
 # save the plots and output in the console
 p <- plot_dimension_reduction(umap_df_epn,
-                              point_color = "epn_subtypes",
+                              point_color = "subtype",
                               x_label = "Dimension 1",
                               y_label = "Dimension 2",
                               alpha_value = 0.7,
@@ -219,8 +225,6 @@ p <- plot_dimension_reduction(umap_df_epn,
                                                 to_be_classified_color, 
                                                 palette_OkabeIto %>% c(1,3,6,8)))
 # save the figure
-pdf(file.path(plots_dir, "supp_umap_epn.pdf"))
-print(p)
-dev.off()
-
+ggsave(file.path(plots_dir, "supp_umap_epn.pdf"), 
+       p, width = 5, height = 4)
 

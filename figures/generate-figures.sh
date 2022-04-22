@@ -107,7 +107,7 @@ Rscript --vanilla ${analyses_dir}/telomerase-activity-prediction/01-run-EXTEND.R
 Rscript --vanilla ${analyses_dir}/telomerase-activity-prediction/01-run-EXTEND.R --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-counts-rsem-expected_count-collapsed.polya.rds --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_counts.txt
 
 # Build figures of telomerase activity
-Rscript --vanilla scripts/TelomeraseActivities.R
+Rscript --vanilla scripts/fig4-telomerase-activities.R
 
 ####### Transcriptomic overview
 
@@ -128,10 +128,28 @@ Rscript --vanilla ${analyses_dir}/gene-set-enrichment-analysis/01-conduct-gsea-a
 Rscript --vanilla -e "rmarkdown::render('${analyses_dir}/gene-set-enrichment-analysis/02-model-gsea.Rmd', clean = TRUE)"
 
 # Step that generates the GSVA, UMAP, and legend panels
-Rscript --vanilla scripts/fig4-panels-gsva-umap.R
+Rscript --vanilla scripts/fig5-panels-gsva-umap.R
 
-# Step that generates UMAP for molecular analysis 
-Rscript --vanilla scripts/supp-subtype-umap.R
+
+###### TP53 scores
+
+# Generate the tp53 scores boxplot for figure 3
+Rscript --vanilla scripts/fig3-panel-tp53.R
+
+###### Hypermutator signatures
+# Run the mutational-signatures module
+bash ${analyses_dir}/mutational-signatures/run_mutational_signatures.sh
+
+
+# Copy the figure to final directory
+cp ${analyses_dir}/mutational-signatures/plots/cns/hypermutator_sigs_heatmap.pdf  pdfs/fig4/panels/hypermutator_sigs_heatmap.pdf
+cp ${analyses_dir}/mutational-signatures/plots/cns/hypermutator_sigs_heatmap_legends.pdf  pdfs/fig4/panels/hypermutator_sigs_heatmap_legends.pdf
+
+####### Sample distributions
+
+# Generate sample distribution panel for Figure 1 and supplementary panels
+Rscript --vanilla scripts/fig1-sample-distribution.R
+
 
 ####### CN Status Heatmap
 if [ "$RUN_LOCAL" -lt "1" ]; then
@@ -148,6 +166,35 @@ Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.
 ######## Mutational signatures
 # Copy the figure to final directory
 cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_sina_IQR.pdf  pdfs/fig3/panels/mutational_signatures_exposures.pdf
+
+
+######## Immune deconvolution with quanTIseq (5C)
+# run the immune-deconv module:
+bash ${analyses_dir}/immune-deconv/run-immune-deconv.sh
+# copy figure panel:
+cp ${analyses_dir}/immune-deconv/plots/cell_types-molecular_subtypes.pdf  pdfs/fig5/panels/quantiseq-cell_types-molecular_subtypes.pdf
+
+###### Forest plot for 5D
+Rscript --vanilla scripts/fig5-forest-plot.R
+
+
+####### Supplementary figures
+
+# UMAP panels for supplementary figure 2 from molecular analysis 
+Rscript --vanilla scripts/supp-subtype-umap.R
+
+# Panels for supplementary figure 3
+Rscript --vanilla scripts/supp-S3-panels-BCD.R
+
+
+# Copy Figure S4 panels (analysis module was run previously)
+cp ${analyses_dir}/mutational-signatures/plots/cns/signature1_tumor-descriptor_cancer-groups.pdf   pdfs/supp/figs4/panels/
+cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_per_sample_barplot.pdf    pdfs/supp/figs4/panels/
+
+
+
+# Copy S5 panel (analysis module was run previously)
+cp ${analyses_dir}/immune-deconv/plots/cell_types-molecular_subtypes.pdf pdfs/supp/figs5/panels/quantiseq-cell_types-molecular_subtypes.pdf
 
 
 

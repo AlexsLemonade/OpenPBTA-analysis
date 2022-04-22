@@ -223,9 +223,11 @@ jobs:
           name: SNV Caller Analysis
           command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-pbta.sh
 
-      - run:
-          name: Tumor mutation burden with TCGA
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tcga-pbta.Rmd', clean = TRUE)"
+
+    # Deprecated
+    #  - run:
+    #      name: Tumor mutation burden with TCGA
+    #      command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tcga-pbta.Rmd', clean = TRUE)"
 
       - run:
           name: Exploration of nonsynonymous filter
@@ -256,18 +258,21 @@ jobs:
           name: GISTIC proof of concept
           command: OPENPBTA_CI=1 ./scripts/run_in_ci.sh bash analyses/run-gistic/run-gistic-module.sh
 
-      - run:
-          name: TCGA Capture Kit Investigation
-          command: ./scripts/run_in_ci.sh bash analyses/tcga-capture-kit-investigation/run-investigation.sh
+    # Deprecated
+    #  - run:
+    #      name: TCGA Capture Kit Investigation
+    #      command: ./scripts/run_in_ci.sh bash analyses/tcga-capture-kit-investigation/run-investigation.sh
 
     # Deprecated - these results are not included in the final TMB results but were used for a comparison at one point
     # - run:
     #     name: d3b TMB code
     #     command: ./scripts/run_in_ci.sh bash analyses/tmb-compare/TMB_d3b_code/run_tmb_d3b.sh
 
-      - run:
-          name: Compare TMB calculations
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tmb-calculations.Rmd', clean = TRUE)"
+
+    # Deprecated
+    #  - run:
+    #      name: Compare TMB calculations
+    #      command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tmb-calculations.Rmd', clean = TRUE)"
 
       - run:
           name: Run survival plots
