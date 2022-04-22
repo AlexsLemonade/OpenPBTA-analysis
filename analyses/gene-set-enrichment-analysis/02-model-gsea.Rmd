@@ -6,7 +6,7 @@ output:
   html_notebook:
     toc: true
 params:
-  is_ci: no
+  is_ci: FALSE
   plot_ci: yes
 ---
 
