@@ -343,7 +343,7 @@ int_lgg <- fit_save_model(meta_indep_grouped,
 int_lgg
   
 ```
-Interaction terms are not significant, except `tp53_score:telomerase_score` at $P=`r fitted$p.value[fitted$term == "tp53_score:telomerase_score"]`$, which does not change much from individual term p-values, suggesting an additive model is more appropriate.
+Interaction terms are not significant, except `tp53_score:telomerase_score`, suggesting an additive model is more appropriate.
 
 
 ### Additive model: `tp53_score+telomerase_score+extent_of_tumor_resection+lgg_group` 
