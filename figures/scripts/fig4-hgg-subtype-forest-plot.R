@@ -1,7 +1,7 @@
-# S. Spielman for ALSF CCDL 2022
+# S. Spielman for ALSF CCDL & Jo Lynne Rokita for D3b, 2022
 #
-# Makes a pdf panel of forest plot of survival analysis on MB samples 
-#  with immune cell fractions and PDL-1 expression predictors
+# Makes a pdf panel of forest plot of survival analysis on HGG samples 
+#  with molecular subtype as predictors
 
 
 library(survival) # needed to parse model output
