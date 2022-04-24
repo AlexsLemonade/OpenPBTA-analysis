@@ -47,7 +47,10 @@ term_order <- rev(c("CD274",
                 "NK_cell",
                 "T_cell_CD4_non_regulatory",
                 "T_cell_CD8",               
-                "T_cell_regulatory_Tregs"))
+                "T_cell_regulatory_Tregs",
+                "extent_of_tumor_resectionGross/Near total resection",
+                "extent_of_tumor_resectionPartial resection",
+                "extent_of_tumor_resectionUnavailable"))
 
 term_labels <- rev(c("CD274 expression (FPKM)",
                 "B cell", 
@@ -58,7 +61,10 @@ term_labels <- rev(c("CD274 expression (FPKM)",
                 "NK cell",
                 "CD4+ T cell (non-regulatory)",
                 "CD8+ T cell",               
-                "Regulatory T cell (Treg)"))
+                "Regulatory T cell (Treg)",
+                "Tumor resection: Total",
+                "Tumor resection: Partial",
+                "Tumor resection: Unknown"))
 
 
 # Get n and event info from glance outpout
