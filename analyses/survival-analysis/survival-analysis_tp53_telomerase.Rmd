@@ -399,9 +399,8 @@ add_hgg
 > The DMG model is marginally significant for `tp53_score` only.
 
 ```{r multivar-fit-3terms}
-base_filename <- "cox_per_cg_terms_tp53_telomerase
-_resect.RDS" # all file names here will follow this convention
-
+base_filename <- "cox_per_cg_terms_tp53_telomerase_resect.RDS" # all file names here will follow this convention
+  
 for (cg in cancer_groups_of_interest_df$cancer_group) {
   cat("==============", cg, "==================")
   # filter to cancer group of interest
