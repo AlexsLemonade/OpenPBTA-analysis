@@ -106,7 +106,8 @@ histology_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max 
     select(Kids_First_Participant_ID, 
            Kids_First_Biospecimen_ID, 
            cancer_group, 
-           molecular_subtype, 
+           molecular_subtype,
+           extent_of_tumor_resection,
            OS_status, 
            OS_days, 
            PFS_days) %>%
@@ -171,7 +172,34 @@ fit_save_model(combined_df_stranded,
                file.path(results_dir, "cox_terms_pdl1_stranded.RDS"))
 
 ```
+## Re-analyze with stranded only: PDL-1 expression minus samples with total resection
 
+> There is no signficant effect of PDL-1 expression. Although this P-value could be viewed as "approaching signficance," the large analysis sample size (N=719), this P-value is actually rather large.
+
+
+```{r cox_pdl1 not total resection}
+# How many samples had a full tumor resection? (best predictor of survival)
+as.data.frame(table(combined_df_stranded$extent_of_tumor_resection))
+
+# Remove these - now only 273 samples
+resect_removed <- combined_df_stranded[!grepl("Gross/Near total resection", combined_df_stranded$extent_of_tumor_resection),]
+nrow(resect_removed)
+
+fit_save_model(resect_removed, 
+               "CD274",
+               file.path(results_dir, "cox_terms_pdl1_stranded_not_resected.RDS"))
+
+# how many LGG? 66, remove
+as.data.frame(table(resect_removed$cancer_group))
+
+lgg_removed <- resect_removed %>%
+  filter(cancer_group != "Low-grade glioma astrocytoma")
+
+fit_save_model(lgg_removed, 
+               "CD274",
+               file.path(results_dir, "cox_terms_pdl1_stranded_lgg_rm.RDS"))
+
+```
 
 ## Analysis: quantiseq cell type fractions across entire cohort
 
@@ -192,6 +220,24 @@ fitted
 ```
 
 Above, no effects are significant at P<0.01. Only one cell type, `T_cell_CD8`, is marginally significant ($P=`r fitted$p.value[fitted$term == "T_cell_CD8"]`$), but it's confidence interval is *huge* so the exact effect is challenging to discern.
+
+## Analysis: quantiseq cell type fractions across entire cohort, minus total resection
+
+> No cell types are meaningfully signficant.
+
+```{r cox_cell_type}
+
+# Define the terms for a quantiseq model. These are used several times in this notebook
+quantiseq_terms <- "B_cell + Macrophage_M1 + Macrophage_M2 + Monocyte + Myeloid_dendritic_cell + Neutrophil + NK_cell + T_cell_CD4_non_regulatory + T_cell_CD8 + T_cell_regulatory_Tregs" 
+
+
+# saving so P-values can be programmatically grabbed
+fit <- fit_save_model(lgg_removed,
+                         quantiseq_terms,
+                         file.path(results_dir, "cox_terms_quantiseq_not_lgg.RDS"),
+                         model_type = "multivariate")
+fit
+```
 
 ## Analysis: quantiseq cell type fractions and PDL-1  across entire cohort
 
