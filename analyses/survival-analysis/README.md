@@ -14,6 +14,11 @@ bash run-survival.sh
 ### Module contents
 
 #### Function
+`util/survival_models.R` performs kaplan-meier, log rank, or cox regression for univariate and/or multivariate analyses.
+This function returns a list with three objects:
+1. The original modeel fit object
+2. The summary table
+3. The original dataframe
 
 #### Scripts
 
