@@ -47,6 +47,7 @@ stranded_file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.s
 cg_celltypes_plot_file <- file.path(output_dir, "cell_types-cancer_groups.pdf")
 subtypes_celltypes_plot_file <- file.path(output_dir, "cell_types-molecular_subtypes.pdf")
 pdl1_distributions_plot_file  <- file.path(output_dir, "PDL1_expression_distributions.pdf")
+cd274_mb_plot_file <- file.path(output_dir, "cd274_expression_mb_subtypes.pdf")
 cd8_cd4_ratio_plot_file <- file.path(output_dir, "cd8_cd4_ratio.pdf")
 ```
 
@@ -293,7 +294,47 @@ pdl1_distributions_plot
 ggsave(pdl1_distributions_plot_file, pdl1_distributions_plot, width = 7, height = 5)
 
 ```
+Visualize MB only, since that was the only significant result from the survival analyses
 
+```{r pdl1_mb, fig.width = 5, fig.height = 5}
+# select only mb samples
+pdl1_cd8_mb <- pdl1_cd8 %>%
+  filter(cancer_group_display == "Medulloblastoma")
+
+
+# Count group sizes to use in x-axis labels. Use this data frame going forward
+  df_counts <- pdl1_cd8_mb %>%
+    group_by(molecular_subtype) %>%
+    mutate(subtype_count = n()) %>%
+    ungroup() %>%
+    mutate(molecular_subtype = glue::glue("{molecular_subtype}\n(N = {subtype_count})"))
+  
+  wilcox_df <- ggpubr::compare_means(log2_expression ~ molecular_subtype, 
+                             data = df_counts,
+                             method = "wilcox.test")
+  
+# distributions of PDL1 expression
+cd274_plot_mb <- ggplot(pdl1_cd8_mb) + 
+  aes(x = molecular_subtype,
+      y = log2_expression) +
+  # remove outliers
+  geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
+  geom_jitter(width = 0.15, size = 0.75, alpha = 0.8, aes(color = "black")) + 
+  scale_color_identity() +
+  labs(x = "Molecular subtype of sample",
+       y = "Log2 expression (FPKM) of CD274") +
+  ggpubr::theme_pubr() + 
+  theme(axis.text.x = element_text(hjust = 1, 
+                                   size = rel(0.6), 
+                                   angle = 75)) 
+
+cd274_plot_mb
+
+ggsave(cd274_mb_plot_file, cd274_plot_mb, width = 5, height = 5)
+```
+
+### Plot the ratio of CD8+/CD4+ T cells as a marker of "hot" tumor (potentially responsive to checkpoint blockade therapy)
+Not much here - only medulloblastoma samples seem to have more CD8+ cells than CD4+ cells
 
 ```{r cd8_cd4 ratio, fig.width = 5, fig.height = 5}
 # subset for just cd8/cd4 ratio
