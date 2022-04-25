@@ -47,6 +47,7 @@ stranded_file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.s
 cg_celltypes_plot_file <- file.path(output_dir, "cell_types-cancer_groups.pdf")
 subtypes_celltypes_plot_file <- file.path(output_dir, "cell_types-molecular_subtypes.pdf")
 pdl1_distributions_plot_file  <- file.path(output_dir, "PDL1_expression_distributions.pdf")
+cd8_cd4_ratio_plot_file <- file.path(output_dir, "cd8_cd4_ratio.pdf")
 ```
 
 Read in data files:
@@ -98,6 +99,14 @@ cancer_groups_of_interest <- c("High-grade glioma astrocytoma",
                                "Neurofibroma Plexiform")
  
 #### Prepare quanTIseq data --> `quantiseq_subset`
+# spread and create cd8/cd4 ratio
+quantiseq_spread <- quantiseq %>%
+  # get a column for each cell type
+  spread(cell_type, score) %>%
+  mutate(cd8_cd4_ratio = `T cell CD8+` / `T cell CD4+ (non-regulatory)`)
+
+quantiseq_gather <- quantiseq_spread %>%  
+  gather(cell_type, score, -c(1:3))
 
 # First, find the molecular subtypes in the of interest cancer groups AND excluding unclassified, with >=3 samples
 subtypes_of_interest <- palette_mapping_df %>%
@@ -109,7 +118,7 @@ subtypes_of_interest <- palette_mapping_df %>%
 
 
 # Now, filter to relevant samples and remove uncharacterized fractions
-quantiseq_subset <- quantiseq %>%
+quantiseq_subset <- quantiseq_gather %>%
   left_join(palette_mapping_df, by = c("sample" = "Kids_First_Biospecimen_ID")) %>%
   filter(molecular_subtype %in% subtypes_of_interest, 
          cell_type != "uncharacterized cell")
@@ -145,8 +154,8 @@ cg_of_interest <- palette_mapping_df %>%
   pull(cancer_group_display)
 
 # Now, filter to relevant samples and remove uncharacterized fractions
-quantiseq_subset_cg <- quantiseq %>%
-  filter(cell_type != "uncharacterized cell") %>%
+quantiseq_subset_cg <- quantiseq_gather %>%
+  filter(cell_type != "uncharacterized cell" & cell_type != "cd8_cd4_ratio") %>%
   left_join(palette_mapping_df, by = c("sample" = "Kids_First_Biospecimen_ID")) %>%
   filter(cancer_group %in% cg_of_interest)
 
@@ -260,30 +269,72 @@ ggplot(pdl1_cd8) +
 
 Instead, let's explore the PDL1 distributions specifically and export this figure:
 
-```{r pdl1_distributions, fig.width = 8, fig.height = 8}
+```{r pdl1_distributions, fig.width = 7, fig.height = 5}
 
 # distributions of PDL1 expression
 pdl1_distributions_plot <- ggplot(pdl1_cd8) + 
-  aes(x = fct_reorder(molecular_subtype,log2_expression, .desc=T),
+  #aes(x = fct_reorder(molecular_subtype,log2_expression, .desc=T),
+  aes(x = molecular_subtype,
       y = log2_expression) +
   # remove outliers
   geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
   geom_jitter(width = 0.15, size = 0.75, alpha = 0.8, aes(color = cancer_group_hex)) + 
-  facet_wrap(~cancer_group_display, nrow = 2, scales = "free") +
+  #facet_wrap(~cancer_group_display, nrow = 2, scales = "free") +
   scale_color_identity() +
   labs(x = "Molecular subtype of sample",
-       y = "Log2 expression (FPKM) of PDL1") +
+       y = "Log2 expression (FPKM) of CD274") +
   ggpubr::theme_pubr() + 
   theme(axis.text.x = element_text(hjust = 1, 
                                    size = rel(0.6), 
-                                   angle = 90)) 
+                                   angle = 75)) 
 
 pdl1_distributions_plot
 
-ggsave(pdl1_distributions_plot_file, pdl1_distributions_plot, width = 8, height = 8)
+ggsave(pdl1_distributions_plot_file, pdl1_distributions_plot, width = 7, height = 5)
 
 ```
 
+
+```{r cd8_cd4 ratio, fig.width = 5, fig.height = 5}
+# subset for just cd8/cd4 ratio
+quantiseq_cd8 <- quantiseq_subset %>%
+  filter(cell_type == "cd8_cd4_ratio" & cancer_group != "Other")
+
+# drop inf
+quantiseq_cd8 <- do.call(data.frame,    # Replace Inf in data by NA
+                   lapply(quantiseq_cd8,
+                          function(x) replace(x, is.infinite(x), NA)))
+
+# drop NaN
+quantiseq_cd8 <- do.call(data.frame,    # Replace Inf in data by NA
+                   lapply(quantiseq_cd8,
+                          function(x) replace(x, is.nan(x), NA)))
+
+# remove NA rows from plot
+quantiseq_cd8 <- quantiseq_cd8 %>%
+  filter(!is.na(score))
+
+# distributions of PDL1 expression
+ratio_plot <- ggplot(quantiseq_cd8) + 
+  aes(x = molecular_subtype,
+      y = score) +
+  # remove outliers
+  geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
+  geom_jitter(width = 0.15, size = 0.75, alpha = 0.8, aes(color = cancer_group_hex)) + 
+  #facet_wrap(~cancer_group_display, nrow = 2, scales = "free") +
+  scale_color_identity() +
+  labs(x = "Molecular subtype of sample",
+       y = "Ratio of CD8+/CD4+ T cells") +
+  ggpubr::theme_pubr() + 
+  theme(axis.text.x = element_text(hjust = 1, 
+                                   size = rel(0.6), 
+                                   angle = 75)) 
+
+ratio_plot
+
+ggsave(cd8_cd4_ratio_plot_file, ratio_plot, width = 5, height = 5)
+
+```
 
 ### Session info
 
