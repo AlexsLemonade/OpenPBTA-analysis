@@ -42,7 +42,7 @@ term_order <- rev(c("molecular_subtypeHGG, H3 wildtype",
 
 term_labels <- rev(c("HGG - H3 wildtype",
                      "HGG - H3 wildtype, TP53 loss",
-                     "DMG - H3 K28 (reference)",
+                     "DMG - H3 K28 (ref)",
                      "DMG - H3 K28, TP53 activated",
                      "DMG - H3 K28, TP53 loss"))
 
@@ -134,7 +134,7 @@ survival_df_spread <- survival_df %>%
   # format tibble for plotting
   gather(hr_ci:p_string, key = "name", value = "value") %>%
   #remove values for reference
-  mutate(value = ifelse(term == "DMG - H3 K28 (reference)", NA, value))
+  mutate(value = ifelse(term == "DMG - H3 K28 (ref)", NA, value))
 
 labels_panel <- ggplot(survival_df_spread) +
   aes(x = name, y = term, label = value) + 
