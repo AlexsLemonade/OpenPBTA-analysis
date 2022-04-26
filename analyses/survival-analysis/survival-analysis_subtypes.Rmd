@@ -73,7 +73,7 @@ Declare output file paths for HGG/DMG all subtypes.
 
 ```{r Set output file paths}
 kap_meier_plot_file <- file.path(plots_dir, "KM_hgg_subtypes.pdf")
-kap_meier_model_file <- file.path(results_dir, "logrank_hgg_subtypes.tsv")
+kap_meier_model_file <- file.path(results_dir, "logrank_hgg_subtypes.RDS")
 ```
 
 ## Import the metadata
@@ -114,17 +114,16 @@ metadata_ind_dna <- metadata %>%
   dplyr::filter(Kids_First_Biospecimen_ID %in%
                   independent_primary$Kids_First_Biospecimen_ID) 
 
-# check whether any RNA pts not in DNA subset
+# check whether any RNA samples not in DNA subset
 metadata_rna <- metadata %>%
   filter(experimental_strategy == "RNA-Seq" & 
            tumor_descriptor == "Initial CNS Tumor" & 
            !is.na(OS_years)) %>%
   unique()
 
+# These are the IDs for patients with RNA samples but not DNA, if any
 rna_pts_to_add <- setdiff(unique(metadata_rna$Kids_First_Participant_ID), metadata_ind_dna$Kids_First_Participant_ID)
 rna_pts_to_add
-
-class(metadata_ind_dna$OS_status)
 
 metadata_ind_dna <- metadata_ind_dna %>%
   group_by(molecular_subtype) %>% 
@@ -135,8 +134,6 @@ metadata_ind_dna <- metadata_ind_dna %>%
   # rm the counting column and it's all cleaned up
   select(-n_molecular_subtype) %>%
   ungroup(molecular_subtype)
-
-class(metadata$molecular_subtype)
 
 # Check Ns
 as.data.frame(table(metadata_ind_dna$OS_status, metadata_ind_dna$molecular_subtype))
@@ -196,7 +193,7 @@ Save the plot to a file.
 # We can save the plot like a normal ggplot
 cowplot::save_plot(filename = kap_meier_plot_file, plot = surv_plot_all_subtype, base_height = 5, base_width = 8)
 # Let's save the model for CI and median survial as well
-readr::write_tsv(surv_median(kap_fit$model), kap_meier_model_file)
+readr::write_rds(kap_fit$model, kap_meier_model_file)
 ```
 
 ## Analysis: cox regression for HGG molecular subtypes
