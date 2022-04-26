@@ -87,16 +87,21 @@ tmb_hist <- read_tsv(file.path(data_dir, "pbta-snv-consensus-mutation-tmb-coding
 poi <- tmb_hist %>%
   # filter to the hypermutators
   dplyr::filter(tmb >= 10) %>%
-  pull(Kids_First_Participant_ID)
+  select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID)
+
+# What are the histologies for hypermutant samples?
+histology_df %>%
+  filter(Kids_First_Biospecimen_ID %in% poi$Kids_First_Biospecimen_ID) %>%
+  select(Kids_First_Biospecimen_ID, cancer_group, short_histology)
   
 # Gather all BS_IDs (soi = "samples of interest"), whether hypermutant or not, for pts with hypermutant samples
-  soi_df <- tmb_hist %>%
-    filter(Kids_First_Participant_ID %in% poi) %>%
-    # Looks like there is a hypermutant metastatic NBL sample we had not caught previously, but let's remove here since we focus on CNS anyway
-    # keep only WGS samples; remove metastases 
-    filter(experimental_strategy == "WGS" & short_histology != "Metastases") %>%
-    # add manual fields
-    mutate(`Therapy post-biopsy` = case_when(
+soi_df <- tmb_hist %>%
+  filter(Kids_First_Participant_ID %in% poi$Kids_First_Participant_ID) %>%
+  # Looks like there is a hypermutant metastatic NBL sample we had not caught previously, but let's remove here since we focus on CNS anyway
+  # keep only WGS samples; remove metastases 
+  filter(experimental_strategy == "WGS" & short_histology != "Metastases") %>%
+  # add manual fields
+  mutate(`Therapy post-biopsy` = case_when(
       Kids_First_Biospecimen_ID == "BS_VW4XN9Y7" ~ "Temozolomide, CCNU, Radiation",
       Kids_First_Biospecimen_ID == "BS_20TBZG09" ~ "Temozolomide, Irinotecan, Bevacizumab, Radiation",
       Kids_First_Biospecimen_ID == "BS_8AY2GM4G" ~ "Unknown",
