@@ -49,10 +49,8 @@ td_palette <- readr::read_tsv(td_palette_file)
 bin_palette <- readr::read_tsv(bin_palette_file) %>%
   mutate(color_names = case_when(
         color_names == "binary_1" ~ "Solid Tissue",
-        color_names == "binary_2" ~ "Derived Cell Line",
-        TRUE ~ as.character(color_names)))
-# remove na color row for annotations
-bin_palette <- bin_palette[!bin_palette$color_names == "na_color",]
+        color_names == "binary_2" ~ "Derived Cell Line")) %>%
+  filter(!is.na(color_names))
 
 # Read in metadata
 meta <- readr::read_tsv(meta_file, guess_max = 10000)
@@ -263,7 +261,7 @@ if (!(params$is_ci == 1)) {
                        rect_gp = gpar(col = "white"),
                        row_split = anno$Patient,
                        row_title = NULL, 
-                       column_title = "RefSig Mutational Signature", 
+                       column_title = "RefSig Mutational Signature Weights", 
                        column_title_side = "bottom")
   
   heat_plot
