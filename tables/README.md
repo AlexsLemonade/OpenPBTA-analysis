@@ -6,7 +6,7 @@ Table 1: Molecular subtypes determined for this project
 - This table shows the type and number of different molecular subtypes profiled in the project.
 
 Table 2: Patients with hypermutant tumors
-- Listed are patients with at least one hypermutant or ultra-hypermutant tumor.
+- Listed are patients with at least one hypermutant or ultra-hypermutant tumor (inclusive of derived cell lines and all phases of therapy).
 Coding region TMB, phase of therapy, therapeutic interventions, cancer predispositions, and molecular subtypes are included.
 
 Table S1: V21 histologies table
