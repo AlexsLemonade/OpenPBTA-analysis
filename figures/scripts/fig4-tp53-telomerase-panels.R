@@ -21,6 +21,7 @@ data_dir <- file.path(root_dir, "data")
 analyses_dir <- file.path(root_dir, "analyses")
 tp53_dir <- file.path(analyses_dir, "tp53_nf1_score")
 telomerase_dir <- file.path(analyses_dir, "telomerase-activity-prediction")
+survival_dir <- file.path(analyses_dir, "survival-analysis", "results", "tp53-telomerase")
 
 # Palette directory
 palette_dir <- file.path(root_dir, "figures", "palettes")
@@ -47,6 +48,11 @@ extend_scores <- read_tsv(file.path(telomerase_dir, "results", "TelomeraseScores
 # Read in TMB for highlighting points in boxplots
 tmb_coding_df <- read_tsv(file.path(data_dir, "pbta-snv-consensus-mutation-tmb-coding.tsv"))
                             
+# Read in survival model results for forest plot
+survival_result <- readRDS(file.path(
+  survival_dir,
+  "cox_additive_terms_tp53_telomerase_resect_glioma_group.RDS"
+))
 
 #### Define output PDF panels ----------------------------------------------------------------
 tp53_roc_pdf                        <- file.path(output_dir, "tp53_stranded_roc_panel.pdf")
@@ -54,8 +60,7 @@ tp53_scores_altered_pdf             <- file.path(output_dir, "tp53_scores_by_alt
 tp53_expression_altered_pdf         <- file.path(output_dir, "tp53_expression_by_altered_panel.pdf") 
 tp53_telomerase_scores_boxplot_pdf        <- file.path(output_dir, "tp53_telomerase_boxplots_panel.pdf") 
 tp53_telomerase_scores_boxplot_legend_pdf <- file.path(output_dir, "tp53_telomerase_boxplots_panel_legend.pdf")
-survival_plot_lgg_pdf                     <- file.path(output_dir, "forest_survival_tp53_telomerase_lgg_panel.pdf") 
-survival_plot_hgg_pdf                     <- file.path(output_dir, "forest_survival_tp53_telomerase_hgg_panel.pdf") 
+survival_plot_pdf                     <- file.path(output_dir, "forest_survival_tp53_telomerase_panel.pdf") 
 
 
 
@@ -416,30 +421,28 @@ cowplot::ggdraw(legend)
 dev.off()
 
 
-## Survival analysis forest plot (LGG) -----------------------------------------------------------------
-
-survival_dir <- file.path(analyses_dir, "survival-analysis", "results")
-survival_result <- readRDS(file.path(
-  survival_dir,
-  "cox_additive_terms_tp53_telomerase_resect_lgg.RDS"
-))
+## Survival analysis forest plot -----------------------------------------------------------------
 
 # Set up ordering and labels for y-axis
-term_order <- rev(c("Tumor resection: Biopsy (ref)",
-                    "extent_of_tumor_resectionPartial resection",
+term_order <- rev(c("tp53_score",
+                    "telomerase_score",
                     "extent_of_tumor_resectionGross/Near total resection",
-                    "LGG group: non-LGG (ref)",
+                    "extent_of_tumor_resectionPartial resection",
+                    "Tumor resection: Biopsy (ref)",
                     "lgg_groupLGG",
-                    "tp53_score",
-                    "telomerase_score"))
+                    "LGG group: non-LGG (ref)",
+                    "hgg_groupHGG",
+                    "HGG group: non-HGG (ref)"))
 
-term_labels <- rev(c("Tumor resection: Biopsy (ref)",
-                     "Tumor resection: Partial",
+term_labels <- rev(c("TP53 score",
+                     "Telomerase score",
                      "Tumor resection: Total",
-                     "LGG group: non-LGG (ref)",
+                     "Tumor resection: Partial",
+                     "Tumor resection: Biopsy (ref)",
                      "LGG group: LGG",
-                     "TP53 score",
-                     "Telomerase score"))
+                     "LGG group: non-LGG (ref)",
+                     "HGG group: HGG",
+                     "HGG group: non-HGG (ref)"))
 
 
 # Get n and event info from glance outpout
@@ -451,156 +454,6 @@ survival_df <- broom::tidy(survival_result) %>%
   # add references
   add_row(term = "Tumor resection: Biopsy (ref)", estimate = 0) %>%
   add_row(term = "LGG group: non-LGG (ref)", estimate = 0) %>%
-  #remove unknown resection from plot
-  filter(term != "extent_of_tumor_resectionUnavailable") %>%
-  mutate(estimate = exp(estimate),
-         conf.low = exp(conf.low),
-         conf.high = exp(conf.high), 
-         # significance indicator column for filling points.
-         significant = p.value <= 0.05,
-         # y-axis factor re-labeling
-         term = factor(term, 
-                       levels = term_order,
-                       labels = term_labels)
-  )
-
-
-
-# Forest plot of the model
-forest_plot <- ggplot(survival_df) +
-  aes(x = estimate, 
-      y = term,
-      fill = significant
-  ) + 
-  # add CI first so line doesn't cover open point
-  geom_errorbarh(
-    aes(
-      xmin = conf.low,
-      xmax = conf.high,
-    ),
-    height = 0.15,
-    size = 0.65
-  ) + 
-  geom_point(
-    size = 3.5,
-    shape = 23
-  ) +
-  # Point fill based on sigificance
-  scale_fill_manual(
-    values = c("white", "black"),
-    guide = FALSE # turn off legend
-  ) + 
-  # Vertical guiding line at 1
-  geom_vline(
-    xintercept = 1, 
-    linetype = 3
-  ) +
-  labs(
-    x = "Hazard Ratio ± 95% CI",
-    y = "",
-    subtitle = glue::glue("N = {survival_n$n} with {survival_n$nevent} events")
-  ) + 
-  # log-scale the x-axis
-  scale_x_log10() +
-  ggpubr::theme_pubr() + 
-  theme(
-    plot.subtitle = element_text(face = "bold")
-  ) +
-  # grid makes it easier to follow lines
-  cowplot::background_grid()
-
-
-# Accompanying panel with sample sizes, P-values, etc.
-
-# prepare data for panel
-survival_df_spread <- survival_df %>%
-  mutate(
-    # Clean pvalues into labels. 
-    p_string = if_else(
-      p.value >= 0.001, 
-      paste0("P = ",round(p.value,3)),
-      "P < 0.001"
-    ),
-    # round to 2 digits and create single string with "hr (low-high)"
-    conf.low = signif(conf.low, 2),
-    conf.high = signif(conf.high, 2),
-    estimate = signif(estimate, 2),
-    hr_ci = glue::glue("{estimate} ({conf.low} - {conf.high})")
-  ) %>%
-  select(term, hr_ci, p_string) %>%
-  # this throws a warning but it's ok
-  # format tibble for plotting
-  gather(hr_ci:p_string, key = "name", value = "value") %>%
-  # remove CI for refs
-  mutate(value = ifelse(grepl("ref", term), NA, value))
-
-labels_panel <- ggplot(survival_df_spread) +
-  aes(x = name, y = term, label = value) + 
-  geom_text(hjust = 0) +
-  labs(
-    # hack!
-    subtitle = paste0("                       ",
-                      "HR (95% CI)                  P-value")
-  ) +
-  ggpubr::theme_pubr() + 
-  # remove axes.
-  theme(
-    axis.title.x = element_blank(),
-    axis.text.x = element_blank(),
-    axis.ticks.x = element_blank(),
-    axis.line.x = element_blank(),
-    axis.title.y = element_blank(),
-    axis.text.y = element_blank(),
-    axis.ticks.y = element_blank(),
-    axis.line.y = element_blank(),
-    # -26 is as low as we can go before plot starts to get coverd
-    plot.margin = margin(6, 0, 36, -25, unit = "pt"),
-    plot.subtitle = element_text(face = "bold")
-  ) 
-
-forest_panels <- cowplot::plot_grid(forest_plot, labels_panel, nrow = 1, rel_widths = c(1,0.5))
-
-
-# Export plot
-ggsave(survival_plot_lgg_pdf, forest_panels, width = 11, height = 3)
-
-
-
-
-## Survival analysis forest plot (HGG) -----------------------------------------------------------------
-
-survival_dir <- file.path(analyses_dir, "survival-analysis", "results")
-survival_result <- readRDS(file.path(
-  survival_dir,
-  "cox_additive_terms_tp53_telomerase_hgg.RDS"
-))
-
-# Set up ordering and labels for y-axis
-term_order <- rev(c("Tumor resection: Biopsy (ref)",
-                    "extent_of_tumor_resectionPartial resection",
-                    "extent_of_tumor_resectionGross/Near total resection",
-                    "HGG group: non-HGG (ref)",
-                    "hgg_groupHGG",
-                    "tp53_score",
-                    "telomerase_score"))
-
-term_labels <- rev(c("Tumor resection: Biopsy (ref)",
-                    "Tumor resection: Partial",
-                    "Tumor resection: Total",
-                    "HGG group: non-HGG (ref)",
-                    "HGG group: HGG",
-                    "TP53 score",
-                    "Telomerase score"))
-
-
-# Get n and event info from glance outpout
-survival_n <- broom::glance(survival_result) %>%
-  select(n, nevent)
-
-# Convert survival model result to data frame, and exponentiate estimates/CIs to get HRs
-survival_df <- broom::tidy(survival_result) %>%
-  # add references
-  add_row(term = "Tumor resection: Biopsy (ref)", estimate = 0) %>%
   add_row(term = "HGG group: non-HGG (ref)", estimate = 0) %>%
   #remove unknown resection from plot
   filter(term != "extent_of_tumor_resectionUnavailable") %>%
@@ -608,7 +461,9 @@ survival_df <- broom::tidy(survival_result) %>%
          conf.low = exp(conf.low),
          conf.high = exp(conf.high), 
          # significance indicator column for filling points.
-         significant = p.value <= 0.05,
+         significant = case_when(p.value <= 0.05 ~ "TRUE", 
+                                 p.value > 0.05 ~ "FALSE", 
+                                 is.na(p.value) ~ "REF"),
          # y-axis factor re-labeling
          term = factor(term, 
                        levels = term_order,
@@ -638,7 +493,9 @@ forest_plot <- ggplot(survival_df) +
   ) +
   # Point fill based on sigificance
   scale_fill_manual(
-    values = c("white", "black"),
+    values = c("FALSE" = "white", 
+               "TRUE" = "black",
+               "REF" = "gray"),
     guide = FALSE # turn off legend
   ) + 
   # Vertical guiding line at 1
@@ -713,5 +570,4 @@ forest_panels <- cowplot::plot_grid(forest_plot, labels_panel, nrow = 1, rel_wid
 
 
 # Export plot
-ggsave(survival_plot_hgg_pdf, forest_panels, width = 11, height = 3)
-
+ggsave(survival_plot_pdf, forest_panels, width = 11, height = 3)
