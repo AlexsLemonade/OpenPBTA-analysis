@@ -422,27 +422,30 @@ dev.off()
 
 
 ## Survival analysis forest plot -----------------------------------------------------------------
+resect_ref <- "Tumor resection: Biopsy (ref)"
+lgg_ref <- "LGG group: non-LGG (ref)"
+hgg_ref <- "HGG group: non-HGG (ref)"
 
 # Set up ordering and labels for y-axis
 term_order <- rev(c("tp53_score",
                     "telomerase_score",
                     "extent_of_tumor_resectionGross/Near total resection",
                     "extent_of_tumor_resectionPartial resection",
-                    "Tumor resection: Biopsy (ref)",
+                    resect_ref,
                     "lgg_groupLGG",
-                    "LGG group: non-LGG (ref)",
+                    lgg_ref,
                     "hgg_groupHGG",
-                    "HGG group: non-HGG (ref)"))
+                    hgg_ref))
 
 term_labels <- rev(c("TP53 score",
                      "Telomerase score",
                      "Tumor resection: Total",
                      "Tumor resection: Partial",
-                     "Tumor resection: Biopsy (ref)",
+                     resect_ref,
                      "LGG group: LGG",
-                     "LGG group: non-LGG (ref)",
+                     lgg_ref,
                      "HGG group: HGG",
-                     "HGG group: non-HGG (ref)"))
+                     hgg_ref))
 
 
 # Get n and event info from glance outpout
@@ -452,9 +455,9 @@ survival_n <- broom::glance(survival_result) %>%
 # Convert survival model result to data frame, and exponentiate estimates/CIs to get HRs
 survival_df <- broom::tidy(survival_result) %>%
   # add references
-  add_row(term = "Tumor resection: Biopsy (ref)", estimate = 0) %>%
-  add_row(term = "LGG group: non-LGG (ref)", estimate = 0) %>%
-  add_row(term = "HGG group: non-HGG (ref)", estimate = 0) %>%
+  add_row(term = resect_ref, estimate = 0) %>%
+  add_row(term = lgg_ref, estimate = 0) %>%
+  add_row(term = hgg_ref, estimate = 0) %>%
   #remove unknown resection from plot
   filter(term != "extent_of_tumor_resectionUnavailable") %>%
   mutate(estimate = exp(estimate),
@@ -509,7 +512,10 @@ forest_plot <- ggplot(survival_df) +
     subtitle = glue::glue("N = {survival_n$n} with {survival_n$nevent} events")
   ) + 
   # log-scale the x-axis
-  scale_x_log10() +
+  scale_x_log10(
+    # axis label was being cut off - this fixes it
+    limits=c(5e-2, 1e2)
+  ) +
   ggpubr::theme_pubr() + 
   theme(
     plot.subtitle = element_text(face = "bold")
@@ -547,8 +553,8 @@ labels_panel <- ggplot(survival_df_spread) +
   geom_text(hjust = 0) +
   labs(
     # hack!
-    subtitle = paste0("                       ",
-                      "HR (95% CI)                  P-value")
+    subtitle = paste0("                      ",
+                      "HR (95% CI)                   P-value")
   ) +
   ggpubr::theme_pubr() + 
   # remove axes.
@@ -570,4 +576,5 @@ forest_panels <- cowplot::plot_grid(forest_plot, labels_panel, nrow = 1, rel_wid
 
 
 # Export plot
-ggsave(survival_plot_pdf, forest_panels, width = 11, height = 3)
+ggsave(survival_plot_pdf, forest_panels, width = 11, height = 3.5)
+
