@@ -74,6 +74,8 @@ Declare output file paths for HGG/DMG all subtypes.
 ```{r Set output file paths}
 kap_meier_plot_file <- file.path(plots_dir, "KM_hgg_subtypes.pdf")
 kap_meier_model_file <- file.path(results_dir, "logrank_hgg_subtypes.RDS")
+kap_meier_data_file <- file.path(results_dir, "logrank_hgg_subtypes_data.tsv") # data needed to make the KM plot
+
 ```
 
 ## Import the metadata
@@ -173,7 +175,6 @@ surv_plot <- survminer::ggsurvplot(fit = kap_fit$model,
   risk.table.y.text = FALSE,
 )
 
-# this isn't working
 surv_plot$plot <- surv_plot$plot +
   ggtitle(paste0("Kaplan Meier HGG tumors by molecular subtype")) +
   theme(legend.position = "right")
@@ -192,8 +193,10 @@ Save the plot to a file.
 ```{r Save survival plot}
 # We can save the plot like a normal ggplot
 cowplot::save_plot(filename = kap_meier_plot_file, plot = surv_plot_all_subtype, base_height = 5, base_width = 8)
-# Let's save the model for CI and median survial as well
+# Save the model itself
 readr::write_rds(kap_fit$model, kap_meier_model_file)
+# Save the data that went into the model for use in manuscript figure scripts
+readr::write_tsv(metadata_ind_dna, kap_meier_data_file)
 ```
 
 ## Analysis: cox regression for HGG molecular subtypes
