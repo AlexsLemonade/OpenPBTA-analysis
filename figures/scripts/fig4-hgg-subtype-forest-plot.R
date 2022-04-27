@@ -17,7 +17,7 @@ if (!dir.exists(output_dir)) {
 }
 
 # Directory with result data to input for plot
-input_dir <- file.path(root_dir, "analyses", "survival-analysis", "results")
+input_dir <- file.path(root_dir, "analyses", "survival-analysis", "results", "subtypes")
 
 
 ## Input and output files -------------------------------------
@@ -35,16 +35,15 @@ forest_pdf <- file.path(output_dir, "forest_hgg_subtypes.pdf")
 # Set up ordering and labels for y-axis
 term_order <- rev(c("molecular_subtypeHGG, H3 wildtype",
                     "molecular_subtypeHGG, H3 wildtype, TP53 loss",
-                    "molecular_subtypeDMG, H3 K28",
                     "molecular_subtypeDMG, H3 K28, TP53 activated",
-                    "molecular_subtypeDMG, H3 K28, TP53 loss"
-                    ))
+                    "molecular_subtypeDMG, H3 K28, TP53 loss",
+                    "molecular_subtypeDMG, H3 K28"))
 
 term_labels <- rev(c("HGG - H3 wildtype",
                      "HGG - H3 wildtype, TP53 loss",
-                     "DMG - H3 K28 (ref)",
                      "DMG - H3 K28, TP53 activated",
-                     "DMG - H3 K28, TP53 loss"))
+                     "DMG - H3 K28, TP53 loss",
+                     "DMG - H3 K28 (ref)"))
 
 
 # Get n and event info from glance output
@@ -60,7 +59,9 @@ survival_df <- broom::tidy(survival_result) %>%
          conf.low = exp(conf.low),
          conf.high = exp(conf.high), 
          # significance indicator column for filling points.
-         significant = p.value <= 0.05,
+         significant = case_when(p.value <= 0.05 ~ "TRUE", 
+                                 p.value > 0.05 ~ "FALSE", 
+                                 is.na(p.value) ~ "REF"),
          # y-axis factor re-labeling
          term = factor(term, 
                        levels = term_order,
@@ -89,7 +90,9 @@ forest_plot <- ggplot(survival_df) +
   ) +
   # Point fill based on sigificance
   scale_fill_manual(
-    values = c("white", "black"),
+    values = c("FALSE" = "white", 
+               "TRUE" = "black",
+               "REF" = "gray"),
     guide = FALSE # turn off legend
   ) + 
   # Vertical guiding line at 1
