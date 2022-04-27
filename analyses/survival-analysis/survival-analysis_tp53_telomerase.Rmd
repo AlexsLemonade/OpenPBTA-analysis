@@ -34,7 +34,7 @@ analysis_dir <- file.path(root_dir, "analyses")
 tp53_dir <- file.path(analysis_dir, "tp53_nf1_score")
 telomerase_dir <- file.path(analysis_dir, "telomerase-activity-prediction")
 
-results_dir <- "results/tp53-telomerase/"
+results_dir <- "results/tp53_telomerase/"
 plots_dir <- "plots"
 util_dir <- "util"
 
