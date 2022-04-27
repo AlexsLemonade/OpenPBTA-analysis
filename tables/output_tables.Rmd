@@ -82,17 +82,17 @@ readme <- tribble(
 ~`Histology column`,~Definition,~`Possible values`,
 "age_at_diagnosis_days","Patient age at diagnosis in days","numeric",
 "age_last_update_days","Patient age at the last clinical event/update in days","numeric",
-"aliquot_id","External aliquot identifier","variable",
+"aliquot_id","External aliquot identifier","alphanumeric",
 "broad_histology","Broad WHO 2016 classification of cancer type","text",
 "cancer_group","Harmonized cancer groupings for plots","text",
 "cancer_predispositions","Reported cancer predisposition syndromes","text",
-"CNS_region","Harmonized brain region based on `primary_site`","Hemispheric;Midline;Mixed;Optic
-pathway;Other;Posterior fossa;Spine;Suprasellar;Ventricles",
+"CNS_region","Harmonized brain region based on `primary_site`",paste(unique(histology_df$CNS_region), collapse = "; "),
 "cohort","Scientific cohort","CBTN;PNOC",
 "cohort_participant_id","Scientific cohort participant ID","C#####-C######",
-"composition","Sample composition","Derived Cell Line;Not Reported;Peripheral Whole Blood;Saliva;Solid Tissue",
+"composition","Sample composition",paste(unique(histology_df$composition), collapse = "; "),
 "ethnicity","Patient reported ethnicity","text",
-"experimental_strategy","Sequencing strategy","WGS;WXS;RNA-Seq;Panel",
+"experimental_strategy","Sequencing strategy",paste(unique(histology_df$experimental_strategy), collapse = "; "),
+# leaving this non-programmatic because of the duplicates that would come up (eg two selections in one patient, needing data cleanup)
 "extent_of_tumor_resection","Amount of tumor resected at time of surgical event","Biopsy only;Partial resection;Gross/Near total resection;Not Reported;Unavailable",
 "germline_sex_estimate","Predicted sex of patient based on germline X and Y ratio calculation (described in methods)","Female;Male;Unknown",
 "harmonized_diagnosis","`integrated_diagnosis` if exists or updated and harmonized diagnosis using pathology_free_text_diagnosis information","text",
@@ -110,18 +110,18 @@ pathway;Other;Posterior fossa;Spine;Suprasellar;Ventricles",
 "PFS_days","Progression-free survival in days","numeric",
 "primary_site","Bodily site(s) from which specimen was derived","text",
 "race","Patient reported race","text",
-"reported_gender","Patient reported gender","text",
-"RNA_library","Type of RNA-Sequencing library preparation","stranded;poly-A",
-"sample_id","External biospecimen identifier","variable",
-"sample_type","Broad sample type","Normal;Tumor",
-"seq_center","Sequencing center","BGI;BGI@CHOP Genome Center;Genomic Clinical Core at Sidra Medical and Research Center;NantOmics;The Translational Genomics Research Institute",
+"reported_gender","Patient reported gender",paste(unique(histology_df$reported_gender), collapse = "; "),
+"RNA_library","Type of RNA-Sequencing library preparation",paste(unique(histology_df$RNA_library), collapse = "; "),
+"sample_id","External biospecimen identifier","alphanumeric",
+"sample_type","Broad sample type",paste(unique(histology_df$sample_type), collapse = "; "),
+"seq_center","Sequencing center",paste(unique(histology_df$seq_center), collapse = "; "),
 "short_histology","Abbreviated `integrated_diagnosis` or `broad_histology` for plotting purposes","text",
-"tumor_descriptor","Phase of therapy from which tumor was derived","Initial CNS Tumor;Progressive Progressive Disease Post-Mortem;Recurrence;Second Malignancy;Unavailable",
+"tumor_descriptor","Phase of therapy from which tumor was derived",paste(unique(histology_df$tumor_descriptor), collapse = "; "),
 "tumor_fraction","Theta2 tumor DNA fraction estimate","numeric",
 "tumor_ploidy","Control-FREEC ploidy","numeric"
 )
 
-# Sheet 2: Define array of samples that need to be classified 
+# Sheet 2: Define array of samples that need to be classified from [ticket](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1206) which are not in v21, but set to be changed in final release [v22](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1207)
 to_be_classified_samples <- c("BS_3J4T2YYW", "BS_7F07M7JG", "BS_AG0BZN6F", "BS_HZNKSQ17", "BS_V6HKXX1Z", "BS_WP9J88EB", "BS_YYAPSA5P")
 
 histologies_table <- histology_df %>% 
