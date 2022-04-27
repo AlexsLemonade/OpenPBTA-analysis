@@ -30,7 +30,7 @@ data_dir <- file.path(root_dir, "data")
 immune_dir <- file.path(root_dir, "analyses", "immune-deconv")
 analysis_dir <- file.path(root_dir, "analyses", "survival-analysis")
 
-results_dir <- file.path(analysis_dir, "results")
+results_dir <- file.path(analysis_dir, "results/immune")
 if(!dir.exists(results_dir)){
   dir.create(results_dir)
 }
@@ -99,20 +99,20 @@ quantiseq <- read_rds(
   select(-cell_type)
 
 # Read in histology file and filter to RNAseq samples with relevant columns
-# Will remove the below patients because I do not know if they had total or partial resections until we check with Jenn Mason
+# The following patients have discrepant extent of tumor resection
 # 7316-116 has Biopsy only;Gross/Near total resection
 # 7316-182 has Gross/Near total resection;Partial resection
+# Ticket was created [here](https://github.com/PediatricOpenTargets/ticket-tracker/issues/298) to track this database update, and I will recode below
 
 histology_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max = 10000) %>%
     filter(composition=="Solid Tissue",
            tumor_descriptor == "Initial CNS Tumor",
            experimental_strategy == "RNA-Seq") %>%
     mutate(extent_of_tumor_resection = case_when(
-    extent_of_tumor_resection == "Biopsy only;Gross/Near total resection" ~ "Gross/Near total resection",
-    extent_of_tumor_resection == "Gross/Near total resection;Partial resection" ~ "Gross/Near total resection",
-    extent_of_tumor_resection == "Not Reported" ~ "Unavailable",
+      sample_id == "7316-116" ~ "Biopsy only",
+      sample_id == "7316-182" ~ "Partial resection",    
+      extent_of_tumor_resection == "Not Reported" ~ "Unavailable",
     TRUE ~ as.character(extent_of_tumor_resection))) %>%
-  filter(sample_id != "7316-116" & sample_id != "7316-182") %>%
     select(Kids_First_Participant_ID, 
            Kids_First_Biospecimen_ID, 
            cancer_group, 
@@ -258,7 +258,8 @@ suitable_subtypes
 
 ## Analysis: quantiseq cell type fractions and PDL-1 + extent of tumor resection for each cancer group of interest (no LGG here)
 
-> Most models here are not robust. **Only Medulloblastoma** returns no warning messages.
+> Most models here are not robust. **Only Medulloblastoma** returns no warning messages. 
+> HGG samples do show some cell types with significance and quantifiable CIs: highher B cell fraction is benefit (p = 1.000222e-12), higher myeloid dendritic cell is benefit (p = 2.050876e-04), higher NK cell fraction is a risk (p = 5.008340e-18).
 
 ```{r cell_type_cg}
 
