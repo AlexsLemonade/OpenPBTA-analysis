@@ -17,7 +17,7 @@ if (!dir.exists(output_dir)) {
 }
 
 # Directory with result data to input for plot
-input_dir <- file.path(root_dir, "analyses", "survival-analysis", "results")
+input_dir <- file.path(root_dir, "analyses", "survival-analysis", "results", "immune")
 
 
 ## Input and output files -------------------------------------
@@ -50,7 +50,8 @@ term_order <- rev(c("CD274",
                 "T_cell_regulatory_Tregs",
                 "extent_of_tumor_resectionGross/Near total resection",
                 "extent_of_tumor_resectionPartial resection",
-                "extent_of_tumor_resectionUnavailable"))
+                "extent_of_tumor_resectionUnavailable",
+                "Tumor resection: Biopsy (ref)"))
 
 term_labels <- rev(c("CD274 expression (FPKM)",
                 "B cell", 
@@ -64,7 +65,8 @@ term_labels <- rev(c("CD274 expression (FPKM)",
                 "Regulatory T cell (Treg)",
                 "Tumor resection: Total",
                 "Tumor resection: Partial",
-                "Tumor resection: Unknown"))
+                "Tumor resection: Unknown",
+                "Tumor resection: Biopsy (ref)"))
 
 
 # Get n and event info from glance outpout
@@ -73,18 +75,22 @@ survival_n <- broom::glance(survival_result) %>%
 
 # Convert survival model result to data frame, and exponentiate estimates/CIs to get HRs
 survival_df <- broom::tidy(survival_result) %>%
+  # add reference
+  add_row(term = "Tumor resection: Biopsy (ref)", estimate = 0) %>%
   # remove the unbounded Macrophage_M1:
   filter(term != "Macrophage_M1") %>%
   mutate(estimate = exp(estimate),
          conf.low = exp(conf.low),
          conf.high = exp(conf.high), 
          # significance indicator column for filling points.
-         significant = p.value <= 0.05,
+         significant = case_when(p.value <= 0.05 ~ "TRUE", 
+                                 p.value > 0.05 ~ "FALSE", 
+                                 is.na(p.value) ~ "REF"),
          # y-axis factor re-labeling
          term = factor(term, 
                        levels = term_order,
                        labels = term_labels)
-  )
+         )
 
 
 
@@ -109,7 +115,9 @@ forest_plot <- ggplot(survival_df) +
   ) +
   # Point fill based on sigificance
   scale_fill_manual(
-    values = c("white", "black"),
+    values = c("FALSE" = "white", 
+               "REF" = "gray", 
+               "TRUE" = "black"),
     guide = FALSE # turn off legend
   ) + 
   # Vertical guiding line at 1
@@ -131,6 +139,7 @@ forest_plot <- ggplot(survival_df) +
   # grid makes it easier to follow lines
   cowplot::background_grid()
 
+forest_plot
 
 # Accompanying panel with sample sizes, P-values, etc.
 
@@ -152,7 +161,9 @@ survival_df_spread <- survival_df %>%
   select(term, hr_ci, p_string) %>%
   # this throws a warning but it's ok
   # format tibble for plotting
-  gather(hr_ci:p_string, key = "name", value = "value")
+  gather(hr_ci:p_string, key = "name", value = "value") %>%
+  # remove CI for ref
+  mutate(value = ifelse(grepl("ref", term), NA, value))
 
 labels_panel <- ggplot(survival_df_spread) +
   aes(x = name, y = term, label = value) + 
