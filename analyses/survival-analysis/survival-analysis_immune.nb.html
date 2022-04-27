@@ -1787,32 +1787,35 @@ $(document).ready(function () {
 <h4>Packages</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShzdXJ2aXZhbClcbmxpYnJhcnkoZ2dwdWJyKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbImxpYnJhcnkoc3Vydml2YWwpIiwibGlicmFyeShnZ3B1YnIpIl19 -->
 <pre class="r"><code>library(survival)
 library(ggpubr)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBnZ3Bsb3QyXG5SZWdpc3RlcmVkIFMzIG1ldGhvZCBvdmVyd3JpdHRlbiBieSAnZHBseXInOlxuICBtZXRob2QgICAgICAgICAgIGZyb21cbiAgcHJpbnQucm93d2lzZV9kZiAgICAgXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IG1hZ3JpdHRyXG4ifQ== -->
-<pre><code>Loading required package: ggplot2
-Registered S3 method overwritten by 'dplyr':
-  method           from
-  print.rowwise_df     
-Loading required package: magrittr</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
+<!-- rnb-message-begin eyJkYXRhIjoiTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBnZ3Bsb3QyXG4ifQ== -->
+<pre><code>Loading required package: ggplot2</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBtYWdyaXR0clxuIn0= -->
+<pre><code>Loading required package: magrittr</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjoibGlicmFyeSh0aWR5dmVyc2UpIn0= -->
 <pre class="r"><code>library(tidyverse)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXHUwMDFiWzMwbeKUgOKUgCBcdTAwMWJbMW1BdHRhY2hpbmcgcGFja2FnZXNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2UgMS4yLjEg4pSA4pSAXHUwMDFiWzM5bVxuXHUwMDFiWzMwbVx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG10aWJibGUgXHUwMDFiWzMwbSAyLjEuMyAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bXB1cnJyICBcdTAwMWJbMzBtIDAuMy4yXG5cdTAwMWJbMzJt4pyUXHUwMDFiWzMwbSBcdTAwMWJbMzRtdGlkeXIgIFx1MDAxYlszMG0gMC44LjMgICAgIFx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG1kcGx5ciAgXHUwMDFiWzMwbSAwLjguM1xuXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bXJlYWRyICBcdTAwMWJbMzBtIDEuMy4xICAgICBcdTAwMWJbMzJt4pyUXHUwMDFiWzMwbSBcdTAwMWJbMzRtc3RyaW5nclx1MDAxYlszMG0gMS40LjBcblx1MDAxYlszMm3inJRcdTAwMWJbMzBtIFx1MDAxYlszNG10aWJibGUgXHUwMDFiWzMwbSAyLjEuMyAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszMG0gXHUwMDFiWzM0bWZvcmNhdHNcdTAwMWJbMzBtIDAuNC4wXHUwMDFiWzM5bVxuXHUwMDFiWzMwbeKUgOKUgCBcdTAwMWJbMW1Db25mbGljdHNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2VfY29uZmxpY3RzKCkg4pSA4pSAXG5cdTAwMWJbMzFt4pyWXHUwMDFiWzMwbSBcdTAwMWJbMzRtdGlkeXJcdTAwMWJbMzBtOjpcdTAwMWJbMzJtZXh0cmFjdCgpXHUwMDFiWzMwbSAgIG1hc2tzIFx1MDAxYlszNG1tYWdyaXR0clx1MDAxYlszMG06OmV4dHJhY3QoKVxuXHUwMDFiWzMxbeKcllx1MDAxYlszMG0gXHUwMDFiWzM0bWRwbHlyXHUwMDFiWzMwbTo6XHUwMDFiWzMybWZpbHRlcigpXHUwMDFiWzMwbSAgICBtYXNrcyBcdTAwMWJbMzRtc3RhdHNcdTAwMWJbMzBtOjpmaWx0ZXIoKVxuXHUwMDFiWzMxbeKcllx1MDAxYlszMG0gXHUwMDFiWzM0bWRwbHlyXHUwMDFiWzMwbTo6XHUwMDFiWzMybWxhZygpXHUwMDFiWzMwbSAgICAgICBtYXNrcyBcdTAwMWJbMzRtc3RhdHNcdTAwMWJbMzBtOjpsYWcoKVxuXHUwMDFiWzMxbeKcllx1MDAxYlszMG0gXHUwMDFiWzM0bXB1cnJyXHUwMDFiWzMwbTo6XHUwMDFiWzMybXNldF9uYW1lcygpXHUwMDFiWzMwbSBtYXNrcyBcdTAwMWJbMzRtbWFncml0dHJcdTAwMWJbMzBtOjpzZXRfbmFtZXMoKVx1MDAxYlszOW1cbiJ9 -->
-<pre><code>[30m── [1mAttaching packages[22m ───────────────────────────────────────── tidyverse 1.2.1 ──[39m
-[30m[32m✔[30m [34mtibble [30m 2.1.3     [32m✔[30m [34mpurrr  [30m 0.3.2
-[32m✔[30m [34mtidyr  [30m 0.8.3     [32m✔[30m [34mdplyr  [30m 0.8.3
-[32m✔[30m [34mreadr  [30m 1.3.1     [32m✔[30m [34mstringr[30m 1.4.0
-[32m✔[30m [34mtibble [30m 2.1.3     [32m✔[30m [34mforcats[30m 0.4.0[39m
-[30m── [1mConflicts[22m ──────────────────────────────────────────── tidyverse_conflicts() ──
-[31m✖[30m [34mtidyr[30m::[32mextract()[30m   masks [34mmagrittr[30m::extract()
-[31m✖[30m [34mdplyr[30m::[32mfilter()[30m    masks [34mstats[30m::filter()
-[31m✖[30m [34mdplyr[30m::[32mlag()[30m       masks [34mstats[30m::lag()
-[31m✖[30m [34mpurrr[30m::[32mset_names()[30m masks [34mmagrittr[30m::set_names()[39m</code></pre>
-<!-- rnb-output-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIEF0dGFjaGluZyBwYWNrYWdlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlIDEuMi4xIOKUgOKUgFxuIn0= -->
+<pre><code>── Attaching packages ─────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pyUIHRpYmJsZSAgMi4xLjMgICAgIOKclCBwdXJyciAgIDAuMy4yXG7inJQgdGlkeXIgICAwLjguMyAgICAg4pyUIGRwbHlyICAgMC44LjNcbuKclCByZWFkciAgIDEuMy4xICAgICDinJQgc3RyaW5nciAxLjQuMFxu4pyUIHRpYmJsZSAgMi4xLjMgICAgIOKclCBmb3JjYXRzIDAuNC4wXG4ifQ== -->
+<pre><code>✔ tibble  2.1.3     ✔ purrr   0.3.2
+✔ tidyr   0.8.3     ✔ dplyr   0.8.3
+✔ readr   1.3.1     ✔ stringr 1.4.0
+✔ tibble  2.1.3     ✔ forcats 0.4.0</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIENvbmZsaWN0cyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlX2NvbmZsaWN0cygpIOKUgOKUgFxu4pyWIHRpZHlyOjpleHRyYWN0KCkgICBtYXNrcyBtYWdyaXR0cjo6ZXh0cmFjdCgpXG7inJYgZHBseXI6OmZpbHRlcigpICAgIG1hc2tzIHN0YXRzOjpmaWx0ZXIoKVxu4pyWIGRwbHlyOjpsYWcoKSAgICAgICBtYXNrcyBzdGF0czo6bGFnKClcbuKcliBwdXJycjo6c2V0X25hbWVzKCkgbWFza3MgbWFncml0dHI6OnNldF9uYW1lcygpXG4ifQ== -->
+<pre><code>── Conflicts ────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ tidyr::extract()   masks magrittr::extract()
+✖ dplyr::filter()    masks stats::filter()
+✖ dplyr::lag()       masks stats::lag()
+✖ purrr::set_names() masks magrittr::set_names()</code></pre>
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -1821,7 +1824,7 @@ Loading required package: magrittr</code></pre>
 <p>Set up input and output directories:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBkZWZpbmUgZGlyZWN0b3JpZXNcbnJvb3RfZGlyIDwtIHJwcm9qcm9vdDo6ZmluZF9yb290KHJwcm9qcm9vdDo6aGFzX2RpcihcIi5naXRcIikpXG5kYXRhX2RpciA8LSBmaWxlLnBhdGgocm9vdF9kaXIsIFwiZGF0YVwiKVxuaW1tdW5lX2RpciA8LSBmaWxlLnBhdGgocm9vdF9kaXIsIFwiYW5hbHlzZXNcIiwgXCJpbW11bmUtZGVjb252XCIpXG5hbmFseXNpc19kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcImFuYWx5c2VzXCIsIFwic3Vydml2YWwtYW5hbHlzaXNcIilcblxucmVzdWx0c19kaXIgPC0gZmlsZS5wYXRoKGFuYWx5c2lzX2RpciwgXCJyZXN1bHRzXCIpXG5pZighZGlyLmV4aXN0cyhyZXN1bHRzX2Rpcikpe1xuICBkaXIuY3JlYXRlKHJlc3VsdHNfZGlyKVxufVxuXG5wbG90c19kaXIgPC0gZmlsZS5wYXRoKGFuYWx5c2lzX2RpciwgXCJwbG90c1wiKVxuaWYoIWRpci5leGlzdHMocGxvdHNfZGlyKSl7XG4gIGRpci5jcmVhdGUocGxvdHNfZGlyKVxufVxuXG51dGlsX2RpciA8LSBmaWxlLnBhdGgoYW5hbHlzaXNfZGlyLCBcInV0aWxcIilcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgZGVmaW5lIGRpcmVjdG9yaWVzIiwicm9vdF9kaXIgPC0gcnByb2pyb290OjpmaW5kX3Jvb3QocnByb2pyb290OjpoYXNfZGlyKFwiLmdpdFwiKSkiLCJkYXRhX2RpciA8LSBmaWxlLnBhdGgocm9vdF9kaXIsIFwiZGF0YVwiKSIsImltbXVuZV9kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcImFuYWx5c2VzXCIsIFwiaW1tdW5lLWRlY29udlwiKSIsImFuYWx5c2lzX2RpciA8LSBmaWxlLnBhdGgocm9vdF9kaXIsIFwiYW5hbHlzZXNcIiwgXCJzdXJ2aXZhbC1hbmFseXNpc1wiKSIsIiIsInJlc3VsdHNfZGlyIDwtIGZpbGUucGF0aChhbmFseXNpc19kaXIsIFwicmVzdWx0c1wiKSIsImlmKCFkaXIuZXhpc3RzKHJlc3VsdHNfZGlyKSl7XG4gIGRpci5jcmVhdGUocmVzdWx0c19kaXIpXG59IiwiIiwicGxvdHNfZGlyIDwtIGZpbGUucGF0aChhbmFseXNpc19kaXIsIFwicGxvdHNcIikiLCJpZighZGlyLmV4aXN0cyhwbG90c19kaXIpKXtcbiAgZGlyLmNyZWF0ZShwbG90c19kaXIpXG59IiwiIiwidXRpbF9kaXIgPC0gZmlsZS5wYXRoKGFuYWx5c2lzX2RpciwgXCJ1dGlsXCIpIl19 -->
 <pre class="r"><code># define directories
 root_dir &lt;- rprojroot::find_root(rprojroot::has_dir(&quot;.git&quot;))
 data_dir &lt;- file.path(root_dir, &quot;data&quot;)
@@ -1845,21 +1848,16 @@ util_dir &lt;- file.path(analysis_dir, &quot;util&quot;)</code></pre>
 <p>Source the util function file.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTb3VyY2UgZnVuY3Rpb25zIHVzZWQgdG8gYnVpbGQgYW5kIGV4cG9ydCBtb2RlbHNcbnNvdXJjZShmaWxlLnBhdGgodXRpbF9kaXIsXCJzdXJ2aXZhbF9tb2RlbHMuUlwiKSlcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgU291cmNlIGZ1bmN0aW9ucyB1c2VkIHRvIGJ1aWxkIGFuZCBleHBvcnQgbW9kZWxzIiwic291cmNlKGZpbGUucGF0aCh1dGlsX2RpcixcInN1cnZpdmFsX21vZGVscy5SXCIpKSJdfQ== -->
 <pre class="r"><code># Source functions used to build and export models
 source(file.path(util_dir,&quot;survival_models.R&quot;))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RhdGEudGFibGUnOlxuICBtZXRob2QgICAgICAgICAgIGZyb21cbiAgcHJpbnQuZGF0YS50YWJsZSAgICAgXG4ifQ== -->
-<pre><code>Registered S3 method overwritten by 'data.table':
-  method           from
-  print.data.table     </code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Read in and process relevant data files:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBGaXJzdCwgd2UgZGVmaW5lIGEgZnVuY3Rpb24gZm9yIHVzZSBoZXJlIG9ubHkgdG8gcHJvY2VzcyBleHByZXNzaW9uIGZpbGVzIGFuZCBvYnRhaW4gQ0QyNzQgZXhwcmVzc2lvbiBhY3Jvc3MgbGlicmFyaWVzXG5leHRyYWN0X2NkMjc0X2V4cHJlc3Npb24gPC0gZnVuY3Rpb24oZGYsIGxpYnJhcnlfdHlwZSl7XG4gIFxuICAjIEdldCB0aGUgbGlicmFyeSBzYW1wbGVzIGZyb20gYHF1YW50aXNlcWAgZGZcbiAgc2FtcGxlcyA8LSBxdWFudGlzZXEgJT4lXG4gICAgZmlsdGVyKGxpYnJhcnkgPT0gbGlicmFyeV90eXBlKSAlPiVcbiAgICBwdWxsKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpXG4gIFxuICAjIFJldHVybiB0aGUgZXhwcmVzc2lvbiBsZXZlbHMgZm9yIHRob3NlIHNhbXBsZXMgZnJvbSBgZGZgXG4gIGRmICU+JSBcbiAgICBzZWxlY3Qoc2FtcGxlcykgJT4lXG4gICAgcm93bmFtZXNfdG9fY29sdW1uKFwiZ2VuZV9zeW1ib2xcIikgJT4lXG4gICAgZmlsdGVyKGdlbmVfc3ltYm9sID09IFwiQ0QyNzRcIikgJT4lXG4gICAgY29sdW1uX3RvX3Jvd25hbWVzKFwiZ2VuZV9zeW1ib2xcIikgJT4lIFxuICAgIHQoKSAlPiUgXG4gICAgYXMuZGF0YS5mcmFtZSgpICU+JVxuICAgIHJvd25hbWVzX3RvX2NvbHVtbihcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIikgJT4lXG4gICAgbXV0YXRlKGxpYnJhcnkgPSBsaWJyYXJ5X3R5cGUpICU+JVxuICAgIGFzX3RpYmJsZSgpXG4gIFxufVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgRmlyc3QsIHdlIGRlZmluZSBhIGZ1bmN0aW9uIGZvciB1c2UgaGVyZSBvbmx5IHRvIHByb2Nlc3MgZXhwcmVzc2lvbiBmaWxlcyBhbmQgb2J0YWluIENEMjc0IGV4cHJlc3Npb24gYWNyb3NzIGxpYnJhcmllcyIsImV4dHJhY3RfY2QyNzRfZXhwcmVzc2lvbiA8LSBmdW5jdGlvbihkZiwgbGlicmFyeV90eXBlKXtcbiAgXG4gICMgR2V0IHRoZSBsaWJyYXJ5IHNhbXBsZXMgZnJvbSBgcXVhbnRpc2VxYCBkZlxuICBzYW1wbGVzIDwtIHF1YW50aXNlcSAlPiVcbiAgICBmaWx0ZXIobGlicmFyeSA9PSBsaWJyYXJ5X3R5cGUpICU+JVxuICAgIHB1bGwoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRClcbiAgXG4gICMgUmV0dXJuIHRoZSBleHByZXNzaW9uIGxldmVscyBmb3IgdGhvc2Ugc2FtcGxlcyBmcm9tIGBkZmBcbiAgZGYgJT4lIFxuICAgIHNlbGVjdChzYW1wbGVzKSAlPiVcbiAgICByb3duYW1lc190b19jb2x1bW4oXCJnZW5lX3N5bWJvbFwiKSAlPiVcbiAgICBmaWx0ZXIoZ2VuZV9zeW1ib2wgPT0gXCJDRDI3NFwiKSAlPiVcbiAgICBjb2x1bW5fdG9fcm93bmFtZXMoXCJnZW5lX3N5bWJvbFwiKSAlPiUgXG4gICAgdCgpICU+JSBcbiAgICBhcy5kYXRhLmZyYW1lKCkgJT4lXG4gICAgcm93bmFtZXNfdG9fY29sdW1uKFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiKSAlPiVcbiAgICBtdXRhdGUobGlicmFyeSA9IGxpYnJhcnlfdHlwZSkgJT4lXG4gICAgYXNfdGliYmxlKClcbiAgXG59Il19 -->
 <pre class="r"><code># First, we define a function for use here only to process expression files and obtain CD274 expression across libraries
 extract_cd274_expression &lt;- function(df, library_type){
   
@@ -1886,7 +1884,7 @@ extract_cd274_expression &lt;- function(df, library_type){
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBSZWFkIGluIGFuZCBjbGVhbiB1cCB0aGUgcXVhbnRpc2VxIGltbXVuZSBkZWNvbnZvbHV0ZWQgc2NvcmVzIGZpbGUgXG5xdWFudGlzZXEgPC0gcmVhZF9yZHMoXG4gIGZpbGUucGF0aChpbW11bmVfZGlyLCBcInJlc3VsdHNcIiwgXCJxdWFudGlzZXFfZGVjb252LW91dHB1dC5yZHNcIilcbiAgKSAlPiVcbiAgIyByZW1vdmUgdW5jaGFyYWN0ZXJpemVkIGNlbGwgdHlwZXNcbiAgZmlsdGVyKGNlbGxfdHlwZSAhPSBcInVuY2hhcmFjdGVyaXplZCBjZWxsXCIpICU+JVxuICAjIHJlbW92ZSB1bm5lZWRlZCBgbWV0aG9kYCBjb2x1bW5cbiAgc2VsZWN0KC1tZXRob2QpICU+JVxuICAjIHJlbmFtZSBzYW1wbGUgY29sdW1uXG4gIHJlbmFtZShLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gc2FtcGxlKSAlPiVcbiAgIyBjbGVhbiB1cCB0aGUgY2VsbF90eXBlIGNvbHVtbiB3aXRoIHVuZGVyc2NvcmVzIGZvciBkb3duc3RyZWFtIHVzZSBcbiAgbXV0YXRlKGNlbGxfdHlwZV91bmRlcnNjb3JlcyA9IGdzdWIoXCIgXCIsIFwiX1wiLCBjZWxsX3R5cGUpLFxuICAgICAgICAgY2VsbF90eXBlX3VuZGVyc2NvcmVzID0gZ3N1YihcIlxcXFwrXCIsIFwiXCIsIGNlbGxfdHlwZV91bmRlcnNjb3JlcyksXG4gICAgICAgICBjZWxsX3R5cGVfdW5kZXJzY29yZXMgPSBnc3ViKFwiXFxcXChcIiwgXCJcIiwgY2VsbF90eXBlX3VuZGVyc2NvcmVzKSxcbiAgICAgICAgIGNlbGxfdHlwZV91bmRlcnNjb3JlcyA9IGdzdWIoXCJcXFxcKVwiLCBcIlwiLCBjZWxsX3R5cGVfdW5kZXJzY29yZXMpLFxuICAgICAgICAgY2VsbF90eXBlX3VuZGVyc2NvcmVzID0gZ3N1YihcIlxcXFwtXCIsIFwiX1wiLCBjZWxsX3R5cGVfdW5kZXJzY29yZXMpKSAlPiVcbiAgIyByZW1vdmUgb3JpZ2luYWwgY29sdW1uXG4gIHNlbGVjdCgtY2VsbF90eXBlKVxuXG4jIFJlYWQgaW4gaGlzdG9sb2d5IGZpbGUgYW5kIGZpbHRlciB0byBSTkFzZXEgc2FtcGxlcyB3aXRoIHJlbGV2YW50IGNvbHVtbnNcbmhpc3RvbG9neV9kZiA8LSByZWFkX3RzdihmaWxlLnBhdGgoZGF0YV9kaXIsIFwicGJ0YS1oaXN0b2xvZ2llcy50c3ZcIiksIGd1ZXNzX21heCA9IDEwMDAwKSAlPiVcbiAgICBmaWx0ZXIoY29tcG9zaXRpb249PVwiU29saWQgVGlzc3VlXCIsXG4gICAgICAgICAgIHR1bW9yX2Rlc2NyaXB0b3IgPT0gXCJJbml0aWFsIENOUyBUdW1vclwiLFxuICAgICAgICAgICBleHBlcmltZW50YWxfc3RyYXRlZ3kgPT0gXCJSTkEtU2VxXCIpICU+JVxuICAgIHNlbGVjdChLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELCBcbiAgICAgICAgICAgS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCwgXG4gICAgICAgICAgIGNhbmNlcl9ncm91cCwgXG4gICAgICAgICAgIG1vbGVjdWxhcl9zdWJ0eXBlLCBcbiAgICAgICAgICAgT1Nfc3RhdHVzLCBcbiAgICAgICAgICAgT1NfZGF5cywgXG4gICAgICAgICAgIFBGU19kYXlzKSAlPiVcbiAgICBkaXN0aW5jdCgpIFxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgUmVhZCBpbiBhbmQgY2xlYW4gdXAgdGhlIHF1YW50aXNlcSBpbW11bmUgZGVjb252b2x1dGVkIHNjb3JlcyBmaWxlICIsInF1YW50aXNlcSA8LSByZWFkX3JkcyhcbiAgZmlsZS5wYXRoKGltbXVuZV9kaXIsIFwicmVzdWx0c1wiLCBcInF1YW50aXNlcV9kZWNvbnYtb3V0cHV0LnJkc1wiKVxuICApICU+JVxuICAjIHJlbW92ZSB1bmNoYXJhY3Rlcml6ZWQgY2VsbCB0eXBlc1xuICBmaWx0ZXIoY2VsbF90eXBlICE9IFwidW5jaGFyYWN0ZXJpemVkIGNlbGxcIikgJT4lXG4gICMgcmVtb3ZlIHVubmVlZGVkIGBtZXRob2RgIGNvbHVtblxuICBzZWxlY3QoLW1ldGhvZCkgJT4lXG4gICMgcmVuYW1lIHNhbXBsZSBjb2x1bW5cbiAgcmVuYW1lKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgPSBzYW1wbGUpICU+JVxuICAjIGNsZWFuIHVwIHRoZSBjZWxsX3R5cGUgY29sdW1uIHdpdGggdW5kZXJzY29yZXMgZm9yIGRvd25zdHJlYW0gdXNlIFxuICBtdXRhdGUoY2VsbF90eXBlX3VuZGVyc2NvcmVzID0gZ3N1YihcIiBcIiwgXCJfXCIsIGNlbGxfdHlwZSksXG4gICAgICAgICBjZWxsX3R5cGVfdW5kZXJzY29yZXMgPSBnc3ViKFwiXFxcXCtcIiwgXCJcIiwgY2VsbF90eXBlX3VuZGVyc2NvcmVzKSxcbiAgICAgICAgIGNlbGxfdHlwZV91bmRlcnNjb3JlcyA9IGdzdWIoXCJcXFxcKFwiLCBcIlwiLCBjZWxsX3R5cGVfdW5kZXJzY29yZXMpLFxuICAgICAgICAgY2VsbF90eXBlX3VuZGVyc2NvcmVzID0gZ3N1YihcIlxcXFwpXCIsIFwiXCIsIGNlbGxfdHlwZV91bmRlcnNjb3JlcyksXG4gICAgICAgICBjZWxsX3R5cGVfdW5kZXJzY29yZXMgPSBnc3ViKFwiXFxcXC1cIiwgXCJfXCIsIGNlbGxfdHlwZV91bmRlcnNjb3JlcykpICU+JVxuICAjIHJlbW92ZSBvcmlnaW5hbCBjb2x1bW5cbiAgc2VsZWN0KC1jZWxsX3R5cGUpIiwiIiwiIyBSZWFkIGluIGhpc3RvbG9neSBmaWxlIGFuZCBmaWx0ZXIgdG8gUk5Bc2VxIHNhbXBsZXMgd2l0aCByZWxldmFudCBjb2x1bW5zIiwiaGlzdG9sb2d5X2RmIDwtIHJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2RpciwgXCJwYnRhLWhpc3RvbG9naWVzLnRzdlwiKSwgZ3Vlc3NfbWF4ID0gMTAwMDApICU+JVxuICAgIGZpbHRlcihjb21wb3NpdGlvbj09XCJTb2xpZCBUaXNzdWVcIixcbiAgICAgICAgICAgdHVtb3JfZGVzY3JpcHRvciA9PSBcIkluaXRpYWwgQ05TIFR1bW9yXCIsXG4gICAgICAgICAgIGV4cGVyaW1lbnRhbF9zdHJhdGVneSA9PSBcIlJOQS1TZXFcIikgJT4lXG4gICAgc2VsZWN0KEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsIFxuICAgICAgICAgICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lELCBcbiAgICAgICAgICAgY2FuY2VyX2dyb3VwLCBcbiAgICAgICAgICAgbW9sZWN1bGFyX3N1YnR5cGUsIFxuICAgICAgICAgICBPU19zdGF0dXMsIFxuICAgICAgICAgICBPU19kYXlzLCBcbiAgICAgICAgICAgUEZTX2RheXMpICU+JVxuICAgIGRpc3RpbmN0KCkgIl19 -->
 <pre class="r"><code># Read in and clean up the quantiseq immune deconvoluted scores file 
 quantiseq &lt;- read_rds(
   file.path(immune_dir, &quot;results&quot;, &quot;quantiseq_deconv-output.rds&quot;)
@@ -1920,19 +1918,21 @@ histology_df &lt;- read_tsv(file.path(data_dir, &quot;pbta-histologies.tsv&quot;
            PFS_days) %&gt;%
     distinct() </code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgT1NfZGF5cyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBhZ2VfbGFzdF91cGRhdGVfZGF5cyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBub3JtYWxfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfcGxvaWR5ID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW1cbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuIn0= -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgT1NfZGF5cyA9IGNvbF9kb3VibGUoKSxcbiAgYWdlX2xhc3RfdXBkYXRlX2RheXMgPSBjb2xfZG91YmxlKCksXG4gIG5vcm1hbF9mcmFjdGlvbiA9IGNvbF9kb3VibGUoKSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBjb2xfZG91YmxlKCksXG4gIHR1bW9yX3Bsb2lkeSA9IGNvbF9kb3VibGUoKVxuKVxuIn0= -->
 <pre><code>Parsed with column specification:
 cols(
   .default = col_character(),
-  OS_days = [32mcol_double()[39m,
-  age_last_update_days = [32mcol_double()[39m,
-  normal_fraction = [32mcol_double()[39m,
-  tumor_fraction = [32mcol_double()[39m,
-  tumor_ploidy = [32mcol_double()[39m
-)
-See spec(...) for full column specifications.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBSZWFkIGluIGdlbmUgZXhwcmVzc2lvbiBmaWxlcyAtIGJvdGggcG9seS1BIGFuZCBzdHJhbmRlZCBzYW1wbGVzXG5wb2x5YSA8LSByZWFkX3JkcyhmaWxlLnBhdGgoZGF0YV9kaXIsIFwicGJ0YS1nZW5lLWV4cHJlc3Npb24tcnNlbS1mcGttLWNvbGxhcHNlZC5wb2x5YS5yZHNcIikpXG5zdHJhbmRlZCA8LSByZWFkX3JkcyhmaWxlLnBhdGgoZGF0YV9kaXIsIFwicGJ0YS1nZW5lLWV4cHJlc3Npb24tcnNlbS1mcGttLWNvbGxhcHNlZC5zdHJhbmRlZC5yZHNcIikpXG5cbiMgUHJvY2VzcyBnZW5lIGV4cHJlc3Npb24gZmlsZXMgdG8gb2J0YWluIFBETDEgKGFrYSBDRDI3NClcbmNkMjc0X2V4cHJlc3Npb24gPC0gYmluZF9yb3dzKFxuICBleHRyYWN0X2NkMjc0X2V4cHJlc3Npb24ocG9seWEsIFwicG9seWFcIiksXG4gIHN0cmFuZGVkX2NkMjc0IDwtIGV4dHJhY3RfY2QyNzRfZXhwcmVzc2lvbihzdHJhbmRlZCwgXCJzdHJhbmRlZFwiKVxuKVxuYGBgIn0= -->
+  OS_days = col_double(),
+  age_last_update_days = col_double(),
+  normal_fraction = col_double(),
+  tumor_fraction = col_double(),
+  tumor_ploidy = col_double()
+)</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
+<pre><code>See spec(...) for full column specifications.</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgUmVhZCBpbiBnZW5lIGV4cHJlc3Npb24gZmlsZXMgLSBib3RoIHBvbHktQSBhbmQgc3RyYW5kZWQgc2FtcGxlcyIsInBvbHlhIDwtIHJlYWRfcmRzKGZpbGUucGF0aChkYXRhX2RpciwgXCJwYnRhLWdlbmUtZXhwcmVzc2lvbi1yc2VtLWZwa20tY29sbGFwc2VkLnBvbHlhLnJkc1wiKSkiLCJzdHJhbmRlZCA8LSByZWFkX3JkcyhmaWxlLnBhdGgoZGF0YV9kaXIsIFwicGJ0YS1nZW5lLWV4cHJlc3Npb24tcnNlbS1mcGttLWNvbGxhcHNlZC5zdHJhbmRlZC5yZHNcIikpIiwiIiwiIyBQcm9jZXNzIGdlbmUgZXhwcmVzc2lvbiBmaWxlcyB0byBvYnRhaW4gUERMMSAoYWthIENEMjc0KSIsImNkMjc0X2V4cHJlc3Npb24gPC0gYmluZF9yb3dzKFxuICBleHRyYWN0X2NkMjc0X2V4cHJlc3Npb24ocG9seWEsIFwicG9seWFcIiksXG4gIHN0cmFuZGVkX2NkMjc0IDwtIGV4dHJhY3RfY2QyNzRfZXhwcmVzc2lvbihzdHJhbmRlZCwgXCJzdHJhbmRlZFwiKVxuKSJdfQ== -->
 <pre class="r"><code># Read in gene expression files - both poly-A and stranded samples
 polya &lt;- read_rds(file.path(data_dir, &quot;pbta-gene-expression-rsem-fpkm-collapsed.polya.rds&quot;))
 stranded &lt;- read_rds(file.path(data_dir, &quot;pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds&quot;))
@@ -1948,7 +1948,7 @@ cd274_expression &lt;- bind_rows(
 <p>Now, we can combine data for modeling:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBtZXJnZSBkYXRhIGZyYW1lcyBhbmQgY29udmVydCBkYXlzIC0tLT4geWVhcnNcbmNvbWJpbmVkX2RmIDwtIGhpc3RvbG9neV9kZiAlPiVcbiAgaW5uZXJfam9pbihjZDI3NF9leHByZXNzaW9uKSAlPiVcbiAgaW5uZXJfam9pbihxdWFudGlzZXEpICU+JVxuICBtdXRhdGUoXG4gICAgT1NfeWVhcnMgPSBPU19kYXlzIC8gMzY1LjI1XG4gICkgJT4lXG4gICMgZ2V0IGEgY29sdW1uIGZvciBlYWNoIGNlbGwgdHlwZVxuICBzcHJlYWQoY2VsbF90eXBlX3VuZGVyc2NvcmVzLCBzY29yZSlcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgbWVyZ2UgZGF0YSBmcmFtZXMgYW5kIGNvbnZlcnQgZGF5cyAtLS0+IHllYXJzIiwiY29tYmluZWRfZGYgPC0gaGlzdG9sb2d5X2RmICU+JVxuICBpbm5lcl9qb2luKGNkMjc0X2V4cHJlc3Npb24pICU+JVxuICBpbm5lcl9qb2luKHF1YW50aXNlcSkgJT4lXG4gIG11dGF0ZShcbiAgICBPU195ZWFycyA9IE9TX2RheXMgLyAzNjUuMjVcbiAgKSAlPiVcbiAgIyBnZXQgYSBjb2x1bW4gZm9yIGVhY2ggY2VsbCB0eXBlXG4gIHNwcmVhZChjZWxsX3R5cGVfdW5kZXJzY29yZXMsIHNjb3JlKSJdfQ== -->
 <pre class="r"><code># merge data frames and convert days ---&gt; years
 combined_df &lt;- histology_df %&gt;%
   inner_join(cd274_expression) %&gt;%
@@ -1959,10 +1959,12 @@ combined_df &lt;- histology_df %&gt;%
   # get a column for each cell type
   spread(cell_type_underscores, score)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiSm9pbmluZywgYnkgPSBcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIlxuSm9pbmluZywgYnkgPSBjKFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLCBcImxpYnJhcnlcIilcbiJ9 -->
-<pre><code>Joining, by = &quot;Kids_First_Biospecimen_ID&quot;
-Joining, by = c(&quot;Kids_First_Biospecimen_ID&quot;, &quot;library&quot;)</code></pre>
-<!-- rnb-output-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiSm9pbmluZywgYnkgPSBcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIlxuIn0= -->
+<pre><code>Joining, by = &quot;Kids_First_Biospecimen_ID&quot;</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiSm9pbmluZywgYnkgPSBjKFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLCBcImxpYnJhcnlcIilcbiJ9 -->
+<pre><code>Joining, by = c(&quot;Kids_First_Biospecimen_ID&quot;, &quot;library&quot;)</code></pre>
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -1972,22 +1974,17 @@ Joining, by = c(&quot;Kids_First_Biospecimen_ID&quot;, &quot;library&quot;)</cod
 <p>We use a cox regression to explore influence of PDL-1 expression on survival, while controling for library (polyA vs stranded).</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZml0X3NhdmVfbW9kZWwoY29tYmluZWRfZGYsIFxuICAgICAgICAgICAgICAgXCJDRDI3NCArIGxpYnJhcnlcIixcbiAgICAgICAgICAgICAgIGZpbGUucGF0aChyZXN1bHRzX2RpciwgXCJjb3hfdGVybXNfcGRsMV9saWJyYXJ5LlJEU1wiKSwgXG4gICAgICAgICAgICAgICBtb2RlbF90eXBlID0gXCJtdWx0aXZhcmlhdGVcIilcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiZml0X3NhdmVfbW9kZWwoY29tYmluZWRfZGYsIFxuICAgICAgICAgICAgICAgXCJDRDI3NCArIGxpYnJhcnlcIixcbiAgICAgICAgICAgICAgIGZpbGUucGF0aChyZXN1bHRzX2RpciwgXCJjb3hfdGVybXNfcGRsMV9saWJyYXJ5LlJEU1wiKSwgXG4gICAgICAgICAgICAgICBtb2RlbF90eXBlID0gXCJtdWx0aXZhcmlhdGVcIikifQ== -->
 <pre class="r"><code>fit_save_model(combined_df, 
                &quot;CD274 + library&quot;,
                file.path(results_dir, &quot;cox_terms_pdl1_library.RDS&quot;), 
                model_type = &quot;multivariate&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6NywibnJvdyI6Mn0sInJkZiI6IlVrUllNd3BZQ2dBQUFBTUFBd1lBQUFNRkFBQUFBQVZWVkVZdE9BQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFjQUFBQVFBQUFBQWdBRUFBa0FBQUFGUTBReU56UUFCQUFKQUFBQUQyeHBZbkpoY25semRISmhibVJsWkFBQUFBNEFBQUFDdjc2TDc2ZE5KZjYvLzdUTFFlWm1EZ0FBQUE0QUFBQUNQN0p3c1Z0SW1QQS94MTVXSU9zSnh3QUFBQTRBQUFBQ3YvcUJIai80OWxqQUpiVnM0d2xybUFBQUFBNEFBQUFDUDdqOVcrK1JCRlk2WXRVd2xiUVpJUUFBQUE0QUFBQUN2OUNzRkx5cElMUEFBcmM0UUkxZmxBQUFBQTRBQUFBQ1A1Wmh6cEFvMnl1Lytmc21BcklNOVFBQUJBSUFBQUFCQUFRQUNRQUFBQVZ1WVcxbGN3QUFBQkFBQUFBSEFBUUFDUUFBQUFSMFpYSnRBQVFBQ1FBQUFBaGxjM1JwYldGMFpRQUVBQWtBQUFBSmMzUmtMbVZ5Y205eUFBUUFDUUFBQUFsemRHRjBhWE4wYVdNQUJBQUpBQUFBQjNBdWRtRnNkV1VBQkFBSkFBQUFDR052Ym1ZdWJHOTNBQVFBQ1FBQUFBbGpiMjVtTG1ocFoyZ0FBQVFDQUFBQUFRQUVBQWtBQUFBSmNtOTNMbTVoYldWekFBQUFEUUFBQUFLQUFBQUEvLy8vL2dBQUJBSUFBQUFCQUFRQUNRQUFBQVZqYkdGemN3QUFBQkFBQUFBQkFBUUFDUUFBQUFwa1lYUmhMbVp5WVcxbEFBQUEvZ0FBQkFJQUFBQUJBQVFBQ1FBQUFBZHZjSFJwYjI1ekFBQUNFd0FBQUFVQUFBQVFBQUFBQVFBRUFBa0FBQUFCY2dBQUFCQUFBQUFCQUFRQUNRQUFBQkJqYjNoZmNHUnNNVjlzYVdKeVlYSjVBQUFBQ2dBQUFBRUFBQUFBQUFBQURRQUFBQUVBQUFBQ0FBQUFEUUFBQUFFQUFBQUhBQUFFQWdBQUF2OEFBQUFRQUFBQUJRQUVBQWtBQUFBR1pXNW5hVzVsQUFRQUNRQUFBQVZzWVdKbGJBQUVBQWtBQUFBT2NtOTNibUZ0WlhNdWNISnBiblFBQkFBSkFBQUFDbkp2ZDNNdWRHOTBZV3dBQkFBSkFBQUFDbU52YkhNdWRHOTBZV3dBQUFEK0FBQUEvZz09In0= -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"CD274","2":"-0.1193228","3":"0.07203206","4":"-1.656523","5":"9.761595e-02","6":"-0.260503","7":"0.02185748"},{"1":"librarystranded","2":"-1.9816392","3":"0.18256642","4":"-10.854346","5":"1.901624e-27","6":"-2.339463","7":"-1.62381555"}],"options":{"columns":{"min":{},"max":[10],"total":[7]},"rows":{"min":[10],"max":[10],"total":[2]},"pages":{}}}
+{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"CD274","2":"-0.1193228","3":"0.07203206","4":"-1.656523","5":"9.761595e-02","6":"-0.260503","7":"0.02185748"},{"1":"librarystranded","2":"-1.9816392","3":"0.18256642","4":"-10.854346","5":"1.901624e-27","6":"-2.339463","7":"-1.62381555"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<!-- rnb-frame-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuTkFcbmBgYCJ9 -->
-<pre class="r"><code>NA</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>We observe a <em>highly significant</em> library effect, suggesting strong batch effects in the analysis. <strong>Therefore, we will model using only stranded data for the rest of this notebook to ameliorate this influence.</strong></p>
@@ -1995,7 +1992,7 @@ Joining, by = c(&quot;Kids_First_Biospecimen_ID&quot;, &quot;library&quot;)</cod
 <h3>Subset to stranded only</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29tYmluZWRfZGZfc3RyYW5kZWQgPC0gZmlsdGVyKGNvbWJpbmVkX2RmLCBsaWJyYXJ5ID09IFwic3RyYW5kZWRcIilcblxuIyBob3cgbWFueSBzYW1wbGVzIGRvIHdlIG5vdyBoYXZlP1xubnJvdyhjb21iaW5lZF9kZl9zdHJhbmRlZClcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbImNvbWJpbmVkX2RmX3N0cmFuZGVkIDwtIGZpbHRlcihjb21iaW5lZF9kZiwgbGlicmFyeSA9PSBcInN0cmFuZGVkXCIpIiwiIiwiIyBob3cgbWFueSBzYW1wbGVzIGRvIHdlIG5vdyBoYXZlPyIsIm5yb3coY29tYmluZWRfZGZfc3RyYW5kZWQpIl19 -->
 <pre class="r"><code>combined_df_stranded &lt;- filter(combined_df, library == &quot;stranded&quot;)
 
 # how many samples do we now have?
@@ -2015,21 +2012,19 @@ nrow(combined_df_stranded)</code></pre>
 </blockquote>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZml0X3NhdmVfbW9kZWwoY29tYmluZWRfZGZfc3RyYW5kZWQsIFxuICAgICAgICAgICAgICAgXCJDRDI3NFwiLFxuICAgICAgICAgICAgICAgZmlsZS5wYXRoKHJlc3VsdHNfZGlyLCBcImNveF90ZXJtc19wZGwxX3N0cmFuZGVkLlJEU1wiKSlcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiZml0X3NhdmVfbW9kZWwoY29tYmluZWRfZGZfc3RyYW5kZWQsIFxuICAgICAgICAgICAgICAgXCJDRDI3NFwiLFxuICAgICAgICAgICAgICAgZmlsZS5wYXRoKHJlc3VsdHNfZGlyLCBcImNveF90ZXJtc19wZGwxX3N0cmFuZGVkLlJEU1wiKSkifQ== -->
 <pre class="r"><code>fit_save_model(combined_df_stranded, 
                &quot;CD274&quot;,
                file.path(results_dir, &quot;cox_terms_pdl1_stranded.RDS&quot;))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiVGVzdGluZyBtb2RlbDogc3Vydml2YWw6OlN1cnYoT1NfeWVhcnMsIE9TX3N0YXR1cykgfiBDRDI3NCB3aXRoIGNveC5yZWdcbiJ9 -->
+<!-- rnb-message-begin eyJkYXRhIjoiVGVzdGluZyBtb2RlbDogc3Vydml2YWw6OlN1cnYoT1NfeWVhcnMsIE9TX3N0YXR1cykgfiBDRDI3NCB3aXRoIGNveC5yZWdcbiJ9 -->
 <pre><code>Testing model: survival::Surv(OS_years, OS_status) ~ CD274 with cox.reg</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6NywibnJvdyI6MX0sInJkZiI6IlVrUllNd3BZQ2dBQUFBTUFBd1lBQUFNRkFBQUFBQVZWVkVZdE9BQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFjQUFBQVFBQUFBQVFBRUFBa0FBQUFGUTBReU56UUFBQUFPQUFBQUFiL0ovK0s0MzFTS0FBQUFEZ0FBQUFFL3U4aVMwS25XeHdBQUFBNEFBQUFCdi8zeUFQWGhkczhBQUFBT0FBQUFBVCt2WGdtYnZhMnBBQUFBRGdBQUFBRy8ycDBLTDZJVmNBQUFBQTRBQUFBQlA0T2s3dGhZSE44QUFBUUNBQUFBQVFBRUFBa0FBQUFGYm1GdFpYTUFBQUFRQUFBQUJ3QUVBQWtBQUFBRWRHVnliUUFFQUFrQUFBQUlaWE4wYVcxaGRHVUFCQUFKQUFBQUNYTjBaQzVsY25KdmNnQUVBQWtBQUFBSmMzUmhkR2x6ZEdsakFBUUFDUUFBQUFkd0xuWmhiSFZsQUFRQUNRQUFBQWhqYjI1bUxteHZkd0FFQUFrQUFBQUpZMjl1Wmk1b2FXZG9BQUFFQWdBQUFBRUFCQUFKQUFBQUNYSnZkeTV1WVcxbGN3QUFBQTBBQUFBQ2dBQUFBUC8vLy84QUFBUUNBQUFBQVFBRUFBa0FBQUFGWTJ4aGMzTUFBQUFRQUFBQUFRQUVBQWtBQUFBS1pHRjBZUzVtY21GdFpRQUFBUDRBQUFRQ0FBQUFBUUFFQUFrQUFBQUhiM0IwYVc5dWN3QUFBaE1BQUFBRkFBQUFFQUFBQUFFQUJBQUpBQUFBQVhJQUFBQVFBQUFBQVFBRUFBa0FBQUFJWTI5NFgzQmtiREVBQUFBS0FBQUFBUUFBQUFBQUFBQU5BQUFBQVFBQUFBRUFBQUFOQUFBQUFRQUFBQWNBQUFRQ0FBQUMvd0FBQUJBQUFBQUZBQVFBQ1FBQUFBWmxibWRwYm1VQUJBQUpBQUFBQld4aFltVnNBQVFBQ1FBQUFBNXliM2R1WVcxbGN5NXdjbWx1ZEFBRUFBa0FBQUFLY205M2N5NTBiM1JoYkFBRUFBa0FBQUFLWTI5c2N5NTBiM1JoYkFBQUFQNEFBQUQrIn0= -->
+<!-- rnb-message-end -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"CD274","2":"-0.2031215","3":"0.1085293","4":"-1.871583","5":"0.06126432","6":"-0.4158349","7":"0.009591928"}],"options":{"columns":{"min":{},"max":[10],"total":[7]},"rows":{"min":[10],"max":[10],"total":[1]},"pages":{}}}
+{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"CD274","2":"-0.2031215","3":"0.1085293","4":"-1.871583","5":"0.06126432","6":"-0.4158349","7":"0.009591928"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -2040,9 +2035,8 @@ nrow(combined_df_stranded)</code></pre>
 </blockquote>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jIERlZmluZSB0aGUgdGVybXMgZm9yIGEgcXVhbnRpc2VxIG1vZGVsLiBUaGVzZSBhcmUgdXNlZCBzZXZlcmFsIHRpbWVzIGluIHRoaXMgbm90ZWJvb2tcbnF1YW50aXNlcV90ZXJtcyA8LSBcIkJfY2VsbCArIE1hY3JvcGhhZ2VfTTEgKyBNYWNyb3BoYWdlX00yICsgTW9ub2N5dGUgKyBNeWVsb2lkX2RlbmRyaXRpY19jZWxsICsgTmV1dHJvcGhpbCArIE5LX2NlbGwgKyBUX2NlbGxfQ0Q0X25vbl9yZWd1bGF0b3J5ICsgVF9jZWxsX0NEOCArIFRfY2VsbF9yZWd1bGF0b3J5X1RyZWdzXCIgXG5cblxuIyBzYXZpbmcgc28gUC12YWx1ZXMgY2FuIGJlIHByb2dyYW1tYXRpY2FsbHkgZ3JhYmJlZFxuZml0dGVkIDwtIGZpdF9zYXZlX21vZGVsKGNvbWJpbmVkX2RmX3N0cmFuZGVkLFxuICAgICAgICAgICAgICAgICAgICAgICAgIHF1YW50aXNlcV90ZXJtcyxcbiAgICAgICAgICAgICAgICAgICAgICAgICBmaWxlLnBhdGgocmVzdWx0c19kaXIsIFwiY294X3Rlcm1zX3F1YW50aXNlcS5SRFNcIiksXG4gICAgICAgICAgICAgICAgICAgICAgICAgbW9kZWxfdHlwZSA9IFwibXVsdGl2YXJpYXRlXCIpXG5maXR0ZWRcbmBgYCJ9 -->
-<pre class="r"><code>
-# Define the terms for a quantiseq model. These are used several times in this notebook
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgRGVmaW5lIHRoZSB0ZXJtcyBmb3IgYSBxdWFudGlzZXEgbW9kZWwuIFRoZXNlIGFyZSB1c2VkIHNldmVyYWwgdGltZXMgaW4gdGhpcyBub3RlYm9vayIsInF1YW50aXNlcV90ZXJtcyA8LSBcIkJfY2VsbCArIE1hY3JvcGhhZ2VfTTEgKyBNYWNyb3BoYWdlX00yICsgTW9ub2N5dGUgKyBNeWVsb2lkX2RlbmRyaXRpY19jZWxsICsgTmV1dHJvcGhpbCArIE5LX2NlbGwgKyBUX2NlbGxfQ0Q0X25vbl9yZWd1bGF0b3J5ICsgVF9jZWxsX0NEOCArIFRfY2VsbF9yZWd1bGF0b3J5X1RyZWdzXCIgIiwiIiwiIiwiIyBzYXZpbmcgc28gUC12YWx1ZXMgY2FuIGJlIHByb2dyYW1tYXRpY2FsbHkgZ3JhYmJlZCIsImZpdHRlZCA8LSBmaXRfc2F2ZV9tb2RlbChjb21iaW5lZF9kZl9zdHJhbmRlZCxcbiAgICAgICAgICAgICAgICAgICAgICAgICBxdWFudGlzZXFfdGVybXMsXG4gICAgICAgICAgICAgICAgICAgICAgICAgZmlsZS5wYXRoKHJlc3VsdHNfZGlyLCBcImNveF90ZXJtc19xdWFudGlzZXEuUkRTXCIpLFxuICAgICAgICAgICAgICAgICAgICAgICAgIG1vZGVsX3R5cGUgPSBcIm11bHRpdmFyaWF0ZVwiKSIsImZpdHRlZCJdfQ== -->
+<pre class="r"><code># Define the terms for a quantiseq model. These are used several times in this notebook
 quantiseq_terms &lt;- &quot;B_cell + Macrophage_M1 + Macrophage_M2 + Monocyte + Myeloid_dendritic_cell + Neutrophil + NK_cell + T_cell_CD4_non_regulatory + T_cell_CD8 + T_cell_regulatory_Tregs&quot; 
 
 
@@ -2053,13 +2047,11 @@ fitted &lt;- fit_save_model(combined_df_stranded,
                          model_type = &quot;multivariate&quot;)
 fitted</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6NywibnJvdyI6MTB9LCJyZGYiOiJVa1JZTXdwWUNnQUFBQU1BQXdZQUFBTUZBQUFBQUFWVlZFWXRPQUFBQkFJQUFBQUJBQVFBQ1FBQUFBRjRBQUFERXdBQUFBY0FBQUFRQUFBQUNnQUVBQWtBQUFBR1FsOWpaV3hzQUFRQUNRQUFBQTFOWVdOeWIzQm9ZV2RsWDAweEFBUUFDUUFBQUExTllXTnliM0JvWVdkbFgwMHlBQVFBQ1FBQUFBaE5iMjV2WTNsMFpRQUVBQWtBQUFBV1RYbGxiRzlwWkY5a1pXNWtjbWwwYVdOZlkyVnNiQUFFQUFrQUFBQUtUbVYxZEhKdmNHaHBiQUFFQUFrQUFBQUhUa3RmWTJWc2JBQUVBQWtBQUFBWlZGOWpaV3hzWDBORU5GOXViMjVmY21WbmRXeGhkRzl5ZVFBRUFBa0FBQUFLVkY5alpXeHNYME5FT0FBRUFBa0FBQUFYVkY5alpXeHNYM0psWjNWc1lYUnZjbmxmVkhKbFozTUFBQUFPQUFBQUNrQStPV1pEZjRGWXdER282aE9UdFYzQVBrWHREZmU4cUwrNzd4RWwyd0ptd0NJY09taTRDbUxBUm8ya1ZuRWRiTUE0QWhIVzhMbURRRFVtNXNVQ2d4NUFTWGxuVXpHMTVzQkNGT2xLdnVSL0FBQUFEZ0FBQUFwQU1NeUUrVXc4eEVBeHVKdk9XT25aUURTbUxqOElLTU5BRkZKdUdyTGFPVUFlMEJZZEorZWZRRUF6ZlA4MC9aRkFMZ2pUenZGT1EwQW5pbVBrRk12WFFEbmRlNUJDdXFsQVNRVlU1alkrbGdBQUFBNEFBQUFLUC96SmJzRUlwTjIvNytPbzk4OXNSTC8zZFFqUlNEMHl2NVgrTlpWNjRYcS84czdhaFZGcDRyLzJSZmRRbnBraXYvbVVSL1VmZnNFLy9NREZJNFNOQlQvL2hDOEZmaEg4ditjZ0V4c2lRWllBQUFBT0FBQUFDait5YmZqd1MvQWVQOVJxU3Vaa1Y1NC93a0dtRGxjZENEL3ZjNkMwd2Nzb1A4NnhrM2UweEQ4L3hQcVprVTRhVWorOElZMDhFbk4wUDdLRDdvTXByWk0vcVFUSEVBTllxRC9lRXBxai9UVTJBQUFBRGdBQUFBckFCWnUxdHg3NXdNQktNa0IrbHVGTXdGR3ZxWlJuQVd6QUpDSW4wQ1lPRU1BNEp6U1VFSzNod0ZzblNPZnRMRlhBU3JoOXRBZVNKTC8rcmFPTloxdVFQOUE4STRrMFdJREFZTWZJWEFKczdRQUFBQTRBQUFBS1FFK1RJWjd4Y1BSQU1SS3MxZ1pYM1VBa1paaHJXUmk4UUNPeWE0dU9vZ1pBR0N2b3JXS04vRUF5WnBKRjhEdWtRQld6WHVpMnhRaEFSaHhUNFcyOStrQlphU3N2cUlHT1FFNzFUdHFMNnJVQUFBUUNBQUFBQVFBRUFBa0FBQUFGYm1GdFpYTUFBQUFRQUFBQUJ3QUVBQWtBQUFBRWRHVnliUUFFQUFrQUFBQUlaWE4wYVcxaGRHVUFCQUFKQUFBQUNYTjBaQzVsY25KdmNnQUVBQWtBQUFBSmMzUmhkR2x6ZEdsakFBUUFDUUFBQUFkd0xuWmhiSFZsQUFRQUNRQUFBQWhqYjI1bUxteHZkd0FFQUFrQUFBQUpZMjl1Wmk1b2FXZG9BQUFFQWdBQUFBRUFCQUFKQUFBQUNYSnZkeTV1WVcxbGN3QUFBQTBBQUFBQ2dBQUFBUC8vLy9ZQUFBUUNBQUFBQVFBRUFBa0FBQUFGWTJ4aGMzTUFBQUFRQUFBQUFRQUVBQWtBQUFBS1pHRjBZUzVtY21GdFpRQUFBUDRBQUFRQ0FBQUFBUUFFQUFrQUFBQUhiM0IwYVc5dWN3QUFBaE1BQUFBRkFBQUFFQUFBQUFFQUJBQUpBQUFBQVhJQUFBQVFBQUFBQVFBRUFBa0FBQUFOWTI5NFgyTmxiR3hmZEhsd1pRQUFBQW9BQUFBQkFBQUFBQUFBQUEwQUFBQUJBQUFBQ2dBQUFBMEFBQUFCQUFBQUJ3QUFCQUlBQUFML0FBQUFFQUFBQUFVQUJBQUpBQUFBQm1WdVoybHVaUUFFQUFrQUFBQUZiR0ZpWld3QUJBQUpBQUFBRG5KdmQyNWhiV1Z6TG5CeWFXNTBBQVFBQ1FBQUFBcHliM2R6TG5SdmRHRnNBQVFBQ1FBQUFBcGpiMnh6TG5SdmRHRnNBQUFBL2dBQUFQND0ifQ== -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"B_cell","2":"30.2242167","3":"16.798904","4":"1.79917789","5":"0.07199055","6":"-2.7010302","7":"63.149464"},{"1":"Macrophage_M1","2":"-17.6598217","3":"17.721127","4":"-0.99654053","5":"0.31898758","6":"-52.3925932","7":"17.072950"},{"1":"Macrophage_M2","2":"-30.2731484","3":"20.649143","4":"-1.46607286","5":"0.14262844","6":"-70.7447253","7":"10.198428"},{"1":"Monocyte","2":"-0.1091166","3":"5.080498","4":"-0.02147754","5":"0.98286472","6":"-10.0667100","7":"9.848477"},{"1":"Myeloid_dendritic_cell","2":"-9.0551331","3":"7.703209","4":"-1.17550137","5":"0.23979419","6":"-24.1531460","7":"6.042880"},{"1":"Neutrophil","2":"-45.1065777","3":"32.402252","4":"-1.39208156","5":"0.16389770","6":"-108.6138248","7":"18.400669"},{"1":"NK_cell","2":"-24.0080847","3":"15.017241","4":"-1.59870144","5":"0.10988696","6":"-53.4413362","7":"5.425167"},{"1":"T_cell_CD4_non_regulatory","2":"21.1519588","3":"11.770293","4":"1.79706301","5":"0.07232562","6":"-1.9173923","7":"44.221310"},{"1":"T_cell_CD8","2":"50.9484657","3":"25.865167","4":"1.96977141","5":"0.04886458","6":"0.2536706","7":"101.643261"},{"1":"T_cell_regulatory_Tregs","2":"-36.1633695","3":"50.041653","4":"-0.72266536","5":"0.46988550","6":"-134.2432079","7":"61.916469"}],"options":{"columns":{"min":{},"max":[10],"total":[7]},"rows":{"min":[10],"max":[10],"total":[10]},"pages":{}}}
+{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"B_cell","2":"30.2242167","3":"16.798904","4":"1.79917789","5":"0.07199055","6":"-2.7010302","7":"63.149464"},{"1":"Macrophage_M1","2":"-17.6598217","3":"17.721127","4":"-0.99654053","5":"0.31898758","6":"-52.3925932","7":"17.072950"},{"1":"Macrophage_M2","2":"-30.2731484","3":"20.649143","4":"-1.46607286","5":"0.14262844","6":"-70.7447253","7":"10.198428"},{"1":"Monocyte","2":"-0.1091166","3":"5.080498","4":"-0.02147754","5":"0.98286472","6":"-10.0667100","7":"9.848477"},{"1":"Myeloid_dendritic_cell","2":"-9.0551331","3":"7.703209","4":"-1.17550137","5":"0.23979419","6":"-24.1531460","7":"6.042880"},{"1":"Neutrophil","2":"-45.1065777","3":"32.402252","4":"-1.39208156","5":"0.16389770","6":"-108.6138248","7":"18.400669"},{"1":"NK_cell","2":"-24.0080847","3":"15.017241","4":"-1.59870144","5":"0.10988696","6":"-53.4413362","7":"5.425167"},{"1":"T_cell_CD4_non_regulatory","2":"21.1519588","3":"11.770293","4":"1.79706301","5":"0.07232562","6":"-1.9173923","7":"44.221310"},{"1":"T_cell_CD8","2":"50.9484657","3":"25.865167","4":"1.96977141","5":"0.04886458","6":"0.2536706","7":"101.643261"},{"1":"T_cell_regulatory_Tregs","2":"-36.1633695","3":"50.041653","4":"-0.72266536","5":"0.46988550","6":"-134.2432079","7":"61.916469"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Above, no effects are significant at P&lt;0.01. Only one cell type, <code>T_cell_CD8</code>, is marginally significant (<span class="math inline">\(P=0.0488646\)</span>), but it’s confidence interval is <em>huge</em> so the exact effect is challenging to discern.</p>
@@ -2071,19 +2063,17 @@ fitted</code></pre>
 </blockquote>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZml0X3NhdmVfbW9kZWwoY29tYmluZWRfZGZfc3RyYW5kZWQsXG4gICAgICAgICAgICAgICBwYXN0ZTAocXVhbnRpc2VxX3Rlcm1zLCBcIitDRDI3NFwiKSxcbiAgICAgICAgICAgICAgIGZpbGUucGF0aChyZXN1bHRzX2RpciwgXCJjb3hfdGVybXNfcXVhbnRpc2VxLlJEU1wiKSxcbiAgICAgICAgICAgICAgIG1vZGVsX3R5cGUgPSBcIm11bHRpdmFyaWF0ZVwiKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiZml0X3NhdmVfbW9kZWwoY29tYmluZWRfZGZfc3RyYW5kZWQsXG4gICAgICAgICAgICAgICBwYXN0ZTAocXVhbnRpc2VxX3Rlcm1zLCBcIitDRDI3NFwiKSxcbiAgICAgICAgICAgICAgIGZpbGUucGF0aChyZXN1bHRzX2RpciwgXCJjb3hfdGVybXNfcXVhbnRpc2VxLlJEU1wiKSxcbiAgICAgICAgICAgICAgIG1vZGVsX3R5cGUgPSBcIm11bHRpdmFyaWF0ZVwiKSJ9 -->
 <pre class="r"><code>fit_save_model(combined_df_stranded,
                paste0(quantiseq_terms, &quot;+CD274&quot;),
                file.path(results_dir, &quot;cox_terms_quantiseq.RDS&quot;),
                model_type = &quot;multivariate&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6NywibnJvdyI6MTF9LCJyZGYiOiJVa1JZTXdwWUNnQUFBQU1BQXdZQUFBTUZBQUFBQUFWVlZFWXRPQUFBQkFJQUFBQUJBQVFBQ1FBQUFBRjRBQUFERXdBQUFBY0FBQUFRQUFBQUN3QUVBQWtBQUFBR1FsOWpaV3hzQUFRQUNRQUFBQTFOWVdOeWIzQm9ZV2RsWDAweEFBUUFDUUFBQUExTllXTnliM0JvWVdkbFgwMHlBQVFBQ1FBQUFBaE5iMjV2WTNsMFpRQUVBQWtBQUFBV1RYbGxiRzlwWkY5a1pXNWtjbWwwYVdOZlkyVnNiQUFFQUFrQUFBQUtUbVYxZEhKdmNHaHBiQUFFQUFrQUFBQUhUa3RmWTJWc2JBQUVBQWtBQUFBWlZGOWpaV3hzWDBORU5GOXViMjVmY21WbmRXeGhkRzl5ZVFBRUFBa0FBQUFLVkY5alpXeHNYME5FT0FBRUFBa0FBQUFYVkY5alpXeHNYM0psWjNWc1lYUnZjbmxmVkhKbFozTUFCQUFKQUFBQUJVTkVNamMwQUFBQURnQUFBQXRBUDZUdG8vRFJhOEFxaUJocW8zdTZ3RDJnNFcxSXJWTS81MWFYRHBXM1g4QWdFT3pTd3BydXdFVkxNd3ljVThEQU9WeDhrVFJtc0VBMGNnYmVpc2RGUUVrNEk5cmJ1eXZBUWNUMTlhQjI3TCswelpTU3RrMTdBQUFBRGdBQUFBdEFNUEYwSk5tYVUwQXliNlYxT2oralFEU1d2MFNRK0c1QUZMOTR1QlYzaWtBZkdhMDU2VFBSUUVBOWdKVnpsZHRBTGlIcHlOTHdNRUFubTBabU5TL2JRRG05RUx5TVI4WkFTUFU0bXA1bDZ6KzlaSm5lM3JkMEFBQUFEZ0FBQUFzLy9lSDVBaUNkZTcvbkJwbGFxQUljdi9jR1c2a2Q1TVEvd2Y5ZkJNS3F5TC93aCtocjRrOEF2L1Q2anpJK1VWSy8rdTdmYlU5UHpELzd0d1M3ZU83MFAvOWF2TmpLcnppLzVzaCtMaVk2VXIvbXBlK1UyMkpJQUFBQURnQUFBQXMvcjZWVFFlTWxXai9lTWZNaVE2c0hQOE0zcGEyTmZVQS83R3Y3VC9ZQUlUL1RUQmZvTThRaVA4aExXNzNzenRRL3Q2SGFqeW9CR3orMVQwbzY4L3RiUDZtZVhxdzdZY00vM242cERHM0RXai9lcVlZQytQVmFBQUFBRGdBQUFBdS8rUVV5RnUvWmtNQklzekUzSm4zNHdGRisxcnFjT0lEQUl0KzhEdEFsNThBM1Jaekg2V3pJd0ZxUDRJZmZWVnZBUzNIOXh3cUJ1c0FGZ2pEU0dpWFl2NEJuM05qS2orSEFZS3ZtcUtLMDhML1RtbUhCZDlRWEFBQUFEZ0FBQUF0QVVEYUxtbFFvSEVBMjNrb0RxWUExUUNWek1CKy9EclpBSmNxTzhLTGMwMEFjMHIvVW0wZG1RRFVTdGUwTUJteEFFS3dKcnJEWVVFQkZ5aW5yckdtaVFGazRweG5DZ1lCQVR5V3V0MG5sNWovQ1p5N3dPVnEzQUFBRUFnQUFBQUVBQkFBSkFBQUFCVzVoYldWekFBQUFFQUFBQUFjQUJBQUpBQUFBQkhSbGNtMEFCQUFKQUFBQUNHVnpkR2x0WVhSbEFBUUFDUUFBQUFsemRHUXVaWEp5YjNJQUJBQUpBQUFBQ1hOMFlYUnBjM1JwWXdBRUFBa0FBQUFIY0M1MllXeDFaUUFFQUFrQUFBQUlZMjl1Wmk1c2IzY0FCQUFKQUFBQUNXTnZibVl1YUdsbmFBQUFCQUlBQUFBQkFBUUFDUUFBQUFseWIzY3VibUZ0WlhNQUFBQU5BQUFBQW9BQUFBRC8vLy8xQUFBRUFnQUFBQUVBQkFBSkFBQUFCV05zWVhOekFBQUFFQUFBQUFFQUJBQUpBQUFBQ21SaGRHRXVabkpoYldVQUFBRCtBQUFFQWdBQUFBRUFCQUFKQUFBQUIyOXdkR2x2Ym5NQUFBSVRBQUFBQlFBQUFCQUFBQUFCQUFRQUNRQUFBQUZ5QUFBQUVBQUFBQUVBQkFBSkFBQUFFMk52ZUY5alpXeHNYM1I1Y0dWZlkyUXlOelFBQUFBS0FBQUFBUUFBQUFBQUFBQU5BQUFBQVFBQUFBc0FBQUFOQUFBQUFRQUFBQWNBQUFRQ0FBQUMvd0FBQUJBQUFBQUZBQVFBQ1FBQUFBWmxibWRwYm1VQUJBQUpBQUFBQld4aFltVnNBQVFBQ1FBQUFBNXliM2R1WVcxbGN5NXdjbWx1ZEFBRUFBa0FBQUFLY205M2N5NTBiM1JoYkFBRUFBa0FBQUFLWTI5c2N5NTBiM1JoYkFBQUFQNEFBQUQrIn0= -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"B_cell","2":"31.64425110","3":"16.9431785","4":"1.8676691","5":"0.06180821","6":"-1.563768e+00","7":"64.8522707"},{"1":"Macrophage_M1","2":"-13.26581128","3":"18.4361184","4":"-0.7195555","5":"0.47179869","6":"-4.939994e+01","7":"22.8683169"},{"1":"Macrophage_M2","2":"-29.62843974","3":"20.5888560","4":"-1.4390523","5":"0.15013572","6":"-6.998186e+01","7":"10.7249765"},{"1":"Monocyte","2":"0.72932008","3":"5.1869839","4":"0.1406058","5":"0.88818136","6":"-9.436982e+00","7":"10.8956218"},{"1":"Myeloid_dendritic_cell","2":"-8.03305682","3":"7.7750749","4":"-1.0331806","5":"0.30151937","6":"-2.327192e+01","7":"7.2058099"},{"1":"Neutrophil","2":"-42.58749540","3":"32.4804866","4":"-1.3111717","5":"0.18979975","6":"-1.062481e+02","7":"21.0730885"},{"1":"NK_cell","2":"-25.36127574","3":"15.0662368","4":"-1.6833185","5":"0.09231344","6":"-5.489056e+01","7":"4.1680057"},{"1":"T_cell_CD4_non_regulatory","2":"20.44541732","3":"11.8032715","4":"1.7321822","5":"0.08324112","6":"-2.688570e+00","7":"43.5794043"},{"1":"T_cell_CD8","2":"50.43859421","3":"25.7385366","4":"1.9596528","5":"0.05003639","6":"-8.010602e-03","7":"100.8851990"},{"1":"T_cell_regulatory_Tregs","2":"-35.53875609","3":"49.9157899","4":"-0.7119742","5":"0.47648073","6":"-1.333719e+02","7":"62.2943944"},{"1":"CD274","2":"-0.08126191","3":"0.1148163","4":"-0.7077558","5":"0.47909689","6":"-3.062977e-01","7":"0.1437739"}],"options":{"columns":{"min":{},"max":[10],"total":[7]},"rows":{"min":[10],"max":[10],"total":[11]},"pages":{}}}
+{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"B_cell","2":"31.64425110","3":"16.9431785","4":"1.8676691","5":"0.06180821","6":"-1.563768e+00","7":"64.8522707"},{"1":"Macrophage_M1","2":"-13.26581128","3":"18.4361184","4":"-0.7195555","5":"0.47179869","6":"-4.939994e+01","7":"22.8683169"},{"1":"Macrophage_M2","2":"-29.62843974","3":"20.5888560","4":"-1.4390523","5":"0.15013572","6":"-6.998186e+01","7":"10.7249765"},{"1":"Monocyte","2":"0.72932008","3":"5.1869839","4":"0.1406058","5":"0.88818136","6":"-9.436982e+00","7":"10.8956218"},{"1":"Myeloid_dendritic_cell","2":"-8.03305682","3":"7.7750749","4":"-1.0331806","5":"0.30151937","6":"-2.327192e+01","7":"7.2058099"},{"1":"Neutrophil","2":"-42.58749540","3":"32.4804866","4":"-1.3111717","5":"0.18979975","6":"-1.062481e+02","7":"21.0730885"},{"1":"NK_cell","2":"-25.36127574","3":"15.0662368","4":"-1.6833185","5":"0.09231344","6":"-5.489056e+01","7":"4.1680057"},{"1":"T_cell_CD4_non_regulatory","2":"20.44541732","3":"11.8032715","4":"1.7321822","5":"0.08324112","6":"-2.688570e+00","7":"43.5794043"},{"1":"T_cell_CD8","2":"50.43859421","3":"25.7385366","4":"1.9596528","5":"0.05003639","6":"-8.010602e-03","7":"100.8851990"},{"1":"T_cell_regulatory_Tregs","2":"-35.53875609","3":"49.9157899","4":"-0.7119742","5":"0.47648073","6":"-1.333719e+02","7":"62.2943944"},{"1":"CD274","2":"-0.08126191","3":"0.1148163","4":"-0.7077558","5":"0.47909689","6":"-3.062977e-01","7":"0.1437739"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -2092,7 +2082,7 @@ fitted</code></pre>
 <p>For cancer group analyses, we only want to consider groups with at least THREE DECEASED, again considering stranded only. We find those groups here:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VpdGFibGVfY2FuY2VyX2dyb3VwcyA8LSBjb21iaW5lZF9kZl9zdHJhbmRlZCAlPiVcbiAgZHJvcF9uYSgpICU+JVxuICBjb3VudChjYW5jZXJfZ3JvdXAsT1Nfc3RhdHVzKSAlPiVcbiAgc3ByZWFkKE9TX3N0YXR1cywgbixcbiAgICAgICAgICMgV2hlbiB0aGVyZSBhcmUgbm8gZXZlbnRzLCByZWNvcmQgdGhlIGV2ZW50IGNvdW50IGFzIDAgaW5zdGVhZCBvZiB0aGUgZGVmYXVsdCBOQVxuICAgICAgICAgZmlsbCA9IDApICU+JVxuICBmaWx0ZXIoREVDRUFTRUQgPj0gMykgXG5cbiMgc2hvdyByZXN1bHQ6IHRoZXJlIGFyZSA1IGdyb3VwcyB0byBrZWVwXG5zdWl0YWJsZV9jYW5jZXJfZ3JvdXBzXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbInN1aXRhYmxlX2NhbmNlcl9ncm91cHMgPC0gY29tYmluZWRfZGZfc3RyYW5kZWQgJT4lXG4gIGRyb3BfbmEoKSAlPiVcbiAgY291bnQoY2FuY2VyX2dyb3VwLE9TX3N0YXR1cykgJT4lXG4gIHNwcmVhZChPU19zdGF0dXMsIG4sXG4gICAgICAgICAjIFdoZW4gdGhlcmUgYXJlIG5vIGV2ZW50cywgcmVjb3JkIHRoZSBldmVudCBjb3VudCBhcyAwIGluc3RlYWQgb2YgdGhlIGRlZmF1bHQgTkFcbiAgICAgICAgIGZpbGwgPSAwKSAlPiVcbiAgZmlsdGVyKERFQ0VBU0VEID49IDMpICIsIiIsIiMgc2hvdyByZXN1bHQ6IHRoZXJlIGFyZSA1IGdyb3VwcyB0byBrZWVwIiwic3VpdGFibGVfY2FuY2VyX2dyb3VwcyJdfQ== -->
 <pre class="r"><code>suitable_cancer_groups &lt;- combined_df_stranded %&gt;%
   drop_na() %&gt;%
   count(cancer_group,OS_status) %&gt;%
@@ -2104,19 +2094,17 @@ fitted</code></pre>
 # show result: there are 5 groups to keep
 suitable_cancer_groups</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MywibnJvdyI6NX0sInJkZiI6IlVrUllNd3BZQ2dBQUFBTUFBd1lBQUFNRkFBQUFBQVZWVkVZdE9BQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFNQUFBQVFBQUFBQlFBRUFBa0FBQUFnUkdsbVpuVnpaU0JwYm5SeWFXNXphV01nY0c5dWRHbHVaU0JuYkdsdmJXRUFCQUFKQUFBQUZrUnBabVoxYzJVZ2JXbGtiR2x1WlNCbmJHbHZiV0VBQkFBSkFBQUFDa1Z3Wlc1a2VXMXZiV0VBQkFBSkFBQUFIVWhwWjJndFozSmhaR1VnWjJ4cGIyMWhJR0Z6ZEhKdlkzbDBiMjFoQUFRQUNRQUFBQTlOWldSMWJHeHZZbXhoYzNSdmJXRUFBQUFPQUFBQUJVQUlBQUFBQUFBQVFDb0FBQUFBQUFCQUlnQUFBQUFBQUVBOUFBQUFBQUFBUUR3QUFBQUFBQUFBQUFBT0FBQUFCUUFBQUFBQUFBQUFBQUFBQUFBQUFBQkFTZ0FBQUFBQUFFQWNBQUFBQUFBQVFGQUFBQUFBQUFBQUFBUUNBQUFBQVFBRUFBa0FBQUFKY205M0xtNWhiV1Z6QUFBQURRQUFBQUtBQUFBQS8vLy8rd0FBQkFJQUFBQUJBQVFBQ1FBQUFBVmpiR0Z6Y3dBQUFCQUFBQUFCQUFRQUNRQUFBQXBrWVhSaExtWnlZVzFsQUFBRUFnQUFBQUVBQkFBSkFBQUFCVzVoYldWekFBQUFFQUFBQUFNQUJBQUpBQUFBREdOaGJtTmxjbDluY205MWNBQUVBQWtBQUFBSVJFVkRSVUZUUlVRQUJBQUpBQUFBQmt4SlZrbE9Sd0FBQVA0QUFBUUNBQUFBQVFBRUFBa0FBQUFIYjNCMGFXOXVjd0FBQWhNQUFBQUZBQUFBRUFBQUFBRUFCQUFKQUFBQUFYSUFBQUFRQUFBQUFRQUVBQWtBQUFBTlkyRnVZMlZ5WDJkeWIzVndjd0FBQUFvQUFBQUJBQUFBQUFBQUFBMEFBQUFCQUFBQUJRQUFBQTBBQUFBQkFBQUFBd0FBQkFJQUFBVC9BQUFBRUFBQUFBVUFCQUFKQUFBQUJtVnVaMmx1WlFBRUFBa0FBQUFGYkdGaVpXd0FCQUFKQUFBQURuSnZkMjVoYldWekxuQnlhVzUwQUFRQUNRQUFBQXB5YjNkekxuUnZkR0ZzQUFRQUNRQUFBQXBqYjJ4ekxuUnZkR0ZzQUFBQS9nQUFBUDQ9In0= -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["cancer_group"],"name":[1],"type":["chr"],"align":["left"]},{"label":["DECEASED"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["LIVING"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Diffuse intrinsic pontine glioma","2":"3","3":"0"},{"1":"Diffuse midline glioma","2":"13","3":"0"},{"1":"Ependymoma","2":"9","3":"52"},{"1":"High-grade glioma astrocytoma","2":"29","3":"7"},{"1":"Medulloblastoma","2":"28","3":"64"}],"options":{"columns":{"min":{},"max":[10],"total":[3]},"rows":{"min":[10],"max":[10],"total":[5]},"pages":{}}}
+{"columns":[{"label":["cancer_group"],"name":[1],"type":["chr"],"align":["left"]},{"label":["DECEASED"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["LIVING"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Diffuse intrinsic pontine glioma","2":"3","3":"0"},{"1":"Diffuse midline glioma","2":"13","3":"0"},{"1":"Ependymoma","2":"9","3":"52"},{"1":"High-grade glioma astrocytoma","2":"29","3":"7"},{"1":"Medulloblastoma","2":"28","3":"64"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>For molecular signatures analysis, we want to only consider cancer groups, of those identified above, that have more than 1 molecular subtype.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29tYmluZWRfZGZfc3RyYW5kZWQgJT4lXG4gIGZpbHRlcihjYW5jZXJfZ3JvdXAgJWluJSBzdWl0YWJsZV9jYW5jZXJfZ3JvdXBzJGNhbmNlcl9ncm91cCkgJT4lXG4gIHNlbGVjdChjYW5jZXJfZ3JvdXAsIG1vbGVjdWxhcl9zdWJ0eXBlKSAlPiVcbiAgZGlzdGluY3QoKSAlPiVcbiAgIyBjb3VudCBudW1iZXIgb2Ygc3VidHlwZXNcbiAgY291bnQoY2FuY2VyX2dyb3VwKSAlPiVcbiAgZmlsdGVyKG4gPiAxKSAtPiBzdWl0YWJsZV9zdWJ0eXBlc1xuXG5cbiMgbiBpcyBob3cgbWFueSBzdWJ0eXBlcyB0aGUgZ3JvdXAgaGFzLiBUaGVyZSBuZWVkcyB0byBiZSBtb3JlIHRoYW4gMS5cbnN1aXRhYmxlX3N1YnR5cGVzXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbImNvbWJpbmVkX2RmX3N0cmFuZGVkICU+JVxuICBmaWx0ZXIoY2FuY2VyX2dyb3VwICVpbiUgc3VpdGFibGVfY2FuY2VyX2dyb3VwcyRjYW5jZXJfZ3JvdXApICU+JVxuICBzZWxlY3QoY2FuY2VyX2dyb3VwLCBtb2xlY3VsYXJfc3VidHlwZSkgJT4lXG4gIGRpc3RpbmN0KCkgJT4lXG4gICMgY291bnQgbnVtYmVyIG9mIHN1YnR5cGVzXG4gIGNvdW50KGNhbmNlcl9ncm91cCkgJT4lXG4gIGZpbHRlcihuID4gMSkgLT4gc3VpdGFibGVfc3VidHlwZXMiLCIiLCIiLCIjIG4gaXMgaG93IG1hbnkgc3VidHlwZXMgdGhlIGdyb3VwIGhhcy4gVGhlcmUgbmVlZHMgdG8gYmUgbW9yZSB0aGFuIDEuIiwic3VpdGFibGVfc3VidHlwZXMiXX0= -->
 <pre class="r"><code>combined_df_stranded %&gt;%
   filter(cancer_group %in% suitable_cancer_groups$cancer_group) %&gt;%
   select(cancer_group, molecular_subtype) %&gt;%
@@ -2129,13 +2117,11 @@ suitable_cancer_groups</code></pre>
 # n is how many subtypes the group has. There needs to be more than 1.
 suitable_subtypes</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MiwibnJvdyI6NH0sInJkZiI6IlVrUllNd3BZQ2dBQUFBTUFBd1lBQUFNRkFBQUFBQVZWVkVZdE9BQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFJQUFBQVFBQUFBQkFBRUFBa0FBQUFXUkdsbVpuVnpaU0J0YVdSc2FXNWxJR2RzYVc5dFlRQUVBQWtBQUFBS1JYQmxibVI1Ylc5dFlRQUVBQWtBQUFBZFNHbG5hQzFuY21Ga1pTQm5iR2x2YldFZ1lYTjBjbTlqZVhSdmJXRUFCQUFKQUFBQUQwMWxaSFZzYkc5aWJHRnpkRzl0WVFBQUFBMEFBQUFFQUFBQUF3QUFBQVVBQUFBSUFBQUFCUUFBQkFJQUFBQUJBQVFBQ1FBQUFBVmpiR0Z6Y3dBQUFCQUFBQUFCQUFRQUNRQUFBQXBrWVhSaExtWnlZVzFsQUFBRUFnQUFBQUVBQkFBSkFBQUFDWEp2ZHk1dVlXMWxjd0FBQUEwQUFBQUNnQUFBQVAvLy8vd0FBQVFDQUFBQUFRQUVBQWtBQUFBRmJtRnRaWE1BQUFBUUFBQUFBZ0FFQUFrQUFBQU1ZMkZ1WTJWeVgyZHliM1Z3QUFRQUNRQUFBQUZ1QUFBQS9nQUFCQUlBQUFBQkFBUUFDUUFBQUFkdmNIUnBiMjV6QUFBQ0V3QUFBQVVBQUFBUUFBQUFBUUFFQUFrQUFBQUJjZ0FBQUJBQUFBQUJBQVFBQ1FBQUFCRnpkV2wwWVdKc1pWOXpkV0owZVhCbGN3QUFBQW9BQUFBQkFBQUFBQUFBQUEwQUFBQUJBQUFBQkFBQUFBMEFBQUFCQUFBQUFnQUFCQUlBQUFUL0FBQUFFQUFBQUFVQUJBQUpBQUFBQm1WdVoybHVaUUFFQUFrQUFBQUZiR0ZpWld3QUJBQUpBQUFBRG5KdmQyNWhiV1Z6TG5CeWFXNTBBQVFBQ1FBQUFBcHliM2R6TG5SdmRHRnNBQVFBQ1FBQUFBcGpiMnh6TG5SdmRHRnNBQUFBL2dBQUFQND0ifQ== -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["cancer_group"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"Diffuse midline glioma","2":"3"},{"1":"Ependymoma","2":"5"},{"1":"High-grade glioma astrocytoma","2":"8"},{"1":"Medulloblastoma","2":"5"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[4]},"pages":{}}}
+{"columns":[{"label":["cancer_group"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"Diffuse midline glioma","2":"3"},{"1":"Ependymoma","2":"5"},{"1":"High-grade glioma astrocytoma","2":"8"},{"1":"Medulloblastoma","2":"5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -2146,9 +2132,8 @@ suitable_subtypes</code></pre>
 </blockquote>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5iYXNlX2ZpbGVuYW1lIDwtIFwiY294X3Blcl9jZ190ZXJtc19xdWFudGlzZXEuUkRTXCIgIyBhbGwgZmlsZSBuYW1lcyBoZXJlIHdpbGwgZm9sbG93IHRoaXMgY29udmVudGlvblxuXG5mb3IgKGNnIGluIHN1aXRhYmxlX2NhbmNlcl9ncm91cHMkY2FuY2VyX2dyb3VwKSB7XG4gIGNhdChcIj09PT09PT09PT09PT09XCIsIGNnLCBcIj09PT09PT09PT09PT09PT09PVwiKVxuICAjIGZpbHRlciB0byBjYW5jZXIgZ3JvdXAgb2YgaW50ZXJlc3RcbiAgZml0X2RhdGEgPC0gY29tYmluZWRfZGZfc3RyYW5kZWQgJT4lIFxuICAgIGZpbHRlcihjYW5jZXJfZ3JvdXAgPT0gY2cpXG4gIFxuICAjIERlZmluZSBmaWxlbmFtZSB3aGVyZSBtb2RlbCB3aWxsIGJlIHNhdmVkXG4gIGZpbGVuYW1lIDwtIGZpbGUucGF0aChcbiAgICByZXN1bHRzX2RpcixcbiAgICBzdHJfcmVwbGFjZShiYXNlX2ZpbGVuYW1lLCBcImNnXCIsIGNnKVxuICApXG4gIFxuICAjIEZpdCBtb2RlbFxuICBmaXRfc2F2ZV9tb2RlbChmaXRfZGF0YSwgXG4gICAgICAgICAgICAgICAgIHBhc3RlMChxdWFudGlzZXFfdGVybXMsIFwiK0NEMjc0XCIpLCBcbiAgICAgICAgICAgICAgICAgZmlsZW5hbWUsIFxuICAgICAgICAgICAgICAgICBtb2RlbF90eXBlID0gXCJtdWx0aXZhcmlhdGVcIikgJT4lIHByaW50KClcbn1cbmBgYCJ9 -->
-<pre class="r"><code>
-base_filename &lt;- &quot;cox_per_cg_terms_quantiseq.RDS&quot; # all file names here will follow this convention
+<!-- rnb-source-begin eyJkYXRhIjpbImJhc2VfZmlsZW5hbWUgPC0gXCJjb3hfcGVyX2NnX3Rlcm1zX3F1YW50aXNlcS5SRFNcIiAjIGFsbCBmaWxlIG5hbWVzIGhlcmUgd2lsbCBmb2xsb3cgdGhpcyBjb252ZW50aW9uIiwiIiwiZm9yIChjZyBpbiBzdWl0YWJsZV9jYW5jZXJfZ3JvdXBzJGNhbmNlcl9ncm91cCkge1xuICBjYXQoXCI9PT09PT09PT09PT09PVwiLCBjZywgXCI9PT09PT09PT09PT09PT09PT1cIilcbiAgIyBmaWx0ZXIgdG8gY2FuY2VyIGdyb3VwIG9mIGludGVyZXN0XG4gIGZpdF9kYXRhIDwtIGNvbWJpbmVkX2RmX3N0cmFuZGVkICU+JSBcbiAgICBmaWx0ZXIoY2FuY2VyX2dyb3VwID09IGNnKVxuICBcbiAgIyBEZWZpbmUgZmlsZW5hbWUgd2hlcmUgbW9kZWwgd2lsbCBiZSBzYXZlZFxuICBmaWxlbmFtZSA8LSBmaWxlLnBhdGgoXG4gICAgcmVzdWx0c19kaXIsXG4gICAgc3RyX3JlcGxhY2UoYmFzZV9maWxlbmFtZSwgXCJjZ1wiLCBjZylcbiAgKVxuICBcbiAgIyBGaXQgbW9kZWxcbiAgZml0X3NhdmVfbW9kZWwoZml0X2RhdGEsIFxuICAgICAgICAgICAgICAgICBwYXN0ZTAocXVhbnRpc2VxX3Rlcm1zLCBcIitDRDI3NFwiKSwgXG4gICAgICAgICAgICAgICAgIGZpbGVuYW1lLCBcbiAgICAgICAgICAgICAgICAgbW9kZWxfdHlwZSA9IFwibXVsdGl2YXJpYXRlXCIpICU+JSBwcmludCgpXG59Il19 -->
+<pre class="r"><code>base_filename &lt;- &quot;cox_per_cg_terms_quantiseq.RDS&quot; # all file names here will follow this convention
 
 for (cg in suitable_cancer_groups$cancer_group) {
   cat(&quot;==============&quot;, cg, &quot;==================&quot;)
@@ -2172,65 +2157,103 @@ for (cg in suitable_cancer_groups$cancer_group) {
 <!-- rnb-output-begin eyJkYXRhIjoiPT09PT09PT09PT09PT0gRGlmZnVzZSBpbnRyaW5zaWMgcG9udGluZSBnbGlvbWEgPT09PT09PT09PT09PT09PT09XG4ifQ== -->
 <pre><code>============== Diffuse intrinsic pontine glioma ==================</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmFuIG91dCBvZiBpdGVyYXRpb25zIGFuZCBkaWQgbm90IGNvbnZlcmdlXG4ifQ== -->
-<pre><code>Ran out of iterations and did not converge</code></pre>
+<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZyBpbiBmaXR0ZXIoWCwgWSwgc3RyYXRzLCBvZmZzZXQsIGluaXQsIGNvbnRyb2wsIHdlaWdodHMgPSB3ZWlnaHRzLCA6XG5SYW4gb3V0IG9mIGl0ZXJhdGlvbnMgYW5kIGRpZCBub3QgY29udmVyZ2VcbiJ9 -->
+<pre><code>Warning in fitter(X, Y, strats, offset, init, control, weights = weights, :
+Ran out of iterations and did not converge</code></pre>
+<!-- rnb-warning-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIyBBIHRpYmJsZTogMTEgeCA3XG4gICB0ZXJtICAgICAgICAgICAgZXN0aW1hdGUgc3RkLmVycm9yICBzdGF0aXN0aWMgcC52YWx1ZSBjb25mLmxvdyBjb25mLmhpZ2hcbiAgIDxjaHI+ICAgICAgICAgICAgICA8ZGJsPiAgICAgPGRibD4gICAgICA8ZGJsPiAgIDxkYmw+ICAgIDxkYmw+ICAgICA8ZGJsPlxuIDEgQl9jZWxsICAgICAgICAgIC0xMDA0OC4gIDEzMjU0NTcxLiAgIC03LjU4ZS00ICAgMC45OTkgICAgIC1JbmYgICAgICAgSW5mXG4gMiBNYWNyb3BoYWdlX00xICAgICAgICAwICAgICAgICAgIDAgICBOYU4gICAgICAgTmFOICAgICAgICAgICAgMCAgICAgICAgIDBcbiAzIE1hY3JvcGhhZ2VfTTIgICAgIDU3NzQuICAgNTI3NjU1OS4gICAgMS4wOWUtMyAgIDAuOTk5ICAgICAtSW5mICAgICAgIEluZlxuIDQgTW9ub2N5dGUgICAgICAgICAgMTMzMC4gICAyMjk1MjIyLiAgICA1Ljc5ZS00ICAgMS4wMDAgICAgIC1JbmYgICAgICAgSW5mXG4gNSBNeWVsb2lkX2RlbmRyaeKApiAgIC0zNTIuICAgIDcwMzE1NS4gICAtNS4wMWUtNCAgIDEuMDAwICAgICAtSW5mICAgICAgIEluZlxuIDYgTmV1dHJvcGhpbCAgICAgICAgICAgMCAgICAgICAgICAwICAgTmFOICAgICAgIE5hTiAgICAgICAgICAgIDAgICAgICAgICAwXG4gNyBOS19jZWxsICAgICAgICAgICAtNzI2LiAgIDU2Mjc4NTYuICAgLTEuMjllLTQgICAxLjAwMCAgICAgLUluZiAgICAgICBJbmZcbiA4IFRfY2VsbF9DRDRfbm9u4oCmICAgICA1Mi4zICAxNzU2NTA3LiAgICAyLjk4ZS01ICAgMS4wMDAgICAgIC1JbmYgICAgICAgSW5mXG4gOSBUX2NlbGxfQ0Q4ICAgICAgICAgICAwICAgICAgICAgIDAgICBOYU4gICAgICAgTmFOICAgICAgICAgICAgMCAgICAgICAgIDBcbjEwIFRfY2VsbF9yZWd1bGF04oCmICAgMTc0NC4gIDM4NzAxMTg0LiAgICA0LjUxZS01ICAgMS4wMDAgICAgIC1JbmYgICAgICAgSW5mXG4xMSBDRDI3NCAgICAgICAgICAgICAgICAwICAgICAgMjAwOTYuICAgIDAuICAgICAgICAxICAgICAgICAgLUluZiAgICAgICBJbmZcbj09PT09PT09PT09PT09IERpZmZ1c2UgbWlkbGluZSBnbGlvbWEgPT09PT09PT09PT09PT09PT09XG4ifQ== -->
+<pre><code># A tibble: 11 x 7
+   term            estimate std.error  statistic p.value conf.low conf.high
+   &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+ 1 B_cell          -10048.  13254571.   -7.58e-4   0.999     -Inf       Inf
+ 2 Macrophage_M1        0          0   NaN       NaN            0         0
+ 3 Macrophage_M2     5774.   5276559.    1.09e-3   0.999     -Inf       Inf
+ 4 Monocyte          1330.   2295222.    5.79e-4   1.000     -Inf       Inf
+ 5 Myeloid_dendri…   -352.    703155.   -5.01e-4   1.000     -Inf       Inf
+ 6 Neutrophil           0          0   NaN       NaN            0         0
+ 7 NK_cell           -726.   5627856.   -1.29e-4   1.000     -Inf       Inf
+ 8 T_cell_CD4_non…     52.3  1756507.    2.98e-5   1.000     -Inf       Inf
+ 9 T_cell_CD8           0          0   NaN       NaN            0         0
+10 T_cell_regulat…   1744.  38701184.    4.51e-5   1.000     -Inf       Inf
+11 CD274                0      20096.    0.        1         -Inf       Inf
+============== Diffuse midline glioma ==================</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6NywibnJvdyI6MTF9LCJyZGYiOiJVa1JZTXdwWUNnQUFBQU1BQXdZQUFBTUZBQUFBQUFWVlZFWXRPQUFBQkFJQUFBQUJBQVFBQ1FBQUFBRjRBQUFERXdBQUFBY0FBQUFRQUFBQUN3QUVBQWtBQUFBR1FsOWpaV3hzQUFRQUNRQUFBQTFOWVdOeWIzQm9ZV2RsWDAweEFBUUFDUUFBQUExTllXTnliM0JvWVdkbFgwMHlBQVFBQ1FBQUFBaE5iMjV2WTNsMFpRQUVBQWtBQUFBV1RYbGxiRzlwWkY5a1pXNWtjbWwwYVdOZlkyVnNiQUFFQUFrQUFBQUtUbVYxZEhKdmNHaHBiQUFFQUFrQUFBQUhUa3RmWTJWc2JBQUVBQWtBQUFBWlZGOWpaV3hzWDBORU5GOXViMjVmY21WbmRXeGhkRzl5ZVFBRUFBa0FBQUFLVkY5alpXeHNYME5FT0FBRUFBa0FBQUFYVkY5alpXeHNYM0psWjNWc1lYUnZjbmxmVkhKbFozTUFCQUFKQUFBQUJVTkVNamMwQUFBQURnQUFBQXZBdzZBSlhZRzR3UUFBQUFBQUFBQUFRTGFOM2FzbnRVdEFsTVlCV3R3Z0pzQjJCNjNVZC91dUFBQUFBQUFBQUFEQWhyTDg3T1g0c0VCS0owOTA1V3RkQUFBQUFBQUFBQUJBbTBDMFZuV3ErZ0FBQUFBQUFBQUFBQUFBRGdBQUFBdEJhVWYxWmcyR01BQUFBQUFBQUFBQVFWUWc0N2I2eFJsQlFZTGJJeElMcFVFbGRXWS9vbnRvQUFBQUFBQUFBQUJCVlhmejgxalZJRUU2elZyRVpmaHlBQUFBQUFBQUFBQkJnblJELzlqM1hFRFRuK2dYQlkvc0FBQUFEZ0FBQUF1L1NOZEVKNWpVQmYvNEFBQUFBQUFBUDFIdG5EdW1iNVEvUXZzVUh5M2VmNzlBYlJHK2h5R00vL2dBQUFBQUFBQy9JT3JKdC91YWtUNy9PY0Vhd2didy8vZ0FBQUFBQUFBL0I2RGsxVEsrS3dBQUFBQUFBQUFBQUFBQURnQUFBQXMvNy9zTGdwRzJ5bi80QUFBQUFBQUFQKy80MlFMQjlWMC83L3cyd1EwTTZEL3YvTGsxeHNwSmYvZ0FBQUFBQUFBLzcvOG9DSCtlMGovdi84NHIwRTYxZi9nQUFBQUFBQUEvNy8rMGxybFBQVC93QUFBQUFBQUFBQUFBRGdBQUFBdi84QUFBQUFBQUFBQUFBQUFBQUFBQS8vQUFBQUFBQUFELzhBQUFBQUFBQVAvd0FBQUFBQUFBQUFBQUFBQUFBQUQvOEFBQUFBQUFBUC93QUFBQUFBQUFBQUFBQUFBQUFBRC84QUFBQUFBQUFQL3dBQUFBQUFBQUFBQUFEZ0FBQUF0LzhBQUFBQUFBQUFBQUFBQUFBQUFBZi9BQUFBQUFBQUIvOEFBQUFBQUFBSC93QUFBQUFBQUFBQUFBQUFBQUFBQi84QUFBQUFBQUFIL3dBQUFBQUFBQUFBQUFBQUFBQUFCLzhBQUFBQUFBQUgvd0FBQUFBQUFBQUFBRUFnQUFBQUVBQkFBSkFBQUFCVzVoYldWekFBQUFFQUFBQUFjQUJBQUpBQUFBQkhSbGNtMEFCQUFKQUFBQUNHVnpkR2x0WVhSbEFBUUFDUUFBQUFsemRHUXVaWEp5YjNJQUJBQUpBQUFBQ1hOMFlYUnBjM1JwWXdBRUFBa0FBQUFIY0M1MllXeDFaUUFFQUFrQUFBQUlZMjl1Wmk1c2IzY0FCQUFKQUFBQUNXTnZibVl1YUdsbmFBQUFCQUlBQUFBQkFBUUFDUUFBQUFseWIzY3VibUZ0WlhNQUFBQU5BQUFBQW9BQUFBRC8vLy8xQUFBRUFnQUFBQUVBQkFBSkFBQUFCV05zWVhOekFBQUFFQUFBQUFFQUJBQUpBQUFBQ21SaGRHRXVabkpoYldVQUFBRCtBQUFFQWdBQUFBRUFCQUFKQUFBQUIyOXdkR2x2Ym5NQUFBSVRBQUFBQlFBQUFCQUFBQUFCQUFRQUNRQUFBQUZ5QUFBQUVBQUFBQUVBQkFBSkFBQUFER05sYkd4ZmRIbHdaVjlqWndBQUFBb0FBQUFCQUFBQUFBQUFBQTBBQUFBQkFBQUFDd0FBQUEwQUFBQUJBQUFBQndBQUJBSUFBQUwvQUFBQUVBQUFBQVVBQkFBSkFBQUFCbVZ1WjJsdVpRQUVBQWtBQUFBRmJHRmlaV3dBQkFBSkFBQUFEbkp2ZDI1aGJXVnpMbkJ5YVc1MEFBUUFDUUFBQUFweWIzZHpMblJ2ZEdGc0FBUUFDUUFBQUFwamIyeHpMblJ2ZEdGc0FBQUEvZ0FBQVA0PSJ9 -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"B_cell","2":"-10048.07317","3":"13254571.19","4":"-7.580836e-04","5":"0.9993951","6":"-Inf","7":"Inf"},{"1":"Macrophage_M1","2":"0.00000","3":"0.00","4":"NaN","5":"NaN","6":"0","7":"0"},{"1":"Macrophage_M2","2":"5773.86589","3":"5276558.86","4":"1.094248e-03","5":"0.9991269","6":"-Inf","7":"Inf"},{"1":"Monocyte","2":"1329.50132","3":"2295222.27","4":"5.792473e-04","5":"0.9995378","6":"-Inf","7":"Inf"},{"1":"Myeloid_dendritic_cell","2":"-352.47994","3":"703155.12","4":"-5.012833e-04","5":"0.9996000","6":"-Inf","7":"Inf"},{"1":"Neutrophil","2":"0.00000","3":"0.00","4":"NaN","5":"NaN","6":"0","7":"0"},{"1":"NK_cell","2":"-726.37350","3":"5627855.80","4":"-1.290675e-04","5":"0.9998970","6":"-Inf","7":"Inf"},{"1":"T_cell_CD4_non_regulatory","2":"52.30711","3":"1756506.77","4":"2.977906e-05","5":"0.9999762","6":"-Inf","7":"Inf"},{"1":"T_cell_CD8","2":"0.00000","3":"0.00","4":"NaN","5":"NaN","6":"0","7":"0"},{"1":"T_cell_regulatory_Tregs","2":"1744.17611","3":"38701183.98","4":"4.506777e-05","5":"0.9999640","6":"-Inf","7":"Inf"},{"1":"CD274","2":"0.00000","3":"20095.63","4":"0.000000e+00","5":"1.0000000","6":"-Inf","7":"Inf"}],"options":{"columns":{"min":{},"max":[10],"total":[7]},"rows":{"min":[10],"max":[10],"total":[11]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiPT09PT09PT09PT09PT0gRGlmZnVzZSBtaWRsaW5lIGdsaW9tYSA9PT09PT09PT09PT09PT09PT1cbiJ9 -->
-<pre><code>============== Diffuse midline glioma ==================</code></pre>
+<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZyBpbiBmaXR0ZXIoWCwgWSwgc3RyYXRzLCBvZmZzZXQsIGluaXQsIGNvbnRyb2wsIHdlaWdodHMgPSB3ZWlnaHRzLCA6XG5Mb2dsaWsgY29udmVyZ2VkIGJlZm9yZSB2YXJpYWJsZSA2IDsgY29lZmZpY2llbnQgbWF5IGJlIGluZmluaXRlLlxuIn0= -->
+<pre><code>Warning in fitter(X, Y, strats, offset, init, control, weights = weights, :
+Loglik converged before variable 6 ; coefficient may be infinite.</code></pre>
+<!-- rnb-warning-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIyBBIHRpYmJsZTogMTEgeCA3XG4gICB0ZXJtICAgICAgICAgICAgZXN0aW1hdGUgc3RkLmVycm9yIHN0YXRpc3RpYyBwLnZhbHVlICBjb25mLmxvdyBjb25mLmhpZ2hcbiAgIDxjaHI+ICAgICAgICAgICAgICA8ZGJsPiAgICAgPGRibD4gICAgIDxkYmw+ICAgPGRibD4gICAgIDxkYmw+ICAgICA8ZGJsPlxuIDEgQl9jZWxsICAgICAgICAgICAtMjI5LiAgICAgMy4xM2UrMiAtMC43MzIgICAgIDAuNDY0ICAtSW5mICAgICAgICAgMzg0LiAgXG4gMiBNYWNyb3BoYWdlX00xICAgIC01MTkuICAgICAyLjA1ZSsyIC0yLjU0ICAgICAgMC4wMTExIC1JbmYgICAgICAgIC0xMTguICBcbiAzIE1hY3JvcGhhZ2VfTTIgICAgIDUzMC4gICAgIDMuMDZlKzIgIDEuNzMgICAgICAwLjA4MzQgIC02OS45ICAgICAgIEluZiAgIFxuIDQgTW9ub2N5dGUgICAgICAgICAgIDUyLjQgICAgNC42OWUrMSAgMS4xMiAgICAgIDAuMjY0ICAgLTM5LjYgICAgICAgMTQ0LiAgXG4gNSBNeWVsb2lkX2RlbmRyaeKApiAgIC05NS44ICAgIDEuMjFlKzIgLTAuNzkxICAgICAwLjQyOSAgLTMzMy4gICAgICAgIDE0Mi4gIFxuIDYgTmV1dHJvcGhpbCAgICAgICAyOTg1LiAgICAgMy45NmUrNiAgMC4wMDA3NTQgIDAuOTk5ICAtSW5mICAgICAgICAgSW5mICAgXG4gNyBOS19jZWxsICAgICAgICAgIC0yNDcuICAgICAxLjIxZSsyIC0yLjA1ICAgICAgMC4wNDA3IC00ODMuICAgICAgICAtMTAuNSBcbiA4IFRfY2VsbF9DRDRfbm9u4oCmICAtNjM2LiAgICAgMi43N2UrMiAtMi4zMCAgICAgIDAuMDIxNiAtSW5mICAgICAgICAgLTkzLjMgXG4gOSBUX2NlbGxfQ0Q4ICAgICAgICAgTkEgICAgICAwLiAgICAgIE5BICAgICAgICBOQSAgICAgICAgTkEgICAgICAgICAgTkEgICBcbjEwIFRfY2VsbF9yZWd1bGF04oCmICAxNzI5LiAgICAgMS4zNWUrMyAgMS4yOCAgICAgIDAuMjAxICAtSW5mICAgICAgICAgSW5mICAgXG4xMSBDRDI3NCAgICAgICAgICAgICAgIDEuNDIgICA2Ljk5ZS0xICAyLjA0ICAgICAgMC4wNDE2ICAgIDAuMDU0MyAgICAgIDIuNzlcbj09PT09PT09PT09PT09IEVwZW5keW1vbWEgPT09PT09PT09PT09PT09PT09XG4ifQ== -->
+<pre><code># A tibble: 11 x 7
+   term            estimate std.error statistic p.value  conf.low conf.high
+   &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+ 1 B_cell           -229.     3.13e+2 -0.732     0.464  -Inf         384.  
+ 2 Macrophage_M1    -519.     2.05e+2 -2.54      0.0111 -Inf        -118.  
+ 3 Macrophage_M2     530.     3.06e+2  1.73      0.0834  -69.9       Inf   
+ 4 Monocyte           52.4    4.69e+1  1.12      0.264   -39.6       144.  
+ 5 Myeloid_dendri…   -95.8    1.21e+2 -0.791     0.429  -333.        142.  
+ 6 Neutrophil       2985.     3.96e+6  0.000754  0.999  -Inf         Inf   
+ 7 NK_cell          -247.     1.21e+2 -2.05      0.0407 -483.        -10.5 
+ 8 T_cell_CD4_non…  -636.     2.77e+2 -2.30      0.0216 -Inf         -93.3 
+ 9 T_cell_CD8         NA      0.      NA        NA        NA          NA   
+10 T_cell_regulat…  1729.     1.35e+3  1.28      0.201  -Inf         Inf   
+11 CD274               1.42   6.99e-1  2.04      0.0416    0.0543      2.79
+============== Ependymoma ==================</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiTG9nbGlrIGNvbnZlcmdlZCBiZWZvcmUgdmFyaWFibGUgIDYgOyBjb2VmZmljaWVudCBtYXkgYmUgaW5maW5pdGUuIFxuIn0= -->
-<pre><code>Loglik converged before variable  6 ; coefficient may be infinite. </code></pre>
+<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZyBpbiBmaXR0ZXIoWCwgWSwgc3RyYXRzLCBvZmZzZXQsIGluaXQsIGNvbnRyb2wsIHdlaWdodHMgPSB3ZWlnaHRzLCA6XG5Mb2dsaWsgY29udmVyZ2VkIGJlZm9yZSB2YXJpYWJsZSA5IDsgY29lZmZpY2llbnQgbWF5IGJlIGluZmluaXRlLlxuIn0= -->
+<pre><code>Warning in fitter(X, Y, strats, offset, init, control, weights = weights, :
+Loglik converged before variable 9 ; coefficient may be infinite.</code></pre>
+<!-- rnb-warning-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIyBBIHRpYmJsZTogMTEgeCA3XG4gICB0ZXJtICAgICAgICAgICAgZXN0aW1hdGUgIHN0ZC5lcnJvciBzdGF0aXN0aWMgcC52YWx1ZSBjb25mLmxvdyBjb25mLmhpZ2hcbiAgIDxjaHI+ICAgICAgICAgICAgICA8ZGJsPiAgICAgIDxkYmw+ICAgICA8ZGJsPiAgIDxkYmw+ICAgIDxkYmw+ICAgICA8ZGJsPlxuIDEgQl9jZWxsICAgICAgICAgICAxLjUyZSsyICAgIDkuNTVlKzEgICAxLjU5ICAgIDAuMTExICAgICAtMzUuMSAgICAgMzM5LiAgXG4gMiBNYWNyb3BoYWdlX00xICAgLTQuMDFlKzEgICAgOC41NWUrMSAgLTAuNDY5ICAgMC42MzkgICAgLTIwOC4gICAgICAxMjcuICBcbiAzIE1hY3JvcGhhZ2VfTTIgICAgOC45NGUrMSAgICAxLjE3ZSsyICAgMC43NjIgICAwLjQ0NiAgICAtMTQwLiAgICAgIDMxOS4gIFxuIDQgTW9ub2N5dGUgICAgICAgIC02LjQwZSsxICAgIDUuMzZlKzEgIC0xLjE5ICAgIDAuMjMzICAgIC0xNjkuICAgICAgIDQxLjEgXG4gNSBNeWVsb2lkX2RlbmRy4oCmICAtMS4yNmUrMiAgICAxLjA5ZSsyICAtMS4xNiAgICAwLjI0NiAgICAtMzQwLiAgICAgICA4Ny4yIFxuIDYgTmV1dHJvcGhpbCAgICAgIC0xLjc2ZSsxICAgIDEuNzFlKzIgIC0wLjEwMyAgIDAuOTE4ICAgIC0zNTIuICAgICAgMzE3LiAgXG4gNyBOS19jZWxsICAgICAgICAgIDIuMDRlKzIgICAgMS4xMmUrMiAgIDEuODIgICAgMC4wNjg3ICAgIC0xNS42ICAgICA0MjMuICBcbiA4IFRfY2VsbF9DRDRfbm/igKYgICAxLjgwZSsyICAgIDEuNjhlKzIgICAxLjA3ICAgIDAuMjg2ICAgIC0xNTAuICAgICAgNTA5LiAgXG4gOSBUX2NlbGxfQ0Q4ICAgICAgLTIuNzNlKzUgICAgMS4zOGUrOCAgLTAuMDAxOTggMC45OTggICAgLUluZiAgICAgICBJbmYgICBcbjEwIFRfY2VsbF9yZWd1bGHigKYgICAxLjU0ZSszICAgIDUuMjJlKzIgICAyLjk2ICAgIDAuMDAzMTMgICA1MjAuICAgICAgSW5mICAgXG4xMSBDRDI3NCAgICAgICAgICAgLTIuOThlLTEgICAgNi42NGUtMSAgLTAuNDQ5ICAgMC42NTMgICAgICAtMS42MCAgICAgIDEuMDBcbj09PT09PT09PT09PT09IEhpZ2gtZ3JhZGUgZ2xpb21hIGFzdHJvY3l0b21hID09PT09PT09PT09PT09PT09PVxuIn0= -->
+<pre><code># A tibble: 11 x 7
+   term            estimate  std.error statistic p.value conf.low conf.high
+   &lt;chr&gt;              &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+ 1 B_cell           1.52e+2    9.55e+1   1.59    0.111     -35.1     339.  
+ 2 Macrophage_M1   -4.01e+1    8.55e+1  -0.469   0.639    -208.      127.  
+ 3 Macrophage_M2    8.94e+1    1.17e+2   0.762   0.446    -140.      319.  
+ 4 Monocyte        -6.40e+1    5.36e+1  -1.19    0.233    -169.       41.1 
+ 5 Myeloid_dendr…  -1.26e+2    1.09e+2  -1.16    0.246    -340.       87.2 
+ 6 Neutrophil      -1.76e+1    1.71e+2  -0.103   0.918    -352.      317.  
+ 7 NK_cell          2.04e+2    1.12e+2   1.82    0.0687    -15.6     423.  
+ 8 T_cell_CD4_no…   1.80e+2    1.68e+2   1.07    0.286    -150.      509.  
+ 9 T_cell_CD8      -2.73e+5    1.38e+8  -0.00198 0.998    -Inf       Inf   
+10 T_cell_regula…   1.54e+3    5.22e+2   2.96    0.00313   520.      Inf   
+11 CD274           -2.98e-1    6.64e-1  -0.449   0.653      -1.60      1.00
+============== High-grade glioma astrocytoma ==================</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6NywibnJvdyI6MTF9LCJyZGYiOiJVa1JZTXdwWUNnQUFBQU1BQXdZQUFBTUZBQUFBQUFWVlZFWXRPQUFBQkFJQUFBQUJBQVFBQ1FBQUFBRjRBQUFERXdBQUFBY0FBQUFRQUFBQUN3QUVBQWtBQUFBR1FsOWpaV3hzQUFRQUNRQUFBQTFOWVdOeWIzQm9ZV2RsWDAweEFBUUFDUUFBQUExTllXTnliM0JvWVdkbFgwMHlBQVFBQ1FBQUFBaE5iMjV2WTNsMFpRQUVBQWtBQUFBV1RYbGxiRzlwWkY5a1pXNWtjbWwwYVdOZlkyVnNiQUFFQUFrQUFBQUtUbVYxZEhKdmNHaHBiQUFFQUFrQUFBQUhUa3RmWTJWc2JBQUVBQWtBQUFBWlZGOWpaV3hzWDBORU5GOXViMjVmY21WbmRXeGhkRzl5ZVFBRUFBa0FBQUFLVkY5alpXeHNYME5FT0FBRUFBa0FBQUFYVkY5alpXeHNYM0psWjNWc1lYUnZjbmxmVkhKbFozTUFCQUFKQUFBQUJVTkVNamMwQUFBQURnQUFBQXZBYktJQTJSdzNDTUNBT2tNbjlqa1RRSUNRZTNqK1Y1UkFTamdjdEZNMHRNQlg4ZjZ4MUtza1FLZFNXUURmcVJiQWJ0YjduZ0p5ZU1DRDRPd2R2bmVMZi9nQUFBQUFCNkpBbXdVb3J6NzRaei8yeWo2elc3Ti9BQUFBRGdBQUFBdEFjNC9BRVJYWHVVQnBraWdRTEE3UVFITWg1aU8yaEFOQVIzZlpCNThtZ0VCZVNqWlVXVWVCUVU0emdubnBGZjVBWGlIdFVWNk1Ga0J4VDNjWjNadHBBQUFBQUFBQUFBQkFsU0pHWXUzTnR6L21YbUZRY3BFSUFBQUFEZ0FBQUF1LzUydHlDYmczbHNBRVRydUp4MzhCUC91MGIyanZLUVkvOGVBbVdCRG4yNy9wVEJVZjUya29QMGkxOFZ5MjArVEFBR0FqYjhoSGZNQUNYNi9saUdXYWYvZ0FBQUFBQjZJLzlIVFVJN0JQeUVBQVRTZDRqTnZXQUFBQURnQUFBQXMvM2JaSFpZZXY5RCtHemNhWXZiU29QN1ZXcHAzUHBuQS8wT08ycTR5STZqL2JlRDNwUHR1K1ArLzdFaWczTXJ3L3BOSGdGYlJ1TUQrV0oyTGNnQ2RvZi9BQUFBQUFCNkkveWJ5QlFIclgraitsU2xKRkFlRjRBQUFBRGdBQUFBdi84QUFBQUFBQUFQL3dBQUFBQUFBQXdGRjY5c0pNTFhEQVE4Y05taE5BbU1CMDAvNHVoaVEyLy9BQUFBQUFBQURBZmk4L0NLbWMrdi93QUFBQUFBQUFmL2dBQUFBQUI2TC84QUFBQUFBQUFEK3J6OXM4bHhCTEFBQUFEZ0FBQUF0QWVBWUNMTzdtSHNCZGxhTDk0dXc0Zi9BQUFBQUFBQUJBWWczUndLNXFnRUJodGYyck41MUpmL0FBQUFBQUFBREFKUGVTcXhxdjBNQlhVVlJlZWs2b2YvZ0FBQUFBQjZKLzhBQUFBQUFBQUVBR1d2OUdhVmMrQUFBRUFnQUFBQUVBQkFBSkFBQUFCVzVoYldWekFBQUFFQUFBQUFjQUJBQUpBQUFBQkhSbGNtMEFCQUFKQUFBQUNHVnpkR2x0WVhSbEFBUUFDUUFBQUFsemRHUXVaWEp5YjNJQUJBQUpBQUFBQ1hOMFlYUnBjM1JwWXdBRUFBa0FBQUFIY0M1MllXeDFaUUFFQUFrQUFBQUlZMjl1Wmk1c2IzY0FCQUFKQUFBQUNXTnZibVl1YUdsbmFBQUFCQUlBQUFBQkFBUUFDUUFBQUFseWIzY3VibUZ0WlhNQUFBQU5BQUFBQW9BQUFBRC8vLy8xQUFBRUFnQUFBQUVBQkFBSkFBQUFCV05zWVhOekFBQUFFQUFBQUFFQUJBQUpBQUFBQ21SaGRHRXVabkpoYldVQUFBRCtBQUFFQWdBQUFBRUFCQUFKQUFBQUIyOXdkR2x2Ym5NQUFBSVRBQUFBQlFBQUFCQUFBQUFCQUFRQUNRQUFBQUZ5QUFBQUVBQUFBQUVBQkFBSkFBQUFER05sYkd4ZmRIbHdaVjlqWndBQUFBb0FBQUFCQUFBQUFBQUFBQTBBQUFBQkFBQUFDd0FBQUEwQUFBQUJBQUFBQndBQUJBSUFBQUwvQUFBQUVBQUFBQVVBQkFBSkFBQUFCbVZ1WjJsdVpRQUVBQWtBQUFBRmJHRmlaV3dBQkFBSkFBQUFEbkp2ZDI1aGJXVnpMbkJ5YVc1MEFBUUFDUUFBQUFweWIzZHpMblJ2ZEdGc0FBUUFDUUFBQUFwamIyeHpMblJ2ZEdGc0FBQUEvZ0FBQVA0PSJ9 -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"B_cell","2":"-229.062604","3":"3.129844e+02","4":"-0.7318659010","5":"0.46425042","6":"-Inf","7":"384.375531"},{"1":"Macrophage_M1","2":"-519.282791","3":"2.045674e+02","4":"-2.5384436382","5":"0.01113467","6":"-Inf","7":"-118.338073"},{"1":"Macrophage_M2","2":"530.060289","3":"3.061187e+02","4":"1.7315515613","5":"0.08335344","6":"-69.92131097","7":"Inf"},{"1":"Monocyte","2":"52.438376","3":"4.693631e+01","4":"1.1172240677","5":"0.26389853","6":"-39.55510260","7":"144.431855"},{"1":"Myeloid_dendritic_cell","2":"-95.781170","3":"1.211596e+02","4":"-0.7905374168","5":"0.42921398","6":"-333.24955609","7":"141.687215"},{"1":"Neutrophil","2":"2985.173835","3":"3.958533e+06","4":"0.0007541111","5":"0.99939831","6":"-Inf","7":"Inf"},{"1":"NK_cell","2":"-246.718215","3":"1.205301e+02","4":"-2.0469425900","5":"0.04066372","6":"-482.95288912","7":"-10.483541"},{"1":"T_cell_CD4_non_regulatory","2":"-636.115291","3":"2.769666e+02","4":"-2.2967222149","5":"0.02163462","6":"-Inf","7":"-93.270774"},{"1":"T_cell_CD8","2":"NA","3":"0.000000e+00","4":"NA","5":"NA","6":"NA","7":"NA"},{"1":"T_cell_regulatory_Tregs","2":"1729.289731","3":"1.352569e+03","4":"1.2785226244","5":"0.20106521","6":"-Inf","7":"Inf"},{"1":"CD274","2":"1.424376","3":"6.990210e-01","4":"2.0376729410","5":"0.04158265","6":"0.05432019","7":"2.794432"}],"options":{"columns":{"min":{},"max":[10],"total":[7]},"rows":{"min":[10],"max":[10],"total":[11]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiPT09PT09PT09PT09PT0gRXBlbmR5bW9tYSA9PT09PT09PT09PT09PT09PT1cbiJ9 -->
-<pre><code>============== Ependymoma ==================</code></pre>
+<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZyBpbiBmaXR0ZXIoWCwgWSwgc3RyYXRzLCBvZmZzZXQsIGluaXQsIGNvbnRyb2wsIHdlaWdodHMgPSB3ZWlnaHRzLCA6XG5SYW4gb3V0IG9mIGl0ZXJhdGlvbnMgYW5kIGRpZCBub3QgY29udmVyZ2VcbiJ9 -->
+<pre><code>Warning in fitter(X, Y, strats, offset, init, control, weights = weights, :
+Ran out of iterations and did not converge</code></pre>
+<!-- rnb-warning-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIyBBIHRpYmJsZTogMTEgeCA3XG4gICB0ZXJtICAgICAgICAgICAgZXN0aW1hdGUgc3RkLmVycm9yIHN0YXRpc3RpYyAgcC52YWx1ZSBjb25mLmxvdyBjb25mLmhpZ2hcbiAgIDxjaHI+ICAgICAgICAgICAgICA8ZGJsPiAgICAgPGRibD4gICAgIDxkYmw+ICAgIDxkYmw+ICAgIDxkYmw+ICAgICA8ZGJsPlxuIDEgQl9jZWxsICAgICAgICAgIC0xNjQuICAgICAgIDMzLjAgICAgICAtNC45NiAgNy4xMGUtIDcgLTIyOS4gICAgICAtOTkuMSAgXG4gMiBNYWNyb3BoYWdlX00xICAgICAtOS4zMSAgICAgMjcuNiAgICAgIC0wLjMzOCA3LjM1ZS0gMSAgLTYzLjMgICAgICA0NC43ICBcbiAzIE1hY3JvcGhhZ2VfTTIgICAgLTE2LjYgICAgICAyOS45ICAgICAgLTAuNTU2IDUuNzhlLSAxICAtNzUuMSAgICAgIDQxLjkgIFxuIDQgTW9ub2N5dGUgICAgICAgICAtMjcuNCAgICAgIDEwLjMgICAgICAtMi42NSAgOC4xMGUtIDMgIC00Ny42ICAgICAgLTcuMTEgXG4gNSBNeWVsb2lkX2RlbmRyaeKApiAgLTI2LjMgICAgICAgOS4wNiAgICAgLTIuOTAgIDMuNzNlLSAzICAtNDQuMCAgICAgIC04LjUyIFxuIDYgTmV1dHJvcGhpbCAgICAgICA2NTUuICAgICAgMjI2LiAgICAgICAgMi45MCAgMy43NWUtIDMgIDIxMi4gICAgICBJbmYgICAgXG4gNyBOS19jZWxsICAgICAgICAgIDIwNC4gICAgICAgMjAuNiAgICAgICA5Ljg5ICA0LjgzZS0yMyAgMTY0LiAgICAgIDI0NS4gICBcbiA4IFRfY2VsbF9DRDRfbm9u4oCmICAgMTkuOCAgICAgIDI5LjkgICAgICAgMC42NjIgNS4wOGUtIDEgIC0zOC44ICAgICAgNzguNCAgXG4gOSBUX2NlbGxfQ0Q4ICAgICAgLTM4MS4gICAgICAyNTUuICAgICAgIC0xLjUwICAxLjM0ZS0gMSAtSW5mICAgICAgIDExOC4gICBcbjEwIFRfY2VsbF9yZWd1bGF04oCmIC0xMzcuICAgICAgIDg4LjAgICAgICAtMS41NSAgMS4yMGUtIDEgLTMwOS4gICAgICAgMzUuNyAgXG4xMSBDRDI3NCAgICAgICAgICAgICAtMC4yMDQgICAgIDAuMTY1ICAgIC0xLjI0ICAyLjE2ZS0gMSAgIC0wLjUyNyAgICAgMC4xMTlcbj09PT09PT09PT09PT09IE1lZHVsbG9ibGFzdG9tYSA9PT09PT09PT09PT09PT09PT0jIEEgdGliYmxlOiAxMSB4IDdcbiAgIHRlcm0gICAgICAgICAgICAgZXN0aW1hdGUgc3RkLmVycm9yIHN0YXRpc3RpYyBwLnZhbHVlIGNvbmYubG93IGNvbmYuaGlnaFxuICAgPGNocj4gICAgICAgICAgICAgICA8ZGJsPiAgICAgPGRibD4gICAgIDxkYmw+ICAgPGRibD4gICAgPGRibD4gICAgIDxkYmw+XG4gMSBCX2NlbGwgICAgICAgICAgICAgIDM2LjkgICAgICA2NC42ICAgICAwLjU3MiAgMC41NjggICAgICAtODkuNiAgICAxNjMuICBcbiAyIE1hY3JvcGhhZ2VfTTEgICAgICA3NDkuICAgICAgMjQ4LiAgICAgIDMuMDMgICAwLjAwMjQ3ICAgIDI2NC4gICAgIEluZiAgIFxuIDMgTWFjcm9waGFnZV9NMiAgICAgICA5Ny43ICAgICAxNTQuICAgICAgMC42MzUgIDAuNTI2ICAgICAtMjA0LiAgICAgNDAwLiAgXG4gNCBNb25vY3l0ZSAgICAgICAgICAgIDQxLjEgICAgICAxNC44ICAgICAyLjc3ICAgMC4wMDU1NiAgICAgMTIuMSAgICAgNzAuMiBcbiA1IE15ZWxvaWRfZGVuZHJpdOKApiAgICAgNS4zNSAgICAgMjIuOCAgICAgMC4yMzQgIDAuODE1ICAgICAgLTM5LjQgICAgIDUwLjAgXG4gNiBOZXV0cm9waGlsICAgICAgICAgICAzLjQwICAgIDEzNy4gICAgICAwLjAyNDggMC45ODAgICAgIC0yNjUuICAgICAyNzIuICBcbiA3IE5LX2NlbGwgICAgICAgICAgICAtMjIuMyAgICAgIDQxLjEgICAgLTAuNTQzICAwLjU4NyAgICAgLTEwMy4gICAgICA1OC4yIFxuIDggVF9jZWxsX0NENF9ub25f4oCmICAgIDU0LjMgICAgICAzMy43ICAgICAxLjYxICAgMC4xMDcgICAgICAtMTEuOCAgICAxMjAuICBcbiA5IFRfY2VsbF9DRDggICAgICAgICAgNTMuOSAgICAgMTcyLiAgICAgIDAuMzEzICAwLjc1NCAgICAgLTI4NC4gICAgIDM5MS4gIFxuMTAgVF9jZWxsX3JlZ3VsYXRv4oCmICAgLTM1LjQgICAgIDE4OS4gICAgIC0wLjE4OCAgMC44NTEgICAgIC00MDUuICAgICAzMzQuICBcbjExIENEMjc0ICAgICAgICAgICAgICAgLTYuMjcgICAgICAyLjQxICAgLTIuNjAgICAwLjAwOTQzICAgIC0xMS4wICAgICAtMS41NFxuIn0= -->
+<pre><code># A tibble: 11 x 7
+   term            estimate std.error statistic  p.value conf.low conf.high
+   &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+ 1 B_cell          -164.       33.0      -4.96  7.10e- 7 -229.      -99.1  
+ 2 Macrophage_M1     -9.31     27.6      -0.338 7.35e- 1  -63.3      44.7  
+ 3 Macrophage_M2    -16.6      29.9      -0.556 5.78e- 1  -75.1      41.9  
+ 4 Monocyte         -27.4      10.3      -2.65  8.10e- 3  -47.6      -7.11 
+ 5 Myeloid_dendri…  -26.3       9.06     -2.90  3.73e- 3  -44.0      -8.52 
+ 6 Neutrophil       655.      226.        2.90  3.75e- 3  212.      Inf    
+ 7 NK_cell          204.       20.6       9.89  4.83e-23  164.      245.   
+ 8 T_cell_CD4_non…   19.8      29.9       0.662 5.08e- 1  -38.8      78.4  
+ 9 T_cell_CD8      -381.      255.       -1.50  1.34e- 1 -Inf       118.   
+10 T_cell_regulat… -137.       88.0      -1.55  1.20e- 1 -309.       35.7  
+11 CD274             -0.204     0.165    -1.24  2.16e- 1   -0.527     0.119
+============== Medulloblastoma ==================# A tibble: 11 x 7
+   term             estimate std.error statistic p.value conf.low conf.high
+   &lt;chr&gt;               &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+ 1 B_cell              36.9      64.6     0.572  0.568      -89.6    163.  
+ 2 Macrophage_M1      749.      248.      3.03   0.00247    264.     Inf   
+ 3 Macrophage_M2       97.7     154.      0.635  0.526     -204.     400.  
+ 4 Monocyte            41.1      14.8     2.77   0.00556     12.1     70.2 
+ 5 Myeloid_dendrit…     5.35     22.8     0.234  0.815      -39.4     50.0 
+ 6 Neutrophil           3.40    137.      0.0248 0.980     -265.     272.  
+ 7 NK_cell            -22.3      41.1    -0.543  0.587     -103.      58.2 
+ 8 T_cell_CD4_non_…    54.3      33.7     1.61   0.107      -11.8    120.  
+ 9 T_cell_CD8          53.9     172.      0.313  0.754     -284.     391.  
+10 T_cell_regulato…   -35.4     189.     -0.188  0.851     -405.     334.  
+11 CD274               -6.27      2.41   -2.60   0.00943    -11.0     -1.54</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiTG9nbGlrIGNvbnZlcmdlZCBiZWZvcmUgdmFyaWFibGUgIDkgOyBjb2VmZmljaWVudCBtYXkgYmUgaW5maW5pdGUuIFxuIn0= -->
-<pre><code>Loglik converged before variable  9 ; coefficient may be infinite. </code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6NywibnJvdyI6MTF9LCJyZGYiOiJVa1JZTXdwWUNnQUFBQU1BQXdZQUFBTUZBQUFBQUFWVlZFWXRPQUFBQkFJQUFBQUJBQVFBQ1FBQUFBRjRBQUFERXdBQUFBY0FBQUFRQUFBQUN3QUVBQWtBQUFBR1FsOWpaV3hzQUFRQUNRQUFBQTFOWVdOeWIzQm9ZV2RsWDAweEFBUUFDUUFBQUExTllXTnliM0JvWVdkbFgwMHlBQVFBQ1FBQUFBaE5iMjV2WTNsMFpRQUVBQWtBQUFBV1RYbGxiRzlwWkY5a1pXNWtjbWwwYVdOZlkyVnNiQUFFQUFrQUFBQUtUbVYxZEhKdmNHaHBiQUFFQUFrQUFBQUhUa3RmWTJWc2JBQUVBQWtBQUFBWlZGOWpaV3hzWDBORU5GOXViMjVmY21WbmRXeGhkRzl5ZVFBRUFBa0FBQUFLVkY5alpXeHNYME5FT0FBRUFBa0FBQUFYVkY5alpXeHNYM0psWjNWc1lYUnZjbmxmVkhKbFozTUFCQUFKQUFBQUJVTkVNamMwQUFBQURnQUFBQXRBWXdDbVMvRHlrTUJFRCt6Q29XajZRRlpieDloN0F3UEFUL29VOTN3dENzQmZqQ25BVGFzRXdER2k5SVg5emdkQWFYUE5NRmg1VWtCbWMvL0lPY2Jid1JDcUFwbFJBSjFBbUI3NDcyOTZTci9UR0o1R0pmSmpBQUFBRGdBQUFBdEFWOTVVR1pMUkkwQlZYekpyeEN3dVFGMVR1bjFscjAxQVNzb0dUUUUyeDBCYk53SE5MRlVZUUdWV3VqWU5YcmhBVy9WKzBjWEpha0JsQm56YWp5NVJRYUJvckp5TEx4UkFnRk5KYzNKOGZqL2xQMGtjZnZQVkFBQUFEZ0FBQUFzLytYbnhOUVZIbGIvZUNmK2M4WWdPUCtobGRZYjNJK2UvOHhrdzNrREJQNy95akJhVllYbTB2N3B5dEZoQ3BaMC8vU0dQSy9MNS96L3hGaVkwYzAwVXYyQS90VE9xdjFoQUI2UHFHcFlyaDcvY3dxYWZLc0toQUFBQURnQUFBQXMvdkgrM3NWQVdvVC9rY1NZdFA5bThQOXlJZTBUV2M0SS96Y1pTMzRxbllEL1BpVEJhWE8zTlArMWQ2MVhVLzhRL3NaTkd3aFMyTUQvU1JxYkpmMHVhUCsvekNRa1lkeU0vYVp4Zld1LzFEei9rNXFuWmhieWVBQUFBRGdBQUFBdkFRWTF6QXRXVjJNQnA5YWZjU2xjR3dHR1BqR01DUHVEQVpSN2tDcGxXTk1CMU9NKzkyNmZvd0hZRGp5V0YyTEhBTHlha0llMldrTUJpd1h1ZitiSEgvL0FBQUFBQUFBQkFnRDZ4WmtpZTVMLzVtSTUyYk5qQ0FBQUFEZ0FBQUF0QWRUSlVyRXVsUzBCZjIyTDE4MFVSUUhQMXFoMitvUEpBUklkbU8yeit1a0JWeXV0MjAwbVdRSFBQTUpUR0h2RkFlbTBDVVdmbUJrQi8xTDJZTnArK2YvQUFBQUFBQUFCLzhBQUFBQUFBQUQvd0REOVRXZCtRQUFBRUFnQUFBQUVBQkFBSkFBQUFCVzVoYldWekFBQUFFQUFBQUFjQUJBQUpBQUFBQkhSbGNtMEFCQUFKQUFBQUNHVnpkR2x0WVhSbEFBUUFDUUFBQUFsemRHUXVaWEp5YjNJQUJBQUpBQUFBQ1hOMFlYUnBjM1JwWXdBRUFBa0FBQUFIY0M1MllXeDFaUUFFQUFrQUFBQUlZMjl1Wmk1c2IzY0FCQUFKQUFBQUNXTnZibVl1YUdsbmFBQUFCQUlBQUFBQkFBUUFDUUFBQUFseWIzY3VibUZ0WlhNQUFBQU5BQUFBQW9BQUFBRC8vLy8xQUFBRUFnQUFBQUVBQkFBSkFBQUFCV05zWVhOekFBQUFFQUFBQUFFQUJBQUpBQUFBQ21SaGRHRXVabkpoYldVQUFBRCtBQUFFQWdBQUFBRUFCQUFKQUFBQUIyOXdkR2x2Ym5NQUFBSVRBQUFBQlFBQUFCQUFBQUFCQUFRQUNRQUFBQUZ5QUFBQUVBQUFBQUVBQkFBSkFBQUFER05sYkd4ZmRIbHdaVjlqWndBQUFBb0FBQUFCQUFBQUFBQUFBQTBBQUFBQkFBQUFDd0FBQUEwQUFBQUJBQUFBQndBQUJBSUFBQUwvQUFBQUVBQUFBQVVBQkFBSkFBQUFCbVZ1WjJsdVpRQUVBQWtBQUFBRmJHRmlaV3dBQkFBSkFBQUFEbkp2ZDI1aGJXVnpMbkJ5YVc1MEFBUUFDUUFBQUFweWIzZHpMblJ2ZEdGc0FBUUFDUUFBQUFwamIyeHpMblJ2ZEdGc0FBQUEvZ0FBQVA0PSJ9 -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"B_cell","2":"1.520203e+02","3":"9.547388e+01","4":"1.592271049","5":"0.111323815","6":"-35.105072","7":"339.14567"},{"1":"Macrophage_M1","2":"-4.012441e+01","3":"8.548745e+01","4":"-0.469360259","5":"0.638812149","6":"-207.676741","7":"127.42792"},{"1":"Macrophage_M2","2":"8.943407e+01","3":"1.173083e+02","4":"0.762385143","5":"0.445830171","6":"-140.485887","7":"319.35403"},{"1":"Monocyte","2":"-6.395376e+01","3":"5.357832e+01","4":"-1.193650120","5":"0.232614860","6":"-168.965337","7":"41.05781"},{"1":"Myeloid_dendritic_cell","2":"-1.261900e+02","3":"1.088595e+02","4":"-1.159201225","5":"0.246374172","6":"-339.550718","7":"87.17062"},{"1":"Neutrophil","2":"-1.763654e+01","3":"1.707102e+02","4":"-0.103312751","5":"0.917714756","6":"-352.222448","7":"316.94936"},{"1":"NK_cell","2":"2.036188e+02","3":"1.118359e+02","4":"1.820693180","5":"0.068653510","6":"-15.575471","7":"422.81307"},{"1":"T_cell_CD4_non_regulatory","2":"1.796250e+02","3":"1.682027e+02","4":"1.067907529","5":"0.285562226","6":"-150.046341","7":"509.29629"},{"1":"T_cell_CD8","2":"-2.730246e+05","3":"1.376477e+08","4":"-0.001983503","5":"0.998417394","6":"-Inf","7":"Inf"},{"1":"T_cell_regulatory_Tregs","2":"1.543743e+03","3":"5.224109e+02","4":"2.955036361","5":"0.003126322","6":"519.836621","7":"Inf"},{"1":"CD274","2":"-2.983776e-01","3":"6.639753e-01","4":"-0.449380546","5":"0.653157163","6":"-1.599745","7":"1.00299"}],"options":{"columns":{"min":{},"max":[10],"total":[7]},"rows":{"min":[10],"max":[10],"total":[11]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiPT09PT09PT09PT09PT0gSGlnaC1ncmFkZSBnbGlvbWEgYXN0cm9jeXRvbWEgPT09PT09PT09PT09PT09PT09XG4ifQ== -->
-<pre><code>============== High-grade glioma astrocytoma ==================</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmFuIG91dCBvZiBpdGVyYXRpb25zIGFuZCBkaWQgbm90IGNvbnZlcmdlXG4ifQ== -->
-<pre><code>Ran out of iterations and did not converge</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6NywibnJvdyI6MTF9LCJyZGYiOiJVa1JZTXdwWUNnQUFBQU1BQXdZQUFBTUZBQUFBQUFWVlZFWXRPQUFBQkFJQUFBQUJBQVFBQ1FBQUFBRjRBQUFERXdBQUFBY0FBQUFRQUFBQUN3QUVBQWtBQUFBR1FsOWpaV3hzQUFRQUNRQUFBQTFOWVdOeWIzQm9ZV2RsWDAweEFBUUFDUUFBQUExTllXTnliM0JvWVdkbFgwMHlBQVFBQ1FBQUFBaE5iMjV2WTNsMFpRQUVBQWtBQUFBV1RYbGxiRzlwWkY5a1pXNWtjbWwwYVdOZlkyVnNiQUFFQUFrQUFBQUtUbVYxZEhKdmNHaHBiQUFFQUFrQUFBQUhUa3RmWTJWc2JBQUVBQWtBQUFBWlZGOWpaV3hzWDBORU5GOXViMjVmY21WbmRXeGhkRzl5ZVFBRUFBa0FBQUFLVkY5alpXeHNYME5FT0FBRUFBa0FBQUFYVkY5alpXeHNYM0psWjNWc1lYUnZjbmxmVkhKbFozTUFCQUFKQUFBQUJVTkVNamMwQUFBQURnQUFBQXZBWkhvTXNNdlNWc0FpbnlmMGJSS2F3RENkTnhFS0twakFPMkNxWlhnNnBNQTZSd0d6Yi9FSlFJUjQrRml4OTNkQWFZTUZnUElSVFVBenlPR1BLSkVnd0hmVlIzdXpUem5BWVJwS1NtbFRBci9LRWtGQlpOUGJBQUFBRGdBQUFBdEFRSVNOVXZRSGMwQTdqdWpPVzN1OFFEM2E2VHYza3VaQUpLNHZWbm5SclVBaUhzRENtMDhuUUd4QS9lS2N2cUJBTktXVHdHb1J4VUE5NXNZUlVhdkZRRy9STTB0Qmh5WkFWZ0szUGdnTENUL0ZGOVQ4bjFOL0FBQUFEZ0FBQUF2QUU5VzZQZjFIYjcvVm40TlNzUU9HditIT3gwY25GeVRBQlM1MU15MGxNY0FITSt0a1N3OEdRQWN2M0Mrd0xUaEFJOFVrdDNBeDNEL2xMRmdKY1BscnYvZjRWYzJSWGxpLytOMWFTY0hVdXIvenhyUVdjSzkvQUFBQURnQUFBQXMrcDg5bUl6N2J4VC9uaVBRM2dqaktQK0o5ODMvQUJtOC9nSmtaU1pDYXlEOXVpUVY2TmFWV1AyNjZtYjk1Qk4wN1RUZW1EUHdWV3ovZ1F4SEFYVEd0UDhFcUxzZkxZNUkvdnNQREhCdUdGRC9MdE1YblpVM2hBQUFBRGdBQUFBdkFiSklBZ3pzUHNzQlBxWGtpdTZaTXdGTElRdW9pc0ZiQVI5SnZqUGc4bThCR0JITlVwekdHUUdxRGVpT0VlVWhBWkhRVU1qYXVtOEJEYVJtTzcrU3cvL0FBQUFBQUFBREFjMVlhNS9hWGxyL2cybTdLZElZdkFBQUFEZ0FBQUF2QVdNUXh2TGtwODBCR1dlVW9oUnorUUVUelRzTTdOaFhBSEhIV3cvL3dTTUFoQ2psN0l2NE9mL0FBQUFBQUFBQkFicEgyejYxei8wQlRtUDJQRERyb1FGMWplMWU5UHJCQVFkNkU3R29rb0QrK2luRk9FT0lRQUFBRUFnQUFBQUVBQkFBSkFBQUFCVzVoYldWekFBQUFFQUFBQUFjQUJBQUpBQUFBQkhSbGNtMEFCQUFKQUFBQUNHVnpkR2x0WVhSbEFBUUFDUUFBQUFsemRHUXVaWEp5YjNJQUJBQUpBQUFBQ1hOMFlYUnBjM1JwWXdBRUFBa0FBQUFIY0M1MllXeDFaUUFFQUFrQUFBQUlZMjl1Wmk1c2IzY0FCQUFKQUFBQUNXTnZibVl1YUdsbmFBQUFCQUlBQUFBQkFBUUFDUUFBQUFseWIzY3VibUZ0WlhNQUFBQU5BQUFBQW9BQUFBRC8vLy8xQUFBRUFnQUFBQUVBQkFBSkFBQUFCV05zWVhOekFBQUFFQUFBQUFFQUJBQUpBQUFBQ21SaGRHRXVabkpoYldVQUFBRCtBQUFFQWdBQUFBRUFCQUFKQUFBQUIyOXdkR2x2Ym5NQUFBSVRBQUFBQlFBQUFCQUFBQUFCQUFRQUNRQUFBQUZ5QUFBQUVBQUFBQUVBQkFBSkFBQUFER05sYkd4ZmRIbHdaVjlqWndBQUFBb0FBQUFCQUFBQUFBQUFBQTBBQUFBQkFBQUFDd0FBQUEwQUFBQUJBQUFBQndBQUJBSUFBQUwvQUFBQUVBQUFBQVVBQkFBSkFBQUFCbVZ1WjJsdVpRQUVBQWtBQUFBRmJHRmlaV3dBQkFBSkFBQUFEbkp2ZDI1aGJXVnpMbkJ5YVc1MEFBUUFDUUFBQUFweWIzZHpMblJ2ZEdGc0FBUUFDUUFBQUFwamIyeHpMblJ2ZEdGc0FBQUEvZ0FBQVA0PSJ9 -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"B_cell","2":"-163.8140491","3":"33.0355629","4":"-4.9587183","5":"7.095978e-07","6":"-228.5625626","7":"-99.065536"},{"1":"Macrophage_M1","2":"-9.3108517","3":"27.5582398","4":"-0.3378609","5":"7.354680e-01","6":"-63.3240093","7":"44.702306"},{"1":"Macrophage_M2","2":"-16.6141215","3":"29.8551214","4":"-0.5564915","5":"5.778749e-01","6":"-75.1290841","7":"41.900841"},{"1":"Monocyte","2":"-27.3776000","3":"10.3402049","4":"-2.6476845","5":"8.104513e-03","6":"-47.6440293","7":"-7.111171"},{"1":"Myeloid_dendritic_cell","2":"-26.2773697","3":"9.0600644","4":"-2.9003513","5":"3.727446e-03","6":"-44.0347696","7":"-8.519970"},{"1":"Neutrophil","2":"655.1212629","3":"226.0309918","4":"2.8983692","5":"3.751087e-03","6":"212.1086595","7":"Inf"},{"1":"NK_cell","2":"204.0944218","3":"20.6467858","4":"9.8850458","5":"4.833610e-23","6":"163.6274653","7":"244.561378"},{"1":"T_cell_CD4_non_regulatory","2":"19.7846918","3":"29.9014598","4":"0.6616631","5":"5.081872e-01","6":"-38.8210925","7":"78.390476"},{"1":"T_cell_CD8","2":"-381.3299520","3":"254.5375115","4":"-1.4981287","5":"1.340998e-01","6":"-Inf","7":"117.554403"},{"1":"T_cell_regulatory_Tregs","2":"-136.8215687","3":"88.0424342","4":"-1.5540412","5":"1.201746e-01","6":"-309.3815689","7":"35.738432"},{"1":"CD274","2":"-0.2036821","3":"0.1647898","4":"-1.2360116","5":"2.164543e-01","6":"-0.5266642","7":"0.119300"}],"options":{"columns":{"min":{},"max":[10],"total":[7]},"rows":{"min":[10],"max":[10],"total":[11]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiPT09PT09PT09PT09PT0gTWVkdWxsb2JsYXN0b21hID09PT09PT09PT09PT09PT09PVxuIn0= -->
-<pre><code>============== Medulloblastoma ==================</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6NywibnJvdyI6MTF9LCJyZGYiOiJVa1JZTXdwWUNnQUFBQU1BQXdZQUFBTUZBQUFBQUFWVlZFWXRPQUFBQkFJQUFBQUJBQVFBQ1FBQUFBRjRBQUFERXdBQUFBY0FBQUFRQUFBQUN3QUVBQWtBQUFBR1FsOWpaV3hzQUFRQUNRQUFBQTFOWVdOeWIzQm9ZV2RsWDAweEFBUUFDUUFBQUExTllXTnliM0JvWVdkbFgwMHlBQVFBQ1FBQUFBaE5iMjV2WTNsMFpRQUVBQWtBQUFBV1RYbGxiRzlwWkY5a1pXNWtjbWwwYVdOZlkyVnNiQUFFQUFrQUFBQUtUbVYxZEhKdmNHaHBiQUFFQUFrQUFBQUhUa3RmWTJWc2JBQUVBQWtBQUFBWlZGOWpaV3hzWDBORU5GOXViMjVmY21WbmRXeGhkRzl5ZVFBRUFBa0FBQUFLVkY5alpXeHNYME5FT0FBRUFBa0FBQUFYVkY5alpXeHNYM0psWjNWc1lYUnZjbmxmVkhKbFozTUFCQUFKQUFBQUJVTkVNamMwQUFBQURnQUFBQXRBUW5PWXdJTkhFa0NIYTA2UW14MUlRRmh1RHBHbjArWkFSSkM0eUtFTDgwQVZZeTdiS2kzOVFBc3JSQUdMdVhmQU5sS3dOQVRlNVVCTElYTXpCTHcwUUVydER3NTMyenZBUWE0bTJaT2ZtOEFaRVlUTmRZQUlBQUFBRGdBQUFBdEFVQ1BmWjNqTEhFQnU4N09aZnlxMFFHTS9TUlRDVGk1QUxhdXE3RzFzTEVBMnpvN1ZLRjk4UUdFZDMrTWphZ2hBUkltTURxR3o5VUJBMTNST3BMaTlRR1dFM1IxVjdnNUFaNUdsbDJGMXRFQURVQXVLcDY2YUFBQUFEZ0FBQUFzLzRrcVdNaDRNV1VBSU5rODJqc0dPUCtSTzdsVFlleUJBQmk0TmU2U25xRC9PQWlkWDZzN0tQNWxsZ0o4K1FlUy80V1FsTGY2cG96LzV4bDVEZmY5aVA5UUZNRytjU0d1L3lBRSttUHRmRE1BRXhMc1dqdGdnQUFBQURnQUFBQXMvNGlteDd0dEVpVDlrUkJsKzFnbTVQK0RTUWwyQXVEby9kc2sxRmMvRkV6L3FFWTNmU2JaZ1ArOWQ2S3F2Wmw0LzRzY1hBcmdNSlQrN2NTSko3V25NUCtna05UaDczbUUvNnoxWlFOVUZRVCtEVUFQaDhwalNBQUFBRGdBQUFBdkFWbWlGOWVRemUwQndnWWRwQkk2RXdHbUNSZ3VLN3pkQUtCdW05TmU5NE1CRHJVaWtzcS9td0hDUDBmVTIwQkhBV2JUNU9za1J4c0FuZzJGOFQwYVF3SEc0OUhSWmY1ZkFlVTZpWEZxcFhjQWwvMHdGVFR1OEFBQUFEZ0FBQUF0QVpHNFBXek85Um4vd0FBQUFBQUFBUUhqNEtrNlpZWTVBVVkxRDZnWVVOMEJKQmhSYmZUdG1RSEQ4ZndVOC92ZEFUUmRDUVkxRXFFQmVFZDlpanFVR1FIaDBPRGYzZG1WQWRPTVlwZlhCZDcvNGtjWkJRaUpjQUFBRUFnQUFBQUVBQkFBSkFBQUFCVzVoYldWekFBQUFFQUFBQUFjQUJBQUpBQUFBQkhSbGNtMEFCQUFKQUFBQUNHVnpkR2x0WVhSbEFBUUFDUUFBQUFsemRHUXVaWEp5YjNJQUJBQUpBQUFBQ1hOMFlYUnBjM1JwWXdBRUFBa0FBQUFIY0M1MllXeDFaUUFFQUFrQUFBQUlZMjl1Wmk1c2IzY0FCQUFKQUFBQUNXTnZibVl1YUdsbmFBQUFCQUlBQUFBQkFBUUFDUUFBQUFseWIzY3VibUZ0WlhNQUFBQU5BQUFBQW9BQUFBRC8vLy8xQUFBRUFnQUFBQUVBQkFBSkFBQUFCV05zWVhOekFBQUFFQUFBQUFFQUJBQUpBQUFBQ21SaGRHRXVabkpoYldVQUFBRCtBQUFFQWdBQUFBRUFCQUFKQUFBQUIyOXdkR2x2Ym5NQUFBSVRBQUFBQlFBQUFCQUFBQUFCQUFRQUNRQUFBQUZ5QUFBQUVBQUFBQUVBQkFBSkFBQUFER05sYkd4ZmRIbHdaVjlqWndBQUFBb0FBQUFCQUFBQUFBQUFBQTBBQUFBQkFBQUFDd0FBQUEwQUFBQUJBQUFBQndBQUJBSUFBQUwvQUFBQUVBQUFBQVVBQkFBSkFBQUFCbVZ1WjJsdVpRQUVBQWtBQUFBRmJHRmlaV3dBQkFBSkFBQUFEbkp2ZDI1aGJXVnpMbkJ5YVc1MEFBUUFDUUFBQUFweWIzZHpMblJ2ZEdGc0FBUUFDUUFBQUFwamIyeHpMblJ2ZEdGc0FBQUEvZ0FBQVA0PSJ9 -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"B_cell","2":"36.903099","3":"64.560511","4":"0.57160482","5":"0.567589728","6":"-89.63318","7":"163.439375"},{"1":"Macrophage_M1","2":"749.413362","3":"247.615674","4":"3.02651827","5":"0.002473879","6":"264.09556","7":"Inf"},{"1":"Macrophage_M2","2":"97.719639","3":"153.977671","4":"0.63463513","5":"0.525666411","6":"-204.07105","7":"399.510329"},{"1":"Monocyte","2":"41.130639","3":"14.835288","4":"2.77248665","5":"0.005562980","6":"12.05401","7":"70.207270"},{"1":"Myeloid_dendritic_cell","2":"5.346858","3":"22.806867","4":"0.23444073","5":"0.814642845","6":"-39.35378","7":"50.047496"},{"1":"Neutrophil","2":"3.396126","3":"136.933580","4":"0.02480126","5":"0.980213483","6":"-264.98876","7":"271.781011"},{"1":"NK_cell","2":"-22.323001","3":"41.074587","4":"-0.54347476","5":"0.586802965","6":"-102.82771","7":"58.181709"},{"1":"T_cell_CD4_non_regulatory","2":"54.261328","3":"33.683237","4":"1.61092974","5":"0.107195037","6":"-11.75660","7":"120.279259"},{"1":"T_cell_CD8","2":"53.852022","3":"172.151992","4":"0.31281672","5":"0.754419909","6":"-283.55968","7":"391.263725"},{"1":"T_cell_regulatory_Tregs","2":"-35.360561","3":"188.551464","4":"-0.18753798","5":"0.851238848","6":"-404.91464","7":"334.193518"},{"1":"CD274","2":"-6.267108","3":"2.414085","4":"-2.59605997","5":"0.009429961","6":"-10.99863","7":"-1.535589"}],"options":{"columns":{"min":{},"max":[10],"total":[7]},"rows":{"min":[10],"max":[10],"total":[11]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -2241,9 +2264,8 @@ for (cg in suitable_cancer_groups$cancer_group) {
 </blockquote>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5iYXNlX2ZpbGVuYW1lIDwtIFwiY294X3Blcl9jZ190ZXJtc19tb2xlY3VsYXItc3VidHlwZXMuUkRTXCIgIyBhbGwgZmlsZSBuYW1lcyBoZXJlIHdpbGwgZm9sbG93IHRoaXMgY29udmVudGlvblxuXG5mb3IgKGNnIGluIHN1aXRhYmxlX3N1YnR5cGVzJGNhbmNlcl9ncm91cCkge1xuICBjYXQoXCI9PT09PT09PT09PT09PVwiLCBjZywgXCI9PT09PT09PT09PT09PT09PT1cIilcbiAgIyBmaWx0ZXIgdG8gY2FuY2VyIGdyb3VwIG9mIGludGVyZXN0XG4gIGZpdF9kYXRhIDwtIGNvbWJpbmVkX2RmX3N0cmFuZGVkICU+JSBcbiAgICBmaWx0ZXIoY2FuY2VyX2dyb3VwID09IGNnKVxuICBcbiAgIyBEZWZpbmUgZmlsZW5hbWUgd2hlcmUgbW9kZWwgd2lsbCBiZSBzYXZlZFxuICBmaWxlbmFtZSA8LSBmaWxlLnBhdGgoXG4gICAgcmVzdWx0c19kaXIsXG4gICAgc3RyX3JlcGxhY2UoYmFzZV9maWxlbmFtZSwgXCJjZ1wiLCBjZylcbiAgKVxuICBcbiAgIyBQcmludCB0YWJsZSBvZiBtb2xlY3VsYXIgc3VidHlwZSBjb3VudHMgZm9yIGNvbnRleHQgaW50ZXJwcmV0dGluZyB0aGUgbW9kZWxcbiAgZml0X2RhdGEgJT4lXG4gICAgY291bnQobW9sZWN1bGFyX3N1YnR5cGUpICU+JSBcbiAgICBwcmludCgpXG4gIFxuICAjIEZpdCBtb2RlbFxuICBmaXRfc2F2ZV9tb2RlbChmaXRfZGF0YSwgXG4gICAgICAgICAgICAgICAgIFwibW9sZWN1bGFyX3N1YnR5cGVcIiwgXG4gICAgICAgICAgICAgICAgIGZpbGVuYW1lKSAlPiUgcHJpbnQoKVxufVxuYGBgIn0= -->
-<pre class="r"><code>
-base_filename &lt;- &quot;cox_per_cg_terms_molecular-subtypes.RDS&quot; # all file names here will follow this convention
+<!-- rnb-source-begin eyJkYXRhIjpbImJhc2VfZmlsZW5hbWUgPC0gXCJjb3hfcGVyX2NnX3Rlcm1zX21vbGVjdWxhci1zdWJ0eXBlcy5SRFNcIiAjIGFsbCBmaWxlIG5hbWVzIGhlcmUgd2lsbCBmb2xsb3cgdGhpcyBjb252ZW50aW9uIiwiIiwiZm9yIChjZyBpbiBzdWl0YWJsZV9zdWJ0eXBlcyRjYW5jZXJfZ3JvdXApIHtcbiAgY2F0KFwiPT09PT09PT09PT09PT1cIiwgY2csIFwiPT09PT09PT09PT09PT09PT09XCIpXG4gICMgZmlsdGVyIHRvIGNhbmNlciBncm91cCBvZiBpbnRlcmVzdFxuICBmaXRfZGF0YSA8LSBjb21iaW5lZF9kZl9zdHJhbmRlZCAlPiUgXG4gICAgZmlsdGVyKGNhbmNlcl9ncm91cCA9PSBjZylcbiAgXG4gICMgRGVmaW5lIGZpbGVuYW1lIHdoZXJlIG1vZGVsIHdpbGwgYmUgc2F2ZWRcbiAgZmlsZW5hbWUgPC0gZmlsZS5wYXRoKFxuICAgIHJlc3VsdHNfZGlyLFxuICAgIHN0cl9yZXBsYWNlKGJhc2VfZmlsZW5hbWUsIFwiY2dcIiwgY2cpXG4gIClcbiAgXG4gICMgUHJpbnQgdGFibGUgb2YgbW9sZWN1bGFyIHN1YnR5cGUgY291bnRzIGZvciBjb250ZXh0IGludGVycHJldHRpbmcgdGhlIG1vZGVsXG4gIGZpdF9kYXRhICU+JVxuICAgIGNvdW50KG1vbGVjdWxhcl9zdWJ0eXBlKSAlPiUgXG4gICAgcHJpbnQoKVxuICBcbiAgIyBGaXQgbW9kZWxcbiAgZml0X3NhdmVfbW9kZWwoZml0X2RhdGEsIFxuICAgICAgICAgICAgICAgICBcIm1vbGVjdWxhcl9zdWJ0eXBlXCIsIFxuICAgICAgICAgICAgICAgICBmaWxlbmFtZSkgJT4lIHByaW50KClcbn0iXX0= -->
+<pre class="r"><code>base_filename &lt;- &quot;cox_per_cg_terms_molecular-subtypes.RDS&quot; # all file names here will follow this convention
 
 for (cg in suitable_subtypes$cancer_group) {
   cat(&quot;==============&quot;, cg, &quot;==================&quot;)
@@ -2268,100 +2290,113 @@ for (cg in suitable_subtypes$cancer_group) {
                  filename) %&gt;% print()
 }</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiPT09PT09PT09PT09PT0gRGlmZnVzZSBtaWRsaW5lIGdsaW9tYSA9PT09PT09PT09PT09PT09PT1cbiJ9 -->
-<pre><code>============== Diffuse midline glioma ==================</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiPT09PT09PT09PT09PT0gRGlmZnVzZSBtaWRsaW5lIGdsaW9tYSA9PT09PT09PT09PT09PT09PT0jIEEgdGliYmxlOiAzIHggMlxuICBtb2xlY3VsYXJfc3VidHlwZSAgICAgICAgICAgICAgIG5cbiAgPGNocj4gICAgICAgICAgICAgICAgICAgICAgIDxpbnQ+XG4xIERNRywgSDMgSzI4ICAgICAgICAgICAgICAgICAgICAgNVxuMiBETUcsIEgzIEsyOCwgVFA1MyBhY3RpdmF0ZWQgICAgIDFcbjMgRE1HLCBIMyBLMjgsIFRQNTMgbG9zcyAgICAgICAgIDEyXG4ifQ== -->
+<pre><code>============== Diffuse midline glioma ==================# A tibble: 3 x 2
+  molecular_subtype               n
+  &lt;chr&gt;                       &lt;int&gt;
+1 DMG, H3 K28                     5
+2 DMG, H3 K28, TP53 activated     1
+3 DMG, H3 K28, TP53 loss         12</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MiwibnJvdyI6M30sInJkZiI6IlVrUllNd3BZQ2dBQUFBTUFBd1lBQUFNRkFBQUFBQVZWVkVZdE9BQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFJQUFBQVFBQUFBQXdBRUFBa0FBQUFMUkUxSExDQklNeUJMTWpnQUJBQUpBQUFBRzBSTlJ5d2dTRE1nU3pJNExDQlVVRFV6SUdGamRHbDJZWFJsWkFBRUFBa0FBQUFXUkUxSExDQklNeUJMTWpnc0lGUlFOVE1nYkc5emN3QUFBQTBBQUFBREFBQUFCUUFBQUFFQUFBQU1BQUFFQWdBQUFBRUFCQUFKQUFBQUJXNWhiV1Z6QUFBQUVBQUFBQUlBQkFBSkFBQUFFVzF2YkdWamRXeGhjbDl6ZFdKMGVYQmxBQVFBQ1FBQUFBRnVBQUFFQWdBQUFBRUFCQUFKQUFBQUNYSnZkeTV1WVcxbGN3QUFBQTBBQUFBQ2dBQUFBUC8vLy8wQUFBUUNBQUFBQVFBRUFBa0FBQUFGWTJ4aGMzTUFBQUFRQUFBQUFRQUVBQWtBQUFBS1pHRjBZUzVtY21GdFpRQUFBUDRBQUFRQ0FBQUFBUUFFQUFrQUFBQUhiM0IwYVc5dWN3QUFBaE1BQUFBRkFBQUFFQUFBQUFFQUJBQUpBQUFBQVhJQUFBQVFBQUFBQVFBRUFBa0FBQUFXWTJWc2JGOTBlWEJsWDJOblgyMXZiR1ZqZFd4aGNnQUFBQW9BQUFBQkFBQUFBQUFBQUEwQUFBQUJBQUFBQXdBQUFBMEFBQUFCQUFBQUFnQUFCQUlBQUFML0FBQUFFQUFBQUFVQUJBQUpBQUFBQm1WdVoybHVaUUFFQUFrQUFBQUZiR0ZpWld3QUJBQUpBQUFBRG5KdmQyNWhiV1Z6TG5CeWFXNTBBQVFBQ1FBQUFBcHliM2R6TG5SdmRHRnNBQVFBQ1FBQUFBcGpiMnh6TG5SdmRHRnNBQUFBL2dBQUFQND0ifQ== -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["molecular_subtype"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"DMG, H3 K28","2":"5"},{"1":"DMG, H3 K28, TP53 activated","2":"1"},{"1":"DMG, H3 K28, TP53 loss","2":"12"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[3]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiVGVzdGluZyBtb2RlbDogc3Vydml2YWw6OlN1cnYoT1NfeWVhcnMsIE9TX3N0YXR1cykgfiBtb2xlY3VsYXJfc3VidHlwZSB3aXRoIGNveC5yZWdcbkxvZ2xpayBjb252ZXJnZWQgYmVmb3JlIHZhcmlhYmxlICAxIDsgY29lZmZpY2llbnQgbWF5IGJlIGluZmluaXRlLiBcbiJ9 -->
-<pre><code>Testing model: survival::Surv(OS_years, OS_status) ~ molecular_subtype with cox.reg
-Loglik converged before variable  1 ; coefficient may be infinite. </code></pre>
+<!-- rnb-message-begin eyJkYXRhIjoiVGVzdGluZyBtb2RlbDogc3Vydml2YWw6OlN1cnYoT1NfeWVhcnMsIE9TX3N0YXR1cykgfiBtb2xlY3VsYXJfc3VidHlwZSB3aXRoIGNveC5yZWdcbiJ9 -->
+<pre><code>Testing model: survival::Surv(OS_years, OS_status) ~ molecular_subtype with cox.reg</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZyBpbiBmaXR0ZXIoWCwgWSwgc3RyYXRzLCBvZmZzZXQsIGluaXQsIGNvbnRyb2wsIHdlaWdodHMgPSB3ZWlnaHRzLCA6XG5Mb2dsaWsgY29udmVyZ2VkIGJlZm9yZSB2YXJpYWJsZSAxIDsgY29lZmZpY2llbnQgbWF5IGJlIGluZmluaXRlLlxuIn0= -->
+<pre><code>Warning in fitter(X, Y, strats, offset, init, control, weights = weights, :
+Loglik converged before variable 1 ; coefficient may be infinite.</code></pre>
+<!-- rnb-warning-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIyBBIHRpYmJsZTogMiB4IDdcbiAgdGVybSAgICAgICAgICAgICAgZXN0aW1hdGUgc3RkLmVycm9yIHN0YXRpc3RpYyBwLnZhbHVlIGNvbmYubG93IGNvbmYuaGlnaFxuICA8Y2hyPiAgICAgICAgICAgICAgICA8ZGJsPiAgICAgPGRibD4gICAgIDxkYmw+ICAgPGRibD4gICAgPGRibD4gICAgIDxkYmw+XG4xIG1vbGVjdWxhcl9zdWJ0eXDigKYgICAgMjIuNSAgICA5MjUyLiAgICAgMC4wMDI0MyAgMC45OTggIC1JbmYgICAgICAgIEluZiAgIFxuMiBtb2xlY3VsYXJfc3VidHlw4oCmICAgICAxLjgxICAgICAgMS4wNyAgIDEuNzAgICAgIDAuMDkwMCAgIC0wLjI4MiAgICAgIDMuOTBcbj09PT09PT09PT09PT09IEVwZW5keW1vbWEgPT09PT09PT09PT09PT09PT09IyBBIHRpYmJsZTogNSB4IDJcbiAgbW9sZWN1bGFyX3N1YnR5cGUgICAgICAgICBuXG4gIDxjaHI+ICAgICAgICAgICAgICAgICA8aW50PlxuMSBFUE4sIEgzIEsyOCAgICAgICAgICAgICAgIDFcbjIgRVBOLCBQRiBBICAgICAgICAgICAgICAgICAyXG4zIEVQTiwgU1QgUkVMQSAgICAgICAgICAgICAyMFxuNCBFUE4sIFNUIFlBUDEgICAgICAgICAgICAgIDNcbjUgRVBOLCBUbyBiZSBjbGFzc2lmaWVkICAgIDQ2XG4ifQ== -->
+<pre><code># A tibble: 2 x 7
+  term              estimate std.error statistic p.value conf.low conf.high
+  &lt;chr&gt;                &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1 molecular_subtyp…    22.5    9252.     0.00243  0.998  -Inf        Inf   
+2 molecular_subtyp…     1.81      1.07   1.70     0.0900   -0.282      3.90
+============== Ependymoma ==================# A tibble: 5 x 2
+  molecular_subtype         n
+  &lt;chr&gt;                 &lt;int&gt;
+1 EPN, H3 K28               1
+2 EPN, PF A                 2
+3 EPN, ST RELA             20
+4 EPN, ST YAP1              3
+5 EPN, To be classified    46</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6NywibnJvdyI6Mn0sInJkZiI6IlVrUllNd3BZQ2dBQUFBTUFBd1lBQUFNRkFBQUFBQVZWVkVZdE9BQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFjQUFBQVFBQUFBQWdBRUFBa0FBQUFzYlc5c1pXTjFiR0Z5WDNOMVluUjVjR1ZFVFVjc0lFZ3pJRXN5T0N3Z1ZGQTFNeUJoWTNScGRtRjBaV1FBQkFBSkFBQUFKMjF2YkdWamRXeGhjbDl6ZFdKMGVYQmxSRTFITENCSU15QkxNamdzSUZSUU5UTWdiRzl6Y3dBQUFBNEFBQUFDUURhRHl2TGJBdUkvL08yUzV4bHpOd0FBQUE0QUFBQUNRTUlSOHRSSG8zWS84UkFGcm1WS0R3QUFBQTRBQUFBQ1AyUHZmaWpneHVJLyt5Qml0eVUxNFFBQUFBNEFBQUFDUCsvd0dBR0NsbWMvdHdvaENCWElBQUFBQUE0QUFBQUMvL0FBQUFBQUFBQy8wZzVlanRwT1d3QUFBQTRBQUFBQ2YvQUFBQUFBQUFCQUR5OWV1UFM5QWdBQUJBSUFBQUFCQUFRQUNRQUFBQVZ1WVcxbGN3QUFBQkFBQUFBSEFBUUFDUUFBQUFSMFpYSnRBQVFBQ1FBQUFBaGxjM1JwYldGMFpRQUVBQWtBQUFBSmMzUmtMbVZ5Y205eUFBUUFDUUFBQUFsemRHRjBhWE4wYVdNQUJBQUpBQUFBQjNBdWRtRnNkV1VBQkFBSkFBQUFDR052Ym1ZdWJHOTNBQVFBQ1FBQUFBbGpiMjVtTG1ocFoyZ0FBQVFDQUFBQUFRQUVBQWtBQUFBSmNtOTNMbTVoYldWekFBQUFEUUFBQUFLQUFBQUEvLy8vL2dBQUJBSUFBQUFCQUFRQUNRQUFBQVZqYkdGemN3QUFBQkFBQUFBQkFBUUFDUUFBQUFwa1lYUmhMbVp5WVcxbEFBQUEvZ0FBQkFJQUFBQUJBQVFBQ1FBQUFBZHZjSFJwYjI1ekFBQUNFd0FBQUFVQUFBQVFBQUFBQVFBRUFBa0FBQUFCY2dBQUFCQUFBQUFCQUFRQUNRQUFBQlpqWld4c1gzUjVjR1ZmWTJkZmJXOXNaV04xYkdGeUFBQUFDZ0FBQUFFQUFBQUFBQUFBRFFBQUFBRUFBQUFDQUFBQURRQUFBQUVBQUFBSEFBQUVBZ0FBQXY4QUFBQVFBQUFBQlFBRUFBa0FBQUFHWlc1bmFXNWxBQVFBQ1FBQUFBVnNZV0psYkFBRUFBa0FBQUFPY205M2JtRnRaWE11Y0hKcGJuUUFCQUFKQUFBQUNuSnZkM011ZEc5MFlXd0FCQUFKQUFBQUNtTnZiSE11ZEc5MFlXd0FBQUQrQUFBQS9nPT0ifQ== -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"molecular_subtypeDMG, H3 K28, TP53 activated","2":"22.514816","3":"9251.897103","4":"0.002433535","5":"0.99805832","6":"-Inf","7":"Inf"},{"1":"molecular_subtypeDMG, H3 K28, TP53 loss","2":"1.808001","3":"1.066412","4":"1.695406642","5":"0.08999831","6":"-0.282127","7":"3.89813"}],"options":{"columns":{"min":{},"max":[10],"total":[7]},"rows":{"min":[10],"max":[10],"total":[2]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiPT09PT09PT09PT09PT0gRXBlbmR5bW9tYSA9PT09PT09PT09PT09PT09PT1cbiJ9 -->
-<pre><code>============== Ependymoma ==================</code></pre>
+<!-- rnb-message-begin eyJkYXRhIjoiVGVzdGluZyBtb2RlbDogc3Vydml2YWw6OlN1cnYoT1NfeWVhcnMsIE9TX3N0YXR1cykgfiBtb2xlY3VsYXJfc3VidHlwZSB3aXRoIGNveC5yZWdcbiJ9 -->
+<pre><code>Testing model: survival::Surv(OS_years, OS_status) ~ molecular_subtype with cox.reg</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZyBpbiBmaXR0ZXIoWCwgWSwgc3RyYXRzLCBvZmZzZXQsIGluaXQsIGNvbnRyb2wsIHdlaWdodHMgPSB3ZWlnaHRzLCA6XG5Mb2dsaWsgY29udmVyZ2VkIGJlZm9yZSB2YXJpYWJsZSAxLDIsMyA7IGNvZWZmaWNpZW50IG1heSBiZSBpbmZpbml0ZS5cbiJ9 -->
+<pre><code>Warning in fitter(X, Y, strats, offset, init, control, weights = weights, :
+Loglik converged before variable 1,2,3 ; coefficient may be infinite.</code></pre>
+<!-- rnb-warning-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIyBBIHRpYmJsZTogMyB4IDdcbiAgdGVybSAgICAgICAgICAgICAgZXN0aW1hdGUgc3RkLmVycm9yIHN0YXRpc3RpYyBwLnZhbHVlIGNvbmYubG93IGNvbmYuaGlnaFxuICA8Y2hyPiAgICAgICAgICAgICAgICA8ZGJsPiAgICAgPGRibD4gICAgIDxkYmw+ICAgPGRibD4gICAgPGRibD4gICAgIDxkYmw+XG4xIG1vbGVjdWxhcl9zdWJ0eXDigKYgICAgIDE2LjAgICAgIDg5ODcuICAgMC4wMDE3OCAgIDAuOTk5ICAgICAtSW5mICAgICAgIEluZlxuMiBtb2xlY3VsYXJfc3VidHlw4oCmICAgICAxNy40ICAgICA4OTg3LiAgIDAuMDAxOTQgICAwLjk5OCAgICAgLUluZiAgICAgICBJbmZcbjMgbW9sZWN1bGFyX3N1YnR5cOKApiAgICAgMTYuMyAgICAgODk4Ny4gICAwLjAwMTgxICAgMC45OTkgICAgIC1JbmYgICAgICAgSW5mXG49PT09PT09PT09PT09PSBIaWdoLWdyYWRlIGdsaW9tYSBhc3Ryb2N5dG9tYSA9PT09PT09PT09PT09PT09PT0jIEEgdGliYmxlOiA4IHggMlxuICBtb2xlY3VsYXJfc3VidHlwZSAgICAgICAgICAgICAgICAgICAgblxuICA8Y2hyPiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8aW50PlxuMSBIR0csIEgzIEczNSAgICAgICAgICAgICAgICAgICAgICAgICAgMlxuMiBIR0csIEgzIEczNSwgVFA1MyBsb3NzICAgICAgICAgICAgICAgMVxuMyBIR0csIEgzIHdpbGR0eXBlICAgICAgICAgICAgICAgICAgICAxMVxuNCBIR0csIEgzIHdpbGR0eXBlLCBUUDUzIGFjdGl2YXRlZCAgICAgM1xuNSBIR0csIEgzIHdpbGR0eXBlLCBUUDUzIGxvc3MgICAgICAgICAgN1xuNiBIR0csIElESCwgVFA1MyBsb3NzICAgICAgICAgICAgICAgICAgMVxuNyBIR0csIFRvIGJlIGNsYXNzaWZpZWQgICAgICAgICAgICAgICAxNVxuOCBIR0csIFRvIGJlIGNsYXNzaWZpZWQsIFRQNTMgbG9zcyAgICAgMVxuIn0= -->
+<pre><code># A tibble: 3 x 7
+  term              estimate std.error statistic p.value conf.low conf.high
+  &lt;chr&gt;                &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1 molecular_subtyp…     16.0     8987.   0.00178   0.999     -Inf       Inf
+2 molecular_subtyp…     17.4     8987.   0.00194   0.998     -Inf       Inf
+3 molecular_subtyp…     16.3     8987.   0.00181   0.999     -Inf       Inf
+============== High-grade glioma astrocytoma ==================# A tibble: 8 x 2
+  molecular_subtype                    n
+  &lt;chr&gt;                            &lt;int&gt;
+1 HGG, H3 G35                          2
+2 HGG, H3 G35, TP53 loss               1
+3 HGG, H3 wildtype                    11
+4 HGG, H3 wildtype, TP53 activated     3
+5 HGG, H3 wildtype, TP53 loss          7
+6 HGG, IDH, TP53 loss                  1
+7 HGG, To be classified               15
+8 HGG, To be classified, TP53 loss     1</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MiwibnJvdyI6NX0sInJkZiI6IlVrUllNd3BZQ2dBQUFBTUFBd1lBQUFNRkFBQUFBQVZWVkVZdE9BQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFJQUFBQVFBQUFBQlFBRUFBa0FBQUFMUlZCT0xDQklNeUJMTWpnQUJBQUpBQUFBQ1VWUVRpd2dVRVlnUVFBRUFBa0FBQUFNUlZCT0xDQlRWQ0JTUlV4QkFBUUFDUUFBQUF4RlVFNHNJRk5VSUZsQlVERUFCQUFKQUFBQUZVVlFUaXdnVkc4Z1ltVWdZMnhoYzNOcFptbGxaQUFBQUEwQUFBQUZBQUFBQVFBQUFBSUFBQUFVQUFBQUF3QUFBQzRBQUFRQ0FBQUFBUUFFQUFrQUFBQUZibUZ0WlhNQUFBQVFBQUFBQWdBRUFBa0FBQUFSYlc5c1pXTjFiR0Z5WDNOMVluUjVjR1VBQkFBSkFBQUFBVzRBQUFRQ0FBQUFBUUFFQUFrQUFBQUpjbTkzTG01aGJXVnpBQUFBRFFBQUFBS0FBQUFBLy8vLyt3QUFCQUlBQUFBQkFBUUFDUUFBQUFWamJHRnpjd0FBQUJBQUFBQUJBQVFBQ1FBQUFBcGtZWFJoTG1aeVlXMWxBQUFBL2dBQUJBSUFBQUFCQUFRQUNRQUFBQWR2Y0hScGIyNXpBQUFDRXdBQUFBVUFBQUFRQUFBQUFRQUVBQWtBQUFBQmNnQUFBQkFBQUFBQkFBUUFDUUFBQUJaalpXeHNYM1I1Y0dWZlkyZGZiVzlzWldOMWJHRnlBQUFBQ2dBQUFBRUFBQUFBQUFBQURRQUFBQUVBQUFBRkFBQUFEUUFBQUFFQUFBQUNBQUFFQWdBQUF2OEFBQUFRQUFBQUJRQUVBQWtBQUFBR1pXNW5hVzVsQUFRQUNRQUFBQVZzWVdKbGJBQUVBQWtBQUFBT2NtOTNibUZ0WlhNdWNISnBiblFBQkFBSkFBQUFDbkp2ZDNNdWRHOTBZV3dBQkFBSkFBQUFDbU52YkhNdWRHOTBZV3dBQUFEK0FBQUEvZz09In0= -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["molecular_subtype"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"EPN, H3 K28","2":"1"},{"1":"EPN, PF A","2":"2"},{"1":"EPN, ST RELA","2":"20"},{"1":"EPN, ST YAP1","2":"3"},{"1":"EPN, To be classified","2":"46"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[5]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiVGVzdGluZyBtb2RlbDogc3Vydml2YWw6OlN1cnYoT1NfeWVhcnMsIE9TX3N0YXR1cykgfiBtb2xlY3VsYXJfc3VidHlwZSB3aXRoIGNveC5yZWdcbkxvZ2xpayBjb252ZXJnZWQgYmVmb3JlIHZhcmlhYmxlICAxLDIsMyA7IGNvZWZmaWNpZW50IG1heSBiZSBpbmZpbml0ZS4gXG4ifQ== -->
-<pre><code>Testing model: survival::Surv(OS_years, OS_status) ~ molecular_subtype with cox.reg
-Loglik converged before variable  1,2,3 ; coefficient may be infinite. </code></pre>
+<!-- rnb-message-begin eyJkYXRhIjoiVGVzdGluZyBtb2RlbDogc3Vydml2YWw6OlN1cnYoT1NfeWVhcnMsIE9TX3N0YXR1cykgfiBtb2xlY3VsYXJfc3VidHlwZSB3aXRoIGNveC5yZWdcbiJ9 -->
+<pre><code>Testing model: survival::Surv(OS_years, OS_status) ~ molecular_subtype with cox.reg</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZyBpbiBmaXR0ZXIoWCwgWSwgc3RyYXRzLCBvZmZzZXQsIGluaXQsIGNvbnRyb2wsIHdlaWdodHMgPSB3ZWlnaHRzLCA6XG5Mb2dsaWsgY29udmVyZ2VkIGJlZm9yZSB2YXJpYWJsZSAxLDIsMyw0LDUgOyBjb2VmZmljaWVudCBtYXkgYmUgaW5maW5pdGUuXG4ifQ== -->
+<pre><code>Warning in fitter(X, Y, strats, offset, init, control, weights = weights, :
+Loglik converged before variable 1,2,3,4,5 ; coefficient may be infinite.</code></pre>
+<!-- rnb-warning-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIyBBIHRpYmJsZTogNSB4IDdcbiAgdGVybSAgICAgICAgICAgICAgZXN0aW1hdGUgc3RkLmVycm9yIHN0YXRpc3RpYyBwLnZhbHVlIGNvbmYubG93IGNvbmYuaGlnaFxuICA8Y2hyPiAgICAgICAgICAgICAgICA8ZGJsPiAgICAgPGRibD4gICAgIDxkYmw+ICAgPGRibD4gICAgPGRibD4gICAgIDxkYmw+XG4xIG1vbGVjdWxhcl9zdWJ0eXDigKYgICAgIDE5LjIgICAgIDc3NTguICAgMC4wMDI0NyAgIDAuOTk4ICAgICAtSW5mICAgICAgIEluZlxuMiBtb2xlY3VsYXJfc3VidHlw4oCmICAgICAxOS40ICAgICA3NzU4LiAgIDAuMDAyNTAgICAwLjk5OCAgICAgLUluZiAgICAgICBJbmZcbjMgbW9sZWN1bGFyX3N1YnR5cOKApiAgICAgMjAuMyAgICAgNzc1OC4gICAwLjAwMjYyICAgMC45OTggICAgIC1JbmYgICAgICAgSW5mXG40IG1vbGVjdWxhcl9zdWJ0eXDigKYgICAgIDIwLjMgICAgIDc3NTguICAgMC4wMDI2MSAgIDAuOTk4ICAgICAtSW5mICAgICAgIEluZlxuNSBtb2xlY3VsYXJfc3VidHlw4oCmICAgICAxOC42ICAgICA3NzU4LiAgIDAuMDAyNDAgICAwLjk5OCAgICAgLUluZiAgICAgICBJbmZcbj09PT09PT09PT09PT09IE1lZHVsbG9ibGFzdG9tYSA9PT09PT09PT09PT09PT09PT0jIEEgdGliYmxlOiA1IHggMlxuICBtb2xlY3VsYXJfc3VidHlwZSAgICAgICAgblxuICA8Y2hyPiAgICAgICAgICAgICAgICA8aW50PlxuMSBNQiwgR3JvdXAzICAgICAgICAgICAgICAxMVxuMiBNQiwgR3JvdXA0ICAgICAgICAgICAgICA0OFxuMyBNQiwgU0hIICAgICAgICAgICAgICAgICAyM1xuNCBNQiwgVG8gYmUgY2xhc3NpZmllZCAgICAxNlxuNSBNQiwgV05UICAgICAgICAgICAgICAgICAxMFxuIn0= -->
+<pre><code># A tibble: 5 x 7
+  term              estimate std.error statistic p.value conf.low conf.high
+  &lt;chr&gt;                &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1 molecular_subtyp…     19.2     7758.   0.00247   0.998     -Inf       Inf
+2 molecular_subtyp…     19.4     7758.   0.00250   0.998     -Inf       Inf
+3 molecular_subtyp…     20.3     7758.   0.00262   0.998     -Inf       Inf
+4 molecular_subtyp…     20.3     7758.   0.00261   0.998     -Inf       Inf
+5 molecular_subtyp…     18.6     7758.   0.00240   0.998     -Inf       Inf
+============== Medulloblastoma ==================# A tibble: 5 x 2
+  molecular_subtype        n
+  &lt;chr&gt;                &lt;int&gt;
+1 MB, Group3              11
+2 MB, Group4              48
+3 MB, SHH                 23
+4 MB, To be classified    16
+5 MB, WNT                 10</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6NywibnJvdyI6M30sInJkZiI6IlVrUllNd3BZQ2dBQUFBTUFBd1lBQUFNRkFBQUFBQVZWVkVZdE9BQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFjQUFBQVFBQUFBQXdBRUFBa0FBQUFkYlc5c1pXTjFiR0Z5WDNOMVluUjVjR1ZGVUU0c0lGTlVJRkpGVEVFQUJBQUpBQUFBSFcxdmJHVmpkV3hoY2w5emRXSjBlWEJsUlZCT0xDQlRWQ0JaUVZBeEFBUUFDUUFBQUNadGIyeGxZM1ZzWVhKZmMzVmlkSGx3WlVWUVRpd2dWRzhnWW1VZ1kyeGhjM05wWm1sbFpBQUFBQTRBQUFBRFFDLytXRTE4aTI1QU1XOHNzSGtXUmtBd1N2SnVqWUM0QUFBQURnQUFBQU5Bd1kyUSsvNTd1a0RCalpEODFobklRTUdOa1B0bktDd0FBQUFPQUFBQUF6OWRLYlVyaDhqSVAxL0ltQjdhMXRnL1hiUFpPZGZjc0FBQUFBNEFBQUFEUCsvMFhaMTRmeFkvNy9OUitIZ2RRRC92OUNhQlJyNlpBQUFBRGdBQUFBUC84QUFBQUFBQUFQL3dBQUFBQUFBQS8vQUFBQUFBQUFBQUFBQU9BQUFBQTMvd0FBQUFBQUFBZi9BQUFBQUFBQUIvOEFBQUFBQUFBQUFBQkFJQUFBQUJBQVFBQ1FBQUFBVnVZVzFsY3dBQUFCQUFBQUFIQUFRQUNRQUFBQVIwWlhKdEFBUUFDUUFBQUFobGMzUnBiV0YwWlFBRUFBa0FBQUFKYzNSa0xtVnljbTl5QUFRQUNRQUFBQWx6ZEdGMGFYTjBhV01BQkFBSkFBQUFCM0F1ZG1Gc2RXVUFCQUFKQUFBQUNHTnZibVl1Ykc5M0FBUUFDUUFBQUFsamIyNW1MbWhwWjJnQUFBUUNBQUFBQVFBRUFBa0FBQUFKY205M0xtNWhiV1Z6QUFBQURRQUFBQUtBQUFBQS8vLy8vUUFBQkFJQUFBQUJBQVFBQ1FBQUFBVmpiR0Z6Y3dBQUFCQUFBQUFCQUFRQUNRQUFBQXBrWVhSaExtWnlZVzFsQUFBQS9nQUFCQUlBQUFBQkFBUUFDUUFBQUFkdmNIUnBiMjV6QUFBQ0V3QUFBQVVBQUFBUUFBQUFBUUFFQUFrQUFBQUJjZ0FBQUJBQUFBQUJBQVFBQ1FBQUFCWmpaV3hzWDNSNWNHVmZZMmRmYlc5c1pXTjFiR0Z5QUFBQUNnQUFBQUVBQUFBQUFBQUFEUUFBQUFFQUFBQURBQUFBRFFBQUFBRUFBQUFIQUFBRUFnQUFBdjhBQUFBUUFBQUFCUUFFQUFrQUFBQUdaVzVuYVc1bEFBUUFDUUFBQUFWc1lXSmxiQUFFQUFrQUFBQU9jbTkzYm1GdFpYTXVjSEpwYm5RQUJBQUpBQUFBQ25KdmQzTXVkRzkwWVd3QUJBQUpBQUFBQ21OdmJITXVkRzkwWVd3QUFBRCtBQUFBL2c9PSJ9 -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"molecular_subtypeEPN, ST RELA","2":"15.99677","3":"8987.133","4":"0.001779963","5":"0.9985798","6":"-Inf","7":"Inf"},{"1":"molecular_subtypeEPN, ST YAP1","2":"17.43428","3":"8987.133","4":"0.001939915","5":"0.9984522","6":"-Inf","7":"Inf"},{"1":"molecular_subtypeEPN, To be classified","2":"16.29276","3":"8987.133","4":"0.001812899","5":"0.9985535","6":"-Inf","7":"Inf"}],"options":{"columns":{"min":{},"max":[10],"total":[7]},"rows":{"min":[10],"max":[10],"total":[3]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiPT09PT09PT09PT09PT0gSGlnaC1ncmFkZSBnbGlvbWEgYXN0cm9jeXRvbWEgPT09PT09PT09PT09PT09PT09XG4ifQ== -->
-<pre><code>============== High-grade glioma astrocytoma ==================</code></pre>
+<!-- rnb-message-begin eyJkYXRhIjoiVGVzdGluZyBtb2RlbDogc3Vydml2YWw6OlN1cnYoT1NfeWVhcnMsIE9TX3N0YXR1cykgfiBtb2xlY3VsYXJfc3VidHlwZSB3aXRoIGNveC5yZWdcbiJ9 -->
+<pre><code>Testing model: survival::Surv(OS_years, OS_status) ~ molecular_subtype with cox.reg</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZyBpbiBmaXR0ZXIoWCwgWSwgc3RyYXRzLCBvZmZzZXQsIGluaXQsIGNvbnRyb2wsIHdlaWdodHMgPSB3ZWlnaHRzLCA6XG5Mb2dsaWsgY29udmVyZ2VkIGJlZm9yZSB2YXJpYWJsZSA0IDsgY29lZmZpY2llbnQgbWF5IGJlIGluZmluaXRlLlxuIn0= -->
+<pre><code>Warning in fitter(X, Y, strats, offset, init, control, weights = weights, :
+Loglik converged before variable 4 ; coefficient may be infinite.</code></pre>
+<!-- rnb-warning-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIyBBIHRpYmJsZTogNCB4IDdcbiAgdGVybSAgICAgICAgICAgICAgZXN0aW1hdGUgc3RkLmVycm9yIHN0YXRpc3RpYyBwLnZhbHVlIGNvbmYubG93IGNvbmYuaGlnaFxuICA8Y2hyPiAgICAgICAgICAgICAgICA8ZGJsPiAgICAgPGRibD4gICAgIDxkYmw+ICAgPGRibD4gICAgPGRibD4gICAgIDxkYmw+XG4xIG1vbGVjdWxhcl9zdWJ0eXDigKYgICAtMC4zNTMgICAgIDAuNTkxICAtMC41OTggICAgIDAuNTUwICAgLTEuNTEgICAgICAwLjgwNVxuMiBtb2xlY3VsYXJfc3VidHlw4oCmICAgIDAuMTYzICAgICAwLjY5MSAgIDAuMjM2ICAgICAwLjgxMyAgIC0xLjE5ICAgICAgMS41MiBcbjMgbW9sZWN1bGFyX3N1YnR5cOKApiAgICAwLjc0NSAgICAgMC42NDcgICAxLjE1ICAgICAgMC4yNDkgICAtMC41MjIgICAgIDIuMDEgXG40IG1vbGVjdWxhcl9zdWJ0eXDigKYgIC0xNy4zICAgIDQyOTkuICAgICAtMC4wMDQwMiAgIDAuOTk3IC1JbmYgICAgICAgSW5mICAgIFxuIn0= -->
+<pre><code># A tibble: 4 x 7
+  term              estimate std.error statistic p.value conf.low conf.high
+  &lt;chr&gt;                &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1 molecular_subtyp…   -0.353     0.591  -0.598     0.550   -1.51      0.805
+2 molecular_subtyp…    0.163     0.691   0.236     0.813   -1.19      1.52 
+3 molecular_subtyp…    0.745     0.647   1.15      0.249   -0.522     2.01 
+4 molecular_subtyp…  -17.3    4299.     -0.00402   0.997 -Inf       Inf    </code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MiwibnJvdyI6OH0sInJkZiI6IlVrUllNd3BZQ2dBQUFBTUFBd1lBQUFNRkFBQUFBQVZWVkVZdE9BQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFJQUFBQVFBQUFBQ0FBRUFBa0FBQUFMU0VkSExDQklNeUJITXpVQUJBQUpBQUFBRmtoSFJ5d2dTRE1nUnpNMUxDQlVVRFV6SUd4dmMzTUFCQUFKQUFBQUVFaEhSeXdnU0RNZ2QybHNaSFI1Y0dVQUJBQUpBQUFBSUVoSFJ5d2dTRE1nZDJsc1pIUjVjR1VzSUZSUU5UTWdZV04wYVhaaGRHVmtBQVFBQ1FBQUFCdElSMGNzSUVneklIZHBiR1IwZVhCbExDQlVVRFV6SUd4dmMzTUFCQUFKQUFBQUUwaEhSeXdnU1VSSUxDQlVVRFV6SUd4dmMzTUFCQUFKQUFBQUZVaEhSeXdnVkc4Z1ltVWdZMnhoYzNOcFptbGxaQUFFQUFrQUFBQWdTRWRITENCVWJ5QmlaU0JqYkdGemMybG1hV1ZrTENCVVVEVXpJR3h2YzNNQUFBQU5BQUFBQ0FBQUFBSUFBQUFCQUFBQUN3QUFBQU1BQUFBSEFBQUFBUUFBQUE4QUFBQUJBQUFFQWdBQUFBRUFCQUFKQUFBQUJXNWhiV1Z6QUFBQUVBQUFBQUlBQkFBSkFBQUFFVzF2YkdWamRXeGhjbDl6ZFdKMGVYQmxBQVFBQ1FBQUFBRnVBQUFFQWdBQUFBRUFCQUFKQUFBQUNYSnZkeTV1WVcxbGN3QUFBQTBBQUFBQ2dBQUFBUC8vLy9nQUFBUUNBQUFBQVFBRUFBa0FBQUFGWTJ4aGMzTUFBQUFRQUFBQUFRQUVBQWtBQUFBS1pHRjBZUzVtY21GdFpRQUFBUDRBQUFRQ0FBQUFBUUFFQUFrQUFBQUhiM0IwYVc5dWN3QUFBaE1BQUFBRkFBQUFFQUFBQUFFQUJBQUpBQUFBQVhJQUFBQVFBQUFBQVFBRUFBa0FBQUFXWTJWc2JGOTBlWEJsWDJOblgyMXZiR1ZqZFd4aGNnQUFBQW9BQUFBQkFBQUFBQUFBQUEwQUFBQUJBQUFBQ0FBQUFBMEFBQUFCQUFBQUFnQUFCQUlBQUFML0FBQUFFQUFBQUFVQUJBQUpBQUFBQm1WdVoybHVaUUFFQUFrQUFBQUZiR0ZpWld3QUJBQUpBQUFBRG5KdmQyNWhiV1Z6TG5CeWFXNTBBQVFBQ1FBQUFBcHliM2R6TG5SdmRHRnNBQVFBQ1FBQUFBcGpiMnh6TG5SdmRHRnNBQUFBL2dBQUFQND0ifQ== -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["molecular_subtype"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"HGG, H3 G35","2":"2"},{"1":"HGG, H3 G35, TP53 loss","2":"1"},{"1":"HGG, H3 wildtype","2":"11"},{"1":"HGG, H3 wildtype, TP53 activated","2":"3"},{"1":"HGG, H3 wildtype, TP53 loss","2":"7"},{"1":"HGG, IDH, TP53 loss","2":"1"},{"1":"HGG, To be classified","2":"15"},{"1":"HGG, To be classified, TP53 loss","2":"1"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[8]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiVGVzdGluZyBtb2RlbDogc3Vydml2YWw6OlN1cnYoT1NfeWVhcnMsIE9TX3N0YXR1cykgfiBtb2xlY3VsYXJfc3VidHlwZSB3aXRoIGNveC5yZWdcbkxvZ2xpayBjb252ZXJnZWQgYmVmb3JlIHZhcmlhYmxlICAxLDIsMyw0LDUgOyBjb2VmZmljaWVudCBtYXkgYmUgaW5maW5pdGUuIFxuIn0= -->
-<pre><code>Testing model: survival::Surv(OS_years, OS_status) ~ molecular_subtype with cox.reg
-Loglik converged before variable  1,2,3,4,5 ; coefficient may be infinite. </code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6NywibnJvdyI6NX0sInJkZiI6IlVrUllNd3BZQ2dBQUFBTUFBd1lBQUFNRkFBQUFBQVZWVkVZdE9BQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFjQUFBQVFBQUFBQlFBRUFBa0FBQUFoYlc5c1pXTjFiR0Z5WDNOMVluUjVjR1ZJUjBjc0lFZ3pJSGRwYkdSMGVYQmxBQVFBQ1FBQUFERnRiMnhsWTNWc1lYSmZjM1ZpZEhsd1pVaEhSeXdnU0RNZ2QybHNaSFI1Y0dVc0lGUlFOVE1nWVdOMGFYWmhkR1ZrQUFRQUNRQUFBQ3h0YjJ4bFkzVnNZWEpmYzNWaWRIbHdaVWhIUnl3Z1NETWdkMmxzWkhSNWNHVXNJRlJRTlRNZ2JHOXpjd0FFQUFrQUFBQW1iVzlzWldOMWJHRnlYM04xWW5SNWNHVklSMGNzSUZSdklHSmxJR05zWVhOemFXWnBaV1FBQkFBSkFBQUFNVzF2YkdWamRXeGhjbDl6ZFdKMGVYQmxTRWRITENCVWJ5QmlaU0JqYkdGemMybG1hV1ZrTENCVVVEVXpJR3h2YzNNQUFBQU9BQUFBQlVBektZTTdaelBUUUROdEErd3FyNjlBTkV6M0FZZmpta0EwUVViL242cWZRREtiTU1YbHU4NEFBQUFPQUFBQUJVQytUbWs3NFhFclFMNU9hVDJsd0RKQXZrNXBQQWdUb0VDK1Rtazc1cDNQUUw1T2FUN2ZxVzhBQUFBT0FBQUFCVDlrTzZuaHk1T3BQMlNDOEZKZmQ3Zy9aVzluYnBIUGFqOWxZeEEyYThaZlAyT2xZenBtY0xRQUFBQU9BQUFBQlQvdjc5czdCNHZxUCsvdm9seUZuUEEvNys3bHNLYUZ3RC92N3UrSlZZM29QKy93VXlJVVRyWUFBQUFPQUFBQUJmL3dBQUFBQUFBQS8vQUFBQUFBQUFELzhBQUFBQUFBQVAvd0FBQUFBQUFBLy9BQUFBQUFBQUFBQUFBT0FBQUFCWC93QUFBQUFBQUFmL0FBQUFBQUFBQi84QUFBQUFBQUFIL3dBQUFBQUFBQWYvQUFBQUFBQUFBQUFBUUNBQUFBQVFBRUFBa0FBQUFGYm1GdFpYTUFBQUFRQUFBQUJ3QUVBQWtBQUFBRWRHVnliUUFFQUFrQUFBQUlaWE4wYVcxaGRHVUFCQUFKQUFBQUNYTjBaQzVsY25KdmNnQUVBQWtBQUFBSmMzUmhkR2x6ZEdsakFBUUFDUUFBQUFkd0xuWmhiSFZsQUFRQUNRQUFBQWhqYjI1bUxteHZkd0FFQUFrQUFBQUpZMjl1Wmk1b2FXZG9BQUFFQWdBQUFBRUFCQUFKQUFBQUNYSnZkeTV1WVcxbGN3QUFBQTBBQUFBQ2dBQUFBUC8vLy9zQUFBUUNBQUFBQVFBRUFBa0FBQUFGWTJ4aGMzTUFBQUFRQUFBQUFRQUVBQWtBQUFBS1pHRjBZUzVtY21GdFpRQUFBUDRBQUFRQ0FBQUFBUUFFQUFrQUFBQUhiM0IwYVc5dWN3QUFBaE1BQUFBRkFBQUFFQUFBQUFFQUJBQUpBQUFBQVhJQUFBQVFBQUFBQVFBRUFBa0FBQUFXWTJWc2JGOTBlWEJsWDJOblgyMXZiR1ZqZFd4aGNnQUFBQW9BQUFBQkFBQUFBQUFBQUEwQUFBQUJBQUFBQlFBQUFBMEFBQUFCQUFBQUJ3QUFCQUlBQUFML0FBQUFFQUFBQUFVQUJBQUpBQUFBQm1WdVoybHVaUUFFQUFrQUFBQUZiR0ZpWld3QUJBQUpBQUFBRG5KdmQyNWhiV1Z6TG5CeWFXNTBBQVFBQ1FBQUFBcHliM2R6TG5SdmRHRnNBQVFBQ1FBQUFBcGpiMnh6TG5SdmRHRnNBQUFBL2dBQUFQND0ifQ== -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"molecular_subtypeHGG, H3 wildtype","2":"19.16216","3":"7758.411","4":"0.002469856","5":"0.9980293","6":"-Inf","7":"Inf"},{"1":"molecular_subtypeHGG, H3 wildtype, TP53 activated","2":"19.42584","3":"7758.411","4":"0.002503843","5":"0.9980022","6":"-Inf","7":"Inf"},{"1":"molecular_subtypeHGG, H3 wildtype, TP53 loss","2":"20.30064","3":"7758.411","4":"0.002616598","5":"0.9979123","6":"-Inf","7":"Inf"},{"1":"molecular_subtypeHGG, To be classified","2":"20.25499","3":"7758.411","4":"0.002610714","5":"0.9979170","6":"-Inf","7":"Inf"},{"1":"molecular_subtypeHGG, To be classified, TP53 loss","2":"18.60621","3":"7758.411","4":"0.002398199","5":"0.9980865","6":"-Inf","7":"Inf"}],"options":{"columns":{"min":{},"max":[10],"total":[7]},"rows":{"min":[10],"max":[10],"total":[5]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiPT09PT09PT09PT09PT0gTWVkdWxsb2JsYXN0b21hID09PT09PT09PT09PT09PT09PVxuIn0= -->
-<pre><code>============== Medulloblastoma ==================</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MiwibnJvdyI6NX0sInJkZiI6IlVrUllNd3BZQ2dBQUFBTUFBd1lBQUFNRkFBQUFBQVZWVkVZdE9BQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFJQUFBQVFBQUFBQlFBRUFBa0FBQUFLVFVJc0lFZHliM1Z3TXdBRUFBa0FBQUFLVFVJc0lFZHliM1Z3TkFBRUFBa0FBQUFIVFVJc0lGTklTQUFFQUFrQUFBQVVUVUlzSUZSdklHSmxJR05zWVhOemFXWnBaV1FBQkFBSkFBQUFCMDFDTENCWFRsUUFBQUFOQUFBQUJRQUFBQXNBQUFBd0FBQUFGd0FBQUJBQUFBQUtBQUFFQWdBQUFBRUFCQUFKQUFBQUJXNWhiV1Z6QUFBQUVBQUFBQUlBQkFBSkFBQUFFVzF2YkdWamRXeGhjbDl6ZFdKMGVYQmxBQVFBQ1FBQUFBRnVBQUFFQWdBQUFBRUFCQUFKQUFBQUNYSnZkeTV1WVcxbGN3QUFBQTBBQUFBQ2dBQUFBUC8vLy9zQUFBUUNBQUFBQVFBRUFBa0FBQUFGWTJ4aGMzTUFBQUFRQUFBQUFRQUVBQWtBQUFBS1pHRjBZUzVtY21GdFpRQUFBUDRBQUFRQ0FBQUFBUUFFQUFrQUFBQUhiM0IwYVc5dWN3QUFBaE1BQUFBRkFBQUFFQUFBQUFFQUJBQUpBQUFBQVhJQUFBQVFBQUFBQVFBRUFBa0FBQUFXWTJWc2JGOTBlWEJsWDJOblgyMXZiR1ZqZFd4aGNnQUFBQW9BQUFBQkFBQUFBQUFBQUEwQUFBQUJBQUFBQlFBQUFBMEFBQUFCQUFBQUFnQUFCQUlBQUFML0FBQUFFQUFBQUFVQUJBQUpBQUFBQm1WdVoybHVaUUFFQUFrQUFBQUZiR0ZpWld3QUJBQUpBQUFBRG5KdmQyNWhiV1Z6TG5CeWFXNTBBQVFBQ1FBQUFBcHliM2R6TG5SdmRHRnNBQVFBQ1FBQUFBcGpiMnh6TG5SdmRHRnNBQUFBL2dBQUFQND0ifQ== -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["molecular_subtype"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"MB, Group3","2":"11"},{"1":"MB, Group4","2":"48"},{"1":"MB, SHH","2":"23"},{"1":"MB, To be classified","2":"16"},{"1":"MB, WNT","2":"10"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[5]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiVGVzdGluZyBtb2RlbDogc3Vydml2YWw6OlN1cnYoT1NfeWVhcnMsIE9TX3N0YXR1cykgfiBtb2xlY3VsYXJfc3VidHlwZSB3aXRoIGNveC5yZWdcbkxvZ2xpayBjb252ZXJnZWQgYmVmb3JlIHZhcmlhYmxlICA0IDsgY29lZmZpY2llbnQgbWF5IGJlIGluZmluaXRlLiBcbiJ9 -->
-<pre><code>Testing model: survival::Surv(OS_years, OS_status) ~ molecular_subtype with cox.reg
-Loglik converged before variable  4 ; coefficient may be infinite. </code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6NywibnJvdyI6NH0sInJkZiI6IlVrUllNd3BZQ2dBQUFBTUFBd1lBQUFNRkFBQUFBQVZWVkVZdE9BQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFjQUFBQVFBQUFBQkFBRUFBa0FBQUFiYlc5c1pXTjFiR0Z5WDNOMVluUjVjR1ZOUWl3Z1IzSnZkWEEwQUFRQUNRQUFBQmh0YjJ4bFkzVnNZWEpmYzNWaWRIbHdaVTFDTENCVFNFZ0FCQUFKQUFBQUpXMXZiR1ZqZFd4aGNsOXpkV0owZVhCbFRVSXNJRlJ2SUdKbElHTnNZWE56YVdacFpXUUFCQUFKQUFBQUdHMXZiR1ZqZFd4aGNsOXpkV0owZVhCbFRVSXNJRmRPVkFBQUFBNEFBQUFFdjlhVkdUU3lCVWMveE9KbmN3YWpKRC9uMmlpZE5CQ2J3REZNMkJrOEFNUUFBQUFPQUFBQUJEL2k1WEFPM1oreVArWWdFSU9tYUtnLzVMR3p1TmxveTBDd3kwUzhTdHpXQUFBQURnQUFBQVMvNHg4R2I2ejdVVC9PTkpCdW5HK0VQL0p4RWhqRzQ5Sy9jSHR6QnpCSHBBQUFBQTRBQUFBRVArR2EwWXJYVEswLzZnZkY2U3IrdUQvUDRadDQ2V1ZiUCsvbHNzQlFJcG9BQUFBT0FBQUFCTC80S2VCZ3ZPZUF2L01TWVhZcXhEQy80TFVsaEQ4VFl2L3dBQUFBQUFBQUFBQUFEZ0FBQUFRLzZiNm5qTWZKdVQvNFN2dFM3R3o2UUFBYVhhK3B6U1ovOEFBQUFBQUFBQUFBQkFJQUFBQUJBQVFBQ1FBQUFBVnVZVzFsY3dBQUFCQUFBQUFIQUFRQUNRQUFBQVIwWlhKdEFBUUFDUUFBQUFobGMzUnBiV0YwWlFBRUFBa0FBQUFKYzNSa0xtVnljbTl5QUFRQUNRQUFBQWx6ZEdGMGFYTjBhV01BQkFBSkFBQUFCM0F1ZG1Gc2RXVUFCQUFKQUFBQUNHTnZibVl1Ykc5M0FBUUFDUUFBQUFsamIyNW1MbWhwWjJnQUFBUUNBQUFBQVFBRUFBa0FBQUFKY205M0xtNWhiV1Z6QUFBQURRQUFBQUtBQUFBQS8vLy8vQUFBQkFJQUFBQUJBQVFBQ1FBQUFBVmpiR0Z6Y3dBQUFCQUFBQUFCQUFRQUNRQUFBQXBrWVhSaExtWnlZVzFsQUFBQS9nQUFCQUlBQUFBQkFBUUFDUUFBQUFkdmNIUnBiMjV6QUFBQ0V3QUFBQVVBQUFBUUFBQUFBUUFFQUFrQUFBQUJjZ0FBQUJBQUFBQUJBQVFBQ1FBQUFCWmpaV3hzWDNSNWNHVmZZMmRmYlc5c1pXTjFiR0Z5QUFBQUNnQUFBQUVBQUFBQUFBQUFEUUFBQUFFQUFBQUVBQUFBRFFBQUFBRUFBQUFIQUFBRUFnQUFBdjhBQUFBUUFBQUFCUUFFQUFrQUFBQUdaVzVuYVc1bEFBUUFDUUFBQUFWc1lXSmxiQUFFQUFrQUFBQU9jbTkzYm1GdFpYTXVjSEpwYm5RQUJBQUpBQUFBQ25KdmQzTXVkRzkwWVd3QUJBQUpBQUFBQ21OdmJITXVkRzkwWVd3QUFBRCtBQUFBL2c9PSJ9 -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["term"],"name":[1],"type":["chr"],"align":["left"]},{"label":["estimate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["std.error"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["conf.low"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["conf.high"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"molecular_subtypeMB, Group4","2":"-0.3528502","3":"0.5905075","4":"-0.59753725","5":"0.5501487","6":"-1.5102237","7":"0.8045233"},{"1":"molecular_subtypeMB, SHH","2":"0.1631593","3":"0.6914141","4":"0.23597913","5":"0.8134489","6":"-1.1919875","7":"1.5183061"},{"1":"molecular_subtypeMB, To be classified","2":"0.7453807","3":"0.6466921","4":"1.15260515","5":"0.2490725","6":"-0.5221126","7":"2.0128740"},{"1":"molecular_subtypeMB, WNT","2":"-17.3001724","3":"4299.2684981","4":"-0.00402398","5":"0.9967893","6":"-Inf","7":"Inf"}],"options":{"columns":{"min":{},"max":[10],"total":[7]},"rows":{"min":[10],"max":[10],"total":[4]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <div id="session-info" class="section level4">
 <h4>Session Info</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoic2Vzc2lvbkluZm8oKSJ9 -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgIFxuIFszXSBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgIFxuWzExXSBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcbiBbMV0gc3Vydm1pbmVyXzAuNC40ICAgZm9yY2F0c18wLjQuMCAgICAgc3RyaW5ncl8xLjQuMCAgICAgZHBseXJfMC44LjMgICAgICBcbiBbNV0gcHVycnJfMC4zLjIgICAgICAgcmVhZHJfMS4zLjEgICAgICAgdGlkeXJfMC44LjMgICAgICAgdGliYmxlXzIuMS4zICAgICBcbiBbOV0gdGlkeXZlcnNlXzEuMi4xICAgZ2dwdWJyXzAuMi4xICAgICAgbWFncml0dHJfMS41ICAgICAgZ2dwbG90Ml8zLjIuMCAgICBcblsxM10gc3Vydml2YWxfMi40NC0xLjFcblxubG9hZGVkIHZpYSBhIG5hbWVzcGFjZSAoYW5kIG5vdCBhdHRhY2hlZCk6XG4gWzFdIHpvb18xLjgtNiAgICAgICAgIHRpZHlzZWxlY3RfMC4yLjUgIHhmdW5fMC44ICAgICAgICAgIHNwbGluZXNfMy42LjAgICAgXG4gWzVdIGhhdmVuXzIuMS4xICAgICAgIGxhdHRpY2VfMC4yMC0zOCAgIGNvbG9yc3BhY2VfMS40LTEgIGdlbmVyaWNzXzAuMC4yICAgXG4gWzldIGh0bWx0b29sc18wLjMuNiAgIGJhc2U2NGVuY18wLjEtMyAgIHN1cnZNaXNjXzAuNS41ICAgIHJsYW5nXzAuNC4wICAgICAgXG5bMTNdIHBpbGxhcl8xLjQuMiAgICAgIGdsdWVfMS4zLjEgICAgICAgIHdpdGhyXzIuMS4yICAgICAgIG1vZGVscl8wLjEuNCAgICAgXG5bMTddIHJlYWR4bF8xLjMuMSAgICAgIG11bnNlbGxfMC41LjAgICAgIGdnc2lnbmlmXzAuNS4wICAgIGd0YWJsZV8wLjMuMCAgICAgXG5bMjFdIGNlbGxyYW5nZXJfMS4xLjAgIHJ2ZXN0XzAuMy40ICAgICAgIGV2YWx1YXRlXzAuMTQgICAgIGtuaXRyXzEuMjMgICAgICAgXG5bMjVdIGJyb29tXzAuNS4yICAgICAgIFJjcHBfMS4wLjEgICAgICAgIHh0YWJsZV8xLjgtNCAgICAgIHNjYWxlc18xLjAuMCAgICAgXG5bMjldIGJhY2twb3J0c18xLjEuNCAgIGNtcHJza18yLjItOCAgICAgIGpzb25saXRlXzEuNiAgICAgIGttLmNpXzAuNS0yICAgICAgXG5bMzNdIGdyaWRFeHRyYV8yLjMgICAgIGhtc18wLjQuMiAgICAgICAgIGRpZ2VzdF8wLjYuMjAgICAgIHN0cmluZ2lfMS40LjMgICAgXG5bMzddIEtNc3Vydl8wLjEtNSAgICAgIGdyaWRfMy42LjAgICAgICAgIHJwcm9qcm9vdF8xLjMtMiAgIGNsaV8xLjEuMCAgICAgICAgXG5bNDFdIHRvb2xzXzMuNi4wICAgICAgIGxhenlldmFsXzAuMi4yICAgIGNyYXlvbl8xLjMuNCAgICAgIHBrZ2NvbmZpZ18yLjAuMiAgXG5bNDVdIE1hdHJpeF8xLjItMTcgICAgIGRhdGEudGFibGVfMS4xMi4yIHhtbDJfMS4yLjAgICAgICAgIGx1YnJpZGF0ZV8xLjcuNCAgXG5bNDldIGFzc2VydHRoYXRfMC4yLjEgIHJtYXJrZG93bl8xLjEzICAgIGh0dHJfMS40LjAgICAgICAgIHJzdHVkaW9hcGlfMC4xMCAgXG5bNTNdIFI2XzIuNC4wICAgICAgICAgIG5sbWVfMy4xLTE0MCAgICAgIGNvbXBpbGVyXzMuNi4wICAgXG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgIFxuIFszXSBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgIFxuWzExXSBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcbiBbMV0gc3Vydm1pbmVyXzAuNC40ICAgZm9yY2F0c18wLjQuMCAgICAgc3RyaW5ncl8xLjQuMCAgICBcbiBbNF0gZHBseXJfMC44LjMgICAgICAgcHVycnJfMC4zLjIgICAgICAgcmVhZHJfMS4zLjEgICAgICBcbiBbN10gdGlkeXJfMC44LjMgICAgICAgdGliYmxlXzIuMS4zICAgICAgdGlkeXZlcnNlXzEuMi4xICBcblsxMF0gZ2dwdWJyXzAuMi4xICAgICAgbWFncml0dHJfMS41ICAgICAgZ2dwbG90Ml8zLjIuMCAgICBcblsxM10gc3Vydml2YWxfMi40NC0xLjFcblxubG9hZGVkIHZpYSBhIG5hbWVzcGFjZSAoYW5kIG5vdCBhdHRhY2hlZCk6XG4gWzFdIFJjcHBfMS4wLjEgICAgICAgIGx1YnJpZGF0ZV8xLjcuNCAgIGxhdHRpY2VfMC4yMC0zOCAgXG4gWzRdIHpvb18xLjgtNiAgICAgICAgIHplYWxsb3RfMC4xLjAgICAgIGFzc2VydHRoYXRfMC4yLjEgXG4gWzddIHJwcm9qcm9vdF8xLjMtMiAgIGRpZ2VzdF8wLjYuMjAgICAgIHV0ZjhfMS4xLjQgICAgICAgXG5bMTBdIFI2XzIuNC4wICAgICAgICAgIGNlbGxyYW5nZXJfMS4xLjAgIGJhY2twb3J0c18xLjEuNCAgXG5bMTNdIGV2YWx1YXRlXzAuMTQgICAgIGh0dHJfMS40LjAgICAgICAgIHBpbGxhcl8xLjQuMiAgICAgXG5bMTZdIHJsYW5nXzAuNC4wICAgICAgIGxhenlldmFsXzAuMi4yICAgIHJlYWR4bF8xLjMuMSAgICAgXG5bMTldIHJzdHVkaW9hcGlfMC4xMCAgIGRhdGEudGFibGVfMS4xMi4yIE1hdHJpeF8xLjItMTcgICAgXG5bMjJdIHJtYXJrZG93bl8xLjEzICAgIHNwbGluZXNfMy42LjAgICAgIG11bnNlbGxfMC41LjAgICAgXG5bMjVdIGJyb29tXzAuNS4yICAgICAgIGNvbXBpbGVyXzMuNi4wICAgIG1vZGVscl8wLjEuNCAgICAgXG5bMjhdIHhmdW5fMC44ICAgICAgICAgIHBrZ2NvbmZpZ18yLjAuMiAgIGJhc2U2NGVuY18wLjEtMyAgXG5bMzFdIGh0bWx0b29sc18wLjMuNiAgIHRpZHlzZWxlY3RfMC4yLjUgIGdyaWRFeHRyYV8yLjMgICAgXG5bMzRdIGttLmNpXzAuNS0yICAgICAgIGZhbnNpXzAuNC4wICAgICAgIGNyYXlvbl8xLjMuNCAgICAgXG5bMzddIHdpdGhyXzIuMS4yICAgICAgIGdyaWRfMy42LjAgICAgICAgIG5sbWVfMy4xLTE0MCAgICAgXG5bNDBdIGpzb25saXRlXzEuNiAgICAgIHh0YWJsZV8xLjgtNCAgICAgIGd0YWJsZV8wLjMuMCAgICAgXG5bNDNdIEtNc3Vydl8wLjEtNSAgICAgIHNjYWxlc18xLjAuMCAgICAgIGNsaV8xLjEuMCAgICAgICAgXG5bNDZdIHN0cmluZ2lfMS40LjMgICAgIGdnc2lnbmlmXzAuNS4wICAgIHhtbDJfMS4yLjAgICAgICAgXG5bNDldIHN1cnZNaXNjXzAuNS41ICAgIGdlbmVyaWNzXzAuMC4yICAgIHZjdHJzXzAuMS4wICAgICAgXG5bNTJdIHRvb2xzXzMuNi4wICAgICAgIGNtcHJza18yLjItOCAgICAgIGdsdWVfMS4zLjEgICAgICAgXG5bNTVdIGhtc18wLjQuMiAgICAgICAgIHlhbWxfMi4yLjAgICAgICAgIGNvbG9yc3BhY2VfMS40LTEgXG5bNThdIHJ2ZXN0XzAuMy40ICAgICAgIGtuaXRyXzEuMjMgICAgICAgIGhhdmVuXzIuMS4xICAgICAgXG4ifQ== -->
 <pre><code>R version 3.6.0 (2019-04-26)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Debian GNU/Linux 9 (stretch)
@@ -2381,26 +2416,33 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] survminer_0.4.4   forcats_0.4.0     stringr_1.4.0     dplyr_0.8.3      
- [5] purrr_0.3.2       readr_1.3.1       tidyr_0.8.3       tibble_2.1.3     
- [9] tidyverse_1.2.1   ggpubr_0.2.1      magrittr_1.5      ggplot2_3.2.0    
+ [1] survminer_0.4.4   forcats_0.4.0     stringr_1.4.0    
+ [4] dplyr_0.8.3       purrr_0.3.2       readr_1.3.1      
+ [7] tidyr_0.8.3       tibble_2.1.3      tidyverse_1.2.1  
+[10] ggpubr_0.2.1      magrittr_1.5      ggplot2_3.2.0    
 [13] survival_2.44-1.1
 
 loaded via a namespace (and not attached):
- [1] zoo_1.8-6         tidyselect_0.2.5  xfun_0.8          splines_3.6.0    
- [5] haven_2.1.1       lattice_0.20-38   colorspace_1.4-1  generics_0.0.2   
- [9] htmltools_0.3.6   base64enc_0.1-3   survMisc_0.5.5    rlang_0.4.0      
-[13] pillar_1.4.2      glue_1.3.1        withr_2.1.2       modelr_0.1.4     
-[17] readxl_1.3.1      munsell_0.5.0     ggsignif_0.5.0    gtable_0.3.0     
-[21] cellranger_1.1.0  rvest_0.3.4       evaluate_0.14     knitr_1.23       
-[25] broom_0.5.2       Rcpp_1.0.1        xtable_1.8-4      scales_1.0.0     
-[29] backports_1.1.4   cmprsk_2.2-8      jsonlite_1.6      km.ci_0.5-2      
-[33] gridExtra_2.3     hms_0.4.2         digest_0.6.20     stringi_1.4.3    
-[37] KMsurv_0.1-5      grid_3.6.0        rprojroot_1.3-2   cli_1.1.0        
-[41] tools_3.6.0       lazyeval_0.2.2    crayon_1.3.4      pkgconfig_2.0.2  
-[45] Matrix_1.2-17     data.table_1.12.2 xml2_1.2.0        lubridate_1.7.4  
-[49] assertthat_0.2.1  rmarkdown_1.13    httr_1.4.0        rstudioapi_0.10  
-[53] R6_2.4.0          nlme_3.1-140      compiler_3.6.0   </code></pre>
+ [1] Rcpp_1.0.1        lubridate_1.7.4   lattice_0.20-38  
+ [4] zoo_1.8-6         zeallot_0.1.0     assertthat_0.2.1 
+ [7] rprojroot_1.3-2   digest_0.6.20     utf8_1.1.4       
+[10] R6_2.4.0          cellranger_1.1.0  backports_1.1.4  
+[13] evaluate_0.14     httr_1.4.0        pillar_1.4.2     
+[16] rlang_0.4.0       lazyeval_0.2.2    readxl_1.3.1     
+[19] rstudioapi_0.10   data.table_1.12.2 Matrix_1.2-17    
+[22] rmarkdown_1.13    splines_3.6.0     munsell_0.5.0    
+[25] broom_0.5.2       compiler_3.6.0    modelr_0.1.4     
+[28] xfun_0.8          pkgconfig_2.0.2   base64enc_0.1-3  
+[31] htmltools_0.3.6   tidyselect_0.2.5  gridExtra_2.3    
+[34] km.ci_0.5-2       fansi_0.4.0       crayon_1.3.4     
+[37] withr_2.1.2       grid_3.6.0        nlme_3.1-140     
+[40] jsonlite_1.6      xtable_1.8-4      gtable_0.3.0     
+[43] KMsurv_0.1-5      scales_1.0.0      cli_1.1.0        
+[46] stringi_1.4.3     ggsignif_0.5.0    xml2_1.2.0       
+[49] survMisc_0.5.5    generics_0.0.2    vctrs_0.1.0      
+[52] tools_3.6.0       cmprsk_2.2-8      glue_1.3.1       
+[55] hms_0.4.2         yaml_2.2.0        colorspace_1.4-1 
+[58] rvest_0.3.4       knitr_1.23        haven_2.1.1      </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 </div>
