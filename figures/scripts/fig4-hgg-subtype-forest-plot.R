@@ -31,13 +31,14 @@ survival_result <- read_rds(
 forest_pdf <- file.path(output_dir, "forest_hgg_subtypes.pdf")
 
 ## Make plot --------------------------------------------------
+ref_term <- "molecular_subtypeDMG, H3 K28"
 
 # Set up ordering and labels for y-axis
 term_order <- rev(c("molecular_subtypeHGG, H3 wildtype",
                     "molecular_subtypeHGG, H3 wildtype, TP53 loss",
                     "molecular_subtypeDMG, H3 K28, TP53 activated",
                     "molecular_subtypeDMG, H3 K28, TP53 loss",
-                    "molecular_subtypeDMG, H3 K28"))
+                    ref_term))
 
 term_labels <- rev(c("HGG - H3 wildtype",
                      "HGG - H3 wildtype, TP53 loss",
@@ -53,12 +54,13 @@ survival_n <- broom::glance(survival_result) %>%
 # Convert survival model result to data frame, and exponentiate estimates/CIs to get HRs
 survival_df <- broom::tidy(survival_result) %>%
   # Add DMG, H3 K28 as reference
-  add_row(term = "molecular_subtypeDMG, H3 K28", 
+  add_row(term = ref_term, 
           estimate = 0) %>% 
   mutate(estimate = exp(estimate),
          conf.low = exp(conf.low),
          conf.high = exp(conf.high), 
          # significance indicator column for filling points.
+         # Note T/F these are strings for type compatibility with "REF"
          significant = case_when(p.value <= 0.05 ~ "TRUE", 
                                  p.value > 0.05 ~ "FALSE", 
                                  is.na(p.value) ~ "REF"),
@@ -70,6 +72,8 @@ survival_df <- broom::tidy(survival_result) %>%
 
 
 # Forest plot of the model
+# note this warning is OK and EXPECTED because there is no CI for the reference group: 
+#    Removed 1 rows containing missing values (geom_errorbarh).
 forest_plot <- ggplot(survival_df) +
   aes(x = estimate, 
       y = term,
@@ -118,6 +122,8 @@ forest_plot <- ggplot(survival_df) +
 # Accompanying panel with sample sizes, P-values, etc.
 
 # prepare data for panel
+# note this warning is OK and EXPECTED because there is no CI for the reference group: 
+#    Removed 2 rows containing missing values (geom_text). 
 survival_df_spread <- survival_df %>%
   mutate(
     # Clean pvalues into labels. 
@@ -144,8 +150,8 @@ labels_panel <- ggplot(survival_df_spread) +
   geom_text(hjust = 0) +
   labs(
     # hack!
-    subtitle = paste0("                             ",
-                      "HR (95% CI)                              P-value")
+    subtitle = paste0("                    ",
+                      "HR (95% CI)             P-value")
   ) +
   ggpubr::theme_pubr() + 
   # remove axes.
@@ -168,7 +174,7 @@ forest_panels <- cowplot::plot_grid(forest_plot, labels_panel, nrow = 1, rel_wid
 
 
 # Export plot
-ggsave(forest_pdf, forest_panels, width = 15, height = 4)
+ggsave(forest_pdf, forest_panels, width = 10, height = 3)
 
 
 
