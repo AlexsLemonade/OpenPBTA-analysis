@@ -93,7 +93,7 @@ Set up output directories.
 
 ```{r Set up directories}
 data_dir <- file.path("..", "..", "data")
-results_dir <- "results"
+results_dir <- file.path("results", "template")
 plots_dir <- "plots"
 ```
 
