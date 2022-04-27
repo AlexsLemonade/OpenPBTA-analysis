@@ -132,7 +132,8 @@ histologies_table <- histology_df %>%
     molecular_subtype
   ))
 
-# Sheet 3: CNS region definition
+# Sheet 3: CNS region definition based on definitions from [Cassie Kline](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1025). 
+# This is integrated upstream of molecular subtyping
 cns_regions <- tribble(
 ~CNS_region,~primary_site,
 "Hemispheric","Frontal Lobe;Temporal Lobe;Parietal Lobe;Occipital Lobe",
