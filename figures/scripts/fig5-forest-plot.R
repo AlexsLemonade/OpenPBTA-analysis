@@ -17,7 +17,7 @@ if (!dir.exists(output_dir)) {
 }
 
 # Directory with result data to input for plot
-input_dir <- file.path(root_dir, "analyses", "survival-analysis", "results")
+input_dir <- file.path(root_dir, "analyses", "survival-analysis", "results", "immune")
 
 
 ## Input and output files -------------------------------------
@@ -37,6 +37,8 @@ forest_pdf <- file.path(output_dir, "forest_MB_quantiseq_CD274.pdf")
 # This coefficient will therefore NOT be included in the plot, so it must be discussed in text.
 # That said, this point is SIGNIFICANT! It's definitely _much_ greater than 1.
 
+ref_term <- "Tumor resection: Biopsy (ref)"
+
 # Set up ordering and labels for y-axis
 term_order <- rev(c("CD274",
                 "B_cell", 
@@ -47,7 +49,11 @@ term_order <- rev(c("CD274",
                 "NK_cell",
                 "T_cell_CD4_non_regulatory",
                 "T_cell_CD8",               
-                "T_cell_regulatory_Tregs"))
+                "T_cell_regulatory_Tregs",
+                "extent_of_tumor_resectionGross/Near total resection",
+                "extent_of_tumor_resectionPartial resection",
+                "extent_of_tumor_resectionUnavailable",
+                ref_term))
 
 term_labels <- rev(c("CD274 expression (FPKM)",
                 "B cell", 
@@ -58,7 +64,11 @@ term_labels <- rev(c("CD274 expression (FPKM)",
                 "NK cell",
                 "CD4+ T cell (non-regulatory)",
                 "CD8+ T cell",               
-                "Regulatory T cell (Treg)"))
+                "Regulatory T cell (Treg)",
+                "Tumor resection: Total",
+                "Tumor resection: Partial",
+                "Tumor resection: Unknown",
+                ref_term))
 
 
 # Get n and event info from glance outpout
@@ -67,18 +77,23 @@ survival_n <- broom::glance(survival_result) %>%
 
 # Convert survival model result to data frame, and exponentiate estimates/CIs to get HRs
 survival_df <- broom::tidy(survival_result) %>%
+  # add reference
+  add_row(term = ref_term, estimate = 0) %>%
   # remove the unbounded Macrophage_M1:
   filter(term != "Macrophage_M1") %>%
   mutate(estimate = exp(estimate),
          conf.low = exp(conf.low),
          conf.high = exp(conf.high), 
          # significance indicator column for filling points.
-         significant = p.value <= 0.05,
+         # Note T/F these are strings for type compatibility with "REF"
+         significant = case_when(p.value <= 0.05 ~ "TRUE", 
+                                 p.value > 0.05 ~ "FALSE", 
+                                 is.na(p.value) ~ "REF"),
          # y-axis factor re-labeling
          term = factor(term, 
                        levels = term_order,
                        labels = term_labels)
-  )
+         )
 
 
 
@@ -103,7 +118,9 @@ forest_plot <- ggplot(survival_df) +
   ) +
   # Point fill based on sigificance
   scale_fill_manual(
-    values = c("white", "black"),
+    values = c("FALSE" = "white", 
+               "REF" = "gray", 
+               "TRUE" = "black"),
     guide = FALSE # turn off legend
   ) + 
   # Vertical guiding line at 1
@@ -125,6 +142,7 @@ forest_plot <- ggplot(survival_df) +
   # grid makes it easier to follow lines
   cowplot::background_grid()
 
+forest_plot
 
 # Accompanying panel with sample sizes, P-values, etc.
 
@@ -146,7 +164,9 @@ survival_df_spread <- survival_df %>%
   select(term, hr_ci, p_string) %>%
   # this throws a warning but it's ok
   # format tibble for plotting
-  gather(hr_ci:p_string, key = "name", value = "value")
+  gather(hr_ci:p_string, key = "name", value = "value") %>%
+  # remove CI for ref
+  mutate(value = ifelse(grepl("ref", term), NA, value))
 
 labels_panel <- ggplot(survival_df_spread) +
   aes(x = name, y = term, label = value) + 
@@ -154,7 +174,7 @@ labels_panel <- ggplot(survival_df_spread) +
   labs(
     # hack!
     subtitle = paste0("                             ",
-                      "HR (95% CI)                              P-value")
+                      "HR (95% CI)                             P-value")
   ) +
   ggpubr::theme_pubr() + 
   # remove axes.
@@ -177,7 +197,7 @@ forest_panels <- cowplot::plot_grid(forest_plot, labels_panel, nrow = 1, rel_wid
 
 
 # Export plot
-ggsave(forest_pdf, forest_panels, width = 15, height = 4)
+ggsave(forest_pdf, forest_panels, width = 15, height = 4.5)
 
 
 
