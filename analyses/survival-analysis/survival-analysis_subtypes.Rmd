@@ -42,7 +42,7 @@ Set up output directories.
 
 ```{r Set up directories}
 data_dir <- file.path("..", "..", "data")
-results_dir <- "results"
+results_dir <- "results/subtypes"
 plots_dir <- "plots"
 ```
 
