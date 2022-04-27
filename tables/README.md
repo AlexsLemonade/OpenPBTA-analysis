@@ -29,7 +29,7 @@ Table S3: RNA results table
     - Sheet 3: this tables shows the fractions of for various immune cell types in the tumor microenvironment (TME) for each RNA sample as calculated with [`quanTIseq`](https://doi.org/10.1186/s13073-019-0638-6).
         - Input files are from module [immune-deconv](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/immune-deconv)
     
-Table S4: RNA results table
+Table S4: Key Resources
 - Table of all software and their respective versions used for the OpenPBTA project. Of note, this table contains all software in the OpenPBTA docker image utilized within the repository, but not all software was used for the final manuscript.
     - Sheet 1: r_packages
     - Sheet 2: python_libraries
