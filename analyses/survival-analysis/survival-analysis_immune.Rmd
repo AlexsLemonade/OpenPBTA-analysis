@@ -258,7 +258,8 @@ suitable_subtypes
 
 ## Analysis: quantiseq cell type fractions and PDL-1 + extent of tumor resection for each cancer group of interest (no LGG here)
 
-> Most models here are not robust. **Only Medulloblastoma** returns no warning messages.
+> Most models here are not robust. **Only Medulloblastoma** returns no warning messages. 
+> HGG samples do show some cell types with significance and quantifiable CIs: highher B cell fraction is benefit (p = 1.000222e-12), higher myeloid dendritic cell is benefit (p = 2.050876e-04), higher NK cell fraction is a risk (p = 5.008340e-18).
 
 ```{r cell_type_cg}
 
