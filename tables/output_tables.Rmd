@@ -136,12 +136,9 @@ histologies_table <- histology_df %>%
 # This is integrated upstream of molecular subtyping
 
 # CNS_region ~ primary_site matches
-input_cns_matches <- purrr::imap_dfr(jsonlite::fromJSON(CNS_match_json), 
-                                     function(x, name) { tibble::tibble(CNS_region = name, primary_site = x) })
+cns_regions_df <- purrr::imap_dfr(jsonlite::fromJSON(CNS_match_json), 
+                                     function(x, name) { tibble::tibble(CNS_region = name, primary_site = paste0(x, collapse = '|')) })
 
-cns_regions_df <- input_cns_matches %>%
-  group_by(CNS_region) %>%
-  summarise(primary_site = str_c(primary_site, collapse = "|"))
 
 # Combine and output
 list_s1_table <- list(README = readme,
