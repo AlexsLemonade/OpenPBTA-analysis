@@ -214,7 +214,10 @@ ggsave(cg_celltypes_plot_file, cg_plot, width = 14, height = 4.5)
 
 ```{r subtypes_celltypes_plot, fig.width = 8, fig.height = 6}
 # Faceted plot of subtypes, cell types. Jitter points are colored by underlying cancer group.
-subtypes_celltypes_plot <- ggplot(quantiseq_subset) +
+# First, remove cd8_cd4_ratio
+quantiseq_no_ratio <- quantiseq_subset %>%
+  filter(cell_type != "cd8_cd4_ratio")
+subtypes_celltypes_plot <- ggplot(quantiseq_no_ratio) +
   aes(x = molecular_subtype, y = score, color = cancer_group_hex) + 
   geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
   geom_jitter(width = 0.15, size = 0.75, alpha = 0.6) + 
