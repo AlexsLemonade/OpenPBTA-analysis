@@ -107,7 +107,7 @@ quantiseq_spread <- quantiseq %>%
   mutate(cd8_cd4_ratio = `T cell CD8+` / `T cell CD4+ (non-regulatory)`)
 
 quantiseq_gather <- quantiseq_spread %>%  
-  gather(cell_type, score, -c(1:3))
+  gather(cell_type, score, -c(sample, library, method))
 
 # First, find the molecular subtypes in the of interest cancer groups AND excluding unclassified, with >=3 samples
 subtypes_of_interest <- palette_mapping_df %>%
