@@ -47,7 +47,7 @@ telomerase_counts_polya_file <- file.path(analyses_dir, "telomerase-activity-pre
 telomerase_counts_stranded_file <- file.path(analyses_dir, "telomerase-activity-prediction", "results", "TelomeraseScores_PTBAStranded_counts.txt")
 telomerase_fpkm_polya_file <- file.path(analyses_dir, "telomerase-activity-prediction", "results", "TelomeraseScores_PTBAPolya_FPKM.txt")
 telomerase_fpkm_stranded_file <- file.path(analyses_dir, "telomerase-activity-prediction", "results", "TelomeraseScores_PTBAStranded_FPKM.txt")
-
+CNS_match_json <- file.path(working_dir, "input", "CNS_primary_site_match.json")
 
 # define output files and sheet names, when appropriate
 table_1_file <- file.path(results_dir, "Table1-molecular-subtypes.tsv")
@@ -132,24 +132,21 @@ histologies_table <- histology_df %>%
     molecular_subtype
   ))
 
-# Sheet 3: CNS region definition based on definitions from [Cassie Kline](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1025). 
+# Sheet 3: CNS region definition based on definitions from [Cassie Kline](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/tables/input/CNS_primary_site_match.json) with additional manual review of [HGG primary_site](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1025). 
 # This is integrated upstream of molecular subtyping
-cns_regions <- tribble(
-~CNS_region,~primary_site,
-"Hemispheric","Frontal Lobe;Temporal Lobe;Parietal Lobe;Occipital Lobe",
-"Midline","Pons/Brainstem;Brain Stem- Midbrain/Tectum;Brain Stem- Pons;Brain Stem-Medulla;Thalamus;Basal Ganglia;Hippocampus;Pineal Gland",
-"Spine","Spinal Cord- Cervical;Spinal Cord- Thoracic;Spinal Cord- Lumbar/Thecal Sac;Spine NOS",
-"Ventricles","Ventricles",
-"Posterior fossa","Cerebellum/Posterior Fossa",
-"Optic pathway","Optic Pathway",
-"Suprasellar","Suprasellar/Hypothalamic/Pituitary",
-"Other","Meninges/Dura;Other locations NOS;Skull;Cranial Nerves NOS;Brain"
-)
+
+# CNS_region ~ primary_site matches
+input_cns_matches <- purrr::imap_dfr(jsonlite::fromJSON(CNS_match_json), 
+                                     function(x, name) { tibble::tibble(CNS_region = name, primary_site = x) })
+
+cns_regions_df <- input_cns_matches %>%
+  group_by(CNS_region) %>%
+  summarise(primary_site = str_c(primary_site, collapse = "|"))
 
 # Combine and output
 list_s1_table <- list(README = readme,
                       histologies_file = histologies_table,
-                      CNS_region_definitions = cns_regions
+                      CNS_region_definitions = cns_regions_df
                       )
 write.xlsx(list_s1_table, 
            table_s1_file, 
