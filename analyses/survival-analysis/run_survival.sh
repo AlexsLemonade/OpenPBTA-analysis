@@ -11,10 +11,10 @@ set -o pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 # Plot survial curves of subtypes in HGG/DMG samples
-Rscript -e "rmarkdown::render('survival-analysis_HGG_DMG.Rmd')"
+Rscript -e "rmarkdown::render('survival-analysis_subtypes.Rmd', clean = TRUE)"
 
 # Build survival models to assess tp53, telomerase, cancer group, and HGG group effects
-Rscript -e "rmarkdown::render('survival-analysis_tp53_telomerase.Rmd')"
+Rscript -e "rmarkdown::render('survival-analysis_tp53_telomerase.Rmd', clean = TRUE)"
 
-# Build survival models to assess molecular subtype and immune cell fraction effects
-Rscript -e "rmarkdown::render('survival-analysis_immune.Rmd')"
+# Build survival models to assess molecular subtype, PDL1 expression, and immune cell fraction effects
+Rscript -e "rmarkdown::render('survival-analysis_immune.Rmd', clean = TRUE)"
