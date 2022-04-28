@@ -1,7 +1,7 @@
-# S. Spielman for ALSF CCDL 2022
+# S. Spielman for ALSF CCDL & Jo Lynne Rokita for D3b, 2022
 #
-# Makes a pdf panel of forest plot of survival analysis on MB samples 
-#  with immune cell fractions and PDL-1 expression predictors
+# Makes a pdf panel of forest plot of survival analysis on HGG samples 
+#  with molecular subtype as predictors
 
 
 library(survival) # needed to parse model output
@@ -11,76 +11,51 @@ library(tidyverse)
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # Declare output directory
-output_dir <- file.path(root_dir, "figures", "pdfs", "fig5", "panels")
+output_dir <- file.path(root_dir, "figures", "pdfs", "fig4", "panels")
 if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
 }
 
 # Directory with result data to input for plot
-input_dir <- file.path(root_dir, "analyses", "survival-analysis", "results", "immune")
+input_dir <- file.path(root_dir, "analyses", "survival-analysis", "results", "subtypes")
 
 
 ## Input and output files -------------------------------------
 survival_result <- read_rds(
   file.path(
     input_dir,
-    "cox_per_Medulloblastoma_terms_quantiseq.RDS"
+    "cox_hgg_subtype.RDS"
   )
 )
 
-forest_pdf <- file.path(output_dir, "forest_MB_quantiseq_CD274.pdf")
+forest_pdf <- file.path(output_dir, "forest_hgg_subtypes.pdf")
 
 ## Make plot --------------------------------------------------
-
-# NOTE:
-# The `Macrophage_M1` coefficient estimate and upper bound are INFINITE, and it's lower bound is 4e114.
-# This coefficient will therefore NOT be included in the plot, so it must be discussed in text.
-# That said, this point is SIGNIFICANT! It's definitely _much_ greater than 1.
-
-ref_term <- "Tumor resection: Biopsy (ref)"
+ref_term <- "molecular_subtypeDMG, H3 K28"
 
 # Set up ordering and labels for y-axis
-term_order <- rev(c("CD274",
-                "B_cell", 
-                "Macrophage_M2",  
-                "Monocyte", 
-                "Myeloid_dendritic_cell",
-                "Neutrophil",          
-                "NK_cell",
-                "T_cell_CD4_non_regulatory",
-                "T_cell_CD8",               
-                "T_cell_regulatory_Tregs",
-                "extent_of_tumor_resectionGross/Near total resection",
-                "extent_of_tumor_resectionPartial resection",
-                "extent_of_tumor_resectionUnavailable",
-                ref_term))
+term_order <- rev(c("molecular_subtypeHGG, H3 wildtype",
+                    "molecular_subtypeHGG, H3 wildtype, TP53 loss",
+                    "molecular_subtypeDMG, H3 K28, TP53 activated",
+                    "molecular_subtypeDMG, H3 K28, TP53 loss",
+                    ref_term))
 
-term_labels <- rev(c("CD274 expression (FPKM)",
-                "B cell", 
-                "Macrophage M2",  
-                "Monocyte", 
-                "Myeloid dendritic cell",
-                "Neutrophil",          
-                "NK cell",
-                "CD4+ T cell (non-regulatory)",
-                "CD8+ T cell",               
-                "Regulatory T cell (Treg)",
-                "Tumor resection: Total",
-                "Tumor resection: Partial",
-                "Tumor resection: Unknown",
-                ref_term))
+term_labels <- rev(c("HGG - H3 wildtype",
+                     "HGG - H3 wildtype, TP53 loss",
+                     "DMG - H3 K28, TP53 activated",
+                     "DMG - H3 K28, TP53 loss",
+                     "DMG - H3 K28 (ref)"))
 
 
-# Get n and event info from glance outpout
+# Get n and event info from glance output
 survival_n <- broom::glance(survival_result) %>%
   select(n, nevent)
 
 # Convert survival model result to data frame, and exponentiate estimates/CIs to get HRs
 survival_df <- broom::tidy(survival_result) %>%
-  # add reference
-  add_row(term = ref_term, estimate = 0) %>%
-  # remove the unbounded Macrophage_M1:
-  filter(term != "Macrophage_M1") %>%
+  # Add DMG, H3 K28 as reference
+  add_row(term = ref_term, 
+          estimate = 0) %>% 
   mutate(estimate = exp(estimate),
          conf.low = exp(conf.low),
          conf.high = exp(conf.high), 
@@ -93,11 +68,12 @@ survival_df <- broom::tidy(survival_result) %>%
          term = factor(term, 
                        levels = term_order,
                        labels = term_labels)
-         )
-
+  )
 
 
 # Forest plot of the model
+# note this warning is OK and EXPECTED because there is no CI for the reference group: 
+#    Removed 1 rows containing missing values (geom_errorbarh).
 forest_plot <- ggplot(survival_df) +
   aes(x = estimate, 
       y = term,
@@ -119,8 +95,8 @@ forest_plot <- ggplot(survival_df) +
   # Point fill based on sigificance
   scale_fill_manual(
     values = c("FALSE" = "white", 
-               "REF" = "gray", 
-               "TRUE" = "black"),
+               "TRUE" = "black",
+               "REF" = "gray"),
     guide = FALSE # turn off legend
   ) + 
   # Vertical guiding line at 1
@@ -142,11 +118,12 @@ forest_plot <- ggplot(survival_df) +
   # grid makes it easier to follow lines
   cowplot::background_grid()
 
-forest_plot
 
 # Accompanying panel with sample sizes, P-values, etc.
 
 # prepare data for panel
+# note this warning is OK and EXPECTED because there is no CI for the reference group: 
+#    Removed 2 rows containing missing values (geom_text). 
 survival_df_spread <- survival_df %>%
   mutate(
     # Clean pvalues into labels. 
@@ -165,16 +142,16 @@ survival_df_spread <- survival_df %>%
   # this throws a warning but it's ok
   # format tibble for plotting
   gather(hr_ci:p_string, key = "name", value = "value") %>%
-  # remove CI for ref
-  mutate(value = ifelse(grepl("ref", term), NA, value))
+  #remove values for reference
+  mutate(value = ifelse(term == "DMG - H3 K28 (ref)", NA, value))
 
 labels_panel <- ggplot(survival_df_spread) +
   aes(x = name, y = term, label = value) + 
   geom_text(hjust = 0) +
   labs(
     # hack!
-    subtitle = paste0("                             ",
-                      "HR (95% CI)                             P-value")
+    subtitle = paste0("                    ",
+                      "HR (95% CI)             P-value")
   ) +
   ggpubr::theme_pubr() + 
   # remove axes.
@@ -197,7 +174,7 @@ forest_panels <- cowplot::plot_grid(forest_plot, labels_panel, nrow = 1, rel_wid
 
 
 # Export plot
-ggsave(forest_pdf, forest_panels, width = 15, height = 4.5)
+ggsave(forest_pdf, forest_panels, width = 10, height = 3)
 
 
 
