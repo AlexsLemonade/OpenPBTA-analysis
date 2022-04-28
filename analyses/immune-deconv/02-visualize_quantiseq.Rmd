@@ -366,7 +366,7 @@ ratio_plot <- ggplot(ratio_df) +
   #facet_wrap(~cancer_group_display, nrow = 2, scales = "free") +
   scale_color_identity() +
   labs(x = "Molecular subtype of sample",
-       y = "Ratio of CD8+/CD4+ T cells") +
+       y = "Ratio of CD8+/CD4+ T cells (log10)") +
   ggpubr::theme_pubr() + 
   theme(axis.text.x = element_text(hjust = 1, 
                                    size = rel(0.6), 
