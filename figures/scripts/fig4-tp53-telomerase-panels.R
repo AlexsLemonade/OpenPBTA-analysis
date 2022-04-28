@@ -91,7 +91,9 @@ roc_plot <- ggplot(roc_df) +
   labs(
     x = "False Positive Rate",
     y = "True Positive Rate") + 
-  ggpubr::theme_pubr()
+  ggpubr::theme_pubr() + 
+  theme(legend.text = element_text(size = rel(0.75)), 
+        legend.title = element_text(size = rel(0.8)))
 ggsave(tp53_roc_pdf, roc_plot, width = 5, height = 5, 
        # add for figure compilation
        useDingbats = FALSE) 
@@ -412,138 +414,6 @@ legend <- cowplot::get_legend(tp53_plot_for_legend)
 pdf(tp53_telomerase_scores_boxplot_legend_pdf, width = 6, height = 3, useDingbats = FALSE)
 cowplot::ggdraw(legend)
 dev.off()
-
-
-## Survival analysis forest plot -----------------------------------------------------------------
-
-survival_dir <- file.path(analyses_dir, "survival-analysis", "results")
-survival_result <- readRDS(file.path(
-  survival_dir,
-  "cox_additive_terms_tp53_telomerase_hgg.RDS"
-))
-
-# Get n and event info from glance outpout
-survival_n <- broom::glance(survival_result) %>%
-  select(n, nevent)
-
-# Convert survival model result to data frame, and exponentiate estimates/CIs to get HRs
-survival_df <- broom::tidy(survival_result) %>%
-  mutate(estimate = exp(estimate),
-         conf.low = exp(conf.low),
-         conf.high = exp(conf.high))
-
-# Forest plot of the model
-forest_plot <- ggplot(survival_df) +
-  aes(x = estimate, 
-      y = term,
-      fill = term
-  ) + 
-  # add CI first so line doesn't cover open point
-  geom_errorbarh(
-    aes(
-      xmin = conf.low,
-      xmax = conf.high,
-    ),
-    height = 0.15,
-    size = 0.65
-  ) + 
-  geom_point(
-    size = 3.5,
-    shape = 23
-  ) +
-  # Point fill based on sigificance
-  scale_fill_manual(
-    values = c("black", "black", "white"),
-    guide = FALSE # turn off legend
-  ) + 
-  # Vertical guiding line at 1
-  geom_vline(
-    xintercept = 1, 
-    linetype = 3
-  ) +
-  labs(
-    x = "Hazard Ratio ± 95% CI",
-    y = "",
-    subtitle = glue::glue("N = {survival_n$n} with {survival_n$nevent} events")
-  ) + 
-  # Update term labels for pub-ready
-  scale_y_discrete(
-    labels = c(
-      "HGG group: HGG",
-      "Telomerase score",
-      "TP53 score"
-    )
-  ) +
-  # log-scale the x-axis
-  scale_x_log10() +
-  ggpubr::theme_pubr() + 
-  theme(
-    plot.subtitle = element_text(face = "bold")
-  ) +
-  # grid makes it easier to follow lines
-  cowplot::background_grid()
-  
-
-# Accompanying panel with sample sizes, P-values, etc.
-
-# prepare data for panel
-survival_df_spread <- survival_df %>%
-  mutate(
-    # Clean pvalues into labels. 
-    p_string = if_else(
-      p.value >= 0.001, 
-      paste0("P = ",round(p.value,3)),
-      "P < 0.001"
-    ),
-    # round to 2 digits and create single string with "hr (low-high)"
-    conf.low = round(conf.low, 2),
-    conf.high = round(conf.high, 2),
-    estimate = round(estimate, 2),
-    hr_ci = glue::glue("{estimate} ({conf.low} - {conf.high})")
-  ) %>%
-  select(term, hr_ci, p_string) %>%
-  # this throws a warning but it's ok
-  # format tibble for plotting
-  gather(hr_ci:p_string, key = "name", value = "value")
-
-labels_panel <- ggplot(survival_df_spread) +
-  aes(x = name, y = term, label = value) + 
-  geom_text(hjust = 0) +
-  labs(
-    # hack!
-    subtitle = paste0("                       ",
-                      "HR (95% CI)                  P-value")
-  ) +
-  ggpubr::theme_pubr() + 
-  # remove axes.
-  theme(
-    axis.title.x = element_blank(),
-    axis.text.x = element_blank(),
-    axis.ticks.x = element_blank(),
-    axis.line.x = element_blank(),
-    axis.title.y = element_blank(),
-    axis.text.y = element_blank(),
-    axis.ticks.y = element_blank(),
-    axis.line.y = element_blank(),
-    # -26 is as low as we can go before plot starts to get coverd
-    plot.margin = margin(6, 0, 36, -25, unit = "pt"),
-    plot.subtitle = element_text(face = "bold")
-  ) 
-    
-forest_panels <- cowplot::plot_grid(forest_plot, labels_panel, nrow = 1, rel_widths = c(1, 0.5))
-    
-
-
-# Export plot
-ggsave(survival_plot_pdf, forest_panels, width = 11, height = 3)
-
-
-
-
-
-
-
-
 
 
 
