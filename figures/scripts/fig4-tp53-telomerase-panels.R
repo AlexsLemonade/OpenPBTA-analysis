@@ -91,13 +91,10 @@ roc_plot <- ggplot(roc_df) +
   labs(
     x = "False Positive Rate",
     y = "True Positive Rate") + 
-  ggpubr::theme_pubr() +
-  theme(legend.text = element_text(size = rel(0.7)),
-        legend.title = element_text(size = rel(0.7)),
-        axis.text = element_text(size = rel(0.75)),
-        axis.title = element_text(size = rel(0.75))
-  )
-ggsave(tp53_roc_pdf, roc_plot, width = 5, height = 5) 
+  ggpubr::theme_pubr()
+ggsave(tp53_roc_pdf, roc_plot, width = 5, height = 5, 
+       # add for figure compilation
+       useDingbats = FALSE) 
 
 
 
@@ -219,9 +216,9 @@ tp53_expression_plot <- stranded_tp53 %>%
   )
 
 
-# Export figures
-ggsave(tp53_scores_altered_pdf, tp53_scores_plot, width = 6, height = 4)
-ggsave(tp53_expression_altered_pdf, tp53_expression_plot, width = 6, height = 4)
+# Export figures, with `useDingbats = FALSE` needed for compiling panels in Illustrator
+ggsave(tp53_scores_altered_pdf, tp53_scores_plot, width = 6, height = 4, useDingbats = FALSE)
+ggsave(tp53_expression_altered_pdf, tp53_expression_plot, width = 6, height = 4, useDingbats = FALSE)
 
 
 
@@ -369,7 +366,9 @@ tp53_telo_tmb_boxplot <- ggplot(plot_df) +
 # Export plot
 ggsave(tp53_telomerase_scores_boxplot_pdf,
        tp53_telo_tmb_boxplot,
-       width = 9, height = 6)
+       width = 9, height = 6, 
+       # compilation:
+       useDingbats = FALSE)
 
 # Make a legend for the grey/orange/red since this was not done with normal mapping
 # We have to make a "fake" plot for this to extract the legend from
@@ -410,7 +409,7 @@ tp53_plot_for_legend <- ggplot(tp53_plot_legend_df) +
 legend <- cowplot::get_legend(tp53_plot_for_legend)
 
 # Export legend
-pdf(tp53_telomerase_scores_boxplot_legend_pdf, width = 6, height = 3)
+pdf(tp53_telomerase_scores_boxplot_legend_pdf, width = 6, height = 3, useDingbats = FALSE)
 cowplot::ggdraw(legend)
 dev.off()
 
