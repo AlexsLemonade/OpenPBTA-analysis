@@ -100,7 +100,7 @@ soi_df <- tmb_hist %>%
   # Looks like there is a hypermutant metastatic NBL sample we had not caught previously, but let's remove here since we focus on CNS anyway
   # keep only WGS samples; remove metastases 
   filter(experimental_strategy == "WGS" & short_histology != "Metastases") %>%
-  # add manual fields
+  # manually add therapy field and update cancer predispositions not included in histologies file per [ticket](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1318)
   mutate(`Therapy post-biopsy` = case_when(
       Kids_First_Biospecimen_ID == "BS_VW4XN9Y7" ~ "Temozolomide, CCNU, Radiation",
       Kids_First_Biospecimen_ID == "BS_20TBZG09" ~ "Temozolomide, Irinotecan, Bevacizumab, Radiation",
