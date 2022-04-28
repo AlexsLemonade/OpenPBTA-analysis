@@ -2,8 +2,10 @@
 title: "Tables output for manuscript"
 author: "Run Jin (D3b), Stephanie J. Spielman (ALSF CCDL), and Jo Lynne Rokita (D3b)"
 date: "2021-2022"
-output:
-  html_document: default
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
 params:
   release: release-v21-20210820
 ---
