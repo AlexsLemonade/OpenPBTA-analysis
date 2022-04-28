@@ -16,6 +16,7 @@ editor_options:
 
 ```{r setup}
 library(tidyverse)
+library(ggpubr)
 
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
@@ -303,30 +304,40 @@ pdl1_cd8_mb <- pdl1_cd8 %>%
 
 
 # Count group sizes to use in x-axis labels. Use this data frame going forward
-  df_counts <- pdl1_cd8_mb %>%
-    group_by(molecular_subtype) %>%
-    mutate(subtype_count = n()) %>%
-    ungroup() %>%
-    mutate(molecular_subtype = glue::glue("{molecular_subtype}\n(N = {subtype_count})"))
+df_counts <- pdl1_cd8_mb %>%
+  group_by(molecular_subtype) %>%
+  mutate(subtype_count = n()) %>%
+  ungroup() %>%
+  mutate(molecular_subtype = glue::glue("{molecular_subtype}\n(N = {subtype_count})"))
   
-  wilcox_df <- ggpubr::compare_means(log2_expression ~ molecular_subtype, 
+wilcox_df <- ggpubr::compare_means(log2_expression ~ molecular_subtype, 
                              data = df_counts,
                              method = "wilcox.test")
+wilcox_df
+
+# Add p-values
+wilcox_df <- wilcox_df %>%
+ mutate(y.position = c(0.8,
+                       NA,
+                       1.8,
+                       1.0,
+                       2.0,
+                       2.2))
   
 # distributions of PDL1 expression
-cd274_plot_mb <- ggplot(pdl1_cd8_mb) + 
+cd274_plot_mb <- ggplot(df_counts) + 
   aes(x = molecular_subtype,
       y = log2_expression) +
   # remove outliers
   geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
-  geom_jitter(width = 0.15, size = 0.75, alpha = 0.8, aes(color = "black")) + 
+  geom_jitter(width = 0.15, size = 1.4, alpha = 0.5, aes(color = "black")) + 
+  stat_pvalue_manual(wilcox_df, label = "p = {p.adj}")+
   scale_color_identity() +
   labs(x = "Molecular subtype of sample",
-       y = "Log2 expression (FPKM) of CD274") +
+       y = "CD274 expression (Log2 FPKM)") +
   ggpubr::theme_pubr() + 
-  theme(axis.text.x = element_text(hjust = 1, 
-                                   size = rel(0.6), 
-                                   angle = 75)) 
+  theme(axis.text.x = element_text(hjust = 0.55, 
+                                   size = rel(0.85))) 
 
 cd274_plot_mb
 
@@ -338,27 +349,17 @@ Not much here - only medulloblastoma samples seem to have more CD8+ cells than C
 
 ```{r cd8_cd4 ratio, fig.width = 5, fig.height = 5}
 # subset for just cd8/cd4 ratio
-quantiseq_cd8 <- quantiseq_subset %>%
-  filter(cell_type == "cd8_cd4_ratio" & cancer_group != "Other")
-
-# drop inf
-quantiseq_cd8 <- do.call(data.frame,    # Replace Inf in data by NA
-                   lapply(quantiseq_cd8,
-                          function(x) replace(x, is.infinite(x), NA)))
-
-# drop NaN
-quantiseq_cd8 <- do.call(data.frame,    # Replace Inf in data by NA
-                   lapply(quantiseq_cd8,
-                          function(x) replace(x, is.nan(x), NA)))
-
-# remove NA rows from plot
-quantiseq_cd8 <- quantiseq_cd8 %>%
-  filter(!is.na(score))
+ratio_df <- quantiseq_subset %>%
+  filter(cell_type == "cd8_cd4_ratio",
+         cancer_group != "Other",
+         !is.nan(score),
+         !is.infinite(score)
+         )
 
 # distributions of PDL1 expression
-ratio_plot <- ggplot(quantiseq_cd8) + 
+ratio_plot <- ggplot(ratio_df) + 
   aes(x = molecular_subtype,
-      y = score) +
+      y = log(score,10)) +
   # remove outliers
   geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
   geom_jitter(width = 0.15, size = 0.75, alpha = 0.8, aes(color = cancer_group_hex)) + 
