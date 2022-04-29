@@ -71,6 +71,6 @@ results/tp53_telomerase/*.RDS (`survival-analysis_tp53_telomerase.Rmd`)
 
 The `plots` folder contains Kaplan-meier curve for the log rank analysis listed in parentheses below.
 ```
-plots/KM_hgg_subtypes.pdf (HGG subtypes)
-plots/survival_curve_gender.pdf (template)
+plots/KM_hgg_subtypes.pdf (`survival-analysis_subtypes.Rmd`)
+plots/survival_curve_gender.pdf (`survival-analysis_template.Rmd`)
 ```
