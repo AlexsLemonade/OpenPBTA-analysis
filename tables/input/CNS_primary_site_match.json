@@ -6,9 +6,9 @@
         "Occipital Lobe",				
         "Right Occipital",				
         "Left temporo-parietal",				
-        "Right Parietal Lobe",				
-        "Right Frontal Lobe",				
-        "Right Temporal Lobe"
+        "Right Parietal",				
+        "Right Frontal",				
+        "Right Temporal"
     ],
     "Midline": [
         "Brainstem",				
@@ -18,19 +18,7 @@
         "Thalamus",				
         "Basal Ganglia",				
         "Hippocampus",				
-        "Pineal Gland",
-        "L. Pons Anterior",
-        "L. Lateral Pons",
-        "L. Anterior Medulla",
-        "R. Inferior Pons",
-        "R. Posterior Pons; Adjacent #6",
-        "R. Anterior Pons; Adjacent #7",
-        "Inferior Pons",
-        "Inferior Medulla",
-        "Superior Pons",
-        "L. Pons",
-        "Pons",
-        "Pons/Brainstem"
+        "Pineal Gland"
     ],
     "Spine":[
         "Spinal Cord- Cervical",				
@@ -55,8 +43,5 @@
         "Cranial Nerves NOS",				
         "Brain",				
         "Right Occipital - Parietal Lobes and Thalamus"
-    ],"Mixed":[
-        "L. Frontal Periventricular White Matter; Adjacent #3",
-        "Cerebellar White Matter Adjacent Necrosis + Medulla"
-    ] 
+    ]
 }
