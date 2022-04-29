@@ -7,6 +7,8 @@ output:
     toc: true
 editor_options: 
   chunk_output_type: inline
+params:
+  is_ci: 0
 ---
 
 <br><br><br><br>
@@ -301,6 +303,9 @@ ggsave(pdl1_distributions_plot_file, pdl1_distributions_plot, width = 7, height 
 Visualize MB only, since that was the only significant result from the survival analyses
 
 ```{r pdl1_mb, fig.width = 5, fig.height = 5}
+# This chunk should NOT run in CI. 
+if (!(params$is_ci == 1)) {
+
 # select only mb samples
 pdl1_cd8_mb <- pdl1_cd8 %>%
   filter(cancer_group_display == "Medulloblastoma")
@@ -345,6 +350,7 @@ cd274_plot_mb <- ggplot(df_counts) +
 cd274_plot_mb
 
 ggsave(cd274_mb_plot_file, cd274_plot_mb, width = 5, height = 5)
+}
 ```
 
 ### Plot the ratio of CD8+/CD4+ T cells as a marker of "hot" tumor (potentially responsive to checkpoint blockade therapy)
