@@ -35,7 +35,7 @@ It also demonstrates how to run cox regression survival analysis on continuous v
 
 `survival-analysis_tp53_telomerase.Rmd` runs the following analysis:
 1. Univariate models 
-- extent of tumor resection (Total, Partial, Biopsy, Unknown)
+- extent of tumor resection (cox)
 - LGG group (LGG vs. non-LGG)
 - HGG group (HGG vs. non-HGG)
 - Cancer group (cox)
