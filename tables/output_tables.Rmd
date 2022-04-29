@@ -137,7 +137,7 @@ histologies_table <- histology_df %>%
 
 # CNS_region ~ primary_site matches
 cns_regions_df <- purrr::imap_dfr(jsonlite::fromJSON(CNS_match_json), 
-                                     function(x, name) { tibble::tibble(CNS_region = name, primary_site = paste0(x, collapse = '|')) })
+                                     function(x, name) { tibble::tibble(CNS_region = name, primary_site = paste0(x, collapse = ';')) })
 
 
 # Combine and output
