@@ -368,14 +368,14 @@ ratio_df <- quantiseq_subset %>%
 # distributions of PDL1 expression
 ratio_plot <- ggplot(ratio_df) + 
   aes(x = molecular_subtype,
-      y = log(score,10)) +
+      y = score) +
   # remove outliers
   geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
   geom_jitter(width = 0.15, size = 0.75, alpha = 0.8, aes(color = cancer_group_hex)) + 
   #facet_wrap(~cancer_group_display, nrow = 2, scales = "free") +
   scale_color_identity() +
   labs(x = "Molecular subtype of sample",
-       y = "Ratio of CD8+/CD4+ T cells (log10)") +
+       y = "Ratio of CD8+/CD4+ T cell fractions") +
   ggpubr::theme_pubr() + 
   theme(axis.text.x = element_text(hjust = 1, 
                                    size = rel(0.6), 
