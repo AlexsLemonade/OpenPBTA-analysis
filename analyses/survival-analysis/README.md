@@ -43,7 +43,7 @@ It also demonstrates how to run cox regression survival analysis on continuous v
 
 2. Multivariate models
 - Interaction model: `TP53 classifier score * telomerase score * extent of tumor resection * LGG group`
-- Additive model: `TP53 classifier score + telomerase score + extent of tumor resection + LGG group + HGG_group`
+- Additive model: `TP53 classifier score + telomerase score + extent of tumor resection + LGG group + HGG_group` across entire PBTA cohort
 - Additive models: `TP53 classifier score + telomerase score + extent of tumor resection` for each `cancer_group`
 
 3. Fit results are saved as `.RDS` files for each analysis
