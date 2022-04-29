@@ -63,10 +63,10 @@ It also demonstrates how to run cox regression survival analysis on continuous v
 
 Within the `results` folder are folders containing survival model fit results for each analysis described above.
 ```
-results/immune/*.RDS
-results/subtypes/*.RDS
-results/template/*.tsv
-results/tp53-telomerase/*.RDS
+results/immune/*.RDS (`survival-analysis_immune.Rmd`)
+results/subtypes/*.RDS (`survival-analysis_subtypes.Rmd`)
+results/template/*.tsv (`survival-analysis_template.Rmd`)
+results/tp53_telomerase/*.RDS (`survival-analysis_tp53_telomerase.Rmd`)
 ```
 
 The `plots` folder contains Kaplan-meier curve for the log rank analysis listed in parentheses below.
