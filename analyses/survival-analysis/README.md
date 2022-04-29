@@ -42,7 +42,7 @@ It also demonstrates how to run cox regression survival analysis on continuous v
 - Cancer group (log rank)
 
 2. Multivariate models
-- Interaction model: `TP53 classifier score * telomerase score * extent of tumor resection * LGG group`
+- Interaction model: `TP53 classifier score * telomerase score * extent of tumor resection * LGG group` across entire PBTA cohort
 - Additive model: `TP53 classifier score + telomerase score + extent of tumor resection + LGG group + HGG_group` across entire PBTA cohort
 - Additive models: `TP53 classifier score + telomerase score + extent of tumor resection` for each `cancer_group`
 
