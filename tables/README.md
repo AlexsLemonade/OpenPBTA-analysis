@@ -7,6 +7,9 @@ Table 1: Molecular subtypes determined for this project
 
 Table S1: V21 histologies table
 - This table displays the histologies file from v21 release of OpenPBTA in an excel format.
+    - Sheet 1: README
+    - Sheet 2: V21 histologies file
+    - Sheet 3: CNS region definitions
 
 Table S2: DNA results table
 - This excel shows key results from analyzing DNA sequencing. 
@@ -26,5 +29,11 @@ Table S3: RNA results table
     - Sheet 3: this tables shows the fractions of for various immune cell types in the tumor microenvironment (TME) for each RNA sample as calculated with [`quanTIseq`](https://doi.org/10.1186/s13073-019-0638-6).
         - Input files are from module [immune-deconv](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/immune-deconv)
     
-    
+Table S4: Key Resources
+- Table of all software and their respective versions used for the OpenPBTA project. Of note, this table contains all software in the OpenPBTA docker image utilized within the repository, but not all software was used for the final manuscript.
+    - Sheet 1: r_packages
+    - Sheet 2: python_libraries
+    - Sheet 3: other_command_line_tools
+    - Sheet 4: workflow_repository_tools
+
     
