@@ -424,7 +424,7 @@ write.xlsx(list_s4_table,
 ```
 
 
-## Print session info
+### print out session info
 ```{r}
 sessionInfo()
 ```
