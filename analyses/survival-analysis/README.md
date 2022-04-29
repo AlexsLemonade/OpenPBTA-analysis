@@ -54,7 +54,7 @@ It also demonstrates how to run cox regression survival analysis on continuous v
 
 2. Multivariate models:
 - CD274 (PD-L1) expression, controlling for RNA library
-- quanTIseq immune cell fractions + extent of tumor resection + LGG group across entire PBTA cohort
+- `quanTIseq immune cell fractions + extent of tumor resection + LGG group`, across entire PBTA cohort
 - quanTIseq immune cell fractions + CD274 expression + extent of tumor resection + LGG group across entire PBTA cohort
 - quanTIseq immune cell fractions + CD274 expression + extent of tumor resection across suitable `cancer_groups` (DECEASED N>=3, thus no LGG)
 
