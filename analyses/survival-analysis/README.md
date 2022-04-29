@@ -25,19 +25,19 @@ bash run-survival.sh
 #### Scripts
 
 `survival-analysis_template.Rmd` shows the usage of function `survival_analysis` to perform Kaplan-Meier, log-rank and cox regression survival analyses. 
-Particularly, it demonstrates runninng Kaplan-Meier and log-rank survival analysis on categorial variable, using `germline_sex_estimate` as an example.
-It also demonstrates how to run cox regression survival analysis on continuous variable, using `tmb` (tumor mutation burden) as an example.
+Particularly, it demonstrates runninng Kaplan-Meier and log-rank survival analysis on a categorical variable, using `germline_sex_estimate` as an example.
+It also demonstrates how to run cox regression survival analysis on a continuous variable, using `tmb` (tumor mutation burden) as an example.
 
 `survival-analysis_subtypes.Rmd` runs the following analyses:
 1. Univariate models
-- Kaplan-Meier survival analysis on HGG samples (minus oligodendrogliomas) by `molecular_subtype`
-- Cox regression univariate analysis on HGG samples (minus oligodendrogliomas) by `molecular_subtype`
+- Kaplan-Meier survival analysis on HGG samples by `molecular_subtype`
+- Cox regression univariate analysis on HGG samples by `molecular_subtype`
 
 `survival-analysis_tp53_telomerase.Rmd` runs the following analysis:
 1. Univariate models 
 - extent of tumor resection (cox)
-- LGG group (LGG vs. non-LGG)
-- HGG group (HGG vs. non-HGG)
+- LGG group (cox)
+- HGG group (cox)
 - Cancer group (cox)
 - Cancer group (log rank)
 
