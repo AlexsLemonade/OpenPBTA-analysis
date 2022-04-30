@@ -1,4 +1,4 @@
-a# S. Spielman for ALSF CCDL, Jo Lynne Rokita for D3b 2022
+# S. Spielman for ALSF CCDL, Jo Lynne Rokita for D3b 2022
 #
 # Makes pdf panels for reporting TP53 and telomerase results in main text
 
