@@ -91,7 +91,6 @@ histologies_rna <- read_tsv(metadata_file, guess_max = 10000) %>%
   mutate(extent_of_tumor_resection = case_when(
     sample_id == "7316-116" ~ "Biopsy only",
     sample_id == "7316-182" ~ "Partial resection",
-    extent_of_tumor_resection == "Not Reported" ~ "Unavailable",
     TRUE ~ as.character(extent_of_tumor_resection))) %>%
   select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID_RNA, sample_id, cancer_group, OS_status, OS_days, PFS_days, extent_of_tumor_resection) %>%
   distinct() 
@@ -188,15 +187,24 @@ Here, we run a survival analyses for several _independent_ predictors, one at a 
 Confirming gross/near total tumor resection has a very significant prognostic effect. The greater the resection, the better the OS.
 
 ```{r cox_resect}
+# We want to remove all unavailable/not reported from this model
+meta_indep_grouped_resection <- meta_indep_grouped %>%
+  # REMOVE unreported resections
+  filter(!(extent_of_tumor_resection %in% c("Not Reported", "Unavailable"))) 
+  
+  
+# Note the order of extent of resection - Biopsy only is the reference level
+unique(meta_indep_grouped_resection$extent_of_tumor_resection)
+
 # full dataset
-fit_save_model(meta_indep_grouped, 
+fit_save_model(meta_indep_grouped_resection, 
               "extent_of_tumor_resection", 
              file.path(results_dir, "cox_terms_resect_all.RDS"))
 
 # Are total resected tumors mainly LGG? About 30% of all fully resected are LGG, so LGG and extent_of_tumor_resection == "Gross/Near Total" do not make up the same cohort
-table(meta_indep_grouped$lgg_group, meta_indep_grouped$extent_of_tumor_resection)
+table(meta_indep_grouped_resection$lgg_group, meta_indep_grouped_resection$extent_of_tumor_resection)
 
-table(meta_indep_grouped$hgg_group, meta_indep_grouped$extent_of_tumor_resection)
+table(meta_indep_grouped_resection$hgg_group, meta_indep_grouped_resection$extent_of_tumor_resection)
 
 ```
 
@@ -281,8 +289,9 @@ _Statistical significance._ The column marked "z" gives the Wald statistic value
 ### Interaction model: `tp53_score*telomerase_score*extent_of_tumor_resection*lgg_group` 
 
 ```{r multi_interaction_4terms extent_tumor_resect glioma_group}
+
 # we save this for the purpose of printing out a p-value below
-int_model <- fit_save_model(meta_indep_grouped,    
+int_model <- fit_save_model(meta_indep_grouped_resection,     # use the data without unknown resection data for this model
              "tp53_score*telomerase_score*extent_of_tumor_resection*lgg_group*hgg_group",
              file.path(results_dir, "cox_interaction_terms_tp53_telomerase_resect_glioma_group.RDS"),
              "multivariate"
@@ -294,12 +303,13 @@ Interaction terms are not significant, except `tp53_score:extent_of_tumor_resect
 
 
 ### Additive model: `tp53_score+telomerase_score+extent_of_tumor_resection+lgg_group+hgg_group` 
-> The strongest predictor here is extent of tumor resection with gross/near total resection having a survival benefit and partial resection nearing significance for a survival benefit.
+
+> The strongest predictor here is extent of tumor resection with gross/near total resection having a survival benefit and partial resection nearing significance (both compared to biopsy only) for a survival benefit.
 > High _TP53_ scores, telomerase scores, and non-LGG are all significant risk factors for poorer overall survival.
 
 ```{r multi_additive_4terms extent_tumor_resect glioma_group}
 # we save this for the purpose of printing out a p-value below
-add_model <- fit_save_model(meta_indep_grouped,    
+add_model <- fit_save_model(meta_indep_grouped_resection,     # use the data unknown resection data for this model
              "tp53_score+telomerase_score+extent_of_tumor_resection+lgg_group+hgg_group",
              file.path(results_dir, "cox_additive_terms_tp53_telomerase_resect_glioma_group.RDS"),
              "multivariate"
@@ -310,18 +320,20 @@ add_model
 
 ### Additive models: `tp53_score+telomerase_score+extent_of_tumor_resection` _for each cancer group_
 
-> The EPN model shows significant effects for both `tp53_score` and `telomerase_score`. 
-> The DMG model is marginally significant for `tp53_score` only.
 
 ```{r multivar-fit-3terms}
 base_filename <- "cox_per_cg_terms_tp53_telomerase_resect.RDS" # all file names here will follow this convention
   
+# remove unknown extent of resections from this data
+meta_indep <- meta_indep %>%
+  filter(!(extent_of_tumor_resection %in% c("Not Reported", "Unavailable")))
+
 for (cg in cancer_groups_of_interest_df$cancer_group) {
   cat("==============", cg, "==================")
   # filter to cancer group of interest
   fit_data <- meta_indep %>% 
     filter(cancer_group == cg)
-  
+
   # Define filename where model will be saved
   filename <- file.path(
     results_dir,
