@@ -33,7 +33,16 @@ Table S3: RNA results table
     - Sheet 3: this tables shows the fractions of for various immune cell types in the tumor microenvironment (TME) for each RNA sample as calculated with [`quanTIseq`](https://doi.org/10.1186/s13073-019-0638-6).
         - Input files are from module [immune-deconv](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/immune-deconv)
 
-Table S4: Key Resources
+Table S4: Overall survival models
+- Table of overall survival analyses included in the manuscript.
+    - Sheet 1: cox regression for HGG subtypes
+    - Sheet 2: log-rank for HGG subtypes
+    - Sheet 3: cox regression for _TP53_ and telomerase scores across PBTA
+    - Sheet 4: cox regression for _TP53_ and telomerase scores for EPN
+    - Sheet 5: cox regression for _TP53_ and telomerase scores for DMG   
+    - Sheet 6: cox regression for quanTIseq cell fractions in MB
+
+Table S5: Key Resources
 - Table of all software and their respective versions used for the OpenPBTA project. Of note, this table contains all software in the OpenPBTA docker image utilized within the repository, but not all software was used for the final manuscript.
     - Sheet 1: r_packages
     - Sheet 2: python_libraries
