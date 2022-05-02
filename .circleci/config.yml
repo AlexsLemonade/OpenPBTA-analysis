@@ -103,8 +103,8 @@ jobs:
          command: ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
 
       - run:
-          name: Immune deconvolution using immunedeconv, uses xCell by default
-          command: ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
+          name: Immune deconvolution using immunedeconv
+          command: OPENPBTA_QUICK_IMMUNE=1 ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
 
       - run:
           name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded data and creates recurrent fusion list
@@ -165,10 +165,6 @@ jobs:
       - run:
           name: Focal CN Preparation
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
-
-      - run:
-          name: Survival analysis
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/survival-analysis/survival-analysis_template.Rmd', params = list(plot_ci = FALSE), clean = TRUE)"
 
       - run:
           name: Comparative RNASeq 
@@ -275,7 +271,7 @@ jobs:
     #      command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tmb-calculations.Rmd', clean = TRUE)"
 
       - run:
-          name: Run survival plots
+          name: Survival analysis
           command: ./scripts/run_in_ci.sh bash analyses/survival-analysis/run_survival.sh
 
       - run:
