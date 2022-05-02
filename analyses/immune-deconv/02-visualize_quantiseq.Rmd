@@ -183,7 +183,7 @@ cg_plot <- quantiseq_subset_cg %>%
   aes(x = cell_type, y = score, color = cancer_group_hex) + 
   geom_jitter(width = 0.15, size = 0.7, alpha = 0.6) + 
   ggplot2::geom_boxplot(outlier.size = 0, 
-                        size = 0.3, 
+                        size = 0.25,
                         color = "black", 
                         alpha = 0,
                         # remove whiskers
@@ -197,16 +197,18 @@ cg_plot <- quantiseq_subset_cg %>%
   ggpubr::theme_pubr() + 
   cowplot::panel_border() +
   ggplot2::theme(
-    axis.text.x = ggplot2::element_text(size = 8.5, angle = 45, hjust = 1),
-    axis.text.y = ggplot2::element_text(size = 10),
-    axis.title = ggplot2::element_text(size = 12),
-    strip.text = ggplot2::element_text(size = 8.5),
+    axis.text.x = ggplot2::element_text(size = 6, angle = 45, hjust = 1),
+    axis.text.y = ggplot2::element_text(size = 8),
+    axis.title = ggplot2::element_text(size = 10),
+    strip.text = ggplot2::element_text(size = 6),
+    axis.line = ggplot2::element_line(size = ggplot2::rel(0.5)),
+    axis.ticks = ggplot2::element_line(size = ggplot2::rel(0.5)),
     legend.position = "none"
   )
 
 cg_plot
 
-ggsave(cg_celltypes_plot_file, cg_plot, width = 14, height = 4.5)
+ggsave(cg_celltypes_plot_file, cg_plot, width = 11, height = 3.5)
 ```
 
 
