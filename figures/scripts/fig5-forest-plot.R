@@ -1,4 +1,4 @@
-# S. Spielman for ALSF CCDL 2022
+# S. Spielman for ALSF CCDL & Jo Lynne Rokita for D3b, 2022
 #
 # Makes a pdf panel of forest plot of survival analysis on MB samples 
 #  with immune cell fractions and PDL-1 expression predictors
@@ -33,9 +33,8 @@ forest_pdf <- file.path(output_dir, "forest_MB_quantiseq_CD274.pdf")
 ## Make plot --------------------------------------------------
 
 # NOTE:
-# The `Macrophage_M1` coefficient estimate and upper bound are INFINITE, and it's lower bound is 4e114.
+# The `Macrophage_M1` lower and upper bounds are INFINITE, with an HR = 0 and p = 0.99.
 # This coefficient will therefore NOT be included in the plot, so it must be discussed in text.
-# That said, this point is SIGNIFICANT! It's definitely _much_ greater than 1.
 
 ref_term <- "Tumor resection: Biopsy (ref)"
 
@@ -52,7 +51,6 @@ term_order <- rev(c("CD274",
                 "T_cell_regulatory_Tregs",
                 "extent_of_tumor_resectionGross/Near total resection",
                 "extent_of_tumor_resectionPartial resection",
-                "extent_of_tumor_resectionUnavailable",
                 ref_term))
 
 term_labels <- rev(c("CD274 expression (FPKM)",
@@ -67,7 +65,6 @@ term_labels <- rev(c("CD274 expression (FPKM)",
                 "Regulatory T cell (Treg)",
                 "Tumor resection: Total",
                 "Tumor resection: Partial",
-                "Tumor resection: Unknown",
                 ref_term))
 
 
@@ -141,8 +138,6 @@ forest_plot <- ggplot(survival_df) +
   ) +
   # grid makes it easier to follow lines
   cowplot::background_grid()
-
-forest_plot
 
 # Accompanying panel with sample sizes, P-values, etc.
 
