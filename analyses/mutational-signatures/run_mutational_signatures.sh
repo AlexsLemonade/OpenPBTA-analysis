@@ -52,4 +52,4 @@ Rscript -e "rmarkdown::render('07-plot_cns_fit.Rmd', clean = TRUE, params = list
 
 
 # Explore signature relationship with TP53 and hypermutator samples
-Rscript -e "rmarkdown::render('08-explore_hypermutators.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('08-explore_hypermutators.Rmd', clean = TRUE, params = list(is_ci = ${ABBREVIATED_MUTSIGS}))"
