@@ -84,11 +84,12 @@ roc_plot <- ggplot(roc_df) +
   ) +
   geom_step(
     aes(color = Classifier), 
-    size = 0.75
+    size = 0.5
   ) + 
   geom_segment(
     aes(x = 0, y = 0, xend = 1, yend = 1), 
-    color = "black"
+    color = "black", 
+    size = 0.25,
   ) +
   coord_fixed() +
   scale_y_continuous(labels = scales::percent) +
@@ -97,13 +98,17 @@ roc_plot <- ggplot(roc_df) +
   labs(
     x = "False Positive Rate",
     y = "True Positive Rate") + 
-  ggpubr::theme_pubr() +
-  theme(legend.text = element_text(size = rel(0.7)),
-        legend.title = element_text(size = rel(0.7)),
-        axis.text = element_text(size = rel(0.75)),
-        axis.title = element_text(size = rel(0.75))
+  ggpubr::theme_pubr() + 
+  theme(axis.text = element_text(size = rel(0.5)), 
+        axis.title = element_text(size = rel(0.5)), 
+        legend.text = element_text(size = rel(0.36)), 
+        legend.title = element_text(size = rel(0.4)),
+        legend.key.size = unit(5, "points"),
+        axis.line = element_line(size = rel(0.4))
   )
-ggsave(tp53_roc_pdf, roc_plot, width = 5, height = 5) 
+ggsave(tp53_roc_pdf, roc_plot, width = 2.5, height = 2.5, 
+       # add for figure compilation
+       useDingbats = FALSE) 
 
 
 
@@ -153,10 +158,10 @@ plot_tp53 <- function(df, pvalue_y) {
   ggplot(df_counts) +
     aes(x = tp53_altered, 
         y = tp53) +
-    geom_violin() + 
+    geom_violin(size = 0.35) + 
     geom_jitter(alpha = 0.25, # very light alpha to accomodate `other` category
                 width = 0.1, 
-                size = 1) + 
+                size = 0.6) + 
     # Add median +/- IQR pointrange
     geom_pointrange(data = stats_df, 
                     aes(
@@ -165,14 +170,22 @@ plot_tp53 <- function(df, pvalue_y) {
                       ymin = ymin,
                       ymax = ymax
                     ),
-                    color = "firebrick", size = rel(0.6)
+                    color = "firebrick", size = rel(0.4)
     ) +
     # Add p-value annotation with ggpubr
     ggpubr::stat_pvalue_manual(
       wilcox_df, 
-      label = "Wilcoxon P-value = {p.adj}"
+      label = "Wilcoxon P-value = {p.adj}",
+      size = 2.25
     ) +
-    ggpubr::theme_pubr() 
+    ggpubr::theme_pubr()  +
+    # Sizing for compilation - small figure export
+    theme(
+      axis.text = element_text(size = rel(0.7)),
+      axis.title = element_text(size = rel(0.7)),
+      axis.line = element_line(size = rel(0.5)),
+      axis.ticks = element_line(size = rel(0.5))
+    )
   
 }
 
@@ -225,9 +238,9 @@ tp53_expression_plot <- stranded_tp53 %>%
   )
 
 
-# Export figures
-ggsave(tp53_scores_altered_pdf, tp53_scores_plot, width = 6, height = 4)
-ggsave(tp53_expression_altered_pdf, tp53_expression_plot, width = 6, height = 4)
+# Export figures, with `useDingbats = FALSE` needed for compiling panels in Illustrator
+ggsave(tp53_scores_altered_pdf, tp53_scores_plot, width = 3.75, height = 2.5, useDingbats = FALSE)
+ggsave(tp53_expression_altered_pdf, tp53_expression_plot, width = 3.75, height = 2.5, useDingbats = FALSE)
 
 
 
@@ -323,8 +336,9 @@ legend_colors <- c(Normal      = "grey40",
                    `Ultra-hypermutant` = "red")
 # Other plot parameters which need to be re-introduced in legend:
 normal_alpha <- 0.7
-normal_size <- 1.75
-mutator_size <- 2.25
+normal_size <- 0.75
+mutator_size <- 1
+point_stroke <- 0.25
 normal_pch <- 19
 mutator_pch <- 21
 jitter_width <- 0.15 # not in legend but often in main plot
@@ -339,7 +353,7 @@ tp53_telo_tmb_boxplot <- ggplot(plot_df) +
   geom_boxplot(
     outlier.shape = NA, # no outliers
     color = "grey20",    # dark grey color
-    size = 0.4 
+    size = 0.2
   ) +
   # Separate out jitters so that the mutant layers are ON TOP OF normal
   geom_jitter(
@@ -348,34 +362,47 @@ tp53_telo_tmb_boxplot <- ggplot(plot_df) +
     alpha = normal_alpha,
     size = normal_size,
     pch = normal_pch,
-    color = legend_colors["Normal"]
+    color = legend_colors["Normal"],
+    stroke = point_stroke
   ) +
   geom_jitter(
     data = plot_df[plot_df$mutator == "Hypermutant",],
     width = jitter_width, 
     pch = mutator_pch,
     size = mutator_size,
-    fill = legend_colors["Hypermutant"]
+    fill = legend_colors["Hypermutant"],
+    stroke = point_stroke
   ) +  
   geom_jitter(
     data = plot_df[plot_df$mutator == "Ultra-hypermutant",],
     width = jitter_width, 
     pch = mutator_pch,
     size = mutator_size,
-    fill = legend_colors["Ultra-hypermutant"]
+    fill = legend_colors["Ultra-hypermutant"],
+    stroke = point_stroke
   ) +  
   labs(x = "Cancer group", 
        y = "Score") +
   facet_wrap(~score_type, nrow = 2) +
   ggpubr::theme_pubr() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust=1, size = rel(0.8))
+    axis.text.x = element_text(angle = 45, hjust=1, size = rel(0.5)),
+    # Sizing for compilation - small figure export
+    axis.text.y = element_text(size = rel(0.5)),
+    axis.title = element_text(size = rel(0.5)),
+    strip.text = element_text(size = rel(0.5)),
+    axis.line = element_line(size = rel(0.5)),
+    axis.ticks = element_line(size = rel(0.5))
   )
 
 # Export plot
 ggsave(tp53_telomerase_scores_boxplot_pdf,
        tp53_telo_tmb_boxplot,
-       width = 9, height = 6)
+       width = 4.875, height = 3.25, 
+       # compilation:
+       useDingbats = FALSE)
+
+
 
 # Make a legend for the grey/orange/red since this was not done with normal mapping
 # We have to make a "fake" plot for this to extract the legend from
@@ -404,19 +431,25 @@ legend_name <- "Mutation status"
 tp53_plot_for_legend <- ggplot(tp53_plot_legend_df) + 
   aes(x = cancer_group, y = tmb, shape = mutator_factor, fill = mutator_factor, color = mutator_factor, size = mutator_factor, alpha = mutator_factor) +
   geom_point(size =3) + 
-  scale_size_manual(name = legend_name, values = c(normal_size, mutator_size, mutator_size))+
+  scale_size_manual(name = legend_name, values = c(normal_size, mutator_size, mutator_size/10))+
   scale_shape_manual(name = legend_name, values = c(normal_pch, mutator_pch, mutator_pch)) +
   scale_alpha_manual(name = legend_name, values = c(normal_alpha, 1, 1))+
   scale_color_manual(name = legend_name,values = c(unname(legend_colors["Normal"]), "black", "black")) + 
   scale_fill_manual(name = legend_name, values = c("black", unname(legend_colors["Hypermutant"]), unname(legend_colors["Ultra-hypermutant"]))) +
   # theme to remove gray background. this strategy works
-  theme_classic()
+  theme_classic() + 
+  theme(
+  # Sizing for compilation - small figure export
+    legend.text = element_text(size = rel(0.45)),
+    legend.title = element_text(size = rel(0.6)),
+    legend.key.size = unit(10, "points")
+)
 
 
 legend <- cowplot::get_legend(tp53_plot_for_legend)
 
 # Export legend
-pdf(tp53_telomerase_scores_boxplot_legend_pdf, width = 6, height = 3)
+pdf(tp53_telomerase_scores_boxplot_legend_pdf, width = 1.3, height = 0.8, useDingbats = FALSE)
 cowplot::ggdraw(legend)
 dev.off()
 
