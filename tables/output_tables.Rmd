@@ -371,12 +371,10 @@ cox_subtypes_df <- broom::tidy(cox_subtypes) %>%
          conf.high = exp(conf.high)
   )
 
-lr_subtypes_df <- broom::tidy(lr_subtypes$model) %>%
-  mutate(HR = exp(estimate),
-         conf.low = exp(conf.low),
-         conf.high = exp(conf.high)
-  )
-
+lr_subtypes_df <- summary(lr_subtypes$model)$table %>% 
+     as.data.frame() %>% 
+     rownames_to_column("strata")
+ 
 cox_tp53_df <- broom::tidy(cox_tp53) %>%
   mutate(HR = exp(estimate),
          conf.low = exp(conf.low),
