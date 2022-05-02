@@ -178,7 +178,7 @@ cp ${analyses_dir}/immune-deconv/plots/cell_types-molecular_subtypes.pdf  pdfs/f
 Rscript --vanilla scripts/fig5-forest-plot.R
 
 ###### Box plot for 5E
-cp ${analyses_dir}/immune-deconv/plots/cd274_expression_mb.subtypes.pdf  pdfs/fig5/panels/cd274_expression_mb.subtypes.pdf
+cp ${analyses_dir}/immune-deconv/plots/cd274_expression_mb_subtypes.pdf  pdfs/fig5/panels/cd274_expression_mb_subtypes.pdf
 
 
 ####### Supplementary figures
