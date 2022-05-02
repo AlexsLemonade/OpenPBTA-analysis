@@ -33,9 +33,8 @@ forest_pdf <- file.path(output_dir, "forest_MB_quantiseq_CD274.pdf")
 ## Make plot --------------------------------------------------
 
 # NOTE:
-# The `Macrophage_M1` coefficient estimate and upper bound are INFINITE, and it's lower bound is 4e114.
+# The `Macrophage_M1` lower and upper bounds are INFINITE, with an HR = 0 and p = 0.99.
 # This coefficient will therefore NOT be included in the plot, so it must be discussed in text.
-# That said, this point is SIGNIFICANT! It's definitely _much_ greater than 1.
 
 ref_term <- "Tumor resection: Biopsy (ref)"
 
