@@ -357,7 +357,7 @@ write.xlsx(list_s3_table,
 
 ## Table S4: `Survival results` table
 ```{r table_s4}
-# Read in and tidy files
+# Read in files
 cox_subtypes <- readRDS(cox_subtypes_file)
 lr_subtypes <- readRDS(lr_subtypes_file)
 cox_tp53 <- readRDS(cox_tp53_file)
@@ -365,11 +365,13 @@ cox_dmg_tp53 <- readRDS(cox_dmg_tp53_file)
 cox_epn <- readRDS(cox_epn_tp53_file)
 cox_mb_quantiseq <- readRDS(cox_mb_quantiseq_file)
 
+# Tidy files
 cox_subtypes_df <- broom::tidy(cox_subtypes) %>%
   mutate(HR = exp(estimate),
          conf.low = exp(conf.low),
          conf.high = exp(conf.high)
-  )
+  ) %>%
+  select(-estimate)
 
 lr_subtypes_df <- summary(lr_subtypes$model)$table %>% 
      as.data.frame() %>% 
@@ -379,26 +381,33 @@ cox_tp53_df <- broom::tidy(cox_tp53) %>%
   mutate(HR = exp(estimate),
          conf.low = exp(conf.low),
          conf.high = exp(conf.high)
-  )
+  ) %>%
+  select(-estimate)
 
 cox_epn_df <- broom::tidy(cox_epn) %>%
   mutate(HR = exp(estimate),
          conf.low = exp(conf.low),
          conf.high = exp(conf.high)
-  )
+  ) %>%
+  select(-estimate)
 
 cox_dmg_tp53_df <- broom::tidy(cox_dmg_tp53) %>%
   mutate(HR = exp(estimate),
          conf.low = exp(conf.low),
          conf.high = exp(conf.high)
-  )
-
+  ) %>%
+  # make this character so it prints in excel
+  mutate(conf.high = ifelse(is.infinite(conf.high), "Inf", conf.high)) %>%
+  select(-estimate)
 
 cox_mb_quantiseq_df <- broom::tidy(cox_mb_quantiseq) %>%
   mutate(HR = exp(estimate),
          conf.low = exp(conf.low),
          conf.high = exp(conf.high)
-  )
+  ) %>%
+  # make this character so it prints in excel
+  mutate(conf.high = ifelse(is.infinite(conf.high), "Inf", conf.high)) %>%
+  select(-estimate)
 
 # Combine and output
 list_s4_table <- list(cox_reg_hgg_subtypes = cox_subtypes_df,
