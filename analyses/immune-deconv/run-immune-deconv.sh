@@ -25,6 +25,10 @@ POLYA='../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds'
 STRANDED='../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds'
 CLIN='../../data/pbta-histologies.tsv'
 
+# In CI we'll run an abbreviated version of the figures script due to insufficient testing data
+# needed for making some of the plots
+ABBREVIATED_IMMUNE=${OPENPBTA_QUICK_IMMUNE:-0}
+
 # generate deconvolution output for poly-A and stranded datasets using xCell
 Rscript --vanilla 01-immune-deconv.R \
 --polyaexprs $POLYA \
@@ -44,5 +48,5 @@ echo "Deconvolution finished."
 
 
 # Perform visualization
-Rscript -e "rmarkdown::render('02-visualize_quantiseq.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('02-visualize_quantiseq.Rmd', clean = TRUE, params = list(is_ci = ${ABBREVIATED_IMMUNE}))"
 

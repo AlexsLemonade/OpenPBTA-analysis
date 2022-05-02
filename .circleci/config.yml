@@ -103,8 +103,8 @@ jobs:
          command: ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
 
       - run:
-          name: Immune deconvolution using immunedeconv, uses xCell by default
-          command: ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
+          name: Immune deconvolution using immunedeconv
+          command: OPENPBTA_QUICK_IMMUNE=1 ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
 
       - run:
           name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded data and creates recurrent fusion list
