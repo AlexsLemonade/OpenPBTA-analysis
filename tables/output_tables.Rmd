@@ -1,9 +1,11 @@
 ---
 title: "Tables output for manuscript"
-author: "Run Jin and Stephanie J. Spielman"
+author: "Run Jin (D3b), Stephanie J. Spielman (ALSF CCDL), and Jo Lynne Rokita (D3b)"
 date: "2021-2022"
-output:
-  html_document: default
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
 params:
   release: release-v21-20210820
 ---
@@ -47,10 +49,11 @@ telomerase_counts_polya_file <- file.path(analyses_dir, "telomerase-activity-pre
 telomerase_counts_stranded_file <- file.path(analyses_dir, "telomerase-activity-prediction", "results", "TelomeraseScores_PTBAStranded_counts.txt")
 telomerase_fpkm_polya_file <- file.path(analyses_dir, "telomerase-activity-prediction", "results", "TelomeraseScores_PTBAPolya_FPKM.txt")
 telomerase_fpkm_stranded_file <- file.path(analyses_dir, "telomerase-activity-prediction", "results", "TelomeraseScores_PTBAStranded_FPKM.txt")
-
+CNS_match_json <- file.path(working_dir, "input", "CNS_primary_site_match.json")
 
 # define output files and sheet names, when appropriate
 table_1_file <- file.path(results_dir, "Table1-molecular-subtypes.tsv")
+table_2_file <- file.path(results_dir, "Table2-hypermutators.tsv")
 table_s1_file <- file.path(results_dir, "TableS1-histologies.xlsx")
 table_s2_file <- file.path(results_dir, "TableS2-DNA-results-table.xlsx")
 table_s3_file <- file.path(results_dir, "TableS3-RNA-results-table.xlsx")
@@ -73,21 +76,147 @@ histology_df %>%
 
 ```
 
+## Table 2: Patients with hypermutant or ultra-hypermutant tumors
+```{r table 2}
+# Read in coding TMB file, merge with histologies data
+tmb_hist <- read_tsv(file.path(data_dir, "pbta-snv-consensus-mutation-tmb-coding.tsv")) %>%
+    # rename TSB to Kids_First_Biospecimen_ID
+  rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>%
+  select(Kids_First_Biospecimen_ID, tmb) %>%
+  left_join(histology_df) 
+
+# Gather all PT_IDs (poi = "patients of interest") for those with any hypermutant samples which are not cell lines
+poi <- tmb_hist %>%
+  # filter to the hypermutators
+  dplyr::filter(tmb >= 10) %>%
+  select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID)
+
+# What are the histologies for hypermutant samples?
+histology_df %>%
+  filter(Kids_First_Biospecimen_ID %in% poi$Kids_First_Biospecimen_ID) %>%
+  select(Kids_First_Biospecimen_ID, cancer_group, short_histology)
+  
+# Gather all BS_IDs (soi = "samples of interest"), whether hypermutant or not, for pts with hypermutant samples
+soi_df <- tmb_hist %>%
+  filter(Kids_First_Participant_ID %in% poi$Kids_First_Participant_ID) %>%
+  # Looks like there is a hypermutant metastatic NBL sample we had not caught previously, but let's remove here since we focus on CNS anyway
+  # keep only WGS samples; remove metastases 
+  filter(experimental_strategy == "WGS" & short_histology != "Metastases") %>%
+  # manually add therapy field and update cancer predispositions not included in histologies file per [ticket](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1318)
+  mutate(`Therapy post-biopsy` = case_when(
+      Kids_First_Biospecimen_ID == "BS_VW4XN9Y7" ~ "Temozolomide, CCNU, Radiation",
+      Kids_First_Biospecimen_ID == "BS_20TBZG09" ~ "Temozolomide, Irinotecan, Bevacizumab, Radiation",
+      Kids_First_Biospecimen_ID == "BS_8AY2GM4G" ~ "Unknown",
+      Kids_First_Biospecimen_ID == "BS_85Q5P8GF" ~ "Temozolomide, Radiation",
+      sample_id == "7316-3058" ~ "Nivolumab",
+      Kids_First_Biospecimen_ID == "BS_P3PF53V8" ~ "Temozolomide, Irinotecan, Radiation",
+      sample_id == "7316-2189" ~ "Unknown"
+    ),
+    # add Lynch syndrome
+    cancer_predispositions = case_when(
+      Kids_First_Biospecimen_ID == "BS_8AY2GM4G" ~ "NF-1, Lynch syndrome, pathogenic MSH6",
+      sample_id == "7316-3058" ~ "Lynch Syndrome, pathogenic MSH2",
+      sample_id == "7316-2189" ~ "Lynch Syndrome",
+      Kids_First_Biospecimen_ID == "BS_85Q5P8GF" ~"Lynch syndrome",
+      TRUE ~ as.character(cancer_predispositions)),
+      ) %>%
+    # select relevant columns
+      select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, sample_id, tumor_descriptor, composition, `Therapy post-biopsy`, cancer_predispositions, tmb, molecular_subtype) %>%
+    arrange(Kids_First_Participant_ID, tumor_descriptor, composition)
+
+soi_df    
+
+soi_df %>%
+  # rename columns and write table
+      rename(`Kids First Participant ID` = Kids_First_Participant_ID,
+             `Kids First Biospecimen ID` = Kids_First_Biospecimen_ID,
+             `CBTN ID` = sample_id,
+             `Phase of therapy` = tumor_descriptor,
+              Composition = composition,
+             `Cancer predisposition(s)` = cancer_predispositions,
+             TMB = tmb,
+             `OpenPBTA molecular subtype` = molecular_subtype
+             ) %>%
+  write_tsv(table_2_file)
+
+```
+
 ## Table S1: V21 histologies table
 
 ```{r v21 histology as excel}
-# Define array of samples that need to be classified 
+# Sheet 1: README tab
+
+readme <- tribble(
+~`Histology column`,~Definition,~`Possible values`,
+"age_at_diagnosis_days","Patient age at diagnosis in days","numeric",
+"age_last_update_days","Patient age at the last clinical event/update in days","numeric",
+"aliquot_id","External aliquot identifier","alphanumeric",
+"broad_histology","Broad WHO 2016 classification of cancer type",paste(unique(histology_df$broad_histology), collapse = "; "),
+"cancer_group","Harmonized cancer groupings for plots",paste(unique(histology_df$cancer_group), collapse = "; "),
+"cancer_predispositions","Reported cancer predisposition syndromes",paste(unique(histology_df$cancer_predispositions), collapse = "; "),
+"CNS_region","Harmonized brain region based on `primary_site`",paste(unique(histology_df$CNS_region), collapse = "; "),
+"cohort","Scientific cohort",paste(unique(histology_df$cohort), collapse = "; "),
+"cohort_participant_id","Scientific cohort participant ID","C#####-C######",
+"composition","Sample composition",paste(unique(histology_df$composition), collapse = "; "),
+"ethnicity","Patient reported ethnicity",paste(unique(histology_df$ethnicity), collapse = "; "),
+"experimental_strategy","Sequencing strategy",paste(unique(histology_df$experimental_strategy), collapse = "; "),
+# leaving this non-programmatic because of the duplicates that would come up (eg two selections in one patient, needing data cleanup)
+"extent_of_tumor_resection","Amount of tumor resected at time of surgical event","Biopsy only;Partial resection;Gross/Near total resection;Not Reported;Unavailable",
+"germline_sex_estimate","Predicted sex of patient based on germline X and Y ratio calculation (described in methods)",paste(unique(histology_df$germline_sex_estimate), collapse = "; "),
+"harmonized_diagnosis","`integrated_diagnosis` if exists or updated and harmonized diagnosis using pathology_free_text_diagnosis information","text",
+"integrated_diagnosis","2016 WHO diagnosis integrated from pathology diagnosis and molecular subtyping","text",
+"Kids_First_Biospecimen_ID","KidsFirst biospecimen identifier","BS_########",
+"Kids_First_Participant_ID","KidsFirst patient identifier","PT_########",
+"molecular_subtype","Molecular subtype defined by WHO 2016 guidelines","text",
+"normal_fraction","Theta2 normal DNA fraction estimate","numeric",
+"Notes","Free text field describing changes from `pathology_diagnosis` to `integrated_diagnosis` or manner in which molecular_subtype was determined","text",
+"OS_days","Overall survival in days","numeric",
+"OS_status","Overall survival status",paste(unique(histology_df$OS_status), collapse = "; "),
+"parent_aliquot_id","External identifier combining sample_id; sample_type; aliquot_id; sequencing_strategy for some samples","alphanumeric",
+"pathology_diagnosis","Reported and/or harmonized patient diagnosis from pathology reports","text",
+"pathology_free_text_diagnosis","Free text patient diagnosis from pathology reports","text",
+"PFS_days","Progression-free survival in days","numeric",
+"primary_site","Bodily site(s) from which specimen was derived","text",
+"race","Patient reported race",paste(unique(histology_df$race), collapse = "; "),
+"reported_gender","Patient reported gender",paste(unique(histology_df$reported_gender), collapse = "; "),
+"RNA_library","Type of RNA-Sequencing library preparation",paste(unique(histology_df$RNA_library), collapse = "; "),
+"sample_id","External biospecimen identifier","alphanumeric",
+"sample_type","Broad sample type",paste(unique(histology_df$sample_type), collapse = "; "),
+"seq_center","Sequencing center",paste(unique(histology_df$seq_center), collapse = "; "),
+"short_histology","Abbreviated `integrated_diagnosis` or `broad_histology` for plotting purposes",paste(unique(histology_df$short_histology), collapse = "; "),
+"tumor_descriptor","Phase of therapy from which tumor was derived",paste(unique(histology_df$tumor_descriptor), collapse = "; "),
+"tumor_fraction","Theta2 tumor DNA fraction estimate","numeric",
+"tumor_ploidy","Control-FREEC ploidy","numeric"
+)
+
+# Sheet 2: Define array of samples that need to be classified from [ticket](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1206) which are not in v21, but set to be changed in final release [v22](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1207)
 to_be_classified_samples <- c("BS_3J4T2YYW", "BS_7F07M7JG", "BS_AG0BZN6F", "BS_HZNKSQ17", "BS_V6HKXX1Z", "BS_WP9J88EB", "BS_YYAPSA5P")
 
-histology_df %>% 
+histologies_table <- histology_df %>% 
   # Update definitions of molecular subtype for TBD samples
   mutate(molecular_subtype = ifelse(
     Kids_First_Biospecimen_ID %in% to_be_classified_samples,
     "MB, To be classified",
     molecular_subtype
-  )) %>%
-  # export with argument `keepNA=TRUE` so NAs come up as NAs and not blank cells
-  write.xlsx(table_s1_file, overwrite=TRUE, keepNA=TRUE)
+  ))
+
+# Sheet 3: CNS region definition based on definitions from [Cassie Kline](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/tables/input/CNS_primary_site_match.json) with additional manual review of [HGG primary_site](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1025). 
+# This is integrated upstream of molecular subtyping
+
+# CNS_region ~ primary_site matches
+cns_regions_df <- purrr::imap_dfr(jsonlite::fromJSON(CNS_match_json), 
+                                     function(x, name) { tibble::tibble(CNS_region = name, primary_site = paste0(x, collapse = ';')) })
+
+
+# Combine and output
+list_s1_table <- list(README = readme,
+                      histologies_file = histologies_table,
+                      CNS_region_definitions = cns_regions_df
+                      )
+write.xlsx(list_s1_table, 
+           table_s1_file, 
+           overwrite=TRUE, 
+           keepNA=TRUE)
 ```
 
 ## Table S2: DNA results table
@@ -215,7 +344,7 @@ write.xlsx(list_s3_table,
 
 ```
 
-### Create `Key Resources` table S4
+## Table S4: `Key Resources` table
 
 ```{r table_s4}
 # Sheet 1: R packages in Docker image
