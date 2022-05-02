@@ -1,4 +1,4 @@
-# S. Spielman for ALSF CCDL 2022
+# S. Spielman for ALSF CCDL & Jo Lynne Rokita for D3b, 2022
 #
 # Makes a pdf panel of forest plot of survival analysis on MB samples 
 #  with immune cell fractions and PDL-1 expression predictors
@@ -52,7 +52,6 @@ term_order <- rev(c("CD274",
                 "T_cell_regulatory_Tregs",
                 "extent_of_tumor_resectionGross/Near total resection",
                 "extent_of_tumor_resectionPartial resection",
-                "extent_of_tumor_resectionUnavailable",
                 ref_term))
 
 term_labels <- rev(c("CD274 expression (FPKM)",
@@ -67,7 +66,6 @@ term_labels <- rev(c("CD274 expression (FPKM)",
                 "Regulatory T cell (Treg)",
                 "Tumor resection: Total",
                 "Tumor resection: Partial",
-                "Tumor resection: Unknown",
                 ref_term))
 
 
@@ -141,8 +139,6 @@ forest_plot <- ggplot(survival_df) +
   ) +
   # grid makes it easier to follow lines
   cowplot::background_grid()
-
-forest_plot
 
 # Accompanying panel with sample sizes, P-values, etc.
 
