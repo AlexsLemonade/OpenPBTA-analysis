@@ -365,49 +365,29 @@ cox_dmg_tp53 <- readRDS(cox_dmg_tp53_file)
 cox_epn <- readRDS(cox_epn_tp53_file)
 cox_mb_quantiseq <- readRDS(cox_mb_quantiseq_file)
 
-# Tidy files
-cox_subtypes_df <- broom::tidy(cox_subtypes) %>%
+# Make function to tidy files
+process_survival <- function(df){
+  broom::tidy(df) %>%
   mutate(HR = exp(estimate),
          conf.low = exp(conf.low),
          conf.high = exp(conf.high)
   ) %>%
+  # make this character so it prints in excel
+  mutate(conf.high = ifelse(is.infinite(conf.high), "Inf", conf.high)) %>%
   select(-estimate)
+}
+
+# Tidy files
+cox_subtypes_df <- process_survival(cox_subtypes)
+cox_tp53_df <- process_survival(cox_tp53)
+cox_epn_df <- process_survival(cox_epn)
+cox_dmg_tp53_df <- process_survival(cox_dmg_tp53)
+cox_mb_quantiseq_df <- process_survival(cox_mb_quantiseq)
 
 lr_subtypes_df <- summary(lr_subtypes$model)$table %>% 
      as.data.frame() %>% 
      rownames_to_column("strata")
- 
-cox_tp53_df <- broom::tidy(cox_tp53) %>%
-  mutate(HR = exp(estimate),
-         conf.low = exp(conf.low),
-         conf.high = exp(conf.high)
-  ) %>%
-  select(-estimate)
 
-cox_epn_df <- broom::tidy(cox_epn) %>%
-  mutate(HR = exp(estimate),
-         conf.low = exp(conf.low),
-         conf.high = exp(conf.high)
-  ) %>%
-  select(-estimate)
-
-cox_dmg_tp53_df <- broom::tidy(cox_dmg_tp53) %>%
-  mutate(HR = exp(estimate),
-         conf.low = exp(conf.low),
-         conf.high = exp(conf.high)
-  ) %>%
-  # make this character so it prints in excel
-  mutate(conf.high = ifelse(is.infinite(conf.high), "Inf", conf.high)) %>%
-  select(-estimate)
-
-cox_mb_quantiseq_df <- broom::tidy(cox_mb_quantiseq) %>%
-  mutate(HR = exp(estimate),
-         conf.low = exp(conf.low),
-         conf.high = exp(conf.high)
-  ) %>%
-  # make this character so it prints in excel
-  mutate(conf.high = ifelse(is.infinite(conf.high), "Inf", conf.high)) %>%
-  select(-estimate)
 
 # Combine and output
 list_s4_table <- list(cox_reg_hgg_subtypes = cox_subtypes_df,
