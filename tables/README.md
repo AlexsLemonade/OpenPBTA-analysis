@@ -35,12 +35,12 @@ Table S3: RNA results table
 
 Table S4: Overall survival models
 - Table of overall survival analyses included in the manuscript.
-    - Sheet 1: cox regression for HGG subtypes
-    - Sheet 2: log-rank for HGG subtypes
-    - Sheet 3: cox regression for _TP53_ and telomerase scores across PBTA
-    - Sheet 4: cox regression for _TP53_ and telomerase scores for EPN
-    - Sheet 5: cox regression for _TP53_ and telomerase scores for DMG   
-    - Sheet 6: cox regression for quanTIseq cell fractions in MB
+    - Sheet 1: cox regression ~ `molecular_subtype` for HGG
+    - Sheet 2: log-rank ~ `molecular_subtype` for HGG
+    - Sheet 3: cox regression ~ `tp53 scores + telomerase scores + extent of tumor resection + LGG group + HGG group` across PBTA
+    - Sheet 4: cox regression ~ `tp53 scores + telomerase scores + extent of tumor resection` for EPN
+    - Sheet 5: cox regression ~ `tp53 scores + telomerase scores + extent of tumor resection` for DMG
+    - Sheet 6: cox regression ~ `quantiseq cell type fractions + CD274 expression + extent of tumor resection` for MB
 
 Table S5: Key Resources
 - Table of all software and their respective versions used for the OpenPBTA project. Of note, this table contains all software in the OpenPBTA docker image utilized within the repository, but not all software was used for the final manuscript.
