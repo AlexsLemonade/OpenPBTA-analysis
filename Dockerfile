@@ -41,6 +41,10 @@ RUN apt-get -y --no-install-recommends install \
    default-jdk
 
 
+# Required for running matplotlib in Python in an interactive session
+RUN apt-get -y --no-install-recommends install \
+    python3-tk
+
 # Standalone tools and libraries
 ################################
 
