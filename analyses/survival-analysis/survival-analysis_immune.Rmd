@@ -1,6 +1,6 @@
 ---
 title: "Survival analysis by immune scores and molecular subtypes"
-authors: Run Jin (D3B) and Stephanie Spielman (CCDL)
+authors: Run Jin (D3B), Stephanie Spielman (CCDL), Jo Lynne Rokita (D3b)
 output: 
   html_notebook:
     toc: true
@@ -30,7 +30,7 @@ data_dir <- file.path(root_dir, "data")
 immune_dir <- file.path(root_dir, "analyses", "immune-deconv")
 analysis_dir <- file.path(root_dir, "analyses", "survival-analysis")
 
-results_dir <- file.path(analysis_dir, "results")
+results_dir <- file.path(analysis_dir, "results/immune")
 if(!dir.exists(results_dir)){
   dir.create(results_dir)
 }
@@ -99,18 +99,36 @@ quantiseq <- read_rds(
   select(-cell_type)
 
 # Read in histology file and filter to RNAseq samples with relevant columns
+# The following patients have discrepant extent of tumor resection
+# 7316-116 has Biopsy only;Gross/Near total resection
+# 7316-182 has Gross/Near total resection;Partial resection
+# Ticket was created [here](https://github.com/PediatricOpenTargets/ticket-tracker/issues/298) to track this database update, and I will recode below
+
 histology_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max = 10000) %>%
-    filter(composition=="Solid Tissue",
-           tumor_descriptor == "Initial CNS Tumor",
-           experimental_strategy == "RNA-Seq") %>%
-    select(Kids_First_Participant_ID, 
-           Kids_First_Biospecimen_ID, 
-           cancer_group, 
-           molecular_subtype, 
-           OS_status, 
-           OS_days, 
-           PFS_days) %>%
-    distinct() 
+  filter(composition=="Solid Tissue",
+          tumor_descriptor == "Initial CNS Tumor",
+          experimental_strategy == "RNA-Seq") %>%
+  mutate(extent_of_tumor_resection = case_when(
+    sample_id == "7316-116" ~ "Biopsy only",
+    sample_id == "7316-182" ~ "Partial resection",    
+    TRUE ~ as.character(extent_of_tumor_resection))) %>%
+  select(Kids_First_Participant_ID, 
+         Kids_First_Biospecimen_ID, 
+         cancer_group, 
+         molecular_subtype,
+         extent_of_tumor_resection,
+         OS_status, 
+         OS_days, 
+         PFS_days) %>%
+  distinct() 
+
+# create lgg grouping
+lgg_levels <- c("non-LGG", "LGG")
+histology_df <- histology_df %>%
+  mutate(lgg_group = ifelse(cancer_group == "Low-grade glioma astrocytoma",
+                             lgg_levels[2], # second is LGG 
+                             lgg_levels[1]), # first is non-LGG
+          lgg_group = factor(lgg_group, levels = lgg_levels)) # ensures non-LGG is the reference 
 
 # Read in gene expression files - both poly-A and stranded samples
 polya <- read_rds(file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"))
@@ -119,7 +137,7 @@ stranded <- read_rds(file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collaps
 # Process gene expression files to obtain PDL1 (aka CD274)
 cd274_expression <- bind_rows(
   extract_cd274_expression(polya, "polya"),
-  stranded_cd274 <- extract_cd274_expression(stranded, "stranded")
+  extract_cd274_expression(stranded, "stranded")
 )
 ```
 
@@ -145,7 +163,8 @@ We use a cox regression to explore influence of PDL-1 expression on survival, wh
 fit_save_model(combined_df, 
                "CD274 + library",
                file.path(results_dir, "cox_terms_pdl1_library.RDS"), 
-               model_type = "multivariate")
+               model_type = "multivariate") %>%
+  print()
 
 ```
 
@@ -162,7 +181,7 @@ nrow(combined_df_stranded)
 
 ## Re-analyze with stranded only: PDL-1 expression across entire cohort
 
-> There is no signficant effect of PDL-1 expression. Although this P-value could be viewed as "approaching signficance," the large analysis sample size (N=719), this P-value is actually rather large.
+> There is no signficant effect of PDL-1 expression. Although this P-value could be viewed as "approaching signficance," the large analysis sample size (N=689), this P-value is actually rather large.
 
 
 ```{r cox_pdl1}
@@ -172,34 +191,47 @@ fit_save_model(combined_df_stranded,
 
 ```
 
+## Analysis: quantiseq cell type fractions + extent of tumor resection + lgg group across entire cohort
 
-## Analysis: quantiseq cell type fractions across entire cohort
+Several effects are significant: 
 
-> No cell types are meaningfully signficant.
++ extent of tumor resection gross/near total and partial are signficantly different from biopsy only.
++ LGG and non-LGG
+
+
 
 ```{r cox_cell_type}
 
 # Define the terms for a quantiseq model. These are used several times in this notebook
 quantiseq_terms <- "B_cell + Macrophage_M1 + Macrophage_M2 + Monocyte + Myeloid_dendritic_cell + Neutrophil + NK_cell + T_cell_CD4_non_regulatory + T_cell_CD8 + T_cell_regulatory_Tregs" 
 
+# For this model, we need to remove unknown resections from the data:
+combined_df_stranded_resection <- combined_df_stranded %>%
+  filter(!(extent_of_tumor_resection %in% c("Not Reported", "Unavailable")))
+
+# Note the order of resection - the reference is "Biopsy only"
+unique(combined_df_stranded_resection$extent_of_tumor_resection)
 
 # saving so P-values can be programmatically grabbed
-fitted <- fit_save_model(combined_df_stranded,
-                         quantiseq_terms,
+fitted <- fit_save_model(combined_df_stranded_resection,
+                         paste0(quantiseq_terms,"+extent_of_tumor_resection +lgg_group"),
                          file.path(results_dir, "cox_terms_quantiseq.RDS"),
                          model_type = "multivariate")
 fitted
 ```
 
-Above, no effects are significant at P<0.01. Only one cell type, `T_cell_CD8`, is marginally significant ($P=`r fitted$p.value[fitted$term == "T_cell_CD8"]`$), but it's confidence interval is *huge* so the exact effect is challenging to discern.
 
-## Analysis: quantiseq cell type fractions and PDL-1  across entire cohort
+## Analysis: quantiseq cell type fractions + extent of tumor resection + lgg group + PDL-1  across entire cohort
 
-> No effects are significant
+Several effects are significant: 
+
++ extent of tumor resection gross/near total and partial are signficantly different from biopsy only.
++ LGG and non-LGG
 
 ```{r cox_cell_type_cd274}
-fit_save_model(combined_df_stranded,
-               paste0(quantiseq_terms, "+CD274"),
+# again use data with unknown resections removed
+fit_save_model(combined_df_stranded_resection,
+               paste0(quantiseq_terms, "+extent_of_tumor_resection+lgg_group+CD274"),
                file.path(results_dir, "cox_terms_quantiseq.RDS"),
                model_type = "multivariate")
 ```
@@ -239,9 +271,10 @@ suitable_subtypes
 
 
 
-## Analysis: quantiseq cell type fractions and PDL-1 for each cancer group of interest
+## Analysis: quantiseq cell type fractions and PDL-1 + extent of tumor resection for each cancer group of interest (no LGG here)
 
-> Most models here are not robust. **Only Medulloblastoma** returns no warning messages.
+> Most models here are not robust. **Only HGG** returns no warning messages. 
+
 
 ```{r cell_type_cg}
 
@@ -249,8 +282,8 @@ base_filename <- "cox_per_cg_terms_quantiseq.RDS" # all file names here will fol
 
 for (cg in suitable_cancer_groups$cancer_group) {
   cat("==============", cg, "==================")
-  # filter to cancer group of interest
-  fit_data <- combined_df_stranded %>% 
+  # filter to cancer group of interest, using data with unknown resections removed
+  fit_data <- combined_df_stranded_resection %>% 
     filter(cancer_group == cg)
   
   # Define filename where model will be saved
@@ -261,45 +294,12 @@ for (cg in suitable_cancer_groups$cancer_group) {
   
   # Fit model
   fit_save_model(fit_data, 
-                 paste0(quantiseq_terms, "+CD274"), 
+                 paste0(quantiseq_terms, "+CD274+extent_of_tumor_resection"), 
                  filename, 
                  model_type = "multivariate") %>% print()
 }
 ```
 
-
-
-## Analysis: Differences among molecular subtypes within cancer groups
-
-> Models here are not robust. Due to insufficient data sizes, parameters converge with unreasonablely large CIs.
-
-```{r cell_type_cg_molecular}
-
-base_filename <- "cox_per_cg_terms_molecular-subtypes.RDS" # all file names here will follow this convention
-
-for (cg in suitable_subtypes$cancer_group) {
-  cat("==============", cg, "==================")
-  # filter to cancer group of interest
-  fit_data <- combined_df_stranded %>% 
-    filter(cancer_group == cg)
-  
-  # Define filename where model will be saved
-  filename <- file.path(
-    results_dir,
-    str_replace(base_filename, "cg", cg)
-  )
-  
-  # Print table of molecular subtype counts for context interpretting the model
-  fit_data %>%
-    count(molecular_subtype) %>% 
-    print()
-  
-  # Fit model
-  fit_save_model(fit_data, 
-                 "molecular_subtype", 
-                 filename) %>% print()
-}
-```
 
 #### Session Info
 

@@ -172,7 +172,13 @@ cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_sina_IQR.pdf  pdfs/
 # run the immune-deconv module:
 bash ${analyses_dir}/immune-deconv/run-immune-deconv.sh
 # copy figure panel:
-cp ${analyses_dir}/immune-deconv/plots/cell_types-molecular_subtypes.pdf  pdfs/fig5/panels/quantiseq-cell_types-molecular_subtypes.pdf
+cp ${analyses_dir}/immune-deconv/plots/cell_types-cancer_groups.pdf  pdfs/fig5/panels/quantiseq-cell_types-cancer_groups.pdf
+
+###### Forest plot for 5D
+Rscript --vanilla scripts/fig5-forest-plot.R
+
+###### Box plot for 5E
+cp ${analyses_dir}/immune-deconv/plots/cd274_expression_mb_subtypes.pdf  pdfs/fig5/panels/cd274_expression_mb_subtypes.pdf
 
 
 ####### Supplementary figures
@@ -192,5 +198,13 @@ cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_per_sample_barplot.
 
 # Copy S5 panel (analysis module was run previously)
 cp ${analyses_dir}/immune-deconv/plots/cell_types-molecular_subtypes.pdf pdfs/supp/figs5/panels/quantiseq-cell_types-molecular_subtypes.pdf
+
+# Copy S5 panels (analysis module was run previously)
+# 5S - H
+cp ${analyses_dir}/immune-deconv/plots/cell_types-molecular_subtypes.pdf pdfs/supp/figs5/panels/quantiseq-cell_types-molecular_subtypes.pdf
+
+# 5S - I
+cp ${analyses_dir}/immune-deconv/plots/cd8_cd4_ratio.pdf pdfs/supp/figs5/panels/cd8_cd4_ratio.pdf
+
 
 

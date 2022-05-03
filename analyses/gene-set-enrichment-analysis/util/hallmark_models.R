@@ -11,15 +11,6 @@ library(stringr)
 library(broom)
 
 
-# Magrittr pipe
-`%>%` <- dplyr::`%>%`
-
-### Check tidyr version for nesting code to ensure it used as <1.0.0 ####
-tidyr_version <- package_version( packageVersion("tidyr") )
-if (tidyr_version$major >= 1){
-  nest   <- nest_legacy
-  unnest <- unnest_legacy
-}
 
 
 

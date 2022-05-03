@@ -1,4 +1,4 @@
-# S. Spielman for ALSF CCDL 2022
+# S. Spielman for ALSF CCDL, Jo Lynne Rokita for D3b 2022
 #
 # Makes pdf panels for reporting TP53 and telomerase results in main text
 
@@ -21,6 +21,7 @@ data_dir <- file.path(root_dir, "data")
 analyses_dir <- file.path(root_dir, "analyses")
 tp53_dir <- file.path(analyses_dir, "tp53_nf1_score")
 telomerase_dir <- file.path(analyses_dir, "telomerase-activity-prediction")
+survival_dir <- file.path(analyses_dir, "survival-analysis", "results", "tp53_telomerase")
 
 # Palette directory
 palette_dir <- file.path(root_dir, "figures", "palettes")
@@ -46,7 +47,12 @@ extend_scores <- read_tsv(file.path(telomerase_dir, "results", "TelomeraseScores
 
 # Read in TMB for highlighting points in boxplots
 tmb_coding_df <- read_tsv(file.path(data_dir, "pbta-snv-consensus-mutation-tmb-coding.tsv"))
-                            
+
+# Read in survival model results for forest plot
+survival_result <- readRDS(file.path(
+  survival_dir,
+  "cox_additive_terms_tp53_telomerase_resect_glioma_group.RDS"
+))
 
 #### Define output PDF panels ----------------------------------------------------------------
 tp53_roc_pdf                        <- file.path(output_dir, "tp53_stranded_roc_panel.pdf")
@@ -54,7 +60,7 @@ tp53_scores_altered_pdf             <- file.path(output_dir, "tp53_scores_by_alt
 tp53_expression_altered_pdf         <- file.path(output_dir, "tp53_expression_by_altered_panel.pdf") 
 tp53_telomerase_scores_boxplot_pdf        <- file.path(output_dir, "tp53_telomerase_boxplots_panel.pdf") 
 tp53_telomerase_scores_boxplot_legend_pdf <- file.path(output_dir, "tp53_telomerase_boxplots_panel_legend.pdf")
-survival_plot_pdf                     <- file.path(output_dir, "forest_survival_tp53_telomerase_hgg_panel.pdf") 
+survival_plot_pdf                     <- file.path(output_dir, "forest_survival_tp53_telomerase_panel.pdf") 
 
 
 
@@ -78,11 +84,12 @@ roc_plot <- ggplot(roc_df) +
   ) +
   geom_step(
     aes(color = Classifier), 
-    size = 0.75
+    size = 0.5
   ) + 
   geom_segment(
     aes(x = 0, y = 0, xend = 1, yend = 1), 
-    color = "black"
+    color = "black", 
+    size = 0.25,
   ) +
   coord_fixed() +
   scale_y_continuous(labels = scales::percent) +
@@ -91,18 +98,22 @@ roc_plot <- ggplot(roc_df) +
   labs(
     x = "False Positive Rate",
     y = "True Positive Rate") + 
-  ggpubr::theme_pubr() +
-  theme(legend.text = element_text(size = rel(0.7)),
-        legend.title = element_text(size = rel(0.7)),
-        axis.text = element_text(size = rel(0.75)),
-        axis.title = element_text(size = rel(0.75))
+  ggpubr::theme_pubr() + 
+  theme(axis.text = element_text(size = rel(0.5)), 
+        axis.title = element_text(size = rel(0.5)), 
+        legend.text = element_text(size = rel(0.36)), 
+        legend.title = element_text(size = rel(0.4)),
+        legend.key.size = unit(5, "points"),
+        axis.line = element_line(size = rel(0.4))
   )
-ggsave(tp53_roc_pdf, roc_plot, width = 5, height = 5) 
+ggsave(tp53_roc_pdf, roc_plot, width = 2.5, height = 2.5, 
+       # add for figure compilation
+       useDingbats = FALSE) 
 
 
 
 
- ### TP53 scores and expression violin plots -----------------------------------------------------------
+### TP53 scores and expression violin plots -----------------------------------------------------------
 # We do not use color palettes since the color mappings will necessarily change across figures.
 # We use ggplot instead of ggpubr because of jitter styling (ggpubr jitter point placement is deterministic)
 
@@ -126,15 +137,15 @@ plot_tp53 <- function(df, pvalue_y) {
   # Perform test for variable without `other`
   df_2cat <- filter(df_counts, 
                     !(str_detect(tp53_altered,"other")))
-                    
+  
   # Prepare for use with `stat_pvalue_manual()`
   wilcox_df <- ggpubr::compare_means(tp53 ~ tp53_altered, 
-                             data = df_2cat,
-                             method = "wilcox.test") %>%
+                                     data = df_2cat,
+                                     method = "wilcox.test") %>%
     mutate(y.position = pvalue_y)
   
   
-
+  
   # Prepare stats df for median +/ IQR
   stats_df <- df_counts %>%
     group_by(tp53_altered) %>%
@@ -143,14 +154,14 @@ plot_tp53 <- function(df, pvalue_y) {
       ymin = quantile(tp53, 0.25, na.rm=TRUE),
       ymax = quantile(tp53, 0.75, na.rm=TRUE)
     )
-
+  
   ggplot(df_counts) +
     aes(x = tp53_altered, 
         y = tp53) +
-    geom_violin() + 
+    geom_violin(size = 0.35) + 
     geom_jitter(alpha = 0.25, # very light alpha to accomodate `other` category
                 width = 0.1, 
-                size = 1) + 
+                size = 0.6) + 
     # Add median +/- IQR pointrange
     geom_pointrange(data = stats_df, 
                     aes(
@@ -159,14 +170,22 @@ plot_tp53 <- function(df, pvalue_y) {
                       ymin = ymin,
                       ymax = ymax
                     ),
-                    color = "firebrick", size = rel(0.6)
+                    color = "firebrick", size = rel(0.4)
     ) +
     # Add p-value annotation with ggpubr
     ggpubr::stat_pvalue_manual(
       wilcox_df, 
-      label = "Wilcoxon P-value = {p.adj}"
+      label = "Wilcoxon P-value = {p.adj}",
+      size = 2.25
     ) +
-    ggpubr::theme_pubr() 
+    ggpubr::theme_pubr()  +
+    # Sizing for compilation - small figure export
+    theme(
+      axis.text = element_text(size = rel(0.7)),
+      axis.title = element_text(size = rel(0.7)),
+      axis.line = element_line(size = rel(0.5)),
+      axis.ticks = element_line(size = rel(0.5))
+    )
   
 }
 
@@ -219,9 +238,9 @@ tp53_expression_plot <- stranded_tp53 %>%
   )
 
 
-# Export figures
-ggsave(tp53_scores_altered_pdf, tp53_scores_plot, width = 6, height = 4)
-ggsave(tp53_expression_altered_pdf, tp53_expression_plot, width = 6, height = 4)
+# Export figures, with `useDingbats = FALSE` needed for compiling panels in Illustrator
+ggsave(tp53_scores_altered_pdf, tp53_scores_plot, width = 3.75, height = 2.5, useDingbats = FALSE)
+ggsave(tp53_expression_altered_pdf, tp53_expression_plot, width = 3.75, height = 2.5, useDingbats = FALSE)
 
 
 
@@ -278,7 +297,7 @@ tp53_telo_mutator_df <- tmb_coding_df %>%
     )
   )
 
-  
+
 # Prepare combined data for visualization
 plot_df <- tp53_telo_mutator_df %>%
   # add in histology information
@@ -317,8 +336,9 @@ legend_colors <- c(Normal      = "grey40",
                    `Ultra-hypermutant` = "red")
 # Other plot parameters which need to be re-introduced in legend:
 normal_alpha <- 0.7
-normal_size <- 1.75
-mutator_size <- 2.25
+normal_size <- 0.75
+mutator_size <- 1
+point_stroke <- 0.25
 normal_pch <- 19
 mutator_pch <- 21
 jitter_width <- 0.15 # not in legend but often in main plot
@@ -333,7 +353,7 @@ tp53_telo_tmb_boxplot <- ggplot(plot_df) +
   geom_boxplot(
     outlier.shape = NA, # no outliers
     color = "grey20",    # dark grey color
-    size = 0.4 
+    size = 0.2
   ) +
   # Separate out jitters so that the mutant layers are ON TOP OF normal
   geom_jitter(
@@ -342,34 +362,47 @@ tp53_telo_tmb_boxplot <- ggplot(plot_df) +
     alpha = normal_alpha,
     size = normal_size,
     pch = normal_pch,
-    color = legend_colors["Normal"]
+    color = legend_colors["Normal"],
+    stroke = point_stroke
   ) +
   geom_jitter(
     data = plot_df[plot_df$mutator == "Hypermutant",],
     width = jitter_width, 
     pch = mutator_pch,
     size = mutator_size,
-    fill = legend_colors["Hypermutant"]
+    fill = legend_colors["Hypermutant"],
+    stroke = point_stroke
   ) +  
   geom_jitter(
     data = plot_df[plot_df$mutator == "Ultra-hypermutant",],
     width = jitter_width, 
     pch = mutator_pch,
     size = mutator_size,
-    fill = legend_colors["Ultra-hypermutant"]
+    fill = legend_colors["Ultra-hypermutant"],
+    stroke = point_stroke
   ) +  
   labs(x = "Cancer group", 
        y = "Score") +
   facet_wrap(~score_type, nrow = 2) +
   ggpubr::theme_pubr() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust=1, size = rel(0.8))
+    axis.text.x = element_text(angle = 45, hjust=1, size = rel(0.5)),
+    # Sizing for compilation - small figure export
+    axis.text.y = element_text(size = rel(0.5)),
+    axis.title = element_text(size = rel(0.5)),
+    strip.text = element_text(size = rel(0.5)),
+    axis.line = element_line(size = rel(0.5)),
+    axis.ticks = element_line(size = rel(0.5))
   )
 
 # Export plot
 ggsave(tp53_telomerase_scores_boxplot_pdf,
        tp53_telo_tmb_boxplot,
-       width = 9, height = 6)
+       width = 4.875, height = 3.25, 
+       # compilation:
+       useDingbats = FALSE)
+
+
 
 # Make a legend for the grey/orange/red since this was not done with normal mapping
 # We have to make a "fake" plot for this to extract the legend from
@@ -398,30 +431,55 @@ legend_name <- "Mutation status"
 tp53_plot_for_legend <- ggplot(tp53_plot_legend_df) + 
   aes(x = cancer_group, y = tmb, shape = mutator_factor, fill = mutator_factor, color = mutator_factor, size = mutator_factor, alpha = mutator_factor) +
   geom_point(size =3) + 
-  scale_size_manual(name = legend_name, values = c(normal_size, mutator_size, mutator_size))+
+  scale_size_manual(name = legend_name, values = c(normal_size, mutator_size, mutator_size/10))+
   scale_shape_manual(name = legend_name, values = c(normal_pch, mutator_pch, mutator_pch)) +
   scale_alpha_manual(name = legend_name, values = c(normal_alpha, 1, 1))+
   scale_color_manual(name = legend_name,values = c(unname(legend_colors["Normal"]), "black", "black")) + 
   scale_fill_manual(name = legend_name, values = c("black", unname(legend_colors["Hypermutant"]), unname(legend_colors["Ultra-hypermutant"]))) +
   # theme to remove gray background. this strategy works
-  theme_classic()
+  theme_classic() + 
+  theme(
+  # Sizing for compilation - small figure export
+    legend.text = element_text(size = rel(0.45)),
+    legend.title = element_text(size = rel(0.6)),
+    legend.key.size = unit(10, "points")
+)
 
 
 legend <- cowplot::get_legend(tp53_plot_for_legend)
 
 # Export legend
-pdf(tp53_telomerase_scores_boxplot_legend_pdf, width = 6, height = 3)
+pdf(tp53_telomerase_scores_boxplot_legend_pdf, width = 1.3, height = 0.8, useDingbats = FALSE)
 cowplot::ggdraw(legend)
 dev.off()
 
 
 ## Survival analysis forest plot -----------------------------------------------------------------
+resect_ref <- "Tumor resection: Biopsy (ref)"
+lgg_ref <- "LGG group: non-LGG (ref)"
+hgg_ref <- "HGG group: non-HGG (ref)"
 
-survival_dir <- file.path(analyses_dir, "survival-analysis", "results")
-survival_result <- readRDS(file.path(
-  survival_dir,
-  "cox_additive_terms_tp53_telomerase_hgg.RDS"
-))
+# Set up ordering and labels for y-axis
+term_order <- rev(c("tp53_score",
+                    "telomerase_score",
+                    "extent_of_tumor_resectionGross/Near total resection",
+                    "extent_of_tumor_resectionPartial resection",
+                    resect_ref,
+                    "lgg_groupLGG",
+                    lgg_ref,
+                    "hgg_groupHGG",
+                    hgg_ref))
+
+term_labels <- rev(c("TP53 score",
+                     "Telomerase score",
+                     "Tumor resection: Total",
+                     "Tumor resection: Partial",
+                     resect_ref,
+                     "LGG group: LGG",
+                     lgg_ref,
+                     "HGG group: HGG",
+                     hgg_ref))
+
 
 # Get n and event info from glance outpout
 survival_n <- broom::glance(survival_result) %>%
@@ -429,15 +487,32 @@ survival_n <- broom::glance(survival_result) %>%
 
 # Convert survival model result to data frame, and exponentiate estimates/CIs to get HRs
 survival_df <- broom::tidy(survival_result) %>%
+  # add references
+  add_row(term = resect_ref, estimate = 0) %>%
+  add_row(term = lgg_ref, estimate = 0) %>%
+  add_row(term = hgg_ref, estimate = 0) %>%
+  #remove unknown resection from plot
+  filter(term != "extent_of_tumor_resectionUnavailable") %>%
   mutate(estimate = exp(estimate),
          conf.low = exp(conf.low),
-         conf.high = exp(conf.high))
+         conf.high = exp(conf.high), 
+         # significance indicator column for filling points.
+         significant = case_when(p.value <= 0.05 ~ "TRUE", 
+                                 p.value > 0.05 ~ "FALSE", 
+                                 is.na(p.value) ~ "REF"),
+         # y-axis factor re-labeling
+         term = factor(term, 
+                       levels = term_order,
+                       labels = term_labels)
+  )
+
+
 
 # Forest plot of the model
 forest_plot <- ggplot(survival_df) +
   aes(x = estimate, 
       y = term,
-      fill = term
+      fill = significant
   ) + 
   # add CI first so line doesn't cover open point
   geom_errorbarh(
@@ -454,7 +529,9 @@ forest_plot <- ggplot(survival_df) +
   ) +
   # Point fill based on sigificance
   scale_fill_manual(
-    values = c("black", "black", "white"),
+    values = c("FALSE" = "white", 
+               "TRUE" = "black",
+               "REF" = "gray"),
     guide = FALSE # turn off legend
   ) + 
   # Vertical guiding line at 1
@@ -467,23 +544,18 @@ forest_plot <- ggplot(survival_df) +
     y = "",
     subtitle = glue::glue("N = {survival_n$n} with {survival_n$nevent} events")
   ) + 
-  # Update term labels for pub-ready
-  scale_y_discrete(
-    labels = c(
-      "HGG group: HGG",
-      "Telomerase score",
-      "TP53 score"
-    )
-  ) +
   # log-scale the x-axis
-  scale_x_log10() +
+  scale_x_log10(
+    # axis label was being cut off - this fixes it
+    limits=c(5e-2, 1e2)
+  ) +
   ggpubr::theme_pubr() + 
   theme(
     plot.subtitle = element_text(face = "bold")
   ) +
   # grid makes it easier to follow lines
   cowplot::background_grid()
-  
+
 
 # Accompanying panel with sample sizes, P-values, etc.
 
@@ -497,23 +569,25 @@ survival_df_spread <- survival_df %>%
       "P < 0.001"
     ),
     # round to 2 digits and create single string with "hr (low-high)"
-    conf.low = round(conf.low, 2),
-    conf.high = round(conf.high, 2),
-    estimate = round(estimate, 2),
+    conf.low = signif(conf.low, 2),
+    conf.high = signif(conf.high, 2),
+    estimate = signif(estimate, 2),
     hr_ci = glue::glue("{estimate} ({conf.low} - {conf.high})")
   ) %>%
   select(term, hr_ci, p_string) %>%
   # this throws a warning but it's ok
   # format tibble for plotting
-  gather(hr_ci:p_string, key = "name", value = "value")
+  gather(hr_ci:p_string, key = "name", value = "value") %>%
+  # remove CI for refs
+  mutate(value = ifelse(grepl("ref", term), NA, value))
 
 labels_panel <- ggplot(survival_df_spread) +
   aes(x = name, y = term, label = value) + 
   geom_text(hjust = 0) +
   labs(
     # hack!
-    subtitle = paste0("                       ",
-                      "HR (95% CI)                  P-value")
+    subtitle = paste0("                      ",
+                      "HR (95% CI)                   P-value")
   ) +
   ggpubr::theme_pubr() + 
   # remove axes.
@@ -530,31 +604,10 @@ labels_panel <- ggplot(survival_df_spread) +
     plot.margin = margin(6, 0, 36, -25, unit = "pt"),
     plot.subtitle = element_text(face = "bold")
   ) 
-    
-forest_panels <- cowplot::plot_grid(forest_plot, labels_panel, nrow = 1, rel_widths = c(1, 0.5))
-    
+
+forest_panels <- cowplot::plot_grid(forest_plot, labels_panel, nrow = 1, rel_widths = c(1,0.5))
 
 
 # Export plot
-ggsave(survival_plot_pdf, forest_panels, width = 11, height = 3)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ggsave(survival_plot_pdf, forest_panels, width = 11, height = 3.5)
 
