@@ -43,6 +43,7 @@ read_tsv(uncorrected_result_file) %>%
 # classification on batch-corrected data
 batch_corrected_result_file <- file.path(root_dir, "analyses", "molecular-subtyping-MB", "results", "MB_batchcorrected_molecular_subtype.tsv")
 read_tsv(batch_corrected_result_file) %>%
+  filter(!Kids_First_Biospecimen_ID_DNA %in%samples_ids_no_rna$Kids_First_Biospecimen_ID_DNA) %>%
   rbind(samples_ids_no_rna) %>%
   write_tsv(batch_corrected_result_file)
 
