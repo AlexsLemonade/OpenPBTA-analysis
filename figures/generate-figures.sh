@@ -193,7 +193,6 @@ cp ${analyses_dir}/mutational-signatures/plots/cns/signature1_tumor-descriptor_c
 cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_per_sample_barplot.pdf    pdfs/supp/figs4/panels/
 
 
-
 # UMAP panels for supplementary figure 6 from molecular analysis 
 Rscript --vanilla scripts/supp-subtype-umap.R
 
