@@ -1,6 +1,6 @@
 # Stephanie J. Spielman for CCDL, 2022
 
-# This script creates three S5 panels (A, B, C)
+# This script creates panels for Figure S5
 
 
 ## Load libraries ------------------------
