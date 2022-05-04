@@ -38,7 +38,7 @@ from sklearn.metrics import roc_curve, precision_recall_curve
 
 import seaborn as sns
 import matplotlib
-zmatplotlib.use('agg')
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 from optparse import OptionParser
 
