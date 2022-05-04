@@ -52,7 +52,7 @@ roc_plot <- ggplot(roc_df) +
   ) +
   geom_step(
     aes(color = Classifier), 
-    size = 0.75
+    size = 0.6
   ) + 
   geom_segment(
     aes(x = 0, y = 0, xend = 1, yend = 1), 
@@ -66,12 +66,14 @@ roc_plot <- ggplot(roc_df) +
     x = "False Positive Rate",
     y = "True Positive Rate") + 
   ggpubr::theme_pubr() +
-  theme(legend.text = element_text(size = rel(0.7)),
-        legend.title = element_text(size = rel(0.7)),
-        axis.text = element_text(size = rel(0.75)),
-        axis.title = element_text(size = rel(0.75))
+  theme(legend.text = element_text(size = rel(0.525)),
+        legend.title = element_text(size = rel(0.525)),
+        legend.key.size = unit(5, "points"),
+        legend.margin = margin(0, 0, 0, -30),
+        axis.text = element_text(size = rel(0.7)),
+        axis.title = element_text(size = rel(0.7))
   )
-ggsave(roc_file, roc_plot, width = 5, height = 5) 
+ggsave(roc_file, roc_plot, width = 3, height = 3) 
 
 
 ## Figures S5B and S5C---------------------------------------------------
@@ -95,7 +97,7 @@ extend_fpkm_df <- stranded_expression %>%
            NormEXTENDScores), 
     by = "SampleID"
   ) %>%
-  mutate(FPKM = log(FPKM + 1))
+  mutate(FPKM = log(FPKM + 1, 2))
 
 # Calculate stats
 extend_fpkm_lm <- function(df) {
@@ -127,29 +129,29 @@ plot_extend_scatter <- function(plot_df, stats_df, gene_name, annotation_y) {
   plot_df %>%
     filter(gene == gene_name) %>%
     ggplot() + 
+    geom_point(size = 1) +
     aes(x = NormEXTENDScores, 
         y = FPKM) + 
-    # All circular shapes (1, 16, 19, 20, 21) are appearing as greek letter lambdas during PDF panel compilation
-    # But, squares seem to work!
-    geom_point(shape = 15) + 
     geom_smooth(method = "lm") + 
     annotate("text", 
              label = stats_df$annotation[stats_df$gene == gene_name], 
-             x = 0.2, 
+             x = 0.28, 
              y = annotation_y,
-             size = 3) + 
+             size = 2.5) + 
     labs(x = "Telomerase score",
          y = paste0(gene_name, " log(FPKM)")
     ) +
-    ggpubr::theme_pubr()
+    ggpubr::theme_pubr() + 
+    theme(axis.text = element_text(size = 8),
+          axis.title = element_text(size = 9))
 }
 
-tert_plot <- plot_extend_scatter(extend_fpkm_df, stats_annotation_df, "TERT", 4.5) #S5b
-terc_plot <- plot_extend_scatter(extend_fpkm_df, stats_annotation_df, "TERC", 6) #S5c
+tert_plot <- plot_extend_scatter(extend_fpkm_df, stats_annotation_df, "TERT", 6.5) 
+terc_plot <- plot_extend_scatter(extend_fpkm_df, stats_annotation_df, "TERC", 8.5) 
 
 
-ggsave(tert_file, tert_plot, width = 5, height = 5)
-ggsave(terc_file, terc_plot, width = 5, height = 5)
+ggsave(tert_file, tert_plot, width = 3, height = 3, useDingbats = FALSE)
+ggsave(terc_file, terc_plot, width = 3, height = 3, useDingbats = FALSE)
 
 
 
