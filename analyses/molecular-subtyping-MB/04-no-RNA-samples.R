@@ -29,13 +29,14 @@ samples_ids_no_rna <- mb_samples %>%
 samples_ids_no_rna <- samples_ids_no_rna %>%
   dplyr::mutate(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID,
                 Kids_First_Biospecimen_ID_RNA = NA,
-                molecular_subtype = "To be classified") %>%
+                molecular_subtype = "MB, To be classified") %>%
   dplyr::select(Kids_First_Participant_ID, sample_id, Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA, molecular_subtype)
 
 # read RNA-based results, append samples with no RNA and write out
 # classification on uncorrected data
 uncorrected_result_file <- file.path(root_dir, "analyses", "molecular-subtyping-MB", "results", "MB_molecular_subtype.tsv")
 read_tsv(uncorrected_result_file) %>%
+  filter(!Kids_First_Biospecimen_ID_DNA %in%samples_ids_no_rna$Kids_First_Biospecimen_ID_DNA) %>%
   rbind(samples_ids_no_rna) %>%
   write_tsv(uncorrected_result_file)
 

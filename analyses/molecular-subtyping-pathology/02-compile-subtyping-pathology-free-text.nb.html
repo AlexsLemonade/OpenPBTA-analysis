@@ -1910,15 +1910,12 @@ output_file &lt;- file.path(results_dir, &quot;compiled_molecular_subtypes_and_r
 clinical &lt;- readr::read_tsv(file.path(data_dir,
                                 &quot;pbta-histologies-base.tsv&quot;)) </code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgaW50ZWdyYXRlZF9kaWFnbm9zaXMgPSBjb2xfbG9naWNhbCgpLFxuICBOb3RlcyA9IGNvbF9sb2dpY2FsKCksXG4gIE9TX2RheXMgPSBjb2xfZG91YmxlKCksXG4gIGFnZV9sYXN0X3VwZGF0ZV9kYXlzID0gY29sX2RvdWJsZSgpLFxuICBtb2xlY3VsYXJfc3VidHlwZSA9IGNvbF9sb2dpY2FsKCksXG4gIG5vcm1hbF9mcmFjdGlvbiA9IGNvbF9kb3VibGUoKSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBjb2xfZG91YmxlKCksXG4gIHR1bW9yX3Bsb2lkeSA9IGNvbF9kb3VibGUoKVxuKVxuIn0= -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgT1NfZGF5cyA9IGNvbF9kb3VibGUoKSxcbiAgYWdlX2xhc3RfdXBkYXRlX2RheXMgPSBjb2xfZG91YmxlKCksXG4gIG5vcm1hbF9mcmFjdGlvbiA9IGNvbF9kb3VibGUoKSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBjb2xfZG91YmxlKCksXG4gIHR1bW9yX3Bsb2lkeSA9IGNvbF9kb3VibGUoKVxuKVxuIn0= -->
 <pre><code>Parsed with column specification:
 cols(
   .default = col_character(),
-  integrated_diagnosis = col_logical(),
-  Notes = col_logical(),
   OS_days = col_double(),
   age_last_update_days = col_double(),
-  molecular_subtype = col_logical(),
   normal_fraction = col_double(),
   tumor_fraction = col_double(),
   tumor_ploidy = col_double()
@@ -1952,7 +1949,7 @@ cols(
 <!-- rnb-source-begin eyJkYXRhIjoibGdhdF9yZWNvZGVfZGYgPC0gcmVhZHI6OnJlYWRfdHN2KGxnYXRfcmVjb2RlX2ZpbGUpIn0= -->
 <pre class="r"><code>lgat_recode_df &lt;- readr::read_tsv(lgat_recode_file)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBzYW1wbGVfaWQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIHR1bW9yX2Rlc2NyaXB0b3IgPSBjb2xfY2hhcmFjdGVyKCksXG4gIGJyb2FkX2hpc3RvbG9neSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgc2hvcnRfaGlzdG9sb2d5ID0gY29sX2NoYXJhY3RlcigpLFxuICBtb2xlY3VsYXJfc3VidHlwZSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgaW50ZWdyYXRlZF9kaWFnbm9zaXMgPSBjb2xfbG9naWNhbCgpLFxuICBoYXJtb25pemVkX2RpYWdub3NpcyA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgTm90ZXMgPSBjb2xfY2hhcmFjdGVyKClcbilcbiJ9 -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBzYW1wbGVfaWQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIHR1bW9yX2Rlc2NyaXB0b3IgPSBjb2xfY2hhcmFjdGVyKCksXG4gIGJyb2FkX2hpc3RvbG9neSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgc2hvcnRfaGlzdG9sb2d5ID0gY29sX2NoYXJhY3RlcigpLFxuICBtb2xlY3VsYXJfc3VidHlwZSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgaW50ZWdyYXRlZF9kaWFnbm9zaXMgPSBjb2xfY2hhcmFjdGVyKCksXG4gIGhhcm1vbml6ZWRfZGlhZ25vc2lzID0gY29sX2NoYXJhY3RlcigpLFxuICBOb3RlcyA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuIn0= -->
 <pre><code>Parsed with column specification:
 cols(
   Kids_First_Biospecimen_ID = col_character(),
@@ -1962,7 +1959,7 @@ cols(
   broad_histology = col_character(),
   short_histology = col_character(),
   molecular_subtype = col_character(),
-  integrated_diagnosis = col_logical(),
+  integrated_diagnosis = col_character(),
   harmonized_diagnosis = col_character(),
   Notes = col_character()
 )</code></pre>
