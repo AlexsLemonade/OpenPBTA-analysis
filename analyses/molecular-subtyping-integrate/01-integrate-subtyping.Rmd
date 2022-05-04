@@ -44,7 +44,8 @@ base_histology <- read_tsv(file.path(data_dir,"pbta-histologies-base.tsv"),
                                                    short_histology = readr::col_character(),
                            broad_histology = readr::col_character(),
                            Notes = readr::col_character())) %>%
-  unique()
+  unique() %>%
+  arrange(Kids_First_Biospecimen_ID)
 ```
 
 ### Read molecular-subtyping-pathology results
@@ -299,7 +300,7 @@ But first need to remove broad_histology.base, broad_histology.subtyped and shor
 histology %>% 
   select(-broad_histology.base,
          -broad_histology.subtyped,
-         - short_histology.base,
+         -short_histology.base,
          -short_histology.subtyped) %>%
   arrange(Kids_First_Biospecimen_ID) %>%
   write_tsv("results/pbta-histologies.tsv")

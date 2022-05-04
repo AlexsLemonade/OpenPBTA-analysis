@@ -25,9 +25,9 @@ Dysembryoplastic neuroepithelial tumor (DNET)	Dysembryoplastic neuroepithelial t
 Dysembryoplastic neuroepithelial tumor (DNET);Ganglioglioma	Dysembryoplastic neuroepithelial tumor	No	Yes
 Dysembryoplastic neuroepithelial tumor (DNET);Dysplasia/Gliosis;Ganglioglioma	Dysembryoplastic neuroepithelial tumor	No	Yes
 Dysplasia/Gliosis;Glial-neuronal tumor NOS	Dysplasia Gliosis-Glial-neuronal tumor NOS	No	Yes
+Embryonal tumor with multilayer rosettes, NOS	Embryonal tumor with multilayer rosettes	Yes	No
 Embryonal tumor with multilayer rosettes, C19MC-altered	Embryonal tumor with multilayer rosettes	Yes	No
 CNS Embryonal tumor, NOS	Embryonal tumor with multilayer rosettes	Yes	Yes
-Embryonal tumor with multilayer rosettes, NOS	Embryonal tumor with multilayer rosettes	Yes	No
 Ependymoma	Ependymoma	No	No
 Ependymoma, Supratentorial, RELA fusion positive	Ependymoma	Yes	No
 Ependymoma, Posterior Fossa, Type A	Ependymoma	Yes	No
@@ -117,9 +117,9 @@ Subependymal Giant Cell Astrocytoma, wildtype	Subependymal Giant Cell Astrocytom
 Subependymal Giant Cell Astrocytoma	Subependymal Giant Cell Astrocytoma	No	No
 Teratoma	Teratoma	No	No
 Non-germinomatous germ cell tumor;Teratoma	Teratoma	No	Yes
-Dysplasia/Gliosis	NA	No	Yes
 Benign tumor, osteoblastoma	NA	Yes	Yes
 Benign tumor, cortical tubers	NA	Yes	Yes
+Dysplasia/Gliosis	NA	No	Yes
 Benign tumor, epidermoid cyst	NA	Yes	Yes
 Benign tumor, meningioangiomatosis	NA	Yes	Yes
 Benign tumor, hamartoma	NA	Yes	Yes
