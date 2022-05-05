@@ -122,7 +122,10 @@ lgat_sega_df <- recode_integrated_diagnosis(histologies_df = compiled_subtypes_d
                                    include_path_free_text_dx_terms = "sega|subependymal giant cell astrocytoma",
                                    old_integrated_diagnosis_term = "Low-grade glioma/astrocytoma",
                                    replace_integrated_diagnosis_term = "Subependymal Giant Cell Astrocytoma")
-lgat_sega_df
+
+# update SEGA in molecular subtype
+lgat_sega_df <- lgat_sega_df %>%
+    mutate(molecular_subtype = gsub("LGG,","SEGA,",molecular_subtype)) 
 ```
 
 ### Recoding samples with "fibrillary" in pathology_free_text_diagnosis
