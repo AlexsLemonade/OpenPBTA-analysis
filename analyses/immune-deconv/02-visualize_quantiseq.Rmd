@@ -216,7 +216,7 @@ ggsave(cg_celltypes_plot_file, cg_plot, width = 11, height = 3.5)
 
 ### Visualize fraction distributions across cell types and molecular subtypes
 
-```{r subtypes_celltypes_plot, fig.width = 8, fig.height = 6}
+```{r subtypes_celltypes_plot, fig.width = 12, fig.height = 4}
 # Faceted plot of subtypes, cell types. Jitter points are colored by underlying cancer group.
 # First, remove cd8_cd4_ratio
 quantiseq_no_ratio <- quantiseq_subset %>%
@@ -226,20 +226,23 @@ subtypes_celltypes_plot <- ggplot(quantiseq_no_ratio) +
   geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
   geom_jitter(width = 0.15, size = 0.75, alpha = 0.6) + 
   # change to ncol if we want this *Wide*
-  facet_wrap(~cell_type, nrow = 5, scales = "free_y") +
+  facet_wrap(~cell_type, ncol = 5, scales = "free_y") +
   scale_color_identity() +
   labs(
     x = "Molecular subtype of tumor sample", 
     y = "Estimated fraction in sample"
   ) +
   ggpubr::theme_pubr() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6),
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 3.5),
+        axis.title = element_text(size = rel(0.7)),
         axis.text.y = element_text(size = rel(0.7)),
-        strip.text = element_text(size = rel(0.7)))
+        strip.text = element_text(size = rel(0.7)),
+        axis.line = element_line(size = rel(0.7)),
+        axis.ticks = element_line(size = rel(0.7)))
 
 subtypes_celltypes_plot
 
-ggsave(subtypes_celltypes_plot_file, subtypes_celltypes_plot, width = 8, height = 6)
+ggsave(subtypes_celltypes_plot_file, subtypes_celltypes_plot, width = 13, height = 4)
 ```
 
 
@@ -380,12 +383,16 @@ ratio_plot <- ggplot(ratio_df) +
        y = "Ratio of CD8+/CD4+ T cell fractions") +
   ggpubr::theme_pubr() + 
   theme(axis.text.x = element_text(hjust = 1, 
-                                   size = rel(0.6), 
-                                   angle = 75)) 
+                                   size = rel(0.3), 
+                                   angle = 45),
+        axis.text.y = element_text(size = rel(0.7)),
+        axis.title = element_text(size = rel(0.7)),
+        axis.line = element_line(size = rel(0.7)),
+        axis.ticks = element_line(size = rel(0.7)))
 
 ratio_plot
 
-ggsave(cd8_cd4_ratio_plot_file, ratio_plot, width = 5, height = 5)
+ggsave(cd8_cd4_ratio_plot_file, ratio_plot, width = 2.75, height = 4)
 
 ```
 

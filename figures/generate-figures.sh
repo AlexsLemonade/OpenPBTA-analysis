@@ -183,8 +183,6 @@ cp ${analyses_dir}/immune-deconv/plots/cd274_expression_mb_subtypes.pdf  pdfs/fi
 
 ####### Supplementary figures
 
-# UMAP panels for supplementary figure 2 from molecular analysis 
-Rscript --vanilla scripts/supp-subtype-umap.R
 
 # Panels for supplementary figure 3
 Rscript --vanilla scripts/supp-S3-panels-BCD.R
@@ -195,13 +193,15 @@ cp ${analyses_dir}/mutational-signatures/plots/cns/signature1_tumor-descriptor_c
 cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_per_sample_barplot.pdf    pdfs/supp/figs4/panels/
 
 
+# UMAP panels for supplementary figure 6 from molecular analysis 
+Rscript --vanilla scripts/supp-subtype-umap.R
 
-# Copy S5 panels (analysis module was run previously)
-# 5S - H
-cp ${analyses_dir}/immune-deconv/plots/cell_types-molecular_subtypes.pdf pdfs/supp/figs5/panels/quantiseq-cell_types-molecular_subtypes.pdf
+# Copy additional S6 panels (analysis module was run previously)
+# 6S - E
+cp ${analyses_dir}/immune-deconv/plots/cell_types-molecular_subtypes.pdf pdfs/supp/figs6/panels/quantiseq-cell_types-molecular_subtypes.pdf
 
-# 5S - I
-cp ${analyses_dir}/immune-deconv/plots/cd8_cd4_ratio.pdf pdfs/supp/figs5/panels/cd8_cd4_ratio.pdf
+# 6S - F
+cp ${analyses_dir}/immune-deconv/plots/cd8_cd4_ratio.pdf pdfs/supp/figs6/panels/cd8_cd4_ratio.pdf
 
 
 
