@@ -38,13 +38,6 @@ In adddition, for samples that where pathology_diagnosis is "Other" we also upda
 library(tidyverse)
 data_dir <- "../../data/"
 
-## For v22 update only - create new base histologies from v21 file in order to update only subtyping and no other data
-v21 <- read_tsv(file.path(data_dir,"pbta-histologies.tsv"), guess_max = 10000) 
-v21 %>%
-  select(-harmonized_diagnosis, -cancer_group) %>%
-  write_tsv(file.path(data_dir,"pbta-histologies-base.tsv"))
-
-## Usual start of the script
 base_histology <- read_tsv(file.path(data_dir,"pbta-histologies-base.tsv"),
                            col_types = readr::cols(molecular_subtype = readr::col_character(),
                                                    short_histology = readr::col_character(),
@@ -211,19 +204,6 @@ histology<- histology %>%
   )
 ```
 
-### Differences between V21 and V22 cancer group
-```{r}
-v21 %>%
-  filter(short_histology == "LGAT") %>%
-  select(cancer_group, experimental_strategy) %>%
-  table()
-
-histology %>%
-  filter(short_histology == "LGAT") %>%
-  select(cancer_group, experimental_strategy) %>%
-  table()
-```
-
 ### Write out table for `harmonized_diagnosis` -> `cancer_group` mapping
 
 To make it easier for people to examine the mapping between these two fields, we'll write out a table to `results/`.
@@ -324,17 +304,6 @@ histology <- histology %>%
          -short_histology.subtyped) %>%
   arrange(Kids_First_Biospecimen_ID) %>%
   write_tsv("results/pbta-histologies.tsv")
-```
-
-### Check for differences in molecular subtypes
-```{r}
-base_histology_subset <- base_histology %>%
-  select(Kids_First_Biospecimen_ID, molecular_subtype)
-
-histology_subset <- histology %>%
-  select(Kids_First_Biospecimen_ID, molecular_subtype)
-dplyr::setdiff(histology_subset,base_histology_subset)
-
 ```
 
 ### Session Info
