@@ -68,7 +68,7 @@ table_s1_file <- file.path(results_dir, "TableS1-histologies.xlsx")
 table_s2_file <- file.path(results_dir, "TableS2-DNA-results-table.xlsx")
 table_s3_file <- file.path(results_dir, "TableS3-RNA-results-table.xlsx")
 table_s4_file <- file.path(results_dir, "TableS4-survival-results-table.xlsx")
-table_s5_file <- file.path(results_dir, "TableS5-Key-Resources-table.xlsx")
+table_key_resources_file <- file.path(results_dir, "Key-Resources-table.xlsx")
 ```
 
 ## Table 1: Molecular subtypes determined for this project
@@ -406,9 +406,13 @@ write.xlsx(list_s4_table,
 ```
 
 
-## Table S5: `Key Resources` table
+## `Key Resources` table
 
-```{r table_s5}
+
+This is not a supplementary table according to [Author guidelines](https://www.cell.com/star-supplemental-information).
+
+
+```{r table_key_resources}
 # Sheet 1: R packages in Docker image
 r_packages <- data.frame(installed.packages()[, c(1,3)]) %>%
   rename(`R Package` = "Package")
@@ -472,20 +476,20 @@ workflow_tools <- tribble(
 
 
 # Combine and output
-list_s5_table <- list(r_packages = r_packages,
+list_key_resources_table <- list(r_packages = r_packages,
                       python_libraries = python_libraries,
                       other_command_line_tools = cli_tools,
                       workflow_repository_tools = workflow_tools
                       )
-write.xlsx(list_s5_table, 
-           table_s5_file, 
+write.xlsx(list_key_resources_table, 
+           table_key_resources_file, 
            overwrite=TRUE, 
            keepNA=TRUE)
 
 ```
 
 
-### print out session info
+## Show session info
 ```{r}
 sessionInfo()
 ```
