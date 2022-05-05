@@ -185,8 +185,10 @@ Rscript --vanilla scripts/fig5-forest-plot.R
 mkdir -p pdfs/supp/figs2/panels
 
 # Run the snv module for PBTA and TCGA
-bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh
-bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh
+if [ "$RUN_LOCAL" -lt "1" ]; then
+  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh
+  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh
+fi
 
 # Generate SNV and TMB figures
 Rscript --vanilla scripts/supp-snv-callers-panels.R
@@ -248,14 +250,6 @@ cp ${analyses_dir}/mutational-signatures/plots/cns/signature1_tumor-descriptor_c
 
 
 
-
-
-# UMAP panels for supplementary figure 6 from molecular analysis 
-Rscript --vanilla scripts/supp-subtype-umap.R
-
-<<<<<<< HEAD
-
-
 ##### Figure S5: Other TP53/telomerase ---------------------------
 
 
@@ -286,4 +280,8 @@ cp ${analyses_dir}/immune-deconv/plots/cell_types-molecular_subtypes.pdf pdfs/su
 cp ${analyses_dir}/immune-deconv/plots/cd8_cd4_ratio.pdf pdfs/supp/figs5/panels/cd8_cd4_ratio.pdf
 
 
+##### Clean up -------------------
+
+# Sometimes Rplots.pdf gets produced and honestly nobody really knows why.
+rm -f Rplots.pdf # use `-f` to not get a warning if Rplots.pdf is NOT there.
 
