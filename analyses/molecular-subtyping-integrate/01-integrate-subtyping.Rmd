@@ -224,7 +224,7 @@ histology %>%
   table()
 ```
 
-#### Write out table for `harmonized_diagnosis` -> `cancer_group` mapping
+### Write out table for `harmonized_diagnosis` -> `cancer_group` mapping
 
 To make it easier for people to examine the mapping between these two fields, we'll write out a table to `results/`.
 We'll only include a subset of the mappings in the README (those that we think require the most explanation), so we'll save a separate table for that purpose.
