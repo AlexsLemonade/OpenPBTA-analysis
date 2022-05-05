@@ -5,6 +5,7 @@
 - status: available
 - changes:
   - Update `molecular_subtype` for medulloblastoma WGS-only samples as `MB, To be classified` per [#1207](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1207)
+  - With a rerun of `molecular-subtyping-pathology` and `molecular-subtyping-integrate`, `LGG`--> `SEGA` changes occurred, as well as additional LGG cancer groups which were previously not propagated to the histologies file
 - folder structure
 ```
 data
