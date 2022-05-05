@@ -37,6 +37,8 @@ from sklearn.metrics import average_precision_score, roc_auc_score
 from sklearn.metrics import roc_curve, precision_recall_curve
 
 import seaborn as sns
+import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 from optparse import OptionParser
 
