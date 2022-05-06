@@ -62,10 +62,11 @@ Rscript -e "rmarkdown::render('${analyses_dir}/mutational-signatures/07-plot_cns
 Rscript -e "rmarkdown::render('${analyses_dir}/mutational-signatures/08-explore_hypermutators.Rmd', clean = TRUE)"
 
 
-# Run the collapse-rnaseq module, which is needed for telomerase and immune deconvolution
-bash ${analyses_dir}/collapse-rnaseq/run-collapse-rnaseq.sh # Consumed by telomerase and tp53 to Figures 5, S5, S6
+# Run the collapse-rnaseq module, which is needed for telomerase, immune deconvolution, and GSVA modules
+bash ${analyses_dir}/collapse-rnaseq/run-collapse-rnaseq.sh 
 
 # Run the telomerase activity prediction script, for Figures 4 and S5
+# TODO: should we actually just run the full module script? I don't do that here since it also re-runs collapse rna seq.
 Rscript --vanilla ${analyses_dir}/telomerase-activity-prediction/01-run-EXTEND.R \
  --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
  --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt
@@ -76,7 +77,6 @@ bash ${analyses_dir}/tp53_nf1_score/run_classifier.sh
 # Run the survival module, for Figures 4 and 5
 bash ${analyses_dir}/survival-analysis/run_survival.sh
 
-
 # Run the dimension reduction module, for Figures 5 and S6
 bash ${analyses_dir}/transcriptomic-dimension-reduction/dimension-reduction-plots.sh
 
@@ -84,11 +84,7 @@ bash ${analyses_dir}/transcriptomic-dimension-reduction/dimension-reduction-plot
 bash ${analyses_dir}/immune-deconv/run-immune-deconv.sh
 
 # Generate GSVA scores and test for cancer group differences, for Figure 5
-Rscript --vanilla ${analyses_dir}/gene-set-enrichment-analysis/01-conduct-gsea-analysis.R \
-  --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
-  --output ${analyses_dir}/gene-set-enrichment-analysis/results/gsva_scores_stranded.tsv
-Rscript --vanilla -e "rmarkdown::render('${analyses_dir}/gene-set-enrichment-analysis/02-model-gsea.Rmd', clean = TRUE)"
-
+bash ${analyses_dir}/gene-set-enrichment-analysis/run-gsea.sh
 
 
 
@@ -142,7 +138,7 @@ mkdir -p pdfs/fig4/panels
 
 
 # Generate TP53 and telomerase figures 
-Rscript --vanilla scripts/fig4-tp53-telomerase.R # panels A, B, C, D, F
+Rscript --vanilla scripts/fig4-tp53-telomerase-panels.R # panels A, B, C, D, F
 Rscript --vanilla scripts/fig4-hgg-subtype-forest-plot.R # panel G
 Rscript --vanilla scripts/fig4-hgg-kaplan-meier.R # panel H
 
