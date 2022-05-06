@@ -6,7 +6,7 @@
 set -e
 set -o pipefail
 
-# If RUN_LOCAL is used, the snv callers steps are skipped because they cannot
+# If RUN_LOCAL is used, the time-intensive steps are skipped because they cannot
 # be run on a local computer -- the idea is that setting RUN_LOCAL=1 will allow for
 # local testing running/testing of all the other figures
 RUN_LOCAL=${RUN_LOCAL:-0}
@@ -33,57 +33,95 @@ Rscript --vanilla scripts/color_palettes.R
 Rscript -e "rmarkdown::render('mapping-histology-labels.Rmd', clean = TRUE, params = list(release = 'release-v21-20210820'))"
 
 
+##### Run all analysis modules required for figures ---------------------------------------
 
-##### Figure 1: Workflow and sample distribution ---------------------------
+# Run modules that cannot be run locally due to memory requirements
+if [ "$RUN_LOCAL" -lt "1" ]; then
+  bash ${analyses_dir}/focal-cn-file-preparation/run-prepare-cn.sh      # Figures 2 and S3
+  Rscript --vanilla scripts/supp-snv-callers-panels.R                   # Figure S2
+  Rscript --vanilla scripts/supp-tmb-compare-panels.R                   # Figure S2
+  bash ${analyses_dir}/copy_number_consensus_call/run_consensus_call.sh # Figure S3 (heatmap)
+fi
+
+# Run the `oncoprint-landscape` module shell script, for Figure 2 and S3
+bash ${analyses_dir}/oncoprint-landscape/run-oncoprint.sh
+
+# Run the interaction plots script for Figures 3 and S3
+bash ${analyses_dir}/interaction-plots/01-create-interaction-plots.sh
+
+
+# Run the chromothripsis module, which requires the chromosomal-instability module, for Figure 3
+bash ${analyses_dir}/chromosomal-instability/run_breakpoint_analysis.sh
+bash ${analyses_dir}/chromothripsis/run-chromothripsis.sh
+
+# Run the mutational-signatures module for Figures 3 and S4
+# We only run the part of the module used in the manuscript (i.e., not de novo)
+Rscript --vanilla ${analyses_dir}/mutational-signatures/05-fit_cns_signatures.R
+Rscript -e "rmarkdown::render('${analyses_dir}/mutational-signatures/06-compare_cns_exposures.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('${analyses_dir}/mutational-signatures/07-plot_cns_fit.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('${analyses_dir}/mutational-signatures/08-explore_hypermutators.Rmd', clean = TRUE)"
+
+
+# Run the collapse-rnaseq module, which is needed for telomerase and immune deconvolution
+bash ${analyses_dir}/collapse-rnaseq/run-collapse-rnaseq.sh # Consumed by telomerase and tp53 to Figures 5, S5, S6
+
+# Run the telomerase activity prediction script, for Figures 4 and S5
+Rscript --vanilla ${analyses_dir}/telomerase-activity-prediction/01-run-EXTEND.R \
+ --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
+ --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt
+
+# Run the tp53 classifier, for Figures 4 and S5
+bash ${analyses_dir}/tp53_nf1_score/run_classifier.sh
+
+# Run the survival module, for Figures 4 and 5
+bash ${analyses_dir}/survival-analysis/run_survival.sh
+
+
+# Run the dimension reduction module, for Figures 5 and S6
+bash ${analyses_dir}/transcriptomic-dimension-reduction/dimension-reduction-plots.sh
+
+# Run the immune deconvolution module, for Figures 5 and S6
+bash ${analyses_dir}/immune-deconv/run-immune-deconv.sh
+
+# Generate GSVA scores and test for cancer group differences, for Figure 5
+Rscript --vanilla ${analyses_dir}/gene-set-enrichment-analysis/01-conduct-gsea-analysis.R \
+  --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
+  --output ${analyses_dir}/gene-set-enrichment-analysis/results/gsva_scores_stranded.tsv
+Rscript --vanilla -e "rmarkdown::render('${analyses_dir}/gene-set-enrichment-analysis/02-model-gsea.Rmd', clean = TRUE)"
+
+
+
+
+
+##### Figure 1: Workflow and sample distribution ------------------------------------
 
 # Create directories
 mkdir -p pdfs/fig1/panels
-mkdir -p pdfs/figs1/panels
 
 # Generate sample distribution panel for Figure 1 (and supplementary panels)
 Rscript --vanilla scripts/fig1-sample-distribution.R
 
 
-##### Figure 2: Oncoprint ---------------------------
+##### Figure 2: Oncoprint ------------------------------------------------------------
 
 # Create directory
 mkdir -p pdfs/fig2/panels
-
-if [ "$RUN_LOCAL" -lt "1" ]; then
-  # Run the `focal-cn-file-preparation` module shell script to prepare the focal
-  # CN file so that it can be represented on the oncoprint
-  bash ${analyses_dir}/focal-cn-file-preparation/run-prepare-cn.sh
-fi
-
-# Run the `oncoprint-landscape` module shell script
-bash ${analyses_dir}/oncoprint-landscape/run-oncoprint.sh
 
 
 # Create single panel PDFs and legends
 # Note: This script also generates a panel for Figure S3
 Rscript --vanilla scripts/fig2-oncoprint-landscape.R
 
-##### Figure 3: Mutation overview ---------------------------
 
-#### Interaction plots ####
+
+
+##### Figure 3: Mutation overview ----------------------------------------------------
 
 # Create directory
 mkdir -p pdfs/fig3/panels
 
-# Run the main figure generation script
-bash ${analyses_dir}/interaction-plots/01-create-interaction-plots.sh
-
 # Copy the main figure to final directory - panels A,B
 cp ${analyses_dir}/interaction-plots/plots/combined_top50.pdf pdfs/fig3/panels/mutation_cooccurrence_figure.pdf
-
-
-#### Chromothripsis ####
-
-# The chromothripsis module uses breakpoint counts from this module
-bash ${analyses_dir}/chromosomal-instability/run_breakpoint_analysis.sh
-
-# Run the chromothripsis module
-bash ${analyses_dir}/chromothripsis/run-chromothripsis.sh
 
 # Copy scatter plot from the chromothripsis module - Panel C
 cp ${analyses_dir}/chromothripsis/plots/04-breakpoint-data/count_chromothripsis_cnv_and_sv_breaks_scatterplot.pdf pdfs/fig3/panels/count_chromothripsis_cnv_and_sv_breaks_scatterplot.pdf
@@ -91,86 +129,47 @@ cp ${analyses_dir}/chromothripsis/plots/04-breakpoint-data/count_chromothripsis_
 # Run the Rscript that creates the barplot using the most recent color palette - panel D
 Rscript --vanilla scripts/fig3-chromothripsis-barplot.R
 
-#### Mutational signatures ####
-
-# Run the module
-bash ${analyses_dir}/mutational/run_mutational_signatures.sh
-
-
 # Copy panel from module - panel E
 cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_sina_IQR.pdf  pdfs/fig3/panels/mutational_signatures_exposures.pdf
 
 
-##### Figure 4: TP53 and telomerase ---------------------------
+
+
+##### Figure 4: TP53 and telomerase ---------------------------------------------------
 
 # Create directory
 mkdir -p pdfs/fig4/panels
 
-#### Generate input data from modules:
-#####  tp53, telomerase, and, and the collapse-rnaseq dependency for telomerase
 
-# Generate collapsed data for count files used as input for subsequent calls
-# Note this module needs to be run for both telomerase and immune deconvolution
-bash ${analyses_dir}/collapse-rnaseq/run-collapse-rnaseq.sh
-
-# Generate telomerase activities using gene expression data from collapse RNA seq data files
-Rscript --vanilla ${analyses_dir}/telomerase-activity-prediction/01-run-EXTEND.R --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt
-
-# Run the tp53 classifier
-bash ${analyses_dir}/tp53_nf1_score/run_classifier.sh
-
-# Run the survival module
-bash ${analyses_dir}/survival-analysis/run_survival.sh
-
-
-##### Generate TP53 and telomerase figures ####
+# Generate TP53 and telomerase figures 
 Rscript --vanilla scripts/fig4-tp53-telomerase.R # panels A, B, C, D, F
 Rscript --vanilla scripts/fig4-hgg-subtype-forest-plot.R # panel G
 Rscript --vanilla scripts/fig4-hgg-kaplan-meier.R # panel H
 
-
-# The mutational signatures data (and plots) were already generated by a Figure 3 step: `bash ${analyses_dir}/mutational-signatures/run_mutational_signatures.sh`
 # Copy hypermutator figure and legend panel - panel E
 cp ${analyses_dir}/mutational-signatures/plots/cns/hypermutator_sigs_heatmap.pdf  pdfs/fig4/panels/hypermutator_sigs_heatmap.pdf
 cp ${analyses_dir}/mutational-signatures/plots/cns/hypermutator_sigs_heatmap_legends.pdf  pdfs/fig4/panels/hypermutator_sigs_heatmap_legends.pdf
 
 
-##### Figure 5: GSVA and immune deconvolution ---------------------------
+
+
+
+##### Figure 5: GSVA and immune deconvolution -----------------------------------------
 
 # Create directory
 mkdir -p pdfs/fig5/panels
 
 
-#### UMAP and GSVA #### 
-
-# Run the dimension reduction steps
-bash ${analyses_dir}/transcriptomic-dimension-reduction/dimension-reduction-plots.sh
-
-# Generate GSVA scores and test for cancer group differences 
-Rscript --vanilla ${analyses_dir}/gene-set-enrichment-analysis/01-conduct-gsea-analysis.R \
-  --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
-  --output ${analyses_dir}/gene-set-enrichment-analysis/results/gsva_scores_stranded.tsv
-Rscript --vanilla -e "rmarkdown::render('${analyses_dir}/gene-set-enrichment-analysis/02-model-gsea.Rmd', clean = TRUE)"
-
 # Generate the GSVA, UMAP, and legend panels: panels A and B
 Rscript --vanilla scripts/fig5-panels-gsva-umap.R
 
-
-#### Immune deconvolution ####
-
-# Run the immune-deconv module
-bash ${analyses_dir}/immune-deconv/run-immune-deconv.sh
 
 # Copy the figures to final directory - panels C and E, in order:
 cp ${analyses_dir}/immune-deconv/plots/cell_types-cancer_groups.pdf  pdfs/fig5/panels/quantiseq-cell_types-cancer_groups.pdf
 cp ${analyses_dir}/immune-deconv/plots/cd274_expression_mb_subtypes.pdf  pdfs/fig5/panels/cd274_expression_mb_subtypes.pdf
 
 
-#### Survival ####
-
-
 # Generate the forest plot for panel D
-# Note this requires the `survival-analysis` module which was run in a Figure 4 step: `bash ${analyses_dir}/survival-analysis/run_survival.sh`
 Rscript --vanilla scripts/fig5-forest-plot.R
 
 
@@ -178,51 +177,32 @@ Rscript --vanilla scripts/fig5-forest-plot.R
 
 
 
-##### Figure S2: Consensus SNV calls and TMB -------------------------------------
-##### CAUTION!!! Generating these panels requires 32 GB RAM!
+
+##### Figure S2: Consensus SNV calls and TMB --------------------------------------------
 
 # Create directory
 mkdir -p pdfs/supp/figs2/panels
 
-# Run the snv module for PBTA and TCGA
+# Generate SNV and TMB figures, **but only if NOT LOCAL**. Signficant memory requirements.
 if [ "$RUN_LOCAL" -lt "1" ]; then
   bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh
   bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh
 fi
 
-# Generate SNV and TMB figures
-Rscript --vanilla scripts/supp-snv-callers-panels.R
-Rscript --vanilla scripts/supp-tmb-compare-panels.R
 
 
 
 
-
-
-
-
-##### Figure S3: Other oncoprint and CNV landscape ---------------------------
+##### Figure S3: Other oncoprint and CNV landscape --------------------------------------
 
 
 # Create directory
 mkdir -p pdfs/supp/figs3/panels
 
 
-# The oncoprint panel A for this figure was already generated by a Figure 2 step: `Rscript --vanilla scripts/fig2-oncoprint-landscape.R`
+# Note the oncoprint panel A for this figure was already generated by a Figure 2 step: `Rscript --vanilla scripts/fig2-oncoprint-landscape.R`
 
-#### Prepare for CN status heatmap figure ####
-if [ "$RUN_LOCAL" -lt "1" ]; then
-    # Run consensus CNV so we have a refreshed `pbta-cnv-consensus.seg.gz` file
-    bash ${analyses_dir}/copy_number_consensus_call/run_consensus_call.sh
-fi
-
-# Run CN status heatmap WITHOUT final file parameter, to generate `cn_status_bp_per_bin.tsv` input file for figure scripts
-Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.Rmd', clean = TRUE)"
-
-# Chromothripsis data was already generated by a Figure 3 step: `bash ${analyses_dir}/chromosomal-instability/run_breakpoint_analysis.sh`
-
- 
-# Generate three panels for S3: B, C, and D
+# Generate remaining three panels for S3: B, C, and D
 Rscript --vanilla scripts/supp-S3-panels-BCD.R
 
 
@@ -230,16 +210,10 @@ Rscript --vanilla scripts/supp-S3-panels-BCD.R
 
 
 
-
-
-
-##### Figure S4: More mutational signatures ---------------------------
+##### Figure S4: More mutational signatures --------------------------------------------
 
 # Create directory
 mkdir -p pdfs/supp/figs4/panels
-
-
-# The mutational signatures data (and plots) were already generated by a Figure 3 step: `bash ${analyses_dir}/mutational-signatures/run_mutational_signatures.sh`
 
 # Copy panel A:
 cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_per_sample_barplot.pdf  pdfs/supp/figs4/panels/
@@ -250,39 +224,41 @@ cp ${analyses_dir}/mutational-signatures/plots/cns/signature1_tumor-descriptor_c
 
 
 
-##### Figure S5: Other TP53/telomerase ---------------------------
+##### Figure S5: More TP53/telomerase --------------------------------------------------
 
 
 # Create directory
 mkdir -p pdfs/supp/figs5/panels
 
-# The FPKM telomerase data needed for scatterplots was already generated by a Figure 4 step: `Rscript --vanilla ${analyses_dir}/telomerase-activity-prediction/01-run-EXTEND.R --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt`
-# The TP53 data needed for ROC was already generated by a Figure 4 step: `bash ${analyses_dir}/tp53_nf1_score/run_classifier.sh`
-
 # Generate figure panels 
 Rscript --vanilla scripts/supp-S5-panels.R
 
 
-##### Figure S6: UMAP and other molecular subtypes ---------------------------
+
+
+
+
+##### Figure S6: More UMAP and other molecular subtypes --------------------------------
 
 # Create directory
 mkdir -p pdfs/supp/figs6/panels
 
-# The data needed for UMAP plots was already generated by a Figure 5 step: `bash ${analyses_dir}/transcriptomic-dimension-reduction/dimension-reduction-plots.sh`
 
 # Generate UMAP panels - A, B, C, D
 Rscript --vanilla scripts/supp-subtype-umap.R
 
 
-# Copy additional panels from `immune-deconv`.
-# These plots were previously generated by a Figure 5 step: `bash ${analyses_dir}/immune-deconv/run-immune-deconv.sh` 
 # Copy panel E
 cp ${analyses_dir}/immune-deconv/plots/cell_types-molecular_subtypes.pdf pdfs/supp/figs6/panels/quantiseq-cell_types-molecular_subtypes.pdf
 # Copy panel F
 cp ${analyses_dir}/immune-deconv/plots/cd8_cd4_ratio.pdf pdfs/supp/figs6/panels/cd8_cd4_ratio.pdf
 
 
-##### Clean up -------------------
+
+
+
+
+##### Clean up --------------------------------------------------------------------------
 
 # Sometimes Rplots.pdf gets produced and honestly nobody really knows why.
 rm -f Rplots.pdf # use `-f` to not get a warning if Rplots.pdf is NOT there.
