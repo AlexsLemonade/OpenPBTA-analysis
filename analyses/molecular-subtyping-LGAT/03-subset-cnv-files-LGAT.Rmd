@@ -16,7 +16,7 @@ In this notebook, we will look for the following CNV changes that define subtype
 ```{r}
 library("tidyverse")
 library("GenomicRanges")
-
+library("GenomicFeatures")
 ```
 
 ### Input
@@ -235,7 +235,7 @@ txdb <- GenomicFeatures::makeTxDbFromGFF(
   format = "gtf"
 )
 
-# get flfr1 canonical transcrip tx_id 
+# get fgfr1 canonical transcrip tx_id 
 fgfr1_tx_id <- ensembldb::select(txdb, 
                                  keys= ensembldb::keys(txdb, "TXID"),
                                  columns="TXNAME", keytype="TXID") %>%
