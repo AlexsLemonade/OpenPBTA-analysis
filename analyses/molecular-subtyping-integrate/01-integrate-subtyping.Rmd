@@ -185,8 +185,6 @@ histology<- histology %>%
     cancer_group == "Adamantinomatous craniopharyngioma" ~ "Craniopharyngioma",
     sample_id == "7316-2577" ~ "Embryonal tumor with multilayer rosettes",
     cancer_group %in% c("Benign tumor","Dysplasia/Gliosis","Other","Dysplasia/Gliosis-Glial-neuronal tumor NOS") ~ NA_character_,
-    # recode lgat samples back to lgg cancer group for plots/analyses
-    #short_histology == "LGAT" & ~ "Low-grade glioma astrocytoma",
       TRUE ~ as.character(cancer_group))
   ) %>%
   # Additional update to clean up terms that we will use in plots

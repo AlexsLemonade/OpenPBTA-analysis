@@ -77,39 +77,6 @@ clinical <- read_tsv(file.path(root_dir,
  - We will use the `pbta-snv-consensus-mutation.maf.tsv.gz` from `snv-callers` module which gathers calls that are present in all 3 callers (strelka2,mutect2 and lancet)
  - In addition, we will also use `pbta-snv-scavenged-hotspots.maf.tsv.gz` from `hotspot-detection` module to gather calls that overlap MSKCC hotspots found in any caller (except if only vardict calls the site as variant, we remove these calls since we have a lot of calls unique to vardict which we consider as false positive as discussed [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/snv-callers#snv-caller-comparison-analysis))
 
-```{r load-inputs-please-wait}
-
-# select tumor sample barcode, gene, short protein annotation, domains, and variant classification
-keep_cols <- c("Chromosome",
-             "Start_Position",
-             "End_Position",
-             "Strand",
-             "Variant_Classification",
-             "IMPACT",
-             "Tumor_Sample_Barcode",
-             "Hugo_Symbol",
-             "HGVSp_Short",
-             "SIFT",
-             "PolyPhen",
-             "DOMAINS")
-
-snv_consensus_maf <- data.table::fread(
-  file.path(root_dir, "data" , "pbta-snv-consensus-mutation.maf.tsv.gz"),
-  select = keep_cols,
-  data.table = FALSE) 
-
-## Read in snv hotspot mutation data
-snv_hotspot_maf <- data.table::fread(
-  file.path(root_dir, "analyses" , "hotspots-detection" , "results" , "pbta-snv-scavenged-hotspots.maf.tsv.gz"),
-  select = keep_cols,
-  data.table = FALSE) %>%
-  select(colnames(snv_consensus_maf))
-
-snv_consensus_hotspot_maf <- snv_consensus_maf %>%
-  bind_rows(snv_hotspot_maf) %>%
-  unique()
-
-```
 
 Filter to tumor samples that should be included on the basis of pathology diagnosis
 ```{r}
@@ -136,6 +103,42 @@ lgat_dna_df <- lgat_specimens_df %>%
   dplyr::select(Kids_First_Biospecimen_ID,sample_id)
 ```
 
+```{r load-inputs-please-wait}
+
+# select tumor sample barcode, gene, short protein annotation, domains, and variant classification
+keep_cols <- c("Chromosome",
+             "Start_Position",
+             "End_Position",
+             "Strand",
+             "Variant_Classification",
+             "IMPACT",
+             "Tumor_Sample_Barcode",
+             "Hugo_Symbol",
+             "HGVSp_Short",
+             "SIFT",
+             "PolyPhen",
+             "DOMAINS")
+
+## Read in snv hotspot mutation data
+snv_hotspot_maf <- data.table::fread(
+  file.path(root_dir, "analyses" , "hotspots-detection" , "results" , "pbta-snv-scavenged-hotspots.maf.tsv.gz"),
+  select = keep_cols,
+  data.table = FALSE) %>%
+  # find lgat samples
+  dplyr::filter(Tumor_Sample_Barcode %in% lgat_dna_df$Kids_First_Biospecimen_ID)
+
+snv_consensus_hotspot_maf <- data.table::fread(
+  # read in consensus maf
+  file.path(root_dir, "data" , "pbta-snv-consensus-mutation.maf.tsv.gz"),
+  select = keep_cols,
+  data.table = FALSE) %>%
+  # find lgat samples
+  dplyr::filter(Tumor_Sample_Barcode %in% lgat_dna_df$Kids_First_Biospecimen_ID) %>%
+  # combine with hotspot maf
+  bind_rows(snv_hotspot_maf) %>%
+  unique()
+
+```
 
 Gather gene(s) that define LGAT subtypes
 Additional information for genes with known hotspots/canonical mutation is also provided in the list. 
@@ -191,12 +194,6 @@ snv_consensus_hotspot_maf <- snv_consensus_hotspot_maf %>%
 We will gather SNV calls that satisfy the conditions per subtype and save the subset along with the HGVSp_Short, DOMAINS and Variant_Classification 
 and recode them as subtypes
 ```{r}
-# Filter consensus mutation files for LGAT subset
-snv_consensus_hotspot_maf <- snv_consensus_hotspot_maf %>%
-  # find lgat samples
-  dplyr::filter(Tumor_Sample_Barcode %in% lgat_dna_df$Kids_First_Biospecimen_ID)
-
-
 # Get BRAF mutation status
 # canonical mutations V600E
 lgat_braf_V600 <- snv_consensus_hotspot_maf %>%
