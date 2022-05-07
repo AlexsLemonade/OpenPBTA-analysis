@@ -56,16 +56,16 @@ Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
   --outputFolder ${analysis_dir}/results \
   --gencode ${cds_file}
 
-if [[ RUN_FOR_SUBTYPING == "0" ]]
-then
+#if [[ RUN_FOR_SUBTYPING == "0" ]]
+#then
    # expression files for prediction
    collapsed_stranded="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
    collapsed_polya="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
-else
+#else
    # expression files for prediction
-   collapsed_stranded="../collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
-   collapsed_polya="../collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
-fi
+#   collapsed_stranded="../collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+#   collapsed_polya="../collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
+#fi
 
 # Skip poly-A steps in CI
 if [ "$POLYA" -gt "0" ]; then
