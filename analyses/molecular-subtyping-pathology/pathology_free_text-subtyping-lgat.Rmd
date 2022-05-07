@@ -4,8 +4,8 @@ output:
   html_notebook:
     toc: true
     toc_float: true
-author: JN Taroni for ALSF CCDL (code) ; K Gaonkar updated for LGAT
-date: 2021
+author: JN Taroni for ALSF CCDL (code) ; K Gaonkar, J Rokita updated for LGAT
+date: 2021, 2022
 ---
 
 CNS lgat have subtypes per the [WHO 2016 CNS subtypes](https://link.springer.com/content/pdf/10.1007/s00401-016-1545-1.pdf). 
