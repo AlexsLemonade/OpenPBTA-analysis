@@ -37,7 +37,7 @@ cds_file="${scratch_dir}/gencode.v27.primary_assembly.annotation.bed"
 snvconsensus_file="${data_dir}/pbta-snv-consensus-mutation.maf.tsv.gz"
 cnvconsensus_file="${data_dir}/consensus_seg_annotated_cn_autosomes.tsv.gz"
 
-if [[ RUN_FOR_SUBTYPING == "0" ]]
+if [[ "$RUN_FOR_SUBTYPING" -eq "0" ]]
 then
    histology_file="../../data/pbta-histologies.tsv"
 else
@@ -62,7 +62,7 @@ Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
 
 # If running for the purpose of figure generation, use the data in the analysis
 # directory that has been freshly collapsed
-if [[ RUN_FOR_FIGURES == "0" ]]
+if [[ "$RUN_FOR_FIGURES" -eq "0" ]]
 then
    # expression files for prediction
    collapsed_stranded="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
