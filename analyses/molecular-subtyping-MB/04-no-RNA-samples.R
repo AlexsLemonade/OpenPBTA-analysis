@@ -29,7 +29,7 @@ samples_ids_no_rna <- mb_samples %>%
 samples_ids_no_rna <- samples_ids_no_rna %>%
   dplyr::mutate(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID,
                 Kids_First_Biospecimen_ID_RNA = NA,
-                molecular_subtype = "To be classified") %>%
+                molecular_subtype = "MB, To be classified") %>%
   dplyr::select(Kids_First_Participant_ID, sample_id, Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA, molecular_subtype)
 
 # read RNA-based results, append samples with no RNA and write out
