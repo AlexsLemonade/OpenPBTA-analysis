@@ -74,9 +74,9 @@ jobs:
         name: Molecular Subtyping - Compile and incorporate pathology feedback
         command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-pathology/run-subtyping-aggregation.sh
 
-      - run:
-          name: Molecular Subtyping - MB
-          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-MB/run-molecular-subtyping-mb.sh
+     - run:
+        name: Molecular Subtyping - MB
+        command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-MB/run-molecular-subtyping-mb.sh
 
       - run:
           name: Molecular Subtyping - CRANIO
