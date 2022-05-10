@@ -1,9 +1,11 @@
 ---
 title: "Tables output for manuscript"
-author: "Run Jin and Stephanie J. Spielman"
+author: "Run Jin (D3b), Stephanie J. Spielman (ALSF CCDL), and Jo Lynne Rokita (D3b)"
 date: "2021-2022"
-output:
-  html_document: default
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
 params:
   release: release-v21-20210820
 ---
@@ -11,6 +13,7 @@ params:
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(openxlsx)
+library(survival)
 ```
 
 ## Output Tables for OpenPBTA Manuscript
@@ -47,13 +50,25 @@ telomerase_counts_polya_file <- file.path(analyses_dir, "telomerase-activity-pre
 telomerase_counts_stranded_file <- file.path(analyses_dir, "telomerase-activity-prediction", "results", "TelomeraseScores_PTBAStranded_counts.txt")
 telomerase_fpkm_polya_file <- file.path(analyses_dir, "telomerase-activity-prediction", "results", "TelomeraseScores_PTBAPolya_FPKM.txt")
 telomerase_fpkm_stranded_file <- file.path(analyses_dir, "telomerase-activity-prediction", "results", "TelomeraseScores_PTBAStranded_FPKM.txt")
+CNS_match_json <- file.path(working_dir, "input", "CNS_primary_site_match.json")
+
+# survival files
+cox_subtypes_file <- file.path(analyses_dir, "survival-analysis", "results", "subtypes", "cox_hgg_subtype.RDS")
+lr_subtypes_file <- file.path(analyses_dir, "survival-analysis", "results", "subtypes", "logrank_hgg_subtypes.RDS")
+cox_tp53_file <- file.path(analyses_dir, "survival-analysis", "results", "tp53_telomerase", "cox_additive_terms_tp53_telomerase_resect_glioma_group.RDS")
+cox_dmg_tp53_file <- file.path(analyses_dir, "survival-analysis", "results", "tp53_telomerase", "cox_per_Diffuse-midline-glioma_terms_tp53_telomerase_resect.RDS")
+cox_epn_tp53_file <- file.path(analyses_dir, "survival-analysis", "results", "tp53_telomerase", "cox_per_Ependymoma_terms_tp53_telomerase_resect.RDS")
+cox_mb_quantiseq_file <- file.path(analyses_dir, "survival-analysis", "results", "immune", "cox_per_Medulloblastoma_terms_quantiseq.RDS")
 
 
 # define output files and sheet names, when appropriate
 table_1_file <- file.path(results_dir, "Table1-molecular-subtypes.tsv")
+table_2_file <- file.path(results_dir, "Table2-hypermutators.tsv")
 table_s1_file <- file.path(results_dir, "TableS1-histologies.xlsx")
 table_s2_file <- file.path(results_dir, "TableS2-DNA-results-table.xlsx")
 table_s3_file <- file.path(results_dir, "TableS3-RNA-results-table.xlsx")
+table_s4_file <- file.path(results_dir, "TableS4-survival-results-table.xlsx")
+table_s5_file <- file.path(results_dir, "TableS5-Key-Resources-table.xlsx")
 ```
 
 ## Table 1: Molecular subtypes determined for this project
@@ -72,21 +87,147 @@ histology_df %>%
 
 ```
 
+## Table 2: Patients with hypermutant or ultra-hypermutant tumors
+```{r table 2}
+# Read in coding TMB file, merge with histologies data
+tmb_hist <- read_tsv(file.path(data_dir, "pbta-snv-consensus-mutation-tmb-coding.tsv")) %>%
+    # rename TSB to Kids_First_Biospecimen_ID
+  rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>%
+  select(Kids_First_Biospecimen_ID, tmb) %>%
+  left_join(histology_df) 
+
+# Gather all PT_IDs (poi = "patients of interest") for those with any hypermutant samples which are not cell lines
+poi <- tmb_hist %>%
+  # filter to the hypermutators
+  dplyr::filter(tmb >= 10) %>%
+  select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID)
+
+# What are the histologies for hypermutant samples?
+histology_df %>%
+  filter(Kids_First_Biospecimen_ID %in% poi$Kids_First_Biospecimen_ID) %>%
+  select(Kids_First_Biospecimen_ID, cancer_group, short_histology)
+  
+# Gather all BS_IDs (soi = "samples of interest"), whether hypermutant or not, for pts with hypermutant samples
+soi_df <- tmb_hist %>%
+  filter(Kids_First_Participant_ID %in% poi$Kids_First_Participant_ID) %>%
+  # Looks like there is a hypermutant metastatic NBL sample we had not caught previously, but let's remove here since we focus on CNS anyway
+  # keep only WGS samples; remove metastases 
+  filter(experimental_strategy == "WGS" & short_histology != "Metastases") %>%
+  # manually add therapy field and update cancer predispositions not included in histologies file per [ticket](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1318)
+  mutate(`Therapy post-biopsy` = case_when(
+      Kids_First_Biospecimen_ID == "BS_VW4XN9Y7" ~ "Temozolomide, CCNU, Radiation",
+      Kids_First_Biospecimen_ID == "BS_20TBZG09" ~ "Temozolomide, Irinotecan, Bevacizumab, Radiation",
+      Kids_First_Biospecimen_ID == "BS_8AY2GM4G" ~ "Unknown",
+      Kids_First_Biospecimen_ID == "BS_85Q5P8GF" ~ "Temozolomide, Radiation",
+      sample_id == "7316-3058" ~ "Nivolumab",
+      Kids_First_Biospecimen_ID == "BS_P3PF53V8" ~ "Temozolomide, Irinotecan, Radiation",
+      sample_id == "7316-2189" ~ "Unknown"
+    ),
+    # add Lynch syndrome
+    cancer_predispositions = case_when(
+      Kids_First_Biospecimen_ID == "BS_8AY2GM4G" ~ "NF-1, Lynch syndrome, pathogenic MSH6",
+      sample_id == "7316-3058" ~ "Lynch Syndrome, pathogenic MSH2",
+      sample_id == "7316-2189" ~ "Lynch Syndrome",
+      Kids_First_Biospecimen_ID == "BS_85Q5P8GF" ~"Lynch syndrome",
+      TRUE ~ as.character(cancer_predispositions)),
+      ) %>%
+    # select relevant columns
+      select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, sample_id, tumor_descriptor, composition, `Therapy post-biopsy`, cancer_predispositions, tmb, molecular_subtype) %>%
+    arrange(Kids_First_Participant_ID, tumor_descriptor, composition)
+
+soi_df    
+
+soi_df %>%
+  # rename columns and write table
+      rename(`Kids First Participant ID` = Kids_First_Participant_ID,
+             `Kids First Biospecimen ID` = Kids_First_Biospecimen_ID,
+             `CBTN ID` = sample_id,
+             `Phase of therapy` = tumor_descriptor,
+              Composition = composition,
+             `Cancer predisposition(s)` = cancer_predispositions,
+             TMB = tmb,
+             `OpenPBTA molecular subtype` = molecular_subtype
+             ) %>%
+  write_tsv(table_2_file)
+
+```
+
 ## Table S1: V21 histologies table
 
 ```{r v21 histology as excel}
-# Define array of samples that need to be classified 
+# Sheet 1: README tab
+
+readme <- tribble(
+~`Histology column`,~Definition,~`Possible values`,
+"age_at_diagnosis_days","Patient age at diagnosis in days","numeric",
+"age_last_update_days","Patient age at the last clinical event/update in days","numeric",
+"aliquot_id","External aliquot identifier","alphanumeric",
+"broad_histology","Broad WHO 2016 classification of cancer type",paste(unique(histology_df$broad_histology), collapse = "; "),
+"cancer_group","Harmonized cancer groupings for plots",paste(unique(histology_df$cancer_group), collapse = "; "),
+"cancer_predispositions","Reported cancer predisposition syndromes",paste(unique(histology_df$cancer_predispositions), collapse = "; "),
+"CNS_region","Harmonized brain region based on `primary_site`",paste(unique(histology_df$CNS_region), collapse = "; "),
+"cohort","Scientific cohort",paste(unique(histology_df$cohort), collapse = "; "),
+"cohort_participant_id","Scientific cohort participant ID","C#####-C######",
+"composition","Sample composition",paste(unique(histology_df$composition), collapse = "; "),
+"ethnicity","Patient reported ethnicity",paste(unique(histology_df$ethnicity), collapse = "; "),
+"experimental_strategy","Sequencing strategy",paste(unique(histology_df$experimental_strategy), collapse = "; "),
+# leaving this non-programmatic because of the duplicates that would come up (eg two selections in one patient, needing data cleanup)
+"extent_of_tumor_resection","Amount of tumor resected at time of surgical event","Biopsy only;Partial resection;Gross/Near total resection;Not Reported;Unavailable",
+"germline_sex_estimate","Predicted sex of patient based on germline X and Y ratio calculation (described in methods)",paste(unique(histology_df$germline_sex_estimate), collapse = "; "),
+"harmonized_diagnosis","`integrated_diagnosis` if exists or updated and harmonized diagnosis using pathology_free_text_diagnosis information","text",
+"integrated_diagnosis","2016 WHO diagnosis integrated from pathology diagnosis and molecular subtyping","text",
+"Kids_First_Biospecimen_ID","KidsFirst biospecimen identifier","BS_########",
+"Kids_First_Participant_ID","KidsFirst patient identifier","PT_########",
+"molecular_subtype","Molecular subtype defined by WHO 2016 guidelines","text",
+"normal_fraction","Theta2 normal DNA fraction estimate","numeric",
+"Notes","Free text field describing changes from `pathology_diagnosis` to `integrated_diagnosis` or manner in which molecular_subtype was determined","text",
+"OS_days","Overall survival in days","numeric",
+"OS_status","Overall survival status",paste(unique(histology_df$OS_status), collapse = "; "),
+"parent_aliquot_id","External identifier combining sample_id; sample_type; aliquot_id; sequencing_strategy for some samples","alphanumeric",
+"pathology_diagnosis","Reported and/or harmonized patient diagnosis from pathology reports","text",
+"pathology_free_text_diagnosis","Free text patient diagnosis from pathology reports","text",
+"PFS_days","Progression-free survival in days","numeric",
+"primary_site","Bodily site(s) from which specimen was derived","text",
+"race","Patient reported race",paste(unique(histology_df$race), collapse = "; "),
+"reported_gender","Patient reported gender",paste(unique(histology_df$reported_gender), collapse = "; "),
+"RNA_library","Type of RNA-Sequencing library preparation",paste(unique(histology_df$RNA_library), collapse = "; "),
+"sample_id","External biospecimen identifier","alphanumeric",
+"sample_type","Broad sample type",paste(unique(histology_df$sample_type), collapse = "; "),
+"seq_center","Sequencing center",paste(unique(histology_df$seq_center), collapse = "; "),
+"short_histology","Abbreviated `integrated_diagnosis` or `broad_histology` for plotting purposes",paste(unique(histology_df$short_histology), collapse = "; "),
+"tumor_descriptor","Phase of therapy from which tumor was derived",paste(unique(histology_df$tumor_descriptor), collapse = "; "),
+"tumor_fraction","Theta2 tumor DNA fraction estimate","numeric",
+"tumor_ploidy","Control-FREEC ploidy","numeric"
+)
+
+# Sheet 2: Define array of samples that need to be classified from [ticket](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1206) which are not in v21, but set to be changed in final release [v22](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1207)
 to_be_classified_samples <- c("BS_3J4T2YYW", "BS_7F07M7JG", "BS_AG0BZN6F", "BS_HZNKSQ17", "BS_V6HKXX1Z", "BS_WP9J88EB", "BS_YYAPSA5P")
 
-histology_df %>% 
+histologies_table <- histology_df %>% 
   # Update definitions of molecular subtype for TBD samples
   mutate(molecular_subtype = ifelse(
     Kids_First_Biospecimen_ID %in% to_be_classified_samples,
     "MB, To be classified",
     molecular_subtype
-  )) %>%
-  # export with argument `keepNA=TRUE` so NAs come up as NAs and not blank cells
-  write.xlsx(table_s1_file, overwrite=TRUE, keepNA=TRUE)
+  ))
+
+# Sheet 3: CNS region definition based on definitions from [Cassie Kline](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/tables/input/CNS_primary_site_match.json) with additional manual review of [HGG primary_site](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1025). 
+# This is integrated upstream of molecular subtyping
+
+# CNS_region ~ primary_site matches
+cns_regions_df <- purrr::imap_dfr(jsonlite::fromJSON(CNS_match_json), 
+                                     function(x, name) { tibble::tibble(CNS_region = name, primary_site = paste0(x, collapse = ';')) })
+
+
+# Combine and output
+list_s1_table <- list(README = readme,
+                      histologies_file = histologies_table,
+                      CNS_region_definitions = cns_regions_df
+                      )
+write.xlsx(list_s1_table, 
+           table_s1_file, 
+           overwrite=TRUE, 
+           keepNA=TRUE)
 ```
 
 ## Table S2: DNA results table
@@ -213,6 +354,136 @@ write.xlsx(list_s3_table,
            keepNA=TRUE)
 
 ```
+
+## Table S4: `Survival results` table
+```{r table_s4}
+# Read in files
+cox_subtypes <- readRDS(cox_subtypes_file)
+lr_subtypes <- readRDS(lr_subtypes_file)
+cox_tp53 <- readRDS(cox_tp53_file)
+cox_dmg_tp53 <- readRDS(cox_dmg_tp53_file)
+cox_epn <- readRDS(cox_epn_tp53_file)
+cox_mb_quantiseq <- readRDS(cox_mb_quantiseq_file)
+
+# Make function to tidy files
+process_survival <- function(df){
+  broom::tidy(df) %>%
+  mutate(HR = exp(estimate),
+         conf.low = exp(conf.low),
+         conf.high = exp(conf.high)
+  ) %>%
+  # make this character so it prints in excel
+  mutate(conf.high = ifelse(is.infinite(conf.high), "Inf", conf.high)) %>%
+  select(-estimate)
+}
+
+# Tidy files
+cox_subtypes_df <- process_survival(cox_subtypes)
+cox_tp53_df <- process_survival(cox_tp53)
+cox_epn_df <- process_survival(cox_epn)
+cox_dmg_tp53_df <- process_survival(cox_dmg_tp53)
+cox_mb_quantiseq_df <- process_survival(cox_mb_quantiseq)
+
+lr_subtypes_df <- summary(lr_subtypes$model)$table %>% 
+     as.data.frame() %>% 
+     rownames_to_column("strata")
+
+
+# Combine and output
+list_s4_table <- list(cox_reg_hgg_subtypes = cox_subtypes_df,
+                      logrank_hgg_subtypes = lr_subtypes_df,
+                      cox_reg_tp53_telomerase_pbta = cox_tp53_df,
+                      cox_reg_tp53_telomerase_epn = cox_epn_df,
+                      cox_reg_tp53_telomerase_dmg = cox_dmg_tp53_df,
+                      cox_reg_quantiseq_mb = cox_mb_quantiseq_df
+                      )
+write.xlsx(list_s4_table, 
+           table_s4_file, 
+           overwrite=TRUE, 
+           keepNA=TRUE)
+
+
+```
+
+
+## Table S5: `Key Resources` table
+
+```{r table_s5}
+# Sheet 1: R packages in Docker image
+r_packages <- data.frame(installed.packages()[, c(1,3)]) %>%
+  rename(`R Package` = "Package")
+
+# Sheet 2: Python libraries in Docker image
+
+# libraries not included in `requirements.txt`
+python_libraries <- tribble(
+  ~Software,~Version,
+  "setuptools","46.3.0",
+  "six","1.14.0",
+  "wheel ","0.34.2"
+)
+
+# parse `requirements.txt`
+python_requirements <- read_tsv(
+  file.path(root_dir, "requirements.txt"), 
+  col_names = FALSE) %>%
+  separate(X1, into = c("Software", "Version"), sep = "==")
+
+# merge `python_requirements` into `python_libraries`
+python_libraries <- bind_rows(python_libraries, python_requirements)
+
+
+# Sheet 3: Command line software in Docker image
+cli_tools <- tribble(
+~Software,~Version,~Source,
+"bedtools","2.28.0","https://github.com/arq5x/bedtools2/",
+"bedops","2.4.37","https://github.com/bedops/",
+"HTSlib","1.9","https://github.com/samtools/htslib/",
+"MCR","R2014a","https://www.mathworks.com/supportfiles/downloads/R2014a/",
+"GISTIC2","2.0.23","ftp://ftp.broadinstitute.org/pub/GISTIC2.0/"
+)
+
+
+
+# Sheet 4: Tools used in workflows
+workflow_tools <- tribble(
+  ~"Software", ~"Version", ~"Associated Workflow(s) or Script",
+  "NGSCheckMate","1.3","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/bcf_call.cwl",
+  "ControlFreeC","11.6","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_combined_somatic_wgs_cnv_wf.cwl",
+  "CNVKit","0.9.3","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_combined_somatic_wgs_cnv_wf.cwl",
+  "strelka2","2.9.3","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_strelka2_mutect2_manta_workflow.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-mutect2_strelka2-wf.cwl",
+  "mutect2 (GATK)","4.1.1.0","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_strelka2_mutect2_manta_workflow.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-mutect2_strelka2-wf.cwl",
+  "manta","1.4.0","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_strelka2_mutect2_manta_workflow.cwl",
+  "STAR aligner","2.6.1d","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl",
+  "rsem","1.3.1","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl",
+  "STAR-Fusion","1.5.0","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl",
+  "Arriba","1.1.0","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl",
+  "bwa","0.7.17","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-wf.cwl",
+  "sambamba","0.6.3","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-mendqc-wf.cwl",
+  "GATK","4.0.3.0","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-wf.cwl",
+  "lancet","1.0.7","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-lancet-wf.cwl",
+  "UCSC-Treehouse MendQC","1.1.1","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-mendqc-wf.cwl",
+  "GATK","4.0.12.0","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-mutect2_strelka2-wf.cwl",
+  "VarDict Java v1.5.8","1.5.8","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-vardict-wf.cwl",
+  "VEP","r93","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_annot_vcf_sub_wf.cwl",
+  "bcftools","1.7","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_annot_vcf_sub_wf.cwl",
+  "GISTIC","2.0.23","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/bash/run-gistic.sh ; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/bash/run_gistic_consensus.sh"
+)
+
+
+# Combine and output
+list_s5_table <- list(r_packages = r_packages,
+                      python_libraries = python_libraries,
+                      other_command_line_tools = cli_tools,
+                      workflow_repository_tools = workflow_tools
+                      )
+write.xlsx(list_s5_table, 
+           table_s5_file, 
+           overwrite=TRUE, 
+           keepNA=TRUE)
+
+```
+
 
 ### print out session info
 ```{r}

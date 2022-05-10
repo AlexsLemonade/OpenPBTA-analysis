@@ -137,6 +137,10 @@ Rscript --vanilla scripts/fig5-panels-gsva-umap.R
 Rscript --vanilla scripts/fig3-panel-tp53.R
 
 ###### Hypermutator signatures
+# Run the mutational-signatures module
+bash ${analyses_dir}/mutational-signatures/run_mutational_signatures.sh
+
+
 # Copy the figure to final directory
 cp ${analyses_dir}/mutational-signatures/plots/cns/hypermutator_sigs_heatmap.pdf  pdfs/fig4/panels/hypermutator_sigs_heatmap.pdf
 cp ${analyses_dir}/mutational-signatures/plots/cns/hypermutator_sigs_heatmap_legends.pdf  pdfs/fig4/panels/hypermutator_sigs_heatmap_legends.pdf
@@ -168,17 +172,36 @@ cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_sina_IQR.pdf  pdfs/
 # run the immune-deconv module:
 bash ${analyses_dir}/immune-deconv/run-immune-deconv.sh
 # copy figure panel:
-cp ${analyses_dir}/immune-deconv/plots/cell_types-molecular_subtypes.pdf  pdfs/fig5/panels/quantiseq-cell_types-molecular_subtypes.pdf
+cp ${analyses_dir}/immune-deconv/plots/cell_types-cancer_groups.pdf  pdfs/fig5/panels/quantiseq-cell_types-cancer_groups.pdf
+
+###### Forest plot for 5D
+Rscript --vanilla scripts/fig5-forest-plot.R
+
+###### Box plot for 5E
+cp ${analyses_dir}/immune-deconv/plots/cd274_expression_mb_subtypes.pdf  pdfs/fig5/panels/cd274_expression_mb_subtypes.pdf
 
 
 ####### Supplementary figures
 
-# UMAP panels for supplementary figure 2 from molecular analysis 
-Rscript --vanilla scripts/supp-subtype-umap.R
 
 # Panels for supplementary figure 3
 Rscript --vanilla scripts/supp-S3-panels-BCD.R
 
+
+# Copy Figure S4 panels (analysis module was run previously)
+cp ${analyses_dir}/mutational-signatures/plots/cns/signature1_tumor-descriptor_cancer-groups.pdf   pdfs/supp/figs4/panels/
+cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_per_sample_barplot.pdf    pdfs/supp/figs4/panels/
+
+
+# UMAP panels for supplementary figure 6 from molecular analysis 
+Rscript --vanilla scripts/supp-subtype-umap.R
+
+# Copy additional S6 panels (analysis module was run previously)
+# 6S - E
+cp ${analyses_dir}/immune-deconv/plots/cell_types-molecular_subtypes.pdf pdfs/supp/figs6/panels/quantiseq-cell_types-molecular_subtypes.pdf
+
+# 6S - F
+cp ${analyses_dir}/immune-deconv/plots/cd8_cd4_ratio.pdf pdfs/supp/figs6/panels/cd8_cd4_ratio.pdf
 
 
 

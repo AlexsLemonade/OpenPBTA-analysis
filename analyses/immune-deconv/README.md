@@ -54,6 +54,7 @@ The results in the RDS files object are predicted immune scores per cell type pe
 
 This notebook visualizes results from `quanTIseq` deconvolution and exports two figures:
 
++ `plots/cell_types-cancer_groups .pdf` visualizes the immune cell fractions across molecular subtypes of interest
 + `plots/cell_types-molecular_subtypes.pdf` visualizes the immune cell fractions across molecular subtypes of interest
 + `plots/PDL1_expressions_distributions.pdf` visualizes FPKM expression for the gene PDL1 across molecular subtypes of interest
 

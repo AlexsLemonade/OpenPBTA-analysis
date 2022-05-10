@@ -39,7 +39,6 @@ import os
 import re
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import rpy2.robjects as robjects
 from sklearn.preprocessing import StandardScaler
 from rpy2.robjects import pandas2ri
