@@ -17,13 +17,13 @@ SUBSET=${OPENPBTA_SUBSET:-1}
 
 # Define needed files
 HISTOLOGIES=../../data/pbta-histologies-base.tsv
-FULL_EXPRESSION=../collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds
+FULL_EXPRESSION=../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds
 SUBSET_EXPRESSION=epn-subset/epn-pbta-gene-expression-rsem-fpkm-collapsed.stranded.tsv.gz
 NOTEBOOK=../../scratch/EPN_molecular_subtype.tsv
 GISTIC=../../data/pbta-cnv-consensus-gistic.zip
 GISTIC_SUBFILE_BROAD=pbta-cnv-consensus-gistic/broad_values_by_arm.txt
 GSVA=../gene-set-enrichment-analysis/results/gsva_scores_stranded.tsv
-FUSION=../fusion-summary/results/fusion_summary_ependymoma_foi.tsv
+FUSION=../../data/fusion_summary_ependymoma_foi.tsv
 BREAKPOINTS_CNV=../chromosomal-instability/breakpoint-data/cnv_breaks_densities.tsv
 BREAKPOINTS_SV=../chromosomal-instability/breakpoint-data/sv_breaks_densities.tsv
 FOCAL_GENE_CN=../../data/consensus_seg_annotated_cn_autosomes.tsv.gz
