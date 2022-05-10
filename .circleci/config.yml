@@ -286,12 +286,13 @@ jobs:
 
   deploy:
     machine:
+      image: ubuntu-2004:202201-02
       docker_layer_caching: true
     working_directory: ~/OpenPBTA-analysis
     steps:
       - checkout
       - run: ./scripts/run_in_ci.sh echo 'Building image!'
-      - run: docker login --username $DOCKER_ID --password $DOCKER_PASSWD
+      - run: docker login --username $DOCKER_ID --password-stdin $DOCKER_PASSWD
       - run: docker tag open-pbta ccdlopenpbta/open-pbta:latest
       - run: docker push ccdlopenpbta/open-pbta:latest
 
