@@ -1,0 +1,60 @@
+---
+title: "Table numbers for manuscript"
+author: "Jo Lynne Rokita for D3b"
+date: "2022"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+params:
+  release: release-v21-20210820
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+```
+
+## Set directories 
+
+```{r set directories}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+analysis_dir <- file.path(root_dir, "analyses", "interaction-plots")
+results_dir <- file.path(analysis_dir, "results")
+```
+
+## Read in Files
+```{r read in files}
+all_results_file <- file.path(results_dir, "cooccur_top50.ALL.tsv")
+hgg_results_file <- file.path(results_dir, "cooccur_top50.Diffuse-astrocytic-and-oligodendroglial-tumor.tsv")
+
+# Read in only significant results 
+all_results <- read_tsv(all_results_file) %>%
+  filter(q < 0.05)
+
+hgg_results <- read_tsv(hgg_results_file) %>%
+  filter(q < 0.05)
+
+```
+
+## Calculate sample sizes/ratios used for manuscript
+
+```{r sample sizes}
+# Total N samples in co-occurrence analysis
+hgg_results %>%
+  nrow()
+
+#666 is the total N of tumors in the co-occurrence module (across all PBTA) from sum of Ns in rows cooccur_top50.ALL.tsv
+
+# Number of significant events
+n_sig <- all_results %>%
+  nrow()
+
+# Number of hgg significant events
+n_hgg_sig <- hgg_results %>%
+  nrow()
+
+# Ratio/percent hgg significant events
+n_hgg_sig/n_sig
+
+```
