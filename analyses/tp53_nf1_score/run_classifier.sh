@@ -12,7 +12,7 @@
 set -e
 set -o pipefail
 
-# If running for subtyping, use the base histologies file
+# If running for subtyping, use the base histologies file by setting this to 1
 RUN_FOR_SUBTYPING=${OPENPBTA_BASE_SUBTYPING:-0}
 
 # If we're running for figure generation, set to 1
@@ -60,13 +60,13 @@ Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
   --outputFolder ${analysis_dir}/results \
   --gencode ${cds_file}
 
-# If running for the purpose of figure generation, use the data in the analysis
-# directory that has been freshly collapsed
+# If running for the purpose of figure generation (RUN_FOR_FIGURES will be 1), 
+# use the data in the analysis directory that has been freshly collapsed
 if [[ "$RUN_FOR_FIGURES" -eq "0" ]]
 then
-   # expression files for prediction
-   collapsed_stranded="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
-   collapsed_polya="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
+  # expression files for prediction
+  collapsed_stranded="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+  collapsed_polya="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
 else
   # expression files for prediction
   collapsed_stranded="../collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
@@ -113,5 +113,4 @@ Rscript 08-compare-molecularsubtypes-tp53scores.R
 
 # create boxplots by broad histology, cancer group
 Rscript 09-compare-histologies.R
-
 
