@@ -23,3 +23,9 @@ To run a basic analysis and create a co-occurence plot:
 ```
 bash analyses/interaction-plots/01-create-interaction-plots.sh
 ```
+
+# Result Ns used in manuscript
+02-result-ns-for-manuscript.Rmd is a notebook which calculates the relevant Ns and ratios used in the manuscript.
+
+
+

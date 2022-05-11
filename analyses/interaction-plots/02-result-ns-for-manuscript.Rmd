@@ -15,7 +15,6 @@ library(tidyverse)
 ```
 
 ## Set directories 
-
 ```{r set directories}
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
@@ -34,27 +33,35 @@ all_results <- read_tsv(all_results_file) %>%
 
 hgg_results <- read_tsv(hgg_results_file) %>%
   filter(q < 0.05)
-
 ```
 
 ## Calculate sample sizes/ratios used for manuscript
 
 ```{r sample sizes}
 # Total N samples in co-occurrence analysis
-hgg_results %>%
-  nrow()
+all_results_n <- all_results %>%
+  dplyr::rowwise() %>%
+  dplyr::mutate(sample_n = sum(mut11,mut10,mut01,mut00)) %>%
+  pull(sample_n) %>%
+  unique()
 
-#666 is the total N of tumors in the co-occurrence module (across all PBTA) from sum of Ns in rows cooccur_top50.ALL.tsv
+all_results_n
 
 # Number of significant events
 n_sig <- all_results %>%
   nrow()
+n_sig
 
 # Number of hgg significant events
 n_hgg_sig <- hgg_results %>%
   nrow()
+n_hgg_sig
 
-# Ratio/percent hgg significant events
+# Ratio of hgg:total significant events
 n_hgg_sig/n_sig
+```
 
+## Print session info
+```{r print session info}
+sessionInfo()
 ```
