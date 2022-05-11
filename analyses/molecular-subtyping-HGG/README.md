@@ -7,17 +7,25 @@ When re-running this module, you may want to regenerate the HGG subset files usi
 
 ## Usage
 
-To run all of the Rscripts in this module from the command line sequentially, use:
+When running specifically for the purpose of regenerating molecular subtypes, it can be helpful to skip notebooks that do not directly inform the subtypes (e.g., create plots that were used to revisit diagnoses earlier in the project).
+This can be accomplished with:
 
 ```
 bash run-molecular-subtyping-HGG.sh
 ```
 
-When run in this manner, `02-HGG-molecular-subtyping-subset-files.R` will generate subset files using whichever files are symlinked in `data` on your local machine.
-
 `run-molecular-subtyping-HGG.sh` is designed to be run as if it was called from this module directory even when called from outside of this directory.
 
+When run in this manner, `02-HGG-molecular-subtyping-subset-files.R` will generate subset files using whichever files are symlinked in `data` on your local machine.
+
+To run **all** of the Rscripts in this module from the command line sequentially, use:
+
+```
+SUBSETTING_ONLY=0 bash run-molecular-subtyping-HGG.sh
+```
+
 `00-HGG-select-pathology-dx.Rmd` is not run via this shell script, as it should be run locally, tied to `release-v17-20200908`, and should not be re-rendered when there are changes to the underlying `pbta-histologies.tsv` file in future releases (see [Folder content](#folder-content) and [#748](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/748)).
+
 
 ## Folder content
 
@@ -83,51 +91,4 @@ The results, shown below, suggest that one sample may be a candidate for reclass
 
 ![09_umap_tsne](plots/HGG_stranded.png)
 
-## Folder structure
-
-The structure of this folder is as follows:
-
-```
-├── 00-HGG-select-pathology-dx.Rmd
-├── 00-HGG-select-pathology-dx.nb.html
-├── 01-HGG-molecular-subtyping-defining-lesions.Rmd
-├── 01-HGG-molecular-subtyping-defining-lesions.nb.html
-├── 02-HGG-molecular-subtyping-subset-files.R
-├── 03-HGG-molecular-subtyping-cnv.Rmd
-├── 03-HGG-molecular-subtyping-cnv.nb.html
-├── 04-HGG-molecular-subtyping-mutation.Rmd
-├── 04-HGG-molecular-subtyping-mutation.nb.html
-├── 05-HGG-molecular-subtyping-fusion.Rmd
-├── 05-HGG-molecular-subtyping-fusion.nb.html
-├── 06-HGG-molecular-subtyping-gene-expression.Rmd
-├── 06-HGG-molecular-subtyping-gene-expression.nb.html
-├── 07-HGG-molecular-subtyping-combine-table.Rmd
-├── 07-HGG-molecular-subtyping-combine-table.nb.html
-├── 08-1p19q-codeleted-oligodendrogliomas.Rmd
-├── 08-1p19q-codeleted-oligodendrogliomas.nb.html
-├── 09-HGG-with-braf-clustering.Rmd
-├── 09-HGG-with-braf-clustering.nb.html
-├── README.md
-├── hgg-subset
-│   ├── hgg_focal_cn.tsv.gz
-│   ├── hgg_fusion.tsv
-│   ├── hgg_gistic_broad_values.tsv
-│   ├── hgg_metadata.tsv
-│   ├── hgg_snv_maf.tsv.gz
-│   ├── hgg_subtyping_path_dx_strings.json
-│   ├── hgg_zscored_expression.polya.RDS
-│   └── hgg_zscored_expression.stranded.RDS
-├── plots
-│   ├── HGG_stranded.pdf
-│   └── HGG_stranded.png
-├── results
-│   ├── HGG_cleaned_all_table.tsv
-│   ├── HGG_cleaned_cnv.tsv
-│   ├── HGG_cleaned_expression.polya.tsv
-│   ├── HGG_cleaned_expression.stranded.tsv
-│   ├── HGG_cleaned_fusion.tsv
-│   ├── HGG_cleaned_mutation.tsv
-│   ├── HGG_defining_lesions.tsv
-│   └── HGG_molecular_subtype.tsv
-└── run-molecular-subtyping-HGG.sh
-```
+[`10-HGG-TP53-annotation.Rmd`](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/10-HGG-TP53-annotation.nb.html) is a notebook that adds annotations to HGG samples with TP53 status we obtained from SNV and CNV data as well as TP53 classifier scores.

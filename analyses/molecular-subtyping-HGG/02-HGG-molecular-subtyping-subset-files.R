@@ -48,9 +48,7 @@ stranded_expression <-
   read_rds(
     file.path(
       root_dir,
-      "analyses",
-      "collapse-rnaseq",
-      "results",
+      "data",
       "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
     )
   )
@@ -59,9 +57,7 @@ polya_expression <-
   read_rds(
     file.path(
       root_dir,
-      "analyses",
-      "collapse-rnaseq",
-      "results",
+      "data",
       "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
     )
   )
@@ -77,7 +73,9 @@ cn_df <- read_tsv(file.path(
 
 # Read in fusion data
 fusion_df <- read_tsv(
-  file.path(root_dir, "analyses","fusion_filtering", "results", "pbta-fusion-putative-oncogenic.tsv"))
+  file.path(root_dir, 
+            "data", 
+            "pbta-fusion-putative-oncogenic.tsv"))
 
 # Read in GISTIC `broad_values_by_arm.txt` file
 unzip(file.path(root_dir, "data", "pbta-cnv-consensus-gistic.zip"),
@@ -110,7 +108,9 @@ snv_consensus_maf <- data.table::fread(
   data.table = FALSE) 
 ## Read in snv hotspot mutation data
 snv_hotspot_maf <- data.table::fread(
-  file.path(root_dir, "analyses" , "hotspots-detection" , "results" , "pbta-snv-scavenged-hotspots.maf.tsv.gz"),
+  file.path(root_dir, 
+            "data", 
+            "pbta-snv-scavenged-hotspots.maf.tsv.gz"),
   select = keep_cols,
   data.table = FALSE) %>%
   select(colnames(snv_consensus_maf))
