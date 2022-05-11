@@ -40,7 +40,7 @@ hgg_results_sig <- hgg_results %>%
 
 ```{r sample sizes}
 # Total N samples in co-occurrence analysis
-all_results_n <- all_results %>%
+all_results_n <- all_results_sig %>%
   dplyr::rowwise() %>%
   dplyr::mutate(sample_n = sum(mut11,mut10,mut01,mut00)) %>%
   pull(sample_n) %>%
@@ -49,7 +49,7 @@ all_results_n <- all_results %>%
 all_results_n
 
 # Number of significant events
-n_sig <- all_results %>%
+n_sig <- all_results_sig %>%
   nrow()
 n_sig
 

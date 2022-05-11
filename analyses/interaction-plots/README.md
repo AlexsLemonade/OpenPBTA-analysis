@@ -19,10 +19,14 @@ In the case of the full data set, a bar plot is also produced that summarizes wh
 
 ## Usage
 
-To run a basic analysis and create a co-occurence plot:
+To run a basic analysis, create a co-occurence plot, and calculate sample Ns for the manuscript:
 ```
-bash analyses/interaction-plots/01-create-interaction-plots.sh
+bash analyses/interaction-plots/bash run-interaction-plots.sh
 ```
+
+# Co-occurrence analysis
+`01-create-interaction-plots.sh` is a wrapper script to perform co-occurrence analysis, create plots displaying SNV co-occurence and mutual exclusivity, record results in tables.
+ 
 
 # Result Ns used in manuscript
 `02-result-ns-for-manuscript.Rmd` is a notebook which calculates the relevant Ns and ratios used in the manuscript.
