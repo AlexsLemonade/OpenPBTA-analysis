@@ -27,11 +27,12 @@ results_dir <- file.path(analysis_dir, "results")
 all_results_file <- file.path(results_dir, "cooccur_top50.ALL.tsv")
 hgg_results_file <- file.path(results_dir, "cooccur_top50.Diffuse-astrocytic-and-oligodendroglial-tumor.tsv")
 
-# Read in only significant results 
-all_results <- read_tsv(all_results_file) %>%
+# Read in results (only need significant results for all, but all data for hgg)
+all_results_sig <- read_tsv(all_results_file) %>%
   filter(q < 0.05)
 
-hgg_results <- read_tsv(hgg_results_file) %>%
+hgg_results <- read_tsv(hgg_results_file) 
+hgg_results_sig <- hgg_results %>%
   filter(q < 0.05)
 ```
 
@@ -53,12 +54,33 @@ n_sig <- all_results %>%
 n_sig
 
 # Number of hgg significant events
-n_hgg_sig <- hgg_results %>%
+n_hgg_sig <- hgg_results_sig %>%
   nrow()
 n_hgg_sig
 
 # Ratio of hgg:total significant events
 n_hgg_sig/n_sig
+
+# Number of hggs with mutually exclusive TP53 and PPM1D mutations (52/54)
+hgg_results %>%
+  filter(gene1 == "TP53" & gene2 == "PPM1D") %>%
+  # sum mutually exclusive
+  dplyr::rowwise() %>%
+  dplyr::mutate(n_mut_excl = sum(mut10,mut01)) %>%
+  pull(n_mut_excl)
+
+# Total number of hggs with a mutation in _either_ gene (this has already gone into the `perc_mutexcl` calculation)
+hgg_results %>%
+  filter(gene1 == "TP53" & gene2 == "PPM1D") %>%
+  # sum mutually exclusive
+  dplyr::rowwise() %>%
+  dplyr::mutate(n_mut = sum(mut10,mut01,mut11)) %>%
+  pull(n_mut)
+
+# Percent of hggs with with mutually exclusive TP53 and PPM1D mutations
+hgg_results %>%
+  filter(gene1 == "TP53" & gene2 == "PPM1D") %>%
+  pull(perc_mutexcl)
 ```
 
 ## Print session info
