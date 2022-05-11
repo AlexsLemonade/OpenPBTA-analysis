@@ -1,5 +1,6 @@
 #########################################################################
-# Jo Lynne Rokita for D3b 2022
+# Module author: JA Shapiro for ALSF CCDL 2019-2020
+# Script author: Jo Lynne Rokita for D3b 2022
 #
 # Run the interaction plots pipeline:
 ## 1. `01-create-interaction-plots` to create interaction plots
