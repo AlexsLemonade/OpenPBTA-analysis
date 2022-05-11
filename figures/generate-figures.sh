@@ -56,11 +56,7 @@ bash ${analyses_dir}/chromothripsis/run-chromothripsis.sh
 
 # Run the mutational-signatures module for Figures 3 and S4
 # We only run the part of the module used in the manuscript (i.e., not de novo)
-Rscript --vanilla ${analyses_dir}/mutational-signatures/05-fit_cns_signatures.R
-Rscript -e "rmarkdown::render('${analyses_dir}/mutational-signatures/06-compare_cns_exposures.Rmd', clean = TRUE)"
-Rscript -e "rmarkdown::render('${analyses_dir}/mutational-signatures/07-plot_cns_fit.Rmd', clean = TRUE)"
-Rscript -e "rmarkdown::render('${analyses_dir}/mutational-signatures/08-explore_hypermutators.Rmd', clean = TRUE)"
-
+OPENPBTA_CNS_FIT_ONLY=1 bash ${analyses_dir}/mutational-signatures/run_mutational_signatures.sh
 
 # Run the collapse-rnaseq module, which is needed for telomerase, immune deconvolution, and GSVA modules
 OPENPBTA_TP53_FIGURES=1 bash ${analyses_dir}/collapse-rnaseq/run-collapse-rnaseq.sh 
