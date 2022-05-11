@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# J. Taroni for ALSF CCDL 
-# 2020
+# J. Taroni and S. Spielman for ALSF CCDL 
+# 2020-2022
 
 set -e
 set -o pipefail
