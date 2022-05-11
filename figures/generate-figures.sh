@@ -63,7 +63,7 @@ Rscript -e "rmarkdown::render('${analyses_dir}/mutational-signatures/08-explore_
 
 
 # Run the collapse-rnaseq module, which is needed for telomerase, immune deconvolution, and GSVA modules
-bash ${analyses_dir}/collapse-rnaseq/run-collapse-rnaseq.sh 
+OPENPBTA_TP53_FIGURES=1 bash ${analyses_dir}/collapse-rnaseq/run-collapse-rnaseq.sh 
 
 # Run the telomerase activity prediction script, for Figures 4 and S5
 # TODO: should we actually just run the full module script? I don't do that here since it also re-runs collapse rna seq.
