@@ -12,7 +12,16 @@
 set -e
 set -o pipefail
 
+# If running for subtyping, use the base histologies file by setting this to 1
 RUN_FOR_SUBTYPING=${OPENPBTA_BASE_SUBTYPING:-0}
+
+# If we're running for figure generation, set to 1
+RUN_FOR_FIGURES=${OPENPBTA_TP53_FIGURES:-0}
+
+# we want to skip the poly-A steps in CI
+# if POLYA=1, poly-A steps will be run
+POLYA=${OPENPBTA_POLYAPLOT:-1}
+
 
 # This script should always run as if it were being called from
 # the directory it lives in.
@@ -21,11 +30,6 @@ analysis_dir="$(perl -e 'use File::Basename;
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$analysis_dir" || exit
 
-
-# we want to skip the poly-A steps in CI
-# if POLYA=1, poly-A steps will be run
-POLYA=${OPENPBTA_POLYAPLOT:-1}
-
 data_dir="../../data"
 scratch_dir="../../scratch"
 # cds gencode bed file
@@ -33,7 +37,7 @@ cds_file="${scratch_dir}/gencode.v27.primary_assembly.annotation.bed"
 snvconsensus_file="${data_dir}/pbta-snv-consensus-mutation.maf.tsv.gz"
 cnvconsensus_file="${data_dir}/consensus_seg_annotated_cn_autosomes.tsv.gz"
 
-if [[ RUN_FOR_SUBTYPING == "0" ]]
+if [[ "$RUN_FOR_SUBTYPING" -eq "0" ]]
 then
    histology_file="../../data/pbta-histologies.tsv"
 else
@@ -56,15 +60,17 @@ Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
   --outputFolder ${analysis_dir}/results \
   --gencode ${cds_file}
 
-if [[ RUN_FOR_SUBTYPING == "0" ]]
+# If running for the purpose of figure generation (RUN_FOR_FIGURES will be 1), 
+# use the data in the analysis directory that has been freshly collapsed
+if [[ "$RUN_FOR_FIGURES" -eq "0" ]]
 then
-   # expression files for prediction
-   collapsed_stranded="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
-   collapsed_polya="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
+  # expression files for prediction
+  collapsed_stranded="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+  collapsed_polya="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
 else
-   # expression files for prediction
-   collapsed_stranded="../collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
-   collapsed_polya="../collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
+  # expression files for prediction
+  collapsed_stranded="../collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+  collapsed_polya="../collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
 fi
 
 # Skip poly-A steps in CI
@@ -107,5 +113,4 @@ Rscript 08-compare-molecularsubtypes-tp53scores.R
 
 # create boxplots by broad histology, cancer group
 Rscript 09-compare-histologies.R
-
 
