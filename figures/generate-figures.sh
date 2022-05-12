@@ -38,8 +38,8 @@ Rscript -e "rmarkdown::render('mapping-histology-labels.Rmd', clean = TRUE, para
 # Run modules that cannot be run locally due to memory requirements
 if [ "$RUN_LOCAL" -lt "1" ]; then
   bash ${analyses_dir}/focal-cn-file-preparation/run-prepare-cn.sh      # Figures 2 and S3
-  Rscript --vanilla scripts/supp-snv-callers-panels.R                   # Figure S2
-  Rscript --vanilla scripts/supp-tmb-compare-panels.R                   # Figure S2
+  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh # Figure S2
+  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh # Figure S2
   bash ${analyses_dir}/copy_number_consensus_call/run_consensus_call.sh # Figure S3 (heatmap)
 fi
 
@@ -177,8 +177,8 @@ mkdir -p pdfs/supp/figs2/panels
 
 # Generate SNV and TMB figures, **but only if NOT LOCAL**. Signficant memory requirements.
 if [ "$RUN_LOCAL" -lt "1" ]; then
-  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh
-  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh
+  Rscript --vanilla scripts/supp-snv-callers-panels.R   # Figure S2
+  Rscript --vanilla scripts/supp-tmb-compare-panels.R   # Figure S2
 fi
 
 
