@@ -29,6 +29,7 @@
 ################################ Initial Set Up ################################
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+analysis_dir <- file.path(root_dir, "analyses", "snv-callers")
 
 # Import special functions
 source(file.path(root_dir, "analyses", "snv-callers", "util", "tmb_functions.R"))
@@ -95,9 +96,9 @@ option_list <- list(
 opt <- parse_args(OptionParser(option_list = option_list))
 
 # Make everything relative to root path
-opt$metadata <- file.path(root_dir, opt$metadata)
-opt$db_file <- file.path(root_dir, opt$db_file)
-opt$coding_regions <- file.path(root_dir, opt$coding_regions)
+opt$metadata <- file.path(analysis_dir, opt$metadata)
+opt$db_file <- file.path(analysis_dir, opt$db_file)
+opt$coding_regions <- file.path(analysis_dir, opt$coding_regions)
 
 ########### Check that the files we need are in the paths specified ############
 needed_files <- c(
@@ -118,7 +119,7 @@ if (!all(files_found)) {
 
 ############################### Set Up Output #####################################
 # Set and make the plots directory
-opt$output <- file.path(root_dir, opt$output)
+opt$output <- file.path(analysis_dir, opt$output)
 
 # Make output folder
 if (!dir.exists(opt$output)) {

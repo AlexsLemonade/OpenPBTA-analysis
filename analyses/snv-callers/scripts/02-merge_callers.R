@@ -28,6 +28,7 @@
 #
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+analysis_dir <- file.path(root_dir, "analyses", "snv-callers")
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
@@ -74,7 +75,7 @@ vaf_filter <- opt$vaf_filter # get out of opt list for sql
 
 ############################## Connect to database #############################
 # Normalize this file path
-opt$db_file <- file.path(root_dir, opt$db_file)
+opt$db_file <- file.path(analysis_dir, opt$db_file)
 
 # Check that the database specified exists
 if (!file.exists(opt$db_file)) {
@@ -86,7 +87,7 @@ con <- DBI::dbConnect(RSQLite::SQLite(), opt$db_file)
 
 ############################### Set Up Output #####################################
 # Normalize file path
-opt$output_file <- file.path(root_dir, opt$output_file)
+opt$output_file <- file.path(analysis_dir, opt$output_file)
 
 # Make sure the folder is made
 output_dir <- stringr::word(opt$output_file, sep = "/", start = 1, end = -2)
