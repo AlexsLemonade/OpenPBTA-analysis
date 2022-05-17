@@ -98,6 +98,13 @@ hist %>%
   unique() %>%
   length()
 
+# Total number of broad histologies
+tumor_only_broad_hist <- hist %>%
+  filter(!is.na(pathology_diagnosis) & !is.na(broad_histology) & broad_histology != "Non-tumor") 
+
+unique(tumor_only_broad_hist$broad_histology)
+length(unique(tumor_only_broad_hist$broad_histology))
+
 # Total N assays by whether sample is a tumor (adding here, paired normal) or cell line (also adding paired normal)
 hist <- hist %>%
   mutate(id = ifelse(composition == "Derived Cell Line", "Cell Line", "Non-Cell Line"),
