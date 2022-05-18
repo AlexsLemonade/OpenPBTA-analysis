@@ -467,8 +467,9 @@ workflow_tools <- tribble(
   "VarDict Java v1.5.8","1.5.8","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-vardict-wf.cwl",
   "VEP","r93","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_annot_vcf_sub_wf.cwl",
   "bcftools","1.7","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_annot_vcf_sub_wf.cwl",
-  "GISTIC","2.0.23","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/bash/run-gistic.sh ; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/bash/run_gistic_consensus.sh"
-)
+  "RSEM", "1.3.1", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl",
+  "AnnotSV", "2.1", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/annotsv.cwl",
+  "FusionAnnotator", "0.2.0", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/fusion_annotator.cwl")
 
 
 # Combine and output
