@@ -133,8 +133,7 @@ calculate_tmb <- function(tumor_sample_barcode = NULL,
     dplyr::group_by(
       #TODO: Make this column passing stuff more flexible with some tidyeval maybe
       Tumor_Sample_Barcode = tumor_sample_barcode,
-      experimental_strategy,
-      short_histology
+      experimental_strategy
     ) %>%
     # Count number of mutations for that sample
     dplyr::summarize(
