@@ -54,8 +54,7 @@ We invite researchers to join OpenPBTA to help rigorously characterize the genom
       - [2. File and merge a pull request for adding `02-cluster-heatmap.R` to the repository.](#2-file-and-merge-a-pull-request-for-adding-02-cluster-heatmapr-to-the-repository)
       - [3. File and merge a pull request for the shell script that runs the entirety of `gene-expression-clustering`.](#3-file-and-merge-a-pull-request-for-the-shell-script-that-runs-the-entirety-of-gene-expression-clustering)
     - [Passing variables only in CI](#passing-variables-only-in-ci)
-  - [Molecular-subtyping](#molecular-subtyping)
-    - [Adding summary analyses to run-for-subtyping.sh](#adding-summary-analyses-to-run-for-subtypingsh)
+- [Data release preparation](#data-release-preparation)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -486,41 +485,6 @@ In this example `OPENPBTA_PATHSIG=0.75` species an environment variable `OPENPBT
 Any environment variables prefixed with `OPENPBTA_` are passed to the specified shell script.
 Environment variables without this prefix are not passed.
 
-### Molecular-subtyping 
+## Data release preparation
 
-If you would like to identify molecular subtype membership for new RNA-seq PBTA samples belonging to the following broad_histologies, run the bash script below.
- * [`molecular-subtyping-EWS`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-EWS)
- * [`molecular-subtyping-HGG`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-HGG)
- * [`molecular-subtyping-LGAT`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-LGAT)
- * [`molecular-subtyping-embryonal`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-embryonal)
- * [`molecular-subtyping-CRANIO`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-CRANIO)
- * [`molecular-subtyping-EPN`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-EPN)
- * [`molecular-subtyping-MB`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-MB)
- * [`molecular-subtyping-neurocytoma`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/molecular-subtyping-neurocytoma)
-
-<!--TODO: Add WGS/WXS summarization modules.-->   
-
-```
-bash scripts/run-for-subtyping.sh
-```
-
-Running this will re-run RNA-seq specific summary file generation modules as well as molecular-subtyping-* modules to generate the `compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` file containing the `molecular_subtype` column.
-
-
-#### Adding summary analyses to run-for-subtyping.sh
-
-For an analysis to be run for subyping, it must use `pbta-histologies-base.tsv` as input and shouldn't depend on `molecular_subtype` or `integrated_diagnosis` columns for molecular-subtyping-* modules. 
-Please set BASE_SUBTYPING=1 as a condition to run code with `pbta-histologies-base.tsv`.   
-
-Here is an example:
-
-```
-BASE_SUBTYPING=1 analyses/gene-set-enrichment-analysis/run-gsea.sh
-
-```
-
-This would run the `analyses/gene-set-enrichment-analysis/run-gsea.sh` with `pbta-histologies-base.tsv` to generate gsva scores that are used in multiple molecular-subtyping-* modules.
-
-
-
-<!--TODO: Add instructions for running scripts from anywhere in the project?-->
+Some scripts in this analysis repository are required for preparing a data release. To learn more, please see [these docs](scripts/README.md).
