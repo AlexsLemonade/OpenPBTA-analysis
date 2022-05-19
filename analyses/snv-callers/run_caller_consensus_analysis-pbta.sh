@@ -24,6 +24,15 @@ wgs_bed=../../scratch/intersect_strelka_mutect_WGS.bed
 # Set a default for the VAF filter if none is specified
 vaf_cutoff=${OPENPBTA_VAF_CUTOFF:-0}
 
+# If running during data generation, we want to use the BASE histologies file
+run_for_release=${OPENPBTA_BASE_RELEASE:-0}
+if [[ "$run_for_release" -eq "0" ]]
+then
+   histologies_file=../../data/pbta-histologies.tsv
+else
+   histologies_file=../../data/pbta-histologies-base.tsv
+fi
+
 # Unless told to run the plots, the default is to skip them
 # To run plots, set OPENPBTA_PLOTS to 1 or more
 run_plots_nb=${OPENPBTA_PLOTS:-0}
@@ -36,7 +45,7 @@ python3 scripts/01-setup_db.py \
   --mutect-file ../../data/pbta-snv-mutect2.vep.maf.gz \
   --lancet-file ../../data/pbta-snv-lancet.vep.maf.gz \
   --vardict-file ../../data/pbta-snv-vardict.vep.maf.gz \
-  --meta-file ../../data/pbta-histologies.tsv
+  --meta-file $histologies_file
 
 ##################### Merge callers' files into total files ####################
 echo "Merging callers"
@@ -76,7 +85,7 @@ echo "Calculating TMB"
 Rscript scripts/03-calculate_tmb.R \
   --db_file $dbfile \
   --output results/consensus \
-  --metadata ../../data/pbta-histologies.tsv \
+  --metadata $histologies_file \
   --coding_regions $cds_file \
   --overwrite \
   --nonsynfilter_maf
