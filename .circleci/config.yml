@@ -283,27 +283,27 @@ jobs:
 #          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('tables/output_tables.Rmd', params = list(release = 'testing'), clean = TRUE)"
 
 
-#   deploy:
-#     machine:
-#       docker_layer_caching: true
-#     working_directory: ~/OpenPBTA-analysis
-#     steps:
-#       - checkout
-#       - run: ./scripts/run_in_ci.sh echo 'Building image!'
-#       - run: docker login --username $DOCKER_ID --password $DOCKER_PASSWD
-#       - run: docker tag open-pbta ccdlopenpbta/open-pbta:latest
-#       - run: docker push ccdlopenpbta/open-pbta:latest
+  deploy:
+    machine:
+      docker_layer_caching: true
+    working_directory: ~/OpenPBTA-analysis
+    steps:
+      - checkout
+      - run: ./scripts/run_in_ci.sh echo 'Building image!'
+      - run: docker login --username $DOCKER_ID --password $DOCKER_PASSWD
+      - run: docker tag open-pbta ccdlopenpbta/open-pbta:latest
+      - run: docker push ccdlopenpbta/open-pbta:latest
 
-# workflows:
-#   version: 2
-#   test-and-deploy:
-#     jobs:
-#       - run_analyses
+workflows:
+  version: 2
+  test-and-deploy:
+    jobs:
+      - run_analyses
 
-#       - deploy:
-#           requires:
-#             - run_analyses
-#           filters:
-#             # No branch commit will ever trigger this job.
-#             branches:
-#               only: master
+      - deploy:
+          requires:
+            - run_analyses
+          filters:
+            # No branch commit will ever trigger this job.
+            branches:
+              only: master
