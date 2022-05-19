@@ -37,7 +37,7 @@ analysis_dir <- file.path(root_dir, "analyses", "snv-callers")
 library(optparse)
 
 # Import special functions
-source(file.path(root_dir, "analyses", "snv-callers", "util", "split_mnv.R"))
+source(file.path(analysis_dir, "util", "split_mnv.R"))
 
 #--------------------------------Set up options--------------------------------#
 # Set up optparse options
@@ -49,7 +49,7 @@ option_list <- list(
   ),
   make_option(
     opt_str = c("-o", "--output_file"), type = "character",
-    default = NULL, help = "File path and file name of where you would like the 
+    default = NULL, help = "File path and file name of where you would like the
                             MAF-like output from this script to be stored.",
     metavar = "character"
   ),
@@ -74,8 +74,6 @@ opt <- parse_args(OptionParser(option_list = option_list))
 vaf_filter <- opt$vaf_filter # get out of opt list for sql
 
 ############################## Connect to database #############################
-# Normalize this file path
-opt$db_file <- file.path(analysis_dir, opt$db_file)
 
 # Check that the database specified exists
 if (!file.exists(opt$db_file)) {
@@ -86,8 +84,6 @@ if (!file.exists(opt$db_file)) {
 con <- DBI::dbConnect(RSQLite::SQLite(), opt$db_file)
 
 ############################### Set Up Output #####################################
-# Normalize file path
-opt$output_file <- file.path(analysis_dir, opt$output_file)
 
 # Make sure the folder is made
 output_dir <- stringr::word(opt$output_file, sep = "/", start = 1, end = -2)
