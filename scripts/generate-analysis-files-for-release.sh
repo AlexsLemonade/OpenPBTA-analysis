@@ -114,4 +114,10 @@ if [ "$RUN_LOCAL" -lt "1" ]; then
 
 fi
 
-
+# Create an md5sum file for all the files in the directory where the analysis
+# files are compiled
+cd ${compiled_dir}
+# Remove old file if it exists
+rm -f analysis_files_md5sum.txt
+# Create a new md5sum.txt file
+md5sum * > analysis_files_md5sum.txt
