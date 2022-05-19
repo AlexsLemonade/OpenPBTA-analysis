@@ -32,10 +32,16 @@ Running the following **from this directory** will generate all analysis files t
 bash generate-analysis-files-for-release.sh
 ```
 
+This script also generates a file that contains the MD5 checksums for the analysis files (`scratch/analysis_files_for_release/analysis_files_md5sum.txt`).
+
 **Notes**
 
 - Modules run via this script must have options to use the base (pre-subtyping) histologies file `pbta-histologies-base.tsv`; these options are used in `generate-analysis-files-for-release.sh`.
+- :warning: This requires 100GB of disk space to run and it may require more than 32 GB of ram. To test locally, you can use the following:
 
+```
+RUN_LOCAL=1 bash generate-analysis-files-for-release.sh
+```
 
 ### Molecular subtyping 
 
