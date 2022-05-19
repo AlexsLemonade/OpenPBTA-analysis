@@ -60,7 +60,7 @@ if [ "$RUN_LOCAL" -lt "1" ]; then
 
   # Run SNV consensus & TMB step for PBTA data
   echo "Run SNV callers module for PBTA data"
-  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh
+  OPENPBTA_BASE_RELEASE=1 bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh
 
   # Run SNV consensus & TMB step for TCGA data
   echo "Run SNV callers module for TCGA data"
@@ -103,7 +103,7 @@ if [ "$RUN_LOCAL" -lt "1" ]; then
 
   # Copy over GISTIC
   cp ${analyses_dir}/run-gistic/results/pbta-cnv-consensus-gistic.zip ${compiled_dir}
-  
+
   # Run step that generates "most focal CN" files (annotation) using the *BASE* histology file
   echo "Run focal CN file preparation"
   OPENPBTA_BASE_RELEASE=1 bash ${analyses_dir}/focal-cn-file-preparation/run-prepare-cn.sh
@@ -111,7 +111,7 @@ if [ "$RUN_LOCAL" -lt "1" ]; then
   # Copy over focal CN
   cp ${analyses_dir}/focal-cn-file-preparation/results/consensus_seg_annotated_cn_autosomes.tsv.gz ${compiled_dir}
   cp ${analyses_dir}/focal-cn-file-preparation/results/consensus_seg_annotated_cn_x_and_y.tsv.gz ${compiled_dir}
-  
+
 fi
 
 
