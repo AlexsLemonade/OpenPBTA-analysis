@@ -36,8 +36,9 @@ RUN pip3 install \
   "six==1.14.0" \
   "wheel==0.34.2"
 
+
 # Install java
-RUN apt-get -y --no-install-recommends install \
+RUN apt-get update && apt-get -y --no-install-recommends install \
    default-jdk
 
 
@@ -377,7 +378,9 @@ RUN ./install_bioc.r \
 
 # Molecular subtyping MB
 RUN R -e "remotes::install_github('d3b-center/medullo-classifier-package', ref = 'e3d12f64e2e4e00f5ea884f3353eb8c4b612abe8', dependencies = TRUE, upgrade = FALSE)" \
-    && ./install_bioc.r MM2S
+    && ./install_bioc.r MM2S \
+    && Rscript -e "library(medulloPackage)"
+
 # More recent version of sva required for molecular subtyping MB
 RUN R -e "remotes::install_github('jtleek/sva-devel@123be9b2b9fd7c7cd495fab7d7d901767964ce9e', dependencies = FALSE, upgrade = FALSE)"
 
