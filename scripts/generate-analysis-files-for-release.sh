@@ -57,39 +57,39 @@ cp ${analyses_dir}/fusion-summary/results/* ${compiled_dir}
 
 # Run modules that cannot be run locally due to memory requirements
 if [ "$RUN_LOCAL" -lt "1" ]; then
-  
+
   # Run SNV consensus & TMB step for PBTA data
   echo "Run SNV callers module for PBTA data"
   bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh
-  
+
   # Run SNV consensus & TMB step for TCGA data
-  echo "Run SNV callers module for TCGA data"  
+  echo "Run SNV callers module for TCGA data"
   bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh
-  
+
   # Copy over SNV callers
   ## PBTA
-  cp ${analyses_dir}/snv-callers/results/consensus/pbta-snv-consensus-mutation.maf.tsv ${compiled_dir}
+  cp ${analyses_dir}/snv-callers/results/consensus/pbta-snv-consensus-mutation.maf.tsv.gz ${compiled_dir}
   cp ${analyses_dir}/snv-callers/results/consensus/pbta-snv-mutation-tmb-coding.tsv ${compiled_dir}
   cp ${analyses_dir}/snv-callers/results/consensus/pbta-snv-mutation-tmb-all.tsv ${compiled_dir}
   ## TCGA
-  cp ${analyses_dir}/snv-callers/results/consensus/tcga-snv-consensus-snv.maf.tsv
+  cp ${analyses_dir}/snv-callers/results/consensus/tcga-snv-consensus-snv.maf.tsv.gz ${compiled_dir}
   cp ${analyses_dir}/snv-callers/results/consensus/tcga-snv-mutation-tmb-coding.tsv ${compiled_dir}
   cp ${analyses_dir}/snv-callers/results/consensus/tcga-snv-mutation-tmb-all.tsv ${compiled_dir}
-  
+
   # Run hotspot detection
   echo "Run hotspots detection"
   bash ${analyses_dir}/hotspots-detection/run_overlaps_hotspots.sh
-  
+
   # Copy over hotspots detection
-  cp ${analyses_dir}/hotspots-detection/results/pbta-snv-scavenged-hotspot.maf.tsv.gz ${compiled_dir}
-  
+  cp ${analyses_dir}/hotspots-detection/results/pbta-snv-scavenged-hotspots.maf.tsv.gz ${compiled_dir}
+
   # Run consensus CN caller step
   echo "Run CNV consensus"
   bash ${analyses_dir}/copy_number_consensus_call/run_consensus_call.sh
-  
+
   # Copy over CNV consensus
   cp ${analyses_dir}/copy_number_consensus_call/results/pbta-cnv-consensus.seg.gz ${compiled_dir}
-  
+
   # Run GISTIC step -- only the part that generates ZIP file
   echo "Run GISTIC"
   # Run a step that subs ploidy for NA to allow GISTIC to run
@@ -97,12 +97,12 @@ if [ "$RUN_LOCAL" -lt "1" ]; then
     --in_consensus ${analyses_dir}/copy_number_consensus_call/results/pbta-cnv-consensus.seg.gz \
     --out_consensus ${analyses_dir}/run-gistic/results/pbta-cnv-consensus-gistic-only.seg.gz \
     --histology ${data_dir}/pbta-histologies-base.tsv
-    
+
   # This will use the file that just got generated above
   bash ${analyses_dir}/run-gistic/scripts/run-gistic-openpbta.sh
-  
+
   # Copy over GISTIC
-  cp ${analyses_dir}/run-gistic/results/pbta-cnv-consensus-gistic.zep ${compiled_dir}
+  cp ${analyses_dir}/run-gistic/results/pbta-cnv-consensus-gistic.zip ${compiled_dir}
   
   # Run step that generates "most focal CN" files (annotation) using the *BASE* histology file
   echo "Run focal CN file preparation"
