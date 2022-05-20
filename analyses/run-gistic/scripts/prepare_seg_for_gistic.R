@@ -41,7 +41,7 @@ opts <- parse_args(OptionParser(option_list = option_list))
 
 # Read the cnv consensus file with copy.num=NA for neutral calls
 cnv_consensus <- readr::read_tsv(opts$in_consensus)
-# Read in histology file for ploiidy information
+# Read in histology file for ploidy information
 metadata <- readr::read_tsv(opts$histology, guess_max=100000)
 
 # Use the tumor ploidy as the copy number for neutral calls
