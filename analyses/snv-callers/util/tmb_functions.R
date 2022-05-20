@@ -115,8 +115,8 @@ calculate_tmb <- function(tumor_sample_barcode = NULL,
   #
   # Returns:
   # A calculated total region size, and TMB for the given Tumor_Sample_Barcode,
-  # returned as a single row data.frame. `experimental_strategy`, `short_histology`
-  # columns are carried along.
+  # returned as a single row data.frame. `experimental_strategy` column is
+  # included.
 
   # Sum up genome sizes
   bed_size <- as.numeric(sum(bed_ranges@ranges@width))
