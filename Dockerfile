@@ -222,6 +222,10 @@ RUN R -e "remotes::install_github('Nik-Zainal-Group/signature.tools.lib', ref = 
 # Patterned geoms
 RUN R -e "remotes::install_github('coolbutuseless/ggpattern', ref = '390e13fead028ba240eae9293a5ef422df02bc8e')"
 
+# Molecular subtyping MB
+RUN R -e "remotes::install_github('d3b-center/medullo-classifier-package', ref = 'e3d12f64e2e4e00f5ea884f3353eb8c4b612abe8', dependencies = TRUE, upgrade = FALSE)" \
+    && Rscript -e "library(medulloPackage)"
+
 # Install python packages
 ##########################
 
