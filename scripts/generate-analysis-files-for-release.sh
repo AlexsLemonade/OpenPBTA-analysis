@@ -20,6 +20,11 @@ analyses_dir="$BASEDIR/analyses"
 data_dir="$BASEDIR/data"
 scratch_dir="$BASEDIR/scratch"
 
+# Compile all the files that need to be included in the release in one place
+# in the scratch directory
+compiled_dir=${scratch_dir}/analysis_files_for_release
+mkdir -p ${compiled_dir}
+
 # Collapsed RNA-seq files
 echo "Create collapse RSEM files"
 bash ${analyses_dir}/collapse-rnaseq/run-collapse-rnaseq.sh
@@ -35,11 +40,6 @@ OPENPBTA_BASE_RELEASE=1 bash ${analyses_dir}/fusion_filtering/run_fusion_merged.
 # Fusion summary
 echo "Run fusion summary for subtypes"
 bash ${analyses_dir}/fusion-summary/run-new-analysis.sh
-
-# Compile all the files that need to be included in the release in one place
-# in the scratch directory
-compiled_dir=${scratch_dir}/analysis_files_for_release
-mkdir -p ${compiled_dir}
 
 # Copy over collapsed RNA-seq files
 cp ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds ${compiled_dir}
