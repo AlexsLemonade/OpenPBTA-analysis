@@ -12,7 +12,7 @@ set -o pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 # The sqlite database made from the callers will be called:
-dbfile=../../scratch/tcga_snv_db.sqlite
+dbfile=../../scratch/snv-callers/tcga_snv_db.sqlite
 
 # Designate output file
 consensus_file=results/consensus/tcga-snv-consensus-snv.maf.tsv

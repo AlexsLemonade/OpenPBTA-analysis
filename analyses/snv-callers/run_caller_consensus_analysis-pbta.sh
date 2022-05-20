@@ -12,7 +12,7 @@ set -o pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 # The sqlite database made from the callers will be called:
-dbfile=../../scratch/snv_db.sqlite
+dbfile=../../scratch/snv-callers/snv_db.sqlite
 
 # Designate output file
 consensus_file=results/consensus/pbta-snv-consensus-mutation.maf.tsv
