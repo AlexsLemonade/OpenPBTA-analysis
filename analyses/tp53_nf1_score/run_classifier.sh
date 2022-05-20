@@ -31,7 +31,7 @@ analysis_dir="$(perl -e 'use File::Basename;
 cd "$analysis_dir" || exit
 
 data_dir="../../data"
-scratch_dir="../../scratch"
+scratch_dir="../../scratch/tp53-classifier"
 # cds gencode bed file
 cds_file="${scratch_dir}/gencode.v27.primary_assembly.annotation.bed"
 snvconsensus_file="${data_dir}/pbta-snv-consensus-mutation.maf.tsv.gz"
@@ -60,7 +60,7 @@ Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
   --outputFolder ${analysis_dir}/results \
   --gencode ${cds_file}
 
-# If running for the purpose of figure generation (RUN_FOR_FIGURES will be 1), 
+# If running for the purpose of figure generation (RUN_FOR_FIGURES will be 1),
 # use the data in the analysis directory that has been freshly collapsed
 if [[ "$RUN_FOR_FIGURES" -eq "0" ]]
 then
