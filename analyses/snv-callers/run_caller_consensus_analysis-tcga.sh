@@ -18,7 +18,7 @@ dbfile=../../scratch/snv-callers/tcga_snv_db.sqlite
 consensus_file=results/consensus/tcga-snv-consensus-snv.maf.tsv
 
 # BED and GTF file paths
-cds_file=../../scratch/gencode.v27.primary_assembly.annotation.bed
+cds_file=../../scratch/snv-callers/gencode.v27.primary_assembly.annotation.bed
 
 # Set a default for the VAF filter if none is specified
 vaf_cutoff=${OPENPBTA_VAF_CUTOFF:-0}

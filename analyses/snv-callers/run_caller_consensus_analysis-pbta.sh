@@ -18,8 +18,8 @@ dbfile=../../scratch/snv-callers/snv_db.sqlite
 consensus_file=results/consensus/pbta-snv-consensus-mutation.maf.tsv
 
 # BED and GTF file paths
-cds_file=../../scratch/gencode.v27.primary_assembly.annotation.bed
-wgs_bed=../../scratch/intersect_strelka_mutect_WGS.bed
+cds_file=../../scratch/snv-callers/gencode.v27.primary_assembly.annotation.bed
+wgs_bed=../../scratch/snv-callers/intersect_strelka_mutect_WGS.bed
 
 # Set a default for the VAF filter if none is specified
 vaf_cutoff=${OPENPBTA_VAF_CUTOFF:-0}
