@@ -1,11 +1,11 @@
 # Adapted from https://github.com/PediatricOpenTargets/OpenPedCan-analysis/blob/f02b6fe1198aed281a650b679f79c261cda00ffd/analyses/run-gistic/scripts/prepare_seg_for_gistic.R
 # prepare_seg_for_gistic.R
 #
-# 
-# Purpose: Generate seg files that are compatible with GISTIC 
+#
+# Purpose: Generate seg files that are compatible with GISTIC
 # Currently, if we use the cnv consensus seg file as is, since we define copy.num=NA for neutral calls
-# a lot of NAs are present in the file and will cause GISTIC to error out. 
-# Those changes were made for the focal CN module so in order not to change that but also fixed the 
+# a lot of NAs are present in the file and will cause GISTIC to error out.
+# Those changes were made for the focal CN module so in order not to change that but also fixed the
 # issue in GISTIC, we generated a consensus seg file just for GISTIC by using `tumor_ploidy` as `copy.num`
 
 
@@ -14,7 +14,6 @@
 
 # Parse command line options
 library(optparse)
-library(tidyverse)
 
 option_list <- list(
   make_option(
@@ -32,7 +31,7 @@ option_list <- list(
   make_option(
     c("-c", "--histology"),
     type = "character",
-    default = NULL, 
+    default = NULL,
     help = "histology file to match the ploidy of samples (.TSV)"
   )
 )
@@ -45,12 +44,15 @@ cnv_consensus <- readr::read_tsv(opts$in_consensus)
 # Read in histology file for ploiidy information
 metadata <- readr::read_tsv(opts$histology, guess_max=100000)
 
-# Use the tumor ploidy for 
-cnv_consensus_for_gistic <- metadata %>% 
+# Use the tumor ploidy as the copy number for neutral calls
+# Neutral calls will have NA values otherwise and cause GISTIC to fail
+cnv_consensus_for_gistic <- metadata %>%
   dplyr::select(Kids_First_Biospecimen_ID, tumor_ploidy) %>%
   dplyr::rename(ID = Kids_First_Biospecimen_ID) %>%
   dplyr::inner_join(cnv_consensus, by="ID") %>%
-  dplyr::mutate(copy.num = dplyr::case_when(is.na(copy.num) ~ tumor_ploidy, TRUE ~ copy.num)) %>%
+  dplyr::mutate(copy.num = dplyr::if_else(is.na(copy.num),
+                                          tumor_ploidy,
+                                          copy.num)) %>%
   dplyr::select(-tumor_ploidy)
 
 # write out the file for GISTIC usage
