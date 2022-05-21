@@ -2958,21 +2958,23 @@ div.tocify {
 <h3>Libraries and Functions</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY25fZ2lzdGljX2RmIDwtIHJlYWRfdHN2KGZpbGUucGF0aChyZXN1bHRzX2RpciwgXFxIR0dfY2xlYW5lZF9jbnYudHN2XFwpKVxubXV0YXRpb25fZGYgPC0gcmVhZF90c3YoZmlsZS5wYXRoKHJlc3VsdHNfZGlyLCBcXEhHR19jbGVhbmVkX211dGF0aW9uLnRzdlxcKSlcbmhpc3RvbG9naWVzX2RmIDwtIHJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2RpciwgXFxwYnRhLWhpc3RvbG9naWVzLWJhc2UudHN2XFwpLCBndWVzc19tYXggPSAxMDAwMClcbmZ1c2lvbl9kZiA8LSByZWFkX3RzdihmaWxlLnBhdGgocmVzdWx0c19kaXIsIFxcSEdHX2NsZWFuZWRfZnVzaW9uLnRzdlxcKSlcbnBvbHlhX2V4cCA8LSByZWFkX3RzdihmaWxlLnBhdGgocmVzdWx0c19kaXIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxcSEdHX2NsZWFuZWRfZXhwcmVzc2lvbi5wb2x5YS50c3ZcXCkpXG5zdHJhbmRlZF9leHAgPC0gcmVhZF90c3YoZmlsZS5wYXRoKHJlc3VsdHNfZGlyLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcXEhHR19jbGVhbmVkX2V4cHJlc3Npb24uc3RyYW5kZWQudHN2XFwpKVxuXG4jIHRoZSBjZWxsIGxpbmUgY29tcG9zaXRpb24gZmlsZSBjb21lcyBmcm9tICM2MTAgaW4gT3BlblBCVEFfYW5hbHlzaXMgcmVwb1xuY2VsbF9saW5lX2NvbXBvc2l0aW9uIDwtIHJlYWRfdHN2KGZpbGUucGF0aChcXGlucHV0XFwsXFxjZWxsLWxpbmUtY29tcG9zaXRpb24udHN2XFwpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbF90eXBlcyA9XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZWFkcjo6Y29scyggYWxpcXVvdF9pZCAgPSByZWFkcjo6Y29sX2NoYXJhY3RlcigpKSlcbmBgYCJ9 -->
-<pre class="r"><code>cn_gistic_df &lt;- read_tsv(file.path(results_dir, \HGG_cleaned_cnv.tsv\))
-mutation_df &lt;- read_tsv(file.path(results_dir, \HGG_cleaned_mutation.tsv\))
-histologies_df &lt;- read_tsv(file.path(data_dir, \pbta-histologies-base.tsv\), guess_max = 10000)
-fusion_df &lt;- read_tsv(file.path(results_dir, \HGG_cleaned_fusion.tsv\))
-polya_exp &lt;- read_tsv(file.path(results_dir,
-                                \HGG_cleaned_expression.polya.tsv\))
-stranded_exp &lt;- read_tsv(file.path(results_dir,
-                                   \HGG_cleaned_expression.stranded.tsv\))
-
-# the cell line composition file comes from #610 in OpenPBTA_analysis repo
-cell_line_composition &lt;- read_tsv(file.path(\input\,\cell-line-composition.tsv\),
-                                  col_types =
-                                    readr::cols( aliquot_id  = readr::col_character()))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoibGlicmFyeSh0aWR5dmVyc2UpIn0= -->
+<pre class="r"><code>library(tidyverse)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIEF0dGFjaGluZyBwYWNrYWdlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlIDEuMi4xIOKUgOKUgFxuIn0= -->
+<pre><code>── Attaching packages ───────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pyUIGdncGxvdDIgMy4yLjAgICAgIOKclCBwdXJyciAgIDAuMy4yXG7inJQgdGliYmxlICAyLjEuMyAgICAg4pyUIGRwbHlyICAgMC44LjNcbuKclCB0aWR5ciAgIDAuOC4zICAgICDinJQgc3RyaW5nciAxLjQuMFxu4pyUIHJlYWRyICAgMS4zLjEgICAgIOKclCBmb3JjYXRzIDAuNC4wXG4ifQ== -->
+<pre><code>✔ ggplot2 3.2.0     ✔ purrr   0.3.2
+✔ tibble  2.1.3     ✔ dplyr   0.8.3
+✔ tidyr   0.8.3     ✔ stringr 1.4.0
+✔ readr   1.3.1     ✔ forcats 0.4.0</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIENvbmZsaWN0cyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlX2NvbmZsaWN0cygpIOKUgOKUgFxu4pyWIGRwbHlyOjpmaWx0ZXIoKSBtYXNrcyBzdGF0czo6ZmlsdGVyKClcbuKcliBkcGx5cjo6bGFnKCkgICAgbWFza3Mgc3RhdHM6OmxhZygpXG4ifQ== -->
+<pre><code>── Conflicts ──────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -2980,11 +2982,17 @@ cell_line_composition &lt;- read_tsv(file.path(\input\,\cell-line-composition.ts
 <h3>Directories</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBmdWxsIHRhYmxlXG5vdXRwdXRfYWxsIDwtIGZpbGUucGF0aChyZXN1bHRzX2RpciwgXFxIR0dfY2xlYW5lZF9hbGxfdGFibGUudHN2XFwpXG4jIG1vbGVjdWxhciBzdWJ0eXBlIHRhYmxlXG5vdXRwdXRfc3VidHlwZSA8LSBmaWxlLnBhdGgocmVzdWx0c19kaXIsIFxcSEdHX21vbGVjdWxhcl9zdWJ0eXBlLnRzdlxcKVxuYGBgIn0= -->
-<pre class="r"><code># full table
-output_all &lt;- file.path(results_dir, \HGG_cleaned_all_table.tsv\)
-# molecular subtype table
-output_subtype &lt;- file.path(results_dir, \HGG_molecular_subtype.tsv\)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgRGV0ZWN0IHRoZSBcIi5naXRcIiBmb2xkZXIgLS0gdGhpcyB3aWxsIGluIHRoZSBwcm9qZWN0IHJvb3QgZGlyZWN0b3J5LiIsIiMgVXNlIHRoaXMgYXMgdGhlIHJvb3QgZGlyZWN0b3J5IHRvIGVuc3VyZSBwcm9wZXIgc291cmNpbmcgb2YgZnVuY3Rpb25zIG5vIiwiIyBtYXR0ZXIgd2hlcmUgdGhpcyBpcyBjYWxsZWQgZnJvbSIsInJvb3RfZGlyIDwtIHJwcm9qcm9vdDo6ZmluZF9yb290KHJwcm9qcm9vdDo6aGFzX2RpcihcIi5naXRcIikpIiwiIiwiIyBGaWxlIHBhdGggdG8gcmVzdWx0cyBkaXJlY3RvcnkgLS0gdGhpcyBjb250YWlucyB0aGUgY2xlYW5lZCBkYXRhIiwicmVzdWx0c19kaXIgPC1cbiAgZmlsZS5wYXRoKHJvb3RfZGlyLCBcImFuYWx5c2VzXCIsIFwibW9sZWN1bGFyLXN1YnR5cGluZy1IR0dcIiwgXCJyZXN1bHRzXCIpIiwiIiwiZGF0YV9kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcImRhdGFcIikiXX0= -->
+<pre class="r"><code># Detect the &quot;.git&quot; folder -- this will in the project root directory.
+# Use this as the root directory to ensure proper sourcing of functions no
+# matter where this is called from
+root_dir &lt;- rprojroot::find_root(rprojroot::has_dir(&quot;.git&quot;))
+
+# File path to results directory -- this contains the cleaned data
+results_dir &lt;-
+  file.path(root_dir, &quot;analyses&quot;, &quot;molecular-subtyping-HGG&quot;, &quot;results&quot;)
+
+data_dir &lt;- file.path(root_dir, &quot;data&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2993,12 +3001,20 @@ output_subtype &lt;- file.path(results_dir, \HGG_molecular_subtype.tsv\)</code><
 <h3>Read in Files</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlzdG9sb2dpZXNfZGYgJT4lXG4gIGZpbHRlcihLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiVcbiAgICAgICAgICAgc2V0ZGlmZihtdXRhdGlvbl9kZiRUdW1vcl9TYW1wbGVfQmFyY29kZSxcbiAgICAgICAgICAgICAgICAgICBjbl9naXN0aWNfZGYkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkpICU+JVxuICBjb3VudChleHBlcmltZW50YWxfc3RyYXRlZ3kpXG5gYGAifQ== -->
-<pre class="r"><code>histologies_df %&gt;%
-  filter(Kids_First_Biospecimen_ID %in%
-           setdiff(mutation_df$Tumor_Sample_Barcode,
-                   cn_gistic_df$Kids_First_Biospecimen_ID)) %&gt;%
-  count(experimental_strategy)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbImNuX2dpc3RpY19kZiA8LSByZWFkX3RzdihmaWxlLnBhdGgocmVzdWx0c19kaXIsIFwiSEdHX2NsZWFuZWRfY252LnRzdlwiKSkiLCJtdXRhdGlvbl9kZiA8LSByZWFkX3RzdihmaWxlLnBhdGgocmVzdWx0c19kaXIsIFwiSEdHX2NsZWFuZWRfbXV0YXRpb24udHN2XCIpKSIsImhpc3RvbG9naWVzX2RmIDwtIHJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2RpciwgXCJwYnRhLWhpc3RvbG9naWVzLWJhc2UudHN2XCIpLCBndWVzc19tYXggPSAxMDAwMCkiLCJmdXNpb25fZGYgPC0gcmVhZF90c3YoZmlsZS5wYXRoKHJlc3VsdHNfZGlyLCBcIkhHR19jbGVhbmVkX2Z1c2lvbi50c3ZcIikpIiwicG9seWFfZXhwIDwtIHJlYWRfdHN2KGZpbGUucGF0aChyZXN1bHRzX2RpcixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJIR0dfY2xlYW5lZF9leHByZXNzaW9uLnBvbHlhLnRzdlwiKSkiLCJzdHJhbmRlZF9leHAgPC0gcmVhZF90c3YoZmlsZS5wYXRoKHJlc3VsdHNfZGlyLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIkhHR19jbGVhbmVkX2V4cHJlc3Npb24uc3RyYW5kZWQudHN2XCIpKSIsIiIsIiMgdGhlIGNlbGwgbGluZSBjb21wb3NpdGlvbiBmaWxlIGNvbWVzIGZyb20gIzYxMCBpbiBPcGVuUEJUQV9hbmFseXNpcyByZXBvIiwiY2VsbF9saW5lX2NvbXBvc2l0aW9uIDwtIHJlYWRfdHN2KGZpbGUucGF0aChcImlucHV0XCIsXCJjZWxsLWxpbmUtY29tcG9zaXRpb24udHN2XCIpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbF90eXBlcyA9XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZWFkcjo6Y29scyggYWxpcXVvdF9pZCAgPSByZWFkcjo6Y29sX2NoYXJhY3RlcigpKSkiXX0= -->
+<pre class="r"><code>cn_gistic_df &lt;- read_tsv(file.path(results_dir, &quot;HGG_cleaned_cnv.tsv&quot;))
+mutation_df &lt;- read_tsv(file.path(results_dir, &quot;HGG_cleaned_mutation.tsv&quot;))
+histologies_df &lt;- read_tsv(file.path(data_dir, &quot;pbta-histologies-base.tsv&quot;), guess_max = 10000)
+fusion_df &lt;- read_tsv(file.path(results_dir, &quot;HGG_cleaned_fusion.tsv&quot;))
+polya_exp &lt;- read_tsv(file.path(results_dir,
+                                &quot;HGG_cleaned_expression.polya.tsv&quot;))
+stranded_exp &lt;- read_tsv(file.path(results_dir,
+                                   &quot;HGG_cleaned_expression.stranded.tsv&quot;))
+
+# the cell line composition file comes from #610 in OpenPBTA_analysis repo
+cell_line_composition &lt;- read_tsv(file.path(&quot;input&quot;,&quot;cell-line-composition.tsv&quot;),
+                                  col_types =
+                                    readr::cols( aliquot_id  = readr::col_character()))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3007,10 +3023,11 @@ output_subtype &lt;- file.path(results_dir, \HGG_molecular_subtype.tsv\)</code><
 <h3>Output Files</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZG5hX2RmIDwtIG11dGF0aW9uX2RmICU+JVxuICByZW5hbWUoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCA9IFR1bW9yX1NhbXBsZV9CYXJjb2RlKSAlPiVcbiAgbGVmdF9qb2luKGNuX2dpc3RpY19kZilcbmBgYCJ9 -->
-<pre class="r"><code>dna_df &lt;- mutation_df %&gt;%
-  rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %&gt;%
-  left_join(cn_gistic_df)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgZnVsbCB0YWJsZSIsIm91dHB1dF9hbGwgPC0gZmlsZS5wYXRoKHJlc3VsdHNfZGlyLCBcIkhHR19jbGVhbmVkX2FsbF90YWJsZS50c3ZcIikiLCIjIG1vbGVjdWxhciBzdWJ0eXBlIHRhYmxlIiwib3V0cHV0X3N1YnR5cGUgPC0gZmlsZS5wYXRoKHJlc3VsdHNfZGlyLCBcIkhHR19tb2xlY3VsYXJfc3VidHlwZS50c3ZcIikiXX0= -->
+<pre class="r"><code># full table
+output_all &lt;- file.path(results_dir, &quot;HGG_cleaned_all_table.tsv&quot;)
+# molecular subtype table
+output_subtype &lt;- file.path(results_dir, &quot;HGG_molecular_subtype.tsv&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3023,7 +3040,35 @@ output_subtype &lt;- file.path(results_dir, \HGG_molecular_subtype.tsv\)</code><
 <p>The CNV and SV data, and therefore the GISTIC data that is <em>downstream</em> of the copy number consensus calls, only includes WGS samples. Let’s look at what biospecimen identifiers are present in the mutation data but not in the copy number data.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW55KGR1cGxpY2F0ZWQoZG5hX2RmJHNhbXBsZV9pZCkpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiaGlzdG9sb2dpZXNfZGYgJT4lXG4gIGZpbHRlcihLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEICVpbiVcbiAgICAgICAgICAgc2V0ZGlmZihtdXRhdGlvbl9kZiRUdW1vcl9TYW1wbGVfQmFyY29kZSxcbiAgICAgICAgICAgICAgICAgICBjbl9naXN0aWNfZGYkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkpICU+JVxuICBjb3VudChleHBlcmltZW50YWxfc3RyYXRlZ3kpIn0= -->
+<pre class="r"><code>histologies_df %&gt;%
+  filter(Kids_First_Biospecimen_ID %in%
+           setdiff(mutation_df$Tumor_Sample_Barcode,
+                   cn_gistic_df$Kids_First_Biospecimen_ID)) %&gt;%
+  count(experimental_strategy)</code></pre>
+<!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["experimental_strategy"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"Targeted Sequencing","2":"1"},{"1":"WGS","2":"6"},{"1":"WXS","2":"31"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiZG5hX2RmIDwtIG11dGF0aW9uX2RmICU+JVxuICByZW5hbWUoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCA9IFR1bW9yX1NhbXBsZV9CYXJjb2RlKSAlPiVcbiAgbGVmdF9qb2luKGNuX2dpc3RpY19kZikifQ== -->
+<pre class="r"><code>dna_df &lt;- mutation_df %&gt;%
+  rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %&gt;%
+  left_join(cn_gistic_df)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiSm9pbmluZywgYnkgPSBjKFwiS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRFwiLCBcInNhbXBsZV9pZFwiLCBcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIilcbiJ9 -->
+<pre><code>Joining, by = c(&quot;Kids_First_Participant_ID&quot;, &quot;sample_id&quot;, &quot;Kids_First_Biospecimen_ID&quot;)</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYW55KGR1cGxpY2F0ZWQoZG5hX2RmJHNhbXBsZV9pZCkpIn0= -->
 <pre class="r"><code>any(duplicated(dna_df$sample_id))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIFRSVUVcbiJ9 -->
@@ -3031,14 +3076,16 @@ output_subtype &lt;- file.path(results_dir, \HGG_molecular_subtype.tsv\)</code><
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>What are they?</p>
+<p>If we only group by sample_id what does composition,aliquot_id and cell_line_composition look like:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlzdG9sb2dpZXNfZGYgJT4lXG4gIGxlZnRfam9pbihjZWxsX2xpbmVfY29tcG9zaXRpb24pICU+JVxuICBmaWx0ZXIoc2FtcGxlX2lkICVpbiUgZG5hX2RmJHNhbXBsZV9pZFtkdXBsaWNhdGVkKGRuYV9kZiRzYW1wbGVfaWQpXSxcbiAgICAgICAgIGV4cGVyaW1lbnRhbF9zdHJhdGVneSAlaW4lIGMoXFxXR1NcXCksXG4gICAgICAgICBzYW1wbGVfdHlwZSA9PSBcXFR1bW9yXFwpICU+JVxuICBncm91cF9ieShzYW1wbGVfaWQpICU+JVxuICBhcnJhbmdlKHNhbXBsZV9pZCkgJT4lXG4gIGRwbHlyOjpzZWxlY3QoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCxcbiAgICAgICAgICAgICAgICBzYW1wbGVfaWQsXG4gICAgICAgICAgICAgICAgY29tcG9zaXRpb24sXG4gICAgICAgICAgICAgICAgY2VsbF9saW5lX2NvbXBvc2l0aW9uLFxuICAgICAgICAgICAgICAgIGFsaXF1b3RfaWQpICU+JVxuICBzdW1tYXJpemUoXG4gICAgICAgICAgICBjb21wb3NpdGlvbiA9ICBwYXN0ZShjb21wb3NpdGlvbiwgY29sbGFwc2UgPSBcXFxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiaGlzdG9sb2dpZXNfZGYgJT4lXG4gIGxlZnRfam9pbihjZWxsX2xpbmVfY29tcG9zaXRpb24pICU+JVxuICBmaWx0ZXIoc2FtcGxlX2lkICVpbiUgZG5hX2RmJHNhbXBsZV9pZFtkdXBsaWNhdGVkKGRuYV9kZiRzYW1wbGVfaWQpXSxcbiAgICAgICAgIGV4cGVyaW1lbnRhbF9zdHJhdGVneSAlaW4lIGMoXCJXR1NcIiksXG4gICAgICAgICBzYW1wbGVfdHlwZSA9PSBcIlR1bW9yXCIpICU+JVxuICBncm91cF9ieShzYW1wbGVfaWQpICU+JVxuICBhcnJhbmdlKHNhbXBsZV9pZCkgJT4lXG4gIGRwbHlyOjpzZWxlY3QoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCxcbiAgICAgICAgICAgICAgICBzYW1wbGVfaWQsXG4gICAgICAgICAgICAgICAgY29tcG9zaXRpb24sXG4gICAgICAgICAgICAgICAgY2VsbF9saW5lX2NvbXBvc2l0aW9uLFxuICAgICAgICAgICAgICAgIGFsaXF1b3RfaWQpICU+JVxuICBzdW1tYXJpemUoXG4gICAgICAgICAgICBjb21wb3NpdGlvbiA9ICBwYXN0ZShjb21wb3NpdGlvbiwgY29sbGFwc2UgPSBcIiwgXCIpLFxuICAgICAgICAgICAgY2VsbF9saW5lX2NvbXBvc2l0aW9uID0gcGFzdGUoY2VsbF9saW5lX2NvbXBvc2l0aW9uLCBjb2xsYXBzZSA9IFwiLCBcIiksXG4gICAgICAgICAgICBhbGlxdW90X2lkID0gcGFzdGUoYWxpcXVvdF9pZCwgY29sbGFwc2UgPSBcIiwgXCIpKSJ9 -->
 <pre class="r"><code>histologies_df %&gt;%
   left_join(cell_line_composition) %&gt;%
   filter(sample_id %in% dna_df$sample_id[duplicated(dna_df$sample_id)],
-         experimental_strategy %in% c(\WGS\),
-         sample_type == \Tumor\) %&gt;%
+         experimental_strategy %in% c(&quot;WGS&quot;),
+         sample_type == &quot;Tumor&quot;) %&gt;%
   group_by(sample_id) %&gt;%
   arrange(sample_id) %&gt;%
   dplyr::select(Kids_First_Biospecimen_ID,
@@ -3047,36 +3094,25 @@ output_subtype &lt;- file.path(results_dir, \HGG_molecular_subtype.tsv\)</code><
                 cell_line_composition,
                 aliquot_id) %&gt;%
   summarize(
-            composition =  paste(composition, collapse = \</code></pre>
+            composition =  paste(composition, collapse = &quot;, &quot;),
+            cell_line_composition = paste(cell_line_composition, collapse = &quot;, &quot;),
+            aliquot_id = paste(aliquot_id, collapse = &quot;, &quot;))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm0obXV0YXRpb25fZGYsIGNuX2dpc3RpY19kZilcbmBgYCJ9 -->
-<pre class="r"><code>rm(mutation_df, cn_gistic_df)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>What are they?</p>
-<p>If we only group by sample_id what does composition,aliquot_id and cell_line_composition look like:</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZXhwX2RmIDwtIGJpbmRfcm93cyhwb2x5YV9leHAsIHN0cmFuZGVkX2V4cClcbnJtKHBvbHlhX2V4cCwgc3RyYW5kZWRfZXhwKVxuYGBgIn0= -->
-<pre class="r"><code>exp_df &lt;- bind_rows(polya_exp, stranded_exp)
-rm(polya_exp, stranded_exp)</code></pre>
-<!-- rnb-source-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiSm9pbmluZywgYnkgPSBjKFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLCBcInNhbXBsZV9pZFwiLCBcImFsaXF1b3RfaWRcIiwgXCJLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEXCIpXG4ifQ== -->
+<pre><code>Joining, by = c(&quot;Kids_First_Biospecimen_ID&quot;, &quot;sample_id&quot;, &quot;aliquot_id&quot;, &quot;Kids_First_Participant_ID&quot;)</code></pre>
+<!-- rnb-message-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["sample_id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["composition"],"name":[2],"type":["chr"],"align":["left"]},{"label":["cell_line_composition"],"name":[3],"type":["chr"],"align":["left"]},{"label":["aliquot_id"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"7316-1746","2":"Derived Cell Line, Derived Cell Line","3":"A, S","4":"739839, 739838"},{"1":"7316-1763","2":"Derived Cell Line, Derived Cell Line, Solid Tissue","3":"A, S, NA","4":"739837, 739836, 549707"},{"1":"7316-1769","2":"Solid Tissue, Derived Cell Line","3":"NA, S","4":"549713, 739826"},{"1":"7316-195","2":"Solid Tissue, Derived Cell Line, Derived Cell Line","3":"NA, S, A","4":"563906, 739835, 739834"},{"1":"7316-2151","2":"Solid Tissue, Derived Cell Line","3":"NA, A","4":"711255, 739823"},{"1":"7316-2176","2":"Solid Tissue, Derived Cell Line","3":"NA, A","4":"563910, 739833"},{"1":"7316-2189","2":"Solid Tissue, Derived Cell Line","3":"NA, A","4":"711151, 739825"},{"1":"7316-3058","2":"Derived Cell Line, Solid Tissue, Derived Cell Line","3":"S, NA, A","4":"739830, 612631, 739831"},{"1":"7316-3213","2":"Solid Tissue, Solid Tissue","3":"NA, NA","4":"A05239, A05265"},{"1":"7316-3214","2":"Solid Tissue, Solid Tissue","3":"NA, NA","4":"A07094, A07092"},{"1":"7316-3217","2":"Solid Tissue, Solid Tissue","3":"NA, NA","4":"A12401, A08734"},{"1":"7316-3222","2":"Solid Tissue, Solid Tissue","3":"NA, NA","4":"A09593, A09597"},{"1":"7316-3223","2":"Solid Tissue, Solid Tissue","3":"NA, NA","4":"A09825, A09715"},{"1":"7316-3227","2":"Solid Tissue, Solid Tissue","3":"NA, NA","4":"A14406, A14404"},{"1":"7316-3228","2":"Solid Tissue, Solid Tissue","3":"NA, NA","4":"A14451, A14456"},{"1":"7316-3229","2":"Solid Tissue, Solid Tissue","3":"NA, NA","4":"SF5608-2, SF5608-3"},{"1":"7316-3230","2":"Solid Tissue, Solid Tissue, Solid Tissue, Solid Tissue","3":"NA, NA, NA, NA","4":"SF5606-19, SF5606-7, SF5606-12, SF5606-6"},{"1":"7316-3231","2":"Solid Tissue, Solid Tissue, Solid Tissue, Solid Tissue, Solid Tissue, Solid Tissue","3":"NA, NA, NA, NA, NA, NA","4":"SF5599-4, SF5599-7, SF5599-14, SF5599-8, SF5599-11, SF5599-2"},{"1":"7316-85","2":"Derived Cell Line, Solid Tissue, Derived Cell Line","3":"A, NA, S","4":"739824, 549720, 739827"},{"1":"7316-913","2":"Solid Tissue, Derived Cell Line, Derived Cell Line","3":"NA, S, A","4":"563907, 739829, 739828"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>The duplicates are mostly from multiple Solid tumor samples per sample_id or there are non-tumor ( derived cell-line ) samples for sample_id .</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWlzc2luZ19ic2lkcyA8LSBzZXRkaWZmKGV4cF9kZiRLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lELFxuICAgICAgICAgICAgICAgICAgICAgICAgIGZ1c2lvbl9kZiRTYW1wbGUpXG5cbmhpc3RvbG9naWVzX2RmICU+JVxuICBmaWx0ZXIoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCAlaW4lIG1pc3NpbmdfYnNpZHMpXG5gYGAifQ== -->
-<pre class="r"><code>missing_bsids &lt;- setdiff(exp_df$Kids_First_Biospecimen_ID,
-                         fusion_df$Sample)
-
-histologies_df %&gt;%
-  filter(Kids_First_Biospecimen_ID %in% missing_bsids)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoicm0obXV0YXRpb25fZGYsIGNuX2dpc3RpY19kZikifQ== -->
+<pre class="r"><code>rm(mutation_df, cn_gistic_df)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3086,14 +3122,9 @@ histologies_df %&gt;%
 <p>We have two cleaned gene expression data files corresponding to the stranded and poly-A datasets. The (z-scored) distributions for the 3 genes of interest look pretty similar: <a href="https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/06-HGG-molecular-subtyping-gene-expression.nb.html#density_plots" class="uri">https://alexslemonade.github.io/OpenPBTA-analysis/analyses/molecular-subtyping-HGG/06-HGG-molecular-subtyping-gene-expression.nb.html#density_plots</a> Therefore, we’ll put all of this in the same table.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByZWFkIGluIGZ1bGwgZmlsZVxucHV0YXRpdmVfb25jb2dlbmljX2RmIDwtXG4gIHJlYWRfdHN2KGZpbGUucGF0aChyb290X2RpcixcbiAgICBcXGFuYWx5c2VzXFwsXG4gICAgXFxmdXNpb25fZmlsdGVyaW5nXFwsXG4gICAgXFxyZXN1bHRzXFwsXG4gICAgXFxwYnRhLWZ1c2lvbi1wdXRhdGl2ZS1vbmNvZ2VuaWMudHN2XFwpKVxuYGBgIn0= -->
-<pre class="r"><code># read in full file
-putative_oncogenic_df &lt;-
-  read_tsv(file.path(root_dir,
-    \analyses\,
-    \fusion_filtering\,
-    \results\,
-    \pbta-fusion-putative-oncogenic.tsv\))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbImV4cF9kZiA8LSBiaW5kX3Jvd3MocG9seWFfZXhwLCBzdHJhbmRlZF9leHApIiwicm0ocG9seWFfZXhwLCBzdHJhbmRlZF9leHApIl19 -->
+<pre class="r"><code>exp_df &lt;- bind_rows(polya_exp, stranded_exp)
+rm(polya_exp, stranded_exp)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3102,7 +3133,54 @@ putative_oncogenic_df &lt;-
 <p>There are some biospecimen identifiers that are in the expression files, but not the fusion files. What are they?</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWxsKG1pc3NpbmdfYnNpZHMgJWluJSBwdXRhdGl2ZV9vbmNvZ2VuaWNfZGYkU2FtcGxlKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIm1pc3NpbmdfYnNpZHMgPC0gc2V0ZGlmZihleHBfZGYkS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCxcbiAgICAgICAgICAgICAgICAgICAgICAgICBmdXNpb25fZGYkU2FtcGxlKSIsIiIsImhpc3RvbG9naWVzX2RmICU+JVxuICBmaWx0ZXIoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCAlaW4lIG1pc3NpbmdfYnNpZHMpIl19 -->
+<pre class="r"><code>missing_bsids &lt;- setdiff(exp_df$Kids_First_Biospecimen_ID,
+                         fusion_df$Sample)
+
+histologies_df %&gt;%
+  filter(Kids_First_Biospecimen_ID %in% missing_bsids)</code></pre>
+<!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Biospecimen_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["aliquot_id"],"name":[3],"type":["chr"],"align":["left"]},{"label":["Kids_First_Participant_ID"],"name":[4],"type":["chr"],"align":["left"]},{"label":["experimental_strategy"],"name":[5],"type":["chr"],"align":["left"]},{"label":["sample_type"],"name":[6],"type":["chr"],"align":["left"]},{"label":["composition"],"name":[7],"type":["chr"],"align":["left"]},{"label":["tumor_descriptor"],"name":[8],"type":["chr"],"align":["left"]},{"label":["primary_site"],"name":[9],"type":["chr"],"align":["left"]},{"label":["reported_gender"],"name":[10],"type":["chr"],"align":["left"]},{"label":["race"],"name":[11],"type":["chr"],"align":["left"]},{"label":["ethnicity"],"name":[12],"type":["chr"],"align":["left"]},{"label":["age_at_diagnosis_days"],"name":[13],"type":["chr"],"align":["left"]},{"label":["pathology_diagnosis"],"name":[14],"type":["chr"],"align":["left"]},{"label":["integrated_diagnosis"],"name":[15],"type":["lgl"],"align":["right"]},{"label":["Notes"],"name":[16],"type":["lgl"],"align":["right"]},{"label":["RNA_library"],"name":[17],"type":["chr"],"align":["left"]},{"label":["OS_days"],"name":[18],"type":["dbl"],"align":["right"]},{"label":["OS_status"],"name":[19],"type":["chr"],"align":["left"]},{"label":["PFS_days"],"name":[20],"type":["chr"],"align":["left"]},{"label":["cohort"],"name":[21],"type":["chr"],"align":["left"]},{"label":["age_last_update_days"],"name":[22],"type":["dbl"],"align":["right"]},{"label":["seq_center"],"name":[23],"type":["chr"],"align":["left"]},{"label":["cancer_predispositions"],"name":[24],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[25],"type":["lgl"],"align":["right"]},{"label":["pathology_free_text_diagnosis"],"name":[26],"type":["chr"],"align":["left"]},{"label":["cohort_participant_id"],"name":[27],"type":["chr"],"align":["left"]},{"label":["extent_of_tumor_resection"],"name":[28],"type":["chr"],"align":["left"]},{"label":["normal_fraction"],"name":[29],"type":["dbl"],"align":["right"]},{"label":["tumor_fraction"],"name":[30],"type":["dbl"],"align":["right"]},{"label":["tumor_ploidy"],"name":[31],"type":["dbl"],"align":["right"]},{"label":["germline_sex_estimate"],"name":[32],"type":["chr"],"align":["left"]},{"label":["parent_aliquot_id"],"name":[33],"type":["chr"],"align":["left"]},{"label":["CNS_region"],"name":[34],"type":["chr"],"align":["left"]},{"label":["broad_histology"],"name":[35],"type":["chr"],"align":["left"]},{"label":["short_histology"],"name":[36],"type":["chr"],"align":["left"]}],"data":[{"1":"BS_0C7VZC0A","2":"7316-2176","3":"588280","4":"PT_VAJN5QP8","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Initial CNS Tumor","9":"Basal Ganglia;Optic Pathway;Temporal Lobe;Ventricles","10":"Female","11":"White","12":"Not Hispanic or Latino","13":"6158","14":"High-grade glioma/astrocytoma (WHO grade III/IV)","15":"NA","16":"NA","17":"stranded","18":"1433","19":"LIVING","20":"1433","21":"CBTN","22":"7591","23":"NantOmics","24":"None documented","25":"NA","26":"high grade glioma","27":"C624225","28":"Partial resection","29":"NA","30":"NA","31":"NA","32":"Female","33":"7316-2176-T-425778.RNA-Seq","34":"Hemispheric","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_0RQ4P069","2":"7316-1746","3":"739942","4":"PT_C2D4JXS1","5":"RNA-Seq","6":"Tumor","7":"Derived Cell Line","8":"Initial CNS Tumor","9":"Cerebellum/Posterior Fossa","10":"Female","11":"Reported Unknown","12":"Hispanic or Latino","13":"2307","14":"High-grade glioma/astrocytoma (WHO grade III/IV)","15":"NA","16":"NA","17":"stranded","18":"132","19":"DECEASED","20":"23","21":"CBTN","22":"2439","23":"NantOmics","24":"None documented","25":"NA","26":"high grade glioma","27":"C337143","28":"Partial resection","29":"NA","30":"NA","31":"NA","32":"Female","33":"7316-1746-T-365613.RNA-Seq","34":"Posterior fossa","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_0ZA67BBC","2":"A12748","3":"A12764","4":"PT_VPEMAQBN","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Initial CNS Tumor","9":"Pons/Brainstem","10":"Not Reported","11":"Not Reported","12":"Not Reported","13":"1709","14":"Brainstem glioma- Diffuse intrinsic pontine glioma","15":"NA","16":"NA","17":"poly-A","18":"552","19":"DECEASED","20":"NA","21":"PNOC","22":"2261","23":"The Translational Genomics Research Institute","24":"NA","25":"NA","26":"Anaplastic Astrocytoma","27":"C3078444","28":"NA","29":"NA","30":"NA","31":"NA","32":"Female","33":"A12748-T.RNA-Seq","34":"Midline","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_1EN5V3XW","2":"7316-2561","3":"577720","4":"PT_RDJ40M73","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Recurrence","9":"Temporal Lobe","10":"Female","11":"White","12":"Not Hispanic or Latino","13":"5754","14":"High-grade glioma/astrocytoma (WHO grade III/IV)","15":"NA","16":"NA","17":"stranded","18":"728","19":"DECEASED","20":"346","21":"CBTN","22":"6482","23":"NantOmics","24":"None documented","25":"NA","26":"high grade glioma most consistent with glioblastoma","27":"C621519","28":"Partial resection","29":"NA","30":"NA","31":"NA","32":"Female","33":"7316-2561-T-460404.RNA-Seq","34":"Hemispheric","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_2A5R9MEJ","2":"7316-1085","3":"711673","4":"PT_FYPWZBH0","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Initial CNS Tumor","9":"Brain Stem- Midbrain/Tectum;Thalamus","10":"Female","11":"White","12":"Not Hispanic or Latino","13":"3360","14":"High-grade glioma/astrocytoma (WHO grade III/IV)","15":"NA","16":"NA","17":"stranded","18":"NA","19":"LIVING","20":"Not Reported","21":"CBTN","22":"3360","23":"NantOmics","24":"None documented","25":"NA","26":"diffuse midline glioma, h3 k27 m","27":"C879573","28":"Partial resection","29":"NA","30":"NA","31":"NA","32":"Female","33":"7316-1085-T-353519.RNA-Seq","34":"Midline","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_30VC3R2Q","2":"7316-639","3":"711763","4":"PT_7DTGJYA7","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Initial CNS Tumor","9":"Brain Stem- Pons","10":"Female","11":"White","12":"Not Hispanic or Latino","13":"1070","14":"Brainstem glioma- Diffuse intrinsic pontine glioma","15":"NA","16":"NA","17":"stranded","18":"1003","19":"DECEASED","20":"1003","21":"CBTN","22":"2073","23":"NantOmics","24":"None documented","25":"NA","26":"anaplastic astrocytoma, who grade 3","27":"C226320","28":"Partial resection","29":"NA","30":"NA","31":"NA","32":"NA","33":"7316-639-T-338697.RNA-Seq","34":"Midline","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_399RPKC9","2":"7316-3030","3":"731895","4":"PT_KVMF5TFW","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Initial CNS Tumor","9":"Brain Stem- Pons","10":"Female","11":"White","12":"Hispanic or Latino","13":"2600","14":"High-grade glioma/astrocytoma (WHO grade III/IV)","15":"NA","16":"NA","17":"stranded","18":"389","19":"DECEASED","20":"216","21":"CBTN","22":"2989","23":"NantOmics","24":"None documented","25":"NA","26":"anaplastic astrocytoma","27":"C806142","28":"Biopsy only","29":"NA","30":"NA","31":"NA","32":"Female","33":"7316-3030-T-541271.RNA-Seq","34":"Midline","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_5965SFPZ","2":"7316-2557","3":"731862","4":"PT_A325EYR2","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Initial CNS Tumor","9":"Brain Stem- Pons;Cerebellum/Posterior Fossa","10":"Female","11":"White","12":"Not Hispanic or Latino","13":"2774","14":"Brainstem glioma- Diffuse intrinsic pontine glioma","15":"NA","16":"NA","17":"stranded","18":"273","19":"DECEASED","20":"237","21":"CBTN","22":"3047","23":"NantOmics","24":"NA","25":"NA","26":"diffuse midline glioma, h3-k27m mutant who grade iv","27":"C796794","28":"Partial resection","29":"NA","30":"NA","31":"NA","32":"Female","33":"7316-2557-T-460353.RNA-Seq","34":"Mixed","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_A7Q8G0Y1","2":"7316-126","3":"746063","4":"PT_PR4YBBH3","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Progressive","9":"Brain Stem- Pons","10":"Female","11":"White","12":"Unavailable/Not Reported","13":"3739","14":"Brainstem glioma- Diffuse intrinsic pontine glioma","15":"NA","16":"NA","17":"stranded","18":"39","19":"DECEASED","20":"39","21":"CBTN","22":"3778","23":"NantOmics","24":"None documented","25":"NA","26":"brainstem - dipg","27":"C29274","28":"Not Reported","29":"NA","30":"NA","31":"NA","32":"Female","33":"7316-126-T-112502.RNA-Seq","34":"Midline","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_DS438CXE","2":"7316-2857","3":"654195","4":"PT_0DXHDZJR","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Initial CNS Tumor","9":"Frontal Lobe","10":"Male","11":"White","12":"Not Hispanic or Latino","13":"493","14":"High-grade glioma/astrocytoma (WHO grade III/IV)","15":"NA","16":"NA","17":"stranded","18":"648","19":"DECEASED","20":"648","21":"CBTN","22":"1141","23":"NantOmics","24":"None documented","25":"NA","26":"glioblastoma, who grade 4","27":"C789168","28":"Partial resection","29":"NA","30":"NA","31":"NA","32":"Male","33":"7316-2857-T-513841.RNA-Seq","34":"Hemispheric","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_FEV5A0HN","2":"7316-535","3":"577717","4":"PT_6SH7PV1N","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Initial CNS Tumor","9":"Temporal Lobe","10":"Male","11":"White","12":"Not Hispanic or Latino","13":"1405","14":"High-grade glioma/astrocytoma (WHO grade III/IV)","15":"NA","16":"NA","17":"stranded","18":"2624","19":"LIVING","20":"2624","21":"CBTN","22":"4029","23":"NantOmics","24":"None documented","25":"NA","26":"anaplastic mixed glioma","27":"C113652","28":"Gross/Near total resection","29":"NA","30":"NA","31":"NA","32":"Male","33":"7316-535-T-331790.RNA-Seq","34":"Hemispheric","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_FX2P2WEG","2":"7316-2640","3":"573150","4":"PT_0SPKM4S8","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Initial CNS Tumor","9":"Parietal Lobe","10":"Male","11":"Black or African American","12":"Not Hispanic or Latino","13":"2005","14":"High-grade glioma/astrocytoma (WHO grade III/IV)","15":"NA","16":"NA","17":"stranded","18":"334","19":"LIVING","20":"205","21":"CBTN","22":"2339","23":"NantOmics","24":"None documented","25":"NA","26":"high grade glioneuronal tumor (who gradeiv)","27":"C687324","28":"Gross/Near total resection","29":"NA","30":"NA","31":"NA","32":"Male","33":"7316-2640-T-475109.RNA-Seq","34":"Hemispheric","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_FXJY0MNH","2":"7316-4998","3":"A15266","4":"PT_8P368R5B","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Initial CNS Tumor","9":"Pons/Brainstem","10":"Not Reported","11":"Not Reported","12":"Not Reported","13":"4745","14":"Brainstem glioma- Diffuse intrinsic pontine glioma","15":"NA","16":"NA","17":"stranded","18":"NA","19":"DECEASED","20":"NA","21":"PNOC","22":"NA","23":"BGI","24":"NA","25":"NA","26":"Brainstem glioma- Diffuse intrinsic pontine glioma","27":"C3080658","28":"NA","29":"NA","30":"NA","31":"NA","32":"NA","33":"7316-4998-T-A15247.RNA-seq","34":"Midline","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_H1XPVS9A","2":"7316-1106","3":"549575","4":"PT_T8V9ES93","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Initial CNS Tumor","9":"Temporal Lobe","10":"Male","11":"White","12":"Not Hispanic or Latino","13":"6081","14":"High-grade glioma/astrocytoma (WHO grade III/IV)","15":"NA","16":"NA","17":"stranded","18":"NA","19":"LIVING","20":"Not Reported","21":"CBTN","22":"6081","23":"NantOmics","24":"None documented","25":"NA","26":"malignant pxa (grade iii who)","27":"C334437","28":"Gross/Near total resection","29":"NA","30":"NA","31":"NA","32":"Male","33":"7316-1106-T-353836.RNA-Seq","34":"Hemispheric","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_HJRTC9JQ","2":"7316-2189","3":"734533","4":"PT_VTM2STE3","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Progressive","9":"Frontal Lobe;Parietal Lobe;Temporal Lobe","10":"Female","11":"White","12":"Not Hispanic or Latino","13":"3316","14":"High-grade glioma/astrocytoma (WHO grade III/IV)","15":"NA","16":"NA","17":"stranded","18":"299","19":"LIVING","20":"215","21":"CBTN","22":"3615","23":"NantOmics","24":"Other inherited conditions NOS","25":"NA","26":"high grade glioma","27":"C641691","28":"Partial resection","29":"NA","30":"NA","31":"NA","32":"Female","33":"7316-2189-T-425973.RNA-Seq","34":"Hemispheric","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_JVW2JJ39","2":"7316-1064","3":"739974","4":"PT_7570EHD9","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Initial CNS Tumor","9":"Frontal Lobe","10":"Male","11":"Reported Unknown","12":"Hispanic or Latino","13":"2136","14":"High-grade glioma/astrocytoma (WHO grade III/IV)","15":"NA","16":"NA","17":"stranded","18":"8","19":"LIVING","20":"8","21":"CBTN","22":"2144","23":"NantOmics","24":"None documented","25":"NA","26":"glioblastoma multiforme","27":"C176382","28":"Unavailable","29":"NA","30":"NA","31":"NA","32":"NA","33":"7316-1064-T-351292.RNA-Seq","34":"Hemispheric","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_KABQQA0T","2":"A16915","3":"A16919","4":"PT_W5GP3F6B","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Initial CNS Tumor","9":"Pons/Brainstem","10":"Not Reported","11":"Not Reported","12":"Not Reported","13":"2459","14":"Brainstem glioma- Diffuse intrinsic pontine glioma","15":"NA","16":"NA","17":"stranded","18":"258","19":"DECEASED","20":"NA","21":"PNOC","22":"2717","23":"BGI","24":"NA","25":"NA","26":"Diffuse midline glioma, H3K27M mutant, WHO grade IV","27":"C3092712","28":"NA","29":"NA","30":"NA","31":"NA","32":"NA","33":"7316-5003-T-A16915.RNA-seq","34":"Midline","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_MDBT7S5Z","2":"7316-3771","3":"728245","4":"PT_QTDY0Y9A","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Initial CNS Tumor","9":"Cerebellum/Posterior Fossa;Spinal Cord- Cervical;Spinal Cord- Lumbar/Thecal Sac;Spinal Cord- Thoracic","10":"Male","11":"Asian","12":"Not Hispanic or Latino","13":"4290","14":"High-grade glioma/astrocytoma (WHO grade III/IV)","15":"NA","16":"NA","17":"stranded","18":"814","19":"DECEASED","20":"396","21":"CBTN","22":"5104","23":"NantOmics","24":"None documented","25":"NA","26":"diffuse midline glioma","27":"C973299","28":"Partial resection","29":"NA","30":"NA","31":"NA","32":"Male","33":"7316-3771-T-592398.RNA-Seq","34":"Mixed","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_MWWZBQ60","2":"7316-2756","3":"731915","4":"PT_VCD0W8HG","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Initial CNS Tumor","9":"Brain Stem- Pons;Other locations NOS","10":"Female","11":"White","12":"Not Hispanic or Latino","13":"4320","14":"High-grade glioma/astrocytoma (WHO grade III/IV)","15":"NA","16":"NA","17":"stranded","18":"536","19":"DECEASED","20":"170","21":"CBTN","22":"4856","23":"NantOmics","24":"None documented","25":"NA","26":"diffuse midline glioma who grade iv","27":"C760140","28":"Biopsy only","29":"NA","30":"NA","31":"NA","32":"Female","33":"7316-2756-T-508176.RNA-Seq","34":"Mixed","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_NEVYM2FP","2":"A17997","3":"A18004","4":"PT_EN2RN5Y1","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Initial CNS Tumor","9":"Pons/Brainstem","10":"Not Reported","11":"Not Reported","12":"Not Reported","13":"3159","14":"Brainstem glioma- Diffuse intrinsic pontine glioma","15":"NA","16":"NA","17":"poly-A","18":"355","19":"DECEASED","20":"NA","21":"PNOC","22":"3514","23":"The Translational Genomics Research Institute","24":"NA","25":"NA","26":"Glioma","27":"C3093081","28":"NA","29":"NA","30":"NA","31":"NA","32":"NA","33":"A17997-T.RNA-Seq","34":"Midline","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_NPA6CZQF","2":"7316-204","3":"398058","4":"PT_RSDTCFDA","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Initial CNS Tumor","9":"Frontal Lobe","10":"Female","11":"White","12":"Not Hispanic or Latino","13":"4946","14":"High-grade glioma/astrocytoma (WHO grade III/IV)","15":"NA","16":"NA","17":"poly-A","18":"360","19":"DECEASED","20":"106","21":"CBTN","22":"5306","23":"BGI@CHOP Genome Center","24":"None documented","25":"NA","26":"anaplastic astrocytoma","27":"C57441","28":"Biopsy only","29":"NA","30":"NA","31":"NA","32":"Female","33":"7316-204-T-211338.RNA-Seq","34":"Hemispheric","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_NR3P3GN2","2":"7316-3935","3":"724105","4":"PT_DJ106XYS","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Initial CNS Tumor","9":"Other locations NOS","10":"Male","11":"Reported Unknown","12":"Hispanic or Latino","13":"4489","14":"High-grade glioma/astrocytoma (WHO grade III/IV)","15":"NA","16":"NA","17":"stranded","18":"18","19":"DECEASED","20":"16","21":"CBTN","22":"4507","23":"NantOmics","24":"None documented","25":"NA","26":"diffuse midline glioma","27":"C975144","28":"Gross/Near total resection","29":"NA","30":"NA","31":"NA","32":"Male","33":"7316-3935-T-609467.RNA-Seq","34":"Other","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_PQVTB6BB","2":"7316-1312","3":"739930","4":"PT_9W4WTVFZ","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Initial CNS Tumor","9":"Brain Stem- Pons;Cerebellum/Posterior Fossa","10":"Female","11":"Reported Unknown","12":"Hispanic or Latino","13":"2870","14":"High-grade glioma/astrocytoma (WHO grade III/IV)","15":"NA","16":"NA","17":"stranded","18":"323","19":"DECEASED","20":"269","21":"CBTN","22":"3193","23":"NantOmics","24":"None documented","25":"NA","26":"astrocytic neoplasm","27":"C164451","28":"Biopsy only","29":"NA","30":"NA","31":"NA","32":"NA","33":"7316-1312-T-356990.RNA-Seq","34":"Mixed","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_X4X1SFSE","2":"7316-71","3":"470015","4":"PT_VVCN8DXT","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Initial CNS Tumor","9":"Occipital Lobe;Parietal Lobe;Temporal Lobe","10":"Male","11":"White","12":"Not Hispanic or Latino","13":"2668","14":"Gliomatosis Cerebri","15":"NA","16":"NA","17":"stranded","18":"375","19":"DECEASED","20":"57","21":"CBTN","22":"3043","23":"NantOmics","24":"None documented","25":"NA","26":"anaplastic gliomatosis cerebri (who grade 4)","27":"C16359","28":"Partial resection","29":"NA","30":"NA","31":"NA","32":"Male","33":"7316-71-T-55540.RNA-Seq","34":"Hemispheric","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_XM1AHBDJ","2":"A12911","3":"A12929","4":"PT_7P6J57H3","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Initial CNS Tumor","9":"Pons/Brainstem","10":"Not Reported","11":"Not Reported","12":"Not Reported","13":"1949","14":"Brainstem glioma- Diffuse intrinsic pontine glioma","15":"NA","16":"NA","17":"poly-A","18":"400","19":"DECEASED","20":"NA","21":"PNOC","22":"2349","23":"The Translational Genomics Research Institute","24":"NA","25":"NA","26":"Anaplastic Astrocytoma","27":"C3078567","28":"NA","29":"NA","30":"NA","31":"NA","32":"NA","33":"A12911-T.RNA-Seq","34":"Midline","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"},{"1":"BS_XQ5SFW35","2":"7316-89","3":"577715","4":"PT_N32BYY8A","5":"RNA-Seq","6":"Tumor","7":"Solid Tissue","8":"Progressive","9":"Occipital Lobe","10":"Male","11":"White","12":"Not Hispanic or Latino","13":"1461","14":"High-grade glioma/astrocytoma (WHO grade III/IV)","15":"NA","16":"NA","17":"stranded","18":"7111","19":"LIVING","20":"4873","21":"CBTN","22":"8572","23":"NantOmics","24":"Other inherited conditions NOS","25":"NA","26":"high-grade glioma","27":"C25461","28":"Gross/Near total resection","29":"NA","30":"NA","31":"NA","32":"Male","33":"7316-89-T-63187.RNA-Seq","34":"Hemispheric","35":"Diffuse astrocytic and oligodendroglial tumor","36":"HGAT"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>No obvious pattern – the <code>sample_type</code> and <code>composition</code> columns contain values we’d expect based on the retention of these identifiers. Are these samples present in the files prior to subsetting in <a href="./02-HGG-molecular-subtyping-subset-files.R"><code>02-HGG-molecular-subtyping-subset-files.R</code></a>?</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgcmVhZCBpbiBmdWxsIGZpbGUiLCJwdXRhdGl2ZV9vbmNvZ2VuaWNfZGYgPC1cbiAgcmVhZF90c3YoZmlsZS5wYXRoKGRhdGFfZGlyLCBcInBidGEtZnVzaW9uLXB1dGF0aXZlLW9uY29nZW5pYy50c3ZcIikpIl19 -->
+<pre class="r"><code># read in full file
+putative_oncogenic_df &lt;-
+  read_tsv(file.path(data_dir, &quot;pbta-fusion-putative-oncogenic.tsv&quot;))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgenNjb3JlX0dlbmUxQSA9IGNvbF9kb3VibGUoKSxcbiAgenNjb3JlX0dlbmUxQiA9IGNvbF9kb3VibGUoKSxcbiAgenNjb3JlX0dlbmUyQSA9IGNvbF9sb2dpY2FsKCksXG4gIHpzY29yZV9HZW5lMkIgPSBjb2xfZG91YmxlKCksXG4gIG5vdGVfZXhwcmVzc2lvbl9HZW5lMkEgPSBjb2xfbG9naWNhbCgpLFxuICBKdW5jdGlvblJlYWRDb3VudCA9IGNvbF9kb3VibGUoKSxcbiAgU3Bhbm5pbmdGcmFnQ291bnQgPSBjb2xfZG91YmxlKCksXG4gIEdlbmUyQSA9IGNvbF9sb2dpY2FsKCksXG4gIEdlbmUyQV9hbm5vID0gY29sX2xvZ2ljYWwoKSxcbiAgR2VuZTJCX2Fubm8gPSBjb2xfbG9naWNhbCgpLFxuICBjYWxsZXIuY291bnQgPSBjb2xfZG91YmxlKCksXG4gIHJlY2lwcm9jYWxfZXhpc3RzID0gY29sX2xvZ2ljYWwoKVxuKVxuIn0= -->
+<pre><code>Parsed with column specification:
+cols(
+  .default = col_character(),
+  zscore_Gene1A = col_double(),
+  zscore_Gene1B = col_double(),
+  zscore_Gene2A = col_logical(),
+  zscore_Gene2B = col_double(),
+  note_expression_Gene2A = col_logical(),
+  JunctionReadCount = col_double(),
+  SpanningFragCount = col_double(),
+  Gene2A = col_logical(),
+  Gene2A_anno = col_logical(),
+  Gene2B_anno = col_logical(),
+  caller.count = col_double(),
+  reciprocal_exists = col_logical()
+)</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
+<pre><code>See spec(...) for full column specifications.</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYWxsKG1pc3NpbmdfYnNpZHMgJWluJSBwdXRhdGl2ZV9vbmNvZ2VuaWNfZGYkU2FtcGxlKSJ9 -->
 <pre class="r"><code>all(missing_bsids %in% putative_oncogenic_df$Sample)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIEZBTFNFXG4ifQ== -->
@@ -3110,10 +3188,9 @@ putative_oncogenic_df &lt;-
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>No obvious pattern – the <code>sample_type</code> and <code>composition</code> columns contain values we’d expect based on the retention of these identifiers. Are these samples present in the files prior to subsetting in <a href="./02-HGG-molecular-subtyping-subset-files.R"><code>02-HGG-molecular-subtyping-subset-files.R</code></a>?</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VtKCEobWlzc2luZ19ic2lkcyAlaW4lIHB1dGF0aXZlX29uY29nZW5pY19kZiRTYW1wbGUpKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoic3VtKCEobWlzc2luZ19ic2lkcyAlaW4lIHB1dGF0aXZlX29uY29nZW5pY19kZiRTYW1wbGUpKSJ9 -->
 <pre class="r"><code>sum(!(missing_bsids %in% putative_oncogenic_df$Sample))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIDI2XG4ifQ== -->
@@ -3121,16 +3198,32 @@ putative_oncogenic_df &lt;-
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>No, none of these identifiers are in the original putative oncogenic list. What about the unfiltered fusion files?</p>
+<p>STARFusion first.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RhcmZ1c2lvbl9kZiA8LSByZWFkX3RzdihmaWxlLnBhdGgoZGF0YV9kaXIsIFxccGJ0YS1mdXNpb24tc3RhcmZ1c2lvbi50c3YuZ3pcXCkpXG5gYGAifQ== -->
-<pre class="r"><code>starfusion_df &lt;- read_tsv(file.path(data_dir, \pbta-fusion-starfusion.tsv.gz\))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoic3RhcmZ1c2lvbl9kZiA8LSByZWFkX3RzdihmaWxlLnBhdGgoZGF0YV9kaXIsIFwicGJ0YS1mdXNpb24tc3RhcmZ1c2lvbi50c3YuZ3pcIikpIn0= -->
+<pre class="r"><code>starfusion_df &lt;- read_tsv(file.path(data_dir, &quot;pbta-fusion-starfusion.tsv.gz&quot;))</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgSnVuY3Rpb25SZWFkQ291bnQgPSBjb2xfZG91YmxlKCksXG4gIFNwYW5uaW5nRnJhZ0NvdW50ID0gY29sX2RvdWJsZSgpLFxuICBGRlBNID0gY29sX2RvdWJsZSgpLFxuICBMZWZ0QnJlYWtFbnRyb3B5ID0gY29sX2RvdWJsZSgpLFxuICBSaWdodEJyZWFrRW50cm9weSA9IGNvbF9kb3VibGUoKVxuKVxuIn0= -->
+<pre><code>Parsed with column specification:
+cols(
+  .default = col_character(),
+  JunctionReadCount = col_double(),
+  SpanningFragCount = col_double(),
+  FFPM = col_double(),
+  LeftBreakEntropy = col_double(),
+  RightBreakEntropy = col_double()
+)</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
+<pre><code>See spec(...) for full column specifications.</code></pre>
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWxsKG1pc3NpbmdfYnNpZHMgJWluJSBzdGFyZnVzaW9uX2RmJHR1bW9yX2lkKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYWxsKG1pc3NpbmdfYnNpZHMgJWluJSBzdGFyZnVzaW9uX2RmJHR1bW9yX2lkKSJ9 -->
 <pre class="r"><code>all(missing_bsids %in% starfusion_df$tumor_id)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIEZBTFNFXG4ifQ== -->
@@ -3138,18 +3231,30 @@ putative_oncogenic_df &lt;-
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>No, none of these identifiers are in the original putative oncogenic list. What about the unfiltered fusion files?</p>
-<p>STARFusion first.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYXJyaWJhX2RmIDwtIHJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2RpciwgXFxwYnRhLWZ1c2lvbi1hcnJpYmEudHN2Lmd6XFwpKVxuYGBgIn0= -->
-<pre class="r"><code>arriba_df &lt;- read_tsv(file.path(data_dir, \pbta-fusion-arriba.tsv.gz\))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYXJyaWJhX2RmIDwtIHJlYWRfdHN2KGZpbGUucGF0aChkYXRhX2RpciwgXCJwYnRhLWZ1c2lvbi1hcnJpYmEudHN2Lmd6XCIpKSJ9 -->
+<pre class="r"><code>arriba_df &lt;- read_tsv(file.path(data_dir, &quot;pbta-fusion-arriba.tsv.gz&quot;))</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgc3BsaXRfcmVhZHMxID0gY29sX2RvdWJsZSgpLFxuICBzcGxpdF9yZWFkczIgPSBjb2xfZG91YmxlKCksXG4gIGRpc2NvcmRhbnRfbWF0ZXMgPSBjb2xfZG91YmxlKCksXG4gIGNvdmVyYWdlMSA9IGNvbF9kb3VibGUoKSxcbiAgY292ZXJhZ2UyID0gY29sX2RvdWJsZSgpXG4pXG4ifQ== -->
+<pre><code>Parsed with column specification:
+cols(
+  .default = col_character(),
+  split_reads1 = col_double(),
+  split_reads2 = col_double(),
+  discordant_mates = col_double(),
+  coverage1 = col_double(),
+  coverage2 = col_double()
+)</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
+<pre><code>See spec(...) for full column specifications.</code></pre>
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWxsKG1pc3NpbmdfYnNpZHMgJWluJSBhcnJpYmFfZGYkdHVtb3JfaWQpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYWxsKG1pc3NpbmdfYnNpZHMgJWluJSBhcnJpYmFfZGYkdHVtb3JfaWQpIn0= -->
 <pre class="r"><code>all(missing_bsids %in% arriba_df$tumor_id)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIFRSVUVcbiJ9 -->
@@ -3157,41 +3262,25 @@ putative_oncogenic_df &lt;-
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZnVzaW9uX2RmIDwtIGZ1c2lvbl9kZiAlPiVcbiAgIyBBZGQgaW4gdGhlIGluc3RhbmNlcyB3aGVyZSB3ZSBoYXZlIG5vIGV2aWRlbmNlXG4gIGJpbmRfcm93cyhkYXRhLmZyYW1lKFNhbXBsZSA9IG1pc3NpbmdfYnNpZHMpKSAlPiVcbiAgcmVwbGFjZShpcy5uYSguKSwgXFxOb25lXFwpXG5gYGAifQ== -->
-<pre class="r"><code>fusion_df &lt;- fusion_df %&gt;%
-  # Add in the instances where we have no evidence
-  bind_rows(data.frame(Sample = missing_bsids)) %&gt;%
-  replace(is.na(.), \None\)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm0oYXJyaWJhX2RmLCBwdXRhdGl2ZV9vbmNvZ2VuaWNfZGYsIHN0YXJmdXNpb25fZGYsIG1pc3NpbmdfYnNpZHMpXG5gYGAifQ== -->
-<pre class="r"><code>rm(arriba_df, putative_oncogenic_df, starfusion_df, missing_bsids)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
 <p>So all samples that are “missing” from the putative oncogenic fusion file are present in the Arriba file, but some are not present in the STARFusion file. Putative oncogenic fusions are retained if they are detected by <em>either</em> caller. We will consider biospecimen identifiers that were present in the Arriba file to have no evidence for these fusions, rather than consider them missing data.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm5hX2RmIDwtIGxlZnRfam9pbihleHBfZGYsIGZ1c2lvbl9kZixcbiAgICAgICAgICAgICAgICAgICAgYnkgPSBjKFxcS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFxcID0gXFxTYW1wbGVcXCkpXG5oZWFkKHJuYV9kZiwgbiA9IDEwKVxuYGBgIn0= -->
-<pre class="r"><code>rna_df &lt;- left_join(exp_df, fusion_df,
-                    by = c(\Kids_First_Biospecimen_ID\ = \Sample\))
-head(rna_df, n = 10)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiZnVzaW9uX2RmIDwtIGZ1c2lvbl9kZiAlPiVcbiAgIyBBZGQgaW4gdGhlIGluc3RhbmNlcyB3aGVyZSB3ZSBoYXZlIG5vIGV2aWRlbmNlXG4gIGJpbmRfcm93cyhkYXRhLmZyYW1lKFNhbXBsZSA9IG1pc3NpbmdfYnNpZHMpKSAlPiVcbiAgcmVwbGFjZShpcy5uYSguKSwgXCJOb25lXCIpIn0= -->
+<pre class="r"><code>fusion_df &lt;- fusion_df %&gt;%
+  # Add in the instances where we have no evidence
+  bind_rows(data.frame(Sample = missing_bsids)) %&gt;%
+  replace(is.na(.), &quot;None&quot;)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-warning-begin eyJkYXRhIjoiV2FybmluZyBpbiBiaW5kX3Jvd3NfKHgsIC5pZCk6IGJpbmRpbmcgY2hhcmFjdGVyIGFuZCBmYWN0b3IgdmVjdG9yLFxuY29lcmNpbmcgaW50byBjaGFyYWN0ZXIgdmVjdG9yXG4ifQ== -->
+<pre><code>Warning in bind_rows_(x, .id): binding character and factor vector,
+coercing into character vector</code></pre>
+<!-- rnb-warning-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm5hX2RmIDwtIGhpc3RvbG9naWVzX2RmICU+JVxuICBzZWxlY3QoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCxcbiAgICAgICAgIHNhbXBsZV9pZCxcbiAgICAgICAgIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpICU+JVxuICBpbm5lcl9qb2luKHJuYV9kZilcbmBgYCJ9 -->
-<pre class="r"><code>rna_df &lt;- histologies_df %&gt;%
-  select(Kids_First_Participant_ID,
-         sample_id,
-         Kids_First_Biospecimen_ID) %&gt;%
-  inner_join(rna_df)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoicm0oYXJyaWJhX2RmLCBwdXRhdGl2ZV9vbmNvZ2VuaWNfZGYsIHN0YXJmdXNpb25fZGYsIG1pc3NpbmdfYnNpZHMpIn0= -->
+<pre class="r"><code>rm(arriba_df, putative_oncogenic_df, starfusion_df, missing_bsids)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3201,14 +3290,43 @@ head(rna_df, n = 10)</code></pre>
 <h3>Join the Expression and Fusion Data</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm0oZnVzaW9uX2RmLCBleHBfZGYpXG5gYGAifQ== -->
-<pre class="r"><code>rm(fusion_df, exp_df)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbInJuYV9kZiA8LSBsZWZ0X2pvaW4oZXhwX2RmLCBmdXNpb25fZGYsXG4gICAgICAgICAgICAgICAgICAgIGJ5ID0gYyhcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIiA9IFwiU2FtcGxlXCIpKSIsImhlYWQocm5hX2RmLCBuID0gMTApIl19 -->
+<pre class="r"><code>rna_df &lt;- left_join(exp_df, fusion_df,
+                    by = c(&quot;Kids_First_Biospecimen_ID&quot; = &quot;Sample&quot;))
+head(rna_df, n = 10)</code></pre>
 <!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Biospecimen_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["FOXG1_expression_zscore"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["OLIG2_expression_zscore"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["TP73_AS1_expression_zscore"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["NTRK_fusions"],"name":[5],"type":["chr"],"align":["left"]},{"label":["FGFR1_fusions"],"name":[6],"type":["chr"],"align":["left"]}],"data":[{"1":"BS_0VXZCRJS","2":"-0.60313240","3":"0.25187788","4":"0.3169500","5":"None","6":"None"},{"1":"BS_0ZA67BBC","2":"-0.61841989","3":"0.29636559","4":"0.5476963","5":"None","6":"None"},{"1":"BS_1N7MQZGR","2":"0.63789948","3":"0.55992853","4":"0.2954796","5":"None","6":"None"},{"1":"BS_21ET39G7","2":"-0.62617753","3":"-0.02504953","4":"0.1666841","5":"None","6":"None"},{"1":"BS_2JP7RBMB","2":"-0.62617753","3":"-0.15905255","4":"-0.9444137","5":"None","6":"None"},{"1":"BS_3AC3SRWH","2":"-0.06652320","3":"-1.66067727","4":"-2.2452330","5":"None","6":"None"},{"1":"BS_49CJNZ06","2":"-0.61841989","3":"-1.01318048","4":"-0.6202995","5":"None","6":"None"},{"1":"BS_4PPHAQXF","2":"2.01505610","3":"-0.12599697","4":"0.7883316","5":"None","6":"None"},{"1":"BS_4PWDGEB0","2":"-0.07801682","3":"-1.32826685","4":"0.3889156","5":"None","6":"None"},{"1":"BS_58YXHGAJ","2":"2.35230504","3":"0.32350724","4":"0.7040308","5":"None","6":"None"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW55KGR1cGxpY2F0ZWQocm5hX2RmJHNhbXBsZV9pZCkpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoicm5hX2RmIDwtIGhpc3RvbG9naWVzX2RmICU+JVxuICBzZWxlY3QoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCxcbiAgICAgICAgIHNhbXBsZV9pZCxcbiAgICAgICAgIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpICU+JVxuICBpbm5lcl9qb2luKHJuYV9kZikifQ== -->
+<pre class="r"><code>rna_df &lt;- histologies_df %&gt;%
+  select(Kids_First_Participant_ID,
+         sample_id,
+         Kids_First_Biospecimen_ID) %&gt;%
+  inner_join(rna_df)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiSm9pbmluZywgYnkgPSBcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIlxuIn0= -->
+<pre><code>Joining, by = &quot;Kids_First_Biospecimen_ID&quot;</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoicm0oZnVzaW9uX2RmLCBleHBfZGYpIn0= -->
+<pre class="r"><code>rm(fusion_df, exp_df)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Are there duplicated <code>sample_id</code> in the RNA data frame?</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYW55KGR1cGxpY2F0ZWQocm5hX2RmJHNhbXBsZV9pZCkpIn0= -->
 <pre class="r"><code>any(duplicated(rna_df$sample_id))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIFRSVUVcbiJ9 -->
@@ -3216,46 +3334,29 @@ head(rna_df, n = 10)</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlzdG9sb2dpZXNfZGYgJT4lXG4gIGxlZnRfam9pbihjZWxsX2xpbmVfY29tcG9zaXRpb24pICU+JVxuICBmaWx0ZXIoc2FtcGxlX2lkICVpbiUgcm5hX2RmJHNhbXBsZV9pZFt3aGljaChkdXBsaWNhdGVkKHJuYV9kZiRzYW1wbGVfaWQpKV0sXG4gICAgICAgICBleHBlcmltZW50YWxfc3RyYXRlZ3kgPT0gXFxSTkEtU2VxXFwpICU+JVxuICBncm91cF9ieShzYW1wbGVfaWQpICU+JVxuICBzdW1tYXJpemUoUk5BX2xpYnJhcnkgPSBwYXN0ZShSTkFfbGlicmFyeSwgY29sbGFwc2UgPSBcXFxuYGBgIn0= -->
-<pre class="r"><code>histologies_df %&gt;%
-  left_join(cell_line_composition) %&gt;%
-  filter(sample_id %in% rna_df$sample_id[which(duplicated(rna_df$sample_id))],
-         experimental_strategy == \RNA-Seq\) %&gt;%
-  group_by(sample_id) %&gt;%
-  summarize(RNA_library = paste(RNA_library, collapse = \</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Are there duplicated <code>sample_id</code> in the RNA data frame?</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlzdG9sb2dpZXNfZGYgJT4lXG4gIGRwbHlyOjpmaWx0ZXIoY29tcG9zaXRpb249PVxcRGVyaXZlZCBDZWxsIExpbmVcXCkgJT4lXG4gICMgZ3JvdXBpbmcgYnkgc2FtcGxlX2lkIGFuZCBhbGlxdW90X2lkXG4gIGdyb3VwX2J5KHNhbXBsZV9pZCxhbGlxdW90X2lkKSAlPiVcbiAgIyBoZXJlIHdlIGFyZSBjaGVja2luZyBpZiBjYW4gYWdncmVnYXRlIEROQSBhbmQgUk5BIHNhbXBsZXMgdXNpbmdcbiAgIyBncm91cGluZyBieSBzYW1wbGVfaWQsYWxpcXVvdF9pZFxuICBzdW1tYXJpc2UoZXhwZXJpbWVudGFsX3N0cmF0ZWd5PXBhc3RlKGV4cGVyaW1lbnRhbF9zdHJhdGVneSxjb2xsYXBzZSA9IFxcXG5gYGAifQ== -->
-<pre class="r"><code>histologies_df %&gt;%
-  dplyr::filter(composition==\Derived Cell Line\) %&gt;%
-  # grouping by sample_id and aliquot_id
-  group_by(sample_id,aliquot_id) %&gt;%
-  # here we are checking if can aggregate DNA and RNA samples using
-  # grouping by sample_id,aliquot_id
-  summarise(experimental_strategy=paste(experimental_strategy,collapse = \</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
 <p>What are they?</p>
 <p>Checking for duplicate RNA sample_ids. If we only group by sample_id what does composition and cell_line_composition look like:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlzdG9sb2dpZXNfZGYgJT4lXG4gIGxlZnRfam9pbihjZWxsX2xpbmVfY29tcG9zaXRpb24pICU+JVxuICBkcGx5cjo6ZmlsdGVyKGNvbXBvc2l0aW9uPT1cXERlcml2ZWQgQ2VsbCBMaW5lXFwpICU+JVxuICAjIGdyb3VwaW5nIGJ5IHNhbXBsZV9pZCBhbmQgY2VsbF9saW5lX2NvbXBvc2l0aW9uXG4gIGdyb3VwX2J5KHNhbXBsZV9pZCxjZWxsX2xpbmVfY29tcG9zaXRpb24pICU+JVxuICAjIGhlcmUgd2UgYXJlIGNoZWNraW5nIGlmIGNhbiBhZ2dyZWdhdGUgRE5BIGFuZCBSTkEgc2FtcGxlcyB1c2luZ1xuICAjIHNhbXBsZV9pZCBhbmQgY2VsbF9saW5lX2NvbXBvc2l0aW9uXG4gIHN1bW1hcmlzZShleHBlcmltZW50YWxfc3RyYXRlZ3k9cGFzdGUoZXhwZXJpbWVudGFsX3N0cmF0ZWd5LGNvbGxhcHNlID0gXFxcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiaGlzdG9sb2dpZXNfZGYgJT4lXG4gIGxlZnRfam9pbihjZWxsX2xpbmVfY29tcG9zaXRpb24pICU+JVxuICBmaWx0ZXIoc2FtcGxlX2lkICVpbiUgcm5hX2RmJHNhbXBsZV9pZFt3aGljaChkdXBsaWNhdGVkKHJuYV9kZiRzYW1wbGVfaWQpKV0sXG4gICAgICAgICBleHBlcmltZW50YWxfc3RyYXRlZ3kgPT0gXCJSTkEtU2VxXCIpICU+JVxuICBncm91cF9ieShzYW1wbGVfaWQpICU+JVxuICBzdW1tYXJpemUoUk5BX2xpYnJhcnkgPSBwYXN0ZShSTkFfbGlicmFyeSwgY29sbGFwc2UgPSBcIiwgXCIpLFxuICAgICAgICAgICAgY29tcG9zaXRpb24gPSAgcGFzdGUoY29tcG9zaXRpb24sIGNvbGxhcHNlID0gXCIsIFwiKSxcbiAgICAgICAgICAgIGNlbGxfbGluZV9jb21wb3NpdGlvID0gcGFzdGUoY2VsbF9saW5lX2NvbXBvc2l0aW9uLCBjb2xsYXBzZSA9IFwiLCBcIiksXG4gICAgICAgICAgICBhbGlxdW90X2lkID0gcGFzdGUoYWxpcXVvdF9pZCwgY29sbGFwc2UgPSBcIiwgXCIpKSJ9 -->
 <pre class="r"><code>histologies_df %&gt;%
   left_join(cell_line_composition) %&gt;%
-  dplyr::filter(composition==\Derived Cell Line\) %&gt;%
-  # grouping by sample_id and cell_line_composition
-  group_by(sample_id,cell_line_composition) %&gt;%
-  # here we are checking if can aggregate DNA and RNA samples using
-  # sample_id and cell_line_composition
-  summarise(experimental_strategy=paste(experimental_strategy,collapse = \</code></pre>
+  filter(sample_id %in% rna_df$sample_id[which(duplicated(rna_df$sample_id))],
+         experimental_strategy == &quot;RNA-Seq&quot;) %&gt;%
+  group_by(sample_id) %&gt;%
+  summarize(RNA_library = paste(RNA_library, collapse = &quot;, &quot;),
+            composition =  paste(composition, collapse = &quot;, &quot;),
+            cell_line_compositio = paste(cell_line_composition, collapse = &quot;, &quot;),
+            aliquot_id = paste(aliquot_id, collapse = &quot;, &quot;))</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiSm9pbmluZywgYnkgPSBjKFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLCBcInNhbXBsZV9pZFwiLCBcImFsaXF1b3RfaWRcIiwgXCJLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEXCIpXG4ifQ== -->
+<pre><code>Joining, by = c(&quot;Kids_First_Biospecimen_ID&quot;, &quot;sample_id&quot;, &quot;aliquot_id&quot;, &quot;Kids_First_Participant_ID&quot;)</code></pre>
+<!-- rnb-message-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["sample_id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["RNA_library"],"name":[2],"type":["chr"],"align":["left"]},{"label":["composition"],"name":[3],"type":["chr"],"align":["left"]},{"label":["cell_line_compositio"],"name":[4],"type":["chr"],"align":["left"]},{"label":["aliquot_id"],"name":[5],"type":["chr"],"align":["left"]}],"data":[{"1":"7316-1455","2":"stranded, poly-A","3":"Solid Tissue, Solid Tissue","4":"NA, NA","5":"994695, 400856"},{"1":"7316-158","2":"stranded, stranded","3":"Solid Tissue, Solid Tissue","4":"NA, NA","5":"746061, 1030653"},{"1":"7316-161","2":"stranded, poly-A","3":"Solid Tissue, Solid Tissue","4":"NA, NA","5":"994696, 406959"},{"1":"7316-1746","2":"stranded, stranded, stranded","3":"Derived Cell Line, Derived Cell Line, Solid Tissue","4":"A, S, NA","5":"739942, 739941, 574552"},{"1":"7316-1763","2":"stranded, stranded, stranded","3":"Solid Tissue, Derived Cell Line, Derived Cell Line","4":"NA, A, S","5":"549574, 739940, 739939"},{"1":"7316-1769","2":"stranded, stranded","3":"Solid Tissue, Derived Cell Line","4":"NA, S","5":"470030, 740009"},{"1":"7316-1893","2":"stranded, stranded","3":"Solid Tissue, Solid Tissue","4":"NA, NA","5":"746067, 470029"},{"1":"7316-195","2":"stranded, stranded, stranded","3":"Solid Tissue, Derived Cell Line, Derived Cell Line","4":"NA, S, A","5":"564443, 739938, 739937"},{"1":"7316-2151","2":"stranded, stranded","3":"Solid Tissue, Derived Cell Line","4":"NA, A","5":"711713, 740006"},{"1":"7316-2176","2":"stranded, stranded","3":"Solid Tissue, Derived Cell Line","4":"NA, A","5":"588280, 739936"},{"1":"7316-2189","2":"stranded, stranded","3":"Solid Tissue, Derived Cell Line","4":"NA, A","5":"734533, 740008"},{"1":"7316-255","2":"stranded, poly-A","3":"Solid Tissue, Solid Tissue","4":"NA, NA","5":"994697, 401560"},{"1":"7316-3058","2":"stranded, stranded, stranded","3":"Derived Cell Line, Derived Cell Line, Solid Tissue","4":"S, A, NA","5":"739933, 739934, 746065"},{"1":"7316-85","2":"stranded, poly-A, stranded, stranded","3":"Derived Cell Line, Solid Tissue, Derived Cell Line, Solid Tissue","4":"A, NA, S, NA","5":"740007, 398059, 740010, 994693"},{"1":"7316-913","2":"stranded, stranded, stranded","3":"Solid Tissue, Derived Cell Line, Derived Cell Line","4":"NA, S, A","5":"564444, 739932, 739931"},{"1":"A16915","2":"poly-A, stranded","3":"Solid Tissue, Solid Tissue","4":"NA, NA","5":"A16919, A16919"},{"1":"A18777","2":"poly-A, stranded","3":"Solid Tissue, Solid Tissue","4":"NA, NA","5":"A18808, A18808"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>The duplicates are mostly from multiple Solid tumor samples per sample_id or there are non-tumor ( derived cell-line ) samples for sample_id.</p>
@@ -3263,42 +3364,59 @@ head(rna_df, n = 10)</code></pre>
 <p>Checking : if we group by <code>sample_id</code> and <code>aliquot_id</code> do we get unique matches between DNA and RNA?</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZG5hX2RmIDwtIGRuYV9kZiAlPiVcbiAgbGVmdF9qb2luKGNlbGxfbGluZV9jb21wb3NpdGlvbixieSA9IGMoXFxLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEXFwsIFxcc2FtcGxlX2lkXFwsIFxcS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFxcKSlcblxucm5hX2RmIDwtIHJuYV9kZiAlPiVcbiAgbGVmdF9qb2luKGNlbGxfbGluZV9jb21wb3NpdGlvbixieSA9IGMoXFxLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEXFwsIFxcc2FtcGxlX2lkXFwsIFxcS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFxcKSlcbmBgYCJ9 -->
-<pre class="r"><code>dna_df &lt;- dna_df %&gt;%
-  left_join(cell_line_composition,by = c(\Kids_First_Participant_ID\, \sample_id\, \Kids_First_Biospecimen_ID\))
-
-rna_df &lt;- rna_df %&gt;%
-  left_join(cell_line_composition,by = c(\Kids_First_Participant_ID\, \sample_id\, \Kids_First_Biospecimen_ID\))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiaGlzdG9sb2dpZXNfZGYgJT4lXG4gIGRwbHlyOjpmaWx0ZXIoY29tcG9zaXRpb249PVwiRGVyaXZlZCBDZWxsIExpbmVcIikgJT4lXG4gICMgZ3JvdXBpbmcgYnkgc2FtcGxlX2lkIGFuZCBhbGlxdW90X2lkXG4gIGdyb3VwX2J5KHNhbXBsZV9pZCxhbGlxdW90X2lkKSAlPiVcbiAgIyBoZXJlIHdlIGFyZSBjaGVja2luZyBpZiBjYW4gYWdncmVnYXRlIEROQSBhbmQgUk5BIHNhbXBsZXMgdXNpbmdcbiAgIyBncm91cGluZyBieSBzYW1wbGVfaWQsYWxpcXVvdF9pZFxuICBzdW1tYXJpc2UoZXhwZXJpbWVudGFsX3N0cmF0ZWd5PXBhc3RlKGV4cGVyaW1lbnRhbF9zdHJhdGVneSxjb2xsYXBzZSA9IFwiLCBcIiksY291bnQ9bigpKSAlPiVcbiAgIyBpZiB3ZSBjYW4gc3VjY2Vzc2Z1bGx5IGFnZ3JlZ2F0ZSBgY291bnRgIHdvdWxiZSBiZSA+MVxuICBkcGx5cjo6ZmlsdGVyKGNvdW50ID4xKSJ9 -->
+<pre class="r"><code>histologies_df %&gt;%
+  dplyr::filter(composition==&quot;Derived Cell Line&quot;) %&gt;%
+  # grouping by sample_id and aliquot_id
+  group_by(sample_id,aliquot_id) %&gt;%
+  # here we are checking if can aggregate DNA and RNA samples using
+  # grouping by sample_id,aliquot_id
+  summarise(experimental_strategy=paste(experimental_strategy,collapse = &quot;, &quot;),count=n()) %&gt;%
+  # if we can successfully aggregate `count` woulbe be &gt;1
+  dplyr::filter(count &gt;1)</code></pre>
 <!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["sample_id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["aliquot_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["experimental_strategy"],"name":[3],"type":["chr"],"align":["left"]},{"label":["count"],"name":[4],"type":["int"],"align":["right"]}],"data":[],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Don’t find any aggregated DNA and RNA samples by grouping by <code>sample_id,aliquot_id</code></p>
 <p>If we group by <code>sample_id</code> and <code>cell_line_composition</code> do we get unique matches between DNA and RNA?</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWxsX2RhdGFfZGYgPC0gZnVsbF9qb2luKGRuYV9kZiwgcm5hX2RmLFxuICAgICAgICAgICAgICAgICAgICAgICAgIGJ5ID0gYyhcXEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSURcXCxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXFxzYW1wbGVfaWRcXCxcXGNlbGxfbGluZV9jb21wb3NpdGlvblxcKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICBzdWZmaXggPSBjKFxcX0ROQVxcLCBcXF9STkFcXCkpICU+JVxuICBzZWxlY3Qoc3RhcnRzX3dpdGgoXFxLaWRzX0ZpcnN0XFwpLCBzYW1wbGVfaWQsIGV2ZXJ5dGhpbmcoKSlcblxuaGVhZChhbGxfZGF0YV9kZiwgbiA9IDEwKVxuYGBgIn0= -->
-<pre class="r"><code>all_data_df &lt;- full_join(dna_df, rna_df,
-                         by = c(\Kids_First_Participant_ID\,
-                                \sample_id\,\cell_line_composition\),
-                         suffix = c(\_DNA\, \_RNA\)) %&gt;%
-  select(starts_with(\Kids_First\), sample_id, everything())
-
-head(all_data_df, n = 10)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiaGlzdG9sb2dpZXNfZGYgJT4lXG4gIGxlZnRfam9pbihjZWxsX2xpbmVfY29tcG9zaXRpb24pICU+JVxuICBkcGx5cjo6ZmlsdGVyKGNvbXBvc2l0aW9uPT1cIkRlcml2ZWQgQ2VsbCBMaW5lXCIpICU+JVxuICAjIGdyb3VwaW5nIGJ5IHNhbXBsZV9pZCBhbmQgY2VsbF9saW5lX2NvbXBvc2l0aW9uXG4gIGdyb3VwX2J5KHNhbXBsZV9pZCxjZWxsX2xpbmVfY29tcG9zaXRpb24pICU+JVxuICAjIGhlcmUgd2UgYXJlIGNoZWNraW5nIGlmIGNhbiBhZ2dyZWdhdGUgRE5BIGFuZCBSTkEgc2FtcGxlcyB1c2luZ1xuICAjIHNhbXBsZV9pZCBhbmQgY2VsbF9saW5lX2NvbXBvc2l0aW9uXG4gIHN1bW1hcmlzZShleHBlcmltZW50YWxfc3RyYXRlZ3k9cGFzdGUoZXhwZXJpbWVudGFsX3N0cmF0ZWd5LGNvbGxhcHNlID0gXCIsIFwiKSxjb3VudD1uKCkpICU+JVxuICAjIGlmIHdlIGNhbiBzdWNjZXNzZnVsbHkgYWdncmVnYXRlYGNvdW50YCB3b3VsYmUgYmUgPjFcbiAgZHBseXI6OmZpbHRlcihjb3VudCA+MSkifQ== -->
+<pre class="r"><code>histologies_df %&gt;%
+  left_join(cell_line_composition) %&gt;%
+  dplyr::filter(composition==&quot;Derived Cell Line&quot;) %&gt;%
+  # grouping by sample_id and cell_line_composition
+  group_by(sample_id,cell_line_composition) %&gt;%
+  # here we are checking if can aggregate DNA and RNA samples using
+  # sample_id and cell_line_composition
+  summarise(experimental_strategy=paste(experimental_strategy,collapse = &quot;, &quot;),count=n()) %&gt;%
+  # if we can successfully aggregate`count` woulbe be &gt;1
+  dplyr::filter(count &gt;1)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiSm9pbmluZywgYnkgPSBjKFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLCBcInNhbXBsZV9pZFwiLCBcImFsaXF1b3RfaWRcIiwgXCJLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEXCIpXG4ifQ== -->
+<pre><code>Joining, by = c(&quot;Kids_First_Biospecimen_ID&quot;, &quot;sample_id&quot;, &quot;aliquot_id&quot;, &quot;Kids_First_Participant_ID&quot;)</code></pre>
+<!-- rnb-message-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["sample_id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["cell_line_composition"],"name":[2],"type":["chr"],"align":["left"]},{"label":["experimental_strategy"],"name":[3],"type":["chr"],"align":["left"]},{"label":["count"],"name":[4],"type":["int"],"align":["right"]}],"data":[{"1":"7316-1746","2":"A","3":"RNA-Seq, WGS","4":"2"},{"1":"7316-1746","2":"S","3":"WGS, RNA-Seq","4":"2"},{"1":"7316-1763","2":"A","3":"WGS, RNA-Seq","4":"2"},{"1":"7316-1763","2":"S","3":"RNA-Seq, WGS","4":"2"},{"1":"7316-1769","2":"S","3":"RNA-Seq, WGS","4":"2"},{"1":"7316-195","2":"A","3":"RNA-Seq, WGS","4":"2"},{"1":"7316-195","2":"S","3":"WGS, RNA-Seq","4":"2"},{"1":"7316-2151","2":"A","3":"RNA-Seq, WGS","4":"2"},{"1":"7316-2176","2":"A","3":"RNA-Seq, WGS","4":"2"},{"1":"7316-2189","2":"A","3":"WGS, RNA-Seq","4":"2"},{"1":"7316-3058","2":"A","3":"RNA-Seq, WGS","4":"2"},{"1":"7316-3058","2":"S","3":"RNA-Seq, WGS","4":"2"},{"1":"7316-85","2":"A","3":"RNA-Seq, WGS","4":"2"},{"1":"7316-85","2":"S","3":"WGS, RNA-Seq","4":"2"},{"1":"7316-913","2":"A","3":"RNA-Seq, WGS","4":"2"},{"1":"7316-913","2":"S","3":"RNA-Seq, WGS","4":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>We find 16 pairs of WGS and RNA-Seq samples grouping by sample_id and cell_line_composition. Let’s add <code>cell_line_composition</code>column to dna and rna files to match <code>Derived Cell Line</code> samples appropriately in <code>All Data</code> section of notebook.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVsZXZhbnRfY2xpbmljYWxfZGYgPC0gaGlzdG9sb2dpZXNfZGYgJT4lXG4gIGZpbHRlcihzYW1wbGVfaWQgJWluJSBhbGxfZGF0YV9kZiRzYW1wbGVfaWQsXG4gICAgICAgICBzYW1wbGVfdHlwZSA9PSBcXFR1bW9yXFwpICU+JVxuICBtdXRhdGUoYWdlX2F0X2RpYWdub3Npc195ciA9XG4gICAgICAgICAgIGZsb29yKGFzLmludGVnZXIoYWdlX2F0X2RpYWdub3Npc19kYXlzKS8zNjUpKSAlPiVcbiAgZ3JvdXBfYnkoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCwgc2FtcGxlX2lkKSAlPiVcbiAgc3VtbWFyaXplKENOU19yZWdpb24gPSBwYXN0ZShzb3J0KHVuaXF1ZShDTlNfcmVnaW9uKSksXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sbGFwc2UgPSBcXFxuYGBgIn0= -->
-<pre class="r"><code>relevant_clinical_df &lt;- histologies_df %&gt;%
-  filter(sample_id %in% all_data_df$sample_id,
-         sample_type == \Tumor\) %&gt;%
-  mutate(age_at_diagnosis_yr =
-           floor(as.integer(age_at_diagnosis_days)/365)) %&gt;%
-  group_by(Kids_First_Participant_ID, sample_id) %&gt;%
-  summarize(CNS_region = paste(sort(unique(CNS_region)),
-                               collapse = \</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbImRuYV9kZiA8LSBkbmFfZGYgJT4lXG4gIGxlZnRfam9pbihjZWxsX2xpbmVfY29tcG9zaXRpb24sYnkgPSBjKFwiS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRFwiLCBcInNhbXBsZV9pZFwiLCBcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIikpIiwiIiwicm5hX2RmIDwtIHJuYV9kZiAlPiVcbiAgbGVmdF9qb2luKGNlbGxfbGluZV9jb21wb3NpdGlvbixieSA9IGMoXCJLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEXCIsIFwic2FtcGxlX2lkXCIsIFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiKSkiXX0= -->
+<pre class="r"><code>dna_df &lt;- dna_df %&gt;%
+  left_join(cell_line_composition,by = c(&quot;Kids_First_Participant_ID&quot;, &quot;sample_id&quot;, &quot;Kids_First_Biospecimen_ID&quot;))
+
+rna_df &lt;- rna_df %&gt;%
+  left_join(cell_line_composition,by = c(&quot;Kids_First_Participant_ID&quot;, &quot;sample_id&quot;, &quot;Kids_First_Biospecimen_ID&quot;))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3307,58 +3425,57 @@ head(all_data_df, n = 10)</code></pre>
 <h3>All Data</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWxsX2RhdGFfZGYgPC0gaW5uZXJfam9pbihyZWxldmFudF9jbGluaWNhbF9kZixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgYWxsX2RhdGFfZGYpICU+JVxuICBkcGx5cjo6YXJyYW5nZShLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELCBzYW1wbGVfaWQpXG5gYGAifQ== -->
-<pre class="r"><code>all_data_df &lt;- inner_join(relevant_clinical_df,
-                          all_data_df) %&gt;%
-  dplyr::arrange(Kids_First_Participant_ID, sample_id)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbImFsbF9kYXRhX2RmIDwtIGZ1bGxfam9pbihkbmFfZGYsIHJuYV9kZixcbiAgICAgICAgICAgICAgICAgICAgICAgICBieSA9IGMoXCJLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwic2FtcGxlX2lkXCIsXCJjZWxsX2xpbmVfY29tcG9zaXRpb25cIiksXG4gICAgICAgICAgICAgICAgICAgICAgICAgc3VmZml4ID0gYyhcIl9ETkFcIiwgXCJfUk5BXCIpKSAlPiVcbiAgc2VsZWN0KHN0YXJ0c193aXRoKFwiS2lkc19GaXJzdFwiKSwgc2FtcGxlX2lkLCBldmVyeXRoaW5nKCkpIiwiIiwiaGVhZChhbGxfZGF0YV9kZiwgbiA9IDEwKSJdfQ== -->
+<pre class="r"><code>all_data_df &lt;- full_join(dna_df, rna_df,
+                         by = c(&quot;Kids_First_Participant_ID&quot;,
+                                &quot;sample_id&quot;,&quot;cell_line_composition&quot;),
+                         suffix = c(&quot;_DNA&quot;, &quot;_RNA&quot;)) %&gt;%
+  select(starts_with(&quot;Kids_First&quot;), sample_id, everything())
+
+head(all_data_df, n = 10)</code></pre>
 <!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID_DNA"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID_RNA"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[4],"type":["chr"],"align":["left"]},{"label":["H3F3A.K28M"],"name":[5],"type":["chr"],"align":["left"]},{"label":["HIST1H3B.K28M"],"name":[6],"type":["chr"],"align":["left"]},{"label":["HIST1H3C.K28M"],"name":[7],"type":["chr"],"align":["left"]},{"label":["HIST2H3C.K28M"],"name":[8],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35R"],"name":[9],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35V"],"name":[10],"type":["chr"],"align":["left"]},{"label":["relevant_coding_mutations"],"name":[11],"type":["chr"],"align":["left"]},{"label":["IDH1_mutation"],"name":[12],"type":["chr"],"align":["left"]},{"label":["TERT_variant_classification"],"name":[13],"type":["chr"],"align":["left"]},{"label":["BRAF_V600E"],"name":[14],"type":["chr"],"align":["left"]},{"label":["MYCN_focal_status"],"name":[15],"type":["chr"],"align":["left"]},{"label":["PDGFRA_focal_status"],"name":[16],"type":["chr"],"align":["left"]},{"label":["PTEN_focal_status"],"name":[17],"type":["chr"],"align":["left"]},{"label":["1p"],"name":[18],"type":["chr"],"align":["left"]},{"label":["19q"],"name":[19],"type":["chr"],"align":["left"]},{"label":["7p"],"name":[20],"type":["chr"],"align":["left"]},{"label":["7q"],"name":[21],"type":["chr"],"align":["left"]},{"label":["10p"],"name":[22],"type":["chr"],"align":["left"]},{"label":["10q"],"name":[23],"type":["chr"],"align":["left"]},{"label":["cell_line_composition"],"name":[24],"type":["chr"],"align":["left"]},{"label":["aliquot_id_DNA"],"name":[25],"type":["chr"],"align":["left"]},{"label":["FOXG1_expression_zscore"],"name":[26],"type":["dbl"],"align":["right"]},{"label":["OLIG2_expression_zscore"],"name":[27],"type":["dbl"],"align":["right"]},{"label":["TP73_AS1_expression_zscore"],"name":[28],"type":["dbl"],"align":["right"]},{"label":["NTRK_fusions"],"name":[29],"type":["chr"],"align":["left"]},{"label":["FGFR1_fusions"],"name":[30],"type":["chr"],"align":["left"]},{"label":["aliquot_id_RNA"],"name":[31],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_0DXHDZJR","2":"BS_QWS88QXE","3":"BS_DS438CXE","4":"7316-2857","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"None","12":"No R132 or R172","13":"None","14":"No V600E","15":"neutral","16":"neutral","17":"neutral","18":"neutral","19":"neutral","20":"gain","21":"gain","22":"neutral","23":"neutral","24":"NA","25":"NA","26":"0.184044955","27":"0.04605432","28":"0.66693820","29":"None","30":"None","31":"NA"},{"1":"PT_0MXPTTM3","2":"BS_8SYN7GXG","3":"NA","4":"7316-3220","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"ATRX, IDH1, TP53","12":"p.R132H","13":"None","14":"No V600E","15":"gain","16":"neutral","17":"loss","18":"neutral","19":"neutral","20":"neutral","21":"neutral","22":"neutral","23":"neutral","24":"NA","25":"NA","26":"NA","27":"NA","28":"NA","29":"NA","30":"NA","31":"NA"},{"1":"PT_0MXPTTM3","2":"BS_H3TYF6GD","3":"BS_R7NTZR4C","4":"A09410","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"ATRX, IDH1, TP53","12":"p.R132H","13":"None","14":"No V600E","15":"NA","16":"NA","17":"NA","18":"NA","19":"NA","20":"NA","21":"NA","22":"NA","23":"NA","24":"NA","25":"NA","26":"-0.004411556","27":"1.08182058","28":"-1.59552715","29":"None","30":"None","31":"NA"},{"1":"PT_0SPKM4S8","2":"BS_VW4XN9Y7","3":"BS_FX2P2WEG","4":"7316-2640","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"ATRX, CIC, FGFR1, SETD2, TP53","12":"No R132 or R172","13":"None","14":"No V600E","15":"neutral","16":"neutral","17":"neutral","18":"neutral","19":"neutral","20":"neutral","21":"neutral","22":"neutral","23":"neutral","24":"NA","25":"NA","26":"1.490537842","27":"0.66179661","28":"1.10463806","29":"None","30":"None","31":"NA"},{"1":"PT_1AAYYGGY","2":"BS_1RTE2KEX","3":"BS_C83TK159","4":"A14709","5":"Yes","6":"No","7":"No","8":"No","9":"No","10":"No","11":"H3F3A, TP53","12":"No R132 or R172","13":"None","14":"No V600E","15":"NA","16":"NA","17":"NA","18":"NA","19":"NA","20":"NA","21":"NA","22":"NA","23":"NA","24":"NA","25":"NA","26":"-0.610738672","27":"0.41886977","28":"-0.17504392","29":"None","30":"None","31":"NA"},{"1":"PT_1DSX4VJM","2":"BS_KYPMZZSY","3":"BS_Q13FQ8FV","4":"7316-1708","5":"Yes","6":"No","7":"No","8":"No","9":"No","10":"No","11":"H3F3A, TP53","12":"No R132 or R172","13":"None","14":"No V600E","15":"neutral","16":"neutral","17":"neutral","18":"neutral","19":"neutral","20":"neutral","21":"neutral","22":"neutral","23":"neutral","24":"NA","25":"NA","26":"-0.788879137","27":"1.01791461","28":"0.57902969","29":"None","30":"None","31":"NA"},{"1":"PT_1E3E6GMF","2":"BS_7GKF6M85","3":"NA","4":"7316-3224","5":"Yes","6":"No","7":"No","8":"No","9":"No","10":"No","11":"H3F3A, TP53","12":"No R132 or R172","13":"None","14":"No V600E","15":"neutral","16":"neutral","17":"neutral","18":"neutral","19":"neutral","20":"neutral","21":"neutral","22":"neutral","23":"neutral","24":"NA","25":"NA","26":"NA","27":"NA","28":"NA","29":"NA","30":"NA","31":"NA"},{"1":"PT_1E3E6GMF","2":"BS_541KKASA","3":"BS_JB43XBCQ","4":"A09985","5":"Yes","6":"No","7":"No","8":"No","9":"No","10":"No","11":"H3F3A, TP53","12":"No R132 or R172","13":"None","14":"No V600E","15":"NA","16":"NA","17":"NA","18":"NA","19":"NA","20":"NA","21":"NA","22":"NA","23":"NA","24":"NA","25":"NA","26":"-0.626177529","27":"0.27160850","28":"-0.03115032","29":"None","30":"None","31":"NA"},{"1":"PT_1H2REHT2","2":"BS_79SYEHY3","3":"BS_QWTE1CWR","4":"7316-3022","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"TP53","12":"No R132 or R172","13":"None","14":"No V600E","15":"neutral","16":"neutral","17":"neutral","18":"neutral","19":"neutral","20":"neutral","21":"neutral","22":"neutral","23":"neutral","24":"NA","25":"NA","26":"-0.801291568","27":"0.57950814","28":"0.21845475","29":"None","30":"None","31":"NA"},{"1":"PT_1H2REHT2","2":"BS_96S0VQBN","3":"BS_WKESC3XN","4":"7316-3303","5":"No","6":"No","7":"No","8":"No","9":"No","10":"No","11":"TP53","12":"No R132 or R172","13":"None","14":"No V600E","15":"neutral","16":"neutral","17":"neutral","18":"neutral","19":"neutral","20":"neutral","21":"neutral","22":"neutral","23":"neutral","24":"NA","25":"NA","26":"0.074682953","27":"0.37120953","28":"-0.10380023","29":"None","30":"None","31":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Add in brain region and age.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JpdGVfdHN2KGFsbF9kYXRhX2RmLCBvdXRwdXRfYWxsKVxuYGBgIn0= -->
-<pre class="r"><code>write_tsv(all_data_df, output_all)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoicmVsZXZhbnRfY2xpbmljYWxfZGYgPC0gaGlzdG9sb2dpZXNfZGYgJT4lXG4gIGZpbHRlcihzYW1wbGVfaWQgJWluJSBhbGxfZGF0YV9kZiRzYW1wbGVfaWQsXG4gICAgICAgICBzYW1wbGVfdHlwZSA9PSBcIlR1bW9yXCIpICU+JVxuICBtdXRhdGUoYWdlX2F0X2RpYWdub3Npc195ciA9XG4gICAgICAgICAgIGZsb29yKGFzLmludGVnZXIoYWdlX2F0X2RpYWdub3Npc19kYXlzKS8zNjUpKSAlPiVcbiAgZ3JvdXBfYnkoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCwgc2FtcGxlX2lkKSAlPiVcbiAgc3VtbWFyaXplKENOU19yZWdpb24gPSBwYXN0ZShzb3J0KHVuaXF1ZShDTlNfcmVnaW9uKSksXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sbGFwc2UgPSBcIiwgXCIpLFxuICAgICAgICAgICAgYWdlX2F0X2RpYWdub3Npc195ciA9IHBhc3RlKHNvcnQodW5pcXVlKGFnZV9hdF9kaWFnbm9zaXNfeXIpKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xsYXBzZSA9IFwiLCBcIikpIn0= -->
+<pre class="r"><code>relevant_clinical_df &lt;- histologies_df %&gt;%
+  filter(sample_id %in% all_data_df$sample_id,
+         sample_type == &quot;Tumor&quot;) %&gt;%
+  mutate(age_at_diagnosis_yr =
+           floor(as.integer(age_at_diagnosis_days)/365)) %&gt;%
+  group_by(Kids_First_Participant_ID, sample_id) %&gt;%
+  summarize(CNS_region = paste(sort(unique(CNS_region)),
+                               collapse = &quot;, &quot;),
+            age_at_diagnosis_yr = paste(sort(unique(age_at_diagnosis_yr)),
+                                        collapse = &quot;, &quot;))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaDNfazI4X2RmIDwtIGFsbF9kYXRhX2RmICU+JVxuICAjIE9ubHkgcm93cyB3aXRoIEgzIEsyOE0gbXV0YXRpb25zXG4gIGZpbHRlcihIM0YzQS5LMjhNID09IFxcWWVzXFwgfCBISVNUMUgzQi5LMjhNID09IFxcWWVzXFwgfFxuICAgICAgICAgICBISVNUMUgzQy5LMjhNID09IFxcWWVzXFwgfCBISVNUMkgzQy5LMjhNID09IFxcWWVzXFwpICU+JVxuICAjIE9ubHkgdGhlIHJlbGV2YW50IGNvbHVtbnNcbiAgc2VsZWN0KEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsXG4gICAgICAgICBzYW1wbGVfaWQsXG4gICAgICAgICBIM0YzQS5LMjhNLFxuICAgICAgICAgSElTVDFIM0IuSzI4TSxcbiAgICAgICAgIEhJU1QxSDNDLksyOE0sXG4gICAgICAgICBISVNUMkgzQy5LMjhNLFxuICAgICAgICAgSDNGM0EuRzM1UixcbiAgICAgICAgIEgzRjNBLkczNVYsXG4gICAgICAgICBhZ2VfYXRfZGlhZ25vc2lzX3lyLFxuICAgICAgICAgQ05TX3JlZ2lvbixcbiAgICAgICAgIHJlbGV2YW50X2NvZGluZ19tdXRhdGlvbnMsXG4gICAgICAgICBQVEVOX2ZvY2FsX3N0YXR1cyxcbiAgICAgICAgIFBER0ZSQV9mb2NhbF9zdGF0dXMsXG4gICAgICAgICBGR0ZSMV9mdXNpb25zKSAlPiVcbiAgZGlzdGluY3QoKVxuXG5oM19rMjhfZGZcbmBgYCJ9 -->
-<pre class="r"><code>h3_k28_df &lt;- all_data_df %&gt;%
-  # Only rows with H3 K28M mutations
-  filter(H3F3A.K28M == \Yes\ | HIST1H3B.K28M == \Yes\ |
-           HIST1H3C.K28M == \Yes\ | HIST2H3C.K28M == \Yes\) %&gt;%
-  # Only the relevant columns
-  select(Kids_First_Participant_ID,
-         sample_id,
-         H3F3A.K28M,
-         HIST1H3B.K28M,
-         HIST1H3C.K28M,
-         HIST2H3C.K28M,
-         H3F3A.G35R,
-         H3F3A.G35V,
-         age_at_diagnosis_yr,
-         CNS_region,
-         relevant_coding_mutations,
-         PTEN_focal_status,
-         PDGFRA_focal_status,
-         FGFR1_fusions) %&gt;%
-  distinct()
-
-h3_k28_df</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYWxsX2RhdGFfZGYgPC0gaW5uZXJfam9pbihyZWxldmFudF9jbGluaWNhbF9kZixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgYWxsX2RhdGFfZGYpICU+JVxuICBkcGx5cjo6YXJyYW5nZShLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELCBzYW1wbGVfaWQpIn0= -->
+<pre class="r"><code>all_data_df &lt;- inner_join(relevant_clinical_df,
+                          all_data_df) %&gt;%
+  dplyr::arrange(Kids_First_Participant_ID, sample_id)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiSm9pbmluZywgYnkgPSBjKFwiS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRFwiLCBcInNhbXBsZV9pZFwiKVxuIn0= -->
+<pre><code>Joining, by = c(&quot;Kids_First_Participant_ID&quot;, &quot;sample_id&quot;)</code></pre>
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Write to file.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW55KGgzX2syOF9kZiRIM0YzQS5HMzVSID09IFxcWWVzXFwpXG5gYGAifQ== -->
-<pre class="r"><code>any(h3_k28_df$H3F3A.G35R == \Yes\)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoid3JpdGVfdHN2KGFsbF9kYXRhX2RmLCBvdXRwdXRfYWxsKSJ9 -->
+<pre class="r"><code>write_tsv(all_data_df, output_all)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIEZBTFNFXG4ifQ== -->
-<pre><code>[1] FALSE</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -3379,18 +3496,62 @@ h3_k28_df</code></pre>
 </blockquote>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW55KGgzX2syOF9kZiRIM0YzQS5HMzVWID09IFxcWWVzXFwpXG5gYGAifQ== -->
-<pre class="r"><code>any(h3_k28_df$H3F3A.G35V == \Yes\)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbImgzX2syOF9kZiA8LSBhbGxfZGF0YV9kZiAlPiVcbiAgIyBPbmx5IHJvd3Mgd2l0aCBIMyBLMjhNIG11dGF0aW9uc1xuICBmaWx0ZXIoSDNGM0EuSzI4TSA9PSBcIlllc1wiIHwgSElTVDFIM0IuSzI4TSA9PSBcIlllc1wiIHxcbiAgICAgICAgICAgSElTVDFIM0MuSzI4TSA9PSBcIlllc1wiIHwgSElTVDJIM0MuSzI4TSA9PSBcIlllc1wiKSAlPiVcbiAgIyBPbmx5IHRoZSByZWxldmFudCBjb2x1bW5zXG4gIHNlbGVjdChLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELFxuICAgICAgICAgc2FtcGxlX2lkLFxuICAgICAgICAgSDNGM0EuSzI4TSxcbiAgICAgICAgIEhJU1QxSDNCLksyOE0sXG4gICAgICAgICBISVNUMUgzQy5LMjhNLFxuICAgICAgICAgSElTVDJIM0MuSzI4TSxcbiAgICAgICAgIEgzRjNBLkczNVIsXG4gICAgICAgICBIM0YzQS5HMzVWLFxuICAgICAgICAgYWdlX2F0X2RpYWdub3Npc195cixcbiAgICAgICAgIENOU19yZWdpb24sXG4gICAgICAgICByZWxldmFudF9jb2RpbmdfbXV0YXRpb25zLFxuICAgICAgICAgUFRFTl9mb2NhbF9zdGF0dXMsXG4gICAgICAgICBQREdGUkFfZm9jYWxfc3RhdHVzLFxuICAgICAgICAgRkdGUjFfZnVzaW9ucykgJT4lXG4gIGRpc3RpbmN0KCkiLCIiLCJoM19rMjhfZGYiXX0= -->
+<pre class="r"><code>h3_k28_df &lt;- all_data_df %&gt;%
+  # Only rows with H3 K28M mutations
+  filter(H3F3A.K28M == &quot;Yes&quot; | HIST1H3B.K28M == &quot;Yes&quot; |
+           HIST1H3C.K28M == &quot;Yes&quot; | HIST2H3C.K28M == &quot;Yes&quot;) %&gt;%
+  # Only the relevant columns
+  select(Kids_First_Participant_ID,
+         sample_id,
+         H3F3A.K28M,
+         HIST1H3B.K28M,
+         HIST1H3C.K28M,
+         HIST2H3C.K28M,
+         H3F3A.G35R,
+         H3F3A.G35V,
+         age_at_diagnosis_yr,
+         CNS_region,
+         relevant_coding_mutations,
+         PTEN_focal_status,
+         PDGFRA_focal_status,
+         FGFR1_fusions) %&gt;%
+  distinct()
+
+h3_k28_df</code></pre>
+<!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["H3F3A.K28M"],"name":[3],"type":["chr"],"align":["left"]},{"label":["HIST1H3B.K28M"],"name":[4],"type":["chr"],"align":["left"]},{"label":["HIST1H3C.K28M"],"name":[5],"type":["chr"],"align":["left"]},{"label":["HIST2H3C.K28M"],"name":[6],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35R"],"name":[7],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35V"],"name":[8],"type":["chr"],"align":["left"]},{"label":["age_at_diagnosis_yr"],"name":[9],"type":["chr"],"align":["left"]},{"label":["CNS_region"],"name":[10],"type":["chr"],"align":["left"]},{"label":["relevant_coding_mutations"],"name":[11],"type":["chr"],"align":["left"]},{"label":["PTEN_focal_status"],"name":[12],"type":["chr"],"align":["left"]},{"label":["PDGFRA_focal_status"],"name":[13],"type":["chr"],"align":["left"]},{"label":["FGFR1_fusions"],"name":[14],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_1AAYYGGY","2":"A14709","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"12","10":"Midline","11":"H3F3A, TP53","12":"NA","13":"NA","14":"None"},{"1":"PT_1DSX4VJM","2":"7316-1708","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"6","10":"Midline","11":"H3F3A, TP53","12":"neutral","13":"neutral","14":"None"},{"1":"PT_1E3E6GMF","2":"7316-3224","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"6","10":"Midline","11":"H3F3A, TP53","12":"neutral","13":"neutral","14":"NA"},{"1":"PT_1E3E6GMF","2":"A09985","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"6","10":"Midline","11":"H3F3A, TP53","12":"NA","13":"NA","14":"None"},{"1":"PT_1YQH5NSH","2":"A20091","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"6","10":"Midline","11":"ATRX, H3F3A","12":"NA","13":"NA","14":"None"},{"1":"PT_2JDDX6TJ","2":"7316-409","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"11","10":"Midline","11":"ATRX, H3F3A, TP53","12":"loss","13":"neutral","14":"None"},{"1":"PT_40HTPY49","2":"7316-466","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"7","10":"Midline","11":"H3F3A","12":"neutral","13":"neutral","14":"None"},{"1":"PT_4XB3YTJM","2":"7316-388","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"5","10":"Midline","11":"H3F3A, TP53","12":"neutral","13":"gain","14":"None"},{"1":"PT_59D00MBQ","2":"7316-1936","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"8","10":"Midline","11":"ATRX, H3F3A, TP53","12":"neutral","13":"gain","14":"None"},{"1":"PT_59D00MBQ","2":"7316-1937","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"8","10":"Midline","11":"ATRX, H3F3A, TP53","12":"neutral","13":"neutral","14":"None"},{"1":"PT_5BWZA0NT","2":"7316-1102","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"12","10":"Ventricles","11":"H3F3A","12":"neutral","13":"gain","14":"None"},{"1":"PT_63F63QY0","2":"7316-3521","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"11","10":"Midline","11":"BRAF, H3F3A","12":"neutral","13":"neutral","14":"None"},{"1":"PT_7E3V3JFX","2":"7316-506","3":"No","4":"Yes","5":"No","6":"No","7":"No","8":"No","9":"1","10":"Posterior fossa","11":"HIST1H3B","12":"neutral","13":"neutral","14":"None"},{"1":"PT_7FZ8SE69","2":"7316-2152","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"12","10":"Midline","11":"H3F3A, TP53","12":"neutral","13":"neutral","14":"None"},{"1":"PT_7P6J57H3","2":"A12911","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"5","10":"Midline","11":"H3F3A","12":"NA","13":"NA","14":"None"},{"1":"PT_858H7ABM","2":"7316-903","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"16","10":"Midline","11":"ATRX, H3F3A","12":"neutral","13":"neutral","14":"None"},{"1":"PT_9GKVQ9QS","2":"7316-3213","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"5","10":"Midline","11":"H3F3A, TP53","12":"loss","13":"gain","14":"NA"},{"1":"PT_9GKVQ9QS","2":"7316-3213","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"5","10":"Midline","11":"H3F3A, TP53","12":"loss","13":"amplification","14":"NA"},{"1":"PT_9GKVQ9QS","2":"A05262","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"5","10":"Midline","11":"H3F3A, TP53","12":"NA","13":"NA","14":"None"},{"1":"PT_A06JR0E5","2":"A17096","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"6","10":"Midline","11":"H3F3A, TP53","12":"NA","13":"NA","14":"None"},{"1":"PT_A325EYR2","2":"7316-2557","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"7","10":"Mixed","11":"H3F3A","12":"neutral","13":"neutral","14":"None"},{"1":"PT_B38P3Y5T","2":"7316-3208","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"9","10":"Midline","11":"H3F3A","12":"neutral","13":"neutral","14":"None"},{"1":"PT_C9YDTZPA","2":"A15726","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"5","10":"Midline","11":"H3F3A","12":"NA","13":"NA","14":"None"},{"1":"PT_CSKHQB16","2":"A14567","3":"No","4":"Yes","5":"No","6":"No","7":"No","8":"No","9":"4","10":"Midline","11":"HIST1H3B, TP53","12":"NA","13":"NA","14":"None"},{"1":"PT_DJ106XYS","2":"7316-3935","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"12","10":"Other","11":"H3F3A, TP53","12":"neutral","13":"neutral","14":"None"},{"1":"PT_DMAF1J4A","2":"A18552","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"6","10":"Midline","11":"H3F3A, TP53","12":"NA","13":"NA","14":"None"},{"1":"PT_EN2RN5Y1","2":"A17997","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"8","10":"Midline","11":"ATRX, H3F3A","12":"NA","13":"NA","14":"None"},{"1":"PT_FYPWZBH0","2":"7316-1085","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"9","10":"Midline","11":"H3F3A, TP53","12":"loss","13":"neutral","14":"None"},{"1":"PT_G16VK7FR","2":"A19649","3":"No","4":"Yes","5":"No","6":"No","7":"No","8":"No","9":"5","10":"Midline","11":"HIST1H3B, TP53","12":"NA","13":"NA","14":"None"},{"1":"PT_HGM20MW7","2":"7316-3221","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"9","10":"Midline","11":"BRAF, H3F3A, TP53","12":"neutral","13":"neutral","14":"NA"},{"1":"PT_HGM20MW7","2":"A09446","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"9","10":"Midline","11":"BRAF, H3F3A, TP53","12":"NA","13":"NA","14":"None"},{"1":"PT_HMF8J4EG","2":"7316-644","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"7","10":"Midline","11":"H3F3A, TP53","12":"neutral","13":"neutral","14":"None"},{"1":"PT_JNEV57VK","2":"7316-2594","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"7","10":"Midline","11":"ATRX, H3F3A","12":"neutral","13":"neutral","14":"None"},{"1":"PT_JNEV57VK","2":"7316-3058","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"7","10":"Midline","11":"ATRX, H3F3A, SETD2, TP53","12":"loss","13":"neutral","14":"None"},{"1":"PT_JNEV57VK","2":"7316-3058","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"7","10":"Midline","11":"ATRX, H3F3A, TP53","12":"neutral","13":"neutral","14":"None"},{"1":"PT_JNEV57VK","2":"7316-3058","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"7","10":"Midline","11":"ATRX, H3F3A","12":"neutral","13":"neutral","14":"None"},{"1":"PT_JSFBMK5V","2":"7316-1769","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"15","10":"Midline","11":"H3F3A","12":"neutral","13":"neutral","14":"None"},{"1":"PT_JSFBMK5V","2":"7316-392","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"15","10":"Midline","11":"H3F3A","12":"neutral","13":"neutral","14":"None"},{"1":"PT_KAQMYFYB","2":"A16405","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"6","10":"Midline","11":"H3F3A, TP53","12":"NA","13":"NA","14":"None"},{"1":"PT_KTRJ8TFY","2":"7316-3223","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"5","10":"Midline","11":"H3F3A, TP53","12":"neutral","13":"gain","14":"NA"},{"1":"PT_KTRJ8TFY","2":"7316-3230","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"5","10":"Midline, Mixed","11":"H3F3A, TP53","12":"NA","13":"NA","14":"NA"},{"1":"PT_KTRJ8TFY","2":"7316-3230","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"5","10":"Midline, Mixed","11":"H3F3A, TP53","12":"neutral","13":"neutral","14":"NA"},{"1":"PT_KTRJ8TFY","2":"A09689","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"5","10":"Midline","11":"H3F3A, TP53","12":"NA","13":"NA","14":"None"},{"1":"PT_KZ56XHJT","2":"7316-3217","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"7","10":"Midline","11":"H3F3A","12":"neutral","13":"neutral","14":"NA"},{"1":"PT_KZ56XHJT","2":"7316-3231","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"7","10":"Midline, Mixed","11":"H3F3A","12":"neutral","13":"neutral","14":"NA"},{"1":"PT_KZ56XHJT","2":"7316-3234","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"7","10":"Midline","11":"H3F3A","12":"neutral","13":"neutral","14":"NA"},{"1":"PT_KZ56XHJT","2":"A08732","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"7","10":"Midline","11":"H3F3A, TP53","12":"NA","13":"NA","14":"None"},{"1":"PT_KZ56XHJT","2":"A12398","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"7","10":"Midline","11":"H3F3A, TP53","12":"NA","13":"NA","14":"None"},{"1":"PT_M23Q0DC3","2":"7316-3212","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"","10":"Midline","11":"H3F3A","12":"neutral","13":"neutral","14":"NA"},{"1":"PT_M23Q0DC3","2":"A03942","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"","10":"Midline","11":"H3F3A","12":"NA","13":"NA","14":"None"},{"1":"PT_M9XXJ4GR","2":"7316-3222","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"10","10":"Midline","11":"ATRX, H3F3A, TP53","12":"loss","13":"amplification","14":"NA"},{"1":"PT_M9XXJ4GR","2":"7316-3222","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"10","10":"Midline","11":"ATRX, H3F3A, TP53","12":"loss","13":"gain","14":"NA"},{"1":"PT_M9XXJ4GR","2":"A09576","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"10","10":"Midline","11":"ATRX, H3F3A, TP53","12":"NA","13":"NA","14":"None"},{"1":"PT_MNSEJCDM","2":"7316-3227","3":"No","4":"No","5":"Yes","6":"No","7":"No","8":"No","9":"6","10":"Midline","11":"HIST1H3C, TP53","12":"neutral","13":"neutral","14":"NA"},{"1":"PT_MNSEJCDM","2":"7316-3229","3":"No","4":"No","5":"Yes","6":"No","7":"No","8":"No","9":"6","10":"Midline","11":"HIST1H3C, TP53","12":"NA","13":"NA","14":"NA"},{"1":"PT_MNSEJCDM","2":"7316-3229","3":"No","4":"No","5":"Yes","6":"No","7":"No","8":"No","9":"6","10":"Midline","11":"HIST1H3C, TP53","12":"neutral","13":"neutral","14":"NA"},{"1":"PT_NK8A49X5","2":"7316-3216","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"13","10":"Midline","11":"ATRX, H3F3A","12":"neutral","13":"neutral","14":"NA"},{"1":"PT_NK8A49X5","2":"7316-3228","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"13","10":"Midline","11":"ATRX, H3F3A","12":"neutral","13":"neutral","14":"NA"},{"1":"PT_NK8A49X5","2":"7316-4448","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"13","10":"Midline","11":"ATRX, H3F3A","12":"neutral","13":"neutral","14":"NA"},{"1":"PT_NK8A49X5","2":"A08692","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"13","10":"Midline","11":"ATRX, H3F3A","12":"NA","13":"NA","14":"None"},{"1":"PT_NK8A49X5","2":"A14449","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"13","10":"Midline","11":"ATRX, H3F3A","12":"NA","13":"NA","14":"None"},{"1":"PT_NWYSD53S","2":"A15170","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"4","10":"Midline","11":"H3F3A","12":"NA","13":"NA","14":"None"},{"1":"PT_P2NGYMG5","2":"7316-1956","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"12","10":"Posterior fossa","11":"ATRX, H3F3A","12":"loss","13":"neutral","14":"None"},{"1":"PT_PR4YBBH3","2":"7316-116","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"10","10":"Midline","11":"H3F3A, TP53","12":"loss","13":"gain","14":"None"},{"1":"PT_PR4YBBH3","2":"7316-126","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"10","10":"Midline","11":"H3F3A, TP53","12":"loss","13":"gain","14":"None"},{"1":"PT_PSX2CSYX","2":"7316-46","3":"No","4":"Yes","5":"No","6":"No","7":"No","8":"No","9":"5","10":"Mixed","11":"HIST1H3B, TP53","12":"NA","13":"NA","14":"NA"},{"1":"PT_QA9WJ679","2":"7316-3218","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"14","10":"Midline","11":"H3F3A, TP53","12":"neutral","13":"neutral","14":"NA"},{"1":"PT_QA9WJ679","2":"A08768","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"14","10":"Midline","11":"H3F3A, TP53","12":"NA","13":"NA","14":"None"},{"1":"PT_QTDY0Y9A","2":"7316-3771","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"11","10":"Mixed","11":"H3F3A","12":"neutral","13":"neutral","14":"None"},{"1":"PT_R4T1V1K4","2":"7316-3206","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"9","10":"Midline","11":"H3F3A, TP53","12":"neutral","13":"neutral","14":"None"},{"1":"PT_RA6AGBA7","2":"7316-461","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"8","10":"Midline","11":"H3F3A, TP53","12":"neutral","13":"gain","14":"None"},{"1":"PT_RE6AXQM1","2":"A19015","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"4","10":"Midline","11":"H3F3A, TP53","12":"NA","13":"NA","14":"None"},{"1":"PT_RYMG3M91","2":"A18777","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"10","10":"Midline","11":"H3F3A, TP53","12":"NA","13":"NA","14":"None"},{"1":"PT_V1HNAC2Q","2":"7316-3215","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"7","10":"Midline","11":"H3F3A, TP53","12":"neutral","13":"amplification","14":"NA"},{"1":"PT_V1HNAC2Q","2":"7316-3240","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"7","10":"Midline","11":"H3F3A, TP53","12":"neutral","13":"neutral","14":"NA"},{"1":"PT_V1HNAC2Q","2":"A07150","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"7","10":"Midline","11":"H3F3A, TP53","12":"NA","13":"NA","14":"None"},{"1":"PT_VCD0W8HG","2":"7316-2756","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"11","10":"Mixed","11":"ATRX, H3F3A","12":"loss","13":"neutral","14":"None"},{"1":"PT_VPEMAQBN","2":"7316-3225","3":"No","4":"Yes","5":"No","6":"No","7":"No","8":"No","9":"4","10":"Midline","11":"HIST1H3B, TP53","12":"neutral","13":"neutral","14":"NA"},{"1":"PT_VPEMAQBN","2":"7316-3235","3":"No","4":"Yes","5":"No","6":"No","7":"No","8":"No","9":"4","10":"Midline","11":"HIST1H3B, TP53","12":"neutral","13":"neutral","14":"NA"},{"1":"PT_VPEMAQBN","2":"A12748","3":"No","4":"Yes","5":"No","6":"No","7":"No","8":"No","9":"4","10":"Midline","11":"HIST1H3B, TP53","12":"NA","13":"NA","14":"None"},{"1":"PT_W5GP3F6B","2":"A16915","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"6","10":"Midline","11":"H3F3A, TP53","12":"NA","13":"NA","14":"None"},{"1":"PT_WGVEF96B","2":"7316-3219","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"7","10":"Midline","11":"ATRX, H3F3A, TP53","12":"neutral","13":"neutral","14":"NA"},{"1":"PT_WGVEF96B","2":"7316-4446","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"7","10":"Midline","11":"ATRX, H3F3A, TP53","12":"NA","13":"NA","14":"NA"},{"1":"PT_WGVEF96B","2":"A08958","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"7","10":"Midline","11":"ATRX, H3F3A, TP53","12":"NA","13":"NA","14":"None"},{"1":"PT_X5TQR8V2","2":"7316-343","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"17","10":"Midline","11":"ATRX, H3F3A, TP53","12":"neutral","13":"gain","14":"None"},{"1":"PT_Y5KY6KN9","2":"7316-195","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"9","10":"Posterior fossa","11":"H3F3A, TP53","12":"neutral","13":"neutral","14":"None"},{"1":"PT_Y5KY6KN9","2":"7316-195","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"9","10":"Posterior fossa","11":"H3F3A, TP53","12":"loss, gain","13":"neutral","14":"None"},{"1":"PT_Y660CKCB","2":"7316-3122","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"15","10":"Midline","11":"ATRX, H3F3A, TP53","12":"loss","13":"neutral","14":"None"},{"1":"PT_Y74CVASJ","2":"A16538","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"4","10":"Midline","11":"H3F3A, TP53","12":"NA","13":"NA","14":"None"},{"1":"PT_Z4PJA6KT","2":"7316-1763","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"10","10":"Midline","11":"H3F3A, TP53","12":"neutral","13":"neutral","14":"None"},{"1":"PT_Z4PJA6KT","2":"7316-1763","3":"Yes","4":"No","5":"No","6":"No","7":"No","8":"No","9":"10","10":"Midline","11":"H3F3A, TP53","12":"loss","13":"gain","14":"None"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Mutually exclusive with the H3 G35 mutations?</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYW55KGgzX2syOF9kZiRIM0YzQS5HMzVSID09IFwiWWVzXCIpIn0= -->
+<pre class="r"><code>any(h3_k28_df$H3F3A.G35R == &quot;Yes&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIEZBTFNFXG4ifQ== -->
 <pre><code>[1] FALSE</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Mutually exclusive with the H3 G35 mutations?</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGFibGUoaDNfazI4X2RmJENOU19yZWdpb24pXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYW55KGgzX2syOF9kZiRIM0YzQS5HMzVWID09IFwiWWVzXCIpIn0= -->
+<pre class="r"><code>any(h3_k28_df$H3F3A.G35V == &quot;Yes&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIEZBTFNFXG4ifQ== -->
+<pre><code>[1] FALSE</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Are the majority midline localized?</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoidGFibGUoaDNfazI4X2RmJENOU19yZWdpb24pIn0= -->
 <pre class="r"><code>table(h3_k28_df$CNS_region)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiXG4gICAgICAgIE1pZGxpbmUgIE1pZGxpbmUsIE1peGVkICAgICAgICAgICBNaXhlZCAgICAgICAgICAgT3RoZXIgXG4gICAgICAgICAgICAgNzggICAgICAgICAgICAgICAzICAgICAgICAgICAgICAgNCAgICAgICAgICAgICAgIDEgXG5Qb3N0ZXJpb3IgZm9zc2EgICAgICBWZW50cmljbGVzIFxuICAgICAgICAgICAgICA0ICAgICAgICAgICAgICAgMSBcbiJ9 -->
@@ -3402,29 +3563,40 @@ Posterior fossa      Ventricles
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>Yes.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaDNfazI4X2RmICU+JVxuICBncm91cF9ieShyZWxldmFudF9jb2RpbmdfbXV0YXRpb25zKSAlPiVcbiAgY291bnQoKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiaDNfazI4X2RmICU+JVxuICBncm91cF9ieShyZWxldmFudF9jb2RpbmdfbXV0YXRpb25zKSAlPiVcbiAgY291bnQoKSJ9 -->
 <pre class="r"><code>h3_k28_df %&gt;%
   group_by(relevant_coding_mutations) %&gt;%
   count()</code></pre>
 <!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["relevant_coding_mutations"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"ATRX, H3F3A","2":"12"},{"1":"ATRX, H3F3A, SETD2, TP53","2":"1"},{"1":"ATRX, H3F3A, TP53","2":"12"},{"1":"BRAF, H3F3A","2":"1"},{"1":"BRAF, H3F3A, TP53","2":"2"},{"1":"H3F3A","2":"15"},{"1":"H3F3A, TP53","2":"38"},{"1":"HIST1H3B","2":"1"},{"1":"HIST1H3B, TP53","2":"6"},{"1":"HIST1H3C, TP53","2":"3"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Are the majority midline localized?</p>
+<p>The coding mutation list looks like what we would expect based on the description, with the exception of some BRAF mutations. There are no <em>IDH1</em> mutations.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaDNfazI4X2RmICU+JVxuICBncm91cF9ieShQVEVOX2ZvY2FsX3N0YXR1cywgUERHRlJBX2ZvY2FsX3N0YXR1cykgJT4lXG4gIGNvdW50KClcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiaDNfazI4X2RmICU+JVxuICBncm91cF9ieShQVEVOX2ZvY2FsX3N0YXR1cywgUERHRlJBX2ZvY2FsX3N0YXR1cykgJT4lXG4gIGNvdW50KCkifQ== -->
 <pre class="r"><code>h3_k28_df %&gt;%
   group_by(PTEN_focal_status, PDGFRA_focal_status) %&gt;%
   count()</code></pre>
 <!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["PTEN_focal_status"],"name":[1],"type":["chr"],"align":["left"]},{"label":["PDGFRA_focal_status"],"name":[2],"type":["chr"],"align":["left"]},{"label":["n"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"loss","2":"amplification","3":"2"},{"1":"loss","2":"gain","3":"5"},{"1":"loss","2":"neutral","3":"6"},{"1":"loss, gain","2":"neutral","3":"1"},{"1":"neutral","2":"amplification","3":"1"},{"1":"neutral","2":"gain","3":"6"},{"1":"neutral","2":"neutral","3":"37"},{"1":"NA","2":"NA","3":"33"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Yes.</p>
+<p>The copy number information looks a bit different than what is described, but these are not lesions that must occur.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VtbWFyeShhcy5pbnRlZ2VyKGgzX2syOF9kZiRhZ2VfYXRfZGlhZ25vc2lzX3lyKSlcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoic3VtbWFyeShhcy5pbnRlZ2VyKGgzX2syOF9kZiRhZ2VfYXRfZGlhZ25vc2lzX3lyKSkifQ== -->
 <pre class="r"><code>summary(as.integer(h3_k28_df$age_at_diagnosis_yr))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiICAgTWluLiAxc3QgUXUuICBNZWRpYW4gICAgTWVhbiAzcmQgUXUuICAgIE1heC4gICAgTkEncyBcbiAgMS4wMDAgICA2LjAwMCAgIDcuMDAwICAgOC4yMTMgIDEwLjAwMCAgMTcuMDAwICAgICAgIDIgXG4ifQ== -->
@@ -3433,10 +3605,10 @@ Posterior fossa      Ventricles
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>The coding mutation list looks like what we would expect based on the description, with the exception of some BRAF mutations. There are no <em>IDH1</em> mutations.</p>
+<p>Age is similar to what is described.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGFibGUoaDNfazI4X2RmJEZHRlIxX2Z1c2lvbnMpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoidGFibGUoaDNfazI4X2RmJEZHRlIxX2Z1c2lvbnMpIn0= -->
 <pre class="r"><code>table(h3_k28_df$FGFR1_fusions)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiXG5Ob25lIFxuICA2NCBcbiJ9 -->
@@ -3446,57 +3618,19 @@ None
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>The copy number information looks a bit different than what is described, but these are not lesions that must occur.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaDNfazI4X2RmX2Jpb3NwZWNpbWVuIDwtIGFsbF9kYXRhX2RmICU+JVxuICBmaWx0ZXIoSDNGM0EuSzI4TSA9PSBcXFllc1xcIHwgSElTVDFIM0IuSzI4TSA9PSBcXFllc1xcIHxcbiAgICAgICAgICAgSElTVDFIM0MuSzI4TSA9PSBcXFllc1xcIHwgSElTVDJIM0MuSzI4TSA9PSBcXFllc1xcKSAlPiVcbiAgc2VsZWN0KEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsXG4gICAgICAgICBzYW1wbGVfaWQsXG4gICAgICAgICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQSxcbiAgICAgICAgIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfUk5BKSAlPiVcbiAgbXV0YXRlKG1vbGVjdWxhcl9zdWJ0eXBlID0gXFxETUdcbmBgYCJ9 -->
-<pre class="r"><code>h3_k28_df_biospecimen &lt;- all_data_df %&gt;%
-  filter(H3F3A.K28M == \Yes\ | HIST1H3B.K28M == \Yes\ |
-           HIST1H3C.K28M == \Yes\ | HIST2H3C.K28M == \Yes\) %&gt;%
-  select(Kids_First_Participant_ID,
-         sample_id,
-         Kids_First_Biospecimen_ID_DNA,
-         Kids_First_Biospecimen_ID_RNA) %&gt;%
-  mutate(molecular_subtype = \DMG</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Age is similar to what is described.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaDNfZzM1X2RmIDwtIGFsbF9kYXRhX2RmICU+JVxuICAjIE9ubHkgcm93cyB3aXRoIEgzIEczNSBtdXRhdGlvbnNcbiAgZmlsdGVyKEgzRjNBLkczNVIgPT0gXFxZZXNcXCB8IEgzRjNBLkczNVYgPT0gXFxZZXNcXCkgJT4lXG4gICMgT25seSB0aGUgcmVsZXZhbnQgY29sdW1uc1xuICBzZWxlY3QoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCxcbiAgICAgICAgIHNhbXBsZV9pZCxcbiAgICAgICAgIEgzRjNBLksyOE0sXG4gICAgICAgICBISVNUMUgzQi5LMjhNLFxuICAgICAgICAgSDNGM0EuRzM1UixcbiAgICAgICAgIEgzRjNBLkczNVYsXG4gICAgICAgICBhZ2VfYXRfZGlhZ25vc2lzX3lyLFxuICAgICAgICAgcmVsZXZhbnRfY29kaW5nX211dGF0aW9ucyxcbiAgICAgICAgIE5UUktfZnVzaW9ucykgJT4lXG4gIGRpc3RpbmN0KClcblxuaDNfZzM1X2RmXG5gYGAifQ== -->
-<pre class="r"><code>h3_g35_df &lt;- all_data_df %&gt;%
-  # Only rows with H3 G35 mutations
-  filter(H3F3A.G35R == \Yes\ | H3F3A.G35V == \Yes\) %&gt;%
-  # Only the relevant columns
-  select(Kids_First_Participant_ID,
-         sample_id,
-         H3F3A.K28M,
-         HIST1H3B.K28M,
-         H3F3A.G35R,
-         H3F3A.G35V,
-         age_at_diagnosis_yr,
-         relevant_coding_mutations,
-         NTRK_fusions) %&gt;%
-  distinct()
-
-h3_g35_df</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
 <p>No <em>FGFR1</em> fusions.</p>
 <p>The histologies file that gets distributed as part of the project and contains molecular subtypes contains one row per biospecimen. So we’ll create a table that contains the biospecimen IDs and the calls.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaDNfZzM1X2RmX2Jpb3NwZWNpbWVuIDwtIGFsbF9kYXRhX2RmICU+JVxuICAjIE9ubHkgcm93cyB3aXRoIEgzIEczNSBtdXRhdGlvbnNcbiAgZmlsdGVyKEgzRjNBLkczNVIgPT0gXFxZZXNcXCB8IEgzRjNBLkczNVYgPT0gXFxZZXNcXCkgJT4lXG4gIHNlbGVjdChLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELFxuICAgICAgICAgc2FtcGxlX2lkLFxuICAgICAgICAgS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkEsXG4gICAgICAgICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX1JOQSkgJT4lXG4gIG11dGF0ZShtb2xlY3VsYXJfc3VidHlwZSA9IFxcSEdHXG5gYGAifQ== -->
-<pre class="r"><code>h3_g35_df_biospecimen &lt;- all_data_df %&gt;%
-  # Only rows with H3 G35 mutations
-  filter(H3F3A.G35R == \Yes\ | H3F3A.G35V == \Yes\) %&gt;%
+<!-- rnb-source-begin eyJkYXRhIjoiaDNfazI4X2RmX2Jpb3NwZWNpbWVuIDwtIGFsbF9kYXRhX2RmICU+JVxuICBmaWx0ZXIoSDNGM0EuSzI4TSA9PSBcIlllc1wiIHwgSElTVDFIM0IuSzI4TSA9PSBcIlllc1wiIHxcbiAgICAgICAgICAgSElTVDFIM0MuSzI4TSA9PSBcIlllc1wiIHwgSElTVDJIM0MuSzI4TSA9PSBcIlllc1wiKSAlPiVcbiAgc2VsZWN0KEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsXG4gICAgICAgICBzYW1wbGVfaWQsXG4gICAgICAgICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQSxcbiAgICAgICAgIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfUk5BKSAlPiVcbiAgbXV0YXRlKG1vbGVjdWxhcl9zdWJ0eXBlID0gXCJETUcsIEgzIEsyOFwiKSAifQ== -->
+<pre class="r"><code>h3_k28_df_biospecimen &lt;- all_data_df %&gt;%
+  filter(H3F3A.K28M == &quot;Yes&quot; | HIST1H3B.K28M == &quot;Yes&quot; |
+           HIST1H3C.K28M == &quot;Yes&quot; | HIST2H3C.K28M == &quot;Yes&quot;) %&gt;%
   select(Kids_First_Participant_ID,
          sample_id,
          Kids_First_Biospecimen_ID_DNA,
          Kids_First_Biospecimen_ID_RNA) %&gt;%
-  mutate(molecular_subtype = \HGG</code></pre>
+  mutate(molecular_subtype = &quot;DMG, H3 K28&quot;) </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3513,24 +3647,43 @@ h3_g35_df</code></pre>
 </blockquote>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWRoX2RmIDwtIGFsbF9kYXRhX2RmICU+JVxuICBmaWx0ZXIoSURIMV9tdXRhdGlvbiA9PSBcXHAuUjEzMkhcXClcbmlkaF9kZlxuYGBgIn0= -->
-<pre class="r"><code>idh_df &lt;- all_data_df %&gt;%
-  filter(IDH1_mutation == \p.R132H\)
-idh_df</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbImgzX2czNV9kZiA8LSBhbGxfZGF0YV9kZiAlPiVcbiAgIyBPbmx5IHJvd3Mgd2l0aCBIMyBHMzUgbXV0YXRpb25zXG4gIGZpbHRlcihIM0YzQS5HMzVSID09IFwiWWVzXCIgfCBIM0YzQS5HMzVWID09IFwiWWVzXCIpICU+JVxuICAjIE9ubHkgdGhlIHJlbGV2YW50IGNvbHVtbnNcbiAgc2VsZWN0KEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsXG4gICAgICAgICBzYW1wbGVfaWQsXG4gICAgICAgICBIM0YzQS5LMjhNLFxuICAgICAgICAgSElTVDFIM0IuSzI4TSxcbiAgICAgICAgIEgzRjNBLkczNVIsXG4gICAgICAgICBIM0YzQS5HMzVWLFxuICAgICAgICAgYWdlX2F0X2RpYWdub3Npc195cixcbiAgICAgICAgIHJlbGV2YW50X2NvZGluZ19tdXRhdGlvbnMsXG4gICAgICAgICBOVFJLX2Z1c2lvbnMpICU+JVxuICBkaXN0aW5jdCgpIiwiIiwiaDNfZzM1X2RmIl19 -->
+<pre class="r"><code>h3_g35_df &lt;- all_data_df %&gt;%
+  # Only rows with H3 G35 mutations
+  filter(H3F3A.G35R == &quot;Yes&quot; | H3F3A.G35V == &quot;Yes&quot;) %&gt;%
+  # Only the relevant columns
+  select(Kids_First_Participant_ID,
+         sample_id,
+         H3F3A.K28M,
+         HIST1H3B.K28M,
+         H3F3A.G35R,
+         H3F3A.G35V,
+         age_at_diagnosis_yr,
+         relevant_coding_mutations,
+         NTRK_fusions) %&gt;%
+  distinct()
+
+h3_g35_df</code></pre>
 <!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["H3F3A.K28M"],"name":[3],"type":["chr"],"align":["left"]},{"label":["HIST1H3B.K28M"],"name":[4],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35R"],"name":[5],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35V"],"name":[6],"type":["chr"],"align":["left"]},{"label":["age_at_diagnosis_yr"],"name":[7],"type":["chr"],"align":["left"]},{"label":["relevant_coding_mutations"],"name":[8],"type":["chr"],"align":["left"]},{"label":["NTRK_fusions"],"name":[9],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_9BZETM0M","2":"7316-158","3":"No","4":"No","5":"Yes","6":"No","7":"17","8":"H3F3A, TP53","9":"None"},{"1":"PT_N3205P0D","2":"7316-1099","3":"No","4":"No","5":"Yes","6":"No","7":"18","8":"H3F3A, TP53","9":"None"},{"1":"PT_RDJ40M73","2":"7316-2561","3":"No","4":"No","5":"Yes","6":"No","7":"15","8":"ATRX, H3F3A","9":"None"},{"1":"PT_X71D7G5S","2":"7316-1105","3":"No","4":"No","5":"Yes","6":"No","7":"14","8":"ATRX, H3F3A, TP53","9":"None"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Make a biospecimen-centric table.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWRoX2RmX2Jpb3NwZWNpbWVuIDwtIGFsbF9kYXRhX2RmICU+JVxuICBmaWx0ZXIoSURIMV9tdXRhdGlvbiA9PSBcXHAuUjEzMkhcXCkgJT4lXG4gIHNlbGVjdChLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELFxuICAgICAgICAgc2FtcGxlX2lkLFxuICAgICAgICAgS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkEsXG4gICAgICAgICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX1JOQSkgJT4lXG4gIG11dGF0ZShtb2xlY3VsYXJfc3VidHlwZSA9IFxcSEdHXG5gYGAifQ== -->
-<pre class="r"><code>idh_df_biospecimen &lt;- all_data_df %&gt;%
-  filter(IDH1_mutation == \p.R132H\) %&gt;%
+<!-- rnb-source-begin eyJkYXRhIjoiaDNfZzM1X2RmX2Jpb3NwZWNpbWVuIDwtIGFsbF9kYXRhX2RmICU+JVxuICAjIE9ubHkgcm93cyB3aXRoIEgzIEczNSBtdXRhdGlvbnNcbiAgZmlsdGVyKEgzRjNBLkczNVIgPT0gXCJZZXNcIiB8IEgzRjNBLkczNVYgPT0gXCJZZXNcIikgJT4lXG4gIHNlbGVjdChLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELFxuICAgICAgICAgc2FtcGxlX2lkLFxuICAgICAgICAgS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkEsXG4gICAgICAgICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX1JOQSkgJT4lXG4gIG11dGF0ZShtb2xlY3VsYXJfc3VidHlwZSA9IFwiSEdHLCBIMyBHMzVcIikifQ== -->
+<pre class="r"><code>h3_g35_df_biospecimen &lt;- all_data_df %&gt;%
+  # Only rows with H3 G35 mutations
+  filter(H3F3A.G35R == &quot;Yes&quot; | H3F3A.G35V == &quot;Yes&quot;) %&gt;%
   select(Kids_First_Participant_ID,
          sample_id,
          Kids_First_Biospecimen_ID_DNA,
          Kids_First_Biospecimen_ID_RNA) %&gt;%
-  mutate(molecular_subtype = \HGG</code></pre>
+  mutate(molecular_subtype = &quot;HGG, H3 G35&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3547,34 +3700,30 @@ idh_df</code></pre>
 </blockquote>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud2lsZHR5cGVfZGYgPC0gYWxsX2RhdGFfZGYgJT4lXG4gIGZpbHRlcihIM0YzQS5LMjhNID09IFxcTm9cXCxcbiAgICAgICAgIEhJU1QxSDNCLksyOE0gPT0gXFxOb1xcLFxuICAgICAgICAgSElTVDFIM0MuSzI4TSA9PSBcXE5vXFwsXG4gICAgICAgICBISVNUMkgzQy5LMjhNID09IFxcTm9cXCxcbiAgICAgICAgIEgzRjNBLkczNVIgPT0gXFxOb1xcLFxuICAgICAgICAgSDNGM0EuRzM1ViA9PSBcXE5vXFwsXG4gICAgICAgICAhZ3JlcGwoXFxJREgxXFwsIHJlbGV2YW50X2NvZGluZ19tdXRhdGlvbnMpKSAlPiVcbiAgc2VsZWN0KEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsXG4gICAgICAgICBzYW1wbGVfaWQsXG4gICAgICAgICByZWxldmFudF9jb2RpbmdfbXV0YXRpb25zLFxuICAgICAgICAgVEVSVF92YXJpYW50X2NsYXNzaWZpY2F0aW9uLFxuICAgICAgICAgTVlDTl9mb2NhbF9zdGF0dXMsXG4gICAgICAgICBQREdGUkFfZm9jYWxfc3RhdHVzKSAlPiVcbiAgZGlzdGluY3QoKVxuXG53aWxkdHlwZV9kZiAlPiUgYXJyYW5nZShNWUNOX2ZvY2FsX3N0YXR1cywgUERHRlJBX2ZvY2FsX3N0YXR1cylcbmBgYCJ9 -->
-<pre class="r"><code>wildtype_df &lt;- all_data_df %&gt;%
-  filter(H3F3A.K28M == \No\,
-         HIST1H3B.K28M == \No\,
-         HIST1H3C.K28M == \No\,
-         HIST2H3C.K28M == \No\,
-         H3F3A.G35R == \No\,
-         H3F3A.G35V == \No\,
-         !grepl(\IDH1\, relevant_coding_mutations)) %&gt;%
-  select(Kids_First_Participant_ID,
-         sample_id,
-         relevant_coding_mutations,
-         TERT_variant_classification,
-         MYCN_focal_status,
-         PDGFRA_focal_status) %&gt;%
-  distinct()
-
-wildtype_df %&gt;% arrange(MYCN_focal_status, PDGFRA_focal_status)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjpbImlkaF9kZiA8LSBhbGxfZGF0YV9kZiAlPiVcbiAgZmlsdGVyKElESDFfbXV0YXRpb24gPT0gXCJwLlIxMzJIXCIpIiwiaWRoX2RmIl19 -->
+<pre class="r"><code>idh_df &lt;- all_data_df %&gt;%
+  filter(IDH1_mutation == &quot;p.R132H&quot;)
+idh_df</code></pre>
 <!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["CNS_region"],"name":[3],"type":["chr"],"align":["left"]},{"label":["age_at_diagnosis_yr"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID_DNA"],"name":[5],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID_RNA"],"name":[6],"type":["chr"],"align":["left"]},{"label":["H3F3A.K28M"],"name":[7],"type":["chr"],"align":["left"]},{"label":["HIST1H3B.K28M"],"name":[8],"type":["chr"],"align":["left"]},{"label":["HIST1H3C.K28M"],"name":[9],"type":["chr"],"align":["left"]},{"label":["HIST2H3C.K28M"],"name":[10],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35R"],"name":[11],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35V"],"name":[12],"type":["chr"],"align":["left"]},{"label":["relevant_coding_mutations"],"name":[13],"type":["chr"],"align":["left"]},{"label":["IDH1_mutation"],"name":[14],"type":["chr"],"align":["left"]},{"label":["TERT_variant_classification"],"name":[15],"type":["chr"],"align":["left"]},{"label":["BRAF_V600E"],"name":[16],"type":["chr"],"align":["left"]},{"label":["MYCN_focal_status"],"name":[17],"type":["chr"],"align":["left"]},{"label":["PDGFRA_focal_status"],"name":[18],"type":["chr"],"align":["left"]},{"label":["PTEN_focal_status"],"name":[19],"type":["chr"],"align":["left"]},{"label":["1p"],"name":[20],"type":["chr"],"align":["left"]},{"label":["19q"],"name":[21],"type":["chr"],"align":["left"]},{"label":["7p"],"name":[22],"type":["chr"],"align":["left"]},{"label":["7q"],"name":[23],"type":["chr"],"align":["left"]},{"label":["10p"],"name":[24],"type":["chr"],"align":["left"]},{"label":["10q"],"name":[25],"type":["chr"],"align":["left"]},{"label":["cell_line_composition"],"name":[26],"type":["chr"],"align":["left"]},{"label":["aliquot_id_DNA"],"name":[27],"type":["chr"],"align":["left"]},{"label":["FOXG1_expression_zscore"],"name":[28],"type":["dbl"],"align":["right"]},{"label":["OLIG2_expression_zscore"],"name":[29],"type":["dbl"],"align":["right"]},{"label":["TP73_AS1_expression_zscore"],"name":[30],"type":["dbl"],"align":["right"]},{"label":["NTRK_fusions"],"name":[31],"type":["chr"],"align":["left"]},{"label":["FGFR1_fusions"],"name":[32],"type":["chr"],"align":["left"]},{"label":["aliquot_id_RNA"],"name":[33],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_0MXPTTM3","2":"7316-3220","3":"Midline","4":"25","5":"BS_8SYN7GXG","6":"NA","7":"No","8":"No","9":"No","10":"No","11":"No","12":"No","13":"ATRX, IDH1, TP53","14":"p.R132H","15":"None","16":"No V600E","17":"gain","18":"neutral","19":"loss","20":"neutral","21":"neutral","22":"neutral","23":"neutral","24":"neutral","25":"neutral","26":"NA","27":"NA","28":"NA","29":"NA","30":"NA","31":"NA","32":"NA","33":"NA"},{"1":"PT_0MXPTTM3","2":"A09410","3":"Midline","4":"25","5":"BS_H3TYF6GD","6":"BS_R7NTZR4C","7":"No","8":"No","9":"No","10":"No","11":"No","12":"No","13":"ATRX, IDH1, TP53","14":"p.R132H","15":"None","16":"No V600E","17":"NA","18":"NA","19":"NA","20":"NA","21":"NA","22":"NA","23":"NA","24":"NA","25":"NA","26":"NA","27":"NA","28":"-0.004411556","29":"1.0818206","30":"-1.595527","31":"None","32":"None","33":"NA"},{"1":"PT_QQZXYR4M","2":"7316-1946","3":"Hemispheric","4":"26","5":"BS_58X7SKJS","6":"BS_8PNA0V6R","7":"No","8":"No","9":"No","10":"No","11":"No","12":"No","13":"ATRX, IDH1, TP53","14":"p.R132H","15":"None","16":"No V600E","17":"neutral","18":"neutral","19":"neutral","20":"neutral","21":"neutral","22":"neutral","23":"neutral","24":"neutral","25":"neutral","26":"NA","27":"NA","28":"0.564001909","29":"0.4895332","30":"-3.013155","31":"None","32":"None","33":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>In these instances, the broad copy data look consistent with the description, all tumors have <em>TP53</em> mutations, and the <em>TP73-AS1</em> expression is consistent with downregulation.</p>
 <p>Make a biospecimen-centric table.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWxsX2RhdGFfZGYgJT4lXG4gIGZpbHRlcihgMXBgID09IFxcbG9zc1xcIHwgYDE5cWAgPT0gXFxsb3NzXFwpXG5gYGAifQ== -->
-<pre class="r"><code>all_data_df %&gt;%
-  filter(`1p` == \loss\ | `19q` == \loss\)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiaWRoX2RmX2Jpb3NwZWNpbWVuIDwtIGFsbF9kYXRhX2RmICU+JVxuICBmaWx0ZXIoSURIMV9tdXRhdGlvbiA9PSBcInAuUjEzMkhcIikgJT4lXG4gIHNlbGVjdChLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELFxuICAgICAgICAgc2FtcGxlX2lkLFxuICAgICAgICAgS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkEsXG4gICAgICAgICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX1JOQSkgJT4lXG4gIG11dGF0ZShtb2xlY3VsYXJfc3VidHlwZSA9IFwiSEdHLCBJREhcIikifQ== -->
+<pre class="r"><code>idh_df_biospecimen &lt;- all_data_df %&gt;%
+  filter(IDH1_mutation == &quot;p.R132H&quot;) %&gt;%
+  select(Kids_First_Participant_ID,
+         sample_id,
+         Kids_First_Biospecimen_ID_DNA,
+         Kids_First_Biospecimen_ID_RNA) %&gt;%
+  mutate(molecular_subtype = &quot;HGG, IDH&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3589,22 +3738,30 @@ wildtype_df %&gt;% arrange(MYCN_focal_status, PDGFRA_focal_status)</code></pre>
 </blockquote>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubW9sZWN1bGFyX3N1YnR5cGVfdGFibGUgPC0gYmluZF9yb3dzKGgzX2czNV9kZl9iaW9zcGVjaW1lbixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBoM19rMjhfZGZfYmlvc3BlY2ltZW4sXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaWRoX2RmX2Jpb3NwZWNpbWVuKVxuXG4jIFdlJ2xsIGFkZCBIR0csIEgzIHdpbGR0eXBlIHZhbHVlcyBpbiBjYXNlcyB0aGF0IGRvIG5vdCB5ZXQgaGF2ZSBsYWJlbHNcbm1vbGVjdWxhcl9zdWJ0eXBlX3RhYmxlIDwtIGFsbF9kYXRhX2RmICU+JVxuICBzZWxlY3QoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCwgc2FtcGxlX2lkLFxuICAgICAgICAgS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9ETkEsIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfUk5BKSAlPiVcbiAgbGVmdF9qb2luKG1vbGVjdWxhcl9zdWJ0eXBlX3RhYmxlKSAlPiVcbiAgZGlzdGluY3QoKSAlPiVcbiAgZHBseXI6Om11dGF0ZShtb2xlY3VsYXJfc3VidHlwZSA9IGNhc2Vfd2hlbihcbiAgICAjIG1vbGVjdWxhcl9zdWJ0eXBlIGlzIE5BIGFuZCB3ZSBkaWRuJ3QgZmluZCBhbnkgY2Fub25pY2FsIGhpc3RvbmVcbiAgICAjIHZhcmlhbnQgaW4gdGhlIEROQSBzYW1wbGUgc28gdGhlIHN0YXR1cyB3aWxsIGJlIEgzIHdpbGR0eXBlXG4gICAgaXMubmEobW9sZWN1bGFyX3N1YnR5cGUpICYgIWlzLm5hKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfRE5BKSB+IFxcSEdHXG5gYGAifQ== -->
-<pre class="r"><code>molecular_subtype_table &lt;- bind_rows(h3_g35_df_biospecimen,
-                                     h3_k28_df_biospecimen,
-                                     idh_df_biospecimen)
+<!-- rnb-source-begin eyJkYXRhIjpbIndpbGR0eXBlX2RmIDwtIGFsbF9kYXRhX2RmICU+JVxuICBmaWx0ZXIoSDNGM0EuSzI4TSA9PSBcIk5vXCIsXG4gICAgICAgICBISVNUMUgzQi5LMjhNID09IFwiTm9cIixcbiAgICAgICAgIEhJU1QxSDNDLksyOE0gPT0gXCJOb1wiLFxuICAgICAgICAgSElTVDJIM0MuSzI4TSA9PSBcIk5vXCIsXG4gICAgICAgICBIM0YzQS5HMzVSID09IFwiTm9cIixcbiAgICAgICAgIEgzRjNBLkczNVYgPT0gXCJOb1wiLFxuICAgICAgICAgIWdyZXBsKFwiSURIMVwiLCByZWxldmFudF9jb2RpbmdfbXV0YXRpb25zKSkgJT4lXG4gIHNlbGVjdChLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELFxuICAgICAgICAgc2FtcGxlX2lkLFxuICAgICAgICAgcmVsZXZhbnRfY29kaW5nX211dGF0aW9ucyxcbiAgICAgICAgIFRFUlRfdmFyaWFudF9jbGFzc2lmaWNhdGlvbixcbiAgICAgICAgIE1ZQ05fZm9jYWxfc3RhdHVzLFxuICAgICAgICAgUERHRlJBX2ZvY2FsX3N0YXR1cykgJT4lXG4gIGRpc3RpbmN0KCkiLCIiLCJ3aWxkdHlwZV9kZiAlPiUgYXJyYW5nZShNWUNOX2ZvY2FsX3N0YXR1cywgUERHRlJBX2ZvY2FsX3N0YXR1cykiXX0= -->
+<pre class="r"><code>wildtype_df &lt;- all_data_df %&gt;%
+  filter(H3F3A.K28M == &quot;No&quot;,
+         HIST1H3B.K28M == &quot;No&quot;,
+         HIST1H3C.K28M == &quot;No&quot;,
+         HIST2H3C.K28M == &quot;No&quot;,
+         H3F3A.G35R == &quot;No&quot;,
+         H3F3A.G35V == &quot;No&quot;,
+         !grepl(&quot;IDH1&quot;, relevant_coding_mutations)) %&gt;%
+  select(Kids_First_Participant_ID,
+         sample_id,
+         relevant_coding_mutations,
+         TERT_variant_classification,
+         MYCN_focal_status,
+         PDGFRA_focal_status) %&gt;%
+  distinct()
 
-# We'll add HGG, H3 wildtype values in cases that do not yet have labels
-molecular_subtype_table &lt;- all_data_df %&gt;%
-  select(Kids_First_Participant_ID, sample_id,
-         Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA) %&gt;%
-  left_join(molecular_subtype_table) %&gt;%
-  distinct() %&gt;%
-  dplyr::mutate(molecular_subtype = case_when(
-    # molecular_subtype is NA and we didn't find any canonical histone
-    # variant in the DNA sample so the status will be H3 wildtype
-    is.na(molecular_subtype) &amp; !is.na(Kids_First_Biospecimen_ID_DNA) ~ \HGG</code></pre>
+wildtype_df %&gt;% arrange(MYCN_focal_status, PDGFRA_focal_status)</code></pre>
 <!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["relevant_coding_mutations"],"name":[3],"type":["chr"],"align":["left"]},{"label":["TERT_variant_classification"],"name":[4],"type":["chr"],"align":["left"]},{"label":["MYCN_focal_status"],"name":[5],"type":["chr"],"align":["left"]},{"label":["PDGFRA_focal_status"],"name":[6],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_63HDZHCN","2":"7316-2980","3":"TP53","4":"None","5":"amplification","6":"neutral"},{"1":"PT_Z4BF2NSB","2":"7316-161","3":"CIC, TP53","4":"None","5":"amplification","6":"neutral"},{"1":"PT_8GN3TQRM","2":"7316-2069","3":"None","4":"None","5":"gain","6":"neutral"},{"1":"PT_8GN3TQRM","2":"7316-2091","3":"None","4":"None","5":"gain","6":"neutral"},{"1":"PT_8GN3TQRM","2":"7316-2737","3":"None","4":"None","5":"gain","6":"neutral"},{"1":"PT_KVMF5TFW","2":"7316-3030","3":"TP53","4":"None","5":"gain","6":"neutral"},{"1":"PT_PF9EC93Q","2":"7316-3765","3":"None","4":"None","5":"gain","6":"neutral"},{"1":"PT_Y8RNS9JE","2":"7316-1656","3":"BRAF, TP53","4":"None","5":"loss","6":"neutral"},{"1":"PT_0DXHDZJR","2":"7316-2857","3":"None","4":"None","5":"neutral","6":"neutral"},{"1":"PT_0SPKM4S8","2":"7316-2640","3":"ATRX, CIC, FGFR1, SETD2, TP53","4":"None","5":"neutral","6":"neutral"},{"1":"PT_1H2REHT2","2":"7316-3022","3":"TP53","4":"None","5":"neutral","6":"neutral"},{"1":"PT_1H2REHT2","2":"7316-3303","3":"TP53","4":"None","5":"neutral","6":"neutral"},{"1":"PT_279D9QZ8","2":"7316-325","3":"None","4":"None","5":"neutral","6":"neutral"},{"1":"PT_2WVW55DA","2":"7316-2092","3":"ATRX","4":"None","5":"neutral","6":"neutral"},{"1":"PT_2WVW55DA","2":"7316-2100","3":"TP53","4":"None","5":"neutral","6":"neutral"},{"1":"PT_37B5JRP1","2":"7316-2217","3":"TP53","4":"None","5":"neutral","6":"neutral"},{"1":"PT_37B5JRP1","2":"7316-2554","3":"TP53","4":"None","5":"neutral","6":"neutral"},{"1":"PT_387VK1T9","2":"7316-3625","3":"None","4":"None","5":"neutral","6":"neutral"},{"1":"PT_3AWKWXEV","2":"7316-85","3":"BRAF","4":"None","5":"neutral","6":"neutral"},{"1":"PT_3CHB9PK5","2":"7316-2085","3":"ATRX, BRAF, CIC, FUBP1, SETD2, TP53","4":"None","5":"neutral","6":"neutral"},{"1":"PT_3CHB9PK5","2":"7316-515","3":"ATRX, BRAF, CIC, FUBP1, SETD2, TP53","4":"None","5":"neutral","6":"neutral"},{"1":"PT_3X3MF8ZD","2":"7316-114","3":"None","4":"None","5":"neutral","6":"neutral"},{"1":"PT_4347ZBEX","2":"7316-913","3":"None","4":"None","5":"neutral","6":"neutral"},{"1":"PT_59FJRPVX","2":"7316-3769","3":"None","4":"None","5":"neutral","6":"neutral"},{"1":"PT_6GDPNFA6","2":"7316-2610","3":"None","4":"None","5":"neutral","6":"neutral"},{"1":"PT_6SH7PV1N","2":"7316-535","3":"None","4":"None","5":"neutral","6":"neutral"},{"1":"PT_7WT6P5M8","2":"7316-2308","3":"TP53","4":"None","5":"neutral","6":"neutral"},{"1":"PT_89XRZBSG","2":"7316-1789","3":"None","4":"None","5":"neutral","6":"neutral"},{"1":"PT_89XRZBSG","2":"7316-445","3":"None","4":"None","5":"neutral","6":"neutral"},{"1":"PT_C2D4JXS1","2":"7316-1746","3":"TP53","4":"None","5":"neutral","6":"neutral"},{"1":"PT_HNZNZ635","2":"7316-2151","3":"None","4":"None","5":"neutral","6":"neutral"},{"1":"PT_J5NSRW1Y","2":"7316-3817","3":"None","4":"5'Flank","5":"neutral","6":"neutral"},{"1":"PT_KBFM551M","2":"7316-3214","3":"TP53","4":"None","5":"neutral","6":"neutral"},{"1":"PT_KBFM551M","2":"7316-3237","3":"TP53","4":"None","5":"neutral","6":"neutral"},{"1":"PT_KBFM551M","2":"7316-4447","3":"TP53","4":"None","5":"neutral","6":"neutral"},{"1":"PT_KEQ53KRH","2":"7316-440","3":"TP53","4":"None","5":"neutral","6":"neutral"},{"1":"PT_KFYJBQB8","2":"7316-3075","3":"None","4":"None","5":"neutral","6":"neutral"},{"1":"PT_KTRJ8TFY","2":"7316-3230","3":"TP53","4":"None","5":"neutral","6":"neutral"},{"1":"PT_KZ04SDDS","2":"7316-1774","3":"SETD2, TP53","4":"None","5":"neutral","6":"neutral"},{"1":"PT_MDWPRDBT","2":"7316-2146","3":"None","4":"None","5":"neutral","6":"neutral"},{"1":"PT_MDWPRDBT","2":"7316-2660","3":"SETD2","4":"None","5":"neutral","6":"neutral"},{"1":"PT_MDWPRDBT","2":"7316-2751","3":"None","4":"None","5":"neutral","6":"neutral"},{"1":"PT_MDWPRDBT","2":"7316-895","3":"None","4":"None","5":"neutral","6":"neutral"},{"1":"PT_MSQ6GSVP","2":"7316-2274","3":"None","4":"None","5":"neutral","6":"neutral"},{"1":"PT_N32BYY8A","2":"7316-89","3":"None","4":"None","5":"neutral","6":"neutral"},{"1":"PT_P5HHJJPH","2":"7316-870","3":"BRAF","4":"None","5":"neutral","6":"neutral"},{"1":"PT_RSDTCFDA","2":"7316-204","3":"None","4":"5'Flank","5":"neutral","6":"neutral"},{"1":"PT_S0Q27J13","2":"7316-2307","3":"ATRX, SETD2, TP53","4":"None","5":"neutral","6":"neutral"},{"1":"PT_S2BEPYQ0","2":"7316-3000","3":"None","4":"None","5":"neutral","6":"neutral"},{"1":"PT_T8V9ES93","2":"7316-1106","3":"BRAF","4":"None","5":"neutral","6":"neutral"},{"1":"PT_VAJN5QP8","2":"7316-2176","3":"None","4":"None","5":"neutral","6":"neutral"},{"1":"PT_VTM2STE3","2":"7316-2189","3":"ATRX, BRAF, CIC, FGFR1, FUBP1, SETD2, TP53","4":"None","5":"neutral","6":"neutral"},{"1":"PT_VTM2STE3","2":"7316-2189","3":"SETD2, TP53","4":"None","5":"neutral","6":"neutral"},{"1":"PT_VVCN8DXT","2":"7316-71","3":"None","4":"5'Flank","5":"neutral","6":"neutral"},{"1":"PT_Y76A7PBA","2":"7316-2288","3":"None","4":"None","5":"neutral","6":"neutral"},{"1":"PT_C5FKRB1P","2":"A14565","3":"None","4":"None","5":"NA","6":"NA"},{"1":"PT_KBFM551M","2":"7316-3232","3":"TP53","4":"None","5":"NA","6":"NA"},{"1":"PT_KBFM551M","2":"A07082","3":"TP53","4":"None","5":"NA","6":"NA"},{"1":"PT_SYHB12RN","2":"7316-194","3":"FGFR1","4":"None","5":"NA","6":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>We will label samples without H3 mutations as <code>HGG, H3 wildtype</code> below.</p>
@@ -3623,9 +3780,15 @@ molecular_subtype_table &lt;- all_data_df %&gt;%
 <p>Let’s first filter by the broad arm data and see what we get.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JpdGVfdHN2KG1vbGVjdWxhcl9zdWJ0eXBlX3RhYmxlLCBvdXRwdXRfc3VidHlwZSlcbmBgYCJ9 -->
-<pre class="r"><code>write_tsv(molecular_subtype_table, output_subtype)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYWxsX2RhdGFfZGYgJT4lXG4gIGZpbHRlcihgMXBgID09IFwibG9zc1wiIHwgYDE5cWAgPT0gXCJsb3NzXCIpIn0= -->
+<pre class="r"><code>all_data_df %&gt;%
+  filter(`1p` == &quot;loss&quot; | `19q` == &quot;loss&quot;)</code></pre>
 <!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Kids_First_Participant_ID"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[2],"type":["chr"],"align":["left"]},{"label":["CNS_region"],"name":[3],"type":["chr"],"align":["left"]},{"label":["age_at_diagnosis_yr"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID_DNA"],"name":[5],"type":["chr"],"align":["left"]},{"label":["Kids_First_Biospecimen_ID_RNA"],"name":[6],"type":["chr"],"align":["left"]},{"label":["H3F3A.K28M"],"name":[7],"type":["chr"],"align":["left"]},{"label":["HIST1H3B.K28M"],"name":[8],"type":["chr"],"align":["left"]},{"label":["HIST1H3C.K28M"],"name":[9],"type":["chr"],"align":["left"]},{"label":["HIST2H3C.K28M"],"name":[10],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35R"],"name":[11],"type":["chr"],"align":["left"]},{"label":["H3F3A.G35V"],"name":[12],"type":["chr"],"align":["left"]},{"label":["relevant_coding_mutations"],"name":[13],"type":["chr"],"align":["left"]},{"label":["IDH1_mutation"],"name":[14],"type":["chr"],"align":["left"]},{"label":["TERT_variant_classification"],"name":[15],"type":["chr"],"align":["left"]},{"label":["BRAF_V600E"],"name":[16],"type":["chr"],"align":["left"]},{"label":["MYCN_focal_status"],"name":[17],"type":["chr"],"align":["left"]},{"label":["PDGFRA_focal_status"],"name":[18],"type":["chr"],"align":["left"]},{"label":["PTEN_focal_status"],"name":[19],"type":["chr"],"align":["left"]},{"label":["1p"],"name":[20],"type":["chr"],"align":["left"]},{"label":["19q"],"name":[21],"type":["chr"],"align":["left"]},{"label":["7p"],"name":[22],"type":["chr"],"align":["left"]},{"label":["7q"],"name":[23],"type":["chr"],"align":["left"]},{"label":["10p"],"name":[24],"type":["chr"],"align":["left"]},{"label":["10q"],"name":[25],"type":["chr"],"align":["left"]},{"label":["cell_line_composition"],"name":[26],"type":["chr"],"align":["left"]},{"label":["aliquot_id_DNA"],"name":[27],"type":["chr"],"align":["left"]},{"label":["FOXG1_expression_zscore"],"name":[28],"type":["dbl"],"align":["right"]},{"label":["OLIG2_expression_zscore"],"name":[29],"type":["dbl"],"align":["right"]},{"label":["TP73_AS1_expression_zscore"],"name":[30],"type":["dbl"],"align":["right"]},{"label":["NTRK_fusions"],"name":[31],"type":["chr"],"align":["left"]},{"label":["FGFR1_fusions"],"name":[32],"type":["chr"],"align":["left"]},{"label":["aliquot_id_RNA"],"name":[33],"type":["chr"],"align":["left"]}],"data":[{"1":"PT_QTDY0Y9A","2":"7316-3771","3":"Mixed","4":"11","5":"BS_1S5V7WWC","6":"BS_MDBT7S5Z","7":"Yes","8":"No","9":"No","10":"No","11":"No","12":"No","13":"H3F3A","14":"No R132 or R172","15":"None","16":"No V600E","17":"neutral","18":"neutral","19":"neutral","20":"loss","21":"neutral","22":"neutral","23":"neutral","24":"neutral","25":"neutral","26":"NA","27":"NA","28":"-0.7950549","29":"0.8279377","30":"-0.2167787","31":"None","32":"None","33":"NA"},{"1":"PT_Y5KY6KN9","2":"7316-195","3":"Posterior fossa","4":"9","5":"BS_XMP9XNR9","6":"BS_P9JP6JFA","7":"Yes","8":"No","9":"No","10":"No","11":"No","12":"No","13":"H3F3A, TP53","14":"No R132 or R172","15":"None","16":"No V600E","17":"neutral","18":"neutral","19":"loss, gain","20":"loss","21":"neutral","22":"neutral","23":"neutral","24":"neutral","25":"neutral","26":"A","27":"739834","28":"-0.7530386","29":"-1.8246026","30":"-1.6864945","31":"None","32":"None","33":"739937"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>We don’t see the <em>IDH1</em> mutations we would expect and we do see an H3 K28M mutation, so we will leave this off as well for the moment and in a subsequent notebook we’ll address <a href="https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/435#issuecomment-576898275"><code>AlexsLemonade/OpenPBTA-analysis#435 (comment)</code></a>:</p>
@@ -3639,7 +3802,47 @@ molecular_subtype_table &lt;- all_data_df %&gt;%
 <p>Join all the tables that contain the biospecimen ids and <code>molecular_subtype</code> column together.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIm1vbGVjdWxhcl9zdWJ0eXBlX3RhYmxlIDwtIGJpbmRfcm93cyhoM19nMzVfZGZfYmlvc3BlY2ltZW4sXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaDNfazI4X2RmX2Jpb3NwZWNpbWVuLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlkaF9kZl9iaW9zcGVjaW1lbikiLCIiLCIjIFdlJ2xsIGFkZCBIR0csIEgzIHdpbGR0eXBlIHZhbHVlcyBpbiBjYXNlcyB0aGF0IGRvIG5vdCB5ZXQgaGF2ZSBsYWJlbHMiLCJtb2xlY3VsYXJfc3VidHlwZV90YWJsZSA8LSBhbGxfZGF0YV9kZiAlPiVcbiAgc2VsZWN0KEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQsIHNhbXBsZV9pZCxcbiAgICAgICAgIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfRE5BLCBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX1JOQSkgJT4lXG4gIGxlZnRfam9pbihtb2xlY3VsYXJfc3VidHlwZV90YWJsZSkgJT4lXG4gIGRpc3RpbmN0KCkgJT4lXG4gIGRwbHlyOjptdXRhdGUobW9sZWN1bGFyX3N1YnR5cGUgPSBjYXNlX3doZW4oXG4gICAgIyBtb2xlY3VsYXJfc3VidHlwZSBpcyBOQSBhbmQgd2UgZGlkbid0IGZpbmQgYW55IGNhbm9uaWNhbCBoaXN0b25lXG4gICAgIyB2YXJpYW50IGluIHRoZSBETkEgc2FtcGxlIHNvIHRoZSBzdGF0dXMgd2lsbCBiZSBIMyB3aWxkdHlwZVxuICAgIGlzLm5hKG1vbGVjdWxhcl9zdWJ0eXBlKSAmICFpcy5uYShLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQSkgfiBcIkhHRywgSDMgd2lsZHR5cGVcIixcbiAgICAjIG1vbGVjdWxhcl9zdWJ0eXBlIGlzIE5BIGFuZCB3ZSBkbyBub3QgaGF2ZSBhIEROQSBzYW1wbGVcbiAgICAjIHRvIGNoZWNrIGZvciBoaXN0b25lIHZhcmlhbnQgc28gc3RhdHVzIHdpbGwgYmVcbiAgICAjIFRvIGJlIGNsYXNzaWZpZWRcbiAgICBpcy5uYShtb2xlY3VsYXJfc3VidHlwZSkgJiBpcy5uYShLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEX0ROQSkgfiBcIkhHRywgVG8gYmUgY2xhc3NpZmllZFwiLFxuICAgICMgd2hlbiBtb2xlY3VsYXJfc3VidHlwZSBpcyBub3QgTkEgKHdlIGtub3cgdGhlIEgzIHZhcmlhbnQgc3VidHlwZSBmcm9tIEROQSApXG4gICAgVFJVRSB+IG1vbGVjdWxhcl9zdWJ0eXBlKSkiXX0= -->
+<pre class="r"><code>molecular_subtype_table &lt;- bind_rows(h3_g35_df_biospecimen,
+                                     h3_k28_df_biospecimen,
+                                     idh_df_biospecimen)
+
+# We'll add HGG, H3 wildtype values in cases that do not yet have labels
+molecular_subtype_table &lt;- all_data_df %&gt;%
+  select(Kids_First_Participant_ID, sample_id,
+         Kids_First_Biospecimen_ID_DNA, Kids_First_Biospecimen_ID_RNA) %&gt;%
+  left_join(molecular_subtype_table) %&gt;%
+  distinct() %&gt;%
+  dplyr::mutate(molecular_subtype = case_when(
+    # molecular_subtype is NA and we didn't find any canonical histone
+    # variant in the DNA sample so the status will be H3 wildtype
+    is.na(molecular_subtype) &amp; !is.na(Kids_First_Biospecimen_ID_DNA) ~ &quot;HGG, H3 wildtype&quot;,
+    # molecular_subtype is NA and we do not have a DNA sample
+    # to check for histone variant so status will be
+    # To be classified
+    is.na(molecular_subtype) &amp; is.na(Kids_First_Biospecimen_ID_DNA) ~ &quot;HGG, To be classified&quot;,
+    # when molecular_subtype is not NA (we know the H3 variant subtype from DNA )
+    TRUE ~ molecular_subtype))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiSm9pbmluZywgYnkgPSBjKFwiS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRFwiLCBcInNhbXBsZV9pZFwiLCBcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURfRE5BXCIsIFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRF9STkFcIilcbiJ9 -->
+<pre><code>Joining, by = c(&quot;Kids_First_Participant_ID&quot;, &quot;sample_id&quot;, &quot;Kids_First_Biospecimen_ID_DNA&quot;, &quot;Kids_First_Biospecimen_ID_RNA&quot;)</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Write to file.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoid3JpdGVfdHN2KG1vbGVjdWxhcl9zdWJ0eXBlX3RhYmxlLCBvdXRwdXRfc3VidHlwZSkifQ== -->
+<pre class="r"><code>write_tsv(molecular_subtype_table, output_subtype)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="session-info" class="section level2">
+<h2>Session Info</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoic2Vzc2lvbkluZm8oKSJ9 -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgIFxuIFszXSBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgIFxuWzExXSBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcblsxXSBmb3JjYXRzXzAuNC4wICAgc3RyaW5ncl8xLjQuMCAgIGRwbHlyXzAuOC4zICAgICBwdXJycl8wLjMuMiAgICBcbls1XSByZWFkcl8xLjMuMSAgICAgdGlkeXJfMC44LjMgICAgIHRpYmJsZV8yLjEuMyAgICBnZ3Bsb3QyXzMuMi4wICBcbls5XSB0aWR5dmVyc2VfMS4yLjFcblxubG9hZGVkIHZpYSBhIG5hbWVzcGFjZSAoYW5kIG5vdCBhdHRhY2hlZCk6XG4gWzFdIFJjcHBfMS4wLjEgICAgICAgY2VsbHJhbmdlcl8xLjEuMCBwaWxsYXJfMS40LjIgICAgIGNvbXBpbGVyXzMuNi4wICBcbiBbNV0gYmFzZTY0ZW5jXzAuMS0zICB0b29sc18zLjYuMCAgICAgIGRpZ2VzdF8wLjYuMjAgICAgbHVicmlkYXRlXzEuNy40IFxuIFs5XSBqc29ubGl0ZV8xLjYgICAgIGV2YWx1YXRlXzAuMTQgICAgbmxtZV8zLjEtMTQwICAgICBndGFibGVfMC4zLjAgICAgXG5bMTNdIGxhdHRpY2VfMC4yMC0zOCAgcGtnY29uZmlnXzIuMC4yICBybGFuZ18wLjQuMCAgICAgIGNsaV8xLjEuMCAgICAgICBcblsxN10gcnN0dWRpb2FwaV8wLjEwICB5YW1sXzIuMi4wICAgICAgIGhhdmVuXzIuMS4xICAgICAgeGZ1bl8wLjggICAgICAgIFxuWzIxXSB3aXRocl8yLjEuMiAgICAgIHhtbDJfMS4yLjAgICAgICAgaHR0cl8xLjQuMCAgICAgICBrbml0cl8xLjIzICAgICAgXG5bMjVdIGdlbmVyaWNzXzAuMC4yICAgaG1zXzAuNC4yICAgICAgICBycHJvanJvb3RfMS4zLTIgIGdyaWRfMy42LjAgICAgICBcblsyOV0gdGlkeXNlbGVjdF8wLjIuNSBnbHVlXzEuMy4xICAgICAgIFI2XzIuNC4wICAgICAgICAgcmVhZHhsXzEuMy4xICAgIFxuWzMzXSBybWFya2Rvd25fMS4xMyAgIG1vZGVscl8wLjEuNCAgICAgbWFncml0dHJfMS41ICAgICBiYWNrcG9ydHNfMS4xLjQgXG5bMzddIHNjYWxlc18xLjAuMCAgICAgaHRtbHRvb2xzXzAuMy42ICBydmVzdF8wLjMuNCAgICAgIGFzc2VydHRoYXRfMC4yLjFcbls0MV0gY29sb3JzcGFjZV8xLjQtMSBzdHJpbmdpXzEuNC4zICAgIGxhenlldmFsXzAuMi4yICAgbXVuc2VsbF8wLjUuMCAgIFxuWzQ1XSBicm9vbV8wLjUuMiAgICAgIGNyYXlvbl8xLjMuNCAgICBcbiJ9 -->
@@ -3680,24 +3883,6 @@ loaded via a namespace (and not attached):
 [41] colorspace_1.4-1 stringi_1.4.3    lazyeval_0.2.2   munsell_0.5.0   
 [45] broom_0.5.2      crayon_1.3.4    </code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Write to file.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JpdGVfdHN2KG1vbGVjdWxhcl9zdWJ0eXBlX3RhYmxlLCBvdXRwdXRfc3VidHlwZSlcbmBgYCJ9 -->
-<pre class="r"><code>write_tsv(molecular_subtype_table, output_subtype)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="session-info" class="section level2">
-<h2>Session Info</h2>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
-<pre class="r"><code>sessionInfo()</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 </div>
 
