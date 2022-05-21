@@ -10,17 +10,17 @@ suppressPackageStartupMessages({
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # set results directory
-output_dir <- file.path(root_dir, "analyses", "molecular-subtyping-MB", "results") 
+output_dir <- file.path(root_dir, "analyses", "molecular-subtyping-MB", "results")
 dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 
 # read medulloblastoma samples from histology
-mb_samples <- file.path(root_dir, "data", "pbta-histologies.tsv") %>%
+mb_samples <- file.path(root_dir, "data", "pbta-histologies-base.tsv") %>%
   read_tsv() %>%
   filter(cancer_group == "Medulloblastoma",
          sample_type == "Tumor")
 
 # samples where no RNA-Seq data is available
-sample_ids_with_rna <- mb_samples %>% 
+sample_ids_with_rna <- mb_samples %>%
   filter(experimental_strategy == "RNA-Seq")
 samples_ids_no_rna <- mb_samples %>%
   filter(!sample_id %in% sample_ids_with_rna$sample_id)
