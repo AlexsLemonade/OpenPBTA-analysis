@@ -254,7 +254,7 @@ if (opt$tcga) {
     # Make a Target BED regions column
     dplyr::mutate(
       target_bed = dplyr::recode(experimental_strategy,
-        "WGS" = "scratch/intersect_strelka_mutect_WGS.bed",
+        "WGS" = "scratch/snv-callers/intersect_strelka_mutect_WGS.bed",
         "WXS" = "data/WXS.hg38.100bp_padded.bed"
         #TODO: make a padded/unpadded script option
       ),
