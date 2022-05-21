@@ -89,7 +89,7 @@ Rscript -e "rmarkdown::render('${analysis_dir}/02-qc-rna_expression_score.Rmd',p
 
 # gather consensus seg file with status
 Rscript -e "rmarkdown::render('../focal-cn-file-preparation/02-add-ploidy-consensus.Rmd', clean = TRUE)"
-cp ${scratch_dir}/consensus_seg_with_status.tsv ${analysis_dir}/input/consensus_seg_with_status.tsv
+cp ../../scratch/consensus_seg_with_status.tsv ${analysis_dir}/input/consensus_seg_with_status.tsv
 
 # subset cnv where tp53 is lost
 Rscript -e "rmarkdown::render('${analysis_dir}/03-tp53-cnv-loss-domain.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
