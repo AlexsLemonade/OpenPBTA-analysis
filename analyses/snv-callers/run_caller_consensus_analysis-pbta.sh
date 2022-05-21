@@ -11,15 +11,22 @@ set -o pipefail
 # Set the working directory to the directory of this file
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
+# Scratch folder to use for this module
+scratch_dir=../../scratch/snv-callers
+mkdir -p $scratch_dir
+
+# Data directory
+data_dir=../../data
+
 # The sqlite database made from the callers will be called:
-dbfile=../../scratch/snv-callers/snv_db.sqlite
+dbfile=${scratch_dir}/snv_db.sqlite
 
 # Designate output file
 consensus_file=results/consensus/pbta-snv-consensus-mutation.maf.tsv
 
 # BED and GTF file paths
-cds_file=../../scratch/snv-callers/gencode.v27.primary_assembly.annotation.bed
-wgs_bed=../../scratch/snv-callers/intersect_strelka_mutect_WGS.bed
+cds_file=${scratch_dir}/gencode.v27.primary_assembly.annotation.bed
+wgs_bed=${scratch_dir}/intersect_strelka_mutect_WGS.bed
 
 # Set a default for the VAF filter if none is specified
 vaf_cutoff=${OPENPBTA_VAF_CUTOFF:-0}
@@ -28,9 +35,9 @@ vaf_cutoff=${OPENPBTA_VAF_CUTOFF:-0}
 run_for_release=${OPENPBTA_BASE_RELEASE:-0}
 if [[ "$run_for_release" -eq "0" ]]
 then
-   histologies_file=../../data/pbta-histologies.tsv
+   histologies_file=${data_dir}/pbta-histologies.tsv
 else
-   histologies_file=../../data/pbta-histologies-base.tsv
+   histologies_file=${data_dir}/pbta-histologies-base.tsv
 fi
 
 # Unless told to run the plots, the default is to skip them
@@ -41,10 +48,10 @@ run_plots_nb=${OPENPBTA_PLOTS:-0}
 echo "Setting up Database"
 python3 scripts/01-setup_db.py \
   --db-file $dbfile \
-  --strelka-file ../../data/pbta-snv-strelka2.vep.maf.gz \
-  --mutect-file ../../data/pbta-snv-mutect2.vep.maf.gz \
-  --lancet-file ../../data/pbta-snv-lancet.vep.maf.gz \
-  --vardict-file ../../data/pbta-snv-vardict.vep.maf.gz \
+  --strelka-file ${data_dir}/pbta-snv-strelka2.vep.maf.gz \
+  --mutect-file ${data_dir}/pbta-snv-mutect2.vep.maf.gz \
+  --lancet-file ${data_dir}/pbta-snv-lancet.vep.maf.gz \
+  --vardict-file ${data_dir}/pbta-snv-vardict.vep.maf.gz \
   --meta-file $histologies_file
 
 ##################### Merge callers' files into total files ####################
@@ -65,15 +72,15 @@ python3 scripts/01-setup_db.py \
 # Make All mutations BED files
 echo "Making intersection bed files"
 bedtools intersect \
-  -a ../../data/WGS.hg38.strelka2.unpadded.bed \
-  -b ../../data/WGS.hg38.mutect2.vardict.unpadded.bed \
+  -a ${data_dir}/WGS.hg38.strelka2.unpadded.bed \
+  -b ${data_dir}/WGS.hg38.mutect2.vardict.unpadded.bed \
   > $wgs_bed
 
 #################### Make coding regions file
 # Convert GTF to BED file for use in bedtools
 # Here we are only extracting lines with as a CDS i.e. are coded in protein
 echo "Making CDS bed file"
-gunzip -c ../../data/gencode.v27.primary_assembly.annotation.gtf.gz \
+gunzip -c ${data_dir}/gencode.v27.primary_assembly.annotation.gtf.gz \
   | awk '$3 ~ /CDS/' \
   | convert2bed --do-not-sort --input=gtf - \
   | sort -k 1,1 -k 2,2n \
