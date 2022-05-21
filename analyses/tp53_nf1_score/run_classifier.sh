@@ -32,6 +32,9 @@ cd "$analysis_dir" || exit
 
 data_dir="../../data"
 scratch_dir="../../scratch/tp53-classifier"
+# Make sure scratch directory exists
+mkdir -p $scratch_dir
+
 # cds gencode bed file
 cds_file="${scratch_dir}/gencode.v27.primary_assembly.annotation.bed"
 snvconsensus_file="${data_dir}/pbta-snv-consensus-mutation.maf.tsv.gz"
