@@ -64,7 +64,6 @@ polya_expression <-
 
 
 # Read in focal CN data
-## TODO: If annotated files get included in data download
 cn_df <- read_tsv(file.path(
   root_dir,
   "data",
@@ -73,8 +72,8 @@ cn_df <- read_tsv(file.path(
 
 # Read in fusion data
 fusion_df <- read_tsv(
-  file.path(root_dir, 
-            "data", 
+  file.path(root_dir,
+            "data",
             "pbta-fusion-putative-oncogenic.tsv"))
 
 # Read in GISTIC `broad_values_by_arm.txt` file
@@ -105,11 +104,11 @@ keep_cols <- c("Chromosome",
 snv_consensus_maf <- data.table::fread(
   file.path(root_dir, "data" , "pbta-snv-consensus-mutation.maf.tsv.gz"),
   select = keep_cols,
-  data.table = FALSE) 
+  data.table = FALSE)
 ## Read in snv hotspot mutation data
 snv_hotspot_maf <- data.table::fread(
-  file.path(root_dir, 
-            "data", 
+  file.path(root_dir,
+            "data",
             "pbta-snv-scavenged-hotspots.maf.tsv.gz"),
   select = keep_cols,
   data.table = FALSE) %>%
@@ -154,7 +153,7 @@ path_dx_df <- tumor_metadata_df %>%
   filter(pathology_diagnosis %in% path_dx_list$exact_path_dx |
          # Inclusion based on pathology free text diagnosis
          pathology_free_text_diagnosis ==path_dx_list$gliomatosis_path_free_text_exact)
-  
+
 
 # Now samples on the basis of the defining lesions
 hgg_sample_ids <- hgg_lesions_df %>%

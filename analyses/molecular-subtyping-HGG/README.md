@@ -2,9 +2,6 @@
 
 **Module authors:** Chante Bethell ([@cbethell](https://github.com/cbethell)), Stephanie J. Spielman([@sjspielman](https://github.com/sjspielman)), and Jaclyn Taroni ([@jaclyn-taroni](https://github.com/jaclyn-taroni))
 
-**Note: The files in the `hgg-subset` directory were generated via `02-HGG-molecular-subtyping-subset-files.R` using the the files in the version 17 data release.
-When re-running this module, you may want to regenerate the HGG subset files using the most recent data release.**
-
 ## Usage
 
 When running specifically for the purpose of regenerating molecular subtypes, it can be helpful to skip notebooks that do not directly inform the subtypes (e.g., create plots that were used to revisit diagnoses earlier in the project).
