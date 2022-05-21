@@ -3,10 +3,9 @@
 set -e
 set -o pipefail
 
-# This script runs RNA-seq summary modules 
-# when new RNA samples are added to OpenPBTA
-# Subtyping modules then need to be re-run for 
-# these new samples when needed for data release
+# This script runs any analysis modules required for subtyping that *are not*
+# using `scripts/generate-analysis-files-for-release.sh` and then runs
+# molecular subtyping modules in the required order as needed for data release
 
 ## Step 1. Generate summary files needed for subtyping that are not included in data download
 
