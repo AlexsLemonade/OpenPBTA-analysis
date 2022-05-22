@@ -415,6 +415,7 @@ RUN R -e "remotes::install_github('coolbutuseless/ggpattern', ref = '390e13fead0
 RUN ./install_bioc.r \
     ggforce
 
+RUN Rscript -e "library(medulloPackage)"
 
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
