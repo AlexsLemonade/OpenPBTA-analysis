@@ -415,7 +415,8 @@ RUN R -e "remotes::install_github('coolbutuseless/ggpattern', ref = '390e13fead0
 RUN ./install_bioc.r \
     ggforce
 
-RUN Rscript -e "library(medulloPackage)"
+RUN  R -e "remotes::install_github('d3b-center/medullo-classifier-package', ref = 'e3d12f64e2e4e00f5ea884f3353eb8c4b612abe8', dependencies = TRUE, upgrade = FALSE)" \
+   && Rscript -e "library(medulloPackage)"
 
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
