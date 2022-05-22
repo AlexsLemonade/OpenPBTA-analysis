@@ -48,12 +48,15 @@ The code to generate genelistreference.txt and fusionreference.txt is available 
 * pbta-fusion-recurrently-fused-genes-bysample.tsv
 
 ### Run script
-use OPENPBTA_BASE_SUBTYPING=1 to run this module using the pbta-histologies-base.tsv from data folder while running molecular-subtyping modules for release.
+
+Use `OPENPBTA_BASE_RELEASE=1` to run this module using the `pbta-histologies-base.tsv` from data folder while running for release:
+
 ```sh
-OPENPBTA_BASE_SUBTYPING=1 run_fusion_merged.sh 
+OPENPBTA_BASE_RELEASE=1 bash run_fusion_merged.sh 
 ```
 
-OR by default uses pbta-histologies.tsv from data folder
+OR by default uses `pbta-histologies.tsv` from `data` folder
+
 ```sh
 bash run_fusion_merged.sh
 ```
