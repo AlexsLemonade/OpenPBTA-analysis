@@ -32,10 +32,7 @@ clinical <- readr::read_tsv(file.path(dataDir, "pbta-histologies-base.tsv"),
 
 # get ewings fusion calls from fusion-summary results file
 ewings_foi_bsids <- readr::read_tsv(
-  file.path(root_dir, 
-            "analyses",
-            "fusion-summary",
-            "results",
+  file.path(dataDir,
             "fusion_summary_ewings_foi.tsv")
   ) 
 
@@ -126,8 +123,4 @@ ews_subtype
 ews_subtype %>%
   readr::write_tsv(file.path(results_dir, "EWS_results.tsv"))
 ```
-
-
-
-
 
