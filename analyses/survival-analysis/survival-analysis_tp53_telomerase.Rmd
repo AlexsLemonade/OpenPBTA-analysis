@@ -92,7 +92,15 @@ histologies_rna <- read_tsv(metadata_file, guess_max = 10000) %>%
     sample_id == "7316-116" ~ "Biopsy only",
     sample_id == "7316-182" ~ "Partial resection",
     TRUE ~ as.character(extent_of_tumor_resection))) %>%
-  select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID_RNA, sample_id, cancer_group, OS_status, OS_days, PFS_days, extent_of_tumor_resection) %>%
+  select(Kids_First_Participant_ID, 
+         Kids_First_Biospecimen_ID_RNA, 
+         sample_id, 
+         broad_histology,
+         cancer_group, 
+         OS_status, 
+         OS_days, 
+         PFS_days, 
+         extent_of_tumor_resection) %>%
   distinct() 
   
 # read in tp53 scores
@@ -140,7 +148,7 @@ meta_indep_grouped <- meta_indep %>%
                              hgg_levels[2], # second is HGG 
                              hgg_levels[1]), # first is non-HGG
           hgg_group = factor(hgg_group, levels = hgg_levels), # ensures non-HGG is the reference level
-          lgg_group = ifelse(cancer_group == "Low-grade glioma astrocytoma",
+          lgg_group = ifelse(broad_histology == "Low-grade astrocytic tumor",
                              lgg_levels[2], # second is LGG 
                              lgg_levels[1]), # first is non-LGG
           lgg_group = factor(lgg_group, levels = lgg_levels) # ensures non-HGG is the reference level
