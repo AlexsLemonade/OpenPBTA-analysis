@@ -14,7 +14,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 # The gzipped SEG file to use and a "nickname" for it
 # The FILEPREFIX is appended to the base file name for the
 # gunzipped version of the file in scratch
-SEGFILE=${SEGFILE:-"../../../data/pbta-cnv-consensus.seg.gz"}
+SEGFILE=${SEGFILE:-"../results/pbta-cnv-consensus-gistic-only.seg.gz"}
 FILEPREFIX=${FILEPREFIX:-"consensus"}
 
 # An array list file is used if we want to subset the cohort, by default
