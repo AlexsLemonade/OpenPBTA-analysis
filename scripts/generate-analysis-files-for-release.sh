@@ -114,7 +114,6 @@ if [ "$RUN_LOCAL" -lt "1" ]; then
   
   # Move over the consensus with status file 
   cp ${scratch_dir}/consensus_seg_with_status.tsv ${compiled_dir}
-  mv ${compiled_dir}/consensus_seg_with_status.tsv ${compiled_dir}/pbta-cnv-consensus_seg_with_status.tsv
 
 fi
 
