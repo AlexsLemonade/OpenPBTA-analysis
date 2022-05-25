@@ -9,12 +9,24 @@ set -o pipefail
 # Need to adjust minimum samples to plot if in CI:
 IS_CI=${OPENPBTA_TESTING:-0}
 
+# If running for subtyping, use the base histologies file by setting this to 1
+RUN_FOR_SUBTYPING=${OPENPBTA_BASE_SUBTYPING:-0}
+
 # Set the working directory to the directory of this file
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 # Data and scratch directories
 data_dir=../../data
 scratch_dir=../../scratch
+
+# Use the base file for subtyping
+if [[ "$RUN_FOR_SUBTYPING" -eq "0" ]]
+then
+   histology_file="${data_dir}/pbta-histologies.tsv"
+else
+  histology_file="${data_dir}/pbta-histologies-base.tsv"
+fi
+
 
 # To avoid conflicts, we're going to create a folder within scratch specifically
 # for this module
@@ -37,9 +49,9 @@ surveyed_wgs=${module_scratch_dir}/cnv_surveyed_wgs.bed
   -b ${cn_consensus_dir}/ref/cnv_excluded_regions.bed > $surveyed_wgs
 
 # WXS effectively surveyed BED file
-# Currently there is no WXS CNV data in the data release, so this WXS BED file is 
-# just a place holder for if that happens and is not actually used. 
-# TODO: If WXS data is added, we may also want to subtract <unsurveyed_regions.bed> 
+# Currently there is no WXS CNV data in the data release, so this WXS BED file is
+# just a place holder for if that happens and is not actually used.
+# TODO: If WXS data is added, we may also want to subtract <unsurveyed_regions.bed>
 # regions from this BED regions as well (like is done above with WGS)
 surveyed_wxs=${data_dir}/WXS.hg38.100bp_padded.bed
 
@@ -47,7 +59,7 @@ surveyed_wxs=${data_dir}/WXS.hg38.100bp_padded.bed
 Rscript 00-setup-breakpoint-data.R \
   --cnv_seg ${data_dir}/pbta-cnv-consensus.seg.gz \
   --sv ${data_dir}/pbta-sv-manta.tsv.gz \
-  --metadata ${data_dir}/pbta-histologies.tsv \
+  --metadata ${histology_file} \
   --uncalled ${cn_consensus_dir}/results/uncalled_samples.tsv \
   --output breakpoint-data \
   --surveyed_wgs $surveyed_wgs \
