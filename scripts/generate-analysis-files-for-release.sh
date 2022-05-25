@@ -78,7 +78,7 @@ if [ "$RUN_LOCAL" -lt "1" ]; then
 
   # Run hotspot detection
   echo "Run hotspots detection"
-  bash ${analyses_dir}/hotspots-detection/run_overlaps_hotspots.sh
+  bash ${analyses_dir}/hotspots-detection/run_overlaps_hotspot.sh
 
   # Copy over hotspots detection
   cp ${analyses_dir}/hotspots-detection/results/pbta-snv-scavenged-hotspots.maf.tsv.gz ${compiled_dir}

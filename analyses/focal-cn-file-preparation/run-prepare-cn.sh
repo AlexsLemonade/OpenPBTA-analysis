@@ -60,8 +60,11 @@ Rscript --vanilla 04-prepare-cn-file.R \
 # Define most focal units of recurrent CNVs
 Rscript --vanilla -e "rmarkdown::render('05-define-most-focal-cn-units.Rmd', clean = TRUE)"
 
-# Define the recurrent calls
-Rscript --vanilla -e "rmarkdown::render('06-find-recurrent-calls.Rmd', clean = TRUE)"
+# Define the recurrent calls - not run for data release
+if [[ "$RUN_FOR_RELEASE" -eq "0" ]]
+then
+  Rscript --vanilla -e "rmarkdown::render('06-find-recurrent-calls.Rmd', clean = TRUE)"
+fi
 
 libraryStrategies=("polya" "stranded")
 chromosomesType=("autosomes" "x_and_y")
@@ -118,3 +121,4 @@ if [ "$RUN_ORIGINAL" -gt "0" ]; then
   done
 
 fi
+
