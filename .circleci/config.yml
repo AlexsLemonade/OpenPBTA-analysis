@@ -44,7 +44,7 @@ jobs:
 
       - run:
           name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors
-          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
+          command: OPENPBTA_TESTING=1 OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
 
       - run:
           name: Molecular Subtyping and Plotting - ATRT
@@ -291,7 +291,7 @@ jobs:
     steps:
       - checkout
       - run: ./scripts/run_in_ci.sh echo 'Building image!'
-      - run: docker login --username $DOCKER_ID --password-stdin $DOCKER_PASSWD
+      - run: docker login --username $DOCKER_ID --password $DOCKER_PASSWD
       - run: docker tag open-pbta ccdlopenpbta/open-pbta:latest
       - run: docker push ccdlopenpbta/open-pbta:latest
 

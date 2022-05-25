@@ -3,44 +3,20 @@
 set -e
 set -o pipefail
 
-# This script runs RNA-seq summary modules 
-# when new RNA samples are added to OpenPBTA
-# Subtyping modules then need to be re-run for 
-# these new samples when needed for data release
+# This script runs any analysis modules required for subtyping that *are not*
+# using `scripts/generate-analysis-files-for-release.sh` and then runs
+# molecular subtyping modules in the required order as needed for data release
 
-OPENPBTA_BASE_SUBTYPING=1
+## Step 1. Generate summary files needed for subtyping that are not included in data download
 
-## Step 1. Generate summary files needed for subtyping
-
-echo "Create collapse rsem files"
-OPENPBTA_BASE_SUBTYPING=1 ../analyses/collapse-rnaseq/run-collapse-rnaseq.sh
-
-echo "Create independent sample list"
-OPENPBTA_BASE_SUBTYPING=1 ../analyses/independent-samples/run-independent-samples.sh 
-
-echo "Create fusion filtered list" 
-OPENPBTA_BASE_SUBTYPING=1 ../analyses/fusion_filtering/run_fusion_merged.sh
-
-echo "Run fusion summary for subtypes"
-OPENPBTA_BASE_SUBTYPING=1 ../analyses/fusion-summary/run-new-analysis.sh
-
-echo "Run tsne"
-OPENPBTA_BASE_SUBTYPING=1 ../analyses/transcriptomic-dimension-reduction/dimension-reduction-plots.sh
-
-echo "Run gsea"
-OPENPBTA_BASE_SUBTYPING=1 ../analyses/gene-set-enrichment-analysis/run-gsea.sh
-
-echo "Run cnv consensus"
-../analyses/copy_number_consensus_call/run_consensus_call.sh
-
-echo "Run focal cnv"
-OPENPBTA_BASE_SUBTYPING=1 ../analyses/focal-cn-file-preparation/run-prepare-cn.sh
-
-echo "Run gistic"
-OPENPBTA_BASE_SUBTYPING=1 ../analyses/run-gistic/run-gistic-module.sh 
+echo "Run GSVA"
+OPENPBTA_BASE_SUBTYPING=1 bash ../analyses/gene-set-enrichment-analysis/run-gsea.sh
 
 echo "TP53 altered score"
-OPENPBTA_BASE_SUBTYPING=1 ../analyses/tp53_nf1_score/run_classifier.sh
+OPENPBTA_BASE_SUBTYPING=1 bash ../analyses/tp53_nf1_score/run_classifier.sh
+
+echo "Chromosomal instability"
+OPENPBTA_BASE_SUBTYPING=1 bash ../analyses/chromosomal-instability/run_breakpoint_analysis.sh
 
 ## Step 2. Run subtyping modules
 

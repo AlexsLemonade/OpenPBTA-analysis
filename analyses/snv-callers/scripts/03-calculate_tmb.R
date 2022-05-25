@@ -8,7 +8,6 @@
 #
 # --db_file : Path to sqlite database file made from 01-setup_db.py
 # --metadata : Relative file path to MAF file to be analyzed. Can be .gz compressed.
-#              Assumes file path is given from top directory of 'OpenPBTA-analysis'.
 # --coding_regions : File path that specifies the BED regions file that specifies
 #                     coding regions that should be used for coding only TMB calculations.
 # --overwrite : If specified, will overwrite any files of the same name. Default is FALSE.
@@ -29,10 +28,11 @@
 ################################ Initial Set Up ################################
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+analysis_dir <- file.path(root_dir, "analyses", "snv-callers")
 
 # Import special functions
-source(file.path(root_dir, "analyses", "snv-callers", "util", "tmb_functions.R"))
-source(file.path(root_dir, "analyses", "snv-callers", "util", "split_mnv.R"))
+source(file.path(analysis_dir, "util", "tmb_functions.R"))
+source(file.path(analysis_dir, "util", "split_mnv.R"))
 
 # Magrittr pipe
 `%>%` <- dplyr::`%>%`
@@ -94,10 +94,6 @@ option_list <- list(
 # Parse options
 opt <- parse_args(OptionParser(option_list = option_list))
 
-# Make everything relative to root path
-opt$metadata <- file.path(root_dir, opt$metadata)
-opt$db_file <- file.path(root_dir, opt$db_file)
-opt$coding_regions <- file.path(root_dir, opt$coding_regions)
 
 ########### Check that the files we need are in the paths specified ############
 needed_files <- c(
@@ -117,8 +113,6 @@ if (!all(files_found)) {
 }
 
 ############################### Set Up Output #####################################
-# Set and make the plots directory
-opt$output <- file.path(root_dir, opt$output)
 
 # Make output folder
 if (!dir.exists(opt$output)) {
@@ -260,7 +254,7 @@ if (opt$tcga) {
     # Make a Target BED regions column
     dplyr::mutate(
       target_bed = dplyr::recode(experimental_strategy,
-        "WGS" = "scratch/intersect_strelka_mutect_WGS.bed",
+        "WGS" = "scratch/snv-callers/intersect_strelka_mutect_WGS.bed",
         "WXS" = "data/WXS.hg38.100bp_padded.bed"
         #TODO: make a padded/unpadded script option
       ),
