@@ -12,8 +12,8 @@ RUN_ORIGINAL=${RUN_ORIGINAL:-0}
 # Run testing files for circle CI - will not by default
 IS_CI=${OPENPBTA_TESTING:-0}
 
-# Run for subtyping
-RUN_FOR_SUBTYPING=${OPENPBTA_BASE_SUBTYPING:-0}
+# Run for data release
+RUN_FOR_RELEASE=${OPENPBTA_BASE_RELEASE:-0}
 
 # This script should always run as if it were being called from
 # the directory it lives in.
@@ -26,7 +26,7 @@ scratch_dir=../../scratch
 data_dir=../../data
 results_dir=../../analyses/focal-cn-file-preparation/results
 
-if [[ RUN_FOR_SUBTYPING == "0" ]]
+if [[ "$RUN_FOR_RELEASE" -eq "0" ]]
 then
    histologies_file="${data_dir}/pbta-histologies.tsv"
 else
@@ -38,7 +38,7 @@ goi_file=../../analyses/oncoprint-landscape/driver-lists/brain-goi-list-long.txt
 independent_specimens_file=${data_dir}/independent-specimens.wgswxs.primary.tsv
 
 # Prep the consensus SEG file data
-Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING), clean = TRUE)"
+Rscript --vanilla -e "rmarkdown::render('02-add-ploidy-consensus.Rmd',params=list(base_run = $RUN_FOR_RELEASE), clean = TRUE)"
 
 # Run snakemake script implementing `bedtools coverage` for each sample bed file in
 # `scratch/cytoband_status` -- these files are generated in
@@ -60,8 +60,11 @@ Rscript --vanilla 04-prepare-cn-file.R \
 # Define most focal units of recurrent CNVs
 Rscript --vanilla -e "rmarkdown::render('05-define-most-focal-cn-units.Rmd', clean = TRUE)"
 
-# Define the recurrent calls
-Rscript --vanilla -e "rmarkdown::render('06-find-recurrent-calls.Rmd', clean = TRUE)"
+# Define the recurrent calls - not run for data release
+if [[ "$RUN_FOR_RELEASE" -eq "0" ]]
+then
+  Rscript --vanilla -e "rmarkdown::render('06-find-recurrent-calls.Rmd', clean = TRUE)"
+fi
 
 libraryStrategies=("polya" "stranded")
 chromosomesType=("autosomes" "x_and_y")
@@ -118,3 +121,4 @@ if [ "$RUN_ORIGINAL" -gt "0" ]; then
   done
 
 fi
+

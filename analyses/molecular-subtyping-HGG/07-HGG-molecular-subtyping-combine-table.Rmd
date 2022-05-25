@@ -166,11 +166,7 @@ Are these samples present in the files prior to subsetting in [`02-HGG-molecular
 ```{r}
 # read in full file
 putative_oncogenic_df <-
-  read_tsv(file.path(root_dir,
-    "analyses",
-    "fusion_filtering",
-    "results",
-    "pbta-fusion-putative-oncogenic.tsv"))
+  read_tsv(file.path(data_dir, "pbta-fusion-putative-oncogenic.tsv"))
 ```
 
 ```{r}
