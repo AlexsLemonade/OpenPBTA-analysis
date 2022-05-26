@@ -107,9 +107,11 @@ fi
 # plot ROC curves for poly-A and stranded data
 Rscript 07-plot-roc.R
 
+# Skip plotting steps for subtyping
+if [[ "$RUN_FOR_SUBTYPING" -eq "0" ]]; then
 # create violin plots of TP53 scores across molecular subtypes per broad histology
-Rscript 08-compare-molecularsubtypes-tp53scores.R
+  Rscript 08-compare-molecularsubtypes-tp53scores.R
 
 # create boxplots by broad histology, cancer group
-Rscript 09-compare-histologies.R
-
+  Rscript 09-compare-histologies.R
+fi
