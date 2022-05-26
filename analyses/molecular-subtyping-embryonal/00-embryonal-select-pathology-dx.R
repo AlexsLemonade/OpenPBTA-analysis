@@ -19,7 +19,6 @@ output_file <- file.path(root_dir,
 path_dx_terms<- c(
   "Supratentorial or Spinal Cord PNET",
   "Embryonal Tumor with Multilayered Rosettes",
-  "Embryonal Tumor with Multilayered Rosettes (ETMR)",
   "Embryonal Tumor with Multilayered Rosettes (ETMR);High-grade glioma/astrocytoma (WHO grade III/IV)"
 )
 
