@@ -67,17 +67,22 @@ Rscript 00-setup-breakpoint-data.R \
   --gap 5 \
   --drop_sex
 
+
+# Run only localization for subtyping, and not plots
 ######################### Localization calculations ############################
 Rscript -e "rmarkdown::render('01-localization-of-breakpoints.Rmd',
                               clean = TRUE)"
 
+if [[ "$RUN_FOR_SUBTYPING" -eq "0" ]]; then
 ######################### Chromosomal Instability Plots ########################
 # Circos plots examples:
-Rscript -e "rmarkdown::render('01b-visualization-cnv-sv.Rmd',
+  Rscript -e "rmarkdown::render('01b-visualization-cnv-sv.Rmd',
                               clean = TRUE)"
 # Heatmaps:
-Rscript -e "rmarkdown::render('02a-plot-chr-instability-heatmaps.Rmd',
+  Rscript -e "rmarkdown::render('02a-plot-chr-instability-heatmaps.Rmd',
                               clean = TRUE)"
+fi
+
 # Histology plots:
 if [ $IS_CI -gt 0 ]
 then
@@ -86,5 +91,8 @@ else
   MIN_SAMPLES=5
 fi
 echo $MIN_SAMPLES
+
+if [[ "$RUN_FOR_SUBTYPING" -eq "0" ]]; then
 Rscript -e "rmarkdown::render('02b-plot-chr-instability-by-histology.Rmd',
                               clean = TRUE, params = list(min_samples=${MIN_SAMPLES}))"
+fi
