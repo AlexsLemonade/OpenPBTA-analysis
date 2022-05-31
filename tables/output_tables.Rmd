@@ -7,7 +7,7 @@ output:
     toc: TRUE
     toc_float: TRUE
 params:
-  release: release-v21-20210820
+  release: release-v22-20220505
 ---
 
 ```{r setup, include=FALSE}
@@ -152,9 +152,9 @@ soi_df %>%
 
 ```
 
-## Table S1: V21 histologies table
+## Table S1: V22 histologies table
 
-```{r v21 histology as excel}
+```{r v22 histology as excel}
 # Sheet 1: README tab
 
 readme <- tribble(
@@ -183,7 +183,6 @@ readme <- tribble(
 "Notes","Free text field describing changes from `pathology_diagnosis` to `integrated_diagnosis` or manner in which molecular_subtype was determined","text",
 "OS_days","Overall survival in days","numeric",
 "OS_status","Overall survival status",paste(unique(histology_df$OS_status), collapse = "; "),
-"parent_aliquot_id","External identifier combining sample_id; sample_type; aliquot_id; sequencing_strategy for some samples","alphanumeric",
 "pathology_diagnosis","Reported and/or harmonized patient diagnosis from pathology reports","text",
 "pathology_free_text_diagnosis","Free text patient diagnosis from pathology reports","text",
 "PFS_days","Progression-free survival in days","numeric",
@@ -200,16 +199,7 @@ readme <- tribble(
 "tumor_ploidy","Control-FREEC ploidy","numeric"
 )
 
-# Sheet 2: Define array of samples that need to be classified from [ticket](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1206) which are not in v21, but set to be changed in final release [v22](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1207)
-to_be_classified_samples <- c("BS_3J4T2YYW", "BS_7F07M7JG", "BS_AG0BZN6F", "BS_HZNKSQ17", "BS_V6HKXX1Z", "BS_WP9J88EB", "BS_YYAPSA5P")
-
-histologies_table <- histology_df %>% 
-  # Update definitions of molecular subtype for TBD samples
-  mutate(molecular_subtype = ifelse(
-    Kids_First_Biospecimen_ID %in% to_be_classified_samples,
-    "MB, To be classified",
-    molecular_subtype
-  ))
+# Sheet 2: Histologies file (histology_df)
 
 # Sheet 3: CNS region definition based on definitions from [Cassie Kline](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/tables/input/CNS_primary_site_match.json) with additional manual review of [HGG primary_site](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1025). 
 # This is integrated upstream of molecular subtyping
@@ -221,7 +211,7 @@ cns_regions_df <- purrr::imap_dfr(jsonlite::fromJSON(CNS_match_json),
 
 # Combine and output
 list_s1_table <- list(README = readme,
-                      histologies_file = histologies_table,
+                      histologies_file = histology_df,
                       CNS_region_definitions = cns_regions_df
                       )
 write.xlsx(list_s1_table, 
