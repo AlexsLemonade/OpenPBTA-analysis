@@ -5,9 +5,12 @@
 set -e
 set -o pipefail
 
+# Set the working directory to the directory of this file
+cd "$(dirname "${BASH_SOURCE[0]}")"
+
 # Set defaults for release and biospecimen file name
 BIOSPECIMEN_FILE=${BIOSPECIMEN_FILE:-biospecimen_ids_for_subset.RDS}
-RELEASE=${RELEASE:-release-v21-20210820}
+RELEASE=${RELEASE:-release-v22-20220505}
 NUM_MATCHED=${NUM_MATCHED:-15}
 
 # This option controls whether or not the two larger MAF files are skipped as
