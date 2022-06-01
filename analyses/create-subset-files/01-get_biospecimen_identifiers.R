@@ -77,6 +77,9 @@ get_biospecimen_ids <- function(filename, id_mapping_df) {
   } else if (grepl("consensus_seg_annotated", filename)) {
     annotated_cn_file <- read_tsv(filename)
     biospecimen_ids <- unique(annotated_cn_file$biospecimen_id)
+  } else if (grepl("consensus_seg_with_status", filename)) {
+    cn_seg_status_file <- read_tsv(filename)
+    biospecimen_ids <- unique(cn_seg_status_file$Kids_First_Biospecimen_ID)
   } else if (grepl("pbta-fusion", filename)) {
     fusion_file <- read_tsv(filename)
     # the biospecimen IDs in the filtered/prioritize fusion list included with
