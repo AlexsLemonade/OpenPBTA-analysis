@@ -31,6 +31,8 @@ cd "$script_directory" || exit
 # generated via these scripts
 FULL_DIRECTORY=../../data/$RELEASE
 SUBSET_DIRECTORY=../../data/testing/$RELEASE
+# If run subsetting only, we need to make this directory
+mkdir -p $SUBSET_DIRECTORY
 
 #### generate subset files -----------------------------------------------------
 
