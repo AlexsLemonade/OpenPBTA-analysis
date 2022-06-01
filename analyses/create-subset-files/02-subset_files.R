@@ -101,7 +101,7 @@ subset_files <- function(filename, biospecimen_ids, output_directory) {
     annotated_cn_file %>%
       dplyr::filter(biospecimen_id %in% biospecimen_ids) %>%
       readr::write_tsv(output_file)
-    else if (grepl("consensus_seg_with_status", filename)) {
+  } else if (grepl("consensus_seg_with_status", filename)) {
       cn_seg_status_file <- readr::read_tsv(filename)
       cn_seg_status_file %>%
         dplyr::filter(Kids_First_Biospecimen_ID %in% biospecimen_ids) %>%
