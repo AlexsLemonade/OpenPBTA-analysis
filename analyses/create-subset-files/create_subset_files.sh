@@ -7,13 +7,13 @@ set -o pipefail
 
 # Set defaults for release and biospecimen file name
 BIOSPECIMEN_FILE=${BIOSPECIMEN_FILE:-biospecimen_ids_for_subset.RDS}
-RELEASE=${RELEASE:-release-v21-20210820}
+RELEASE=${RELEASE:-release-v22-20220505}
 NUM_MATCHED=${NUM_MATCHED:-15}
 
 # This option controls whether or not the two larger MAF files are skipped as
 # part of subsetting -- the idea is that setting RUN_LOCAL=1 will allow for
 # local testing
-RUN_LOCAL=${RUN_LOCAL:-0}
+RUN_LOCAL=${RUN_LOCAL:-1}
 
 # Use SKIP_SUBSETTING=1 to skip the subsetting steps and only copy full files
 # and generate a new md5sum.txt file - this can be useful if the only files
