@@ -18,7 +18,7 @@ RUN_LOCAL=${RUN_LOCAL:-1}
 # Use SKIP_SUBSETTING=1 to skip the subsetting steps and only copy full files
 # and generate a new md5sum.txt file - this can be useful if the only files
 # getting updated in a release are those that are copied in full
-SKIP_SUBSETTING=${SKIP_SUBSETTING:-1}
+SKIP_SUBSETTING=${SKIP_SUBSETTING:-0}
 
 # This script should always run as if it were being called from
 # the directory it lives in.
@@ -32,8 +32,7 @@ cd "$script_directory" || exit
 FULL_DIRECTORY=../../data/$RELEASE
 SUBSET_DIRECTORY=../../data/testing/$RELEASE
 # If run subsetting only, we need to make this directory
-if [ ! -d ${SUBSET_DIRECTORY} ]
-then
+if [ ! -d ${SUBSET_DIRECTORY} ]; then
     mkdir -p ${SUBSET_DIRECTORY}
 fi
 
