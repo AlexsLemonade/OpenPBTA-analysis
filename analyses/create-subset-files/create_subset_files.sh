@@ -13,12 +13,12 @@ NUM_MATCHED=${NUM_MATCHED:-15}
 # This option controls whether or not the two larger MAF files are skipped as
 # part of subsetting -- the idea is that setting RUN_LOCAL=1 will allow for
 # local testing
-RUN_LOCAL=${RUN_LOCAL:-0}
+RUN_LOCAL=${RUN_LOCAL:-1}
 
 # Use SKIP_SUBSETTING=1 to skip the subsetting steps and only copy full files
 # and generate a new md5sum.txt file - this can be useful if the only files
 # getting updated in a release are those that are copied in full
-SKIP_SUBSETTING=${SKIP_SUBSETTING:-0}
+SKIP_SUBSETTING=${SKIP_SUBSETTING:-1}
 
 # This script should always run as if it were being called from
 # the directory it lives in.
@@ -32,7 +32,10 @@ cd "$script_directory" || exit
 FULL_DIRECTORY=../../data/$RELEASE
 SUBSET_DIRECTORY=../../data/testing/$RELEASE
 # If run subsetting only, we need to make this directory
-mkdir -p $SUBSET_DIRECTORY
+if [ ! -d ${SUBSET_DIRECTORY} ]
+then
+    mkdir -p ${SUBSET_DIRECTORY}
+fi
 
 #### generate subset files -----------------------------------------------------
 
