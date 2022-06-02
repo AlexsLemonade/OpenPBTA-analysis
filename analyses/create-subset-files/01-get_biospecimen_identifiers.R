@@ -57,7 +57,7 @@ get_biospecimen_ids <- function(filename, id_mapping_df) {
     # 'Tumor_Sample_Barcode'
     # if the files have consensus in the name, the first line of the file does
     # not contain MAF version information
-    if (grepl("consensus|hotspots", filename)) {
+    if (grepl("consensus|hotspots|tmb", filename)) {
       snv_file <- data.table::fread(filename, data.table = FALSE)
     } else {
       snv_file <- data.table::fread(filename,
@@ -134,7 +134,7 @@ option_list <- list(
   make_option(
     c("-r", "--supported_string"),
     type = "character",
-    default = "pbta-snv|pbta-cnv|pbta-fusion|pbta-isoform|pbta-sv|pbta-gene|consensus_seg_annotated",
+    default = "pbta-snv|pbta-cnv|pbta-fusion|pbta-isoform|pbta-sv|pbta-gene|consensus_seg_annotated|consensus_seg_with_status",
     help = "string for pattern matching used to subset to only supported files"
   ),
   make_option(
