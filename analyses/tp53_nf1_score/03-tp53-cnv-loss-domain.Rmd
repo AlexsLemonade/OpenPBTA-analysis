@@ -42,20 +42,9 @@ if (!dir.exists(results_dir)) {
 
 ### Input files
 
-`02-add-ploidy-consensus.Rmd` in focal-cn-file-preparation adds ploidy information to the consensus SEG file and adds a status column that defines gain and loss broadly.
-
-```
-Rscript -e "rmarkdown::render('analyses/focal-cn-file-preparation/02-add-ploidy-consensus.Rmd', clean = TRUE)"
-```
-
-consensus_seg_with_status.tsv was copied from scratch to input folder here so we can access the file in this notebook 
-
 ```{r}
 # consensus seg for file for the location of CNVs
-consensus_seg <- read_tsv(file.path(root_dir, 
-                                    "analyses",
-                                    "tp53_nf1_score",
-                                    "input",
+consensus_seg <- read_tsv(file.path(data_dir,
                                     "consensus_seg_with_status.tsv"))
 
 # Gene location and domain overlap file 
