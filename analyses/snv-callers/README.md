@@ -180,7 +180,6 @@ Two TMB files are created, one including *all snv* and a *coding snvs only*, the
 ```
  --db_file : Path to sqlite database file made from 01-setup_db.py
  --metadata : Relative file path to MAF file to be analyzed. Can be .gz compressed.
-              Assumes file path is given from top directory of 'OpenPBTA-analysis'.
  --all_bed_wgs : File path that specifies the BED regions file to be used for the
                  denominator for all mutations TMB for WGS samples.
  --all_bed_wxs : File path that specifies the BED regions file to be used for the

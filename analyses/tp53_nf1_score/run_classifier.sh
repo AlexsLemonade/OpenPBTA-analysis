@@ -31,7 +31,10 @@ analysis_dir="$(perl -e 'use File::Basename;
 cd "$analysis_dir" || exit
 
 data_dir="../../data"
-scratch_dir="../../scratch"
+scratch_dir="../../scratch/tp53-classifier"
+# Make sure scratch directory exists
+mkdir -p $scratch_dir
+
 # cds gencode bed file
 cds_file="${scratch_dir}/gencode.v27.primary_assembly.annotation.bed"
 snvconsensus_file="${data_dir}/pbta-snv-consensus-mutation.maf.tsv.gz"
@@ -60,7 +63,7 @@ Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
   --outputFolder ${analysis_dir}/results \
   --gencode ${cds_file}
 
-# If running for the purpose of figure generation (RUN_FOR_FIGURES will be 1), 
+# If running for the purpose of figure generation (RUN_FOR_FIGURES will be 1),
 # use the data in the analysis directory that has been freshly collapsed
 if [[ "$RUN_FOR_FIGURES" -eq "0" ]]
 then
@@ -84,10 +87,6 @@ python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_stranded}
 # check correlation expression and scores
 Rscript -e "rmarkdown::render('${analysis_dir}/02-qc-rna_expression_score.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
-# gather consensus seg file with status
-Rscript -e "rmarkdown::render('../focal-cn-file-preparation/02-add-ploidy-consensus.Rmd', clean = TRUE)"
-cp ${scratch_dir}/consensus_seg_with_status.tsv ${analysis_dir}/input/consensus_seg_with_status.tsv
-
 # subset cnv where tp53 is lost
 Rscript -e "rmarkdown::render('${analysis_dir}/03-tp53-cnv-loss-domain.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
@@ -108,9 +107,11 @@ fi
 # plot ROC curves for poly-A and stranded data
 Rscript 07-plot-roc.R
 
+# Skip plotting steps for subtyping
+if [[ "$RUN_FOR_SUBTYPING" -eq "0" ]]; then
 # create violin plots of TP53 scores across molecular subtypes per broad histology
-Rscript 08-compare-molecularsubtypes-tp53scores.R
+  Rscript 08-compare-molecularsubtypes-tp53scores.R
 
 # create boxplots by broad histology, cancer group
-Rscript 09-compare-histologies.R
-
+  Rscript 09-compare-histologies.R
+fi
