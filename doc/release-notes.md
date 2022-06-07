@@ -1,13 +1,13 @@
 # release notes
 ## current release
 ### release-v22-20220505
-- release date: 2022-06-XX
+- release date: 2022-06-08
 - status: available
 - changes:
   - `consensus_seg_with_status.tsv` (from `focal-cn-prep`) was added to the release since it is being used in the `tp53-nf1-score` module
-  - `pbta-histologies-base.tsv` and `pbta-histologies.tsv` were updated to reflect the changes to `molecular-subtyping-MB` [1207](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1207)  and `molecular-subtyping-LGAT`, which were not previously propagated to the files. 
-    - Note: clinical fields were pulled from the D3b data warehouse on 2022-05-26.
-  - GISTIC was rerun using ploidy instead of NA per [1180](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1180), and the following files are updated in this release [1412](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1412):
+  - `pbta-histologies-base.tsv` and `pbta-histologies.tsv` were updated to reflect the previous code changes to `molecular-subtyping-MB` [1207](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1207)  and `molecular-subtyping-LGAT`, which were not previously propagated to the files. 
+    - Note: clinical fields were pulled from the D3b data warehouse on 2022-05-26 and changes in `OS_days` and `tumor_descriptor` are documented in [this V22-release PR comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1424#issuecomment-1141576163).
+  - GISTIC was rerun using ploidy instead of NA per [1180](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1180), thus the following files are updated in this release [1412](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1412):
     - consensus_seg_annotated_cn_autosomes.tsv.gz
     - consensus_seg_annotated_cn_x_and_y.tsv.gz
     - pbta-cnv-cnvkit-gistic.zip
