@@ -288,15 +288,23 @@ palette_df
 
 When multiple values are using the same color, it can be helpful to have a separate value for the legend, e.g., for all `#808080` broad histologies, we may want to display `Other`. 
 We'll add a couple columns for legend-making convenience.
+We also are recoding some of the disease labels for display per [#1403](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1403).
 
 ```{r}
 palette_df <- palette_df %>%
-  mutate(broad_histology_display = if_else(broad_histology_hex == broad_histology_other_hex,
-                                           "Other",
-                                           broad_histology),
-         cancer_group_display = if_else(cancer_group_hex == cancer_group_other_hex,
-                                        "Other",
-                                        cancer_group))
+  mutate(broad_histology_display = case_when(
+      broad_histology_hex == broad_histology_other_hex ~ "Other",
+      broad_histology == "Low-grade astrocytic tumor" ~ "Low-grade glioma",
+      broad_histology == "Diffuse astrocytic and oligodendroglial tumor" ~ "High-grade glioma", 
+      TRUE ~ broad_histology
+    ),
+    cancer_group_display = case_when(
+      cancer_group_hex == cancer_group_other_hex ~ "Other",
+      cancer_group == "High-grade glioma astrocytoma" ~ "Other high-grade gliomas",
+      cancer_group == "Low-grade glioma astrocytoma" ~ "Other low-grade gliomas", 
+      TRUE ~ cancer_group
+    )
+  ) 
 ```
 
 ### Add `broad_histology_order` 
@@ -310,27 +318,32 @@ broad_histology_order_df <- histologies_df %>%
   filter(sample_type == "Tumor",
          # Only count histologies that we'll have a hex code for
          broad_histology %in% included_labels_df$broad_histology) %>%
-  # Filter to unique sample--broad_histology pairs
+  # Need to add broad_histology_display here because that's what we need to 
+  # order/count
+  inner_join(select(palette_df,
+                    broad_histology,
+                    broad_histology_display)) %>%
+    # Filter to unique sample--broad_histology_display pairs
   select(sample_id, 
-         broad_histology) %>%
+         broad_histology_display) %>%
   distinct() %>%
   # Count samples within a broad histology
-  count(broad_histology) %>%
+  count(broad_histology_display) %>%
   # Add Other placeholder
-  bind_rows(data.frame(broad_histology = "Other",
+  bind_rows(data.frame(broad_histology_display = "Other",
                        n = 0, 
                        stringsAsFactors = FALSE)) %>%
   # Reorder based on sample size except Benign tumor and Other should come last
   # And then add numeric column with the order
-  mutate(broad_histology = forcats::fct_reorder(broad_histology,
-                                                n,
-                                                .desc = TRUE) %>%
+  mutate(broad_histology_display = forcats::fct_reorder(broad_histology_display,
+                                                        n,
+                                                        .desc = TRUE) %>%
            forcats::fct_relevel("Benign tumor",
                                 "Other",
                                 after = Inf),
-         broad_histology_order = as.numeric(broad_histology)) %>%
-  # No longer require the sample size
-  select(-n)
+         broad_histology_order = as.numeric(broad_histology_display)) %>%
+           # No longer require the sample size
+           select(-n)
 
 broad_histology_order_df
 ```
@@ -339,8 +352,8 @@ And now we're ready to add this to the palette data frame.
 
 ```{r}
 palette_df <- palette_df %>%
-  left_join(broad_histology_order_df, 
-            by = c("broad_histology_display" = "broad_histology"))
+  left_join(broad_histology_order_df,
+            by = "broad_histology_display")
 ```
 
 ### Add `oncoprint_group` and `oncoprint_hex`
