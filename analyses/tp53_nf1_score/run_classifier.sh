@@ -12,7 +12,16 @@
 set -e
 set -o pipefail
 
+# If running for subtyping, use the base histologies file by setting this to 1
 RUN_FOR_SUBTYPING=${OPENPBTA_BASE_SUBTYPING:-0}
+
+# If we're running for figure generation, set to 1
+RUN_FOR_FIGURES=${OPENPBTA_TP53_FIGURES:-0}
+
+# we want to skip the poly-A steps in CI
+# if POLYA=1, poly-A steps will be run
+POLYA=${OPENPBTA_POLYAPLOT:-1}
+
 
 # This script should always run as if it were being called from
 # the directory it lives in.
@@ -21,19 +30,17 @@ analysis_dir="$(perl -e 'use File::Basename;
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$analysis_dir" || exit
 
-
-# we want to skip the poly-A steps in CI
-# if POLYA=1, poly-A steps will be run
-POLYA=${OPENPBTA_POLYAPLOT:-1}
-
 data_dir="../../data"
-scratch_dir="../../scratch"
+scratch_dir="../../scratch/tp53-classifier"
+# Make sure scratch directory exists
+mkdir -p $scratch_dir
+
 # cds gencode bed file
 cds_file="${scratch_dir}/gencode.v27.primary_assembly.annotation.bed"
 snvconsensus_file="${data_dir}/pbta-snv-consensus-mutation.maf.tsv.gz"
 cnvconsensus_file="${data_dir}/consensus_seg_annotated_cn_autosomes.tsv.gz"
 
-if [[ RUN_FOR_SUBTYPING == "0" ]]
+if [[ "$RUN_FOR_SUBTYPING" -eq "0" ]]
 then
    histology_file="../../data/pbta-histologies.tsv"
 else
@@ -56,15 +63,17 @@ Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
   --outputFolder ${analysis_dir}/results \
   --gencode ${cds_file}
 
-if [[ RUN_FOR_SUBTYPING == "0" ]]
+# If running for the purpose of figure generation (RUN_FOR_FIGURES will be 1),
+# use the data in the analysis directory that has been freshly collapsed
+if [[ "$RUN_FOR_FIGURES" -eq "0" ]]
 then
-   # expression files for prediction
-   collapsed_stranded="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
-   collapsed_polya="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
+  # expression files for prediction
+  collapsed_stranded="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+  collapsed_polya="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
 else
-   # expression files for prediction
-   collapsed_stranded="../collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
-   collapsed_polya="../collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
+  # expression files for prediction
+  collapsed_stranded="../collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+  collapsed_polya="../collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
 fi
 
 # Skip poly-A steps in CI
@@ -77,10 +86,6 @@ python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_stranded}
 
 # check correlation expression and scores
 Rscript -e "rmarkdown::render('${analysis_dir}/02-qc-rna_expression_score.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
-
-# gather consensus seg file with status
-Rscript -e "rmarkdown::render('../focal-cn-file-preparation/02-add-ploidy-consensus.Rmd', clean = TRUE)"
-cp ${scratch_dir}/consensus_seg_with_status.tsv ${analysis_dir}/input/consensus_seg_with_status.tsv
 
 # subset cnv where tp53 is lost
 Rscript -e "rmarkdown::render('${analysis_dir}/03-tp53-cnv-loss-domain.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
@@ -102,10 +107,11 @@ fi
 # plot ROC curves for poly-A and stranded data
 Rscript 07-plot-roc.R
 
+# Skip plotting steps for subtyping
+if [[ "$RUN_FOR_SUBTYPING" -eq "0" ]]; then
 # create violin plots of TP53 scores across molecular subtypes per broad histology
-Rscript 08-compare-molecularsubtypes-tp53scores.R
+  Rscript 08-compare-molecularsubtypes-tp53scores.R
 
 # create boxplots by broad histology, cancer group
-Rscript 09-compare-histologies.R
-
-
+  Rscript 09-compare-histologies.R
+fi
