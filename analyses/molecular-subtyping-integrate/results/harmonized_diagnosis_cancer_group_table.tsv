@@ -17,20 +17,22 @@ Adamantinomatous craniopharyngioma	Craniopharyngioma	No	Yes
 Craniopharyngioma	Craniopharyngioma	No	No
 Desmoplastic infantile astrocytoma and ganglioglioma, RTK	Desmoplastic infantile astrocytoma and ganglioglioma	Yes	No
 Desmoplastic infantile astrocytoma and ganglioglioma, BRAF V600E	Desmoplastic infantile astrocytoma and ganglioglioma	Yes	No
-Diffuse fibrillary astrocytoma	Diffuse fibrillary astrocytoma	No	No
+Diffuse fibrillary astrocytoma, IDH	Diffuse fibrillary astrocytoma	Yes	No
+Diffuse fibrillary astrocytoma, BRAF V600E	Diffuse fibrillary astrocytoma	Yes	No
+Diffuse fibrillary astrocytoma, wildtype	Diffuse fibrillary astrocytoma	Yes	No
+Diffuse fibrillary astrocytoma, RTK	Diffuse fibrillary astrocytoma	Yes	No
+Diffuse fibrillary astrocytoma, KIAA1549-BRAF	Diffuse fibrillary astrocytoma	Yes	No
 Brainstem glioma- Diffuse intrinsic pontine glioma	Diffuse intrinsic pontine glioma	No	Yes
 Diffuse leptomeningeal glioneuronal tumor,  KIAA1549-BRAF	Diffuse leptomeningeal glioneuronal tumor	Yes	No
 Diffuse midline glioma, H3 K28-mutant	Diffuse midline glioma	Yes	No
 Dysembryoplastic neuroepithelial tumor (DNET)	Dysembryoplastic neuroepithelial tumor	No	Yes
 Dysembryoplastic neuroepithelial tumor (DNET);Ganglioglioma	Dysembryoplastic neuroepithelial tumor	No	Yes
 Dysembryoplastic neuroepithelial tumor (DNET);Dysplasia/Gliosis;Ganglioglioma	Dysembryoplastic neuroepithelial tumor	No	Yes
-Dysplasia/Gliosis;Glial-neuronal tumor NOS	Dysplasia Gliosis-Glial-neuronal tumor NOS	No	Yes
 Embryonal tumor with multilayer rosettes, C19MC-altered	Embryonal tumor with multilayer rosettes	Yes	No
 CNS Embryonal tumor, NOS	Embryonal tumor with multilayer rosettes	Yes	Yes
 Embryonal tumor with multilayer rosettes, NOS	Embryonal tumor with multilayer rosettes	Yes	No
 Ependymoma	Ependymoma	No	No
 Ependymoma, Supratentorial, RELA fusion positive	Ependymoma	Yes	No
-Ependymoma, Posterior Fossa, Type A	Ependymoma	Yes	No
 Ependymoma, Supratentorial, YAP1 fusion positive	Ependymoma	Yes	No
 Ependymoma, H3 K28-mutant	Ependymoma	Yes	No
 Epilepsy, chronic rasmussen encephalitis	Epilepsy	Yes	No
@@ -53,10 +55,10 @@ Ganglioglioma, NF1-somatic, BRAF V600E	Ganglioglioma	Yes	No
 Ganglioneuroblastoma	Ganglioneuroblastoma	No	No
 Ganglioneuroma	Ganglioneuroma	No	No
 Germinoma	Germinoma	No	No
-Germinoma;Teratoma	Germinoma-Teratoma	No	Yes
 Glial-neuronal tumor NOS,  KIAA1549-BRAF	Glial-neuronal tumor NOS	Yes	No
 Glial-neuronal tumor NOS	Glial-neuronal tumor NOS	No	No
 Glial-neuronal tumor NOS,  other MAPK	Glial-neuronal tumor NOS	Yes	No
+Gliomatosis cerebri, IDH	Gliomatosis cerebri	Yes	No
 Hemangioblastoma	Hemangioblastoma	No	No
 High-grade glioma/astrocytoma, H3 wildtype	High-grade glioma astrocytoma	Yes	Yes
 High-grade glioma/astrocytoma, H3 G35-mutant	High-grade glioma astrocytoma	Yes	Yes
@@ -65,22 +67,17 @@ High-grade glioma/astrocytoma, IDH-mutant	High-grade glioma astrocytoma	Yes	Yes
 Juvenile xanthogranuloma	Juvenile xanthogranuloma	No	No
 Langerhans Cell histiocytosis	Langerhans Cell histiocytosis	No	No
 Low-grade glioma/astrocytoma, other MAPK	Low-grade glioma astrocytoma	Yes	Yes
-Low-grade glioma/astrocytoma, wildtype	Low-grade glioma astrocytoma	Yes	Yes
 Low-grade glioma/astrocytoma, NF1-germline	Low-grade glioma astrocytoma	Yes	Yes
+Low-grade glioma/astrocytoma, wildtype	Low-grade glioma astrocytoma	Yes	Yes
 Low-grade glioma/astrocytoma, KIAA1549-BRAF	Low-grade glioma astrocytoma	Yes	Yes
-Low-grade glioma/astrocytoma, IDH	Low-grade glioma astrocytoma	Yes	Yes
 Low-grade glioma/astrocytoma (WHO grade I/II)	Low-grade glioma astrocytoma	No	Yes
 Low-grade glioma/astrocytoma, FGFR	Low-grade glioma astrocytoma	Yes	Yes
 Low-grade glioma/astrocytoma, BRAF V600E	Low-grade glioma astrocytoma	Yes	Yes
 Low-grade glioma/astrocytoma, MYB/MYBL1	Low-grade glioma astrocytoma	Yes	Yes
-Low-grade glioma/astrocytoma, KIAA1549-BRAF, other MAPK	Low-grade glioma astrocytoma	Yes	Yes
 Low-grade glioma/astrocytoma, BRAF V600E, CDKN2A/B	Low-grade glioma astrocytoma	Yes	Yes
 Low-grade glioma/astrocytoma, RTK	Low-grade glioma astrocytoma	Yes	Yes
 Low-grade glioma/astrocytoma, NF1-germline, FGFR	Low-grade glioma astrocytoma	Yes	Yes
-Low-grade glioma/astrocytoma, NF1-somatic, NF1-germline, CDKN2A/B	Low-grade glioma astrocytoma	Yes	Yes
-Low-grade glioma/astrocytoma, NF1-somatic, FGFR	Low-grade glioma astrocytoma	Yes	Yes
-Low-grade glioma/astrocytoma, RTK, CDKN2A/B	Low-grade glioma astrocytoma	Yes	Yes
-Low-grade glioma/astrocytoma, NF1-germline, CDKN2A/B	Low-grade glioma astrocytoma	Yes	Yes
+Low-grade glioma/astrocytoma, IDH	Low-grade glioma astrocytoma	Yes	Yes
 Low-grade glioma/astrocytoma, NF1-somatic	Low-grade glioma astrocytoma	Yes	Yes
 Malignant peripheral nerve sheath tumor (MPNST)	Malignant peripheral nerve sheath tumor	No	Yes
 Medulloblastoma	Medulloblastoma	No	No
@@ -95,18 +92,34 @@ Clear cell meningioma	Meningioma	No	Yes
 Meningothelial meningioma	Meningioma	No	Yes
 Anaplastic (malignant) meningioma	Meningioma	No	Yes
 Metastatic secondary tumors	Metastatic secondary tumors	No	No
-Metastatic secondary tumors;Neuroblastoma	Metastatic secondary tumors-Neuroblastoma	No	Yes
+Mixed germ cell tumor	Mixed germ cell tumor	No	No
 Myofibroblastoma	Myofibroblastoma	No	No
 Myxoid spindle cell tumor	Myxoid spindle cell tumor	No	No
 Neuroblastoma	Neuroblastoma	No	No
 Neurocytoma	Neurocytoma	No	No
 Neurofibroma/Plexiform	Neurofibroma Plexiform	No	Yes
-Neurofibroma/Plexiform;Other	Neurofibroma Plexiform	No	Yes
 Oligodendroglioma	Oligodendroglioma	No	No
+Oligodendroglioma, wildtype	Oligodendroglioma	Yes	No
+Pilocytic astrocytoma, other MAPK	Pilocytic astrocytoma	Yes	No
+Pilocytic astrocytoma, KIAA1549-BRAF	Pilocytic astrocytoma	Yes	No
+Pilocytic astrocytoma, wildtype	Pilocytic astrocytoma	Yes	No
+Pilocytic astrocytoma, KIAA1549-BRAF, other MAPK	Pilocytic astrocytoma	Yes	No
+Pilocytic astrocytoma, NF1-germline	Pilocytic astrocytoma	Yes	No
+Pilocytic astrocytoma, BRAF V600E	Pilocytic astrocytoma	Yes	No
+Pilocytic astrocytoma, FGFR	Pilocytic astrocytoma	Yes	No
+Pilocytic astrocytoma, NF1-somatic, FGFR	Pilocytic astrocytoma	Yes	No
+Pilocytic astrocytoma, RTK	Pilocytic astrocytoma	Yes	No
 Pilocytic astrocytoma	Pilocytic astrocytoma	No	No
+Pilocytic astrocytoma, NF1-germline, CDKN2A/B	Pilocytic astrocytoma	Yes	No
+Pilocytic astrocytoma, KIAA1549-BRAF, NF1-germline	Pilocytic astrocytoma	Yes	No
+Pilocytic astrocytoma, NF1-somatic	Pilocytic astrocytoma	Yes	No
 Pineoblastoma	Pineoblastoma	No	No
-Pleomorphic xanthoastrocytoma	Pleomorphic xanthoastrocytoma	No	No
+Pleomorphic xanthoastrocytoma, NF1-somatic, NF1-germline, CDKN2A/B	Pleomorphic xanthoastrocytoma	Yes	No
 Pleomorphic xanthoastrocytoma, BRAF V600E	Pleomorphic xanthoastrocytoma	Yes	No
+Pleomorphic xanthoastrocytoma	Pleomorphic xanthoastrocytoma	No	No
+Pleomorphic xanthoastrocytoma, RTK, CDKN2A/B	Pleomorphic xanthoastrocytoma	Yes	No
+Pleomorphic xanthoastrocytoma, wildtype	Pleomorphic xanthoastrocytoma	Yes	No
+Pleomorphic xanthoastrocytoma, BRAF V600E, CDKN2A/B	Pleomorphic xanthoastrocytoma	Yes	No
 Reactive connective tissue	Reactive connective tissue	No	No
 Rhabdomyosarcoma	Rhabdomyosarcoma	No	No
 Rosai-Dorfman disease	Rosai-Dorfman disease	No	No
@@ -114,7 +127,8 @@ Rosette-forming glioneuronal tumor,  other MAPK, FGFR	Rosette-forming glioneuron
 Sarcoma	Sarcoma	No	No
 Schwannoma	Schwannoma	No	No
 Subependymal Giant Cell Astrocytoma, wildtype	Subependymal Giant Cell Astrocytoma	Yes	No
-Subependymal Giant Cell Astrocytoma	Subependymal Giant Cell Astrocytoma	No	No
+Subependymal Giant Cell Astrocytoma, RTK	Subependymal Giant Cell Astrocytoma	Yes	No
+Subependymal Giant Cell Astrocytoma (SEGA)	Subependymal Giant Cell Astrocytoma	No	Yes
 Teratoma	Teratoma	No	No
 Non-germinomatous germ cell tumor;Teratoma	Teratoma	No	Yes
 Dysplasia/Gliosis	NA	No	Yes

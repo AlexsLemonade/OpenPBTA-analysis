@@ -1,0 +1,120 @@
+---
+title: "Sample numbers for manuscript"
+author: "Jo Lynne Rokita for D3b"
+date: "2022"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+params:
+  release: release-v21-20210820
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+```
+
+## Set directories 
+```{r set directories}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+analysis_dir <- file.path(root_dir, "analyses", "sample-distribution-analysis")
+```
+
+## Read in Files
+```{r read in files}
+hist_file <- file.path(data_dir, "pbta-histologies.tsv")
+cell_lines_file <- file.path(root_dir, "analyses", "molecular-subtyping-HGG", "input", "cell-line-composition.tsv")
+
+# Read in histologies file
+hist <- read_tsv(hist_file, guess_max = 10000)
+cell_lines <- read_tsv(cell_lines_file)
+```
+
+## Calculate sample sizes/ratios used for manuscript
+
+```{r sample sizes}
+# Total N patients
+hist %>%
+  pull(Kids_First_Participant_ID) %>%
+  unique() %>%
+  length()
+
+# Tota N of biospecimens - tumor & normal
+hist %>%
+  pull(Kids_First_Biospecimen_ID) %>%
+  unique() %>%
+  length()
+
+# Total number of tumors
+hist %>%
+  filter(sample_type == "Tumor" & composition != "Derived Cell Line") %>%
+  pull(sample_id) %>%
+  unique() %>%
+  length()
+
+# Total number of unique tumor biospecimens, including cell lines (DNA or RNA)
+hist %>%
+  filter(sample_type == "Tumor") %>%
+  pull(Kids_First_Biospecimen_ID) %>%
+  unique() %>%
+  length()
+
+# Total number of tumor biospecimens subtyped
+hist %>%
+  filter(sample_type == "Tumor" & !is.na(molecular_subtype) & 
+           !grepl("To be classified", molecular_subtype)) %>%
+  pull(Kids_First_Biospecimen_ID) %>%
+  unique() %>%
+  length()
+
+# Total number of unique tumor biospecimens (tumor only)
+tumor_bs <- hist %>%
+  filter(sample_type == "Tumor" & composition != "Derived Cell Line")
+nrow(tumor_bs)
+
+# Total number of unique cell line biospecimens (cell lines)
+cellline_bs <- hist %>%
+  filter(sample_type == "Tumor" & composition == "Derived Cell Line")
+nrow(cellline_bs)
+
+# Total number of cell lines
+cell_lines %>%
+  select(sample_id, cell_line_composition) %>%
+  unique() %>%
+  nrow()
+
+# Total number of tumor biospecimens with WHO-aligned integrated diagnosis
+hist %>%
+  filter(!is.na(integrated_diagnosis)) %>%
+  pull(Kids_First_Biospecimen_ID) %>%
+  unique() %>%
+  length()
+
+# Total number of annotated histologies
+hist %>%
+  filter(!is.na(pathology_diagnosis) & !is.na(cancer_group)) %>%
+  pull(cancer_group) %>%
+  unique() %>%
+  length()
+
+# Total number of broad histologies
+tumor_only_broad_hist <- hist %>%
+  filter(!is.na(pathology_diagnosis) & !is.na(broad_histology) & broad_histology != "Non-tumor") 
+
+unique(tumor_only_broad_hist$broad_histology)
+length(unique(tumor_only_broad_hist$broad_histology))
+
+# Total N assays by whether sample is a tumor (adding here, paired normal) or cell line (also adding paired normal)
+hist <- hist %>%
+  mutate(id = ifelse(composition == "Derived Cell Line", "Cell Line", "Non-Cell Line"),
+         experimental_strategy = ifelse(experimental_strategy == "WXS" | experimental_strategy == "Targeted Sequencing", "WXS/Panel", experimental_strategy))
+
+table(hist$id, hist$experimental_strategy)
+
+```
+
+## Print session info
+```{r print session info}
+sessionInfo()
+```

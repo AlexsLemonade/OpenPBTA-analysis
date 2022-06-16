@@ -13170,47 +13170,6 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h6 id="prioritizing_PT_EPN">prioritizing_PT_EPN<a class="anchor-link" href="#prioritizing_PT_EPN">&#182;</a></h6><ol>
-<li>This function is the same as above but except for fusions it assigns subgroups if certain column are higher than a value in the input table columns</li>
-<li>Here also sample_ids are added to a list that are not not considered for subgrouping in the future</li>
-<li>This function is mainly used for PT_EPN subgroups. </li>
-<li>Based on <a href="https://www.sciencedirect.com/science/article/pii/S153561081500135X?via%3Dihub#fig4">Pajtler et al. fig. 4</a>, over expression of CXorf67 and TKTL1 along with 1q gain is seen under PT_EPN_A subgroup</li>
-<li>Similarly GPBP1 and IFT46 shows over expression along with 6p and 6q loss in PT_EPN_B subgroup</li>
-</ol>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">prioritizing_PT_EPN</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">sample_list</span><span class="p">):</span>
-    <span class="k">if</span><span class="p">(</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;CXorf67_expr_zscore&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">3</span> <span class="ow">or</span>
-        <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;CXorf67_expr_zscore&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">3</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;1q_gain&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span>
-        <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;TKTL1_expr_zscore&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">3</span>  <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;1q_gain&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)):</span>
-        <span class="n">sample_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;sample_id&quot;</span><span class="p">])</span>
-        <span class="k">return</span><span class="p">(</span><span class="s2">&quot;EPN, PF A&quot;</span><span class="p">)</span>
-    <span class="k">elif</span><span class="p">((</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;GPBP1_expr_zscore&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">3</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;6q_loss&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span>
-          <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;GPBP1_expr_zscore&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">3</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;6p_loss&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> 
-          <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;IFT46_expr_zscore&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">3</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;6q_loss&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span>
-          <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;IFT46_expr_zscore&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">3</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;6p_loss&quot;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)):</span>
-        <span class="n">sample_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;sample_id&quot;</span><span class="p">])</span>
-        <span class="k">return</span><span class="p">(</span><span class="s2">&quot;EPN, PF B&quot;</span><span class="p">)</span>
-          
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <h6 id="subgroup_func">subgroup_func<a class="anchor-link" href="#subgroup_func">&#182;</a></h6><ol>
 <li>This function takes tuples of the feature/column name along with the threshold value as input</li>
 <li>If the column has higher than the threshold value, then the corresponding subgroup is assigned</li>
@@ -13222,7 +13181,20 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">subgroup_func</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">subgroupname</span><span class="p">,</span> <span class="n">column_values</span><span class="p">,</span> <span class="n">sample_list</span><span class="p">):</span>
@@ -13252,7 +13224,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># This list will hold samples that have been assigned subgroups</span>
@@ -13280,7 +13252,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">st_epn_rela_fusions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;C11orf95--RELA&quot;</span><span class="p">,</span> <span class="s2">&quot;LTBP3--RELA&quot;</span><span class="p">]</span>
@@ -13465,7 +13437,7 @@ div#notebook {
       <td>BS_5D24XV4T</td>
       <td>BS_0BXY0F9N</td>
       <td>infratentorial</td>
-      <td>0.0</td>
+      <td>1.0</td>
       <td>0.0</td>
       <td>0.0</td>
       <td>0.0</td>
@@ -13509,7 +13481,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">st_epn_yap1_fusions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;C11orf95--YAP1&quot;</span><span class="p">,</span> <span class="s2">&quot;YAP1--MAMLD1&quot;</span><span class="p">,</span> <span class="s2">&quot;YAP1--FAM118B&quot;</span><span class="p">]</span>
@@ -13597,7 +13569,7 @@ div#notebook {
       <td>7316-2079</td>
       <td>BS_FVPMPMRJ</td>
       <td>BS_V4W81SFC</td>
-      <td>undetermined</td>
+      <td>supratentorial</td>
       <td>0.0</td>
       <td>0.0</td>
       <td>0.0</td>
@@ -13630,348 +13602,13 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<ul>
-<li>Using <code>prioritizing_PT_EPN</code> to assign <code>ST_EPN_A</code> and <code>ST_EPN_B</code> subgroup names to samples </li>
-<li>Input - Every row from dataframe </li>
-<li>Output - New subgroup names under <code>subgroup</code> column of the dataframe</li>
-<li>Number of samples assigned at. this point - 31</li>
-</ul>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">prioritizing_PT_EPN</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">))</span>
-
-<span class="n">display</span><span class="p">(</span><span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;EPN, PF A&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
-<span class="n">display</span><span class="p">(</span><span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;EPN, PF B&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>32
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-<div class="output_html rendered_html output_subarea ">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Kids_First_Participant_ID</th>
-      <th>sample_id</th>
-      <th>Kids_First_Biospecimen_ID_DNA</th>
-      <th>Kids_First_Biospecimen_ID_RNA</th>
-      <th>disease_group</th>
-      <th>1q_loss</th>
-      <th>1q_gain</th>
-      <th>9p_loss</th>
-      <th>9q_loss</th>
-      <th>6p_loss</th>
-      <th>...</th>
-      <th>consensus_focal_CN_CDKN2</th>
-      <th>RELA_expr_zscore</th>
-      <th>L1CAM_expr_zscore</th>
-      <th>ARL4D_expr_zscore</th>
-      <th>CLDN1_expr_zscore</th>
-      <th>CXorf67_expr_zscore</th>
-      <th>TKTL1_expr_zscore</th>
-      <th>GPBP1_expr_zscore</th>
-      <th>IFT46_expr_zscore</th>
-      <th>subgroup</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>9</th>
-      <td>PT_2CJ31SBX</td>
-      <td>7316-3624</td>
-      <td>BS_JC2187NA</td>
-      <td>BS_KDSTG5YY</td>
-      <td>infratentorial</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
-      <td>0</td>
-      <td>-0.627743</td>
-      <td>-0.537545</td>
-      <td>-0.167499</td>
-      <td>-0.245109</td>
-      <td>3.660424</td>
-      <td>0.451639</td>
-      <td>0.499846</td>
-      <td>-0.181477</td>
-      <td>EPN, PF A</td>
-    </tr>
-    <tr>
-      <th>91</th>
-      <td>PT_ZA95JQEB</td>
-      <td>7316-384</td>
-      <td>BS_ZZJF26C4</td>
-      <td>BS_8RHPJ740</td>
-      <td>undetermined</td>
-      <td>0.0</td>
-      <td>1.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
-      <td>gain</td>
-      <td>0.388953</td>
-      <td>-0.536484</td>
-      <td>-0.113266</td>
-      <td>-0.239724</td>
-      <td>0.422422</td>
-      <td>5.583640</td>
-      <td>-1.035927</td>
-      <td>-0.083991</td>
-      <td>EPN, PF A</td>
-    </tr>
-    <tr>
-      <th>95</th>
-      <td>PT_ZZRBX5JT</td>
-      <td>7316-3319</td>
-      <td>BS_9N3B3HZB</td>
-      <td>BS_YE1MAQYJ</td>
-      <td>infratentorial</td>
-      <td>0.0</td>
-      <td>1.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>...</td>
-      <td>0</td>
-      <td>-0.629752</td>
-      <td>-0.535926</td>
-      <td>-0.147882</td>
-      <td>-0.214335</td>
-      <td>2.558806</td>
-      <td>3.901709</td>
-      <td>-0.337657</td>
-      <td>0.907115</td>
-      <td>EPN, PF A</td>
-    </tr>
-  </tbody>
-</table>
-<p>3 rows × 34 columns</p>
-</div>
-</div>
-
-</div>
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-<div class="output_html rendered_html output_subarea ">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Kids_First_Participant_ID</th>
-      <th>sample_id</th>
-      <th>Kids_First_Biospecimen_ID_DNA</th>
-      <th>Kids_First_Biospecimen_ID_RNA</th>
-      <th>disease_group</th>
-      <th>1q_loss</th>
-      <th>1q_gain</th>
-      <th>9p_loss</th>
-      <th>9q_loss</th>
-      <th>6p_loss</th>
-      <th>...</th>
-      <th>consensus_focal_CN_CDKN2</th>
-      <th>RELA_expr_zscore</th>
-      <th>L1CAM_expr_zscore</th>
-      <th>ARL4D_expr_zscore</th>
-      <th>CLDN1_expr_zscore</th>
-      <th>CXorf67_expr_zscore</th>
-      <th>TKTL1_expr_zscore</th>
-      <th>GPBP1_expr_zscore</th>
-      <th>IFT46_expr_zscore</th>
-      <th>subgroup</th>
-    </tr>
-  </thead>
-  <tbody>
-  </tbody>
-</table>
-<p>0 rows × 34 columns</p>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<ul>
-<li>This next part calls <code>subgroup_func</code>  to assign sunbgroup name based on the feature provided and the threshold value</li>
-<li>Every feature and threshold value is given as a list of tuples.</li>
-<li><code>st_epn_rela_tests</code>  and <code>st_epn_yap1_tests</code> have inputs that will not be prioritized because this function will not be adding samples to <code>samples_assigned</code> list. This means if a sample has <code>PTEN--TAS2R1</code> fusion and <code>C11orf95--MAML2</code> fusion, it will have both <code>ST_EPN_RELA</code> and <code>ST_EPN_YAP1</code> assigned to it </li>
-<li>Inputs - each row of dataframe aling with list of tuples</li>
-<li>Output - subgroup value</li>
-<li>Number of samples assigned - 31</li>
-</ul>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">st_epn_rela_tests</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;PTEN--TAS2R1&quot;</span><span class="p">,</span>  <span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s2">&quot;9p_loss&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s2">&quot;9q_loss&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s2">&quot;RELA_expr_zscore&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s2">&quot;L1CAM_expr_zscore&quot;</span><span class="p">,</span><span class="mi">3</span><span class="p">)]</span>
-<span class="c1"># Calling function subgroup_func to  set  the values for last column &quot;subgroup&quot;</span>
-<span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">subgroup_func</span><span class="p">,</span>
-                                        <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                                        <span class="n">subgroupname</span><span class="o">=</span><span class="s2">&quot;EPN, ST RELA&quot;</span><span class="p">,</span>
-                                        <span class="n">column_values</span><span class="o">=</span><span class="n">st_epn_rela_tests</span><span class="p">,</span>
-                                        <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>32
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#### Looking for ST_EPN_YAP1 sub-group samples</span>
-<span class="n">st_epn_yap1_tests</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;C11orf95--MAML2&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-             <span class="p">(</span><span class="s2">&quot;11q_loss&quot;</span><span class="p">,</span>  <span class="mi">0</span><span class="p">),</span>
-             <span class="p">(</span><span class="s2">&quot;11q_gain&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-             <span class="p">(</span><span class="s2">&quot;ARL4D_expr_zscore&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> 
-             <span class="p">(</span><span class="s2">&quot;CLDN1_expr_zscore&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]</span>  
-
-<span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">subgroup_func</span><span class="p">,</span>
-                                        <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                                        <span class="n">subgroupname</span><span class="o">=</span><span class="s2">&quot;EPN, ST YAP1&quot;</span><span class="p">,</span>
-                                        <span class="n">column_values</span><span class="o">=</span><span class="n">st_epn_yap1_tests</span><span class="p">,</span>
-                                        <span class="n">sample_list</span><span class="o">=</span><span class="n">samples_assigned</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples_assigned</span><span class="p">))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>32
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <p> Adding `SV instability` and `CNV_instability` columns to the final dataframe </p>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">EPN_final</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span> <span class="c1"># This will print dataframe without the columns</span>
@@ -14150,7 +13787,7 @@ div#notebook {
       <td>BS_5D24XV4T</td>
       <td>BS_0BXY0F9N</td>
       <td>infratentorial</td>
-      <td>0.0</td>
+      <td>1.0</td>
       <td>0.0</td>
       <td>0.0</td>
       <td>0.0</td>
@@ -14327,7 +13964,7 @@ div#notebook {
       <td>BS_5D24XV4T</td>
       <td>BS_0BXY0F9N</td>
       <td>infratentorial</td>
-      <td>0.0</td>
+      <td>1.0</td>
       <td>0.0</td>
       <td>0.0</td>
       <td>0.0</td>
@@ -14358,7 +13995,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Replacing all Nan values with NA so they are not empty when writing to a file</span>
@@ -14382,14 +14019,11 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">rela_samples</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;EPN, ST RELA&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">yap1_samples</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;EPN, ST YAP1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-<span class="n">epna_samples</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;EPN, PF A&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">epnb_samples</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;EPN, PF B&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 <span class="n">no_assigned_samples</span> <span class="o">=</span> <span class="n">EPN_final</span><span class="p">[</span><span class="n">EPN_final</span><span class="p">[</span><span class="s2">&quot;subgroup&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -14398,8 +14032,7 @@ div#notebook {
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;There are a total of &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">total_samples</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; samples out of which &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span>
     <span class="n">no_assigned_samples</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; samples were not assigned any subgroup&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of samples under each subgroup</span><span class="se">\n</span><span class="s2">EPN, ST RELA : &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span>
-    <span class="n">rela_samples</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">EPN, ST YAP1 : &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">yap1_samples</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; </span><span class="se">\n</span><span class="s2">EPN, PF A : &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span>
-    <span class="n">epna_samples</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">EPN, PF B : &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">epnb_samples</span><span class="p">))</span>
+    <span class="n">rela_samples</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">EPN, ST YAP1 : &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">yap1_samples</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -14416,12 +14049,10 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>There are a total of 98 samples out of which 62 samples were not assigned any subgroup
+<pre>There are a total of 98 samples out of which 69 samples were not assigned any subgroup
 Number of samples under each subgroup
-EPN, ST RELA : 29
-EPN, ST YAP1 : 4 
-EPN, PF A : 3
-EPN, PF B : 0
+EPN, ST RELA : 28
+EPN, ST YAP1 : 1
 </pre>
 </div>
 </div>
