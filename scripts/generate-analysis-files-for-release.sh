@@ -78,7 +78,7 @@ if [ "$RUN_LOCAL" -lt "1" ]; then
 
   # Run hotspot detection
   echo "Run hotspots detection"
-  bash ${analyses_dir}/hotspots-detection/run_overlaps_hotspots.sh
+  bash ${analyses_dir}/hotspots-detection/run_overlaps_hotspot.sh
 
   # Copy over hotspots detection
   cp ${analyses_dir}/hotspots-detection/results/pbta-snv-scavenged-hotspots.maf.tsv.gz ${compiled_dir}
@@ -111,6 +111,9 @@ if [ "$RUN_LOCAL" -lt "1" ]; then
   # Copy over focal CN
   cp ${analyses_dir}/focal-cn-file-preparation/results/consensus_seg_annotated_cn_autosomes.tsv.gz ${compiled_dir}
   cp ${analyses_dir}/focal-cn-file-preparation/results/consensus_seg_annotated_cn_x_and_y.tsv.gz ${compiled_dir}
+  
+  # Move over the consensus with status file 
+  cp ${scratch_dir}/consensus_seg_with_status.tsv ${compiled_dir}
 
 fi
 

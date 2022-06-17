@@ -1,5 +1,113 @@
 # release notes
 ## current release
+### release-v22-20220505
+- release date: 2022-06-08
+- status: available
+- changes:
+  - `consensus_seg_with_status.tsv` (from `focal-cn-prep`) was added to the release since it is being used in the `tp53-nf1-score` module
+  - `pbta-histologies-base.tsv` and `pbta-histologies.tsv` were updated to reflect the previous code changes to `molecular-subtyping-MB` [1207](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1207)  and `molecular-subtyping-LGAT`, which were not previously propagated to the files. 
+    - Note: clinical fields were pulled from the D3b data warehouse on 2022-05-26 and changes in `OS_days` and `tumor_descriptor` are documented in [this V22-release PR comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1424#issuecomment-1141576163).
+  - GISTIC was rerun using ploidy instead of NA per [1180](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1180), thus the following files are updated in this release [1412](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1412):
+    - consensus_seg_annotated_cn_autosomes.tsv.gz
+    - consensus_seg_annotated_cn_x_and_y.tsv.gz
+    - pbta-cnv-cnvkit-gistic.zip
+  - The following files were updated following [1412](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1412):
+    - pbta-fusion-putative-oncogenic.tsv
+    - pbta-snv-consensus-mutation.maf.tsv.gz
+    - pbta-snv-mutation-tmb-all.tsv
+    - pbta-snv-mutation-tmb-coding.tsv
+- folder structure
+```
+data
+└── release-v22-20220505
+    ├── consensus_seg_annotated_cn_autosomes.tsv.gz
+    ├── consensus_seg_annotated_cn_x_and_y.tsv.gz
+    ├── consensus_seg_with_status.tsv
+    ├── data-files-description.md
+    ├── fusion_summary_embryonal_foi.tsv
+    ├── fusion_summary_ependymoma_foi.tsv
+    ├── fusion_summary_ewings_foi.tsv
+    ├── fusion_summary_lgat_foi.tsv
+    ├── independent-specimens.rnaseq.primary-plus-polya.tsv
+    ├── independent-specimens.rnaseq.primary-plus-stranded.tsv
+    ├── independent-specimens.wgs.primary-plus.tsv
+    ├── independent-specimens.wgs.primary.tsv
+    ├── independent-specimens.wgswxs.primary-plus.tsv
+    ├── independent-specimens.wgswxs.primary.tsv
+    ├── intersect_cds_lancet_strelka_mutect_WGS.bed
+    ├── intersect_cds_lancet_WXS.bed
+    ├── intersect_strelka_mutect_WGS.bed
+    ├── md5sum.txt
+    ├── pbta-cnv-cnvkit-gistic.zip
+    ├── pbta-cnv-cnvkit.seg.gz
+    ├── pbta-cnv-consensus-gistic.zip
+    ├── pbta-cnv-consensus.seg.gz
+    ├── pbta-cnv-controlfreec.tsv.gz
+    ├── pbta-fusion-arriba.tsv.gz
+    ├── pbta-fusion-putative-oncogenic.tsv
+    ├── pbta-fusion-recurrently-fused-genes-byhistology.tsv
+    ├── pbta-fusion-recurrently-fused-genes-bysample.tsv
+    ├── pbta-fusion-starfusion.tsv.gz
+    ├── pbta-gene-counts-rsem-expected_count.polya.rds
+    ├── pbta-gene-counts-rsem-expected_count.stranded.rds
+    ├── pbta-gene-expression-kallisto.polya.rds
+    ├── pbta-gene-expression-kallisto.stranded.rds
+    ├── pbta-gene-expression-rsem-fpkm-collapsed.polya.rds
+    ├── pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds
+    ├── pbta-gene-expression-rsem-fpkm.polya.rds
+    ├── pbta-gene-expression-rsem-fpkm.stranded.rds
+    ├── pbta-gene-expression-rsem-tpm.polya.rds
+    ├── pbta-gene-expression-rsem-tpm.stranded.rds
+    ├── pbta-histologies.tsv    
+    ├── pbta-histologies-base.tsv
+    ├── pbta-isoform-counts-rsem-expected_count.polya.rds
+    ├── pbta-isoform-counts-rsem-expected_count.stranded.rds
+    ├── pbta-isoform-expression-rsem-tpm.polya.rds
+    ├── pbta-isoform-expression-rsem-tpm.stranded.rds
+    ├── pbta-mend-qc-manifest.tsv
+    ├── pbta-mend-qc-results.tar.gz
+    ├── pbta-snv-consensus-mutation.maf.tsv.gz
+    ├── pbta-snv-consensus-hotspot-mutation.maf.tsv.gz
+    ├── pbta-snv-consensus-mutation-tmb-all.tsv
+    ├── pbta-snv-consensus-mutation-tmb-coding.tsv
+    ├── pbta-snv-lancet.vep.maf.gz
+    ├── pbta-snv-mutect2.vep.maf.gz
+    ├── pbta-snv-scavenged-hotspots.maf.tsv.gz
+    ├── pbta-snv-strelka2.vep.maf.gz
+    ├── pbta-snv-vardict.vep.maf.gz
+    ├── pbta-star-log-final.tar.gz
+    ├── pbta-star-log-manifest.tsv
+    ├── pbta-sv-manta.tsv.gz
+    ├── pbta-tcga-manifest.tsv
+    ├── pbta-tcga-snv-lancet.vep.maf.gz
+    ├── pbta-tcga-snv-mutect2.vep.maf.gz
+    ├── pbta-tcga-snv-strelka2.vep.maf.gz
+    ├── release-notes.md
+    ├── StrexomeLite_hg38_liftover_100bp_padded.bed
+    ├── StrexomeLite_Targets_CrossMap_hg38_filtered_chr_prefixed.bed
+    ├── WGS.hg38.lancet.300bp_padded.bed
+    ├── WGS.hg38.lancet.unpadded.bed
+    ├── WGS.hg38.mutect2.vardict.unpadded.bed
+    ├── WGS.hg38.strelka2.unpadded.bed
+    ├── WGS.hg38.vardict.100bp_padded.bed
+    ├── WXS.hg38.100bp_padded.bed
+    ├── WXS.hg38.lancet.400bp_padded.bed
+    ├── intersected_whole_exome_agilent_designed_120_AND_tcga_6k_genes.Gh38.bed
+    ├── intersected_whole_exome_agilent_plus_tcga_6k_AND_tcga_6k_genes.Gh38.bed
+    ├── tcga_6k_genes.targetIntervals.Gh38.bed
+    ├── tcga_6k_genes.targetIntervals.bed
+    ├── tcga-snv-consensus-snv.maf.tsv.gz
+    ├── tcga-snv-mutation-tmb-all.tsv
+    ├── tcga-snv-mutation-tmb-coding.tsv
+    ├── whole_exome_agilent_1.1_refseq_plus_3_boosters.targetIntervals.Gh38.bed
+    ├── whole_exome_agilent_1.1_refseq_plus_3_boosters.targetIntervals.bed
+    ├── whole_exome_agilent_designed_120.targetIntervals.Gh38.bed
+    ├── whole_exome_agilent_designed_120.targetIntervals.bed
+    ├── whole_exome_agilent_plus_tcga_6k.targetIntervals.Gh38.bed
+    └── whole_exome_agilent_plus_tcga_6k.targetIntervals.bed
+```
+
+## archived release
 ### release-v21-20210820
 - release date: 2021-08-20
 - status: available

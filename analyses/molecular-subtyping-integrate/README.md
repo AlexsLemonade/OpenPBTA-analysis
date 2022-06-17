@@ -34,19 +34,19 @@ Additional modifications after subtype removal are as follows (from `results/can
 | Dysembryoplastic neuroepithelial tumor (DNET);Dysplasia/Gliosis;Ganglioglioma	| Dysembryoplastic neuroepithelial tumor
 | Dysembryoplastic neuroepithelial tumor (DNET);Ganglioglioma | Dysembryoplastic neuroepithelial tumor
 | Dysplasia/Gliosis	| NA
-| Dysplasia/Gliosis;Glial-neuronal tumor NOS	| Dysplasia Gliosis-Glial-neuronal tumor NOS
-| Germinoma;Teratoma	| Germinoma-Teratoma
 | High-grade glioma/astrocytoma	| High-grade glioma astrocytoma
 | High-grade glioma/astrocytoma (WHO grade III/IV)	| High-grade glioma astrocytoma
 | Low-grade glioma/astrocytoma |	Low-grade glioma astrocytoma
 | Low-grade glioma/astrocytoma (WHO grade I/II)	| Low-grade glioma astrocytoma
+| Malignant peripheral nerve sheath tumor (MPNST) |	Malignant peripheral nerve sheath tumor
 | Meningothelial meningioma	| Meningioma
 | Metastatic secondary tumors;Neuroblastoma	| Metastatic secondary tumors-Neuroblastoma
 | Neurofibroma/Plexiform | Neurofibroma Plexiform
-| Neurofibroma/Plexiform;Other	| Neurofibroma Plexiform
 | Non-germinomatous germ cell tumor;Teratoma |	Teratoma
+| Subependymal Giant Cell Astrocytoma (SEGA) | Subependymal Giant Cell Astrocytoma
 
-A full list of mappings between `harmonized_diagnosis` and `cancer_group` is available in `results/results/harmonized_diagnosis_cancer_group_table.tsv`, which contains the following columns:
+
+A full list of mappings between `harmonized_diagnosis` and `cancer_group` is available in `results/harmonized_diagnosis_cancer_group_table.tsv`, which contains the following columns:
 
 | `harmonized_diagnosis` | `cancer_group` | `has_subtype_removed` | `additional_modification` |
 |----------------------|---------------|---------------------|--------------------------|

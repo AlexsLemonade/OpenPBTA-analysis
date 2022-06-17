@@ -87,10 +87,6 @@ python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_stranded}
 # check correlation expression and scores
 Rscript -e "rmarkdown::render('${analysis_dir}/02-qc-rna_expression_score.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
-# gather consensus seg file with status
-Rscript -e "rmarkdown::render('../focal-cn-file-preparation/02-add-ploidy-consensus.Rmd', clean = TRUE)"
-cp ../../scratch/consensus_seg_with_status.tsv ${analysis_dir}/input/consensus_seg_with_status.tsv
-
 # subset cnv where tp53 is lost
 Rscript -e "rmarkdown::render('${analysis_dir}/03-tp53-cnv-loss-domain.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
 
@@ -111,9 +107,11 @@ fi
 # plot ROC curves for poly-A and stranded data
 Rscript 07-plot-roc.R
 
+# Skip plotting steps for subtyping
+if [[ "$RUN_FOR_SUBTYPING" -eq "0" ]]; then
 # create violin plots of TP53 scores across molecular subtypes per broad histology
-Rscript 08-compare-molecularsubtypes-tp53scores.R
+  Rscript 08-compare-molecularsubtypes-tp53scores.R
 
 # create boxplots by broad histology, cancer group
-Rscript 09-compare-histologies.R
-
+  Rscript 09-compare-histologies.R
+fi
