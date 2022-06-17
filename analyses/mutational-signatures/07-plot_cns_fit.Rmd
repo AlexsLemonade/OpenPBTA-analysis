@@ -99,12 +99,8 @@ cancer_groups_to_plot <- c(
   "Medulloblastoma",
   "Meningioma",
   "Ependymoma",
-  "Schwannoma",
-  "Dysembryoplastic neuroepithelial tumor",
   "Pilocytic astrocytoma",
-  "Pleomorphic xanthoastrocytoma",
-  "Subependymal Giant Cell Astrocytoma", 
-  "Atypical Teratoid Rhabdoid Tumor"
+  "Pleomorphic xanthoastrocytoma"
 )
 
 # Join input dataframes together
