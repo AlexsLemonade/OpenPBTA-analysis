@@ -11,6 +11,7 @@
 #
 # --maf :  File path to MAF file to be analyzed. Can be .gz compressed.
 # --metadata : File path to metadata with sample information.
+# --palette : File with cancer group display
 # --specimen_list: A file of specimens to include. Ideally, this list should consist
 #       of independent samples (at most one from each individual). 
 # --vaf: Minimum variant allele fraction of mutations to include.
@@ -28,6 +29,7 @@
 # Rscript analyses/interaction-plots/01-process-mutations.R \
 #   --maf data/pbta-snv-lancet.vep.maf.gz
 #   --metadata data/pbta-histologies.tsv
+#   --palette figures/palettes/broad_histology_cancer_group_palette.tsv
 #   --specimen_list analysis/independent-samples/results/independent-specimens.wgs.primary.tsv
 
 #### Initial Set Up
@@ -42,6 +44,7 @@ script_root <-
 # Load libraries:
 library(optparse)
 library(ggplot2)
+library(tidyverse)
 
 
 # Load functions
@@ -67,7 +70,14 @@ option_list <- list(
     opt_str = "--metadata",
     type = "character",
     default = file.path("..", "..", "data", "pbta-histologies.tsv"),
-    help = "File path of MAF file to be analyzed. Can be .gz compressed.",
+    help = "File path of histology file.",
+    metavar = "character"
+  ),
+  make_option(
+    opt_str = "--palette",
+    type = "character",
+    default = file.path("..", "..", "figures", "palettes", "broad_histology_cancer_group_palette.tsv"),
+    help = "File path of palette file.",
     metavar = "character"
   ),
   make_option(
@@ -162,6 +172,7 @@ opts <- parse_args(OptionParser(option_list = option_list))
 maf_file <- opts$maf
 cnv_file <- opts$cnv
 meta_file <- opts$metadata
+palette_file <- opts$palette
 out_file <- opts$out
 disease_file <- opts$disease_table
 if (!is.na(opts$specimen_list)) {
@@ -178,7 +189,9 @@ if (!is.na(opts$exclude_genes)) {
 
 maf_df <- data.table::fread(maf_file, data.table = FALSE)
 cnv_df <- data.table::fread(cnv_file, data.table = FALSE)
-meta_df <- data.table::fread(meta_file, data.table = FALSE)
+palette_df <- data.table::fread(palette_file, data.table = FALSE)
+meta_df <- data.table::fread(meta_file, data.table = FALSE) %>%
+  left_join(palette_df, by = c("broad_histology", "cancer_group"))
 if (exists("specimen_file")) {
   specimen_df <- data.table::fread(specimen_file, data.table = FALSE)
 }
@@ -333,7 +346,7 @@ gene_disease_counts <- gene_sample_counts %>%
   dplyr::filter(gene %in% top_count_genes) %>%
   dplyr::left_join(sample_meta, 
                    by = c("sample" = "Kids_First_Biospecimen_ID")) %>%
-  dplyr::group_by(gene, disease = cancer_group) %>%
+  dplyr::group_by(gene, disease = cancer_group_display) %>%
   dplyr::summarize(mutant_samples = dplyr::n(),
                    total_muts = sum(mutations),
                    mean_muts_per_sample = mean(mutations)) %>%

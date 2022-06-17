@@ -30,6 +30,7 @@
 library(optparse)
 library(ggplot2)
 library(patchwork)
+library(tidyverse)
 
 # define options
 option_list <- list(
@@ -205,32 +206,21 @@ disease_df <-
   readr::read_tsv(disease_file, col_types = readr::cols()) %>%
   dplyr::mutate(gene = factor(gene, levels = genes))
 
-# Previously calculated top 10
-# display_diseases <- disease_df %>%
-#   dplyr::select(disease, mutant_samples) %>%
-#   dplyr::arrange(desc(mutant_samples)) %>%
-#   dplyr::select(disease) %>%
-#   unique() %>%
-#   head(10) %>% # top 10 diseases with highest mutated samples
-#   dplyr::pull(disease)
-
-# Now a manual version
-display_diseases <- c(
-  "Diffuse midline glioma",
-  "Low-grade glioma astrocytoma",
-  "Craniopharyngioma",
-  "High-grade glioma astrocytoma",
-  "Ganglioglioma",
-  "Medulloblastoma",
-  "Meningioma",
-  "Ependymoma",
-  "Schwannoma",
-  "Dysembryoplastic neuroepithelial tumor"
-)
+# Calculate top 10 mutated cancer groups for display
+ display_diseases <- disease_df %>%
+   # remove other from display
+   dplyr::filter(disease != "Other") %>%
+   dplyr::select(disease, mutant_samples) %>%
+   dplyr::arrange(desc(mutant_samples)) %>%
+   dplyr::select(disease) %>%
+   unique() %>%
+   head(10) %>% # top 10 diseases with highest mutated samples
+   dplyr::pull(disease)
+ 
+ # Print
+ print(display_diseases)
 
 disease_df <- disease_df %>%
-  # remove disease == NA, these are samples where
-  # harmonized_diagnosis is Benign tumor, Dysplasia/Gliosis
   dplyr::filter(!is.na(disease)) %>%
   dplyr::mutate(disease_factor =
            forcats::fct_other(disease, keep = display_diseases) %>%
