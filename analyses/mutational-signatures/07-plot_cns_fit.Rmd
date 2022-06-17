@@ -92,15 +92,19 @@ Note that we are plotting here only the cancer groups used in the [`interaction-
 # Cancer groups we are showing in figure 4
 cancer_groups_to_plot <- c(
   "Diffuse midline glioma",
-  "Low-grade glioma astrocytoma",
+  "Other low-grade gliomas",
   "Craniopharyngioma",
-  "High-grade glioma astrocytoma",
+  "Other high-grade gliomas",
   "Ganglioglioma",
   "Medulloblastoma",
   "Meningioma",
   "Ependymoma",
   "Schwannoma",
-  "Dysembryoplastic neuroepithelial tumor"
+  "Dysembryoplastic neuroepithelial tumor",
+  "Pilocytic astrocytoma",
+  "Pleomorphic xanthoastrocytoma",
+  "Subependymal Giant Cell Astrocytoma", 
+  "Atypical Teratoid Rhabdoid Tumor"
 )
 
 # Join input dataframes together
