@@ -13,7 +13,7 @@ This document contains information about all data files associated with this pro
 + **File description**
 	+ A *brief* one sentence description of what the file contains (e.g., bed files contain coordinates for features XYZ).
 
-### current release (release-v21-20210820)
+### current release (release-v22-20220505)
 
 | **File name** |  **File Type** | **Origin** | **File Description** |
 |---------------|----------------|------------------------|-----------------------|
@@ -36,6 +36,7 @@ This document contains information about all data files associated with this pro
 |`pbta-cnv-controlfreec.tsv.gz` | PBTA data file | [Copy number variant calling](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/06.methods.md#somatic-copy-number-variant-calling-wgs-samples-only); [Workflow](https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_combined_somatic_wgs_cnv_wf.cwl) | Somatic Copy Number Variant - TSV file that is a merge of [ControlFreeC `*_CNVs` files](http://boevalab.inf.ethz.ch/FREEC/tutorial.html#OUTPUT) (WGS samples only)
 |`consensus_seg_annotated_cn_autosomes.tsv.gz` | Analysis file | [Focal CNV consensus calls](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/focal-cn-file-preparation) | [TSV file](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/focal-cn-file-preparation#scripts-and-notebooks) containing genes with copy number changes per biospecimen; autosomes only
 |`consensus_seg_annotated_cn_x_and_y.tsv.gz` | Analysis file | [Focal CNV consensus calls](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/46cf6ccb119312ccae6122ac94c51710df01f6da/analyses/focal-cn-file-preparation) | [TSV file](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/focal-cn-file-preparation#scripts-and-notebooks) containing genes with copy number changes per biospecimen; sex chromosomes only
+|`consensus_seg_with_status.tsv.tsv` | Analysis file | [Focal CNV consensus calls](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/46cf6ccb119312ccae6122ac94c51710df01f6da/analyses/focal-cn-file-preparation) | [TSV file](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/focal-cn-file-preparation#scripts-and-notebooks) containing chromosome locations with copy number changes and ploidy per biospecimen
 |`pbta-fusion-arriba.tsv.gz` | PBTA data file | [Gene fusion detection](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/06.methods.md#gene-fusion-detection); [Workflow](https://github.com/kids-first/kf-rnaseq-workflow/blob/052e31844711fa5cd0ef5e581618e9d7bba3fec6/workflow/kfdrc_RNAseq_workflow.cwl) | Fusion - [Arriba TSV](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/doc/format/arriba-tsv-header.md), annotated with FusionAnnotator
 |`pbta-fusion-putative-oncogenic.tsv` | Analysis file | [`analyses/fusion_filtering`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/fusion_filtering) | Filtered and prioritized fusions 
 |`pbta-fusion-recurrently-fused-genes-byhistology.tsv`| Analysis file | [`analysis/fusion-filtering`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/fusion_filtering) | Recurrently-fused genes tabulated by broad histology

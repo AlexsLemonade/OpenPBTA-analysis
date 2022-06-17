@@ -6,6 +6,8 @@ output:
     toc_float: TRUE
 author: Jo Lynne Rokita, Stephanie J. Spielman, and Jaclyn N. Taroni
 date: 2020
+params:
+  is_ci: FALSE
 ---
 
 The purpose of this notebook is to clean copy number data related to C19MC amplifications in non-MB, non-ATRT embryonal tumors ([`AlexsLemonade/OpenPBTA-analysis#251`](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251)).
@@ -21,6 +23,23 @@ Rscript -e "rmarkdown::render('analyses/molecular-subtyping-embryonal/03-clean-c
 ```
 
 ## Set up
+
+### Handling CI
+
+```{r}
+# Assigning params$is_ci to running_in_ci avoids a locked binding error
+running_in_ci <- params$is_ci
+
+# Are we testing? In case of a non 0/1 number, we recast as logical, and then 
+# ensure logical.
+if (running_in_ci %in% c(0,1)) running_in_ci <- as.logical(running_in_ci)
+
+# If not logical, need to throw an error here
+if (!(is.logical(running_in_ci))) {
+  stop("\n\nERROR: The parameter `is_ci` should be FALSE/TRUE (or 0/1).")
+}
+```
+
 
 ### Libraries and functions
 
@@ -105,8 +124,7 @@ histologies_df <- read_tsv(histologies_file,
                            ))
 
 # copy number consensus file (analysis file)
-# TODO: get this from data download
-cn_consensus_seg <- file.path("..", "copy_number_consensus_call", "results",
+cn_consensus_seg <- file.path(data_dir,
                               "pbta-cnv-consensus.seg.gz")
 # file that contains the biospecimen IDs that met criteria for subtyping
 biospecimen_file <- file.path(results_dir, 
@@ -176,19 +194,25 @@ and from [Bortolin-Cavaillé et al. _NAR._ 2009.](https://dx.doi.org/10.1093%2Fn
 For visualization purposes, we are filling in the missing `seg.mean` values with zeroes.
 
 ```{r}
-plot_chr19(cn_df = cn_consensus,
-           biospecimen_id = "BS_69VS8PS1")
+if (!(running_in_ci)) {
+  plot_chr19(cn_df = cn_consensus,
+             biospecimen_id = "BS_69VS8PS1")
+}
 ```
 
 
 ```{r}
-plot_chr19(cn_df = cn_consensus,
-           biospecimen_id = "BS_K07KNTFY")
+if (!(running_in_ci)) {
+  plot_chr19(cn_df = cn_consensus,
+             biospecimen_id = "BS_K07KNTFY")
+}  
 ```
 
 ```{r}
-plot_chr19(cn_df = cn_consensus,
-           biospecimen_id = "BS_TE8QFF7T")
+if (!(running_in_ci)) {
+  plot_chr19(cn_df = cn_consensus,
+             biospecimen_id = "BS_TE8QFF7T")
+}
 ```
 
 ### Generate cleaned table for joining to fusion and expression data

@@ -2945,7 +2945,7 @@ div.tocify {
 <h2>Set directories</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm9vdF9kaXIgPC0gcnByb2pyb290OjpmaW5kX3Jvb3QocnByb2pyb290OjpoYXNfZGlyKFwiLmdpdFwiKSlcbmRhdGFfZGlyIDwtIGZpbGUucGF0aChyb290X2RpciwgXCJkYXRhXCIpXG5hbmFseXNpc19kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcImFuYWx5c2VzXCIsIFwic2FtcGxlLWRpc3RyaWJ1dGlvbi1hbmFseXNpc1wiKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbInJvb3RfZGlyIDwtIHJwcm9qcm9vdDo6ZmluZF9yb290KHJwcm9qcm9vdDo6aGFzX2RpcihcIi5naXRcIikpIiwiZGF0YV9kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcImRhdGFcIikiLCJhbmFseXNpc19kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcImFuYWx5c2VzXCIsIFwic2FtcGxlLWRpc3RyaWJ1dGlvbi1hbmFseXNpc1wiKSJdfQ== -->
 <pre class="r"><code>root_dir &lt;- rprojroot::find_root(rprojroot::has_dir(&quot;.git&quot;))
 data_dir &lt;- file.path(root_dir, &quot;data&quot;)
 analysis_dir &lt;- file.path(root_dir, &quot;analyses&quot;, &quot;sample-distribution-analysis&quot;)</code></pre>
@@ -2957,38 +2957,40 @@ analysis_dir &lt;- file.path(root_dir, &quot;analyses&quot;, &quot;sample-distri
 <h2>Read in Files</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlzdF9maWxlIDwtIGZpbGUucGF0aChkYXRhX2RpciwgXCJwYnRhLWhpc3RvbG9naWVzLnRzdlwiKVxuY2VsbF9saW5lc19maWxlIDwtIGZpbGUucGF0aChyb290X2RpciwgXCJhbmFseXNlc1wiLCBcIm1vbGVjdWxhci1zdWJ0eXBpbmctSEdHXCIsIFwiaW5wdXRcIiwgXCJjZWxsLWxpbmUtY29tcG9zaXRpb24udHN2XCIpXG5cbiMgUmVhZCBpbiBoaXN0b2xvZ2llcyBmaWxlXG5oaXN0IDwtIHJlYWRfdHN2KGhpc3RfZmlsZSwgZ3Vlc3NfbWF4ID0gMTAwMDApXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbImhpc3RfZmlsZSA8LSBmaWxlLnBhdGgoZGF0YV9kaXIsIFwicGJ0YS1oaXN0b2xvZ2llcy50c3ZcIikiLCJjZWxsX2xpbmVzX2ZpbGUgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcImFuYWx5c2VzXCIsIFwibW9sZWN1bGFyLXN1YnR5cGluZy1IR0dcIiwgXCJpbnB1dFwiLCBcImNlbGwtbGluZS1jb21wb3NpdGlvbi50c3ZcIikiLCIiLCIjIFJlYWQgaW4gaGlzdG9sb2dpZXMgZmlsZSIsImhpc3QgPC0gcmVhZF90c3YoaGlzdF9maWxlLCBndWVzc19tYXggPSAxMDAwMCkiXX0= -->
 <pre class="r"><code>hist_file &lt;- file.path(data_dir, &quot;pbta-histologies.tsv&quot;)
 cell_lines_file &lt;- file.path(root_dir, &quot;analyses&quot;, &quot;molecular-subtyping-HGG&quot;, &quot;input&quot;, &quot;cell-line-composition.tsv&quot;)
 
 # Read in histologies file
 hist &lt;- read_tsv(hist_file, guess_max = 10000)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgT1NfZGF5cyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBhZ2VfbGFzdF91cGRhdGVfZGF5cyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBub3JtYWxfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfcGxvaWR5ID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW1cbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuIn0= -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgT1NfZGF5cyA9IGNvbF9kb3VibGUoKSxcbiAgYWdlX2xhc3RfdXBkYXRlX2RheXMgPSBjb2xfZG91YmxlKCksXG4gIG5vcm1hbF9mcmFjdGlvbiA9IGNvbF9kb3VibGUoKSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBjb2xfZG91YmxlKCksXG4gIHR1bW9yX3Bsb2lkeSA9IGNvbF9kb3VibGUoKVxuKVxuIn0= -->
 <pre><code>Parsed with column specification:
 cols(
   .default = col_character(),
-  OS_days = [32mcol_double()[39m,
-  age_last_update_days = [32mcol_double()[39m,
-  normal_fraction = [32mcol_double()[39m,
-  tumor_fraction = [32mcol_double()[39m,
-  tumor_ploidy = [32mcol_double()[39m
-)
-See spec(...) for full column specifications.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2VsbF9saW5lcyA8LSByZWFkX3RzdihjZWxsX2xpbmVzX2ZpbGUpXG5gYGAifQ== -->
+  OS_days = col_double(),
+  age_last_update_days = col_double(),
+  normal_fraction = col_double(),
+  tumor_fraction = col_double(),
+  tumor_ploidy = col_double()
+)</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
+<pre><code>See spec(...) for full column specifications.</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiY2VsbF9saW5lcyA8LSByZWFkX3RzdihjZWxsX2xpbmVzX2ZpbGUpIn0= -->
 <pre class="r"><code>cell_lines &lt;- read_tsv(cell_lines_file)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgY2VsbF9saW5lX2NvbXBvc2l0aW9uID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIHNhbXBsZV9pZCA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBhbGlxdW90X2lkID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW1cbilcbiJ9 -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBjZWxsX2xpbmVfY29tcG9zaXRpb24gPSBjb2xfY2hhcmFjdGVyKCksXG4gIHNhbXBsZV9pZCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgYWxpcXVvdF9pZCA9IGNvbF9kb3VibGUoKVxuKVxuIn0= -->
 <pre><code>Parsed with column specification:
 cols(
-  Kids_First_Participant_ID = [31mcol_character()[39m,
-  Kids_First_Biospecimen_ID = [31mcol_character()[39m,
-  cell_line_composition = [31mcol_character()[39m,
-  sample_id = [31mcol_character()[39m,
-  aliquot_id = [32mcol_double()[39m
+  Kids_First_Participant_ID = col_character(),
+  Kids_First_Biospecimen_ID = col_character(),
+  cell_line_composition = col_character(),
+  sample_id = col_character(),
+  aliquot_id = col_double()
 )</code></pre>
-<!-- rnb-output-end -->
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -2996,7 +2998,7 @@ cols(
 <h2>Calculate sample sizes/ratios used for manuscript</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBOIHBhdGllbnRzXG5oaXN0ICU+JVxuICBwdWxsKEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQpICU+JVxuICB1bmlxdWUoKSAlPiVcbiAgbGVuZ3RoKClcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgTiBwYXRpZW50cyIsImhpc3QgJT4lXG4gIHB1bGwoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCkgJT4lXG4gIHVuaXF1ZSgpICU+JVxuICBsZW5ndGgoKSJdfQ== -->
 <pre class="r"><code># Total N patients
 hist %&gt;%
   pull(Kids_First_Participant_ID) %&gt;%
@@ -3006,7 +3008,7 @@ hist %&gt;%
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIDk0M1xuIn0= -->
 <pre><code>[1] 943</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhIE4gb2YgYmlvc3BlY2ltZW5zIC0gdHVtb3IgJiBub3JtYWxcbmhpc3QgJT4lXG4gIHB1bGwoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkgJT4lXG4gIHVuaXF1ZSgpICU+JVxuICBsZW5ndGgoKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YSBOIG9mIGJpb3NwZWNpbWVucyAtIHR1bW9yICYgbm9ybWFsIiwiaGlzdCAlPiVcbiAgcHVsbChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKSAlPiVcbiAgdW5pcXVlKCkgJT4lXG4gIGxlbmd0aCgpIl19 -->
 <pre class="r"><code># Tota N of biospecimens - tumor &amp; normal
 hist %&gt;%
   pull(Kids_First_Biospecimen_ID) %&gt;%
@@ -3016,7 +3018,7 @@ hist %&gt;%
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIDI4NDBcbiJ9 -->
 <pre><code>[1] 2840</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBudW1iZXIgb2YgdHVtb3JzXG5oaXN0ICU+JVxuICBmaWx0ZXIoc2FtcGxlX3R5cGUgPT0gXCJUdW1vclwiICYgY29tcG9zaXRpb24gIT0gXCJEZXJpdmVkIENlbGwgTGluZVwiKSAlPiVcbiAgcHVsbChzYW1wbGVfaWQpICU+JVxuICB1bmlxdWUoKSAlPiVcbiAgbGVuZ3RoKClcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgbnVtYmVyIG9mIHR1bW9ycyIsImhpc3QgJT4lXG4gIGZpbHRlcihzYW1wbGVfdHlwZSA9PSBcIlR1bW9yXCIgJiBjb21wb3NpdGlvbiAhPSBcIkRlcml2ZWQgQ2VsbCBMaW5lXCIpICU+JVxuICBwdWxsKHNhbXBsZV9pZCkgJT4lXG4gIHVuaXF1ZSgpICU+JVxuICBsZW5ndGgoKSJdfQ== -->
 <pre class="r"><code># Total number of tumors
 hist %&gt;%
   filter(sample_type == &quot;Tumor&quot; &amp; composition != &quot;Derived Cell Line&quot;) %&gt;%
@@ -3024,10 +3026,10 @@ hist %&gt;%
   unique() %&gt;%
   length()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDEwNzNcbiJ9 -->
-<pre><code>[1] 1073</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDEwNzRcbiJ9 -->
+<pre><code>[1] 1074</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBudW1iZXIgb2YgdW5pcXVlIHR1bW9yIGJpb3NwZWNpbWVucywgaW5jbHVkaW5nIGNlbGwgbGluZXMgKEROQSBvciBSTkEpXG5oaXN0ICU+JVxuICBmaWx0ZXIoc2FtcGxlX3R5cGUgPT0gXCJUdW1vclwiKSAlPiVcbiAgcHVsbChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKSAlPiVcbiAgdW5pcXVlKCkgJT4lXG4gIGxlbmd0aCgpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgbnVtYmVyIG9mIHVuaXF1ZSB0dW1vciBiaW9zcGVjaW1lbnMsIGluY2x1ZGluZyBjZWxsIGxpbmVzIChETkEgb3IgUk5BKSIsImhpc3QgJT4lXG4gIGZpbHRlcihzYW1wbGVfdHlwZSA9PSBcIlR1bW9yXCIpICU+JVxuICBwdWxsKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpICU+JVxuICB1bmlxdWUoKSAlPiVcbiAgbGVuZ3RoKCkiXX0= -->
 <pre class="r"><code># Total number of unique tumor biospecimens, including cell lines (DNA or RNA)
 hist %&gt;%
   filter(sample_type == &quot;Tumor&quot;) %&gt;%
@@ -3038,7 +3040,7 @@ hist %&gt;%
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIDIwMDdcbiJ9 -->
 <pre><code>[1] 2007</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBudW1iZXIgb2YgdHVtb3IgYmlvc3BlY2ltZW5zIHN1YnR5cGVkXG5oaXN0ICU+JVxuICBmaWx0ZXIoc2FtcGxlX3R5cGUgPT0gXCJUdW1vclwiICYgIWlzLm5hKG1vbGVjdWxhcl9zdWJ0eXBlKSAmIFxuICAgICAgICAgICAhZ3JlcGwoXCJUbyBiZSBjbGFzc2lmaWVkXCIsIG1vbGVjdWxhcl9zdWJ0eXBlKSkgJT4lXG4gIHB1bGwoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCkgJT4lXG4gIHVuaXF1ZSgpICU+JVxuICBsZW5ndGgoKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgbnVtYmVyIG9mIHR1bW9yIGJpb3NwZWNpbWVucyBzdWJ0eXBlZCIsImhpc3QgJT4lXG4gIGZpbHRlcihzYW1wbGVfdHlwZSA9PSBcIlR1bW9yXCIgJiAhaXMubmEobW9sZWN1bGFyX3N1YnR5cGUpICYgXG4gICAgICAgICAgICFncmVwbChcIlRvIGJlIGNsYXNzaWZpZWRcIiwgbW9sZWN1bGFyX3N1YnR5cGUpKSAlPiVcbiAgcHVsbChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKSAlPiVcbiAgdW5pcXVlKCkgJT4lXG4gIGxlbmd0aCgpIl19 -->
 <pre class="r"><code># Total number of tumor biospecimens subtyped
 hist %&gt;%
   filter(sample_type == &quot;Tumor&quot; &amp; !is.na(molecular_subtype) &amp; 
@@ -3047,10 +3049,10 @@ hist %&gt;%
   unique() %&gt;%
   length()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDEyODFcbiJ9 -->
-<pre><code>[1] 1281</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDEyNjlcbiJ9 -->
+<pre><code>[1] 1269</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBudW1iZXIgb2YgdW5pcXVlIHR1bW9yIGJpb3NwZWNpbWVucyAodHVtb3Igb25seSlcbnR1bW9yX2JzIDwtIGhpc3QgJT4lXG4gIGZpbHRlcihzYW1wbGVfdHlwZSA9PSBcIlR1bW9yXCIgJiBjb21wb3NpdGlvbiAhPSBcIkRlcml2ZWQgQ2VsbCBMaW5lXCIpXG5ucm93KHR1bW9yX2JzKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgbnVtYmVyIG9mIHVuaXF1ZSB0dW1vciBiaW9zcGVjaW1lbnMgKHR1bW9yIG9ubHkpIiwidHVtb3JfYnMgPC0gaGlzdCAlPiVcbiAgZmlsdGVyKHNhbXBsZV90eXBlID09IFwiVHVtb3JcIiAmIGNvbXBvc2l0aW9uICE9IFwiRGVyaXZlZCBDZWxsIExpbmVcIikiLCJucm93KHR1bW9yX2JzKSJdfQ== -->
 <pre class="r"><code># Total number of unique tumor biospecimens (tumor only)
 tumor_bs &lt;- hist %&gt;%
   filter(sample_type == &quot;Tumor&quot; &amp; composition != &quot;Derived Cell Line&quot;)
@@ -3059,7 +3061,7 @@ nrow(tumor_bs)</code></pre>
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIDE5NjlcbiJ9 -->
 <pre><code>[1] 1969</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBudW1iZXIgb2YgdW5pcXVlIGNlbGwgbGluZSBiaW9zcGVjaW1lbnMgKGNlbGwgbGluZXMpXG5jZWxsbGluZV9icyA8LSBoaXN0ICU+JVxuICBmaWx0ZXIoc2FtcGxlX3R5cGUgPT0gXCJUdW1vclwiICYgY29tcG9zaXRpb24gPT0gXCJEZXJpdmVkIENlbGwgTGluZVwiKVxubnJvdyhjZWxsbGluZV9icylcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgbnVtYmVyIG9mIHVuaXF1ZSBjZWxsIGxpbmUgYmlvc3BlY2ltZW5zIChjZWxsIGxpbmVzKSIsImNlbGxsaW5lX2JzIDwtIGhpc3QgJT4lXG4gIGZpbHRlcihzYW1wbGVfdHlwZSA9PSBcIlR1bW9yXCIgJiBjb21wb3NpdGlvbiA9PSBcIkRlcml2ZWQgQ2VsbCBMaW5lXCIpIiwibnJvdyhjZWxsbGluZV9icykiXX0= -->
 <pre class="r"><code># Total number of unique cell line biospecimens (cell lines)
 cellline_bs &lt;- hist %&gt;%
   filter(sample_type == &quot;Tumor&quot; &amp; composition == &quot;Derived Cell Line&quot;)
@@ -3068,7 +3070,7 @@ nrow(cellline_bs)</code></pre>
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIDM4XG4ifQ== -->
 <pre><code>[1] 38</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBudW1iZXIgb2YgY2VsbCBsaW5lc1xuY2VsbF9saW5lcyAlPiVcbiAgc2VsZWN0KHNhbXBsZV9pZCwgY2VsbF9saW5lX2NvbXBvc2l0aW9uKSAlPiVcbiAgdW5pcXVlKCkgJT4lXG4gIG5yb3coKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgbnVtYmVyIG9mIGNlbGwgbGluZXMiLCJjZWxsX2xpbmVzICU+JVxuICBzZWxlY3Qoc2FtcGxlX2lkLCBjZWxsX2xpbmVfY29tcG9zaXRpb24pICU+JVxuICB1bmlxdWUoKSAlPiVcbiAgbnJvdygpIl19 -->
 <pre class="r"><code># Total number of cell lines
 cell_lines %&gt;%
   select(sample_id, cell_line_composition) %&gt;%
@@ -3078,7 +3080,7 @@ cell_lines %&gt;%
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIDE2XG4ifQ== -->
 <pre><code>[1] 16</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBudW1iZXIgb2YgdHVtb3IgYmlvc3BlY2ltZW5zIHdpdGggV0hPLWFsaWduZWQgaW50ZWdyYXRlZCBkaWFnbm9zaXNcbmhpc3QgJT4lXG4gIGZpbHRlcighaXMubmEoaW50ZWdyYXRlZF9kaWFnbm9zaXMpKSAlPiVcbiAgcHVsbChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEKSAlPiVcbiAgdW5pcXVlKCkgJT4lXG4gIGxlbmd0aCgpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgbnVtYmVyIG9mIHR1bW9yIGJpb3NwZWNpbWVucyB3aXRoIFdITy1hbGlnbmVkIGludGVncmF0ZWQgZGlhZ25vc2lzIiwiaGlzdCAlPiVcbiAgZmlsdGVyKCFpcy5uYShpbnRlZ3JhdGVkX2RpYWdub3NpcykpICU+JVxuICBwdWxsKEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQpICU+JVxuICB1bmlxdWUoKSAlPiVcbiAgbGVuZ3RoKCkiXX0= -->
 <pre class="r"><code># Total number of tumor biospecimens with WHO-aligned integrated diagnosis
 hist %&gt;%
   filter(!is.na(integrated_diagnosis)) %&gt;%
@@ -3086,10 +3088,10 @@ hist %&gt;%
   unique() %&gt;%
   length()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDEyNjBcbiJ9 -->
-<pre><code>[1] 1260</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDEyNDhcbiJ9 -->
+<pre><code>[1] 1248</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBudW1iZXIgb2YgYW5ub3RhdGVkIGhpc3RvbG9naWVzXG5oaXN0ICU+JVxuICBmaWx0ZXIoIWlzLm5hKHBhdGhvbG9neV9kaWFnbm9zaXMpICYgIWlzLm5hKGNhbmNlcl9ncm91cCkpICU+JVxuICBwdWxsKGNhbmNlcl9ncm91cCkgJT4lXG4gIHVuaXF1ZSgpICU+JVxuICBsZW5ndGgoKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgbnVtYmVyIG9mIGFubm90YXRlZCBoaXN0b2xvZ2llcyIsImhpc3QgJT4lXG4gIGZpbHRlcighaXMubmEocGF0aG9sb2d5X2RpYWdub3NpcykgJiAhaXMubmEoY2FuY2VyX2dyb3VwKSkgJT4lXG4gIHB1bGwoY2FuY2VyX2dyb3VwKSAlPiVcbiAgdW5pcXVlKCkgJT4lXG4gIGxlbmd0aCgpIl19 -->
 <pre class="r"><code># Total number of annotated histologies
 hist %&gt;%
   filter(!is.na(pathology_diagnosis) &amp; !is.na(cancer_group)) %&gt;%
@@ -3097,36 +3099,89 @@ hist %&gt;%
   unique() %&gt;%
   length()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDU5XG4ifQ== -->
-<pre><code>[1] 59</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDU4XG4ifQ== -->
+<pre><code>[1] 58</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBudW1iZXIgb2YgYnJvYWQgaGlzdG9sb2dpZXNcbnR1bW9yX29ubHlfYnJvYWRfaGlzdCA8LSBoaXN0ICU+JVxuICBmaWx0ZXIoIWlzLm5hKHBhdGhvbG9neV9kaWFnbm9zaXMpICYgIWlzLm5hKGJyb2FkX2hpc3RvbG9neSkgJiBicm9hZF9oaXN0b2xvZ3kgIT0gXCJOb24tdHVtb3JcIikgXG5cbnVuaXF1ZSh0dW1vcl9vbmx5X2Jyb2FkX2hpc3QkYnJvYWRfaGlzdG9sb2d5KVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgbnVtYmVyIG9mIGJyb2FkIGhpc3RvbG9naWVzIiwidHVtb3Jfb25seV9icm9hZF9oaXN0IDwtIGhpc3QgJT4lXG4gIGZpbHRlcighaXMubmEocGF0aG9sb2d5X2RpYWdub3NpcykgJiAhaXMubmEoYnJvYWRfaGlzdG9sb2d5KSAmIGJyb2FkX2hpc3RvbG9neSAhPSBcIk5vbi10dW1vclwiKSAiLCIiLCJ1bmlxdWUodHVtb3Jfb25seV9icm9hZF9oaXN0JGJyb2FkX2hpc3RvbG9neSkiXX0= -->
 <pre class="r"><code># Total number of broad histologies
 tumor_only_broad_hist &lt;- hist %&gt;%
   filter(!is.na(pathology_diagnosis) &amp; !is.na(broad_histology) &amp; broad_histology != &quot;Non-tumor&quot;) 
 
 unique(tumor_only_broad_hist$broad_histology)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcIkVwZW5keW1hbCB0dW1vclwiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiRGlmZnVzZSBhc3Ryb2N5dGljIGFuZCBvbGlnb2RlbmRyb2dsaWFsIHR1bW9yXCJcbiBbM10gXCJMb3ctZ3JhZGUgYXN0cm9jeXRpYyB0dW1vclwiICAgICAgICAgICAgICAgICAgICBcIkhpc3Rpb2N5dGljIHR1bW9yXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gWzVdIFwiTWVzZW5jaHltYWwgbm9uLW1lbmluZ290aGVsaWFsIHR1bW9yXCIgICAgICAgICAgXCJUdW1vcnMgb2Ygc2VsbGFyIHJlZ2lvblwiICAgICAgICAgICAgICAgICAgICAgIFxuIFs3XSBcIkVtYnJ5b25hbCB0dW1vclwiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiTmV1cm9uYWwgYW5kIG1peGVkIG5ldXJvbmFsLWdsaWFsIHR1bW9yXCIgICAgICBcbiBbOV0gXCJCZW5pZ24gdHVtb3JcIiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIlR1bW9yIG9mIGNyYW5pYWwgYW5kIHBhcmFzcGluYWwgbmVydmVzXCIgICAgICAgXG5bMTFdIFwiQ2hvcm9pZCBwbGV4dXMgdHVtb3JcIiAgICAgICAgICAgICAgICAgICAgICAgICAgXCJMeW1waG9tYVwiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEzXSBcIk1lbmluZ2lvbWFcIiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiR2VybSBjZWxsIHR1bW9yXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcblsxNV0gXCJNZXRhc3RhdGljIHR1bW9yc1wiICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIlByZS1jYW5jZXJvdXMgbGVzaW9uXCIgICAgICAgICAgICAgICAgICAgICAgICAgXG5bMTddIFwiVHVtb3Igb2YgcGluZWFsIHJlZ2lvblwiICAgICAgICAgICAgICAgICAgICAgICAgXCJOb24tQ05TIHR1bW9yXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzE5XSBcIkNob3Jkb21hXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiT3RoZXIgdHVtb3JcIiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcblsyMV0gXCJNZWxhbm9jeXRpYyB0dW1vclwiICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIn0= -->
-<pre><code> [1] &quot;Ependymal tumor&quot;                               &quot;Diffuse astrocytic and oligodendroglial tumor&quot;
- [3] &quot;Low-grade astrocytic tumor&quot;                    &quot;Histiocytic tumor&quot;                            
- [5] &quot;Mesenchymal non-meningothelial tumor&quot;          &quot;Tumors of sellar region&quot;                      
- [7] &quot;Embryonal tumor&quot;                               &quot;Neuronal and mixed neuronal-glial tumor&quot;      
- [9] &quot;Benign tumor&quot;                                  &quot;Tumor of cranial and paraspinal nerves&quot;       
-[11] &quot;Choroid plexus tumor&quot;                          &quot;Lymphoma&quot;                                     
-[13] &quot;Meningioma&quot;                                    &quot;Germ cell tumor&quot;                              
-[15] &quot;Metastatic tumors&quot;                             &quot;Pre-cancerous lesion&quot;                         
-[17] &quot;Tumor of pineal region&quot;                        &quot;Non-CNS tumor&quot;                                
-[19] &quot;Chordoma&quot;                                      &quot;Other tumor&quot;                                  
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcIkVwZW5keW1hbCB0dW1vclwiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gWzJdIFwiRGlmZnVzZSBhc3Ryb2N5dGljIGFuZCBvbGlnb2RlbmRyb2dsaWFsIHR1bW9yXCJcbiBbM10gXCJMb3ctZ3JhZGUgYXN0cm9jeXRpYyB0dW1vclwiICAgICAgICAgICAgICAgICAgIFxuIFs0XSBcIkhpc3Rpb2N5dGljIHR1bW9yXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gWzVdIFwiTWVzZW5jaHltYWwgbm9uLW1lbmluZ290aGVsaWFsIHR1bW9yXCIgICAgICAgICBcbiBbNl0gXCJUdW1vcnMgb2Ygc2VsbGFyIHJlZ2lvblwiICAgICAgICAgICAgICAgICAgICAgIFxuIFs3XSBcIkVtYnJ5b25hbCB0dW1vclwiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gWzhdIFwiTmV1cm9uYWwgYW5kIG1peGVkIG5ldXJvbmFsLWdsaWFsIHR1bW9yXCIgICAgICBcbiBbOV0gXCJCZW5pZ24gdHVtb3JcIiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEwXSBcIlR1bW9yIG9mIGNyYW5pYWwgYW5kIHBhcmFzcGluYWwgbmVydmVzXCIgICAgICAgXG5bMTFdIFwiQ2hvcm9pZCBwbGV4dXMgdHVtb3JcIiAgICAgICAgICAgICAgICAgICAgICAgICBcblsxMl0gXCJMeW1waG9tYVwiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEzXSBcIk1lbmluZ2lvbWFcIiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG5bMTRdIFwiR2VybSBjZWxsIHR1bW9yXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcblsxNV0gXCJNZXRhc3RhdGljIHR1bW9yc1wiICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzE2XSBcIlByZS1jYW5jZXJvdXMgbGVzaW9uXCIgICAgICAgICAgICAgICAgICAgICAgICAgXG5bMTddIFwiVHVtb3Igb2YgcGluZWFsIHJlZ2lvblwiICAgICAgICAgICAgICAgICAgICAgICBcblsxOF0gXCJOb24tQ05TIHR1bW9yXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzE5XSBcIkNob3Jkb21hXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG5bMjBdIFwiT3RoZXIgdHVtb3JcIiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcblsyMV0gXCJNZWxhbm9jeXRpYyB0dW1vclwiICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIn0= -->
+<pre><code> [1] &quot;Ependymal tumor&quot;                              
+ [2] &quot;Diffuse astrocytic and oligodendroglial tumor&quot;
+ [3] &quot;Low-grade astrocytic tumor&quot;                   
+ [4] &quot;Histiocytic tumor&quot;                            
+ [5] &quot;Mesenchymal non-meningothelial tumor&quot;         
+ [6] &quot;Tumors of sellar region&quot;                      
+ [7] &quot;Embryonal tumor&quot;                              
+ [8] &quot;Neuronal and mixed neuronal-glial tumor&quot;      
+ [9] &quot;Benign tumor&quot;                                 
+[10] &quot;Tumor of cranial and paraspinal nerves&quot;       
+[11] &quot;Choroid plexus tumor&quot;                         
+[12] &quot;Lymphoma&quot;                                     
+[13] &quot;Meningioma&quot;                                   
+[14] &quot;Germ cell tumor&quot;                              
+[15] &quot;Metastatic tumors&quot;                            
+[16] &quot;Pre-cancerous lesion&quot;                         
+[17] &quot;Tumor of pineal region&quot;                       
+[18] &quot;Non-CNS tumor&quot;                                
+[19] &quot;Chordoma&quot;                                     
+[20] &quot;Other tumor&quot;                                  
 [21] &quot;Melanocytic tumor&quot;                            </code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGVuZ3RoKHVuaXF1ZSh0dW1vcl9vbmx5X2Jyb2FkX2hpc3QkYnJvYWRfaGlzdG9sb2d5KSlcbmBgYCJ9 -->
+<!-- rnb-output-begin eyJkYXRhIjpbIkVwZW5keW1hbCB0dW1vclxuIiwiRGlmZnVzZSBhc3Ryb2N5dGljIGFuZCBvbGlnb2RlbmRyb2dsaWFsIHR1bW9yXG4iLCJMb3ctZ3JhZGUgYXN0cm9jeXRpYyB0dW1vclxuIiwiSGlzdGlvY3l0aWMgdHVtb3JcbiIsIk1lc2VuY2h5bWFsIG5vbi1tZW5pbmdvdGhlbGlhbCB0dW1vclxuIiwiVHVtb3JzIG9mIHNlbGxhciByZWdpb25cbiIsIkVtYnJ5b25hbCB0dW1vclxuIiwiTmV1cm9uYWwgYW5kIG1peGVkIG5ldXJvbmFsLWdsaWFsIHR1bW9yXG4iLCJCZW5pZ24gdHVtb3JcbiIsIlR1bW9yIG9mIGNyYW5pYWwgYW5kIHBhcmFzcGluYWwgbmVydmVzXG4iLCJDaG9yb2lkIHBsZXh1cyB0dW1vclxuIiwiTHltcGhvbWFcbiIsIk1lbmluZ2lvbWFcbiIsIkdlcm0gY2VsbCB0dW1vclxuIiwiTWV0YXN0YXRpYyB0dW1vcnNcbiIsIlByZS1jYW5jZXJvdXMgbGVzaW9uXG4iLCJUdW1vciBvZiBwaW5lYWwgcmVnaW9uXG4iLCJOb24tQ05TIHR1bW9yXG4iLCJDaG9yZG9tYVxuIiwiT3RoZXIgdHVtb3JcbiIsIk1lbGFub2N5dGljIHR1bW9yXG4iXX0= -->
+<pre><code>Ependymal tumor
+
+Diffuse astrocytic and oligodendroglial tumor
+
+Low-grade astrocytic tumor
+
+Histiocytic tumor
+
+Mesenchymal non-meningothelial tumor
+
+Tumors of sellar region
+
+Embryonal tumor
+
+Neuronal and mixed neuronal-glial tumor
+
+Benign tumor
+
+Tumor of cranial and paraspinal nerves
+
+Choroid plexus tumor
+
+Lymphoma
+
+Meningioma
+
+Germ cell tumor
+
+Metastatic tumors
+
+Pre-cancerous lesion
+
+Tumor of pineal region
+
+Non-CNS tumor
+
+Chordoma
+
+Other tumor
+
+Melanocytic tumor</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoibGVuZ3RoKHVuaXF1ZSh0dW1vcl9vbmx5X2Jyb2FkX2hpc3QkYnJvYWRfaGlzdG9sb2d5KSkifQ== -->
 <pre class="r"><code>length(unique(tumor_only_broad_hist$broad_histology))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIDIxXG4ifQ== -->
 <pre><code>[1] 21</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBOIGFzc2F5cyBieSB3aGV0aGVyIHNhbXBsZSBpcyBhIHR1bW9yIChhZGRpbmcgaGVyZSwgcGFpcmVkIG5vcm1hbCkgb3IgY2VsbCBsaW5lIChhbHNvIGFkZGluZyBwYWlyZWQgbm9ybWFsKVxuaGlzdCA8LSBoaXN0ICU+JVxuICBtdXRhdGUoaWQgPSBpZmVsc2UoY29tcG9zaXRpb24gPT0gXCJEZXJpdmVkIENlbGwgTGluZVwiLCBcIkNlbGwgTGluZVwiLCBcIk5vbi1DZWxsIExpbmVcIiksXG4gICAgICAgICBleHBlcmltZW50YWxfc3RyYXRlZ3kgPSBpZmVsc2UoZXhwZXJpbWVudGFsX3N0cmF0ZWd5ID09IFwiV1hTXCIgfCBleHBlcmltZW50YWxfc3RyYXRlZ3kgPT0gXCJUYXJnZXRlZCBTZXF1ZW5jaW5nXCIsIFwiV1hTL1BhbmVsXCIsIGV4cGVyaW1lbnRhbF9zdHJhdGVneSkpXG5cbnRhYmxlKGhpc3QkaWQsIGhpc3QkZXhwZXJpbWVudGFsX3N0cmF0ZWd5KVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgTiBhc3NheXMgYnkgd2hldGhlciBzYW1wbGUgaXMgYSB0dW1vciAoYWRkaW5nIGhlcmUsIHBhaXJlZCBub3JtYWwpIG9yIGNlbGwgbGluZSAoYWxzbyBhZGRpbmcgcGFpcmVkIG5vcm1hbCkiLCJoaXN0IDwtIGhpc3QgJT4lXG4gIG11dGF0ZShpZCA9IGlmZWxzZShjb21wb3NpdGlvbiA9PSBcIkRlcml2ZWQgQ2VsbCBMaW5lXCIsIFwiQ2VsbCBMaW5lXCIsIFwiTm9uLUNlbGwgTGluZVwiKSxcbiAgICAgICAgIGV4cGVyaW1lbnRhbF9zdHJhdGVneSA9IGlmZWxzZShleHBlcmltZW50YWxfc3RyYXRlZ3kgPT0gXCJXWFNcIiB8IGV4cGVyaW1lbnRhbF9zdHJhdGVneSA9PSBcIlRhcmdldGVkIFNlcXVlbmNpbmdcIiwgXCJXWFMvUGFuZWxcIiwgZXhwZXJpbWVudGFsX3N0cmF0ZWd5KSkiLCIiLCJ0YWJsZShoaXN0JGlkLCBoaXN0JGV4cGVyaW1lbnRhbF9zdHJhdGVneSkiXX0= -->
 <pre class="r"><code># Total N assays by whether sample is a tumor (adding here, paired normal) or cell line (also adding paired normal)
 hist &lt;- hist %&gt;%
   mutate(id = ifelse(composition == &quot;Derived Cell Line&quot;, &quot;Cell Line&quot;, &quot;Non-Cell Line&quot;),
@@ -3134,11 +3189,11 @@ hist &lt;- hist %&gt;%
 
 table(hist$id, hist$experimental_strategy)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgICAgICAgXG4gICAgICAgICAgICAgICAgUk5BLVNlcSAgV0dTIFdYUy9QYW5lbFxuICBDZWxsIExpbmUgICAgICAgICAgMTYgICAyMiAgICAgICAgIDBcbiAgTm9uLUNlbGwgTGluZSAgICAxMDE5IDE3MTggICAgICAgIDY0XG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgICAgICAgXG4gICAgICAgICAgICAgICAgUk5BLVNlcSAgV0dTIFdYUy9QYW5lbFxuICBDZWxsIExpbmUgICAgICAgICAgMTYgICAyMiAgICAgICAgIDBcbiAgTm9uLUNlbGwgTGluZSAgICAxMDE5IDE3MTkgICAgICAgIDY0XG4ifQ== -->
 <pre><code>               
                 RNA-Seq  WGS WXS/Panel
   Cell Line          16   22         0
-  Non-Cell Line    1019 1718        64</code></pre>
+  Non-Cell Line    1019 1719        64</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3147,10 +3202,10 @@ table(hist$id, hist$experimental_strategy)</code></pre>
 <h2>Print session info</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoic2Vzc2lvbkluZm8oKSJ9 -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgICBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgICBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgICBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcblsxXSBmb3JjYXRzXzAuNC4wICAgc3RyaW5ncl8xLjQuMCAgIGRwbHlyXzAuOC4zICAgICBwdXJycl8wLjMuMiAgICAgcmVhZHJfMS4zLjEgICAgIHRpZHlyXzAuOC4zICAgICB0aWJibGVfMi4xLjMgICBcbls4XSBnZ3Bsb3QyXzMuMi4wICAgdGlkeXZlcnNlXzEuMi4xXG5cbmxvYWRlZCB2aWEgYSBuYW1lc3BhY2UgKGFuZCBub3QgYXR0YWNoZWQpOlxuIFsxXSBSY3BwXzEuMC4xICAgICAgIGNlbGxyYW5nZXJfMS4xLjAgcGlsbGFyXzEuNC4yICAgICBjb21waWxlcl8zLjYuMCAgIGJhc2U2NGVuY18wLjEtMyAgdG9vbHNfMy42LjAgICAgIFxuIFs3XSBkaWdlc3RfMC42LjIwICAgIGV2YWx1YXRlXzAuMTQgICAganNvbmxpdGVfMS42ICAgICBsdWJyaWRhdGVfMS43LjQgIG5sbWVfMy4xLTE0MCAgICAgZ3RhYmxlXzAuMy4wICAgIFxuWzEzXSBsYXR0aWNlXzAuMjAtMzggIHBrZ2NvbmZpZ18yLjAuMiAgcmxhbmdfMC40LjAgICAgICBjbGlfMS4xLjAgICAgICAgIHJzdHVkaW9hcGlfMC4xMCAgeWFtbF8yLjIuMCAgICAgIFxuWzE5XSBoYXZlbl8yLjEuMSAgICAgIHhmdW5fMC44ICAgICAgICAgd2l0aHJfMi4xLjIgICAgICB4bWwyXzEuMi4wICAgICAgIGh0dHJfMS40LjAgICAgICAga25pdHJfMS4yMyAgICAgIFxuWzI1XSBnZW5lcmljc18wLjAuMiAgIGhtc18wLjQuMiAgICAgICAgcnByb2pyb290XzEuMy0yICBncmlkXzMuNi4wICAgICAgIHRpZHlzZWxlY3RfMC4yLjUgZ2x1ZV8xLjMuMSAgICAgIFxuWzMxXSBSNl8yLjQuMCAgICAgICAgIHJlYWR4bF8xLjMuMSAgICAgcm1hcmtkb3duXzEuMTMgICBtb2RlbHJfMC4xLjQgICAgIG1hZ3JpdHRyXzEuNSAgICAgYmFja3BvcnRzXzEuMS40IFxuWzM3XSBzY2FsZXNfMS4wLjAgICAgIGh0bWx0b29sc18wLjMuNiAgcnZlc3RfMC4zLjQgICAgICBhc3NlcnR0aGF0XzAuMi4xIGNvbG9yc3BhY2VfMS40LTEgc3RyaW5naV8xLjQuMyAgIFxuWzQzXSBsYXp5ZXZhbF8wLjIuMiAgIG11bnNlbGxfMC41LjAgICAgYnJvb21fMC41LjIgICAgICBjcmF5b25fMS4zLjQgICAgXG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgIFxuIFszXSBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgIFxuWzExXSBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcblsxXSBmb3JjYXRzXzAuNC4wICAgc3RyaW5ncl8xLjQuMCAgIGRwbHlyXzAuOC4zICAgICBwdXJycl8wLjMuMiAgICBcbls1XSByZWFkcl8xLjMuMSAgICAgdGlkeXJfMC44LjMgICAgIHRpYmJsZV8yLjEuMyAgICBnZ3Bsb3QyXzMuMi4wICBcbls5XSB0aWR5dmVyc2VfMS4yLjFcblxubG9hZGVkIHZpYSBhIG5hbWVzcGFjZSAoYW5kIG5vdCBhdHRhY2hlZCk6XG4gWzFdIFJjcHBfMS4wLjEgICAgICAgY2VsbHJhbmdlcl8xLjEuMCBwaWxsYXJfMS40LjIgICAgIGNvbXBpbGVyXzMuNi4wICBcbiBbNV0gYmFzZTY0ZW5jXzAuMS0zICB0b29sc18zLjYuMCAgICAgIGRpZ2VzdF8wLjYuMjAgICAgbHVicmlkYXRlXzEuNy40IFxuIFs5XSBqc29ubGl0ZV8xLjYgICAgIGV2YWx1YXRlXzAuMTQgICAgbmxtZV8zLjEtMTQwICAgICBndGFibGVfMC4zLjAgICAgXG5bMTNdIGxhdHRpY2VfMC4yMC0zOCAgcGtnY29uZmlnXzIuMC4yICBybGFuZ18wLjQuMCAgICAgIGNsaV8xLjEuMCAgICAgICBcblsxN10gcnN0dWRpb2FwaV8wLjEwICB5YW1sXzIuMi4wICAgICAgIGhhdmVuXzIuMS4xICAgICAgeGZ1bl8wLjggICAgICAgIFxuWzIxXSB3aXRocl8yLjEuMiAgICAgIHhtbDJfMS4yLjAgICAgICAgaHR0cl8xLjQuMCAgICAgICBrbml0cl8xLjIzICAgICAgXG5bMjVdIGdlbmVyaWNzXzAuMC4yICAgaG1zXzAuNC4yICAgICAgICBycHJvanJvb3RfMS4zLTIgIGdyaWRfMy42LjAgICAgICBcblsyOV0gdGlkeXNlbGVjdF8wLjIuNSBnbHVlXzEuMy4xICAgICAgIFI2XzIuNC4wICAgICAgICAgcmVhZHhsXzEuMy4xICAgIFxuWzMzXSBybWFya2Rvd25fMS4xMyAgIG1vZGVscl8wLjEuNCAgICAgbWFncml0dHJfMS41ICAgICBiYWNrcG9ydHNfMS4xLjQgXG5bMzddIHNjYWxlc18xLjAuMCAgICAgaHRtbHRvb2xzXzAuMy42ICBydmVzdF8wLjMuNCAgICAgIGFzc2VydHRoYXRfMC4yLjFcbls0MV0gY29sb3JzcGFjZV8xLjQtMSBzdHJpbmdpXzEuNC4zICAgIGxhenlldmFsXzAuMi4yICAgbXVuc2VsbF8wLjUuMCAgIFxuWzQ1XSBicm9vbV8wLjUuMiAgICAgIGNyYXlvbl8xLjMuNCAgICBcbiJ9 -->
 <pre><code>R version 3.6.0 (2019-04-26)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Debian GNU/Linux 9 (stretch)
@@ -3159,26 +3214,34 @@ Matrix products: default
 BLAS/LAPACK: /usr/lib/libopenblasp-r0.2.19.so
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C               LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C              LC_PAPER=en_US.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C             LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] forcats_0.4.0   stringr_1.4.0   dplyr_0.8.3     purrr_0.3.2     readr_1.3.1     tidyr_0.8.3     tibble_2.1.3   
-[8] ggplot2_3.2.0   tidyverse_1.2.1
+[1] forcats_0.4.0   stringr_1.4.0   dplyr_0.8.3     purrr_0.3.2    
+[5] readr_1.3.1     tidyr_0.8.3     tibble_2.1.3    ggplot2_3.2.0  
+[9] tidyverse_1.2.1
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.1       cellranger_1.1.0 pillar_1.4.2     compiler_3.6.0   base64enc_0.1-3  tools_3.6.0     
- [7] digest_0.6.20    evaluate_0.14    jsonlite_1.6     lubridate_1.7.4  nlme_3.1-140     gtable_0.3.0    
-[13] lattice_0.20-38  pkgconfig_2.0.2  rlang_0.4.0      cli_1.1.0        rstudioapi_0.10  yaml_2.2.0      
-[19] haven_2.1.1      xfun_0.8         withr_2.1.2      xml2_1.2.0       httr_1.4.0       knitr_1.23      
-[25] generics_0.0.2   hms_0.4.2        rprojroot_1.3-2  grid_3.6.0       tidyselect_0.2.5 glue_1.3.1      
-[31] R6_2.4.0         readxl_1.3.1     rmarkdown_1.13   modelr_0.1.4     magrittr_1.5     backports_1.1.4 
-[37] scales_1.0.0     htmltools_0.3.6  rvest_0.3.4      assertthat_0.2.1 colorspace_1.4-1 stringi_1.4.3   
-[43] lazyeval_0.2.2   munsell_0.5.0    broom_0.5.2      crayon_1.3.4    </code></pre>
+ [1] Rcpp_1.0.1       cellranger_1.1.0 pillar_1.4.2     compiler_3.6.0  
+ [5] base64enc_0.1-3  tools_3.6.0      digest_0.6.20    lubridate_1.7.4 
+ [9] jsonlite_1.6     evaluate_0.14    nlme_3.1-140     gtable_0.3.0    
+[13] lattice_0.20-38  pkgconfig_2.0.2  rlang_0.4.0      cli_1.1.0       
+[17] rstudioapi_0.10  yaml_2.2.0       haven_2.1.1      xfun_0.8        
+[21] withr_2.1.2      xml2_1.2.0       httr_1.4.0       knitr_1.23      
+[25] generics_0.0.2   hms_0.4.2        rprojroot_1.3-2  grid_3.6.0      
+[29] tidyselect_0.2.5 glue_1.3.1       R6_2.4.0         readxl_1.3.1    
+[33] rmarkdown_1.13   modelr_0.1.4     magrittr_1.5     backports_1.1.4 
+[37] scales_1.0.0     htmltools_0.3.6  rvest_0.3.4      assertthat_0.2.1
+[41] colorspace_1.4-1 stringi_1.4.3    lazyeval_0.2.2   munsell_0.5.0   
+[45] broom_0.5.2      crayon_1.3.4    </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 </div>
