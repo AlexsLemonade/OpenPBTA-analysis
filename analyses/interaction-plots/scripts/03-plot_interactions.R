@@ -208,7 +208,7 @@ disease_df <-
 
 # Calculate top 10 mutated cancer groups for display
  display_diseases <- disease_df %>%
-   # remove other from display
+   # remove other from top 10 possibilities
    dplyr::filter(disease != "Other") %>%
    dplyr::select(disease, mutant_samples) %>%
    dplyr::arrange(desc(mutant_samples)) %>%
