@@ -1,0 +1,400 @@
+---
+title: "Visualization of CNS signature fitting with `deconstructSigs`"
+author: "SJ Spielman"
+date: "2022"
+output:
+  html_notebook:
+    toc: true
+editor_options: 
+  chunk_output_type: inline
+params:
+  is_ci: 0
+---
+
+<br><br><br><br>
+
+#### Files and paths
+
+
+```{r setup}
+`%>%` <- dplyr::`%>%`
+
+proj_root_path  <- file.path( rprojroot::find_root(rprojroot::has_dir(".git")) )
+analysis_path   <- file.path(proj_root_path, "analyses", "mutational-signatures")
+plot_path       <- file.path(analysis_path, "plots", "cns")
+if (!dir.exists(plot_path)) {
+  dir.create(plot_path, recursive = TRUE)
+}
+
+# Input files
+fitted_file    <- file.path(analysis_path, "results", "fitted_exposures_signal-cns_deconstructSigs.rds")
+meta_file      <- file.path(proj_root_path, "data", "pbta-histologies.tsv")
+
+
+histology_palette_file   <- file.path(proj_root_path, "figures", "palettes", "broad_histology_cancer_group_palette.tsv")
+binary_palette_file <- file.path(proj_root_path, "figures", "palettes", "binary_color_palette.tsv")
+tumor_palette_file <-  file.path(proj_root_path, "figures", "palettes", "tumor_descriptor_palette.tsv")
+
+# Output plots
+exposures_sample_barplot_file <- file.path(analysis_path, "plots", "cns", "exposures_per_sample_barplot.pdf")
+exposures_sina_IQR_file <- file.path(analysis_path, "plots", "cns", "exposures_sina_IQR.pdf")
+exposures_presence_barplot_file <- file.path(analysis_path, "plots", "cns", "exposures_presence_barplot.pdf")
+signature1_tumor_cancergroups_file <- file.path(analysis_path, "plots", "cns", "signature1_tumor-descriptor_cancer-groups.pdf")
+signature1_tumor_molecularsubtypes_file <- file.path(analysis_path, "plots", "cns", "signature1_tumor-descriptor_molecular-subtypes.pdf")
+
+# Output result file which contains merged/prepped data for visualization, also used in the `08` notebooks
+results_df_file <- file.path("results", "deconstructsigs_exposures_merged.tsv")
+
+
+# The real signature names: https://signal.mutationalsignatures.com/explore/studyTissueType/1-6
+signature_names_df <- tibble::tibble(
+  signature = factor(
+    c("11", "1", "N6", "8", "MMR2", "18", "19", "3", "Other"), 
+    levels = c("1", "3", "8", "11", "18", "19", "N6", "MMR2", "Other")),
+  cns_names   = c(paste0("CNS_",LETTERS[1:8]), "Other")
+)
+```
+
+First, we read in data and prepare exposures.
+
+```{r read_prep_data, warning=FALSE}
+
+# Read in metadata and palette files
+meta <- readr::read_tsv(meta_file, guess_max = 10000)
+palette_df <- readr::read_tsv(histology_palette_file) 
+binary_df <- readr::read_tsv(binary_palette_file)
+binary_colors <- binary_df$hex_codes[binary_df$color_names != "na_color"]
+tumor_df <- readr::read_tsv(tumor_palette_file)
+
+
+# Read in exposures from CNS signature fitting and tibble it up, including the "unknown" weight
+raw_exposures <- readr::read_rds(fitted_file)
+decon_weights <- lapply(raw_exposures, "[[", "weights")
+exposures_wide <- do.call(rbind, decon_weights) %>%
+  tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
+  tibble::as_tibble() 
+
+unknown_weights <- lapply(raw_exposures, "[[", "unknown")
+unknown_weights_array <- do.call(rbind, unknown_weights)
+exposures <- exposures_wide %>%
+  # use "Other" for unknown
+  dplyr::mutate(Other = unknown_weights_array[,1]) %>%
+  # key is column name in signature_names_df
+  tidyr::gather(-Kids_First_Biospecimen_ID, key = "cns_names", value = "exposure") 
+
+```
+
+
+Now we prepare the data for visualization, including merging data frames and further setting up palettes.
+Note that we are plotting here only the cancer groups used in the [`interaction-plots` module](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/interaction-plots/scripts/03-plot_interactions.R)
+
+```{r merge_data}
+# Cancer groups we are showing in figure 4
+cancer_groups_to_plot <- c(
+  "Diffuse midline glioma",
+  "Low-grade glioma astrocytoma",
+  "Craniopharyngioma",
+  "High-grade glioma astrocytoma",
+  "Ganglioglioma",
+  "Medulloblastoma",
+  "Meningioma",
+  "Ependymoma",
+  "Schwannoma",
+  "Dysembryoplastic neuroepithelial tumor"
+)
+
+# Join input dataframes together
+results_df <- exposures %>% 
+  # Merge with metadata
+  dplyr::inner_join(
+    meta %>%
+      dplyr::select(Kids_First_Biospecimen_ID, broad_histology, cancer_group, tumor_descriptor)
+  ) %>%
+  # Grab the cancer group DISPLAY specifically (needed for joining later)
+  dplyr::inner_join(
+      dplyr::select(palette_df, cancer_group, cancer_group_display)
+  ) %>%
+  # no longer need cancer_group
+  dplyr::select(-cancer_group) %>%
+  # Retain only cancer groups for these visualizations
+  dplyr::filter(cancer_group_display %in% cancer_groups_to_plot) %>%
+  # Merge with correct signal names (already factored and ordered)
+  dplyr::inner_join(signature_names_df)  %>%
+  dplyr::select(-cns_names) # remove signature column 
+
+# We need to create a new scheme for labeling that shows wrapped cancer groups with `(n=X)`
+results_df <- results_df %>%
+  dplyr::count(cancer_group_display, signature) %>%
+  dplyr::select(-signature) %>%
+  dplyr::distinct() %>%
+  dplyr::inner_join(
+      dplyr::select(palette_df, dplyr::contains("cancer_group"))
+  ) %>%
+  dplyr::select(cancer_group_display, n, cancer_group_hex) %>%
+  # Create wrapped with (n=X) factor column for cancer groups
+  dplyr::mutate(cancer_group_display_n = stringr::str_wrap(glue::glue("{cancer_group_display} (N={n})"), 30),
+                cancer_group_display_n = forcats::fct_reorder(cancer_group_display_n, n, .desc=T)) %>%
+  dplyr::inner_join(results_df)
+
+# We also write `results_df` to a file since it will be used by the `08` notebooks.
+readr::write_tsv(results_df, results_df_file)
+
+
+```
+
+
+<br><br>
+
+
+### Sina/IQR of exposures across cancer groups 
+
+
+_All_ samples are included in these sina plots, which show the distribution of exposures for each signature across samples in each cancer group.
+
+
+```{r boxplot, fig.width = 14, fig.height = 4.5}
+
+exposures_sina_boxplot <- results_df %>%
+  # we DO visualize unknown also, but in case...
+  #dplyr::filter(signature != "Other") %>%
+  ggplot2::ggplot() + 
+  ggplot2::aes(x = signature, 
+               y = exposure,
+               color = cancer_group_hex) + 
+  ggforce::geom_sina(size = 0.7) + 
+  ggplot2::geom_boxplot(outlier.size = 0, 
+                        size = 0.3, 
+                        color = "black", 
+                        alpha = 0,
+                        # remove whiskers
+                        coef = 0) +
+  ggplot2::facet_wrap(~cancer_group_display_n, nrow = 2) +
+  ggplot2::scale_color_identity() + 
+  # commenting out because 2 points are somehow removed..
+  #ggplot2::scale_y_continuous(limits = c(0, 1.2), 
+  #                            breaks = c(0, 0.25, 0.5, 0.75, 1.0)) +
+  ggplot2::labs(
+    x = "RefSig signature",
+    y = "Signature weights across samples"
+  ) +
+  ggpubr::theme_pubr() + 
+  cowplot::panel_border() +
+  ggplot2::theme(
+    # angle needed to fit "Other" category
+    axis.text.x = ggplot2::element_text(size = 8.5, angle = 45, hjust = 1),
+    axis.text.y = ggplot2::element_text(size = 10),
+    axis.title = ggplot2::element_text(size = 12),
+    strip.text = ggplot2::element_text(size = 8.5),
+    legend.position = "none"
+  )
+exposures_sina_boxplot
+
+ggplot2::ggsave(exposures_sina_IQR_file, exposures_sina_boxplot, width = 12, height = 5)
+
+```
+
+
+### Barplots of proportions of samples that are _unexposed_ 
+
+Notably, the "rug" of 0's in each distribution represents samples which are unexposed to the given signature. 
+It's useful to get a clear sense of the proportion of samples that are totally unexposed.
+We do _not_ include "Other" in this plot. 
+
+```{r proportion, fig.width = 5, fig.height = 10}
+exposures_proportions <- results_df %>%
+  # remove "other" - not useful to know if samples are unexposed to signatures that aren't even present.
+  dplyr::filter(signature != "Other") %>%
+  dplyr::group_by(cancer_group_display_n, cancer_group_hex, signature) %>%
+  dplyr::summarize(percent_exposed = sum(exposure > 0)/dplyr::n()) %>%
+  ggplot2::ggplot() + 
+  ggplot2::aes(x = signature, y = percent_exposed, fill = cancer_group_hex) + 
+  ggplot2::geom_col(color = "black") +
+  ggplot2::facet_wrap(~cancer_group_display_n, nrow = 5) + 
+  ggplot2::scale_fill_identity() +
+  ggplot2::labs(x = "RefSig Signature", 
+                y = "Percent of samples exposed to signature") +
+  ggpubr::theme_pubr() +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(size = 8))
+
+exposures_proportions
+
+ggplot2::ggsave(exposures_presence_barplot_file, exposures_proportions, width = 5, height = 10)
+
+```
+
+
+<br><br>
+
+
+### Barplot of sample exposures faceted across cancer groups
+
+This plot shows the signature exposures for each sample. 
+Each bar represents one sample, with fills representing the different signatures.
+We order plots by sample 1, and we include the unknown proportion so everything has the same height. 
+In this case, "Other" specifically means mutations that were not assigned to the specific 8 CNS signatures examined, but are associated (if at all) with a different signature.
+
+```{r barplot1, fig.width = 12, fig.height = 9}
+
+# Make a column for exposure of interest to order samples by
+samples_in_order <- results_df %>%
+  dplyr::filter(signature == 1) %>%
+  dplyr::select(exposure, Kids_First_Biospecimen_ID) %>%
+  dplyr::arrange(-exposure) %>%
+  dplyr::pull(Kids_First_Biospecimen_ID)
+
+
+sample_exposures_barplot <- results_df %>%
+  dplyr::mutate(Kids_First_Biospecimen_ID = factor(Kids_First_Biospecimen_ID, levels = samples_in_order)) %>%
+  ggplot2::ggplot() +
+  ggplot2::aes(x = Kids_First_Biospecimen_ID, 
+               y = exposure, 
+               fill = signature) + 
+  ggplot2::geom_col(color = "black", size = 0.05) + 
+  ggplot2::labs(x = "Sample", y = "Signature weight", fill = "RefSig Signature") + 
+  # Only 1:8 palette. The "Other" gets filled as white by including `color="black"` in the geom
+  # There will be a warning about palette size and the warning is OK because ^^
+  colorblindr::scale_fill_OkabeIto() + 
+  ggplot2::facet_wrap(~cancer_group_display_n, scales = "free_x", nrow = 5) + 
+  ggpubr::theme_pubr() + 
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_blank(),
+    axis.ticks.x = ggplot2::element_blank(),
+    axis.title = ggplot2::element_text(size = ggplot2::rel(1.125))
+  )
+
+sample_exposures_barplot
+ggplot2::ggsave(exposures_sample_barplot_file, sample_exposures_barplot, width = 12, height = 9)
+  
+```
+
+<br><br>
+
+### Explore: Signature 1 presence
+
+
+Is there a relationship between the presence of signature 1 in a given sample, and either i) its molecular subtype, or ii) its tumor descriptor?
+Because signature 1 is a "normal" signature, we might expect that samples without signature 1 are more progressive/relapse and/or are associated with a specific subtype. 
+For background discussion, see [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1227). 
+
+We see somewhat of a relationship here, but the data sets are highly imbalanced across categories (include 0 and other very low counts), so the statistics are not extremely reliable.
+
+
+
+```{r sig1_prop, fig.width = 8, fig.height =4}
+# Grab signature1 exposures. 
+sig1_exposures <- results_df %>%
+  # Since exposures sum to 1 **including unknown**, we just need sig 1's exposure
+  dplyr::filter(signature == 1) %>%
+  dplyr::select(Kids_First_Biospecimen_ID, 
+                sig1_proportion = exposure, 
+                cancer_group_display_n) %>%
+  # create indicator column of absence/presence
+  dplyr::mutate(sig1_present = ifelse(sig1_proportion == 0, "Absent", "Present"),
+                # Present should be first level
+                sig1_present = forcats::fct_relevel(sig1_present, "Present")) %>%
+  # merge in tumor descriptor and subtype information
+  dplyr::inner_join(
+    dplyr::select(meta, Kids_First_Biospecimen_ID, tumor_descriptor, molecular_subtype)
+  )
+```
+
+Now, we can make contingency tables and compare signature 1 absence/presence with i) subtypes and ii) descriptors. We run some $\chi^2$-squared tests, **but** there are many low counts in these tables (and some 0!) _so we need to take these tests with a very very big boulder of salt._
+
+```{r contingency_tables}
+
+# Subtypes:
+table(sig1_exposures$molecular_subtype, sig1_exposures$sig1_present)
+chisq.test(table(sig1_exposures$molecular_subtype, sig1_exposures$sig1_present))
+
+# Tumor descriptor:
+table(sig1_exposures$tumor_descriptor, sig1_exposures$sig1_present)
+chisq.test(table(sig1_exposures$tumor_descriptor, sig1_exposures$sig1_present))
+```
+ 
+We can also explore this using the signature 1 exposure directly instead of a binary absence/presence indicator, specifically across cancer groups of interest, and then specifically within `HGG, H3 wildtype` subtype samples because there is (mostly) enough data to do some light comparison across groups. There is somewhat of a trend here, but sample sizes are small that it's not very robust to perform robust statistics across groupings.
+
+
+
+
+```{r sig1_jitter, fig.width = 12, fig.height = 6}
+
+# This chunk should NOT run in CI. 
+if (!(params$is_ci == 1)) {
+   
+  # Grab the tumor descriptor colors
+  tumor_colors <- tumor_df$hex_codes
+  names(tumor_colors) <- tumor_df$color_names
+  
+  # First we can display proportions and tumor desriptor, across cancer display groups
+  sig1_tumor_cancergroups <- sig1_exposures %>%
+    ggplot2::ggplot() + 
+    ggplot2::aes(x = tumor_descriptor, 
+                 y = sig1_proportion, 
+                 color = tumor_descriptor) + 
+    ggplot2::geom_jitter(width = 0.2, alpha = 0.5, size = 2) + 
+    # light guiding line representing 0 exposure
+    ggplot2::geom_hline(yintercept = 0, size = 0.15) + 
+    ggplot2::scale_color_manual(values = tumor_colors) +
+    # add in mean guiding point
+    ggplot2::stat_summary(color = "black") + 
+    ggplot2::facet_wrap(~cancer_group_display_n,nrow = 2) +
+    ggplot2::labs(
+      x = "Tumor descriptor",
+      y = "Signature 1 Weight"
+    ) +
+    ggpubr::theme_pubr() + 
+    ggplot2::theme(
+      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, size = 8),
+      legend.position = "none"
+    )
+  
+  # We can also viz with molecular subtypes, focusing only on subtypes with decent sample sizes. For now let's say N=15.
+  subtypes <- sig1_exposures %>%
+    dplyr::count(molecular_subtype) %>%
+    dplyr::filter(n >= 15) %>%
+    dplyr::pull(molecular_subtype)
+  
+  sig1_tumor_molsubs <- sig1_exposures %>%
+    dplyr::filter(molecular_subtype %in% subtypes) %>%
+    tidyr::drop_na(molecular_subtype) %>%
+    ggplot2::ggplot() + 
+    ggplot2::aes(x = tumor_descriptor, 
+                 y = sig1_proportion, 
+                 color = tumor_descriptor) + 
+    ggplot2::geom_jitter(width = 0.2, alpha = 0.5, size = 1) + 
+    # light guiding line representing 0 exposure
+    ggplot2::geom_hline(yintercept = 0, size = 0.15) + 
+    ggplot2::scale_color_manual(values = tumor_colors) +
+    # add in mean guiding point
+    ggplot2::stat_summary(color = "black", size = 0.25) + 
+    ggplot2::facet_wrap(~molecular_subtype,nrow = 3) +
+    ggplot2::labs(
+      x = "Tumor descriptor",
+      y = "Signature 1 Weight"
+    ) +
+    ggpubr::theme_pubr() + 
+    ggplot2::theme(
+      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, size = 6),
+      strip.text = ggplot2::element_text(size = 6),
+      legend.position = "none"
+    )
+  
+  # Plot the plots
+  print(sig1_tumor_cancergroups)
+  print(sig1_tumor_molsubs)
+  
+  # Save the plots
+  ggplot2::ggsave(signature1_tumor_cancergroups_file, sig1_tumor_cancergroups, width = 12, height = 6)
+  ggplot2::ggsave(signature1_tumor_molecularsubtypes_file, sig1_tumor_molsubs, width = 12, height = 6)
+}
+
+```
+
+
+
+
+### Session info
+
+```{r sessioninfo}
+sessionInfo()
+```

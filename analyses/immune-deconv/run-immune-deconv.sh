@@ -20,19 +20,33 @@ cd "$script_directory" || exit
 mkdir -p results
 mkdir -p plots
 
+# Shared input files
+POLYA='../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds'
+STRANDED='../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds'
+CLIN='../../data/pbta-histologies.tsv'
+
+# In CI we'll run an abbreviated version of the figures script due to insufficient testing data
+# needed for making some of the plots
+ABBREVIATED_IMMUNE=${OPENPBTA_QUICK_IMMUNE:-0}
+
 # generate deconvolution output for poly-A and stranded datasets using xCell
 Rscript --vanilla 01-immune-deconv.R \
---polyaexprs '../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds' \
---strandedexprs '../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds' \
---clin '../../data/pbta-histologies.tsv' \
+--polyaexprs $POLYA \
+--strandedexprs $STRANDED \
 --method 'xcell' \
---outputfile 'results/deconv-output.RData'
+--outputfile 'results/xcell_deconv-output.rds' 
 
-echo "Deconvolution finished..."
-echo "Create summary plots"
+# generate deconvolution output for poly-A and stranded datasets using quanTIseq
+Rscript --vanilla 01-immune-deconv.R \
+--polyaexprs $POLYA \
+--strandedexprs $STRANDED \
+--method 'quantiseq' \
+--outputfile 'results/quantiseq_deconv-output.rds' 
 
-# Now, run the script to generate heatmaps of average normalized immune scores for xCell, stratified by histology and by molecular subtype
-Rscript --vanilla 02-summary-plots.R \
---input 'results/deconv-output.RData' \
---output_dir 'plots'
+
+echo "Deconvolution finished."
+
+
+# Perform visualization
+Rscript -e "rmarkdown::render('02-visualize_quantiseq.Rmd', clean = TRUE, params = list(is_ci = ${ABBREVIATED_IMMUNE}))"
 

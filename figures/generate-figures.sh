@@ -26,44 +26,46 @@ scratch_dir="$BASEDIR/scratch"
 
 # Make output folders for all figures
 mkdir -p pngs
+mkdir -p pdfs
 
-#### Make sure histology_label_color_table.tsv is up to date
-
-Rscript -e "rmarkdown::render('mapping-histology-labels.Rmd', clean = TRUE)"
+#### Make sure color palettes are up-to-date
+Rscript --vanilla scripts/color_palettes.R
+Rscript -e "rmarkdown::render('mapping-histology-labels.Rmd', clean = TRUE, params = list(release = 'release-v21-20210820'))"
 
 ################ Sample distribution
 # Run sample distribution analysis
 bash ${analyses_dir}/sample-distribution-analysis/run-sample-distribution.sh
 
-# Run the figure assembly
-Rscript --vanilla scripts/fig1-sample-distribution.R
-
-################ Mutational landscape figure
-if [ "$RUN_LOCAL" -lt "1" ]; then
-  # Run both SNV caller consensus scripts
-  # Note: This the PBTA consensus script requires at least 128 MB of RAM to run
-  # These scripts are intended to run from the base directory,
-  # so we will temporarily move there
-  cd $BASEDIR
-  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh
-  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh
-  cd $WORKDIR
-
-  # Run mutational signatures analysis
-  Rscript --vanilla -e "rmarkdown::render('../analyses/mutational-signatures/01-known_signatures.Rmd', clean = TRUE)"
-
-  # Run the figure assembly
-  Rscript --vanilla scripts/fig2-mutational-landscape.R
-fi
+# TODO: Rscript for figure (related: https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1175)
 
 ######################
 ## Interaction plots
+
+# Create directory that will hold the relevant panel
+mkdir -p pdfs/fig3/panels
 
 # Run the main figure generation script
 bash ${analyses_dir}/interaction-plots/01-create-interaction-plots.sh
 
 # Copy the main figure to final directory
-cp ${analyses_dir}/interaction-plots/plots/combined_top50.png pngs/mutation_cooccurrence_figure.png
+cp ${analyses_dir}/interaction-plots/plots/combined_top50.pdf pdfs/fig3/panels/mutation_cooccurrence_figure.pdf
+
+
+#####################
+## Chromothripsis
+
+# The chromothripsis module uses breakpoint counts from this module
+bash ${analyses_dir}/chromosomal-instability/run_breakpoint_analysis.sh
+
+# Run the chromothripsis module
+bash ${analyses_dir}/chromothripsis/run-chromothripsis.sh
+
+# Create directory that will hold the relevant scatter plot from the chromothripsis module
+mkdir -p pdfs/fig3/panels
+cp ${analyses_dir}/chromothripsis/plots/04-breakpoint-data/count_chromothripsis_cnv_and_sv_breaks_scatterplot.pdf pdfs/fig3/panels/count_chromothripsis_cnv_and_sv_breaks_scatterplot.pdf
+
+# Run the Rscript that creates the barplot using the most recent color palette
+Rscript --vanilla scripts/fig3-chromothripsis-barplot.R
 
 ######################
 ## Oncoprint plot(s)
@@ -80,55 +82,8 @@ bash ${analyses_dir}/oncoprint-landscape/run-oncoprint.sh
 # Will create two plots - primary only and "primary plus" samples
 filenames=(primary_only primary-plus)
 
-for filename in "${filenames[@]}"; do
-
-  ## Run the `oncoprint-landscape` figure assembly script
-  Rscript --vanilla scripts/oncoprint-landscape.R \
-    --lead_filename ${filename} \
-    --png_name pngs/${filename}_oncoprint_landscape.png
-
-done
-
-## Copy number status heatmap
-
-####### Transcriptomic overview
-
-# First run the dimension reduction steps
-bash ${analyses_dir}/transcriptomic-dimension-reduction/dimension-reduction-plots.sh
-
-# Then collapse RNA-seq data, which is required for GSVA and immune deconvolution
-bash ${analyses_dir}/collapse-rnaseq/run-collapse-rnaseq.sh
-
-# Generate GSVA scores
-Rscript --vanilla ${analyses_dir}/gene-set-enrichment-analysis/01-conduct-gsea-analysis.R \
-  --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
-  --output ${analyses_dir}/gene-set-enrichment-analysis/results/gsva_scores_stranded.tsv
-
-# This notebook tests for differences between `short_histology`
-# and `integrated_diagnosis` - we can use this to filter what pathways are
-# displayed in a heatmap
-Rscript --vanilla -e "rmarkdown::render('${analyses_dir}/gene-set-enrichment-analysis/02-model-gsea.Rmd', clean = TRUE)"
-
-# Immune deconvolution - we can't use CIBERSORT because we don't have access to it
-# By not supplying an argument to --method, we are electing only to use xCell
-Rscript --vanilla ${analyses_dir}/immune-deconv/01-immune-deconv.R \
-  --polyaexprs ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds \
-  --strandedexprs ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
-  --clin ${data_dir}/pbta-histologies.tsv \
-  --output ${analyses_dir}/immune-deconv/results/deconv-output-for-figures.RData
-
-# Step that generates the transcriptomic overview figure itself
-Rscript --vanilla scripts/transcriptomic-overview.R
-
-####### CN Status Heatmap
-if [ "$RUN_LOCAL" -lt "1" ]; then
-# Run consensus CNV so we have a refreshed `pbta-cnv-consensus.seg.gz` file
-bash ${analyses_dir}/copy_number_consensus_call/run_consensus_call.sh
-fi
-
-# Run CN status heatmap but use parameter so file is saved to figures folder
-Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.Rmd',
-                              clean = TRUE, params = list(final_figure=TRUE))"
+# Create single panel PDFs and legends
+Rscript --vanilla scripts/fig2-oncoprint-landscape.R
 
 ####### Telomerase Activities
 
@@ -152,4 +107,101 @@ Rscript --vanilla ${analyses_dir}/telomerase-activity-prediction/01-run-EXTEND.R
 Rscript --vanilla ${analyses_dir}/telomerase-activity-prediction/01-run-EXTEND.R --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-counts-rsem-expected_count-collapsed.polya.rds --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAPolya_counts.txt
 
 # Build figures of telomerase activity
-Rscript --vanilla scripts/TelomeraseActivities.R
+Rscript --vanilla scripts/fig4-telomerase-activities.R
+
+####### Transcriptomic overview
+
+# First run the dimension reduction steps
+bash ${analyses_dir}/transcriptomic-dimension-reduction/dimension-reduction-plots.sh
+
+# Then collapse RNA-seq data, which is required for GSVA and immune deconvolution
+bash ${analyses_dir}/collapse-rnaseq/run-collapse-rnaseq.sh
+
+# Generate GSVA scores
+Rscript --vanilla ${analyses_dir}/gene-set-enrichment-analysis/01-conduct-gsea-analysis.R \
+  --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
+  --output ${analyses_dir}/gene-set-enrichment-analysis/results/gsva_scores_stranded.tsv
+
+# This notebook tests for differences between `short_histology`
+# and `integrated_diagnosis` - we can use this to filter what pathways are
+# displayed in a heatmap
+Rscript --vanilla -e "rmarkdown::render('${analyses_dir}/gene-set-enrichment-analysis/02-model-gsea.Rmd', clean = TRUE)"
+
+# Step that generates the GSVA, UMAP, and legend panels
+Rscript --vanilla scripts/fig5-panels-gsva-umap.R
+
+
+###### TP53 scores
+
+# Generate the tp53 scores boxplot for figure 3
+Rscript --vanilla scripts/fig3-panel-tp53.R
+
+###### Hypermutator signatures
+# Run the mutational-signatures module
+bash ${analyses_dir}/mutational-signatures/run_mutational_signatures.sh
+
+
+# Copy the figure to final directory
+cp ${analyses_dir}/mutational-signatures/plots/cns/hypermutator_sigs_heatmap.pdf  pdfs/fig4/panels/hypermutator_sigs_heatmap.pdf
+cp ${analyses_dir}/mutational-signatures/plots/cns/hypermutator_sigs_heatmap_legends.pdf  pdfs/fig4/panels/hypermutator_sigs_heatmap_legends.pdf
+
+####### Sample distributions
+
+# Generate sample distribution panel for Figure 1 and supplementary panels
+Rscript --vanilla scripts/fig1-sample-distribution.R
+
+
+####### CN Status Heatmap
+if [ "$RUN_LOCAL" -lt "1" ]; then
+# Run consensus CNV so we have a refreshed `pbta-cnv-consensus.seg.gz` file
+bash ${analyses_dir}/copy_number_consensus_call/run_consensus_call.sh
+fi
+
+# Run CN status heatmap but use parameter so file is saved to figures folder
+Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.Rmd',
+                              clean = TRUE, params = list(final_figure=TRUE))"
+
+
+
+######## Mutational signatures
+# Copy the figure to final directory
+cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_sina_IQR.pdf  pdfs/fig3/panels/mutational_signatures_exposures.pdf
+
+
+######## Immune deconvolution with quanTIseq (5C)
+# run the immune-deconv module:
+bash ${analyses_dir}/immune-deconv/run-immune-deconv.sh
+# copy figure panel:
+cp ${analyses_dir}/immune-deconv/plots/cell_types-cancer_groups.pdf  pdfs/fig5/panels/quantiseq-cell_types-cancer_groups.pdf
+
+###### Forest plot for 5D
+Rscript --vanilla scripts/fig5-forest-plot.R
+
+###### Box plot for 5E
+cp ${analyses_dir}/immune-deconv/plots/cd274_expression_mb_subtypes.pdf  pdfs/fig5/panels/cd274_expression_mb_subtypes.pdf
+
+
+####### Supplementary figures
+
+
+# Panels for supplementary figure 3
+Rscript --vanilla scripts/supp-S3-panels-BCD.R
+
+
+# Copy Figure S4 panels (analysis module was run previously)
+cp ${analyses_dir}/mutational-signatures/plots/cns/signature1_tumor-descriptor_cancer-groups.pdf   pdfs/supp/figs4/panels/
+cp ${analyses_dir}/mutational-signatures/plots/cns/exposures_per_sample_barplot.pdf    pdfs/supp/figs4/panels/
+
+
+# UMAP panels for supplementary figure 6 from molecular analysis 
+Rscript --vanilla scripts/supp-subtype-umap.R
+
+# Copy additional S6 panels (analysis module was run previously)
+# 6S - E
+cp ${analyses_dir}/immune-deconv/plots/cell_types-molecular_subtypes.pdf pdfs/supp/figs6/panels/quantiseq-cell_types-molecular_subtypes.pdf
+
+# 6S - F
+cp ${analyses_dir}/immune-deconv/plots/cd8_cd4_ratio.pdf pdfs/supp/figs6/panels/cd8_cd4_ratio.pdf
+
+
+

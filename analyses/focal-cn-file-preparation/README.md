@@ -10,7 +10,7 @@ The purpose of this module is to map from those ranges to gene identifiers for c
 
 To run this analysis _only on consensus SEG file_, 
 
-use OPENPBTA_BASE_SUBTYPING=1 to run this module using the pbta-histologies-base.tsv from data folder and relative path to `copy_number_consensus_call/results/pbta-cnv-consensus.seg.gz` while running molecular-subtyping modules for release.
+use OPENPBTA_BASE_SUBTYPING=1 to run this module using the `pbta-histologies-base.tsv` from data folder and relative path to `copy_number_consensus_call/results/pbta-cnv-consensus.seg.gz` while running molecular-subtyping modules for release.
 
 ```
 OPENPBTA_BASE_SUBTYPING=1 bash analyses/focal-cn-file-preparation/run-prepare-cn.sh

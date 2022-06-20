@@ -34,3 +34,7 @@ Rscript --vanilla 02-classify-mb.R \
 
 # summarize output from both classifiers and expected classification
 Rscript -e "rmarkdown::render('03-compare-classes.Rmd', clean = TRUE)"
+
+# add molecular subtype as "To be classified" for samples without corresponding RNA 
+# and append to the above output files
+Rscript --vanilla 04-no-RNA-samples.R

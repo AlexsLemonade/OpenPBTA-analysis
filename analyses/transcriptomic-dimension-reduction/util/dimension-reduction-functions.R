@@ -171,6 +171,7 @@ plot_dimension_reduction <- function(aligned_scores_df,
                                      point_size = NULL,
                                      x_label,
                                      y_label,
+                                     alpha_value = 0.3,
                                      score1 = 1,
                                      score2 = 2,
                                      color_palette = NULL) {
@@ -267,7 +268,7 @@ plot_dimension_reduction <- function(aligned_scores_df,
     }
 
     dimension_reduction_plot <- dimension_reduction_plot +
-      ggplot2::geom_point(alpha = 0.3) +
+      ggplot2::geom_point(alpha = alpha_value) +
       ggplot2::labs(x = x_label, y = y_label) +
       ggplot2::theme_bw()
 

@@ -33,11 +33,15 @@ if (!dir.exists(cnv_scratch_dir)) {
 }
 
 
-## ===================== Load Independent Specimen List =====================
+## ===================== Load Independent Specimen List and Metadata =====================
 independent_specimen_list <- readr::read_tsv(file.path(root_dir, "data", "independent-specimens.wgs.primary-plus.tsv"))
 
 # Create vector with all sample names
 bioid <- unique(independent_specimen_list$Kids_First_Biospecimen_ID)
+
+# Read in metadata and subset to independent specimens
+metadata <- readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv")) %>%
+  dplyr::filter(Kids_First_Biospecimen_ID %in% bioid)
 
 
 ## ===================== Load and Format CNV File =====================
@@ -55,11 +59,21 @@ cnvconsensus <- cnvconsensus %>%
   # specimens list.
 bioid <- bioid[bioid %in% cnvconsensus$ID]
 
-# Reformat to fit ShatterSeek input requirements: remove chrY, remove rows with NA copy number, remove "chr" notation
+# Reformat to fit ShatterSeek input requirements: remove chrY, remove "chr" notation
 cnvconsensus <- cnvconsensus %>% 
-  dplyr::filter(chrom != "chrY", 
-                !is.na(cnvconsensus$copy.num)) %>%
+  dplyr::filter(chrom != "chrY") %>%
   dplyr::mutate(chrom = stringr::str_remove_all(chrom, "chr"))
+
+# Replace rows of NA copy number with ploidy for that particular tumor
+  # This is necessary because the latest cnvconsensus data reports all regions lacking CNVs as "NA",
+  # but ShatterSeek needs complete CN data to identify oscillating CN regions.
+  # Here, we assume the NA regions match the tumor ploidy. (Although it's important to note that some 
+  # regions marked NA could be uncallable regions, in addition to the regions lacking CNVs.)
+cnvconsensus <- metadata %>% 
+  dplyr::select(Kids_First_Biospecimen_ID, tumor_ploidy) %>%
+  dplyr::rename(ID = Kids_First_Biospecimen_ID) %>%
+  dplyr::inner_join(cnvconsensus, by="ID") %>%
+  dplyr::mutate(copy.num = dplyr::case_when(is.na(copy.num) ~ tumor_ploidy, TRUE ~ copy.num))
 
 
 ## ===================== Define function to merge consecutive CN segments =====================
@@ -67,8 +81,7 @@ cnvconsensus <- cnvconsensus %>%
 ### Explanation:
 
 # ShatterSeek treats every CN segment as a copy number oscillation, even if two consecutive segments 
-# share the same CN value. This is true whether or not there are gaps in between consecutive segments 
-# (and it can't handle NA values).
+# share the same CN value. This is true whether or not there are gaps in between consecutive segments.
 # Because the consensus CNV results include gaps, this threw off the ShatterSeek results. Samples with 
 # no CN changes (CN=2 for every segment) were called as having copy number oscillations.
 
@@ -96,7 +109,6 @@ mergeCNsegments <- function(cnv_df) {
   # does not match the previous row (starting at second row)
   cnv_df$index <- 0
   index_counter <- 1
-  if (nrow(cnv_df) >=2) {
    for (row_iter in 2:nrow(cnv_df)) {
      index_counter <- compare_adjacent_segs(cnv_df[row_iter, ], cnv_df[row_iter-1, ])
      cnv_df[row_iter, "index"] <- index_counter
@@ -106,7 +118,6 @@ mergeCNsegments <- function(cnv_df) {
   cnv_df[1, "index"] <- ifelse(compare_adjacent_segs(cnv_df[1,], cnv_df[2,]), 1, 0)
     # Set index to 1 if row 1 matches row 2
     # Set index to 0 if row 1 doesn't match row 2
-  }
   
   # Merge rows by selecting minimum loc.start and maximum loc.end for each index value
   # Reorder rows by chromosome and start position
@@ -124,6 +135,7 @@ total <- length(bioid) # Total number of samples to run
 chromoth_combined <- data.frame() # Data frame to merge summary data from different samples
 chromoth_obj_list <- vector("list", total) # List to store ShatterSeek chromoth objects from different samples
 names(chromoth_obj_list) <- bioid
+missing_data <- list() # List to store samples with missing data
 
 # Loop through sample list and run ShatterSeek
 for (b in bioid) {
@@ -140,14 +152,18 @@ for (b in bioid) {
   # Subset CNV dataframe to current sample
   cnv_current <-  cnvconsensus[cnvconsensus$ID == b,]
   
-  # If CNV or SV file is empty, jump into next loop
+  # If CNV or SV file is empty, record sample in missing_data list and jump into next loop
   if (nrow(cnv_current) == 0 | nrow(sv_current) == 0) {
-      print(paste0(b," is missing CNV or SV data"))
+    print(paste0(b," is missing CNV or SV data"))
+    missing_data <- c(missing_data, b)
     next;
   }
 
   # Merge consecutive CN segments that share the same CN value (see function description)
-  cnv_current_merged <- mergeCNsegments(cnv_current)
+    # Avoid error by skipping this step if CNV dataframe only has 1 row 
+  if(nrow(cnv_current)>1){
+    cnv_current_merged <- mergeCNsegments(cnv_current)
+  }
   
   # Write out merged CNV file (for debugging)
   readr::write_tsv(cnv_current_merged, file.path(cnv_scratch_dir, paste0(b, "_merged_cnv.tsv")))
@@ -284,3 +300,7 @@ write.table(chromoth_per_sample, file.path(results_dir, "chromothripsis_summary_
 
 # Save list of chromoth objects in scratch directory (used for plotting in script 05)
 saveRDS(chromoth_obj_list, file = file.path(root_dir, "scratch", "chromoth_obj_list.rds"))
+
+# Save list of samples with missing data in scratch directory (for debugging)
+write.table(missing_data, file = file.path(root_dir, "scratch", "samples_with_missing_data.txt"),
+            sep="\n", quote=F, row.names=F, col.names=F)

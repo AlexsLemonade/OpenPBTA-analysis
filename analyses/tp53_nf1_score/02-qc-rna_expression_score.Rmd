@@ -14,10 +14,12 @@ We will check if the values are inversely correlated as we would expect?
 
 ### Setup
 ```{r}
-library("ggpubr")
-library("ggthemes")
-library("tidyverse")
-library("broom")
+suppressPackageStartupMessages({
+  library(ggpubr)
+  library(ggthemes)
+  library(tidyverse)
+  library(broom)
+})
 
 # rootdir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
@@ -197,3 +199,9 @@ ggplot(sample_id_multi_library_scores_df,
 ```
 
 We could consider utilizing batch correction once completed via [#919](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/919) to rerun the classifier for this dataset. We can then check whether the scores would be more similar for polyA and stranded. Instead of choosing one over the other without some additional investigation, perhaps we take an average. For the most part, while there is a bias, the scores agree and for 7316-161, although the polyA score is just under 0.5, it is still considered a loss via evidence. Once we investigate all of the evidence, we might consider a re-thresholding of the scores for what determines inactivation/oncogenic TP53 (discussed earlier).
+
+## Session Info
+
+```{r}
+sessionInfo()
+```

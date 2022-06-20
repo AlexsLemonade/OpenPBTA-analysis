@@ -1,6 +1,6 @@
 # J. Taroni for ALSF CCDL 2019
-# This script processes MAF, focal CN (from focal-cn-file-preparation),
-# standardized fusion files and prepares them for oncoprint plotting.
+# This script processes MAF, CNV, fusion files and prepares them for oncoprint 
+# plotting.
 #
 # NOTES:
 #   * The `Tumor_Sample_Barcode` will now corresponds to the `sample_id` column
@@ -12,10 +12,12 @@
 #
 # EXAMPLE USAGE:
 #
-# Rscript --vanilla 00-map-to-participant.R \
-#   --maf_file snv-consensus_11122019/consensus_mutation.maf.tsv \
-#   --cnv_file ../focal-cn-file-preparation/results/controlfreec_annotated_cn_autosomes.tsv.gz \
-#   --fusion_file ../../scratch/arriba.tsv \
+# Rscript --vanilla 01-map-to-sample-id.R \
+#   --maf_file ../../data/pbta-snv-consensus-mutation.maf.tsv.gz \
+#   --hotspots_maf_file ../../data/pbta-snv-scavenged-hotspots.maf.tsv.gz \
+#   --cnv_autosomes_file ../../data/consensus_seg_annotated_cn_autosomes.tsv.gz \
+#   --cnv_xy_file ../../data/consensus_seg_annotated_cn_x_and_y.tsv.gz \
+#   --fusion_file ../../data/pbta-fusion-putative-oncogenic.tsv \
 #   --metadata_file ../../data/pbta-histologies.tsv \
 #   --output_directory ../../scratch/oncoprint_files \
 #   --filename_lead "primary_only" \
@@ -171,6 +173,8 @@ cnv_df <- cnv_df %>%
   dplyr::filter(!(biospecimen_id %in% biospecimens_to_remove))
 fusion_df <- fusion_df %>%
   dplyr::filter(!(Sample %in% biospecimens_to_remove))
+histologies_df <- histologies_df %>%
+  dplyr::filter(!(Kids_First_Biospecimen_ID %in% biospecimens_to_remove))
 
 #### Filter to independent specimens (optional) --------------------------------
 
@@ -201,6 +205,10 @@ if (!is.null(opt$independent_specimens)) {
   # finally filter the fusions
   fusion_df <- fusion_df %>%
     filter(Sample %in% rnaseq_ind)
+
+  # filter histologies file
+  histologies_df <- histologies_df %>%
+    filter(Kids_First_Biospecimen_ID %in% c(ind_biospecimen,rnaseq_ind))
 
 }
 
@@ -336,6 +344,56 @@ cnv_df <- cnv_df %>%
   # only keep Del and Amp calls
   filter(Variant_Classification %in% c("Del", "Amp"))
 
-
 # Write to file
 readr::write_tsv(cnv_df, cnv_output)
+
+message("Gathering N per cancer_group...")
+# Gather Ns
+gather_n_per_cancer_group <- function(metadata, broad_histology){
+  if (broad_histology != "Other CNS") {
+    metadata <- metadata %>%
+      dplyr::filter(broad_histology == broad_histology) %>%
+      select(cancer_group, sample_id) %>%
+      unique() %>%
+      group_by(cancer_group) %>%
+      tally() %>%
+      as.data.frame()
+
+  } else {
+    metadata <- metadata %>%
+      dplyr::filter(
+        broad_histology %in% c(
+          "Ependymal tumor",
+          "Tumors of sellar region",
+          "Neuronal and mixed neuronal-glial tumor",
+          "Tumor of cranial and paraspinal nerves",
+          "Meningioma",
+          "Mesenchymal non-meningothelial tumor",
+          "Germ cell tumor",
+          "Choroid plexus tumor",
+          "Histiocytic tumor",
+          "Tumor of pineal region",
+          "Metastatic tumors",
+          "Other astrocytic tumor",
+          "Lymphoma",
+          "Melanocytic tumor",
+          "Other tumor"
+        )
+      )  %>%
+      select(cancer_group, sample_id) %>%
+      unique() %>%
+      group_by(cancer_group) %>%
+      tally() %>%
+      as.data.frame()
+
+  }
+}
+
+output_file <- file.path('tables', paste0(opt$filename_lead, "_n_per_cancer_group.tsv"))
+lapply(as.list(c("Low-grade astrocytic tumor","Embryonal tumor",
+         "Diffuse astrocytic and oligodendroglial tumor",
+         "Other CNS")), function(x) gather_n_per_cancer_group(histologies_df,x)) %>%
+	bind_rows() %>%
+        unique() %>% 
+        readr::write_tsv(output_file)
+

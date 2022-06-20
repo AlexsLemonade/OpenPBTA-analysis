@@ -10,7 +10,9 @@ and [Alexandrov et al, 2013](https://www.ncbi.nlm.nih.gov/pubmed/23945592) for a
 + Conduct `de novo` signature extraction from WGS samples using [`sigfit`](https://github.com/kgori/sigfit), including goodness-of-fit analyses to determine optimal parameters.
   + This analysis requires up to 16 GB RAM.
 
-+ Evaluate known (adult) CNS signatures, as identified in [Degasperi et al, 2020](https://doi.org/10.1038/s43018-020-0027-5) in WGS samples using [`sigfit`](https://github.com/kgori/sigfit).
++ Evaluate known (adult) CNS signatures, as identified in [Degasperi et al, 2020](https://doi.org/10.1038/s43018-020-0027-5) in WGS samples. 
+This is first done with both [`deconstructSigs::whichSignatures()`](https://github.com/raerose01/deconstructSigs) and [`sigfit::fit_signatures()`](https://github.com/kgori/sigfit) to see consistency among methods. 
+Given broad consistency, the faster method (`deconstructSigs::whichSignatures()`) is used in the end.
 
 
 ## Usage
@@ -23,25 +25,39 @@ bash run-mutational-signatures.sh
 ## Contents
 
 + The Rmd `01-known_signatures.Rmd` runs the mutational signatures analysis using existing COSMIC and Alexander et al, 2013 signatures. 
-  + Calculates weights from [`deconstructSigs::whichSignatures`](https://www.rdocumentation.org/packages/deconstructSigs/versions/1.8.0/topics/whichSignatures) which are are multiplied by each sample's sum of mutations as provided by [`deconstructSigs::mut.to.sigs.input`](https://www.rdocumentation.org/packages/deconstructSigs/versions/1.8.0/topics/mut.to.sigs.input). These numbers are saved to the `_signatures_results.tsv` files in the `results` folder.
+  + Calculates weights from [`deconstructSigs::whichSignatures`](https://www.rdocumentation.org/packages/deconstructSigs/versions/1.8.0/topics/whichSignatures) which are are multiplied by each sample's sum of mutations as provided by [`deconstructSigs::mut.to.sigs.input`](https://www.rdocumentation.org/packages/deconstructSigs/versions/1.8.0/topics/mut.to.sigs.input).
+  + These numbers are saved to the `_signatures_results.tsv` files in the `results` folder.
 
 + The script `02-split_experimental_strategy.R` splits up the consensus MAF files by experimental strategy, and writes WGS_only data to `scratch/` for consumption by the rest of the mutational signature analysis
 
 + The script `03-de_novo_range_of_nsignatures.sh` is run twice. First, it is used perform benchmarking and ascertain appropriate `k` (number of signatures to extract) and robustness to random seed for *de novo* signature extraction
-  + The benchmarking procedure exports several PNG images containing goodness-of-fit cosine plots to `plots/denovo/gof/` which are visually used to assess optimal `k` values. These files are named according to random seed and the model used for extraction (`multinomial` which corresponds to Alexander et al 2013 or `poisson` which corresponds to the approach from [Emu](https://genomebiology.biomedcentral.com/articles/10.1186/gb-2013-14-4-r39)).
+  + The benchmarking procedure exports several PNG images containing goodness-of-fit cosine plots to `plots/denovo/gof/` which are visually used to assess optimal `k` values. 
+  + These files are named according to random seed and the model used for extraction (`multinomial` which corresponds to Alexander et al 2013 or `poisson` which corresponds to the approach from [Emu](https://genomebiology.biomedcentral.com/articles/10.1186/gb-2013-14-4-r39)).
   
 + The script `03-de_novo_range_of_nsignatures.sh`  is again run to perform the *de novo* signature extraction with the determined range of `k` values.
   + The extraction procedure exports both PNG images containing (refined) goodness-of-fit cosine plots to `plots/denovo/extraction/`and full fitted results containing fitted signatures (`results/de_novo_signatures.RDS`) and associated exposures (`results/de_novo_exposures.RDS`).
 
-+ The Rmd `04-analyze_de_novo.Rmd` analyzes the results from *de novo* signature extraction. This file knits to an HTML (`04-analyze_de_novo.HTML`) which contains a **table** and description of extraction signatures.
++ The Rmd `04-analyze_de_novo.Rmd` analyzes the results from *de novo* signature extraction. 
+This file knits to an HTML (`04-analyze_de_novo.HTML`) which contains a **table** and description of extraction signatures.
 
-+ The script `05-fit_cns_signatures.R` determines the relative contributions of 8 known (adult) CNS signatures in the PBTA WGS data.
-  + This script saves the fitted CNS signature exposures in `results/fitted_cns_signature_exposures.RDS`.
++ The script `05-fit_cns_signatures.R` determines the relative contributions of 8 known (adult) CNS signatures in the PBTA data (considers _both_ WES and WGS) using both [`deconstructSigs::whichSignatures()`](https://github.com/raerose01/deconstructSigs) and [`sigfit::fit_signatures()`](https://github.com/kgori/sigfit).
+  + This script saves the fitted CNS signature exposures in `results/fitted_exposures_signal-cns-deconstructSigs.RDS` and `results/fitted_exposures_signal-cns-sigfit.RDS`, named for which method is used. 
 
-+ The Rmd `06-analyze_cns_fit.Rmd` analyzes and visualizes the results from CNS signature fitting. 
++ The Rmd `06-compare_cns_exposures.Rmd` performs a quick comparison of the `sigfit` and `deconstructSigs` results, and concludes to proceed with `deconstructSigs` exposures.
+  + As part of this, the `sigfit` exposures are set to zero when the lower end of the Bayesian HPD interval < 0.01 ([ref](https://htmlpreview.github.io/?https://github.com/kgori/sigfit/blob/050c389bafd14090524fb4d97edc127d449a2d3b/doc/sigfit_vignette.html)).
+  + `deconstructSigs` sets all exposures that are < 0.06 to 0. 
+
++ The Rmd `07-plot_cns_fit.Rmd` visualizes the `deconstructSigs` exposures from CNS signature fitting.
   + The knitted HTML contains several figures which are also separately exported to `plots/cns/`:
-    + `mean_median_exposure_barplot.png` displays the mean and median exposures for CNS signatures for each of the main histology groups we consider in PBTA.
-    + `top_10_samples_barplot.png` displays the relative signature exposures for the top-10 most mutated samples in the PBTA.
+  + `exposures_per_sample_barplot.pdf`, Signature exposures across samples
+  + `exposures_presence_barplot.pdf`, Proportion of samples exposed to signatures
+  + `exposures_sina_IQR.pdf`, Signature exposures across cancer groups
+  + `signature1_tumor-descriptor_cancer-groups.pdf`, Signature 1 exposure across tumor descriptors and cancer groups
+  + `signature1_tumor-descriptor_molecular-subtypes.pdf`, Signature 1 exposure across tumor descriptors and molecular subtypes
+  
++ The Rmd `08-explore_hypermutators.Rmd` investigates whether hyper-mutant and/or ultra-hypermutant samples have enrichment of signatures 3, 18, and/or MMR.
+  + We also asked whether these samples show dysregulated _TP53_.
+  + `hypermutator_sigs_heatmap.pdf`, heatmap of the 8 CNS signatures for patients who have hyper- or ultra-hypermutant tumors.
 
 
 ## Overall file structure
@@ -58,7 +74,8 @@ OpenPBTA-analysis
 │       │   └── nature_signatures_results.tsv
 │       │   └── de_novo_exposures.RDS
 │       │   └── de_novo_signatures.RDS
-│       │   └── fitted_cns_signature_exposures.RDS
+│       │   └── fitted_exposures_signal-cns_sigfit.rds
+│       │   └── fitted_exposures_signal-cns_deconstructSigs.rds
 │       └── plots
 │           ├── cosmic
 │           │   ├── individual_mut_sigs
@@ -78,11 +95,21 @@ OpenPBTA-analysis
 │           │   │   ├── seed_<RANDOM SEED>_model_<EXTRACTION MODEL>.png
 │           │   │   └── ...
 │           └── cns
-│           │   ├── mean_median_exposure_barplot.png
-│           │   └── top_10_samples_barplot.png
-
-├── data
+│           │   ├── exposures_per_sample_barplot.pdf
+│           │   ├── exposures_presence_barplot.pdf
+│           │   ├── exposures_sina_IQR.pdf
+│           │   ├── hypermutator_sigs_heatmap.pdf
+│           │   ├── signature1_tumor-descriptor_cancer-groups.pdf
+│           │   └── signature1_tumor-descriptor_molecular-subtypes.pdf
+└── data
 ```
+
+
+
+  
+  
+  
+  
 
 ## Summary of custom functions
 

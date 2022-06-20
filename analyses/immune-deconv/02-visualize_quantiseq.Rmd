@@ -1,0 +1,403 @@
+---
+title: "Visualization of `quanTIseq` deconvolution results"
+author: "SJ Spielman (ALSF CCDL) and Jo Lynne Rokita (D3b)"
+date: "2022"
+output:
+  html_notebook:
+    toc: true
+editor_options: 
+  chunk_output_type: inline
+params:
+  is_ci: 0
+---
+
+<br><br><br><br>
+
+#### Files and paths
+
+
+```{r setup}
+library(tidyverse)
+library(ggpubr)
+
+# Establish base dir
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+# Data directory
+data_dir <- file.path(root_dir, "data")
+
+# Analysis directory
+analysis_dir <- file.path(root_dir, "analyses", "immune-deconv")
+
+# Palettes
+palette_dir <- file.path(root_dir, "figures", "palettes")
+
+# Declare output directory
+output_dir <- file.path(analysis_dir, "plots")
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir)
+}
+
+# Define input files
+hist_file <- file.path(data_dir, "pbta-histologies.tsv")
+palette_file <- file.path(palette_dir, "broad_histology_cancer_group_palette.tsv")
+quantiseq_file <- file.path(analysis_dir, "results", "quantiseq_deconv-output.rds")
+polya_file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds")
+stranded_file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
+
+
+# Define output files
+cg_celltypes_plot_file <- file.path(output_dir, "cell_types-cancer_groups.pdf")
+subtypes_celltypes_plot_file <- file.path(output_dir, "cell_types-molecular_subtypes.pdf")
+pdl1_distributions_plot_file  <- file.path(output_dir, "PDL1_expression_distributions.pdf")
+cd274_mb_plot_file <- file.path(output_dir, "cd274_expression_mb_subtypes.pdf")
+cd8_cd4_ratio_plot_file <- file.path(output_dir, "cd8_cd4_ratio.pdf")
+```
+
+Read in data files:
+
+```{r read}
+# Read in clinical data and palette file
+histologies_df <- read_tsv(hist_file, guess_max = 10000)
+palette_df <- readr::read_tsv(palette_file)
+
+# Read in analysis data
+quantiseq <- read_rds(quantiseq_file)
+polya <- read_rds(polya_file)
+stranded <- read_rds(stranded_file)
+```
+
+The following chunk prepares data for visualization:
++ Prepare histology and palette for _all_ samples. Both polya and stranded libraries were used in deconvolution.
++ Define cancer groups of interest to plot
++ Subset data to those cancer groups of interest where molecular subtypes have n>=3
+
+```{r prep_palette}
+#### Prepare palette/histology data data
+palette_mapping_df <- histologies_df %>%
+  # RNA-Seq samples only, *****BOTH****** polya and stranded
+  filter(experimental_strategy == "RNA-Seq") %>%
+  # Identifiers
+  select(Kids_First_Biospecimen_ID,
+         Kids_First_Participant_ID,
+         sample_id,
+         broad_histology,
+         cancer_group, 
+         molecular_subtype) %>%
+  # Add in hex codes & display grouping
+  left_join(palette_df,
+            by = c("broad_histology", "cancer_group")) %>%
+  select(Kids_First_Biospecimen_ID,
+         contains("broad_histology"), 
+         contains("cancer_group"),
+         molecular_subtype)
+
+#### Array of groups we want to visualize
+cancer_groups_of_interest <- c("High-grade glioma astrocytoma", 
+                               "Diffuse midline glioma",
+                               "Low-grade glioma astrocytoma", 
+                               "Ganglioglioma",
+                               "Ependymoma", 
+                               "Medulloblastoma",
+                               "Schwannoma",
+                               "Neurofibroma Plexiform")
+ 
+#### Prepare quanTIseq data --> `quantiseq_subset`
+# spread and create cd8/cd4 ratio
+quantiseq_spread <- quantiseq %>%
+  # get a column for each cell type
+  spread(cell_type, score) %>%
+  mutate(cd8_cd4_ratio = `T cell CD8+` / `T cell CD4+ (non-regulatory)`)
+
+quantiseq_gather <- quantiseq_spread %>%  
+  gather(cell_type, score, -c(sample, library, method))
+
+# First, find the molecular subtypes in the of interest cancer groups AND excluding unclassified, with >=3 samples
+subtypes_of_interest <- palette_mapping_df %>%
+  filter(cancer_group_display %in% cancer_groups_of_interest, 
+         !(str_detect(molecular_subtype, "To be classified"))) %>%
+  count(molecular_subtype) %>%
+  filter(n >= 3) %>%
+  pull(molecular_subtype)
+
+
+# Now, filter to relevant samples and remove uncharacterized fractions
+quantiseq_subset <- quantiseq_gather %>%
+  left_join(palette_mapping_df, by = c("sample" = "Kids_First_Biospecimen_ID")) %>%
+  filter(molecular_subtype %in% subtypes_of_interest, 
+         cell_type != "uncharacterized cell")
+
+
+#### Prepare expression data to explore PDL1 aka CD274 ---> `expression_pdl1`
+
+# Combine polya and stranded to get expression for pdl1, while keeping a library annotation
+polya_expression <- polya %>%
+  rownames_to_column("gene") %>%
+  filter(gene == "CD274") %>%
+  gather(-gene, key = sample, value = expression) %>%
+  mutate(library = "polya")
+
+expression_pdl1 <- stranded %>%
+  rownames_to_column("gene") %>%
+  filter(gene == "CD274") %>%
+  gather(-gene, key = sample, value = expression) %>%
+  mutate(library = "stranded") %>%
+  bind_rows(polya_expression) %>%
+  as_tibble() %>%
+  mutate(log2_expression = log(expression +1, 2)) %>%
+  select(-expression)
+```
+
+```{r cancer_groups_celltypes_plot, fig.width = 14, fig.height = 4.5}
+# Faceted plot of cancer groups, cell types. Jitter points are colored by cancer group.
+# First, find the cancer groups with >=15 samples to match other modules
+cg_of_interest <- palette_mapping_df %>%
+  filter(!is.na(cancer_group)) %>%
+  count(cancer_group_display) %>%
+  filter(n >= 15) %>%
+  pull(cancer_group_display)
+
+# Now, filter to relevant samples and remove uncharacterized fractions
+quantiseq_subset_cg <- quantiseq_gather %>%
+  filter(cell_type != "uncharacterized cell" & cell_type != "cd8_cd4_ratio") %>%
+  left_join(palette_mapping_df, by = c("sample" = "Kids_First_Biospecimen_ID")) %>%
+  filter(cancer_group %in% cg_of_interest)
+
+# We need to create a new scheme for labeling that shows wrapped cancer groups with `(n=X)`
+quantiseq_subset_cg <- quantiseq_subset_cg %>%
+  dplyr::count(cancer_group_display, cell_type) %>%
+  dplyr::select(-cell_type) %>%
+  dplyr::distinct() %>%
+  dplyr::inner_join(
+      dplyr::select(palette_df, dplyr::contains("cancer_group"))
+  ) %>%
+  dplyr::select(cancer_group_display, n, cancer_group_hex) %>%
+  # Create wrapped with (n=X) factor column for cancer groups
+  dplyr::mutate(cancer_group_display_n = stringr::str_wrap(glue::glue("{cancer_group_display} (N={n})"), 30),
+                cancer_group_display_n = forcats::fct_reorder(cancer_group_display_n, n, .desc=T)) %>%
+  dplyr::inner_join(quantiseq_subset_cg)
+
+# plot by cancer group
+cg_plot <- quantiseq_subset_cg %>%
+  ggplot2::ggplot() + 
+  aes(x = cell_type, y = score, color = cancer_group_hex) + 
+  geom_jitter(width = 0.15, size = 0.7, alpha = 0.6) + 
+  ggplot2::geom_boxplot(outlier.size = 0, 
+                        size = 0.25,
+                        color = "black", 
+                        alpha = 0,
+                        # remove whiskers
+                        coef = 0) +
+  ggplot2::facet_wrap(~cancer_group_display_n, nrow = 2, scales = "free_y") +
+  ggplot2::scale_color_identity() + 
+  ggplot2::labs(
+    x = "Immune cell", 
+    y = "Estimated fraction in sample"
+  ) +
+  ggpubr::theme_pubr() + 
+  cowplot::panel_border() +
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(size = 6, angle = 45, hjust = 1),
+    axis.text.y = ggplot2::element_text(size = 8),
+    axis.title = ggplot2::element_text(size = 10),
+    strip.text = ggplot2::element_text(size = 6),
+    axis.line = ggplot2::element_line(size = ggplot2::rel(0.5)),
+    axis.ticks = ggplot2::element_line(size = ggplot2::rel(0.5)),
+    legend.position = "none"
+  )
+
+cg_plot
+
+ggsave(cg_celltypes_plot_file, cg_plot, width = 11, height = 3.5)
+```
+
+
+
+
+### Visualize fraction distributions across cell types and molecular subtypes
+
+```{r subtypes_celltypes_plot, fig.width = 12, fig.height = 4}
+# Faceted plot of subtypes, cell types. Jitter points are colored by underlying cancer group.
+# First, remove cd8_cd4_ratio
+quantiseq_no_ratio <- quantiseq_subset %>%
+  filter(cell_type != "cd8_cd4_ratio")
+subtypes_celltypes_plot <- ggplot(quantiseq_no_ratio) +
+  aes(x = molecular_subtype, y = score, color = cancer_group_hex) + 
+  geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
+  geom_jitter(width = 0.15, size = 0.75, alpha = 0.6) + 
+  # change to ncol if we want this *Wide*
+  facet_wrap(~cell_type, ncol = 5, scales = "free_y") +
+  scale_color_identity() +
+  labs(
+    x = "Molecular subtype of tumor sample", 
+    y = "Estimated fraction in sample"
+  ) +
+  ggpubr::theme_pubr() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 3.5),
+        axis.title = element_text(size = rel(0.7)),
+        axis.text.y = element_text(size = rel(0.7)),
+        strip.text = element_text(size = rel(0.7)),
+        axis.line = element_line(size = rel(0.7)),
+        axis.ticks = element_line(size = rel(0.7)))
+
+subtypes_celltypes_plot
+
+ggsave(subtypes_celltypes_plot_file, subtypes_celltypes_plot, width = 13, height = 4)
+```
+
+
+### Visualize PDL1 (CD274) expression
+
+In [this](https://www.tandfonline.com/doi/full/10.1080/2162402X.2018.1462430) reference, high levels of both CD8+ and PDL1 can mean good candidate for immunotherapy, and high levels of PDL1 with low levels of CD8+ have been associated with poor prognosis.
+
+In our data, CD8+ fractions are very low, at most 1.5% in an HGG H3 WT sample. Distributions of CD8+ fractions also show extremely low variance, _except_ for MB subtypes (relatively speaking). Therefore, we examine here the relationship between expression and fraction for MB specifically.
+
+
+
+First, we explore the relationship between variables with a scatterplot. Because there is very little variation in CD8+, this is not terribly informative.
+
+```{r pdl1_scatterplot, fig.width = 10, fig.height = 6}
+# Merge and subset data to get log2 expression of PDL1 and CD8 fractions
+pdl1_cd8 <- expression_pdl1 %>%
+  inner_join(quantiseq_subset) %>%
+  select(log2_expression, cell_type, library, score, molecular_subtype, cancer_group_display, cancer_group_hex) %>%
+  filter(cell_type == "T cell CD8+", 
+         cancer_group_display != "Other") 
+
+
+# scatterplot of CD8 fractions and PDL1 expression.
+ggplot(pdl1_cd8) + 
+  aes(x = score, y = log2_expression, color = library) + 
+  geom_jitter() + 
+  facet_wrap(~molecular_subtype, nrow = 5) +
+  labs(x = "CD8+ fraction in sample", y = "log2 PDL1 expression") +
+  ggpubr::theme_pubr() + 
+  theme(axis.text.x = element_text(hjust = 1, 
+                                   size = rel(0.8), 
+                                   angle = 45)) +
+  cowplot::panel_border() 
+```
+
+
+Instead, let's explore the PDL1 distributions specifically and export this figure:
+
+```{r pdl1_distributions, fig.width = 7, fig.height = 5}
+
+# distributions of PDL1 expression
+pdl1_distributions_plot <- ggplot(pdl1_cd8) + 
+  #aes(x = fct_reorder(molecular_subtype,log2_expression, .desc=T),
+  aes(x = molecular_subtype,
+      y = log2_expression) +
+  # remove outliers
+  geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
+  geom_jitter(width = 0.15, size = 0.75, alpha = 0.8, aes(color = cancer_group_hex)) + 
+  #facet_wrap(~cancer_group_display, nrow = 2, scales = "free") +
+  scale_color_identity() +
+  labs(x = "Molecular subtype of sample",
+       y = "Log2 expression (FPKM) of CD274") +
+  ggpubr::theme_pubr() + 
+  theme(axis.text.x = element_text(hjust = 1, 
+                                   size = rel(0.6), 
+                                   angle = 75)) 
+
+pdl1_distributions_plot
+
+ggsave(pdl1_distributions_plot_file, pdl1_distributions_plot, width = 7, height = 5)
+
+```
+Visualize MB only, since that was the only significant result from the survival analyses
+
+```{r pdl1_mb, fig.width = 5, fig.height = 5}
+# This chunk should NOT run in CI. 
+if (!(params$is_ci == 1)) {
+
+# select only mb samples
+pdl1_cd8_mb <- pdl1_cd8 %>%
+  filter(cancer_group_display == "Medulloblastoma")
+
+
+# Count group sizes to use in x-axis labels. Use this data frame going forward
+df_counts <- pdl1_cd8_mb %>%
+  group_by(molecular_subtype) %>%
+  mutate(subtype_count = n()) %>%
+  ungroup() %>%
+  mutate(molecular_subtype = glue::glue("{molecular_subtype}\n(N = {subtype_count})"))
+  
+wilcox_df <- ggpubr::compare_means(log2_expression ~ molecular_subtype, 
+                             data = df_counts,
+                             method = "wilcox.test")
+wilcox_df
+
+# Add p-values
+wilcox_df <- wilcox_df %>%
+ mutate(y.position = c(0.8,
+                       NA,
+                       1.8,
+                       1.0,
+                       2.0,
+                       2.2))
+  
+# distributions of PDL1 expression
+cd274_plot_mb <- ggplot(df_counts) + 
+  aes(x = molecular_subtype,
+      y = log2_expression) +
+  # remove outliers
+  geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
+  geom_jitter(width = 0.15, size = 1.4, alpha = 0.5, aes(color = "black")) + 
+  stat_pvalue_manual(wilcox_df, label = "p = {p.adj}")+
+  scale_color_identity() +
+  labs(x = "Molecular subtype of sample",
+       y = "CD274 expression (Log2 FPKM)") +
+  ggpubr::theme_pubr() + 
+  theme(axis.text.x = element_text(hjust = 0.55, 
+                                   size = rel(0.85))) 
+
+cd274_plot_mb
+
+ggsave(cd274_mb_plot_file, cd274_plot_mb, width = 5, height = 5)
+}
+```
+
+### Plot the ratio of CD8+/CD4+ T cells as a marker of "hot" tumor (potentially responsive to checkpoint blockade therapy)
+Not much here - only medulloblastoma samples seem to have more CD8+ cells than CD4+ cells
+
+```{r cd8_cd4 ratio, fig.width = 5, fig.height = 5}
+# subset for just cd8/cd4 ratio
+ratio_df <- quantiseq_subset %>%
+  filter(cell_type == "cd8_cd4_ratio",
+         cancer_group != "Other",
+         !is.nan(score),
+         !is.infinite(score)
+         )
+
+# distributions of PDL1 expression
+ratio_plot <- ggplot(ratio_df) + 
+  aes(x = molecular_subtype,
+      y = score) +
+  # remove outliers
+  geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
+  geom_jitter(width = 0.15, size = 0.75, alpha = 0.8, aes(color = cancer_group_hex)) + 
+  #facet_wrap(~cancer_group_display, nrow = 2, scales = "free") +
+  scale_color_identity() +
+  labs(x = "Molecular subtype of sample",
+       y = "Ratio of CD8+/CD4+ T cell fractions") +
+  ggpubr::theme_pubr() + 
+  theme(axis.text.x = element_text(hjust = 1, 
+                                   size = rel(0.3), 
+                                   angle = 45),
+        axis.text.y = element_text(size = rel(0.7)),
+        axis.title = element_text(size = rel(0.7)),
+        axis.line = element_line(size = rel(0.7)),
+        axis.ticks = element_line(size = rel(0.7)))
+
+ratio_plot
+
+ggsave(cd8_cd4_ratio_plot_file, ratio_plot, width = 2.75, height = 4)
+
+```
+
+### Session info
+
+```{r sessioninfo}
+sessionInfo()
+```

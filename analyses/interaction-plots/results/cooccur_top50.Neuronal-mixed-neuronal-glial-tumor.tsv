@@ -1,2 +1,2 @@
-gene1	gene2	mut11	mut10	mut01	mut00	odds_ratio	cooccur_sign	p	q	cooccur_score
-FGFR1	PDGFRA	0	4	2	20	0	-1	1.0000000000000002	1.0000000000000002	9.64327466553287e-17
+gene1	gene2	mut11	mut10	mut01	mut00	odds_ratio	cooccur_sign	odds_ratio_ci	p	q	cooccur_score	n_mutated_gene1	n_mutated_gene2	perc_mutated_gene1	perc_mutated_gene2	perc_cooccur	perc_mutexcl
+FGFR1	PDGFRA	0	4	2	20	0	-1	0,22.4250196725263	1.0000000000000002	1.0000000000000002	9.64327466553287e-17	4	2	15.384615384615385	7.6923076923076925	0	100

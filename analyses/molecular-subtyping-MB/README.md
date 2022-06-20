@@ -10,7 +10,7 @@ We use the polyA selected (n = 1) and rRNA depleted (n = 121) MB samples as inpu
 
 ### Running the full analysis
 
-This runs 01 - 03 scripts to create all the output in the `results/` folder.
+This runs 01 - 04 scripts to create all the output in the `results/` folder.
 
 ```sh
 bash run-molecular-subtyping-mb.sh
@@ -165,5 +165,34 @@ The markdown produces one html notebook and a tab-delimited file containing RNA 
 results/MB_molecular_subtype.tsv
 
 # batch corrected input consensus output
+results/MB_batchcorrected_molecular_subtype.tsv
+```
+
+#### 04-no-RNA-samples.R
+
+1. Input
+
+```
+# histologies
+data/pbta-histologies.tsv
+
+# classification on uncorrected data
+results/MB_molecular_subtype.tsv
+
+# classification on batch-corrected data
+results/MB_batchcorrected_molecular_subtype.tsv
+```
+
+2. Function:
+
+This script filters the input histologies file to only medulloblastoma samples where no RNA-Seq data is available, adds "To be classified" as the molecular subtype for those samples and appends to the two output tsv files from 03-compare-classes.Rmd.
+
+3. Output
+
+```
+# samples without RNA-seq appended to classification on uncorrected data
+results/MB_molecular_subtype.tsv
+
+# samples without RNA-seq appended to classification on batch-corrected data 
 results/MB_batchcorrected_molecular_subtype.tsv
 ```

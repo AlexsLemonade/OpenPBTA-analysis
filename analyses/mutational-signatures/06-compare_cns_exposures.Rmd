@@ -1,0 +1,173 @@
+---
+title: "Quick comparison of CNS Signal exposures estimated from `sigfit` and `deconstructSigs`"
+author: "SJ Spielman"
+date: '2022'
+output:
+  html_notebook:
+    toc: yes
+  html_document:
+    df_print: paged
+    toc: yes
+---
+
+<br><br><br><br>
+
+#### Files and paths
+
+
+```{r setup}
+`%>%` <- dplyr::`%>%`
+
+# Path to root of project and local analysis module
+proj_root_path <- file.path( rprojroot::find_root(rprojroot::has_dir(".git")) )
+analysis_path <- file.path(proj_root_path, "analyses", "mutational-signatures")
+
+# Fitted files:
+sigfit_fitted_file <- file.path(analysis_path, "results", "fitted_exposures_signal-cns_sigfit.rds")
+decon_fitted_file  <- file.path(analysis_path, "results", "fitted_exposures_signal-cns_deconstructSigs.rds")
+
+```
+
+
+
+
+
+
+We read in the fitted signatures and obtain workable tibbles for `sigfit` and `deconstructSigs` results:
+
+```{r read_prep_data, warning=FALSE}
+
+sigfit_rds <- readr::read_rds(sigfit_fitted_file) # contains both mean and lower/upper bounds
+decon_rds <- readr::read_rds(decon_fitted_file)
+
+
+# sigfit mean exposures into a tibble
+sigfit_mean <- sigfit_rds$mean
+sigfit_exposures <- sigfit_mean %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("sample_id") %>%
+  tibble::as_tibble()  %>%
+  dplyr::mutate(type = "sigfit")
+
+
+# deconstructSigs means exposures into a tibble
+decon_mean <- lapply(decon_rds, "[[", "weights")
+decon_exposures <- do.call(rbind, decon_mean) %>%
+  tibble::rownames_to_column("sample_id") %>%
+  tibble::as_tibble() %>%
+  dplyr::mutate(type = "decon")
+```
+
+
+
+Now we compare the results of the two methods. Overall, they are reasonable consistent, so we'll proceed to visualize the `deconstructSigs` results below.
+
+```{r compare-methods}
+
+# wrangle to combine data
+data_compare_types <- dplyr::full_join(sigfit_exposures, decon_exposures) %>%
+  tidyr::gather(-sample_id, -type, key = "signature", value = "weight") %>%
+  tidyr::spread(key = "type", value = "weight") 
+
+# Create a second column for sigfit FILTERED to recommended >0.01 lower bound
+lower_bound <- sigfit_rds$lower_95 
+data_compare_types <- lower_bound %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("sample_id") %>%
+  tibble::as_tibble() %>%
+  tidyr::gather(-sample_id, key = "signature", value = "sigfit_lb") %>%
+  dplyr::right_join(data_compare_types) %>%
+  dplyr::mutate(sigfit_lb_OK = sigfit_lb >= 0.01)
+
+```
+
+
+
+First, let's visualize the results where we do not filter `sigfit` results, where the red line is equality $Y=X$.
+
+As is written in `sigfit` [vignette](https://rdrr.io/github/kgori/sigfit/f/vignettes/sigfit_vignette.Rmd):
+
+> In practice, ‘sufficiently non-zero’ means that the lower end of the Bayesian HPD interval (see the previous section) is above a threshold value close to zero (by default 0.01, and adjustable via the thresh argument).
+
+The plot below does NOT perform this justification where we collapse all lower bound < 0.01 to have a mean exposure of 0. Instead, points are colored based on whether `sigfit` feels these are "sufficiently non-zero" (blue/TRUE), vs effectively zero (red/FALSE). 
+
+Note further we see some points which are all at 0 for `deconstructSigs`. They [write](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-016-0893-4), 
+
+> Finally, the weights W are normalized between 0 and 1 and any signature with $W_i$ <6% is excluded. This 6 % threshold was chosen by randomly generating tumors in silico whose mutational profiles were perturbed to be distant from the ideal theoretical sample. 
+
+```{r scatter1}
+
+data_compare_types %>%
+  ggplot2::ggplot() + 
+  ggplot2::aes(x = sigfit, y = decon, color = sigfit_lb_OK) + 
+  ggplot2::geom_point(alpha = 0.3) +
+  ggplot2::geom_abline(color = "red") + 
+  ggplot2::facet_wrap(~signature, nrow = 2) + 
+  ggplot2::labs(x = "sigfit package", y = "deconstructSigs package")
+
+```
+
+If we _do_ change the `sigfit` according to 0.01 lower bound recommendation, we see the FALSE (red) `sigfit` estimates now lining up at 0, as expected.
+
+```{r scatter2}
+
+
+data_compare_types_filter <- data_compare_types %>%
+  dplyr::mutate(sigfit = dplyr::if_else(sigfit_lb_OK, sigfit, 0))
+
+data_compare_types_filter %>%
+  ggplot2::ggplot() + 
+  ggplot2::aes(x = sigfit, y = decon, color = sigfit_lb_OK) + 
+  ggplot2::geom_point(alpha = 0.3) +
+  ggplot2::geom_abline(color = "red") + 
+  ggplot2::facet_wrap(~signature, nrow = 2) + 
+  ggplot2::labs(x = "sigfit package", y = "deconstructSigs package")
+
+```
+
+
+
+
+We also calculate correlations (pearson and spearman rank) between methods for each signature, with and without the `sigfit` filtering. Correlations are in alphabetical order for signatures A-H.
+
+```{r correlations}
+
+# First, 
+perform_correlations_nofilter <- function(signature_name, cor_method) {
+  cor(
+    data_compare_types$decon[data_compare_types$signature == signature_name],
+    data_compare_types$sigfit[data_compare_types$signature == signature_name], 
+    method = cor_method
+  )
+}
+
+perform_correlations_filter <- function(signature_name, cor_method) {
+  cor(
+    data_compare_types_filter$decon[data_compare_types_filter$signature == signature_name],
+    data_compare_types_filter$sigfit[data_compare_types_filter$signature == signature_name], 
+    method = cor_method
+  )
+}
+
+
+### PEARSON.
+# filtered, unfiltered
+purrr::map2_dbl(unique(data_compare_types$signature), "pearson", perform_correlations_filter)
+purrr::map2_dbl(unique(data_compare_types$signature), "pearson", perform_correlations_nofilter)
+
+
+### SPEARMAN
+# filtered, unfiltered
+purrr::map2_dbl(unique(data_compare_types$signature), "spearman", perform_correlations_filter)
+purrr::map2_dbl(unique(data_compare_types$signature), "spearman", perform_correlations_nofilter)
+
+```
+
+
+The correlations tend to lower, especially for signature C, when we filter the `sigfit`. 
+
+### Session info
+
+```{r sessioninfo}
+sessionInfo()
+```

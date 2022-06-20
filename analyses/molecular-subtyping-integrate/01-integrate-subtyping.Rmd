@@ -203,6 +203,59 @@ histology<- histology %>%
 
 ```
 
+#### Write out table for `harmonized_diagnosis` -> `cancer_group` mapping
+
+To make it easier for people to examine the mapping between these two fields, we'll write out a table to `results/`.
+We'll only include a subset of the mappings in the README (those that we think require the most explanation), so we'll save a separate table for that purpose.
+
+```{r}
+# We'll save this table in order to have a table of the mappings between the 
+# harmonized dx and cancer group. It will include additional columns that 
+# explain whether or not the subtype is stripped and whether not additional 
+# modifications beyond that have been performed.
+mapping_table <- histology %>% 
+  # Consider removing this sample? -- seems to be a special case, see chunk above
+  # dplyr::filter(sample_id != "7316-2577") %>%
+  dplyr::select(harmonized_diagnosis, 
+                cancer_group) %>%
+  dplyr::distinct() %>%
+  dplyr::filter(!is.na(harmonized_diagnosis)) %>%
+  # This next step removes the subtypes from harmonized diagnosis
+  dplyr::mutate(stripped_subtype = str_extract(harmonized_diagnosis, 
+                                               "[^,]*")) %>%
+  # generate column `has_subtype_removed` to indicate whether cancer group equals 
+  # the harmonized diagnosis after stripping subtype
+  dplyr::mutate(has_subtype_removed = case_when(
+    stripped_subtype == harmonized_diagnosis ~ "No",
+    TRUE ~ "Yes"
+  )) %>%
+  # generate column `additional_modifications` to indicate whether additional 
+  # modifications were done after stripping subtype -- these go into the README!
+  dplyr::mutate(additional_modification = case_when(
+    stripped_subtype == cancer_group ~ "No",
+    TRUE ~ "Yes"
+  )) %>%
+  dplyr::arrange(cancer_group)
+
+# Write the whole table out for examination
+mapping_table %>%
+  # This column will mostly be used in the README (our next step) -- will drop
+  # it here to avoid confusion
+  dplyr::select(-stripped_subtype) %>%
+  readr::write_tsv("results/harmonized_diagnosis_cancer_group_table.tsv")
+
+# Now specifically for the README, we'll want to display instances when 
+# additional modifications are made. We use the `stripped_subtype` column
+# because including the subtypes would muddy the picture in the README.
+mapping_table %>%
+  dplyr::filter(additional_modification == "Yes") %>%
+  dplyr::select(stripped_subtype,
+                cancer_group) %>%
+  dplyr::distinct() %>%
+  dplyr::arrange(stripped_subtype) %>%
+  readr::write_tsv("results/cancer_group_table_for_README.tsv ")
+```
+
 
 #### Check differences in broad_histology 
 Checking for differences in broad_histology to look for changes in molecular_subtype 
@@ -251,3 +304,10 @@ histology %>%
   arrange(Kids_First_Biospecimen_ID) %>%
   write_tsv("results/pbta-histologies.tsv")
 ```
+
+### Session Info
+
+```{r}
+sessionInfo()
+```
+

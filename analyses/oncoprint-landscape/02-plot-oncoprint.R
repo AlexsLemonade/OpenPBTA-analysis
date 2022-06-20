@@ -11,13 +11,16 @@
 #
 # EXAMPLE USAGE:
 #
-# Rscript --vanilla 01-plot-oncoprint.R \
-#  --maf_file ../../scratch/all_primary_samples_maf.tsv \
-#  --cnv_file ../../scratch/all_primary_samples_cnv.tsv \
-#  --fusion_file ../../scratch/all_primary_samples_fusions.tsv \
-#  --metadata_file ../../data/pbta-histologies.tsv \
-#  --goi_list ${genes_list} \
-#  --png_name ${primary_filename}_goi_oncoprint.png
+# Rscript --vanilla 02-plot-oncoprint.R \
+#   --maf_file ../../scratch/oncoprint_files/primary_only_maf.tsv \
+#   --cnv_file ../../scratch/oncoprint_files/primary_only_cnv.tsv \
+#   --fusion_file ../../scratch/oncoprint_files/primary_only_fusions.tsv \
+#   --metadata_file ../../data/pbta-histologies.tsv \
+#   --broad_histology "Embryonal tumor" \
+#   --goi_list data/embryonal-tumor_goi_list.tsv \
+#   --top_n 20 \
+#   --png_name plots/primary_only_embryonal_oncoprint.png \
+#   --output_table primary_only_embryonal_oncoprint_summary_n.tsv
 
 
 #### Set Up --------------------------------------------------------------------
@@ -41,6 +44,14 @@ plots_dir <-
 
 if (!dir.exists(plots_dir)) {
   dir.create(plots_dir)
+}
+
+# Path to output directory for tables produced
+tables_dir <-
+  file.path(root_dir, "analyses", "oncoprint-landscape", "tables")
+
+if (!dir.exists(tables_dir)) {
+  dir.create(tables_dir)
 }
 
 # Source the custom functions script
@@ -112,6 +123,12 @@ option_list <- list(
     action = "store_true",
     default = FALSE,
     help = "logical statement on whether to include intronic variants in oncoprint plot"
+  ),
+  optparse::make_option(
+    c("--output_table"),
+    type = "character",
+    default = NULL,
+    help = "file name for the output tables"
   )
 )
 
@@ -269,22 +286,26 @@ if (!is.null(opt$goi_list)){
   # Get top mutated genes per this subset object
   gene_sum <- mafSummary(filtered_maf_object)$gene.summary
   
+  # write out results 
+  if (!is.null(opt$output_table)) {
+    readr::write_tsv(gene_sum, file.path("tables", opt$output_table))
+  }
+  
   # Sort to get top altered genes rather than mutated only genes
   goi_list <- gene_sum %>%
     dplyr::arrange(dplyr::desc(AlteredSamples)) %>%
     # Filter to genes where multiple samples have an alteration
     dplyr::filter(AlteredSamples > 1) %>%
     dplyr::pull(Hugo_Symbol)
-  
+
   if (opt$top_n < length(goi_list)) {
     # Now let's filter to the `top_n` genes
     goi_list <- goi_list[1:opt$top_n]
-    
+
   }
-  
 }
 
-#### Plot and Save Oncoprint --------------------------------------------------
+### Plot and Save Oncoprint --------------------------------------------------
 
 # Given a maf object, plot an oncoprint of the variants in the
 # dataset and save as a png file.
@@ -312,7 +333,6 @@ oncoplot(
   bgCol = "#F5F5F5",
   top = opt$top_n,
   drawRowBar = FALSE,
-  titleText = ifelse(is.null(opt$broad_histology), "", opt$broad_histology),
   titleFontSize = 1.3,
   gene_mar = 10
 )

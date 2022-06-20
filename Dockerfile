@@ -34,12 +34,19 @@ RUN pip3 install \
   "Cython==0.29.15" \
   "setuptools==46.3.0" \
   "six==1.14.0" \
-  "wheel==0.34.2" 
+  "wheel==0.34.2"
 
 # Install java
-RUN apt-get -y --no-install-recommends install \
+RUN apt-get update && apt-get -y --no-install-recommends install \
    default-jdk
 
+# Required for running matplotlib in Python in an interactive session
+RUN apt-get -y --no-install-recommends install \
+    python3-tk
+
+# gmp, dependency for signature.tools.lib
+RUN apt-get -y --no-install-recommends install \
+    libgmp-dev
 
 # Standalone tools and libraries
 ################################
@@ -72,140 +79,101 @@ RUN wget https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar
 #### R packages
 ###############
 
-# Commonly used R packages
+# From CRAN and Bioconductor
 RUN ./install_bioc.r \
+    annotatr \
+    BSgenome.Hsapiens.UCSC.hg19 \
+    BSgenome.Hsapiens.UCSC.hg38  \
+    caret \
     class \
     cluster \
-    data.table \
-    DT \
-    flextable \
-    foreign \
-    GGally \
-    lattice \
-    MASS \
-    Matrix \
-    mgcv \
-    nlme \
-    nnet \
-    optparse \
-    R.utils \
-    RColorBrewer \
-    rpart \
-    rprojroot \
-    survival \
-    viridis 
-
-
-# Required for interactive sample distribution plots
-# map view is needed to create HTML outputs of the interactive plots
-RUN ./install_bioc.r \
-    gdalUtils \
-    leafem \
-    leafpop \
-    lwgeom \
-    mapview \
-    plainview \
-    sf \
-    stars
-
-# Installs packages needed for plottings
-# treemap, interactive plots, and hex plots
-# Rtsne and umap are required for dimension reduction analyses
-RUN ./install_bioc.r \
+    cmprsk \
+    ComplexHeatmap \
     corrplot \
     d3r \
+    data.table \
+    deconstructSigs \
+    DT \
+    e1071  \
+    EnsDb.Hsapiens.v86 \
+    ensembldb \
+    EnvStats \
+    flextable \
+    foreign \
+    gdalUtils \
+    GenVisR \
+    GGally \
+    ggbio \
+    ggforce \
     ggfortify \
     ggpubr \
     ggrepel \
     ggsci \
     ggsignif \
-    gridGraphics \
-    hexbin \
-    pheatmap \
-    Rtsne \
-    spatial \
-    treemap \
-    umap  \
-    UpSetR \
-    VennDiagram 
-
-# Install rjava
-RUN ./install_bioc.r \
-    rJava 
-
-# Need for survminer for doing survival analysis
-RUN ./install_bioc.r \
-    cmprsk \
-    survMisc \
-    survminer
-
-# maftools for proof of concept in create-subset-files
-RUN R -e "remotes::install_github('PoisonAlien/maftools', ref = '9719868262f946e0b8eb2e7ec2510ee18c6cafa3')"
-
-# ComplexHeatmap
-RUN ./install_bioc.r \
-    ComplexHeatmap
-
-# This is needed for the CNV frequency and proportion aberration plots
-RUN ./install_bioc.r \
-    GenVisR
-
-# These packages are for the genomic region analysis for snv-callers
-RUN ./install_bioc.r \
-    annotatr \
-    TxDb.Hsapiens.UCSC.hg38.knownGene \
-    org.Hs.eg.db \
-    BSgenome.Hsapiens.UCSC.hg19 \
-    BSgenome.Hsapiens.UCSC.hg38
-
-# Packages for expression normalization and batch correction
-RUN ./install_bioc.r \
-    preprocessCore \
-    sva
-
-
-## This is deprecated
-#  # These packages are for single-sample GSEA analysis
-#  RUN ./install_bioc.r 'GSEABase', 'GSVA'
-
-# Required for sex prediction from RNA-seq data
-RUN ./install_bioc.r \
     glmnet \
     glmnetUtils \
-    caret \
-    e1071 
+    gplots \
+    gridGraphics \
+    GSVA \
+    hexbin \
+    janitor \
+    lattice \
+    leafem \
+    leafpop \
+    lsa \
+    lwgeom \
+    mapview \
+    MASS \
+    Matrix \
+    mgcv \
+    MM2S \
+    msigdbr \
+    multipanelfigure \
+    nlme \
+    nnet \
+    openxlsx  \
+    optparse \
+    org.Hs.eg.db \
+    pheatmap \
+    plainview \
+    preprocessCore \
+    qdapRegex  \
+    R.utils \
+    RColorBrewer \
+    rJava \
+    rpart \
+    rprojroot \
+    rtracklayer \
+    Rtsne \
+    sf \
+    spatial \
+    survival \
+    survMisc \
+    survminer \
+    stars \
+    treemap \
+    TxDb.Hsapiens.UCSC.hg38.knownGene \
+    umap  \
+    UpSetR \
+    VennDiagram  \
+    viridis
 
+### Install R packages from GitHub ###
 
+# Need to explicitly check via loading
 # bedr package & check to make sure binaries are available by loading
 RUN ./install_bioc.r \
     bedr \
     && Rscript -e "library(bedr)"
 
-# Also install for mutation signature analysis
-# qdapRegex is for the fusion analysis
-RUN ./install_bioc.r \
-    deconstructSigs \
-    qdapRegex 
-
-# packages required for collapsing RNA-seq data by removing duplicated gene symbols
-RUN ./install_bioc.r \
-    rtracklayer
+# maftools for proof of concept in create-subset-files
+RUN R -e "remotes::install_github('PoisonAlien/maftools', ref = '9719868262f946e0b8eb2e7ec2510ee18c6cafa3')"
 
 # TCGAbiolinks for TMB compare analysis
 RUN R -e "remotes::install_github('RDocTaskForce/parsetools', ref = '1e682a9f4c5c7192d22e8985ce7723c09e98d62b', dependencies = TRUE)" \
     && R -e "remotes::install_github('RDocTaskForce/testextra', ref = '4e5dfac8853c08d5c2a8790a0a1f8165f293b4be', dependencies = TRUE)" \
     && R -e "remotes::install_github('halpo/purrrogress', ref = '54f2130477f161896e7b271ed3ea828c7e4ccb1c', dependencies = TRUE)" \
     && ./install_bioc.r TCGAbiolinks
-
-# Install for mutation signature analysis
-RUN ./install_bioc.r \
-    ggbio
-
-# CRAN package msigdbr and GSVA for gene-set-enrichment-analysis
-RUN ./install_bioc.r \
-    msigdbr \
-    GSVA
-
 
 # package required for immune deconvolution
 RUN R -e "remotes::install_github('icbi-lab/immunedeconv', ref = '493bcaa9e1f73554ac2d25aff6e6a7925b0ea7a6', dependencies = TRUE)"
@@ -227,11 +195,6 @@ RUN R -e "remotes::install_github('NNoureen/EXTEND', ref = '467c2724e1324ef05ad9
 # package required for shatterseek
 RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true'), remotes::install_github('parklab/ShatterSeek', ref = '83ab3effaf9589cc391ecc2ac45a6eaf578b5046', dependencies = TRUE))"
 
-# Packages required for rna-seq-composition
-RUN ./install_bioc.r \
-    EnvStats \
-    janitor 
-
 # Patchwork for plot compositions
 RUN R -e "remotes::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd46899f17197f9858bc5672e9f4')"
 
@@ -240,6 +203,28 @@ RUN R -e "remotes::install_github('wilkox/treemapify', ref = 'e70adf727f4d13223d
 
 # Need this specific version of circlize so it has hg38
 RUN R -e "remotes::install_github('jokergoo/circlize', ref = 'b7d86409d7f893e881980b705ba1dbc758df847d', dependencies = TRUE)"
+
+# More recent version of sva required for molecular subtyping MB
+RUN R -e "remotes::install_github('jtleek/sva-devel@123be9b2b9fd7c7cd495fab7d7d901767964ce9e', dependencies = FALSE, upgrade = FALSE)"
+
+# To install sigfit, we need a more recent version of rstantools than we can obtain via the MRAN snapshot route
+# We're using the ref for the most recent release on GitHub (2.0.0)
+RUN R -e "remotes::install_github('stan-dev/rstantools', ref = 'd43bf9fb6120d40a60e708853e4b80cdb4689d19', dependencies = TRUE)"
+
+# Build arguments are according to the sigfit instructions
+RUN R -e "remotes::install_github('kgori/sigfit', ref = '209776ee1d2193ad4b682b2e2472f848bd7c67a6', build_vignettes = TRUE, build_opts = c('--no-resave-data', '--no-manual'), dependencies = TRUE)"
+
+RUN R -e "remotes::install_github('d3b-center/annoFuse',ref = 'c6a2111b5949ca2aae3853f7f34de3d0db4ffa33', dependencies = TRUE)"
+
+# CNS signatures can be obtained from signature.tools.lib
+RUN R -e "remotes::install_github('Nik-Zainal-Group/signature.tools.lib', ref = '73e899c9090a215a76a307480bda76c241a4a489')"
+
+# Patterned geoms
+RUN R -e "remotes::install_github('coolbutuseless/ggpattern', ref = '390e13fead028ba240eae9293a5ef422df02bc8e')"
+
+# Molecular subtyping MB
+RUN R -e "remotes::install_github('d3b-center/medullo-classifier-package', ref = 'e3d12f64e2e4e00f5ea884f3353eb8c4b612abe8', dependencies = TRUE, upgrade = FALSE)" \
+    && Rscript -e "library(medulloPackage)"
 
 # Install python packages
 ##########################
@@ -364,45 +349,7 @@ RUN mkdir -p gistic_install && \
     chmod 755 /home/rstudio/gistic_install
 WORKDIR /rocker-build/
 
-# Install multipanelfigure, required for transcriptomic overview figure
-# gplots for gistic comparison
-RUN ./install_bioc.r \
-    multipanelfigure \
-    gplots
 
-# Molecular subtyping MB
-RUN R -e "remotes::install_github('d3b-center/medullo-classifier-package', ref = 'e3d12f64e2e4e00f5ea884f3353eb8c4b612abe8', dependencies = TRUE, upgrade = FALSE)" \
-    && ./install_bioc.r MM2S
-# More recent version of sva required for molecular subtyping MB
-RUN R -e "remotes::install_github('jtleek/sva-devel@123be9b2b9fd7c7cd495fab7d7d901767964ce9e', dependencies = FALSE, upgrade = FALSE)"
-
-# Packages required for de novo mutational signatures
-RUN install2.r --error --deps TRUE \
-  lsa
-
-# To install sigfit, we need a more recent version of rstantools than we can obtain via the MRAN snapshot route
-# We're using the ref for the most recent release on GitHub (2.0.0)
-RUN R -e "remotes::install_github('stan-dev/rstantools', ref = 'd43bf9fb6120d40a60e708853e4b80cdb4689d19', dependencies = TRUE)"
-
-# Build arguments are according to the sigfit instructions
-RUN R -e "remotes::install_github('kgori/sigfit', ref = '209776ee1d2193ad4b682b2e2472f848bd7c67a6', build_vignettes = TRUE, build_opts = c('--no-resave-data', '--no-manual'), dependencies = TRUE)"
-
-# Package for kinase domain retention for fusions
-RUN ./install_bioc.r \
-     EnsDb.Hsapiens.v86 \
-     ensembldb
-
-RUN R -e "remotes::install_github('d3b-center/annoFuse',ref = 'c6a2111b5949ca2aae3853f7f34de3d0db4ffa33', dependencies = TRUE)"
-
-
-# gmp, dependency for signature.tools.lib
-RUN apt-get -y --no-install-recommends install \
-    libgmp-dev
-    
-# CNS signatures can be obtained from signature.tools.lib
-RUN R -e "remotes::install_github('Nik-Zainal-Group/signature.tools.lib', ref = '73e899c9090a215a76a307480bda76c241a4a489')"
-    
-    
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
 

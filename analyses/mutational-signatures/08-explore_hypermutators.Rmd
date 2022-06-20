@@ -1,0 +1,324 @@
+---
+title: "Explore hypermutator samples and relationship to signatures"
+author: "SJ Spielman (CCDL) and Jo Lynne Rokita (D3B)"
+date: "2022"
+output:
+  html_notebook:
+  toc: true
+editor_options: 
+  chunk_output_type: inline
+params:
+  is_ci: 0
+---
+  
+  
+#### Files and paths
+  
+  
+```{r setup}
+library(tidyverse)
+library(ComplexHeatmap)
+library(colorblindr)
+
+`%>%` <- dplyr::`%>%`
+
+proj_root_path  <- file.path( rprojroot::find_root(rprojroot::has_dir(".git")) )
+analysis_path   <- file.path(proj_root_path, "analyses")
+plot_path       <- file.path(analysis_path, "mutational-signatures", "plots", "cns")
+results_path       <- file.path(analysis_path, "mutational-signatures", "results")
+
+# Input files
+fitted_file    <- file.path(analysis_path, "mutational-signatures", "results", "deconstructsigs_exposures_merged.tsv")
+meta_file      <- file.path(proj_root_path, "data", "pbta-histologies.tsv")
+tmb_all_file    <- file.path(proj_root_path, "data", "pbta-snv-consensus-mutation-tmb-all.tsv")
+tmb_coding_file <- file.path(proj_root_path, "data", "pbta-snv-consensus-mutation-tmb-coding.tsv")
+td_palette_file <- file.path(proj_root_path, "figures", "palettes", "tumor_descriptor_palette.tsv")
+bin_palette_file <- file.path(proj_root_path, "figures", "palettes", "binary_color_palette.tsv")
+
+# Output files
+heatmap_file <- file.path(plot_path, "hypermutator_sigs_heatmap.pdf")
+heatmap_legends_file <- file.path(plot_path, "hypermutator_sigs_heatmap_legends.pdf")
+sig_matrix_file <- file.path(results_path, "hypermutator_sig_matrix.tsv")
+```
+
+First, we read in data and prepare TMB information.
+
+```{r read_prep_data, warning=FALSE}
+# Read in tumor descriptor and palettes
+td_palette <- readr::read_tsv(td_palette_file)
+bin_palette <- readr::read_tsv(bin_palette_file) %>%
+  mutate(color_names = case_when(
+        color_names == "binary_1" ~ "Solid Tissue",
+        color_names == "binary_2" ~ "Derived Cell Line")) %>%
+  filter(!is.na(color_names))
+
+# Read in metadata
+meta <- readr::read_tsv(meta_file, guess_max = 10000)
+
+# Read in exposures
+exposures <- readr::read_tsv(fitted_file)
+
+# Read in and prepare tmb data
+tmb_all <- readr::read_tsv(tmb_all_file)
+tmb_coding <- readr::read_tsv(tmb_coding_file)
+
+# Merge the all and coding tmb datasets
+tmb_data <- tmb_coding %>% 
+  dplyr::rename(coding_tmb = tmb) %>%
+  dplyr::select(Tumor_Sample_Barcode, coding_tmb) %>%
+  dplyr::inner_join(
+    dplyr::select(tmb_all,
+                  Tumor_Sample_Barcode, 
+                  all_tmb = tmb) # rename `tmb` column  --> `all_tmb` to distinguish from coding_tmb
+  ) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode)
+```
+
+
+
+<br><br>
+  
+  ### Explore: Signatures 3, 18, and MMR2 and mutation burden
+  
+  GitHub references:
+  
+  + https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1248
++ https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1227
+
+Which samples have high 3, 18, and/or MMR2, and are these hypermutators? 
+  
+  Note that this visualization is strictly exploratory and not exported.  
+
+We do **not** observe that samples with high MMR2 or signature 3 exposure have high mutational burdens. 
+Moreover, the hypermutators (all are HGG) are unexposed to signature 3 entirely. 
+Notably, three of the hypermutators have >=50% exposure to signature 18. 
+
+
+```{r tmb_sigs, fig.width = 10, fig.height = 4}
+sigs_of_interest <- c(3, 18, "MMR2")
+tmb_sigs_df <- exposures %>%
+  dplyr::select(signature, exposure, Kids_First_Biospecimen_ID, cancer_group_display) %>%
+  dplyr::distinct() %>%
+  dplyr::inner_join(tmb_data) %>%
+  tidyr::gather(dplyr::contains("tmb"), key = "tmb_type", value = "tmb")
+
+# plot TMB against exposure to those three signatures
+tmb_sigs_df %>%
+  dplyr::filter(signature %in% sigs_of_interest) %>%
+  ggplot2::ggplot() + 
+  ggplot2::aes(x = exposure, y = tmb, fill = cancer_group_display) +
+  ggplot2::geom_point(shape = 21, color ="black") + 
+  # guiding line for majority of signature exposure, >=0.5
+  ggplot2::geom_vline(xintercept = 0.5, color = "red") +
+  # gives a warning because insufficient colors - but OK since points of interest are colored!
+  colorblindr::scale_fill_OkabeIto() +
+  ggplot2::labs(x = "Exposure to given signature") +
+  ggplot2::facet_grid(tmb_type ~ signature, scales = "free")
+```
+
+
+Do the hypermutators also show dysregulated TP53?
+  
+  We define hypermutant samples as > 10 Mut/Mb, and ultrahypermutant samples as >100 Mut/Mb, from reference [Campbell et al., 2017](https://doi.org/10.1016/j.cell.2017.09.048).
+
+The output below shows hypermutator samples and...
+
++ their molecular subtypes (which implicitly gives the cancer group)
++ this also gives the **TP53 status**
+  + their tumor descriptor 
++ their _coding_ TMB
++ their exposures to all signatures (with those of interest appearing first: 3, 18, MMR2)
+
+
+
+
+```{r tp53_sigs}
+hypermutator_df <- tmb_sigs_df %>%
+  # filter to the hypermutators
+  dplyr::filter(tmb_type == "coding_tmb", 
+                tmb >= 10, 
+                signature != "Other") %>% 
+  dplyr::select(-tmb_type) %>%
+  # add in molecular subtype information, **which contains tp53 status** AND cancer group
+  dplyr::inner_join(
+    dplyr::select(meta, Kids_First_Biospecimen_ID, molecular_subtype, tumor_descriptor, composition)
+  ) %>%
+  tidyr::spread(signature, exposure) %>%
+  # it's all coding so can remove type column, but a rename is helpful
+  dplyr::rename(coding_tmb = tmb) %>%
+  # order columns so sigs of interest come first
+  dplyr::select(Kids_First_Biospecimen_ID, molecular_subtype, tumor_descriptor, composition, coding_tmb, sigs_of_interest, dplyr::everything()) %>%
+  # we don't need cancer_group_display, the info is in molecular_subtype
+  dplyr::select(-cancer_group_display) %>%
+  # arrange in order of burden
+  dplyr::arrange(-coding_tmb)
+
+hypermutator_df
+```
+
+A couple interesting observations in the table above:
+  
+  + _No samples_ are exposed to signature 3, 8, or N6
+
++ The DMG hypermutator sample (TMB=35.89) is mostly exposed to [signature 11](https://signal.mutationalsignatures.com/explore/referenceCancerSignature/40). This signature was thought to be associated with temozolomide, except that original evidence has not been reproduced. 
+
++ The HGG hypermutator sample with lowest TMB (TMB=15.48) is primarily exposed to signature 1, which is a normal signature.
+
+### Make heatmap for mutational signatures for patients with hypermutant tumors
+```{r}
+# This chunk should NOT run in CI. 
+if (!(params$is_ci == 1)) {
+  
+  
+  # Create signature matrix for only patients withh hypermutant samples
+  # Gather all BS_IDs (soi = "samples of interest"), whether hypermutant or not, for pts with hypermutant samples
+  
+  soi_df <- meta %>%
+    filter(Kids_First_Biospecimen_ID %in% hypermutator_df$Kids_First_Biospecimen_ID) %>%
+    select(Kids_First_Participant_ID) %>%
+    left_join(meta) %>%
+    #keep only WGS samples; remove normals; keep cell lines
+    filter(experimental_strategy == "WGS" & !is.na(pathology_diagnosis)) %>%
+    select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, tumor_descriptor, composition) %>%
+    unique() %>%
+    arrange(Kids_First_Participant_ID)
+  
+  sigs <- exposures %>%
+    filter(signature != "Other") %>%
+    tidyr::spread(signature, exposure) %>%
+    select(-broad_histology, -cancer_group_display_n, -n, -cancer_group_display, -cancer_group_hex, -tumor_descriptor) %>%
+    filter(Kids_First_Biospecimen_ID %in% soi_df$Kids_First_Biospecimen_ID) %>%
+    as.data.frame() %>%
+    arrange(Kids_First_Biospecimen_ID) %>%
+    write_tsv(sig_matrix_file)
+  
+  # add spaces at the end of BS_ids to make a space between the heatmap and legend
+  rownames(sigs) <- paste0(sigs$Kids_First_Biospecimen_ID, "     ")
+  
+  sigs$Kids_First_Biospecimen_ID <- NULL
+  sigs <- as.matrix(sigs)
+  
+  # Create annotation dataframe
+  anno <- tmb_coding %>%
+    mutate(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>%
+    select(Kids_First_Biospecimen_ID, tmb) %>%
+    # add a column for mutation status
+    mutate(
+      `Mutation status` = case_when(
+        tmb < 10 ~ "Normal",
+        tmb >= 10 & tmb < 100 ~ "Hypermutant",
+        tmb >= 100 ~ "Ultra-hypermutant")
+    ) %>%
+    right_join(soi_df, by = "Kids_First_Biospecimen_ID") %>%
+    unique() %>%
+    # mutate names for annotation
+    mutate(Patient = Kids_First_Participant_ID,
+           `Phase of Therapy` = tumor_descriptor,
+           Composition = composition) %>%
+    select(Patient, Kids_First_Biospecimen_ID, `Phase of Therapy`, Composition, `Mutation status`) %>%
+    as.data.frame() %>%
+    arrange(Kids_First_Biospecimen_ID)
+
+  # set rownames to match matrix, remove BS_ID
+  rownames(anno) <- paste0(anno$Kids_First_Biospecimen_ID, "     ")
+  anno$Kids_First_Biospecimen_ID <- NULL
+  
+  # Add tumor descriptor palette from dataframe
+  td_palette_filtered <- td_palette %>%
+    filter(color_names %in% anno$`Phase of Therapy`)
+  td_palette_col <- as.character(td_palette_filtered$hex_codes)
+  names(td_palette_col) <- td_palette_filtered$color_names
+  
+  pt_palette <- colorRampPalette(palette_OkabeIto)(length(unique(anno$Patient)))
+  names(pt_palette) <- unique(anno$Patient)
+  
+  comp_palette <- as.character(bin_palette$hex_codes)
+  names(comp_palette) <- unique(anno$Composition)
+  
+  # Specify colors
+  ann_colors = list(
+    # mutator color from [this PR](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1280/files#diff-bc8134008706f38e7795b59696928058d123e44b4172df68105a26ad8aa0a398R298-R301) 
+    `Mutation status` = c(Normal = "grey40",
+                          Hypermutant = "orange",
+                          `Ultra-hypermutant` = "red"),
+    Composition = comp_palette,
+    `Phase of Therapy` = td_palette_col,
+    Patient = pt_palette)
+  
+  # Heatmap annotation
+  row_anno = rowAnnotation(df = anno,
+                           col = ann_colors, show_legend=FALSE)
+  
+  # Make heatmap without legends
+  heat_plot <- Heatmap(sigs[, c("1", "3", "8", "11", "18", "19", "MMR2", "N6")], 
+                       name = "Signature weights",
+                       col = colorRampPalette(c("#f1f1f1", "#2166ac"))(50),
+                       cluster_rows = FALSE,
+                       show_row_names = TRUE,
+                       show_heatmap_legend=FALSE,
+                       cluster_columns = FALSE,
+                       right_annotation = row_anno,
+                       rect_gp = gpar(col = "white"),
+                       row_split = anno$Patient,
+                       row_title = NULL, 
+                       column_title = "RefSig Mutational Signature Weights", 
+                       column_title_side = "bottom")
+  
+  heat_plot
+  
+  # Make separate legends to compile in Illustrator
+  patient_legend <- Legend(
+    labels = names(ann_colors$Patient),
+    legend_gp = gpar(fill = ann_colors$Patient),
+    title = "Patient"
+  )
+  
+  mutator_legend <- Legend(
+    labels = names(ann_colors$`Mutation status`),
+    legend_gp = gpar(fill = ann_colors$`Mutation status`),
+    title = "Mutation status"
+  )
+  
+  phase_legend <- Legend(
+    labels = names(ann_colors$`Phase of Therapy`),
+    legend_gp = gpar(fill = ann_colors$`Phase of Therapy`),
+    title = "Phase of Therapy"
+  )
+  
+  comp_legend <- Legend(
+    labels = names(ann_colors$Composition),
+    legend_gp = gpar(fill = ann_colors$Composition),
+    title = "Composition"
+  )
+  
+  weights_legend <- color_mapping_legend(heat_plot@matrix_color_mapping, plot = FALSE, 
+                                         legend_direction = "horizontal")
+  
+  heat_legends <- packLegend(patient_legend,
+             mutator_legend,
+             phase_legend,
+             comp_legend,
+             weights_legend,
+             direction = "horizontal",
+             column_gap = unit(0.75, "cm")
+  ) 
+
+  
+  # save heatmap 
+  pdf(heatmap_file, width = 8, height = 4)
+  print(heat_plot)
+  dev.off()
+
+  # save heatmap legends
+  pdf(heatmap_legends_file, width = 8, height = 2)
+  draw(heat_legends)
+  dev.off()  
+ }
+```
+
+
+### Session info
+
+```{r sessioninfo}
+sessionInfo()
+```
