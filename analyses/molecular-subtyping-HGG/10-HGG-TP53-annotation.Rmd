@@ -1,0 +1,59 @@
+---
+title: "TP53 annotation for HGG"
+output: html_notebook
+---
+
+In this notebook we will annotate HGG samples with TP53 status we obtained from snv/cnv and TP53 classifier. We believe TP53 annotation will add useful information to the current known subtypes as we see TP53 mutations co-occurring with H3 mutations.
+
+## Set up
+```{r}
+# Load in tidyverse functions
+library(tidyverse)
+
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+# results folder
+results_dir <- file.path(
+  root_dir,
+  "analyses",
+  "molecular-subtyping-HGG",
+  "results")
+
+```
+
+
+### Required files
+```{r}
+# File path to data directory
+tp53_status <- read_tsv(file.path(
+  root_dir,
+  "analyses",
+  "tp53_nf1_score",
+  "results",
+  "tp53_altered_status.tsv"))
+
+hgg_subtypes <- read_tsv(file.path(results_dir,"HGG_molecular_subtype.tsv")) 
+
+```
+
+# Add tp53 status 
+```{r}
+
+hgg_subtypes <- hgg_subtypes %>%
+  left_join(tp53_status,by=c(
+                             "sample_id",
+                             "Kids_First_Biospecimen_ID_RNA",
+                             "Kids_First_Biospecimen_ID_DNA")) %>%
+  rename("tp53_SNV_indel_counts"="SNV_indel_counts",
+         "tp53_CNV_loss_counts"="CNV_loss_counts",
+          "tp53_HGVSp_Short"="HGVSp_Short" , 
+         "tp53_CNV_loss_evidence"="CNV_loss_evidence",
+         "tp53_hotspot"="hotspot",
+         "tp53_activating"="activating") %>%
+  mutate(molecular_subtype= case_when(
+    tp53_altered=="activated" ~ stringr::str_c(molecular_subtype,", TP53 activated"),
+    tp53_altered=="loss" ~ stringr::str_c(molecular_subtype,", TP53 loss"),
+    TRUE ~ molecular_subtype
+  )) %>%
+  write_tsv(file.path(results_dir,"HGG_molecular_subtype.tsv"))
+
+```

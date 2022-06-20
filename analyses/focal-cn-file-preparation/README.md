@@ -8,11 +8,20 @@ The purpose of this module is to map from those ranges to gene identifiers for c
 ### Running this analysis
 *This analysis requires at least ~24 GB of RAM to run to completion*
 
-To run this analysis _only on consensus SEG file_, use the following (from the root directory of the repository):
+To run this analysis _only on consensus SEG file_, 
+
+use OPENPBTA_BASE_SUBTYPING=1 to run this module using the `pbta-histologies-base.tsv` from data folder and relative path to `copy_number_consensus_call/results/pbta-cnv-consensus.seg.gz` while running molecular-subtyping modules for release.
+
+```
+OPENPBTA_BASE_SUBTYPING=1 bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
+```
+
+Or by default runs analyses using pbta-histologies.tsv and downloaded files from data release:
 
 ```
 bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
 ```
+
 **Note**: The `run-bedtools.snakemake` script is implemented in `run-prepare-cn.sh` to run the bedtools coverage steps between the UCSC cytoband file and the samples in the copy number files produced in `02-add-ploidy-consensus.Rmd`.
 This script currently takes a while to run, and therefore slows down the processing speed of the main shell script `run-prepare-cn.sh`.
 
@@ -45,7 +54,8 @@ See the notebook for more information. This notebook also prepares lists of copy
 
   | biospecimen_id | status | copy_number | ploidy | ensembl | gene_symbol | cytoband |
   |----------------|--------|-------------|--------|---------|-------------|---------|
-  Any segment that is copy neutral is filtered out of this table. In addition, [any segments with copy number > (2 * ploidy) are marked as amplifications](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/e2058dd43d9b1dd41b609e0c3429c72f79ff3be6/analyses/focal-cn-file-preparation/03-prepare-cn-file.R#L275) in the `status` column.
+  Any segment that is copy neutral is filtered out of this table. In addition, [any segments with copy number > (2 * ploidy) are marked as amplifications](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/e2058dd43d9b1dd41b609e0c3429c72f79ff3be6/analyses/focal-cn-file-preparation/03-prepare-cn-file.R#L275) in the `status` column. 
+Any segments with copy number == 0  are marked as deep deletions in the `status` column.
 
 * `05-define-most-focal-cn-units.Rmd` - This notebook defines the _most focal_ recurrent copy number units by removing focal changes that are within entire chromosome arm losses and gains.
 _Most focal_ here meaning if a chromosome arm is not clearly defined as a gain or loss (and is callable) we look to define the cytoband level status.

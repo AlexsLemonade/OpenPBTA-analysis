@@ -115,8 +115,8 @@ calculate_tmb <- function(tumor_sample_barcode = NULL,
   #
   # Returns:
   # A calculated total region size, and TMB for the given Tumor_Sample_Barcode,
-  # returned as a single row data.frame. `experimental_strategy`, `short_histology`
-  # columns are carried along.
+  # returned as a single row data.frame. `experimental_strategy` column is
+  # included.
 
   # Sum up genome sizes
   bed_size <- as.numeric(sum(bed_ranges@ranges@width))
@@ -133,8 +133,7 @@ calculate_tmb <- function(tumor_sample_barcode = NULL,
     dplyr::group_by(
       #TODO: Make this column passing stuff more flexible with some tidyeval maybe
       Tumor_Sample_Barcode = tumor_sample_barcode,
-      experimental_strategy,
-      short_histology
+      experimental_strategy
     ) %>%
     # Count number of mutations for that sample
     dplyr::summarize(

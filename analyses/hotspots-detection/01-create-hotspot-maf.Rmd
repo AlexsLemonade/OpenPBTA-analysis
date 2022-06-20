@@ -1,0 +1,237 @@
+---
+title: "Create consensus hotspot maf"
+author: Krutika Gaonkar for D3b
+output: html_notebook
+params:
+  vaf_filter:
+    label: VAF filter for hotspots variant calls
+    value: 0
+    input: integer  
+---
+
+In the previous step we gather all known cancer hotspots by scavenging calls by
+- checking for overlap with amino acid positions in a curated and published cancer hotspot [database](https://www.cancerhotspots.org/files/hotspots_v2.xls)
+- checking for overlap with non-coding region hotspots mutations , here we are using the in TERT promoter region
+
+In this notebook, we will create consensus mafs from the filtered call `scratch/hotspot-detection/*RDS`. Since there are slight differences in read support from each caller, we will take a mean value to provide the information per site in the consensus maf file. All other vcf2maf columns will be added from strelka/mutect2  
+
+## Setup
+```{r}
+library("tidyverse")
+library("maftools")
+
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+
+results_dir <- file.path(root_dir,
+                         "analyses",
+                         "hotspots-detection",
+                         "results")
+# Make output folder
+if (!dir.exists(results_dir )) {
+  dir.create(results_dir , recursive = TRUE)
+}
+
+scratch_dir <- file.path(
+  root_dir,
+  "scratch",
+  "hotspot-detection"
+)
+
+# Import function to split MNV to SNV
+source(file.path(root_dir, "analyses", "snv-callers", "util", "split_mnv.R"))
+
+maf_coltypes <- readRDS(file.path("input", "maf_coltypes.RDS"))
+# maf_coltypes is a named vector with column types information for each column in a maf file
+# More description about maf format is available
+# [here](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/)
+
+# combined hotspot calls
+combined_maf_hotspots_filt <- list.files(path = scratch_dir,pattern = ".RDS",full.names = TRUE) %>%
+  map_dfr(readRDS) 
+
+# MNVs are split into SNVs
+combined_maf_hotspots_filt_mnv_split <- split_mnv(combined_maf_hotspots_filt) %>%
+  # removing mvv_id and mnv_pos column
+  # since they uniquely numbered per caller variant calls
+  # in the merged combined_maf_hotspots_filt
+  select(-mnv_id, -mnv_pos)
+
+combined_maf_hotspots_filt <- combined_maf_hotspots_filt %>%
+  # removing MNVs here
+  filter(!Variant_Type %in% c("DNP", "TNP", "ONP")) %>%
+  # adding the MNV split SNV alleles here 
+  union_all(combined_maf_hotspots_filt_mnv_split)
+
+# hotspot mutation maf file output
+output_file <- file.path(results_dir,"pbta-snv-scavenged-hotspots.maf.tsv.gz")
+
+```
+
+## Gather consensus maf file for hotspots
+
+The main tasks are:
+ - gather read supports for REF and ALT from multiple callers adding values from any 1 caller in the order strelka2 > mutect2 > lancet > vardict
+ 
+### Filter hotspots not found in consensus calls
+```{r warning=FALSE }
+# These columns provide unique values 
+# to check for exact in the 2 dataframes
+join_cols <- c("Hugo_Symbol",
+               "Entrez_Gene_Id",
+               "NCBI_Build",
+               "Chromosome",
+               "Start_Position",
+               "End_Position",
+               "Strand",
+               "Variant_Classification",
+               "Variant_Type",
+               "Reference_Allele",
+               "Tumor_Seq_Allele1",
+               "Tumor_Seq_Allele2",
+               "Tumor_Sample_Barcode")
+
+
+caller_counts <- combined_maf_hotspots_filt %>%
+  select(join_cols,caller) %>%
+  unique() %>%
+  group_by_at(join_cols) %>%
+  summarise(caller_count = n(),
+            caller = paste(unique(caller), collapse=';')) %>%
+  ungroup()
+
+```
+
+
+### Gather count and qual values 
+For the following columns which are unique to each caller:
+```
+unique_cols <- c("t_depth",
+                 "n_depth",
+                 "t_ref_count",
+                 "n_ref_count",
+                 "t_alt_count",
+                 "n_alt_count",
+                 "vcf_qual",
+                 "caller")
+```                 
+
+We will prefer the call from strelka, then mutect2, then lancet and then last vardict at this step.
+
+```{r warning=FALSE }
+# These columns are unique to each caller maf file.
+# Read support and quality are intrinsic values gathered
+# from the tools calling the variant so can vary in values.
+unique_cols <- c("t_depth",
+                 "n_depth",
+                 "t_ref_count",
+                 "n_ref_count",
+                 "t_alt_count",
+                 "n_alt_count",
+                 "vcf_qual",
+                 "caller")
+
+# We will create a union of calls where each caller specific 
+# values in the unique columns described above are renamed 
+# with a tag specifying caller name
+combined_maf_hotspots_filt <- filter(combined_maf_hotspots_filt,caller=="strelka2") %>%
+  rename_at(vars(unique_cols), ~str_c("strelka2_", .)) %>% 
+  
+  # join mutect2 calls
+  full_join(
+    filter(combined_maf_hotspots_filt,caller=="mutect2"),
+    by=setdiff(names(combined_maf_hotspots_filt ), unique_cols)) %>%
+  # rename *_count columns to mutect2_*count
+  rename_at(vars(unique_cols), ~str_c("mutect2_", .)) %>% 
+  
+  # join lancet calls
+  full_join(
+    filter( combined_maf_hotspots_filt,caller=="lancet"),
+    by=setdiff(names(combined_maf_hotspots_filt ), unique_cols)) %>%
+  # rename *_count columns to lancet_*count
+  rename_at(vars(unique_cols), ~str_c("lancet_", .)) %>% 
+  
+  # join vardict
+  full_join(
+    filter(combined_maf_hotspots_filt,caller=="vardict"),
+    by=setdiff(names(combined_maf_hotspots_filt ), unique_cols)) %>%
+  # rename *_count columns to vardict_*count
+  rename_at(vars(unique_cols), ~str_c("vardict_", .))
+
+
+# We will select unique cols for each variant call in the order 
+# strelka2 > mutect2 > lancet > vardict
+combined_maf_hotspots_filt <- combined_maf_hotspots_filt %>%
+  # Given a set of vectors, coalesce() finds the first non-missing value at each position. 
+  mutate( "t_depth" = coalesce(strelka2_t_depth,mutect2_t_depth,lancet_t_depth,vardict_t_depth),
+          "n_depth" = coalesce(strelka2_n_depth,mutect2_n_depth,lancet_n_depth,vardict_n_depth),
+          "t_ref_count" = coalesce(strelka2_t_ref_count,mutect2_t_ref_count,lancet_t_ref_count,vardict_t_ref_count),
+          "n_ref_count" = coalesce(strelka2_n_ref_count,mutect2_n_ref_count,lancet_n_ref_count,vardict_n_ref_count),
+          "t_alt_count" = coalesce(strelka2_t_alt_count,mutect2_t_alt_count,lancet_t_alt_count,vardict_t_alt_count),
+          "n_alt_count" = coalesce(strelka2_n_alt_count,mutect2_n_alt_count,lancet_n_alt_count,vardict_n_alt_count),
+          "vcf_qual" = coalesce(strelka2_vcf_qual,mutect2_vcf_qual,lancet_vcf_qual,vardict_vcf_qual),
+          # calculate VAF
+          VAF = t_alt_count/(t_alt_count+t_ref_count))%>%
+  # Filter with vaf_filter parm in this notebook
+  dplyr::filter(VAF >= params$vaf_filter) 
+
+```
+
+## Identify read support for variant type per caller
+
+We will try to identify the read support for each variant type from each callers to visualize if any callers call hostspot sites in specific variant types with low read support calls 
+```{r}
+
+## adding in caller info to plot caller information
+
+combined_maf_hotspots_filt <- combined_maf_hotspots_filt %>%
+  left_join(caller_counts,by=join_cols) 
+
+ggplot(combined_maf_hotspots_filt[,c("caller","caller_count","t_alt_count")],
+       aes(x=as.factor(caller_count),y=t_alt_count))+
+  geom_violin()+ 
+  ggpubr::stat_compare_means()
+
+```
+Hotspot sites called by just 1 caller seem to have majority low read support and a few are found in 3 caller ( now captured in 3 callers because of the variant being present in vardict)
+
+## Identify calls unique to a caller
+Lets look at these calls that are unique to 1 caller.
+
+```{r}
+combined_maf_hotspots_filt %>%
+  filter(caller_count==1)
+```
+
+```{r}
+# gather distribution of callers in the unique_1caller_hotspots 
+unique_1caller_hotspots <- combined_maf_hotspots_filt %>%
+  filter(caller_count==1) %>%
+  group_by(caller) %>%
+  tally()
+  
+unique_1caller_hotspots
+```
+
+Vardict calls a lot of variants summarized [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/snv-callers/README.md)
+In snv-callers consensus calling method we didn't consider vardict calls so we will need to filter out vardict only calls from the hotspots to
+be consistent 
+```{r}
+ combined_maf_hotspots_filt <- combined_maf_hotspots_filt %>% filter(caller !="vardict")
+```
+
+## Save hotspots 
+
+```{r}
+
+combined_maf_hotspots_filt %>%
+  # remove caller unique columns
+  select(-starts_with("strelka2_"),-starts_with("mutect2_"),-starts_with("lancet_"),-starts_with("vardict_")) %>%	
+  as.data.frame() %>%
+  # Write to a TSV file, change NAs back to "."
+  readr::write_tsv(output_file, na = ".")
+
+
+
+```
+

@@ -8,16 +8,21 @@
 set -e
 set -o pipefail
 
-# This option controls whether on not the step that generates the subset
-# files gets run -- it will be turned off in CI
-SUBSET=${OPENPBTA_SUBSET:-1}
-
 # This script should always run as if it were being called from
 # the directory it lives in.
 script_directory="$(perl -e 'use File::Basename;
   use Cwd "abs_path";
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
+
+# This option controls whether on not the step that generates the subset
+# files gets run -- it will be turned off in CI
+SUBSET=${OPENPBTA_SUBSET:-1}
+# This controls plotting in the C19MC notebook
+IS_CI=${OPENPBTA_TESTING:-0}
+
+# Generate JSON file with strings for inclusion/exclusion criteria
+Rscript --vanilla 00-embryonal-select-pathology-dx.R
 
 # Run the first script in this module that identifies non-ATRT and non-MB
 # embryonal tumors and those tumors with TTYH1 fusions for the purposes of
@@ -31,7 +36,7 @@ if [ "$SUBSET" -gt "0" ]; then
 fi
 
 # Run C19mc notebook
-Rscript -e "rmarkdown::render('03-clean-c19mc-data.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('03-clean-c19mc-data.Rmd', clean = TRUE, params=list(is_ci = ${IS_CI}))"
 
 # Run notebook that wrangles all the relevant data
 Rscript -e "rmarkdown::render('04-table-prep.Rmd', clean = TRUE)"

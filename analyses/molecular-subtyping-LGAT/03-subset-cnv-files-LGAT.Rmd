@@ -15,6 +15,8 @@ In this notebook, we will look for the following CNV changes that define subtype
 ### Setup
 ```{r}
 library("tidyverse")
+library("GenomicRanges")
+
 ```
 
 ### Input
@@ -45,14 +47,18 @@ manta <- read_tsv(file.path(
 # consensus seg calls
 cnv <- read_tsv(file.path(
   root_dir,
-  "data",
+  "analyses",
+  "copy_number_consensus_call",
+  "results",
   "pbta-cnv-consensus.seg.gz"
 ))
 
 # consensus seg annotated with gene
 cnv_anno <- read_tsv(file.path(
   root_dir,
-  "data",
+  "analyses",
+  "focal-cn-file-preparation",
+  "results",
   "consensus_seg_annotated_cn_autosomes.tsv.gz"
 ))
 
@@ -231,7 +237,7 @@ txdb <- GenomicFeatures::makeTxDbFromGFF(
 
 # get flfr1 canonical transcrip tx_id 
 fgfr1_tx_id <- ensembldb::select(txdb, 
-                                 keys= keys(txdb, "TXID"),
+                                 keys= ensembldb::keys(txdb, "TXID"),
                                  columns="TXNAME", keytype="TXID") %>%
   # FGFR1 canonical transcript
   # genocode canonical transcript https://genome.ucsc.edu/cgi-bin/hgGene?db=hg38&hgg_gene=FGFR1
@@ -240,6 +246,7 @@ fgfr1_tx_id <- ensembldb::select(txdb,
 
 # GRList is ordered using tx_ids so using 
 # the filtered tx_id for FGFR1 canonical transcript
+GRList <- ensembldb::exonsBy(txdb, by = "tx")
 fgfr1_exons <-unlist(GRList[fgfr1_tx_id])
 ```
 

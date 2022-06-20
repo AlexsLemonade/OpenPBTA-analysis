@@ -11,15 +11,6 @@ library(stringr)
 library(broom)
 
 
-# Magrittr pipe
-`%>%` <- dplyr::`%>%`
-
-### Check tidyr version for nesting code to ensure it used as <1.0.0 ####
-tidyr_version <- package_version( packageVersion("tidyr") )
-if (tidyr_version$major >= 1){
-  nest   <- nest_legacy
-  unnest <- unnest_legacy
-}
 
 
 
@@ -34,6 +25,7 @@ perform_anova <- function(df, predictor_variable_string)
 
 gsva_anova_tukey <- function(df, predictor_variable, library_type, significance_threshold)
 {
+  
   ### Defines a function to compare GSVA scores across a given predictor variable, _for each pathway (hallmark)_.
   ### Returns a named list with two items:
   ##### 1. "anova" is a tibble of all ANOVAs performed, for each hallmark
@@ -82,7 +74,7 @@ gsva_anova_tukey <- function(df, predictor_variable, library_type, significance_
     ungroup() %>%
     filter(term != "Residuals") %>%
     dplyr::select(-df, -sumsq, -meansq, -term) %>%
-    rename(anova_f_statistic = statistic,
+    dplyr::rename(anova_f_statistic = statistic,
            anova_p_value     = p.value) %>%
     mutate(anova_p_value_bonferroni = anova_p_value * number_of_tests,
            anova_p_value_bonferroni = ifelse(anova_p_value_bonferroni >= 1, 1, anova_p_value_bonferroni),

@@ -18,3 +18,6 @@ open_pbta_envs.txt
 
 # Ignore all .pyc files
 *.pyc
+
+# Ignore all bash history files
+.bash_history

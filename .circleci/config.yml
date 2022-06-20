@@ -2,6 +2,7 @@ version: 2
 jobs:
   run_analyses:
     machine:
+      image: ubuntu-2004:202201-02
       docker_layer_caching: true
     resource_class: large
     working_directory: ~/OpenPBTA-analysis
@@ -10,23 +11,20 @@ jobs:
 
       - run:
           name: Data Download
-          command: OPENPBTA_URL=https://open-pbta.s3.amazonaws.com/data OPENPBTA_RELEASE=testing ./scripts/run_in_ci.sh bash download-data.sh
+          command: OPENPBTA_URL=https://s3.amazonaws.com/d3b-openaccess-us-east-1-prd-pbta/data OPENPBTA_RELEASE=testing ./scripts/run_in_ci.sh bash download-data.sh
 
       - run:
           name: List Data Directory Contents
           command: ./scripts/run_in_ci.sh ls data/testing
 
       - run:
-          name: High level histology grouping for plot labels
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('figures/mapping-histology-labels.Rmd', clean = TRUE)"
+          name: Check python packages
+          command: ./scripts/run_in_ci.sh bash scripts/check-python.sh
 
       - run:
           name: Sample Distribution Analyses
           command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
 
-      - run:
-          name: Sample Distribution Figure
-          command: ./scripts/run_in_ci.sh Rscript figures/scripts/fig1-sample-distribution.R
 
       - run:
           name: Transcriptome dimensionality reduction
@@ -46,7 +44,7 @@ jobs:
 
       - run:
           name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors
-          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
+          command: OPENPBTA_TESTING=1 OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
 
       - run:
           name: Molecular Subtyping and Plotting - ATRT
@@ -72,14 +70,13 @@ jobs:
          name: Molecular Subtyping Neurocytoma
          command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-neurocytoma/run_subtyping.sh
 
-     # Commenting this out for now; the code is expected to change
-     # - run:
-     #    name: Molecular Subtyping - Compile and incorporate pathology feedback
-     #    command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-pathology/run-subtyping-aggregation.sh
+      - run:
+         name: Molecular Subtyping - Compile and incorporate pathology feedback
+         command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-pathology/run-subtyping-aggregation.sh
 
       - run:
-          name: Molecular Subtyping - MB
-          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-MB/run-molecular-subtyping-mb.sh
+         name: Molecular Subtyping - MB
+         command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-MB/run-molecular-subtyping-mb.sh
 
       - run:
           name: Molecular Subtyping - CRANIO
@@ -105,8 +102,8 @@ jobs:
          command: ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
 
       - run:
-          name: Immune deconvolution using xCell and MCP-Counter
-          command: OPENPBTA_DECONV_METHOD="mcp_counter" ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
+          name: Immune deconvolution using immunedeconv
+          command: OPENPBTA_QUICK_IMMUNE=1 ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
 
       - run:
           name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded data and creates recurrent fusion list
@@ -154,7 +151,7 @@ jobs:
 
       - run:
           name: Mutational Signatures
-          command: OPENPBTA_QUICK_MUTSIGS=1 ./scripts/run_in_ci.sh bash analyses/mutational-signatures/run_mutational_signatures.sh
+          command: OPENPBTA_QUICK_MUTSIGS=1 OPENPBTA_CNS_FIT_ONLY=0 ./scripts/run_in_ci.sh bash analyses/mutational-signatures/run_mutational_signatures.sh
 
 #      - run:
 #          name: Chromosomal instability breakpoints
@@ -169,16 +166,12 @@ jobs:
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
 
       - run:
-          name: Survival analysis
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/survival-analysis/survival-analysis_template.Rmd', params = list(plot_ci = FALSE), clean = TRUE)"
-
-      - run:
           name: Comparative RNASeq 
           command: ./scripts/run_in_ci.sh bash analyses/comparative-RNASeq-analysis/run-comparative-RNAseq.sh
 
       - run:
-          name: Process SV file
-          command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/01-process-sv-file.R
+          name: Chromothripsis
+          command: ./scripts/run_in_ci.sh bash analyses/chromothripsis/run-chromothripsis.sh
 
 #      - run:
 #          name: Oncoprint plotting
@@ -199,10 +192,6 @@ jobs:
       - run:
           name: Gene set enrichment analysis to generate GSVA scores FOR BASE SUBTYPING
           command: OPENPBTA_TESTING=1 OPENPBTA_BASE_SUBTYPING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh"
-
-      - run:
-          name: Add Shatterseek
-          command: ./scripts/run_in_ci.sh Rscript analyses/sv-analysis/02-shatterseek.R
 
       - run:
           name: Telomerase activity
@@ -229,9 +218,11 @@ jobs:
           name: SNV Caller Analysis
           command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-pbta.sh
 
-      - run:
-          name: Tumor mutation burden with TCGA
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tcga-pbta.Rmd', clean = TRUE)"
+
+    # Deprecated
+    #  - run:
+    #      name: Tumor mutation burden with TCGA
+    #      command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tcga-pbta.Rmd', clean = TRUE)"
 
       - run:
           name: Exploration of nonsynonymous filter
@@ -262,25 +253,39 @@ jobs:
           name: GISTIC proof of concept
           command: OPENPBTA_CI=1 ./scripts/run_in_ci.sh bash analyses/run-gistic/run-gistic-module.sh
 
-      - run:
-          name: TCGA Capture Kit Investigation
-          command: ./scripts/run_in_ci.sh bash analyses/tcga-capture-kit-investigation/run-investigation.sh
+    # Deprecated
+    #  - run:
+    #      name: TCGA Capture Kit Investigation
+    #      command: ./scripts/run_in_ci.sh bash analyses/tcga-capture-kit-investigation/run-investigation.sh
 
     # Deprecated - these results are not included in the final TMB results but were used for a comparison at one point
     # - run:
     #     name: d3b TMB code
     #     command: ./scripts/run_in_ci.sh bash analyses/tmb-compare/TMB_d3b_code/run_tmb_d3b.sh
 
-      - run:
-          name: Compare TMB calculations
-          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tmb-calculations.Rmd', clean = TRUE)"
+
+    # Deprecated
+    #  - run:
+    #      name: Compare TMB calculations
+    #      command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tmb-calculations.Rmd', clean = TRUE)"
 
       - run:
-          name: Run survival plots
+          name: Survival analysis
           command: ./scripts/run_in_ci.sh bash analyses/survival-analysis/run_survival.sh
+
+      - run:
+         name: Scavenge back hotspots
+         command: ./scripts/run_in_ci.sh bash analyses/hotspots-detection/run_overlaps_hotspot.sh
+
+
+      - run:
+         name: Compile manuscript tables
+         command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('tables/output_tables.Rmd', params = list(release = 'testing'), clean = TRUE)"
+
 
   deploy:
     machine:
+      image: ubuntu-2004:202201-02
       docker_layer_caching: true
     working_directory: ~/OpenPBTA-analysis
     steps:

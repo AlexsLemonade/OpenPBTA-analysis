@@ -1,0 +1,16 @@
+variable	group1	group2	p.format	p.adj	p.signif	method
+NormEXTENDScores	all	LGG, other MAPK (N=12)	0.4717	1		Wilcoxon
+NormEXTENDScores	all	LGG, NF1-germline (N=6)	0.9522	1		Wilcoxon
+NormEXTENDScores	all	LGG, KIAA1549-BRAF (N=114)	0.0398	0.6		Wilcoxon
+NormEXTENDScores	all	LGG, IDH (N=3)	0.5584	1		Wilcoxon
+NormEXTENDScores	all	LGG, wildtype (N=42)	0.7891	1		Wilcoxon
+NormEXTENDScores	all	LGG, FGFR (N=8)	0.2106	1		Wilcoxon
+NormEXTENDScores	all	LGG, BRAF V600E (N=26)	0.6821	1		Wilcoxon
+NormEXTENDScores	all	GNG, BRAF V600E (N=12)	0.2948	1		Wilcoxon
+NormEXTENDScores	all	GNG, wildtype (N=14)	0.0017	0.025	*	Wilcoxon
+NormEXTENDScores	all	SEGA, wildtype (N=3)	0.3545	1		Wilcoxon
+NormEXTENDScores	all	GNG, RTK (N=3)	0.0927	1		Wilcoxon
+NormEXTENDScores	all	LGG, BRAF V600E, CDKN2A/B (N=5)	0.1885	1		Wilcoxon
+NormEXTENDScores	all	LGG, RTK (N=11)	0.2755	1		Wilcoxon
+NormEXTENDScores	all	GNG, other MAPK (N=4)	0.2666	1		Wilcoxon
+NormEXTENDScores	all	GNG, KIAA1549-BRAF (N=5)	0.0442	0.66		Wilcoxon

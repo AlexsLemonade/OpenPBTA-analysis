@@ -215,6 +215,8 @@ cnv_filtered_df <- cnv_df %>%
 message("Setting up SV breakpoints...")
 
 sv_df <- data.table::fread(opt$sv, data.table = FALSE) %>%
+  # Filter for PASS variants only
+  dplyr::filter(FILTER == "PASS") %>%
   # Reformat the 23 and 24 chromosomes so they are X and Y and also factors
   dplyr::mutate(
     chrom = dplyr::recode(SV.chrom,

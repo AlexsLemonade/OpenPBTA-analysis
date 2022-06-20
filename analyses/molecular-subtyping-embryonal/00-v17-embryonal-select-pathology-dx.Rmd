@@ -1,0 +1,172 @@
+---
+title: "Select pathology diagnoses for inclusion"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Chante Bethell for ALSF CCDL
+date: 2020
+---
+
+Code for this notebook was adapted from the `analyses/molecular-subtyping-HGG/00-HGG-select-pathology-dx.Rmd`(https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/f65c803706d9c1eea7f2892cb8b638f3d47d15c6/analyses/molecular-subtyping-HGG/00-HGG-select-pathology-dx.Rmd) notebook.
+
+## Background
+
+Originally, we subtyped tumors in this module if the specimen satisfied one of the following criteria:
+
+1. An RNA-seq biospecimen sample includes a _TTYH1_ fusion (5' partner) [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/401#issuecomment-573669727).
+2. Any sample with "Embryonal tumor" in the `broad_histology` column of the metadata `pbta-histologies.tsv` that is not labeled "Medulloblastoma" or "Atypical Teratoid Rhabdoid Tumor (ATRT)" in `pathology_diagnosis` or `integrated_diagnosis` columns [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/251#issuecomment-568220913).
+
+In an upcoming release, `integrated_diagnosis`, which can be updated as the result of subtyping, will be used to populate the `broad_histology` column (see [#748](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/748)).
+Thus, molecular subtyping modules need to be upstream of `broad_histology` and use the `pathology_diagnosis` and `pathology_free_text_diagnosis` fields.
+
+Per a [related github comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/752#issuecomment-697000066), the following criteria should be used to subset samples based on `pathology_diagnosis` and `pathology_free_text_diagnosis` for this module:
+
+1. Any sample with "Supratentorial or Spinal Cord PNET" in the `pathology_diagnosis` column of the metadata `pbta-histologies.tsv`.
+2. Any sample with "Neuroblastoma" in the `pathology_diagnosis` column, where `primary_site` does not contain "Other locations NOS", `pathology_free_text_diagnosis` does not contain "peripheral" or "metastatic".
+3. Any sample with "Other" in the `pathology_diagnosis` column of the metadata, and with "embryonal tumor with multilayer rosettes, ros (who grade iv)", "embryonal tumor, nos, congenital type", "ependymoblastoma" or "medulloepithelioma" in the `pathology_free_text_diagnosis` column.
+
+## Set up
+
+```{r}
+library(tidyverse)
+```
+
+### Directories and files
+
+We're going to tie this to a specific release.
+
+```{r}
+data_dir <- file.path("..", "..", "data", "release-v17-20200908")
+histologies_file <- file.path(data_dir, "pbta-histologies.tsv")
+```
+
+## Read in data
+
+```{r}
+histologies_df <- read_tsv(histologies_file)
+```
+
+## Explore the pathology diagnoses
+
+### `pathology_diagnosis == Supratentorial or Spinal Cord PNET`
+
+We want to filter rows on the basis of the presence of the values "Supratentorial or Spinal Cord PNET" and "Neuroblastoma" in the `pathology_diagnosis` column, [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/752#issuecomment-697000066).  
+
+```{r}
+histologies_df %>%
+  filter(
+      pathology_diagnosis %in% c("Supratentorial or Spinal Cord PNET",
+                                 "Neuroblastoma")
+  ) %>%
+  count(pathology_diagnosis) %>%
+  arrange(desc(n))
+```
+
+When filtering, we will want to keep CNS neuroblastoma samples and not peripheral neuroblastoma samples for this module.
+
+### Can we use `pathology_diagnosis` alone to filter out metastatic neuroblastoma tumors?
+
+There are instances of `Metastatic secondary tumors;Neuroblastoma` in `pathology_diagnosis`, which should be treated as metastatic tumors in this module ([GitHub comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/788#issuecomment-705141520)). 
+
+If we filter to `pathology_diagnosis === "Neuroblastoma"`, does that remove all specimens marked with metastatic?
+
+```{r}
+histologies_df %>%
+  filter(
+    pathology_diagnosis == "Neuroblastoma"
+  ) %>%
+  count(pathology_diagnosis, pathology_free_text_diagnosis) %>%
+  arrange(desc(n))
+```
+
+No, it looks like we need to account for "metastatic" in the `pathology_free_text_diagnosis` column as we still capture "metastatic neuroblastoma" samples when we filter on `pathology_diagnosis` only.
+
+We will also need to select free text terms for inclusions because above we can see values such as `peripheral neuroblastoma` that we do not want to include in this module.
+
+## Pathology diagnosis strings for inclusion
+
+These are the terms that we'll use to look for exact matches in `pathology_diagnosis`.
+ 
+```{r}
+path_dx_terms <- c(
+  "Supratentorial or Spinal Cord PNET"
+) # "neuroblastoma" will also need to be detected in the `pathology_diagnosis` column, but the logic around it is a bit more complex so we will handle this term separately
+```
+
+## Pathology free text diagnosis strings for inclusion
+
+These are the terms that we'll use to look for exact matches in the `pathology_free_text_diagnosis` column.
+
+```{r}
+free_text_dx_terms <- c(
+  "embryonal tumor with multilayer rosettes, ros (who grade iv)",
+  "embryonal tumor, nos, congenital type",
+  "ependymoblastoma",
+  "medulloepithelioma",
+  "medullooepithelioma" # It was noted that this misspelling was included in the `pathology_free_text_diagnosis` column of the histologies file so we will add it to the JSON file [per this comment](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/788#issuecomment-700717514)
+)
+```
+
+## Filter and join data
+
+Let's take a look at a first attempt using these terms as described above.
+
+First, we will create an object filtered to include only samples with exact matches for the `path_dx_terms` (which is currently "Supratentorial or Spinal Cord PNET") in the `pathology_diagnosis` column.
+
+```{r}
+pnet_df <- histologies_df %>%
+  # Filter for exact match of the defined pathology diagnosis term in `path_dx_terms`
+  filter(pathology_diagnosis %in% path_dx_terms)
+```
+
+Now we will create an objected filtered to include any sample with "Other" in the `pathology_diagnosis` column of the metadata, and with the `free_text_dx_terms` in the `pathology_free_text_diagnosis` column.
+
+```{r}
+pathology_free_text_df <- histologies_df %>%
+  # Filter for exact matches of `pathology_diagnosis == "Other"` and defined pathology free text diagnosis terms in `free_text_dx_terms`
+  filter(pathology_diagnosis == "Other",
+         pathology_free_text_diagnosis %in% free_text_dx_terms)
+```
+
+Any sample with "Neuroblastoma" in the `pathology_diagnosis` column, where `primary_site` does not contain "Other locations NOS", `pathology_free_text_diagnosis` does not contain "peripheral", and `pathology_diagnosis` or `pathology_free_text_diagnosis` does not contain "metastatic".
+
+```{r}
+neuroblastoma_df <- histologies_df %>%
+  filter(
+    pathology_diagnosis == "Neuroblastoma",
+    str_detect(str_to_lower(primary_site), "other locations nos", negate = TRUE),
+    str_detect(
+      str_to_lower(pathology_free_text_diagnosis),
+      "peripheral|metastatic",
+      negate = TRUE
+    )
+  )
+neuroblastoma_df
+```
+
+Now let's bind all of the information in our filtered data frames together into one object.
+
+```{r}
+# Binding all of the rows
+filtered_on_dx_df <- bind_rows(pnet_df,
+                               pathology_free_text_df,
+                               neuroblastoma_df) %>%
+  select(
+    Kids_First_Biospecimen_ID,
+    sample_id,
+    Kids_First_Participant_ID,
+    pathology_diagnosis,
+    pathology_free_text_diagnosis,
+    primary_site,
+    broad_histology
+  )
+
+filtered_on_dx_df
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```

@@ -1,30 +1,29 @@
 ## Immune Deconvolution
 
-**Module authors:** Komal Rathi ([@komalsrathi](https://github.com/komalsrathi))
+**Module authors:** Komal Rathi ([@komalsrathi](https://github.com/komalsrathi)) and Stephanie J. Spielman 
 
 ### Description
 
-The goal of this analysis is to use the R package immunedeconv to quantify and compare various immune cell types in the tumor microenvironment (TME) across various PBTA histologies.
-The package `immunedeconv`, provides six deconvolution methods: xCell (n = 64; immune and non-immune cell types), CIBERSORT (n = 22; with and without absolute mode), TIMER (n = 6), EPIC (n = 6), quanTIseq (n = 10) and MCP-Counter (n = 8). 
-We use two deconvolution methods: xCell with 64 cell types and CIBERSORT (abs.) with 22 cell types to get a more fine grained deconvolution of the tumor microenvironment.
-CIBERSORT requires two files that are available upon request from https://cibersort.stanford.edu/.
-We recommend using MCP-Counter instead of CIBERSORT (abs.) when these files are not available to the user.
+The goal of this analysis is to use the R package `immunedeconv` to quantify and compare various immune cell types in the tumor microenvironment (TME) across various PBTA histologies. 
+The package `immunedeconv`, provides six deconvolution (and similar) methods: xCell (n = 64; immune and non-immune cell types), CIBERSORT (n = 22; with and without absolute mode), TIMER (n = 6), EPIC (n = 6), quanTIseq (n = 10) and MCP-Counter (n = 8). 
 
-### Choice of method:
+### Method selection
 
-We chose xCell as the method of choice because it: 
-1) is able to deconvolute the maximum number of immune and non-immune cell types 
+We use two methods: xCell and quanTIseq. 
+
+
+We chose xCell because it: 
+1) is the most comprehensive deconvolution method and is able to deconvolute the maximum number of immune and non-immune cell types 
 2) is highly robust against background predictions and 
 3) can reliably identify the presence of immune cells at low abundances (0-1% infiltration depending on the immune cell type).
-To compare the immune scores predicted by xCell with that of other methods, we chose either CIBERSORT (abs.) and MCP-Counter as those two are the only methods in addition to xCell that output immune scores as arbitrary scores representing cell type abundance.
-All three methods allow comparison between samples (inter-sample comparisons), between cell types (intra-sample comparisons) as well as between different cancer types (inter-histology comparisons).
-We chose CIBERSORT (abs.) over MCP-Counter as it has the greatest number of overlapping immune cell types with that of xCell:
 
-| method | overlapping_cell_type | overlap |
-|--------|---------------|---------|
-| cibersort_abs, mcp_counter, xcell | Monocyte, Neutrophil, T cell CD8+ | 3 |
-| mcp_counter, xcell | B cell, Cancer associated fibroblast, Endothelial cell, Monocyte, Myeloid dendritic cell, Neutrophil, NK cell, T cell CD8+ | 8 |
-| cibersort_abs, xcell | B cell memory, B cell naive, B cell plasma, Eosinophil, Macrophage M1, Macrophage M2, Monocyte, Myeloid dendritic cell activated, Neutrophil, T cell CD4+ naive, T cell CD8+, T cell gamma delta, T cell regulatory (Tregs) | 13 |
+xCell outputs immune scores as arbitrary scores that represent cell type abundance. 
+Importantly, these scores may be compared between samples (inter-sample comparisons), but _may not_ be compared across cell types or cancer types, as described in the [`immunedeconv` documentation](https://icbi-lab.github.io/immunedeconv/articles/immunedeconv.html#interpretation-of-scores). This is in part because xCell is actually a signature-based method and not a deconvolution method, as is described in the [xCell Publication](https://doi.org/10.1186/s13059-017-1349-1):
+> Unlike signature-based methods, which output independent enrichment scores per cell type, the output from deconvolution-based methods is the inferred proportions of the cell types in the mixture.
+
+Therefore, we also use `quanTIseq` as a complementary method. Although `quanTIseq` looks at fewer cell types, the scores can be interpreted as absolute fractions, thereby allowing comparison _both_ across samples and cell types, [as described](https://icbi-lab.github.io/immunedeconv/articles/immunedeconv.html#interpretation-of-scores)
+
+
 
 ### Analysis scripts
 
@@ -39,32 +38,26 @@ pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds
 
 2. Function
 
-This script deconvolutes immune cell types using xCell and another method, which in our case is CIBERSORT (abs.).
-The other recommended method is MCP-Counter (see above for explanation). 
+This script deconvolutes immune cell types using the specified method, one of `xCell` or `quanTIseq`.
 
 3. Output: 
 
-`results/deconv-output.RData`
+```
+results/xcell_deconv-output.rds
+results/quantiseq_deconv-output.rds
+```
 
-The results in the RData object are predicted immune scores per cell type per input sample.
-The predicted scores are not actual cell fractions but arbitrary scores which can be compared within samples, across samples and/or between various cancer types.
-Depending on the requirement, a user could use these to create various plots like scatterplot, corrplot, barplot, boxplot etc. 
+The results in the RDS files object are predicted immune scores per cell type per input sample, for each of the two methods respectively.
 
-#### 02-summary-plots.R 
 
-1. Input
+#### 02-visualize_quantiseq.Rmd
 
-`results/deconv-output.RData`
+This notebook visualizes results from `quanTIseq` deconvolution and exports two figures:
 
-2. Function:
++ `plots/cell_types-cancer_groups .pdf` visualizes the immune cell fractions across molecular subtypes of interest
++ `plots/cell_types-molecular_subtypes.pdf` visualizes the immune cell fractions across molecular subtypes of interest
++ `plots/PDL1_expressions_distributions.pdf` visualizes FPKM expression for the gene PDL1 across molecular subtypes of interest
 
-This script creates summary correlation plots and heatmaps from predicted immune scores.
-
-3. Output
-
-* `plots/corrplot_xCell_vs_CIBERSORT(abs.).pdf`: a correlation plot of predicted immune scores across 13 common cell types from xCell and CIBERSORT (abs.) 
-* `plots/heatmap_xCell.pdf`: heatmap of average immune scores per cell type per histology for xCell stratified by brain and Non-brain tumors.
-* `plots/heatmap_CIBERSORT(abs.).pdf`: heatmap of average immune scores per cell type per histology stratified by brain and Non-brain tumors for the second method, CIBERSORT in our case.
 
 ### Running the analysis
 

@@ -1,11 +1,13 @@
-library('pracma')
-library('dplyr')
-library('ggpubr')
+suppressPackageStartupMessages({
+  library(pracma)
+  library(dplyr)
+  library(ggpubr)
+  library(circlize)
+  library(stringr)
+  library(EXTEND)
+  library(optparse)
+})
 stringsAsFactors=FALSE
-library(circlize)
-library(stringr)
-library(EXTEND)
-library(optparse)
 
 
 ###################################################   Running Analysis on RSEM-FPKM data formats  #####################################################################

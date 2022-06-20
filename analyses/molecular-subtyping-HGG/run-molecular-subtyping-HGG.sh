@@ -14,6 +14,12 @@ set -o pipefail
 # files gets run -- it will be turned off in CI
 SUBSET=${OPENPBTA_SUBSET:-1}
 
+# This controls whether or not notebooks that explore and are not used directly
+# for subtyping are run. By default (when this is set to 1), these notebooks
+# will not be run, i.e., subtyping notebooks only will be run.
+# It is not intended to be used in CI.
+SUBSETTING_ONLY=${SUBSETTING_ONLY:-1}
+
 # cds gencode bed file is used by other analyses where mutation data is
 # filtered to only coding regions
 exon_file="../../scratch/gencode.v27.primary_assembly.annotation.bed"
@@ -24,6 +30,9 @@ script_directory="$(perl -e 'use File::Basename;
   use Cwd "abs_path";
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
+
+# Gather pathology diagnosis and pathology free text diagnosis for HGG sample selection
+Rscript 00-HGG-select-pathology-dx.R
 
 # Run the first script in this module that reclassifies high-grade gliomas
 Rscript -e "rmarkdown::render('01-HGG-molecular-subtyping-defining-lesions.Rmd', clean = TRUE)"
@@ -67,11 +76,15 @@ Rscript -e "rmarkdown::render('06-HGG-molecular-subtyping-gene-expression.Rmd', 
 
 Rscript -e "rmarkdown::render('07-HGG-molecular-subtyping-combine-table.Rmd', clean = TRUE)"
 
-#### 1p/19q co-deleted oligodendrogliomas notebook -----------------------------
+#### Notebooks that are not directly used in subtyping -------------------------
 
-Rscript -e "rmarkdown::render('08-1p19q-codeleted-oligodendrogliomas.Rmd', clean = TRUE)"
+if [ "$SUBSETTING_ONLY" -eq "0" ]; then
+  # 1p/19q co-deleted oligodendrogliomas notebook
+  Rscript -e "rmarkdown::render('08-1p19q-codeleted-oligodendrogliomas.Rmd', clean = TRUE)"
+  # Run notebook that looks at how HGAT samples with `BRAF V600E` mutations cluster
+  Rscript -e "rmarkdown::render('09-HGG-with-braf-clustering.Rmd', clean = TRUE)"
+fi
 
-#### HGAT with `BRAF V600E` mutations clustering ------------------------------
+#### Add TP53 annotation -------------------------------------------------------
 
-# Run notebook that looks at how HGAT samples with `BRAF V600E` mutations cluster
-Rscript -e "rmarkdown::render('09-HGG-with-braf-clustering.Rmd', clean = TRUE)"
+Rscript -e "rmarkdown::render('10-HGG-TP53-annotation.Rmd',clean=TRUE)"

@@ -71,9 +71,11 @@ prepare_maf_object <- function(maf_df,
         "Multi_Hit_Fusion",
         "Hom_Deletion",
         "Hem_Deletion",
-        "amplification",
-        "gain",
-        "loss"
+        "Amp",
+        "Del",
+        "Intron",
+        "5'Flank",
+        "3'Flank"
       )
     )
 

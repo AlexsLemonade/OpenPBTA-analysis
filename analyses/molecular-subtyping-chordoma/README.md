@@ -10,5 +10,4 @@ It can be run via the command line with the following:
 ```
 bash run-molecular-subtyping-chordoma.sh
 ```
-This bash script the same regardless of where it is called and will first subset the data to `Chordoma` samples
-and then run the main notebook that looks at _SMARCB1_ focal copy status and expression levels.
+In this bash script we will filter histologies file with pathology_diagnosis=="Chordoma" to select for chordoma samples and then run the main notebook that looks at _SMARCB1_ focal copy status and expression levels.

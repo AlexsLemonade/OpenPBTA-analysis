@@ -57,7 +57,7 @@ get_biospecimen_ids <- function(filename, id_mapping_df) {
     # 'Tumor_Sample_Barcode'
     # if the files have consensus in the name, the first line of the file does
     # not contain MAF version information
-    if (grepl("consensus", filename)) {
+    if (grepl("consensus|hotspots|tmb", filename)) {
       snv_file <- data.table::fread(filename, data.table = FALSE)
     } else {
       snv_file <- data.table::fread(filename,
@@ -77,6 +77,9 @@ get_biospecimen_ids <- function(filename, id_mapping_df) {
   } else if (grepl("consensus_seg_annotated", filename)) {
     annotated_cn_file <- read_tsv(filename)
     biospecimen_ids <- unique(annotated_cn_file$biospecimen_id)
+  } else if (grepl("consensus_seg_with_status", filename)) {
+    cn_seg_status_file <- read_tsv(filename)
+    biospecimen_ids <- unique(cn_seg_status_file$Kids_First_Biospecimen_ID)
   } else if (grepl("pbta-fusion", filename)) {
     fusion_file <- read_tsv(filename)
     # the biospecimen IDs in the filtered/prioritize fusion list included with
@@ -131,7 +134,7 @@ option_list <- list(
   make_option(
     c("-r", "--supported_string"),
     type = "character",
-    default = "pbta-snv|pbta-cnv|pbta-fusion|pbta-isoform|pbta-sv|pbta-gene|consensus_seg_annotated",
+    default = "pbta-snv|pbta-cnv|pbta-fusion|pbta-isoform|pbta-sv|pbta-gene|consensus_seg_annotated|consensus_seg_with_status",
     help = "string for pattern matching used to subset to only supported files"
   ),
   make_option(

@@ -98,10 +98,10 @@ rule manta_filter:
         ## the first awk also filters out for CNV length
         ## The sort command sorts the first digit of chromosome number numerically
         ## The last pipe is to introduce tab into the file and output file name.        
-        """awk '$6~/DEL/ {{if ($5 > {params.SIZE_CUTOFF}) {{print "chr"$2,$3,$4,$5,"NA","NA","NA",$6}}}}' {input} """
+        """awk '$6~/DEL/ {{if ($5 > {params.SIZE_CUTOFF} && $11 == 'PASS') {{print "chr"$2,$3,$4,$5,"NA","NA","NA",$6}}}}' {input} """
         """ | sort -k1,1 -k2,2n """
         """ | tr [:blank:] '\t' > {output.manta_del} && """
-        """awk '$6~/DUP/ {{if ($5 > {params.SIZE_CUTOFF}) {{print "chr"$2,$3,$4,$5,"NA","NA","NA",$6}}}}' {input} """
+        """awk '$6~/DUP/ {{if ($5 > {params.SIZE_CUTOFF}  && $11 == 'PASS') {{print "chr"$2,$3,$4,$5,"NA","NA","NA",$6}}}}' {input} """
         """ | sort -k1,1 -k2,2n """
         """ | tr [:blank:] '\t' > {output.manta_dup}"""
 
@@ -285,8 +285,8 @@ rule neutral_regions:
 
 rule merge_neutral:
     input:
-        expand( scratch_loc + "endpoints/{sample}.neutral.bed",
-                          sample = config["samples"])
+        expand(scratch_loc + "endpoints/{sample}.neutral.bed",
+               sample = config["samples"])
     output:
         "results/cnv_neutral.bed"
     shell:
@@ -295,18 +295,17 @@ rule merge_neutral:
 
 rule merge_all:
     input:
-        ## Take all of the del and dup files of ALL samples as input. If there are 200 samples, there will be 400 files total
-        expand( scratch_loc + "endpoints/{sample}.{dupdel}.merged.final.bed",
+        ## Take all of the del and dup files of ALL samples as input.
+        expand(scratch_loc + "endpoints/{sample}.{dupdel}.merged.final.bed",
                sample = config["samples"],
-               dupdel = ["dup", "del"])
+               dupdel = ["dup", "del"] )
     output:
-         scratch_loc + "endpoints/all_CNVs_combined.tsv"
-    shell:
-        ## Add a header to the file and combine all of the files using cat. 
-       "echo -e 'chrom\tstart\tend\tmanta_CNVs\tcnvkit_CNVs\tfreec_CNVs\tCNV_type\tBiospecimen\tfile_names' "
-       " | cat - {input} "
-       " | cut -f 1-8 "
-       " > {output}"
+        scratch_loc + "endpoints/all_CNVs_combined.tsv"
+    run:
+        ## Add a header and combine all of the files. 
+        shell("echo -e 'chrom\tstart\tend\tmanta_CNVs\tcnvkit_CNVs\tfreec_CNVs\tCNV_type\tBiospecimen' > {output}")
+        for file in input:
+            shell("cut -f 1-8 {file} >> {output}")
 
 
 rule clean_output:

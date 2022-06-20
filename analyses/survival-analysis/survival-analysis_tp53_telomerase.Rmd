@@ -1,0 +1,358 @@
+---
+title: "Survival analysis by TP53 and telomerase activity"
+authors: Run Jin (D3B), Jo Lynne Rokita (D3B), and Stephanie Spielman (CCDL)
+output: 
+  html_notebook:
+    toc: true
+editor_options: 
+  chunk_output_type: inline
+---
+
+Note that for models that consider the `cancer_group` predictor or are performed separately for each cancer group *only consider cancer groups where `DECEASED >= 3`.* There are seven such groups.
+
+## Setup
+
+#### Packages and functions
+
+
+```{r libraries}
+library(survival)
+library(ggpubr)
+library(tidyverse)
+```
+
+#### Set up files and directories
+
+Set up input and output directories:
+
+```{r Set up directories}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+data_dir <- file.path(root_dir, "data")
+analysis_dir <- file.path(root_dir, "analyses")
+
+tp53_dir <- file.path(analysis_dir, "tp53_nf1_score")
+telomerase_dir <- file.path(analysis_dir, "telomerase-activity-prediction")
+
+results_dir <- "results/tp53_telomerase/"
+plots_dir <- "plots"
+util_dir <- "util"
+
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir)
+}
+```
+
+Source the util function file.
+
+```{r source_functions}
+# Source functions used to build and export models
+source(file.path(util_dir,"survival_models.R"))
+```
+
+Set up file paths.
+
+```{r file_paths}
+
+# Define input files:
+metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+
+# These analyses consider only stranded libraries:
+tp53_file <- file.path(tp53_dir, 
+                        "results", 
+                        "tp53_altered_status.tsv")
+
+tel_stranded_file <- file.path(telomerase_dir,
+                               "results",
+                               "TelomeraseScores_PTBAStranded_FPKM.txt")
+```
+
+## Prepare data for modeling
+
+#### Import and process the metadata
+
+```{r Read in metadata}
+# The following patients have discrepant extent of tumor resection
+# 7316-116 has Biopsy only;Gross/Near total resection
+# 7316-182 has Gross/Near total resection;Partial resection
+# Ticket was created [here](https://github.com/PediatricOpenTargets/ticket-tracker/issues/298) to track this database update, and I will recode beloow
+
+# get primary tumor and remove cell lines
+histologies_rna <- read_tsv(metadata_file, guess_max = 10000) %>%
+  filter(composition=="Solid Tissue",
+                  tumor_descriptor == "Initial CNS Tumor",
+                  experimental_strategy == "RNA-Seq", 
+                  RNA_library == "stranded") %>%
+  rename(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID) %>% 
+  # clean up extent of tumor resection
+  mutate(extent_of_tumor_resection = case_when(
+    sample_id == "7316-116" ~ "Biopsy only",
+    sample_id == "7316-182" ~ "Partial resection",
+    TRUE ~ as.character(extent_of_tumor_resection))) %>%
+  select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID_RNA, sample_id, cancer_group, OS_status, OS_days, PFS_days, extent_of_tumor_resection) %>%
+  distinct() 
+  
+# read in tp53 scores
+tp53_scores <- read_tsv(tp53_file) %>%
+  select(Kids_First_Biospecimen_ID_RNA, sample_id, tp53_score) %>%
+  distinct()
+
+# read in telomerase scores
+tel_scores <- read_tsv(tel_stranded_file) %>%
+  rename(Kids_First_Biospecimen_ID_RNA = SampleID,
+                telomerase_score = NormEXTENDScores) %>%
+  arrange(Kids_First_Biospecimen_ID_RNA)
+
+
+# combine tp53 scores and telomerase score to the dataframe
+# note that we do not need to recode categories since the survival_models.R functions will take care of it
+meta_indep <- histologies_rna %>%
+  # add tp53 and telomerase scores by matching Kids_First_Biospecimen_ID_RNA
+  left_join(tp53_scores, by = "Kids_First_Biospecimen_ID_RNA") %>%
+  left_join(tel_scores, by = "Kids_First_Biospecimen_ID_RNA") %>% 
+  rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA) %>%
+  distinct(Kids_First_Participant_ID, .keep_all=TRUE) %>%
+  # remove samples without survival data
+  drop_na(OS_days) %>%
+  # convert to years
+  mutate(OS_years = OS_days / 365.25)
+```
+ 
+#### Create subsets of data for different models
+
+We create two new tibbles from `meta_indep`:
+
++ `meta_indep_grouped` which contains new columns `hgg_group` that contains levels (in order) `non-HGG` and `HGG` indicating whether it's a HGG sample and `lgg_group` that contains levels (in order) `non-LGG` and `LGG` indicating whether it's a LGG sample
++ `meta_indep_cancers` which is subsetted to only certain cancer groups of interest that have suitable sample sizes which we find here.
+
+```{r lgg_hgg_split}
+# Define LGG and HGG groups
+hgg_cancer_groups <- c("High-grade glioma astrocytoma", "Diffuse midline glioma", "Diffuse intrinsic pontine glioma") 
+hgg_levels <- c("non-HGG", "HGG")
+lgg_levels <- c("non-LGG", "LGG")
+
+# separate into HGG or non-HGG and make the new column a factor
+meta_indep_grouped <- meta_indep %>% 
+   mutate(hgg_group = ifelse(cancer_group %in% hgg_cancer_groups,
+                             hgg_levels[2], # second is HGG 
+                             hgg_levels[1]), # first is non-HGG
+          hgg_group = factor(hgg_group, levels = hgg_levels), # ensures non-HGG is the reference level
+          lgg_group = ifelse(cancer_group == "Low-grade glioma astrocytoma",
+                             lgg_levels[2], # second is LGG 
+                             lgg_levels[1]), # first is non-LGG
+          lgg_group = factor(lgg_group, levels = lgg_levels) # ensures non-HGG is the reference level
+   )
+# Show the data we will use for analysis
+meta_indep_grouped
+```
+
+```{r find_cancer_groups_to_use}
+# Define cancer groups of interest with higher Ns
+# We want to only include groups that have at least THREE in the DECEASED category. 
+# Find them here:
+cancer_groups_of_interest_df <- meta_indep %>%
+  drop_na() %>%
+  count(cancer_group,OS_status) %>%
+  spread(OS_status, n,
+         # When there are no events, record the event count as 0 instead of the default NA
+         fill = 0) %>%
+  filter(DECEASED >= 3) 
+# show result: there are 7 groups to keep
+cancer_groups_of_interest_df
+
+# Subset to only the cancer groups with potentially suitable sample size
+meta_indep_cancer_groups <- meta_indep %>%
+  filter(cancer_group %in% cancer_groups_of_interest_df$cancer_group) %>%
+  # set reference level to Medulloblastoma
+  mutate(cancer_group = fct_relevel(cancer_group, "Medulloblastoma"))
+
+# How many patients got removed?
+nrow(meta_indep) - nrow(meta_indep_cancer_groups)
+```
+
+## Univariate Models
+
+ 
+Here, we run a survival analyses for several _independent_ predictors, one at a time. We use cox regression for all analyses (including categorical), as demonstrated in `survival-analysis_template.Rmd`.
+
++ `extent_of_tumor_resection` (categorical)
++ `lgg_group` (categorical)
++ `hgg_group` (categorical)
++ `cancer_group` (categorical)
+
+### Extent of tumor resection 
+Confirming gross/near total tumor resection has a very significant prognostic effect. The greater the resection, the better the OS.
+
+```{r cox_resect}
+# We want to remove all unavailable/not reported from this model
+meta_indep_grouped_resection <- meta_indep_grouped %>%
+  # REMOVE unreported resections
+  filter(!(extent_of_tumor_resection %in% c("Not Reported", "Unavailable"))) 
+  
+  
+# Note the order of extent of resection - Biopsy only is the reference level
+unique(meta_indep_grouped_resection$extent_of_tumor_resection)
+
+# full dataset
+fit_save_model(meta_indep_grouped_resection, 
+              "extent_of_tumor_resection", 
+             file.path(results_dir, "cox_terms_resect_all.RDS"))
+
+# Are total resected tumors mainly LGG? About 30% of all fully resected are LGG, so LGG and extent_of_tumor_resection == "Gross/Near Total" do not make up the same cohort
+table(meta_indep_grouped_resection$lgg_group, meta_indep_grouped_resection$extent_of_tumor_resection)
+
+table(meta_indep_grouped_resection$hgg_group, meta_indep_grouped_resection$extent_of_tumor_resection)
+
+```
+
+###  LGG or HGG group
+
+> non-LGG/non-HGG are the reference levels. No surprises here: LGG group has better overall survival and HGG has worse overall survival.
+
+```{r cox_hgg}
+fit_save_model(meta_indep_grouped, 
+              "hgg_group", 
+             file.path(results_dir, "cox_terms_hgg_group.RDS"))
+
+fit_save_model(meta_indep_grouped, 
+              "lgg_group", 
+             file.path(results_dir, "cox_terms_lgg_group.RDS"))
+```
+
+### Cancer group (cox)
+
+> MB is the reference level
+
+```{r cox_cancer_group}
+fit_save_model(meta_indep_cancer_groups, 
+               "cancer_group", 
+               file.path(results_dir, "cox_terms_cancer_group.RDS"))
+```
+
+
+
+### Cancer group (log rank)
+
+Here, we perform a log-rank analysis specifically for the `cancer_group` predictor, using data that only considers the 7 cancer groups determined to have suitable sample sizes (`DECEASED >= 3`). The output below shows:
+
++ Table of model coefficients
++ Matrix of `Pairwise comparisons using Log-Rank test`, which shows which cancer groups are significantly different from one another
+
+Note that confidence intervals are so large that survival plots are not clearly legible, so we don't make that visualization here.
+
+```{r cancer_group_log_rank}
+
+# Print model coefficients
+fit_save_model(meta_indep_cancer_groups,
+               "cancer_group",
+               file.path(results_dir,
+                         "log_rank_survival_per_cancer_group.RDS"),
+               test = "log.rank")
+
+
+# Compare pairwise with Bonferroni correction for multiple testing
+survminer::pairwise_survdiff(survival::Surv(time = OS_years, event = OS_status) ~ cancer_group,
+                             meta_indep_cancer_groups %>% mutate(OS_status = ifelse(OS_status == "LIVING", 0, 1)), 
+                             p.adjust.method = "bonferroni")
+
+```
+
+## Multivariate models 
+
+
+Background on hazard ratios and output, from [ref](http://www.sthda.com/english/wiki/cox-proportional-hazards-model):
+
+>"Hazard ratio above 1 indicates a covariate that is positively associated with the event probability, and thus negatively associated with the length of survival.
+>
+>In summary,
+>
+>HR = 1: No effect
+>HR < 1: Reduction in the hazard
+>HR > 1: Increase in Hazard" 
+>
+>The Cox regression results can be interpreted as follow:
+_Statistical significance._ The column marked "z" gives the Wald statistic value. It corresponds to the ratio of each regression coefficient to its standard error (z = coef/se(coef)). The wald statistic evaluates, whether the beta (β) coefficient of a given variable is statistically significantly different from 0. From the output above, we can conclude that the variable sex have highly statistically significant coefficients.
+>
+>_The regression coefficients._ The second feature to note in the Cox model results is the the sign of the regression coefficients (coef). A positive sign means that the hazard (risk of death) is higher, and thus the prognosis worse, for subjects with higher values of that variable. The variable sex is encoded as a numeric vector. 1: male, 2: female. The R summary for the Cox model gives the hazard ratio (HR) for the second group relative to the first group, that is, female versus male. The beta coefficient for sex = -0.53 indicates that females have lower risk of death (lower survival rates) than males, in these data.
+>
+>_Hazard ratios._ The exponentiated coefficients (exp(coef) = exp(-0.53) = 0.59), also known as hazard ratios, give the effect size of covariates. For example, being female (sex=2) reduces the hazard by a factor of 0.59, or 41%. Being female is associated with good prognostic.
+>
+>_Confidence intervals of the hazard ratios._ The summary output also gives upper and lower 95% confidence intervals for the hazard ratio (exp(coef)), lower 95% bound = 0.4237, upper 95% bound = 0.816.
+>
+>_Global statistical significance of the model._ Finally, the output gives p-values for three alternative tests for overall significance of the model: The likelihood-ratio test, Wald test, and score logrank statistics. These three methods are asymptotically equivalent. For large enough N, they will give similar results. For small N, they may differ somewhat. The Likelihood ratio test has better behavior for small sample sizes, so it is generally preferred.
+>
+> Below, HR = exp(coeff) 
+
+### Interaction model: `tp53_score*telomerase_score*extent_of_tumor_resection*lgg_group` 
+
+```{r multi_interaction_4terms extent_tumor_resect glioma_group}
+
+# we save this for the purpose of printing out a p-value below
+int_model <- fit_save_model(meta_indep_grouped_resection,     # use the data without unknown resection data for this model
+             "tp53_score*telomerase_score*extent_of_tumor_resection*lgg_group*hgg_group",
+             file.path(results_dir, "cox_interaction_terms_tp53_telomerase_resect_glioma_group.RDS"),
+             "multivariate"
+            )
+int_model
+```
+
+Interaction terms are not significant, except `tp53_score:extent_of_tumor_resectionUnavailable:hgg_groupHGG` and `extent_of_tumor_resectionUnavailable:hgg_groupHGG`, suggesting an additive model is more appropriate.
+
+
+### Additive model: `tp53_score+telomerase_score+extent_of_tumor_resection+lgg_group+hgg_group` 
+
+> The strongest predictor here is extent of tumor resection with gross/near total resection having a survival benefit and partial resection nearing significance (both compared to biopsy only) for a survival benefit.
+> High _TP53_ scores, telomerase scores, and non-LGG are all significant risk factors for poorer overall survival.
+
+```{r multi_additive_4terms extent_tumor_resect glioma_group}
+# we save this for the purpose of printing out a p-value below
+add_model <- fit_save_model(meta_indep_grouped_resection,     # use the data unknown resection data for this model
+             "tp53_score+telomerase_score+extent_of_tumor_resection+lgg_group+hgg_group",
+             file.path(results_dir, "cox_additive_terms_tp53_telomerase_resect_glioma_group.RDS"),
+             "multivariate"
+            )
+add_model
+```
+
+
+### Additive models: `tp53_score+telomerase_score+extent_of_tumor_resection` _for each cancer group_
+
+
+```{r multivar-fit-3terms}
+base_filename <- "cox_per_cg_terms_tp53_telomerase_resect.RDS" # all file names here will follow this convention
+  
+# remove unknown extent of resections from this data
+meta_indep <- meta_indep %>%
+  filter(!(extent_of_tumor_resection %in% c("Not Reported", "Unavailable")))
+
+for (cg in cancer_groups_of_interest_df$cancer_group) {
+  cat("==============", cg, "==================")
+  # filter to cancer group of interest
+  fit_data <- meta_indep %>% 
+    filter(cancer_group == cg)
+
+  # Define filename where model will be saved
+  filename <- file.path(
+    results_dir,
+    str_replace(base_filename, "cg", cg)
+  )
+  
+  # Fit model
+  fit_save_model(fit_data, 
+                 "tp53_score + telomerase_score + extent_of_tumor_resection", 
+                 filename, 
+                 model_type = "multivariate") %>% print()
+}
+
+
+```
+
+
+## Session Info
+
+```{r Print session info}
+sessionInfo()
+```

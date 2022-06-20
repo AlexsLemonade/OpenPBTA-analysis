@@ -69,7 +69,7 @@ subset_files <- function(filename, biospecimen_ids, output_directory) {
   # filtering strategy depends on the file type, mostly because how the sample
   # IDs change based on the file type -- that's why this logic is required
   if (grepl("pbta-snv", filename)) {
-    if (grepl("consensus-mutation", filename)) {
+    if (grepl("consensus-mutation|hotspots|tmb", filename)) {
       snv_file <- data.table::fread(filename, data.table = FALSE)
       snv_file %>%
         dplyr::filter(Tumor_Sample_Barcode %in% biospecimen_ids) %>%
@@ -101,6 +101,11 @@ subset_files <- function(filename, biospecimen_ids, output_directory) {
     annotated_cn_file %>%
       dplyr::filter(biospecimen_id %in% biospecimen_ids) %>%
       readr::write_tsv(output_file)
+  } else if (grepl("consensus_seg_with_status", filename)) {
+      cn_seg_status_file <- readr::read_tsv(filename)
+      cn_seg_status_file %>%
+        dplyr::filter(Kids_First_Biospecimen_ID %in% biospecimen_ids) %>%
+        readr::write_tsv(output_file)
   } else if (grepl("pbta-fusion", filename)) {
     fusion_file <- readr::read_tsv(filename)
     # original files contain the biospecimen IDs in a column called 'tumor_id',

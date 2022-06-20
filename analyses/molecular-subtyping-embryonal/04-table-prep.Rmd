@@ -107,10 +107,6 @@ chr19_file <- file.path(results_dir, "cleaned_chr19_cn.tsv")
 # annotated sex chromosomes copy number alterations
 sex_chr_consensus <- file.path(data_dir,
                                "consensus_seg_annotated_cn_x_and_y.tsv.gz")
-sex_chr_cnvkit <- file.path("..", "focal-cn-file-preparation", "results", 
-                            "cnvkit_annotated_cn_x_and_y.tsv.gz")
-sex_chr_controlfreec <- file.path("..", "focal-cn-file-preparation", "results", 
-                                  "controlfreec_annotated_cn_x_and_y.tsv.gz")
 ```
 
 Read in files.
@@ -139,10 +135,6 @@ chr19_cn_df <- read_tsv(chr19_file)
 # we'll filter to only the relevant biospecimens for the copy number alteration
 # data that is committed to the repository
 consensus_sex_chr <- read_tsv(sex_chr_consensus) %>%
-  filter(biospecimen_id %in% biospecimen_ids)
-cnvkit_sex_chr <- read_tsv(sex_chr_cnvkit) %>%
-  filter(biospecimen_id %in% biospecimen_ids)
-controlfreec_sex_chr <- read_tsv(sex_chr_controlfreec) %>%
   filter(biospecimen_id %in% biospecimen_ids)
 ```
 
@@ -281,20 +273,11 @@ Not necessarily specific to _BCOR_ alterations.
 consensus_sex_chr %>% filter(gene_symbol == "BCOR") 
 ```
 
-```{r}
-cnvkit_sex_chr %>% filter(gene_symbol == "BCOR") 
-```
-
-```{r}
-controlfreec_sex_chr %>% filter(gene_symbol == "BCOR")
-```
-
 This is not conclusive.
 
 ```{r}
 # remove all the sv and cnv data we will not use
-rm(bcor_sv_df, manta_sv_df, consensus_sex_chr, controlfreec_sex_chr,
-   cnvkit_sex_chr)
+rm(bcor_sv_df, manta_sv_df, consensus_sex_chr)
 ```
 
 ## Final table

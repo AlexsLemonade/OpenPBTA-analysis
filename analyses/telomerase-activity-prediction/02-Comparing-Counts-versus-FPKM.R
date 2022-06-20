@@ -1,12 +1,11 @@
 library('ggpubr')
 stringsAsFactors=FALSE
-library(stringr)
-library(gridBase)
-library(gridGraphics)
-library(optparse)
-
-
-
+suppressPackageStartupMessages({
+  library(stringr)
+  library(gridBase)
+  library(gridGraphics)
+  library(optparse)
+})
 
 ################################################ Comparing Counts versus FPKM (Figure 1) ############################################################################################
 

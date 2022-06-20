@@ -138,7 +138,7 @@ subsetFusion <- putativeFusion %>%
     # get MYB mutation status
     MYB_fus = case_when(
       # fusion in any MYB gene MYB|MYBL1
-      rowSums(dplyr::select(putativeFusion,dplyr::contains(MYB_fused_gene))) > 0 ~ "Yes",
+      rowSums(dplyr::select(putativeFusion,dplyr::matches(MYB_fused_gene))) > 0 ~ "Yes",
       TRUE ~ "No"
     )
   ) %>%

@@ -37,4 +37,4 @@ Rscript --vanilla 04-Comparing-Histology-versus-EXTENDScores.R --output plots/PB
 
 #Distribution of telomerase scores across different molecular subtypes of medulloblastoma tumors.
 echo "Plotting distribution of EXTEND scores in MB subtypes..."
-Rscript --vanilla 05-Comparing-MedulloblastomaSubtypes-EXTENDScores.R --output plots/PBTA_MedulloSubtypes.pdf
+Rscript --vanilla 05-Comparing-MolecularSubtypes-EXTENDScores.R 

@@ -1,0 +1,8 @@
+variable	group1	group2	p.format	p.adj	p.signif	method
+tp53_score	all	CNS Embryonal, NOS (N=14)	2.1e-06	1.5e-05	****	Wilcoxon
+tp53_score	all	MB, Group3 (N=14)	0.24	1		Wilcoxon
+tp53_score	all	MB, Group4 (N=50)	0.13	0.9		Wilcoxon
+tp53_score	all	MB, SHH (N=31)	0.25	1		Wilcoxon
+tp53_score	all	MB, WNT (N=10)	0.30	1		Wilcoxon
+tp53_score	all	ETMR, C19MC-altered (N=5)	0.27	1		Wilcoxon
+tp53_score	all	CNS NB-FOXR2 (N=3)	0.94	1		Wilcoxon

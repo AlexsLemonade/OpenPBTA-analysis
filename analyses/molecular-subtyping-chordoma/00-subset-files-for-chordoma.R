@@ -33,12 +33,12 @@ if (!dir.exists(results_dir)) {
 
 # Read in metadata
 metadata <-
-  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies.tsv"), guess_max = 10000)
+  readr::read_tsv(file.path(root_dir, "data", "pbta-histologies-base.tsv"), guess_max = 10000)
 
 #### Filter metadata -----------------------------------------------------------
 # Select wanted columns in metadata for merging and assign to a new object
 chordoma_metadata <- metadata %>%
-  dplyr::filter(short_histology == "Chordoma") %>%
+  dplyr::filter(pathology_diagnosis == "Chordoma") %>%
   dplyr::select(
     sample_id,
     Kids_First_Participant_ID,
@@ -81,6 +81,8 @@ cn_metadata <- data.table::fread(file.path(
     sample_id,
     Kids_First_Participant_ID,
     biospecimen_id,
+    copy_number,
+    ploidy,
     status
   ) %>%
   dplyr::filter(sample_id %in% chordoma_metadata$sample_id) %>%

@@ -1,0 +1,569 @@
+---
+title: "Incorporating CHOP pathology input to molecular subtyping calls"
+output:
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+author: Jaclyn Taroni for ALSF CCDL, Jo Lynne Rokita for D3b
+date: 2020
+params:
+  is_ci: FALSE
+---
+
+_Authorship above refers to this notebook **only**._
+
+## Background
+
+As part of this project, we have undertaken several analyses that use molecular data to subtype or reclassify biospecimens.
+In some cases, our analyses have resulted in an update of the `integrated_diagnosis` field included in the clinical file (`pbta-histologies.tsv` [[doc](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/doc/data-formats.md#data-caveats)]).
+However, not all logic included in the code of the repository was ultimately in agreement with feedback from pathologists at CHOP.
+In this notebook, we will make changes and document the cases where the logic in the modules of the repository deviate from the final labels.
+
+## Pathology Feedback
+
+Here, we're copying the table from [#606 (comment)](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/609#issuecomment-602821376) here:
+
+| Kids_First_Biospecimen_ID | glioma_brain_region | sample_id | aliquot_id | Kids_First_Participant_ID | experimental_strategy | pathology_diagnosis                              | integrated_diagnosis                     | Notes from Path inspection                                                                  | Action                                                                                 | Given to Rita 3/13/20                                                                                      | short_histology | broad_histology                                                          | broad_composition | Notes                                                                 | cancer_predispositions | molecular_subtype   |
+|---------------------------|---------------------|-----------|------------|---------------------------|-----------------------|--------------------------------------------------|------------------------------------------|---------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|-----------------|--------------------------------------------------------------------------|-------------------|-----------------------------------------------------------------------|------------------------|---------------------|
+| BS_C6ZZ3FY5               | hemispheric         | 7316-1105 | 470017     | PT_X71D7G5S               | RNA-Seq               | Supratentorial or Spinal Cord PNET               | High-grade glioma                        | No path report available                                                                    | reviewed - OK with new dx                                                              | 1 slide, pathology report                                                                                  | HGAT            | Diffuse astrocytic and oligodendroglial tumor                            | tumor             | Updated via OpenPBTA subtyping                                        | None documented        | HGG, H3 G35         |
+| BS_P8WN8XEQ               | hemispheric         | 7316-1105 | 549712     | PT_X71D7G5S               | WGS                   | Supratentorial or Spinal Cord PNET               | High-grade glioma                        | No path report available                                                                    | reviewed - OK with new dx                                                              | 1 slide, pathology report                                                                                  | HGAT            | Diffuse astrocytic and oligodendroglial tumor                            | tumor             | Updated via OpenPBTA subtyping                                        | None documented        | HGG, H3 G35         |
+| BS_23M72ABG               | NA                  | 7316-523  | 588343     | PT_AQWDQW27               | RNA-Seq               | Meningioma                                       | </s>Ependymoma</s> Meningioma                   | No path report available                                                                    | reviewed - keep as meningioma                                                          | 2 slides, pathology report; email request for radiology                                                    | tumor           | <s>Ependymal tumor</s>                                                          | tumor             |                                                                       | None documented        | <s>ST-EPN-YAP</s>          |
+| BS_5JM573JC               | hemispheric         | 7316-2255 | 717166     | PT_6Q0NPVP3               | RNA-Seq               | Ganglioglioma                                    | Diffuse midline glioma                   | Path report ganglioglioma with extensive chondroid metaplasia                               | need to review radiology report; if not diffuse, ganglioglioma, H3 mut - cannot review | pathology report (no slides - from Pitt); email request for radiology - will not receive in the short term | HGAT            | Diffuse astrocytic and oligodendroglial tumor                            | tumor             | Updated via OpenPBTA subtyping                         | None documented        | DMG, H3 K28         |
+| BS_E5H6CFYT               | hemispheric         | 7316-2255 | 711134     | PT_6Q0NPVP3               | WGS                   | Ganglioglioma                                    | Diffuse midline glioma                   | Path report ganglioglioma with extensive chondroid metaplasia                               | need to review radiology report; if not diffuse, ganglioglioma, H3 mut - cannot review | pathology report (no slides - from Pitt); email request for radiology - will not receive in the short term | HGAT            | Diffuse astrocytic and oligodendroglial tumor                            | tumor             | Updated via OpenPBTA subtyping                         | None documented        | DMG, H3 K28         |
+| BS_BFDEZK1C               | other               | 7316-1102 | 549714     | PT_5BWZA0NT               | WGS                   | Supratentorial or Spinal Cord PNET               | Diffuse midline glioma                   | No path report available                                                                    | reviewed - OK with new dx                                                              | 3 slides, pathology report                                                                                 | HGAT            | Diffuse astrocytic and oligodendroglial tumor                            | tumor             | Updated via OpenPBTA subtyping                                        | None documented        | DMG, H3 K28         |
+| BS_MB7WN0ZB               | other               | 7316-1102 | 470031     | PT_5BWZA0NT               | RNA-Seq               | Supratentorial or Spinal Cord PNET               | Diffuse midline glioma                   | No path report available                                                                    | reviewed - OK with new dx                                                              | 3 slides, pathology report                                                                                 | HGAT            | Diffuse astrocytic and oligodendroglial tumor                            | tumor             | Updated via OpenPBTA subtyping                                        | None documented        | DMG, H3 K28         |
+| BS_H1XPVS9A               | hemispheric         | 7316-1106 | 549575     | PT_T8V9ES93               | RNA-Seq               | High-grade glioma/astrocytoma (WHO grade III/IV) | <s>High-grade glioma</s> Low-grade glioma       | No path report available                                                                    | reviewed - new dx: Malignant PXA with BRAF V600E mutation                                                    | 2 slides, pathology report                                                                                 | HGAT            | <s>Diffuse astrocytic and oligodendroglial tumor</s> Low-grade astrocytic tumor | tumor             | Updated via OpenPBTA subtyping                                        | None documented        | LGG, BRAF V600E          |
+| BS_J4E9SW51               | hemispheric         | 7316-1106 | 549708     | PT_T8V9ES93               | WGS                   | High-grade glioma/astrocytoma (WHO grade III/IV) | <s>High-grade glioma</s> Low-grade glioma       | No path report available                                                                    | reviewed - OK with new dx (PXA/LGG)                                                    | 2 slides, pathology report                                                                                 | HGAT            | <s>Diffuse astrocytic and oligodendroglial tumor</s> Low-grade astrocytic tumor | tumor             | Updated via OpenPBTA subtyping                                        | None documented        | LGG, BRAF V600E          |
+| BS_J8VX4D17               | mixed               | 7316-506  | 588299     | PT_7E3V3JFX               | RNA-Seq               | Ependymoma                                       | <s>Diffuse midline glioma</s> Ependymoma        | Path report posterior fossa ependymoma                                                      | reviewed - keep EPN with H3 mut- rare                                                  |                                                                                                            | HGAT            | <s>Diffuse astrocytic and oligodendroglial tumor</s> Ependymal tumor            | tumor             | Updated via OpenPBTA subtyping                                        | None documented        | <s>DMG, H3 K28</s>         |
+| BS_G16NM5WJ               | mixed               | 7316-506  | 588011     | PT_7E3V3JFX               | WGS                   | Ependymoma                                       | <s>Diffuse midline glioma</s> Ependymoma        | Path report posterior fossa ependymoma                                                      | reviewed - keep EPN with H3 mut- rare                                                  |                                                                                                            | HGAT            | <s>Diffuse astrocytic and oligodendroglial tumor</s> Ependymal tumor            | tumor             | Updated via OpenPBTA subtyping                                        | None documented        | <s>DMG, H3 K28</s>         |
+| BS_KSKZ9J7J               | NA                  | 7316-765  | 470731     | PT_80NVYCBS               | RNA-Seq               | Ependymoma                                       | CNS Embryonal Tumor                      | Path report anaplastic ependymoma                                                           | reviewed - OK with new dx                                                              |                                                                                                            | Embryonal Tumor | Embryonal tumor                                                          | tumor             | Updated via OpenPBTA subtyping                                        | None documented        | CNS HGNET-MN1       |
+| BS_K07KNTFY               | NA                  | 7316-272  | 588001     | PT_00G007DM               | WGS                   | Medulloblastoma                                  | Embryonal tumor with multilayer rosettes | Path report had "medulloblastoma" handwritten, but final dx ETMR with multilayer rosettes   | reviewed - OK with new dx                                                              |                                                                                                            | ETMR            | Embryonal tumor                                                          | tumor             | Updated via OpenPBTA subtyping                                        | None documented        | ETMR, C19MC-altered |
+| BS_QWNBZ9RJ               | NA                  | 7316-272  | 588287     | PT_00G007DM               | RNA-Seq               | Medulloblastoma                                  | Embryonal tumor with multilayer rosettes | Path report had "medulloblastoma" handwritten, but final dx ETMR with multilayer rosettes   | reviewed - OK with new dx                                                              |                                                                                                            | ETMR            | Embryonal tumor                                                          | tumor             | Updated via OpenPBTA subtyping                                        | None documented        | ETMR, C19MC-altered |
+| BS_P39SQPTS               | NA                  | 7316-447  | 588300     | PT_01MZ62KG               | RNA-Seq               | Pineoblastoma                                    | Embryonal tumor with multilayer rosettes | Path report PNET/pineoblastoma; "there are scattered true rosettes (Flexner-Wintersteiner)" | reviewed - OK with new dx                                                              |                                                                                                            | ETMR            | Embryonal tumor                                                          | tumor             | Updated via OpenPBTA subtyping                                        | None documented        | ETMR, C19MC-altered |
+| BS_TE8QFF7T               | NA                  | 7316-447  | 588012     | PT_01MZ62KG               | WGS                   | Pineoblastoma                                    | Embryonal tumor with multilayer rosettes | Path report PNET/pineoblastoma; "there are scattered true rosettes (Flexner-Wintersteiner)" | reviewed - OK with new dx                                                              |                                                                                                            | ETMR            | Embryonal tumor                                                          | tumor             | Updated via OpenPBTA subtyping                                        | None documented        | ETMR, C19MC-altered |
+| BS_N6N147BY               | NA                  | 7316-238  | 232096     | PT_X648RVMK               | RNA-Seq               | High-grade glioma/astrocytoma (WHO grade III/IV) | Embryonal tumor with multilayer rosettes | Path report handwritten "high grade glioma"; final dx infiltrating glioneuronal neoplasm    | reviewed - OK with new dx (ETMR original tumor 7316-2975 and this one consistent)      |                                                                                                            | ETMR            | Embryonal tumor                                                          | tumor             | Updated via OpenPBTA subtyping                                        | None documented        | ETMR, C19MC-altered |
+| BS_5P1TN10Z               | hemispheric         | 7316-158  | 746061     | PT_9BZETM0M               | RNA-Seq               | Supratentorial or Spinal Cord PNET               | High-grade glioma                        | Path report PNET                                                                            | reviewed - OK with new dx grade III-IV                                                 |                                                                                                            | HGAT            | Diffuse astrocytic and oligodendroglial tumor                            | tumor             | from PNET to HGG due to H3F3A mutation;Updated via OpenPBTA subtyping | None documented        | HGG, H3 G35         |
+| BS_STNH7YSX               | hemispheric         | 7316-158  | 746056     | PT_9BZETM0M               | WGS                   | Supratentorial or Spinal Cord PNET               | High-grade glioma                        | Path report PNET                                                                            | reviewed - OK with new dx grade III-IV                                                 |                                                                                                            | HGAT            | Diffuse astrocytic and oligodendroglial tumor                            | tumor             | from PNET to HGG due to H3F3A mutation;Updated via OpenPBTA subtyping | None documented        | HGG, H3 G35         |
+| BS_TV5B86ZD               | hemispheric         | 7316-158  | 150593     | PT_9BZETM0M               | RNA-Seq               | Supratentorial or Spinal Cord PNET               | High-grade glioma                        | Path report PNET                                                                            | reviewed - OK with new dx grade III-IV                                                 |                                                                                                            | HGAT            | Diffuse astrocytic and oligodendroglial tumor                            | tumor             | from PNET to HGG due to H3F3A mutation;Updated via OpenPBTA subtyping | None documented        | HGG, H3 G35         |
+
+And the notes:
+
+> #### Few notes:
+> 1. `PT_7E3V3JFX` specimens were consistent with the original EPN dx, so pathology would call this a rare EPN, H3 K28 mutated tumor, rather than DMG.
+> 2. `PT_AQWDQW27` specimen was consistent with meningioma, even though it has a hallmark EPN fusion, so pathology would also call this a rare meningioma with a _YAP1_ fusion.
+> 3. Because 1 is a rare tumor (maybe first seen), the logic of searching for all H3 K28 mutations in [HGG subtyping](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249) would convert this sample by default.
+>  4. Pathology confirmed this HGG BRAF V600E mutant tumor, [`BS_H1XPVS9A`](https://cbethell.github.io/open-pbta-output/09-HGG-with-braf-clustering.nb.html#identify_sample_that_clusters_with_lgat), to be a LGAT (PXA). I updated `molecular_subtype` here based on what it would look like, but this should come through via the LGAT [subtyping](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/631) ticket. How should we add this info?
+> 5. Per [this issue](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/905), we are updating BS_YB99Q6TN (WGS) and BS_5965SFPZ (which is the matched RNAseq sample) belonging to sample_id== "7316-2557" as H3 K28M as per manual review of the pathology report, which lists the integrated diagnosis for this tumor as "DIFFUSE MIDLINE GLIOMA, H3-K27M MUTANT". The K28M mutation is also found in Mutect2 calls.
+
+## Set up
+
+```{r}
+# This logic is the same as analyses/gene-set-enrichment-analysis/02-model-gsea.Rmd
+# Assigning params$is_ci to running_in_ci avoids a locked binding error
+running_in_ci <- params$is_ci
+
+# Are we testing? In case of a non 0/1 number, we recast as logical, and then
+# ensure logical.
+if (running_in_ci %in% c(0,1)) running_in_ci <- as.logical(running_in_ci)
+if (!(is.logical(running_in_ci)))
+{
+  stop("\n\nERROR: The parameter `is_ci` should be FALSE/TRUE (or 0/1).")
+}
+```
+
+```{r warning=FALSE}
+library(tidyverse)
+```
+
+### Directory and files
+
+#### Directories
+
+```{r}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+results_dir <- "results"
+```
+
+#### Input
+
+When we run this locally, we want to tie it to a specific version of the histologies file _prior_ to feedback we received from pathology that is recorded on [#609](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/609).
+
+```{r}
+if (running_in_ci) {
+  histologies_file <- file.path(data_dir, "pbta-histologies-base.tsv")
+} else {
+  histologies_file <- file.path(data_dir, "release-v18-20201123",
+                                "pbta-histologies-base.tsv")
+}
+```
+
+```{r}
+compiled_results_file <- file.path(results_dir,
+                                   "compiled_molecular_subtypes_with_clinical_feedback_and_report_info.tsv")
+fusions_file <- file.path(root_dir,
+  "analyses",
+  "fusion_filtering",
+  "results",
+  "pbta-fusion-putative-oncogenic.tsv")
+```
+
+#### Output
+
+```{r}
+output_file <- file.path(results_dir,
+                         "compiled_molecular_subtypes_with_clinical_pathology_feedback_and_report_info.tsv")
+```
+
+## Read in data
+
+```{r message=FALSE}
+histologies_df <- read_tsv(histologies_file, guess_max = 10000)
+compiled_df <- read_tsv(compiled_results_file, guess_max = 10000)
+fusions_df <- read_tsv(fusions_file, guess_max = 10000)
+```
+
+## Revise subtyping calls based on pathology feedback
+
+### `PT_7E3V3JFX`
+
+`PT_7E3V3JFX` was classified in `molecular-subtyping-HGG` as `DMG, H3 K28` because the first step in that module was to identify any samples in the cohort with "defining lesions:" H3 K28 or H3 G35 (original subtyping issue: [#249](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249)).
+
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_7E3V3JFX")
+```
+
+The relevant notes above are
+
+> 1. `PT_7E3V3JFX` specimens were consistent with the original EPN dx, so pathology would call this a rare EPN, H3 K28 mutated tumor, rather than DMG.
+> 3. Because 1 is a rare tumor (maybe first seen), the logic of searching for all H3 K28 mutations in [HGG subtyping](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/249) would convert this sample by default - how to handle this?
+
+So we will revise the `molecular_subtype`, `integrated_diagnosis`, `short_histology`, and `broad_histology` accordingly.
+
+```{r}
+compiled_df <- compiled_df %>%
+  mutate(
+    integrated_diagnosis = case_when(
+      Kids_First_Participant_ID == "PT_7E3V3JFX" ~ "Ependymoma, H3 K28-mutant",
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      Kids_First_Participant_ID == "PT_7E3V3JFX" ~ "Ependymoma",
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      Kids_First_Participant_ID == "PT_7E3V3JFX" ~ "Ependymal tumor",
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      Kids_First_Participant_ID == "PT_7E3V3JFX" ~ "EPN, H3 K28",
+      TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(
+      Kids_First_Participant_ID == "PT_7E3V3JFX" ~ "Updated via OpenPBTA subtyping",
+      TRUE ~ Notes
+    )
+  )
+```
+
+### `BS_H1XPVS9A`
+
+`BS_H1XPVS9A` is from a sample with a BRAF V600E mutation that is H3 wildtype.
+This sample was originally labeled as a HGG.
+In low-dimensional transcriptomic space (e.g., UMAP, t-SNE), `BS_H1XPVS9A` clusters with LGG samples - most likely due to harboring a BRAF V600E mutation.
+(See `molecular-subtyping-HGG`.)
+
+The relevant note from above:
+
+>  4. Pathology confirmed this HGG BRAF V600E mutant tumor, `BS_H1XPVS9A`
+to be a malignant PXA. @kgaonkar6 updated `molecular_subtype` here based on what it would look like, but this should come through via the LGAT [subtyping](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/631) ticket. 
+
+The steps for LGAT subtyping are to classify LGG samples on the basis of the presence/absence of _BRAF_ fusions and BRAF V600E mutations.
+
+```{r}
+compiled_df %>%
+  filter(Kids_First_Biospecimen_ID == "BS_H1XPVS9A") %>%
+  select(Kids_First_Participant_ID, sample_id) %>%
+  left_join(compiled_df)
+```
+
+We know from `molecular-subtyping-HGG` that a BRAF V600E mutation is present.
+Now we have to check for the presence of _BRAF_ fusions.
+
+```{r}
+fusions_df %>%
+  filter(str_detect(FusionName, "BRAF"),
+         Sample == "BS_H1XPVS9A")
+```
+
+There are no _BRAF_ fusions in `BS_H1XPVS9A`, so we are able to classify this sample (`7316-1106`) as `LGG, BRAF V600E`.
+
+```{r}
+compiled_df <- compiled_df %>%
+  mutate(
+    integrated_diagnosis = case_when(
+      sample_id == "7316-1106" ~ "Pleomorphic xanthoastrocytoma, BRAF V600E",
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      sample_id == "7316-1106" ~ "LGAT",
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      sample_id == "7316-1106" ~ "Low-grade astrocytic tumor",
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      sample_id == "7316-1106" ~ "LGG, BRAF V600E",
+      TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(
+      sample_id == "7316-1106" ~ "Updated via OpenPBTA subtyping and via pathology review",
+      TRUE ~ Notes
+    )
+  )
+```
+
+### `PT_AQWDQW27`
+
+> 2. `PT_AQWDQW27` specimen was consistent with meningioma, even though it has a hallmark EPN fusion, so pathology would also call this a rare meningioma with a _YAP1_ fusion.
+
+The `molecular-subtyping-EPN` module has not been completed yet, but the logic that is in that module may mean that we need to include revising the labels of `PT_AQWDQW27`.
+
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_AQWDQW27")
+# This sample is missing from the EPN table, but it should be there - will have to investigate and update this later.
+```
+
+### `PT_6Q0NPVP3`
+
+The specimens for this patient, BS_5JM573JC and BS_E5H6CFYT, were classified as HGAT due to the presence of a histone mutation, but with the removal of LGAT from the HGAT module, this sample will no longer show up in two modules.
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_6Q0NPVP3")
+```
+
+### Are there any other duplicate subtypes?
+```{r}
+unique_subtypes <- compiled_df %>%
+  select(Kids_First_Participant_ID, sample_id, molecular_subtype) %>%
+  distinct()
+
+unique_subtypes[duplicated(unique_subtypes$sample_id),]
+#PT_KTRJ8TFY (fixed in clinical feedback) and PT_6Q0NPVP3 (fixed in HGG module removing LGAT)
+```
+### `PT_00G007DM`
+7316-272 is subtyped as ETMR because a C19MC alteration was found and pathology review confirms the new diagnosis
+
+```{r}
+compiled_df <- compiled_df %>%
+  mutate(molecular_subtype= case_when(sample_id == "7316-272"~"ETMR, C19MC-altered",
+                                      TRUE ~ molecular_subtype),
+         short_histology= case_when(sample_id == "7316-272"~"ETMR",
+                                      TRUE ~ short_histology),
+         integrated_diagnosis = case_when(sample_id == "7316-272"~"Embryonal tumor with multilayer rosettes, C19MC-altered",
+                                      TRUE ~ integrated_diagnosis),
+         Notes = case_when(sample_id == "7316-272" ~ "Updated via OpenPBTA subtyping",
+      TRUE ~ Notes
+    )
+  ) %>%
+  unique()
+```
+
+This sample has multiple specimens with different diagnoses and subtypes and this is actually expected, as there are two different diagnoses in the CBTN database and the C19MC alteration was only found in one of the samples.
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_00G007DM")
+```
+
+### `PT_5BWZA0NT`
+
+This sample was inspected by pathology and should be annotated as DMG, H3 K28, so let's update that.
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_5BWZA0NT")
+```
+
+```{r}
+compiled_df <- compiled_df %>%
+  mutate(
+    integrated_diagnosis = case_when(
+      sample_id == "7316-1102" ~ "Diffuse midline glioma, H3 K28-mutant",
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      sample_id == "7316-1102" ~ "HGAT",
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      sample_id == "7316-1102" ~ "Diffuse astrocytic and oligodendroglial tumor",
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      sample_id == "7316-1102" ~ "DMG, H3 K28",
+      TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(
+      sample_id == "7316-1102" ~ "Updated via OpenPBTA subtyping",
+      TRUE ~ Notes
+    )
+  )
+```
+
+### `PT_80NVYCBS`
+
+This sample was inspected by pathology and should be CNS HGNET-MN1, so we will update here.
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_80NVYCBS")
+```
+```{r}
+compiled_df <- compiled_df %>%
+  mutate(
+    integrated_diagnosis = case_when(
+      sample_id == "7316-765" ~ "CNS Embryonal tumor, HGNET-MN1",
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      sample_id == "7316-765" ~ "Embryonal tumor",
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      sample_id == "7316-765" ~ "Embryonal tumor",
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      sample_id == "7316-765" ~ "CNS HGNET-MN1",
+      TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(
+      sample_id == "7316-765" ~ "Updated via OpenPBTA subtyping",
+      TRUE ~ Notes
+    )
+  )
+```
+
+### `PT_9BZETM0M`
+
+This sample was inspected by pathology and should be HGG, H3 G35, so we will update here.
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_9BZETM0M")
+```
+```{r}
+compiled_df <- compiled_df %>%
+  mutate(
+    integrated_diagnosis = case_when(
+      sample_id == "7316-158" ~ "High-grade glioma/astrocytoma, H3 G35-mutant",
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      sample_id == "7316-158" ~ "HGAT",
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      sample_id == "7316-158" ~ "Diffuse astrocytic and oligodendroglial tumor",
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      sample_id == "7316-158" ~ "HGG, H3 G35",
+      TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(
+      sample_id == "7316-158" ~ "Updated via OpenPBTA subtyping",
+      TRUE ~ Notes
+    )
+    
+  )
+```
+
+### `PT_C2D4JXS1`
+
+This sample has one biospecimen which did not have the H3 variant captured in consensus calls - will inspect this later and possibly will be fixed with [#819](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/854).
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_C2D4JXS1")
+```
+
+### `PT_KTRJ8TFY`
+
+This sample has one biospecimen which did not have the H3 variant captured in consensus calls. It has the variant present only in VarDict calls and in IGV, and expect this will be fixed with [#819](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/854).
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_KTRJ8TFY")
+```
+
+### `PT_X648RVMK`
+
+This sample was reviewed by pathology and confirmed to be ETMR, C19MC-altered. Will change here.
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_X648RVMK")
+```
+```{r}
+compiled_df <- compiled_df %>%
+  mutate(
+    integrated_diagnosis = case_when(
+      sample_id == "7316-238" ~ "Embryonal tumor with multilayer rosettes, C19MC-altered",
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      sample_id == "7316-238" ~ "ETMR",
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      sample_id == "7316-238" ~ "Embryonal tumor",
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      sample_id == "7316-238" ~ "ETMR, C19MC-altered",
+      TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(
+      sample_id == "7316-238" ~ "Updated via OpenPBTA subtyping",
+      TRUE ~ Notes
+    )
+  )
+```
+
+### `PT_X71D7G5S`
+
+This sample was reviewed by pathology and confirmed to be H3 mutant. Will change here.
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_X71D7G5S")
+```
+```{r}
+compiled_df <- compiled_df %>%
+  mutate(
+    integrated_diagnosis = case_when(
+      sample_id == "7316-1105" ~ "High-grade glioma/astrocytoma, H3 G35-mutant",
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      sample_id == "7316-1105" ~ "HGAT",
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      sample_id == "7316-1105" ~ "Diffuse astrocytic and oligodendroglial tumor",
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      sample_id == "7316-1105" ~ "HGG, H3 G35",
+      TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(sample_id == "7316-1105" ~ "Updated via OpenPBTA subtyping",
+      TRUE ~ Notes
+    )
+  )
+```
+
+### `PT_A325EYR2`
+This sample was reviewed by pathology and confirmed to be H3 mutant, as per note 5 above.
+
+```{r}
+compiled_df %>%
+  filter(Kids_First_Participant_ID == "PT_A325EYR2")
+```
+```{r}
+compiled_df <- compiled_df %>%
+  mutate(
+    integrated_diagnosis = case_when(
+      sample_id == "7316-2557" ~ "Diffuse midline glioma, H3 K28-mutant",
+      TRUE ~ integrated_diagnosis
+    ),
+    short_histology = case_when(
+      sample_id == "7316-2557" ~ "HGAT",
+      TRUE ~ short_histology
+    ),
+    broad_histology = case_when(
+      sample_id == "7316-2557" ~ "Diffuse astrocytic and oligodendroglial tumor",
+      TRUE ~ broad_histology
+    ),
+    molecular_subtype = case_when(
+      sample_id == "7316-2557" ~ "DMG, H3 K28",
+      TRUE ~ molecular_subtype
+    ),
+    Notes = case_when(
+      sample_id == "7316-2557" ~ "Updated via OpenPBTA subtyping",
+      TRUE ~ Notes
+    )
+  )
+```
+
+
+### Chordoma samples pathology review 
+As discussed in [ticket](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/608) we will assign subtypes to chordoma samples through pathology review only since molecular subtypes were not sufficient.
+	
+ sample_id | molecular_subtype
+-- | --
+7316-1101 |	CHDM, poorly differentiated
+7316-2935 |	CHDM, poorly differentiated
+7316-3295 |	CHDM, poorly differentiated
+7316-4062 |	CHDM, poorly differentiated
+7316-921 |	CHDM, conventional
+7316-3632	| CHDM, conventional
+
+```{r}
+chdm_poorly_diff_sample_ids <- c("7316-1101",
+                                 "7316-2935",
+                                 "7316-3295",
+                                 "7316-4062")
+chdm_conventional_sample_ids <- c("7316-921",
+                                  "7316-3632")
+  
+compiled_df %>%
+  filter(sample_id %in% c(chdm_conventional_sample_ids,chdm_poorly_diff_sample_ids)) 
+
+```
+
+
+```{r}
+
+compiled_df <- compiled_df %>%
+    mutate(molecular_subtype = case_when(
+      sample_id %in% chdm_poorly_diff_sample_ids ~ "CHDM, poorly differentiated",
+      sample_id %in% chdm_conventional_sample_ids ~ "CHDM, conventional",
+      TRUE ~ molecular_subtype),
+   harmonized_diagnosis = case_when(str_detect(molecular_subtype, "CHDM") ~
+                                    str_replace(molecular_subtype, "CHDM, ", "Chordoma, "), 
+                                    TRUE ~ harmonized_diagnosis),
+    Notes = case_when(sample_id %in% c(chdm_conventional_sample_ids,
+                                        chdm_poorly_diff_sample_ids) ~ "Updated via pathology review",
+      TRUE ~ Notes
+    )
+)
+
+```
+
+
+
+
+###Check list of subtypes look as expected at this point in time
+```{r}
+# sort first
+list_subtypes <- compiled_df %>%
+  filter(!grepl("To be classified", molecular_subtype)) %>%
+  select(integrated_diagnosis, molecular_subtype) %>%
+  distinct() %>%
+  arrange(integrated_diagnosis)
+list_subtypes
+```
+
+### Write revised table to file
+
+```{r}
+# sort first
+compiled_df <- compiled_df %>%
+  arrange(Kids_First_Participant_ID, sample_id) %>%
+  distinct() # to remove duplicates from above
+write_tsv(compiled_df, output_file)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```

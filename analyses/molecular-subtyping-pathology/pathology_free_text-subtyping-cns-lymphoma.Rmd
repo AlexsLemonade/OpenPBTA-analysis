@@ -1,0 +1,123 @@
+---
+title: "Using WHO 2016 CNS subtypes to improve CNS lymphoma harmonized diagnosis"
+output: 
+  html_notebook:
+    toc: true
+    toc_float: true
+author: JN Taroni for ALSF CCDL (code) ; K Gaonkar updated for CNS lymphoma
+date: 2021
+---
+
+CNS lymphoma have subtypes per the [WHO 2016 CNS subtypes](https://link.springer.com/content/pdf/10.1007/s00401-016-1545-1.pdf). 
+However, these are not captured in our molecular data.
+Instead, we can use the pathology free text information in the histologies file to further classify the CNS lymphoma harmonized diagnosis information.
+We will use this notebook to do so; see [#999](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/999) for more information.
+
+## Set Up
+
+### Libraries
+
+```{r}
+# Pipes
+library(magrittr)
+library(tidyverse)
+```
+
+### Input
+
+```{r}
+data_dir <- file.path("..", "..", "data")
+results_dir <- file.path("results")
+histologies_file <- file.path(data_dir, "pbta-histologies-base.tsv")
+```
+
+### Output
+
+```{r}
+results_dir <- "results"
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+output_file <- file.path(results_dir, "cns-lymphoma-subtypes.tsv")
+```
+
+## Read in data
+
+```{r}
+histologies_df <- readr::read_tsv(histologies_file, guess_max = 10000)
+```
+
+### Display `pathology_free_text_diagnosis` values
+
+```{r}
+histologies_df %>%
+  dplyr::filter(pathology_diagnosis == "Primary CNS lymphoma") %>%
+  dplyr::select(pathology_free_text_diagnosis) %>%
+  dplyr::distinct()
+```
+
+## Recoding `harmonized_diagnosis` 
+
+We use the following table from [#999](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/999) to recode the `harmonized_diagnosis` values for samples with a `pathology_diagnosis` of CNS lymphoma:
+
+pathology_diagnosis | subtyping module | pathology_free_text_diagnosis | broad_histology | short_histology | harmonized_diagnosis
+-- | -- | -- | -- | -- | --
+Primary CNS lymphoma | NA | burkitt's lymphoma | Lymphoma | CNS lymphoma | CNS Burkitt's lymphoma
+
+
+
+
+```{r}
+lymphoma_df <- histologies_df %>%
+  # We are only concerned with samples where the pathology_free_text_diagnosis
+  # contains Primary CNS lymphoma
+  dplyr::filter(pathology_diagnosis == "Primary CNS lymphoma") %>%
+  # Retain only relevant identifier and disease label columns
+  dplyr::select(Kids_First_Biospecimen_ID,
+                Kids_First_Participant_ID,
+                sample_id,
+                tumor_descriptor,
+                pathology_free_text_diagnosis,
+                broad_histology,
+                short_histology) %>%
+  # To smooth the way for string detection for the pathology free text, we
+  # add a column where all of the text is converted to lowercase
+  dplyr::mutate(pathology_free_text_dx_lower = 
+                  stringr::str_to_lower(pathology_free_text_diagnosis)) %>%
+  # String detection in pathology free text per the table
+  dplyr::mutate(
+    harmonized_diagnosis = dplyr::case_when(
+      stringr::str_detect(pathology_free_text_dx_lower,
+                          "burkitt's lymphoma") ~ "CNS Burkitt's lymphoma"
+    ),
+    broad_histology = dplyr::case_when(
+      stringr::str_detect(pathology_free_text_dx_lower,
+                          "burkitt's lymphoma") ~ "Lymphoma",
+      TRUE ~ broad_histology
+    ),
+    short_histology = dplyr::case_when(
+      stringr::str_detect(pathology_free_text_dx_lower,
+                          "burkitt's lymphomag") ~ "CNS lymphoma",
+      TRUE ~ short_histology
+    ),
+    Notes = "Updated via OpenPBTA subtyping from pathology_free_text_diagnosis"
+  ) %>%
+  # Drop the column we added for convenience of string detection
+  # and to format to match compiled_mol_subtypes_pathology_clinical_df
+  dplyr::select(-pathology_free_text_dx_lower,
+                -pathology_free_text_diagnosis)
+```
+
+Write to file!
+
+```{r}
+lymphoma_df %>%
+  arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_tsv(output_file)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```

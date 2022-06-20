@@ -3,14 +3,13 @@
 # K S Gaonkar
 
 # Run fusion_filtering
-# Takes one environment variable, `OPENPBTA_BASE_SUBTYPING`, if value is 1 then
-# uses pbta-histologies-base.tsv for subtyping if value is 0 runs all modules (Default)
-# with pbta-histologies.tsv
+# Takes one environment variable, `OPENPBTA_BASE_RELEASE`, if value is 1 then
+# uses pbta-histologies-base.tsv, else runs all module with pbta-histologies.tsv (Default)
 
 set -e
 set -o pipefail
 
-RUN_FOR_SUBTYPING=${OPENPBTA_BASE_SUBTYPING:-0}
+RUN_FOR_RELEASE=${OPENPBTA_BASE_RELEASE:-0}
 
 # This script should always run as if it were being called from
 # the directory it lives in.
@@ -46,7 +45,7 @@ stranded_expression_file="${data_path}/pbta-gene-expression-rsem-fpkm.stranded.r
 normal_expression_file="${references_path}/Brain_FPKM_hg38_matrix.txt.zip"
 
 # metadata files
-if [[ RUN_FOR_SUBTYPING == "0" ]]
+if [[ "$RUN_FOR_RELEASE" -eq "0" ]]
 then
    histologies_file="${data_path}/pbta-histologies.tsv" 
    independent_samples_file="${data_path}/independent-specimens.wgswxs.primary-plus.tsv"
@@ -107,10 +106,10 @@ Rscript 03-Calc-zscore-annotate.R --standardFusionCalls "${scratch_path}/standar
                                   --outputfile "${scratch_path}/standardFusionStrandedExp_QC_expression"
 
 # Project specific filtering
-Rscript -e "rmarkdown::render('04-project-specific-filtering.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
+Rscript -e "rmarkdown::render('04-project-specific-filtering.Rmd',params=list(base_run = $RUN_FOR_RELEASE))"
 
 # QC filter putative oncogene found in more than 4 histologies
-Rscript -e "rmarkdown::render('05-QC_putative_onco_fusion_dustribution.Rmd',params=list(base_run = $RUN_FOR_SUBTYPING))"
+Rscript -e "rmarkdown::render('05-QC_putative_onco_fusion_distribution.Rmd',params=list(base_run = $RUN_FOR_RELEASE))"
 
 # Recurrent fusion/fused genes
 Rscript 06-recurrent-fusions-per-histology.R --standardFusionCalls $putative_oncogenic_fusion \

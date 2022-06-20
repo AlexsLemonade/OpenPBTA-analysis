@@ -2,9 +2,9 @@
 # Module author: Komal S. Rathi
 # 2019
 
-# This script runs the steps for immune deconvolution in PBTA histologies
-# It uses xCell and one of the three methods:
-# mcp_counter, cibersort_abs, timer
+# This script runs the steps for immune deconvolution in PBTA histologies using xCell. 
+# xCell is the most comprehensive deconvolution method (with the largest number of cell types) and widely used in literature vs other deconvolution methods.
+# Reference for benchmarking between xCell and other methods: PMID: 31641033
 
 set -e
 set -o pipefail
@@ -19,38 +19,34 @@ cd "$script_directory" || exit
 # create results directory if it doesn't already exist
 mkdir -p results
 mkdir -p plots
-# generate deconvolution output for poly-A and stranded datasets using xCell and the second specified method
-# we will use CIBERSORT for the paper but because the dependent scripts are not publicly accesible, we will use the next best method i.e. MCP-counter as default for testing purpose
-# Reference for benchmarking between xCell, CIBERSORT and MCP-counter: PMID: 31641033
 
-DECONV_METHOD=${OPENPBTA_DECONV_METHOD:-"cibersort_abs"}
-echo "Deconv method: $DECONV_METHOD"
-if [ "$DECONV_METHOD" == "cibersort_abs" ]
-then
-	CIBERSORT_BIN="CIBERSORT.R"
-	CIBERSORT_MAT="LM22.txt"
-else
-	CIBERSORT_BIN="NA"
-	CIBERSORT_MAT="NA"
-fi
-echo "$CIBERSORT_BIN"
-echo "$CIBERSORT_MAT"
+# Shared input files
+POLYA='../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds'
+STRANDED='../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds'
+CLIN='../../data/pbta-histologies.tsv'
 
+# In CI we'll run an abbreviated version of the figures script due to insufficient testing data
+# needed for making some of the plots
+ABBREVIATED_IMMUNE=${OPENPBTA_QUICK_IMMUNE:-0}
+
+# generate deconvolution output for poly-A and stranded datasets using xCell
 Rscript --vanilla 01-immune-deconv.R \
---polyaexprs ../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds \
---strandedexprs ../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
---clin ../../data/pbta-histologies.tsv \
---method $DECONV_METHOD \
---cibersortbin $CIBERSORT_BIN \
---cibersortgenemat $CIBERSORT_MAT \
---outputfile results/deconv-output.RData
+--polyaexprs $POLYA \
+--strandedexprs $STRANDED \
+--method 'xcell' \
+--outputfile 'results/xcell_deconv-output.rds' 
 
-echo "Deconvolution finished..."
-echo "Create summary plots"
+# generate deconvolution output for poly-A and stranded datasets using quanTIseq
+Rscript --vanilla 01-immune-deconv.R \
+--polyaexprs $POLYA \
+--strandedexprs $STRANDED \
+--method 'quantiseq' \
+--outputfile 'results/quantiseq_deconv-output.rds' 
 
-# Now, run the script to generate correlation plots between xCell and the second method 
-# Also generates corresponding heatmaps of average normalized immune scores
-Rscript --vanilla 02-summary-plots.R \
---input results/deconv-output.RData \
---output plots
+
+echo "Deconvolution finished."
+
+
+# Perform visualization
+Rscript -e "rmarkdown::render('02-visualize_quantiseq.Rmd', clean = TRUE, params = list(is_ci = ${ABBREVIATED_IMMUNE}))"
 

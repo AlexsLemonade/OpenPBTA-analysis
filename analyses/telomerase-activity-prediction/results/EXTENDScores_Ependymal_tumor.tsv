@@ -1,0 +1,4 @@
+variable	group1	group2	p.format	p.adj	p.signif	method
+NormEXTENDScores	all	EPN, ST RELA (N=29)	0.89	1		Wilcoxon
+NormEXTENDScores	all	EPN, PF A (N=3)	0.75	1		Wilcoxon
+NormEXTENDScores	all	EPN, ST YAP1 (N=4)	0.46	1		Wilcoxon

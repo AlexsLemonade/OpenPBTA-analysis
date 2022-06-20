@@ -171,6 +171,7 @@ plot_dimension_reduction <- function(aligned_scores_df,
                                      point_size = NULL,
                                      x_label,
                                      y_label,
+                                     alpha_value = 0.3,
                                      score1 = 1,
                                      score2 = 2,
                                      color_palette = NULL) {
@@ -231,25 +232,17 @@ plot_dimension_reduction <- function(aligned_scores_df,
 
     if (!is.null(color_palette)) {
 
-      color_palette <- color_palette %>%
-        # We'll use deframe so we can use it as a recoding list
-        tibble::deframe()
-
-      aligned_scores_df <- aligned_scores_df %>%
-        dplyr::mutate(sample_color = dplyr::recode(!!color_sym,
-                                                   !!!color_palette))
-
       dimension_reduction_plot <- ggplot2::ggplot(
         aligned_scores_df,
         ggplot2::aes(
           x = dplyr::pull(aligned_scores_df, score1),
           y = dplyr::pull(aligned_scores_df, score2),
-          color = sample_color,
+          color = !!color_sym,
           size = !!point_size,
           shape = !!point_shape
         )
       ) +
-      ggplot2::scale_color_identity()
+      ggplot2::scale_color_manual(values = color_palette)
     } else {
       dimension_reduction_plot <- ggplot2::ggplot(
         aligned_scores_df,
@@ -275,7 +268,7 @@ plot_dimension_reduction <- function(aligned_scores_df,
     }
 
     dimension_reduction_plot <- dimension_reduction_plot +
-      ggplot2::geom_point(alpha = 0.3) +
+      ggplot2::geom_point(alpha = alpha_value) +
       ggplot2::labs(x = x_label, y = y_label) +
       ggplot2::theme_bw()
 

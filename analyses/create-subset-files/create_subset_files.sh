@@ -7,7 +7,7 @@ set -o pipefail
 
 # Set defaults for release and biospecimen file name
 BIOSPECIMEN_FILE=${BIOSPECIMEN_FILE:-biospecimen_ids_for_subset.RDS}
-RELEASE=${RELEASE:-release-v18-20201123}
+RELEASE=${RELEASE:-release-v22-20220505}
 NUM_MATCHED=${NUM_MATCHED:-15}
 
 # This option controls whether or not the two larger MAF files are skipped as
@@ -31,6 +31,10 @@ cd "$script_directory" || exit
 # generated via these scripts
 FULL_DIRECTORY=../../data/$RELEASE
 SUBSET_DIRECTORY=../../data/testing/$RELEASE
+# If run subsetting only, we need to make this directory
+if [ ! -d ${SUBSET_DIRECTORY} ]; then
+    mkdir -p ${SUBSET_DIRECTORY}
+fi
 
 #### generate subset files -----------------------------------------------------
 
@@ -86,6 +90,9 @@ cp $FULL_DIRECTORY/pbta-mend* $SUBSET_DIRECTORY
 
 # fusion summary files
 cp $FULL_DIRECTORY/fusion_summary* $SUBSET_DIRECTORY
+
+# MB pathology subtypes
+cp $FULL_DIRECTORY/pbta-mb-pathology-subtypes.tsv $SUBSET_DIRECTORY
 
 # if the md5sum.txt file already exists, get rid of it
 cd $SUBSET_DIRECTORY

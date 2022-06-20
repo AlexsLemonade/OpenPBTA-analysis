@@ -1,9 +1,12 @@
-library('ggpubr')
+suppressPackageStartupMessages({
+  library(ggpubr)
+  library(grid)
+  library(forcats) ### for fct_reorder()
+  library(optparse)
+  library(cowplot)
+})
 stringsAsFactors=FALSE
-library(grid)
-library(forcats) ### for fct_reorder()
-library(optparse)
-library(cowplot)
+
 ############################################################### Combining Histology with EXTEND Scores (Figure 3) ###############################################################################
 
 

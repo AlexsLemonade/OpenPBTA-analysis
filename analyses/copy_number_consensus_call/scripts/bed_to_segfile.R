@@ -123,8 +123,8 @@ cnvs <- cnvs %>%
                 segmean = purrr::map_dbl(cnvkit_df, segmean_function),
                 cnvkit_cn = purrr::map_dbl(cnvkit_df, copies_wmedian),
                 freec_cn = purrr::map_dbl(freec_df, copies_wmedian),
-                copynum = ifelse(is.finite(cnvkit_cn), # use cnvkit if available
-                                 cnvkit_cn, freec_cn), #otherwise use freec
+                copynum = ifelse(is.finite(freec_cn), # use freec if available
+                                 freec_cn, cnvkit_cn), #otherwise use cnvkit
                 num.mark = NA)
 
 
@@ -155,7 +155,7 @@ out_neutral <- neutral %>%
                 loc.end = end) %>%
   dplyr::mutate(num.mark = NA,
                 seg.mean = NA,
-                copy.num = 2)
+                copy.num = NA)
 # unset X and Y copy numbers
 out_neutral$copy.num[out_neutral$chrom %in% c("chrX", "chrY")] <- NA
     

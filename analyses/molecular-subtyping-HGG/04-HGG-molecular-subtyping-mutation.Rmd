@@ -175,7 +175,9 @@ We likely want to be permissive with the _TERT_ mutations in terms of *regions.*
 ```{r}
 tert_snv_df <- filtered_snv_df %>%
   dplyr::filter(Hugo_Symbol == "TERT",
-                Variant_Classification != "Silent")
+                Variant_Classification == "5'Flank",
+                Start_Position %in% c("1295113","1295135"),
+                End_Position %in% c("1295113","1295135"))
 
 tert_snv_df
 ```

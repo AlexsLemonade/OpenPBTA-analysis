@@ -31,8 +31,8 @@ dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
 
 # input files
 clin_file <- file.path(data_dir, "pbta-histologies-base.tsv")
-polya.file <- file.path(root_dir, "analyses", "collapse-rnaseq", "results", "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds")
-stranded.file <- file.path(root_dir, "analyses", "collapse-rnaseq", "results","pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
+polya.file <- file.path(root_dir, "data", "pbta-gene-expression-rsem-fpkm-collapsed.polya.rds")
+stranded.file <- file.path(root_dir, "data","pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
 terms.file <- file.path("input", "mb_subtyping_path_dx_strings.json")
 
 # Read in the JSON file that contains the strings we'll use to include or

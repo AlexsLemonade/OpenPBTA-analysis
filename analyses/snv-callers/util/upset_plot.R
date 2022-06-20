@@ -43,6 +43,6 @@ upset_png <- function(detect_mat, plot_file_path, subset_vector = NULL, has_vard
       text.scale = 2,
       point.size = 4,
       mainbar.y.label = "")
-    );
+  );
   dev.off()
 }

@@ -39,7 +39,7 @@ sampleIDMatchedIndependent<-clinical %>% dplyr::filter(Kids_First_Biospecimen_ID
 
 # PNOC sampleIDs have .WXS which would need to .RNA-Seq ; Panel not in independent sample list ; so using patient ID to match
 clinical_pnoc<-clinical %>% 
-  dplyr::filter(cohort=="PNOC003",experimental_strategy=="RNA-Seq",tumor_descriptor=="Initial CNS Tumor") %>% 
+  dplyr::filter(cohort=="PNOC",experimental_strategy=="RNA-Seq",tumor_descriptor=="Initial CNS Tumor") %>% 
   dplyr::select(Kids_First_Participant_ID,Kids_First_Biospecimen_ID)
 
 

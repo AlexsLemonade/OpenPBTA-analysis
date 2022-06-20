@@ -21,10 +21,12 @@ This script produces TSV files containing the counts and percentages of samples 
  
  The interactive treemap can be found [here](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/sample-distribution-analysis/plots/histology-treemap.html).  
  The interactive, multilayer pie chart can be found [here](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/plots/sample-distribution-analysis/histology-pie.html).
- 
 
 The `03-tumor-descriptor-and-assay-count` notebook contains a series of tables that count the number of each assay type and example primary vs. recurrence broken down by histology. 
 View the notebook [here](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/sample-distribution-analysis/03-tumor-descriptor-and-assay-count.nb.html).
+
+The `04-ns-for-manuscript` notebook contains a series of calculations used when discussing the sample numbers throughout the manuscript. 
+View the notebook [here](https://alexslemonade.github.io/OpenPBTA-analysis/analyses/sample-distribution-analysis/04-ns-for-manuscript.nb.html).
 
 
 
@@ -37,14 +39,16 @@ The structure of this folder is as follows:
 ├── 02-multilayer-plots.R
 ├── 03-tumor-descriptor-and-assay-count.Rmd
 ├── 03-tumor-descriptor-and-assay-count.nb.html
+├── 04-ns-for-manuscript.Rmd
+├── 04-ns-for-manuscript.nb.html
 ├── README.md
 ├── plots
 │   ├── distribution_across_cancer_types.pdf
 │   ├── histology-pie.html
-│   └── histology-treemap.html
 ├── results
 │   ├── disease_expression.tsv
 │   ├── plots_df.tsv
+│   ├── sample_dist_plot_df.tsv
 │   └── primary_sites_counts.tsv
 └── run-sample-distribution.sh
 ```
