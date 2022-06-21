@@ -313,7 +313,8 @@ Interaction terms are not significant, except `tp53_score:extent_of_tumor_resect
 ### Additive model: `tp53_score+telomerase_score+extent_of_tumor_resection+lgg_group+hgg_group` 
 
 > The strongest predictor here is extent of tumor resection with gross/near total resection having a survival benefit and partial resection nearing significance (both compared to biopsy only) for a survival benefit.
-> High _TP53_ scores, telomerase scores, and non-LGG are all significant risk factors for poorer overall survival.
+> Non-LGG is a significant risk factors for poorer overall survival.
+> We do not see a significant effect of TP53 or telomerase scores.
 
 ```{r multi_additive_4terms extent_tumor_resect glioma_group}
 # we save this for the purpose of printing out a p-value below
