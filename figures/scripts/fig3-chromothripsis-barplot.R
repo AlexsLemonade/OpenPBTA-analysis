@@ -60,33 +60,34 @@ palette_df <- read_tsv(palette_file)
 # We'll only be using the cancer group palette and we need a named vector of
 # hexcodes
 cancer_group_col_df <- palette_df %>%
-  select(cancer_group, cancer_group_hex) %>%
+  select(cancer_group_display, cancer_group_hex) %>%
   distinct()
 
 # Can't do pull with names with our versions
 cancer_group_palette <- cancer_group_col_df$cancer_group_hex
-names(cancer_group_palette) <- cancer_group_col_df$cancer_group
+names(cancer_group_palette) <- cancer_group_col_df$cancer_group_display
 
 # Need a data frame that contains the identifiers + cancer group
 cancer_group_df <- histologies_df %>%
-  select(Kids_First_Biospecimen_ID, cancer_group)
+  left_join(palette_df, by = c("broad_histology", "cancer_group")) %>%
+  select(Kids_First_Biospecimen_ID, broad_histology, cancer_group_display)
 
-# Add cancer group and palette information t
+# Add cancer group and palette information
 chromo_per_sample_df <- chromo_per_sample_df %>%
   left_join(cancer_group_df)
 
 ### Repeat all of these steps for cancer_group instead of display_group
 chromoth_cancer_group_df <- chromo_per_sample_df %>%
-  count(any_regions_logical, cancer_group) %>%
+  count(any_regions_logical, cancer_group_display) %>%
   tidyr::spread(key = any_regions_logical, value = n, fill=0) %>%
-  group_by(cancer_group) %>%
+  group_by(cancer_group_display) %>%
   mutate(cancer_group_size = sum(`TRUE`, `FALSE`)) %>%
   mutate(prop = `TRUE` / cancer_group_size) %>%
   mutate(labels = paste0(`TRUE`, " / ", cancer_group_size)) %>%
-  ungroup(cancer_group) %>%
-  filter(cancer_group_size >= 3 & !is.na(cancer_group)) %>% # Only keep groups with >=3 tumors
+  ungroup(cancer_group_display) %>%
+  filter(cancer_group_size >= 3 & !is.na(cancer_group_display)) %>% # Only keep groups with >=3 tumors
   # Reorder cancer_group based on proportion
-  mutate(cancer_group = fct_reorder(cancer_group, prop))
+  mutate(cancer_group_display = fct_reorder(cancer_group_display, prop))
 
 #### Plotting ------------------------------------------------------------------
 
@@ -102,9 +103,9 @@ plot_options <- list(
 )
 
 bar_plot <- ggplot(chromoth_cancer_group_df ,
-                   aes(x = cancer_group,
+                   aes(x = cancer_group_display,
                        y = prop,
-                       fill = cancer_group)) +
+                       fill = cancer_group_display)) +
   geom_bar(stat = "identity", show.legend = FALSE) +
   geom_text(aes(label = labels), hjust = -0.2, size = 3.25) +
   scale_fill_manual(values = cancer_group_palette) +
