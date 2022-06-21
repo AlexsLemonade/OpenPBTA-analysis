@@ -182,7 +182,8 @@ nrow(combined_df_stranded)
 
 ## Re-analyze with stranded only: PDL-1 expression across entire cohort
 
-> There is no signficant effect of PDL-1 expression. Although this P-value could be viewed as "approaching signficance," the large analysis sample size (N=689), this P-value is actually rather large.
+There is a marginally signficant effect of PDL-1 expression (P=0.033). 
+Higher expression is associated with lowered survival.
 
 
 ```{r cox_pdl1}
@@ -194,9 +195,9 @@ fit_save_model(combined_df_stranded,
 
 ## Analysis: quantiseq cell type fractions + extent of tumor resection + lgg group across entire cohort
 
-Several effects are significant: 
+Two effects are significant: 
 
-+ extent of tumor resection gross/near total and partial are signficantly different from biopsy only.
++ extent of tumor resection partial is signficantly different from biopsy
 + LGG and non-LGG
 
 
@@ -224,10 +225,7 @@ fitted
 
 ## Analysis: quantiseq cell type fractions + extent of tumor resection + lgg group + PDL-1  across entire cohort
 
-Several effects are significant: 
-
-+ extent of tumor resection gross/near total and partial are signficantly different from biopsy only.
-+ LGG and non-LGG
+The only observed significant effect is LGG vs. non-LGG.
 
 ```{r cox_cell_type_cd274}
 # again use data with unknown resections removed
@@ -274,7 +272,7 @@ suitable_subtypes
 
 ## Analysis: quantiseq cell type fractions and PDL-1 + extent of tumor resection for each cancer group of interest (no LGG here)
 
-> Most models here are not robust. **Only HGG** returns no warning messages. 
+> Models here are generally not robust. They either do not converge, or converge with infinite coefficients.
 
 
 ```{r cell_type_cg}
