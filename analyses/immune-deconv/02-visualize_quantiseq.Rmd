@@ -92,15 +92,29 @@ palette_mapping_df <- histologies_df %>%
          contains("cancer_group"),
          molecular_subtype)
 
+#### Array of groups we want to visualize (top 15 groups with highest N samples?)
+cancer_groups_of_interest <- palette_mapping_df %>%
+    filter(cancer_group_display != "Other", !is.na(cancer_group_display)) %>%
+  group_by(cancer_group_display) %>%
+  tally() %>%
+  arrange(-n) %>%
+  head(15) %>%
+  pull(cancer_group_display)
+
+cancer_groups_of_interest <- palette_mapping_df %>%
+  filter(cancer_group_display != "Other", !is.na(cancer_group_display)) %>%
+  pull(cancer_group_display) %>%
+  unique()
+
 #### Array of groups we want to visualize
-cancer_groups_of_interest <- c("High-grade glioma astrocytoma", 
-                               "Diffuse midline glioma",
-                               "Low-grade glioma astrocytoma", 
-                               "Ganglioglioma",
-                               "Ependymoma", 
-                               "Medulloblastoma",
-                               "Schwannoma",
-                               "Neurofibroma Plexiform")
+#cancer_groups_of_interest <- c("Other high-grade gliomas", 
+#                               "Diffuse midline glioma",
+#                               "Other low-grade gliomas", 
+#                               "Ganglioglioma",
+#                               "Ependymoma", 
+#                               "Medulloblastoma",
+#                               "Schwannoma",
+#                               "Neurofibroma Plexiform")
  
 #### Prepare quanTIseq data --> `quantiseq_subset`
 # spread and create cd8/cd4 ratio
@@ -152,7 +166,7 @@ expression_pdl1 <- stranded %>%
 # Faceted plot of cancer groups, cell types. Jitter points are colored by cancer group.
 # First, find the cancer groups with >=15 samples to match other modules
 cg_of_interest <- palette_mapping_df %>%
-  filter(!is.na(cancer_group)) %>%
+  filter(!is.na(cancer_group_display), cancer_group_display != "Other") %>%
   count(cancer_group_display) %>%
   filter(n >= 15) %>%
   pull(cancer_group_display)
@@ -161,7 +175,7 @@ cg_of_interest <- palette_mapping_df %>%
 quantiseq_subset_cg <- quantiseq_gather %>%
   filter(cell_type != "uncharacterized cell" & cell_type != "cd8_cd4_ratio") %>%
   left_join(palette_mapping_df, by = c("sample" = "Kids_First_Biospecimen_ID")) %>%
-  filter(cancer_group %in% cg_of_interest)
+  filter(cancer_group_display %in% cg_of_interest)
 
 # We need to create a new scheme for labeling that shows wrapped cancer groups with `(n=X)`
 quantiseq_subset_cg <- quantiseq_subset_cg %>%
