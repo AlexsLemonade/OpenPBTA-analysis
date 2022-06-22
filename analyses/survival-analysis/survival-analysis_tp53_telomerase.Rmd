@@ -91,6 +91,7 @@ histologies_rna <- read_tsv(metadata_file, guess_max = 10000) %>%
   mutate(extent_of_tumor_resection = case_when(
     sample_id == "7316-116" ~ "Biopsy only",
     sample_id == "7316-182" ~ "Partial resection",
+    sample_id == "7316-356" ~ "Partial resection", # https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1430#pullrequestreview-1014340267
     TRUE ~ as.character(extent_of_tumor_resection))) %>%
   select(Kids_First_Participant_ID, 
          Kids_First_Biospecimen_ID_RNA, 
@@ -126,11 +127,7 @@ meta_indep <- histologies_rna %>%
   # remove samples without survival data
   drop_na(OS_days) %>%
   # convert to years
-  mutate(OS_years = OS_days / 365.25) %>%
-  # Recode a sample from Gross/Near total resection;Partial resection --> Partial resection
-  mutate(extent_of_tumor_resection = ifelse(extent_of_tumor_resection == "Gross/Near total resection;Partial resection", 
-                                            "Partial resection", 
-                                            extent_of_tumor_resection))
+  mutate(OS_years = OS_days / 365.25)
 ```
  
 #### Create subsets of data for different models
