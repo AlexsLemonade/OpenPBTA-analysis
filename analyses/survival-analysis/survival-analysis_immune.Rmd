@@ -110,11 +110,13 @@ histology_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max 
           experimental_strategy == "RNA-Seq") %>%
   mutate(extent_of_tumor_resection = case_when(
     sample_id == "7316-116" ~ "Biopsy only",
-    sample_id == "7316-182" ~ "Partial resection",    
+    sample_id == "7316-182" ~ "Partial resection",
+    sample_id == "7316-356" ~ "Partial resection",
     TRUE ~ as.character(extent_of_tumor_resection))) %>%
   select(Kids_First_Participant_ID, 
          Kids_First_Biospecimen_ID, 
-         cancer_group, 
+         broad_histology,
+         cancer_group,
          molecular_subtype,
          extent_of_tumor_resection,
          OS_status, 
@@ -122,10 +124,10 @@ histology_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max 
          PFS_days) %>%
   distinct() 
 
-# create lgg grouping
+# create lgg grouping from broad_histology: https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1416
 lgg_levels <- c("non-LGG", "LGG")
 histology_df <- histology_df %>%
-  mutate(lgg_group = ifelse(cancer_group == "Low-grade glioma astrocytoma",
+  mutate(lgg_group = ifelse(broad_histology == "Low-grade astrocytic tumor",
                              lgg_levels[2], # second is LGG 
                              lgg_levels[1]), # first is non-LGG
           lgg_group = factor(lgg_group, levels = lgg_levels)) # ensures non-LGG is the reference 
@@ -181,7 +183,8 @@ nrow(combined_df_stranded)
 
 ## Re-analyze with stranded only: PDL-1 expression across entire cohort
 
-> There is no signficant effect of PDL-1 expression. Although this P-value could be viewed as "approaching signficance," the large analysis sample size (N=689), this P-value is actually rather large.
+There is a marginally signficant effect of PDL-1 expression (P=0.033). 
+Higher expression is associated with lowered survival.
 
 
 ```{r cox_pdl1}
@@ -193,9 +196,10 @@ fit_save_model(combined_df_stranded,
 
 ## Analysis: quantiseq cell type fractions + extent of tumor resection + lgg group across entire cohort
 
-Several effects are significant: 
+Three effects are significant: 
 
-+ extent of tumor resection gross/near total and partial are signficantly different from biopsy only.
++ extent of tumor resection "partial resection" is signficantly different from biopsy
++ extent of tumor resection "gross/near total resection" is signficantly different from biopsy
 + LGG and non-LGG
 
 
@@ -223,10 +227,13 @@ fitted
 
 ## Analysis: quantiseq cell type fractions + extent of tumor resection + lgg group + PDL-1  across entire cohort
 
-Several effects are significant: 
+Three effects are significant: 
 
-+ extent of tumor resection gross/near total and partial are signficantly different from biopsy only.
++ extent of tumor resection "partial resection" is signficantly different from biopsy
++ extent of tumor resection "gross/near total resection" is signficantly different from biopsy
 + LGG and non-LGG
+
+PDL-1 expression is not signficant.  
 
 ```{r cox_cell_type_cd274}
 # again use data with unknown resections removed
@@ -273,7 +280,7 @@ suitable_subtypes
 
 ## Analysis: quantiseq cell type fractions and PDL-1 + extent of tumor resection for each cancer group of interest (no LGG here)
 
-> Most models here are not robust. **Only HGG** returns no warning messages. 
+> Models here are generally not robust. They either do not converge, or converge with infinite coefficients.
 
 
 ```{r cell_type_cg}
