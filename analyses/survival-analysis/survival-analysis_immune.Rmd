@@ -110,7 +110,8 @@ histology_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max 
           experimental_strategy == "RNA-Seq") %>%
   mutate(extent_of_tumor_resection = case_when(
     sample_id == "7316-116" ~ "Biopsy only",
-    sample_id == "7316-182" ~ "Partial resection",    
+    sample_id == "7316-182" ~ "Partial resection",
+    sample_id == "7316-356" ~ "Partial resection",
     TRUE ~ as.character(extent_of_tumor_resection))) %>%
   select(Kids_First_Participant_ID, 
          Kids_First_Biospecimen_ID, 
@@ -195,9 +196,10 @@ fit_save_model(combined_df_stranded,
 
 ## Analysis: quantiseq cell type fractions + extent of tumor resection + lgg group across entire cohort
 
-Two effects are significant: 
+Three effects are significant: 
 
-+ extent of tumor resection partial is signficantly different from biopsy
++ extent of tumor resection "partial resection" is signficantly different from biopsy
++ extent of tumor resection "gross/near total resection" is signficantly different from biopsy
 + LGG and non-LGG
 
 
@@ -225,7 +227,13 @@ fitted
 
 ## Analysis: quantiseq cell type fractions + extent of tumor resection + lgg group + PDL-1  across entire cohort
 
-The only observed significant effect is LGG vs. non-LGG.
+Three effects are significant: 
+
++ extent of tumor resection "partial resection" is signficantly different from biopsy
++ extent of tumor resection "gross/near total resection" is signficantly different from biopsy
++ LGG and non-LGG
+
+PDL-1 expression is not signficant.  
 
 ```{r cox_cell_type_cd274}
 # again use data with unknown resections removed
