@@ -9,10 +9,10 @@ Table 2: Patients with hypermutant tumors
 - Listed are patients with at least one hypermutant or ultra-hypermutant tumor (inclusive of derived cell lines and all phases of therapy).
 Coding region TMB, phase of therapy, therapeutic interventions, cancer predispositions, and molecular subtypes are included.
 
-Table S1: V21 histologies table
+Table S1: V22 histologies table
 - This table displays the histologies file from v21 release of OpenPBTA in an excel format.
     - Sheet 1: README
-    - Sheet 2: V21 histologies file
+    - Sheet 2: V22 histologies file
     - Sheet 3: CNS region definitions
 
 Table S2: DNA results table
