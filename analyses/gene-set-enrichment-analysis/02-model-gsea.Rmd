@@ -74,16 +74,16 @@ scores_stranded_file <- file.path(results_dir, "gsva_scores_stranded.tsv")
 scores_polya_file    <- file.path(results_dir, "gsva_scores_polya.tsv")
 
 ######## Define output files
-file_anova_stranded_cancer_group  <- file.path(results_dir, "gsva_anova_stranded_cancer_group.tsv")
-file_anova_polya_cancer_group     <- file.path(results_dir, "gsva_anova_polya_cancer_group.tsv")
-file_anova_stranded_harmonized_diagnosis <- file.path(results_dir, "gsva_anova_stranded_harmonized_diagnosis.tsv")
-file_anova_polya_harmonized_diagnosis    <- file.path(results_dir, "gsva_anova_polya_harmonized_diagnosis.tsv")
+file_anova_stranded_cancer_group  <- file.path(results_dir, "gsva_anova_stranded_cancer_group.RDS")
+file_anova_polya_cancer_group     <- file.path(results_dir, "gsva_anova_polya_cancer_group.RDS")
+file_anova_stranded_harmonized_diagnosis <- file.path(results_dir, "gsva_anova_stranded_harmonized_diagnosis.RDS")
+file_anova_polya_harmonized_diagnosis    <- file.path(results_dir, "gsva_anova_polya_harmonized_diagnosis.RDS")
 
 
-file_tukey_stranded_cancer_group  <- file.path(results_dir, "gsva_tukey_stranded_cancer_group.tsv")
-file_tukey_polya_cancer_group     <- file.path(results_dir, "gsva_tukey_polya_cancer_group.tsv")
-file_tukey_stranded_harmonized_diagnosis <- file.path(results_dir, "gsva_tukey_stranded_harmonized_diagnosis.tsv")
-file_tukey_polya_harmonized_diagnosis    <- file.path(results_dir, "gsva_tukey_polya_harmonized_diagnosis.tsv")
+file_tukey_stranded_cancer_group  <- file.path(results_dir, "gsva_tukey_stranded_cancer_group.RDS")
+file_tukey_polya_cancer_group     <- file.path(results_dir, "gsva_tukey_polya_cancer_group.RDS")
+file_tukey_stranded_harmonized_diagnosis <- file.path(results_dir, "gsva_tukey_stranded_harmonized_diagnosis.RDS")
+file_tukey_polya_harmonized_diagnosis    <- file.path(results_dir, "gsva_tukey_polya_harmonized_diagnosis.RDS")
 
 
 ######## Load input files
@@ -126,10 +126,10 @@ head(cancer_group_stranded_model_results)
 head(harmonized_diagnosis_stranded_model_results)
 
 ## Save stranded library results
-write_tsv(cancer_group_stranded_model_results[["anova"]],  file_anova_stranded_cancer_group)
-write_tsv(harmonized_diagnosis_stranded_model_results[["anova"]], file_anova_stranded_harmonized_diagnosis)
-write_tsv(cancer_group_stranded_model_results[["tukey"]],  file_tukey_stranded_cancer_group)
-write_tsv(harmonized_diagnosis_stranded_model_results[["tukey"]], file_tukey_stranded_harmonized_diagnosis)
+write_rds(cancer_group_stranded_model_results[["anova"]],  file_anova_stranded_cancer_group)
+write_rds(harmonized_diagnosis_stranded_model_results[["anova"]], file_anova_stranded_harmonized_diagnosis)
+write_rds(cancer_group_stranded_model_results[["tukey"]],  file_tukey_stranded_cancer_group)
+write_rds(harmonized_diagnosis_stranded_model_results[["tukey"]], file_tukey_stranded_harmonized_diagnosis)
 
 
 ### Don't run polyA samples in CI due to data limitations, won't be enough levels for ANOVA
@@ -140,10 +140,10 @@ if (!(running_in_ci)){
   head(harmonized_diagnosis_polya_model_results)
 
   ### Save polya library results
-  write_tsv(cancer_group_polya_model_results[["anova"]],     file_anova_polya_cancer_group)
-  write_tsv(harmonized_diagnosis_polya_model_results[["anova"]],    file_anova_polya_harmonized_diagnosis)
-  write_tsv(cancer_group_polya_model_results[["tukey"]],     file_tukey_polya_cancer_group)
-  write_tsv(harmonized_diagnosis_polya_model_results[["tukey"]],    file_tukey_polya_harmonized_diagnosis)
+  write_rds(cancer_group_polya_model_results[["anova"]],     file_anova_polya_cancer_group)
+  write_rds(harmonized_diagnosis_polya_model_results[["anova"]],    file_anova_polya_harmonized_diagnosis)
+  write_rds(cancer_group_polya_model_results[["tukey"]],     file_tukey_polya_cancer_group)
+  write_rds(harmonized_diagnosis_polya_model_results[["tukey"]],    file_tukey_polya_harmonized_diagnosis)
 
 }
 ```
