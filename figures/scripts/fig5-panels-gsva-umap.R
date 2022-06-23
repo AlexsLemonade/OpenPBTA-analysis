@@ -167,7 +167,7 @@ gsva_stats_file <- file.path(
 )
 
 gsva_scores_df <- read_tsv(gsva_scores_file)
-gsva_stats_df <- read_rds(gsva_stats_file)
+gsva_stats_df <- read_tsv(gsva_stats_file)
 
 # What gene sets are we going to include in our heatmap?
 # We'll filter based on whether the ANOVA has a significant p-value
