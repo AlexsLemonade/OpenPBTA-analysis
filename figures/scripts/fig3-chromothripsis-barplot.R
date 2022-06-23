@@ -99,7 +99,7 @@ plot_options <- list(
   ylim(c(0, 1)),
   xlab(NULL),
   ylab("Proportion of Tumors with Chromothripsis Events"),
-  theme(axis.text.x = element_text(angle = 45, hjust = 0.95))
+  theme(axis.text.x = element_text(hjust = 0.95))
 )
 
 bar_plot <- ggplot(chromoth_cancer_group_df ,
