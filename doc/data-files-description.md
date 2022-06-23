@@ -19,7 +19,7 @@ This document contains information about all data files associated with this pro
 |---|---|---|---|
 |`fusion_summary_embryonal_foi.tsv` | Analysis file | [`fusion-summary`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/fusion-summary) | Summary file for presence of embryonal tumor fusions of interest |
 |`fusion_summary_ependymoma_foi.tsv` | Analysis file | [`analysis/fusion-summary`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/fusion-summary) | Summary file for presence of ependymal tumor fusions of interest |
-|`fusion_summary_ewings_foi.tsv` | Analysis file | [`analysis/fusion-summary`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/fusion-summary) | Summary file for presence of Ewing's sarcoma fusions of interest |
+|`fusion_summary_ewings_foi.tsv` | Analysis file | [`fusion-summary`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/fusion-summary) | Summary file for presence of Ewing's sarcoma fusions of interest |
 |`gencode.v27.primary_assembly.annotation.gtf.gz` | Reference file | GENCODE v27 | hg38 gene annotation on primary assembly (reference chromosomes and scaffolds) |
 |`GRCh38.primary_assembly.genome.fa.gz` | Reference Genome file | GENCODE v27 | hg38 primary assembly genome sequence FASTA file |
 |`independent-specimens.wgs.primary-plus.tsv` | Analysis file | [`independent-samples`](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/independent-samples) | Independent specimens list for WGS sample, primary + non-primary when no primary sample is available |
