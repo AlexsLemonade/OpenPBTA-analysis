@@ -174,7 +174,10 @@ bash ${analyses_dir}/immune-deconv/run-immune-deconv.sh
 # copy figure panel:
 cp ${analyses_dir}/immune-deconv/plots/cell_types-cancer_groups.pdf  pdfs/fig5/panels/quantiseq-cell_types-cancer_groups.pdf
 
-###### Forest plot for 5D
+###### Survival plots for 4D
+Rscript --vanilla scripts/fig4-hgg-kaplan-meier.R
+Rscript --vanilla scripts/fig4-hgg-subtype-forest-plot.R
+Rscript --vanilla scripts/fig4-tp53-telomerase-panels.R
 Rscript --vanilla scripts/fig5-forest-plot.R
 
 ###### Box plot for 5E
