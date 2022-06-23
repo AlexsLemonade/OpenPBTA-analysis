@@ -163,7 +163,7 @@ gsva_scores_file <- file.path(
 gsva_stats_file <- file.path(
   gsva_dir,
   "results",
-  "gsva_anova_stranded_cancer_group.RDS"
+  "gsva_anova_stranded_cancer_group.tsv.gz"
 )
 
 gsva_scores_df <- read_tsv(gsva_scores_file)
