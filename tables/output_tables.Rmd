@@ -80,6 +80,8 @@ histology_df %>%
   filter(!is.na(pathology_diagnosis),
          !is.na(molecular_subtype),
          !grepl("To be classified", molecular_subtype)) %>%
+  # remove doubled samples (WGS/RNA-seq etc.)
+  distinct(broad_histology, molecular_subtype, sample_id) %>%
   # Count broad histology and subtype combinations
   count(broad_histology, molecular_subtype) %>%
   # export
