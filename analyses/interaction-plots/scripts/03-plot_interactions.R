@@ -206,7 +206,7 @@ disease_df <-
   readr::read_tsv(disease_file, col_types = readr::cols()) %>%
   dplyr::mutate(gene = factor(gene, levels = genes))
 
-# Calculate top 10 mutated cancer groups for display
+# What are the top 10 mutated cancer display groups?
  display_diseases <- disease_df %>%
    # remove other from top 10 possibilities
    dplyr::filter(disease != "Other") %>%
@@ -219,6 +219,22 @@ disease_df <-
  
  # Print
  print(display_diseases)
+ 
+ # We want to set the order to have "other" HGG or LGG come last within the groups
+ 
+ display_diseases <- c("Diffuse midline glioma",
+                       "Other high-grade gliomas",
+                       "Pilocytic astrocytoma",
+                       "Ganglioglioma",
+                       "Pleomorphic xanthoastrocytoma",
+                       "Other low-grade gliomas",
+                       "Medulloblastoma",
+                       "Atypical Teratoid Rhabdoid Tumor",
+                       "Other embryonal tumors",
+                       "Ependymoma",
+                       "Craniopharyngioma",
+                       "Meningioma")
+ 
 
 disease_df <- disease_df %>%
   dplyr::filter(!is.na(disease)) %>%

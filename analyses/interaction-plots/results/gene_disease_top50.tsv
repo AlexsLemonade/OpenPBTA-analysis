@@ -2,8 +2,8 @@ gene	disease	mutant_samples	total_muts	mean_muts_per_sample
 H3F3A	Diffuse midline glioma	36	36	1
 TP53	Diffuse midline glioma	25	28	1.12
 CTNNB1	Craniopharyngioma	22	22	1
-TP53	Other high-grade gliomas	20	28	1.4
-BRAF	Other low-grade gliomas	15	15	1
+TP53	Other high-grade gliomas	21	29	1.380952380952381
+BRAF	Other low-grade gliomas	17	17	1
 BRAF	Ganglioglioma	13	13	1
 CTNNB1	Medulloblastoma	12	12	1
 ATRX	Diffuse midline glioma	11	11	1
@@ -47,12 +47,14 @@ DNAH14	Other high-grade gliomas	4	10	2.5
 IGFN1	Other high-grade gliomas	4	10	2.5
 TNC	Other high-grade gliomas	4	10	2.5
 LRP1B	Other high-grade gliomas	4	9	2.25
+PTPN11	Other high-grade gliomas	4	7	1.75
 FGFR1	Other low-grade gliomas	4	6	1.5
 BRAF	Other high-grade gliomas	4	5	1.25
+FGFR1	Other high-grade gliomas	4	5	1.25
 PIK3CA	Other high-grade gliomas	4	5	1.25
 COL4A3	Other high-grade gliomas	4	4	1
-FSIP2	Other	4	4	1
 H3F3A	Other high-grade gliomas	4	4	1
+IDH1	Other high-grade gliomas	4	4	1
 IGSF10	Other high-grade gliomas	4	4	1
 PIK3CA	Diffuse midline glioma	4	4	1
 PTPN11	Diffuse midline glioma	4	4	1
@@ -62,30 +64,23 @@ CCDC168	Other high-grade gliomas	3	9	3
 CELSR1	Other high-grade gliomas	3	9	3
 ZNF469	Other high-grade gliomas	3	9	3
 PHLPP1	Other high-grade gliomas	3	7	2.3333333333333335
-PTPN11	Other high-grade gliomas	3	6	2
 FGFR1	Pilocytic astrocytoma	3	5	1.6666666666666667
-FGFR1	Other	3	4	1.3333333333333333
-FGFR1	Other high-grade gliomas	3	4	1.3333333333333333
 NF2	Ependymoma	3	4	1.3333333333333333
 NF2	Schwannoma	3	4	1.3333333333333333
 BCOR	Pilocytic astrocytoma	3	3	1
-BRAF	Other	3	3	1
-IDH1	Other	3	3	1
-IDH1	Other high-grade gliomas	3	3	1
+FSIP2	Other embryonal tumors	3	3	1
+IDH1	Other low-grade gliomas	3	3	1
 KRAS	Other	3	3	1
-LRP1B	Other	3	3	1
 PPM1D	Other high-grade gliomas	3	3	1
 STAG2	Medulloblastoma	3	3	1
 TNC	Diffuse midline glioma	3	3	1
 PDGFRA	Dysembryoplastic neuroepithelial tumor	2	4	2
 PDGFRA	Other low-grade gliomas	2	4	2
 FGFR1	Dysembryoplastic neuroepithelial tumor	2	3	1.5
+FGFR1	Other	2	3	1.5
 PTEN	Diffuse midline glioma	2	3	1.5
 STAG2	Ewing sarcoma	2	3	1.5
-ADGRV1	Other	2	2	1
-ATRX	Other	2	2	1
 BRAF	Diffuse midline glioma	2	2	1
-CELSR1	Other	2	2	1
 DDX3X	Other high-grade gliomas	2	2	1
 DNAH14	Diffuse midline glioma	2	2	1
 DNAH14	Medulloblastoma	2	2	1
@@ -97,54 +92,61 @@ KRAS	Ganglioglioma	2	2	1
 KRAS	Neurofibroma Plexiform	2	2	1
 KRAS	Pilocytic astrocytoma	2	2	1
 LRP1B	Ganglioglioma	2	2	1
-NF1	Other	2	2	1
+LRP1B	Other	2	2	1
+MYH14	Other embryonal tumors	2	2	1
 NF1	Other low-grade gliomas	2	2	1
 NF1	Pilocytic astrocytoma	2	2	1
 PDGFRA	Diffuse midline glioma	2	2	1
 PHLPP1	Craniopharyngioma	2	2	1
 PIK3R1	Pilocytic astrocytoma	2	2	1
-PTPN11	Other	2	2	1
+RP1L1	Other embryonal tumors	2	2	1
 RYR2	Medulloblastoma	2	2	1
 SETD2	Medulloblastoma	2	2	1
 STAG2	Other high-grade gliomas	2	2	1
-TP53	Other	2	2	1
 ZNF469	Ependymoma	2	2	1
-FBN2	Other	1	2	2
+FBN2	Other embryonal tumors	1	2	2
 FGFR1	NA	1	2	2
 NF2	Other high-grade gliomas	1	2	2
 PTEN	Medulloblastoma	1	2	2
 ADGRV1	Medulloblastoma	1	1	1
-ATM	CNS Embryonal tumor	1	1	1
+ADGRV1	Other embryonal tumors	1	1	1
+ADGRV1	Other low-grade gliomas	1	1	1
 ATM	Diffuse midline glioma	1	1	1
 ATM	Medulloblastoma	1	1	1
+ATM	Other embryonal tumors	1	1	1
 ATM	Other low-grade gliomas	1	1	1
 ATRX	Ganglioglioma	1	1	1
+ATRX	Other	1	1	1
+ATRX	Other low-grade gliomas	1	1	1
 BCOR	Diffuse midline glioma	1	1	1
 BCOR	Dysembryoplastic neuroepithelial tumor	1	1	1
 BCOR	Ependymoma	1	1	1
 BCOR	Ganglioglioma	1	1	1
-BCOR	Other	1	1	1
+BCOR	Other embryonal tumors	1	1	1
 BCOR	Other low-grade gliomas	1	1	1
 BRAF	Dysembryoplastic neuroepithelial tumor	1	1	1
+BRAF	Other	1	1	1
 CCDC168	Atypical Teratoid Rhabdoid Tumor	1	1	1
 CCDC168	Craniopharyngioma	1	1	1
 CCDC168	Diffuse midline glioma	1	1	1
 CCDC168	Other	1	1	1
 CELSR1	Diffuse midline glioma	1	1	1
 CELSR1	Medulloblastoma	1	1	1
+CELSR1	Other	1	1	1
+CELSR1	Other embryonal tumors	1	1	1
 COL4A3	Atypical Teratoid Rhabdoid Tumor	1	1	1
 COL4A3	Diffuse midline glioma	1	1	1
 COL4A3	Neurofibroma Plexiform	1	1	1
-COL4A3	Other	1	1	1
+COL4A3	Other embryonal tumors	1	1	1
 CTNNB1	Other	1	1	1
 CTNNB1	Other high-grade gliomas	1	1	1
-DNAH14	Other	1	1	1
+DNAH14	Other embryonal tumors	1	1	1
 DNAH14	Pilocytic astrocytoma	1	1	1
 DNHD1	Medulloblastoma	1	1	1
-DNHD1	Other	1	1	1
+DNHD1	Other embryonal tumors	1	1	1
 EGFR	Diffuse midline glioma	1	1	1
 FBN2	Pilocytic astrocytoma	1	1	1
-IDH1	Other low-grade gliomas	1	1	1
+FSIP2	Other	1	1	1
 IGFN1	Atypical Teratoid Rhabdoid Tumor	1	1	1
 IGFN1	Neurofibroma Plexiform	1	1	1
 IGFN1	Other	1	1	1
@@ -152,35 +154,36 @@ IGFN1	Pilocytic astrocytoma	1	1	1
 IGSF10	Diffuse midline glioma	1	1	1
 IGSF10	Other	1	1	1
 KDM6A	Other low-grade gliomas	1	1	1
-KIAA1109	Other	1	1	1
-KIAA1549	CNS Embryonal tumor	1	1	1
+KIAA1109	Other embryonal tumors	1	1	1
 KIAA1549	Ependymoma	1	1	1
 KIAA1549	Medulloblastoma	1	1	1
+KIAA1549	Other embryonal tumors	1	1	1
 KMT2C	Atypical Teratoid Rhabdoid Tumor	1	1	1
-KMT2C	Other	1	1	1
+KMT2C	Other embryonal tumors	1	1	1
 KMT2D	Craniopharyngioma	1	1	1
 KMT2D	Other	1	1	1
 LRP1	Craniopharyngioma	1	1	1
 LRP1	Diffuse midline glioma	1	1	1
 LRP1B	Atypical Teratoid Rhabdoid Tumor	1	1	1
+LRP1B	Other embryonal tumors	1	1	1
 MAGEL2	Medulloblastoma	1	1	1
 MAGEL2	Other	1	1	1
 MUC5AC	Diffuse midline glioma	1	1	1
 MUC5AC	Ependymoma	1	1	1
 MUC5AC	Ewing sarcoma	1	1	1
-MUC5AC	Other	1	1	1
-MYH14	CNS Embryonal tumor	1	1	1
+MUC5AC	Other embryonal tumors	1	1	1
 MYH14	Medulloblastoma	1	1	1
-MYH14	Other	1	1	1
 NF1	Dysembryoplastic neuroepithelial tumor	1	1	1
 NF1	Ganglioglioma	1	1	1
+NF1	Other	1	1	1
+NF1	Other embryonal tumors	1	1	1
 NF1	NA	1	1	1
 NF2	Medulloblastoma	1	1	1
 NF2	Other	1	1	1
 PCLO	Craniopharyngioma	1	1	1
 PCLO	Medulloblastoma	1	1	1
-PCLO	Other	1	1	1
-PHLPP1	Other	1	1	1
+PCLO	Other embryonal tumors	1	1	1
+PHLPP1	Other embryonal tumors	1	1	1
 PHLPP1	Other low-grade gliomas	1	1	1
 PHLPP1	Teratoma	1	1	1
 PHLPP1	NA	1	1	1
@@ -189,14 +192,13 @@ PIK3CA	Medulloblastoma	1	1	1
 PIK3R1	Diffuse midline glioma	1	1	1
 PRKDC	Ependymoma	1	1	1
 PRKDC	Medulloblastoma	1	1	1
-PRKDC	Other	1	1	1
+PRKDC	Other embryonal tumors	1	1	1
 PTEN	Ganglioglioma	1	1	1
 PTPN11	Dysembryoplastic neuroepithelial tumor	1	1	1
+PTPN11	Other	1	1	1
 PTPN11	Other low-grade gliomas	1	1	1
-RP1L1	CNS Embryonal tumor	1	1	1
 RP1L1	Diffuse midline glioma	1	1	1
 RP1L1	Medulloblastoma	1	1	1
-RP1L1	Other	1	1	1
 RYR2	Diffuse midline glioma	1	1	1
 RYR2	Ependymoma	1	1	1
 RYR2	Pilocytic astrocytoma	1	1	1
@@ -209,6 +211,7 @@ SMARCA4	Other low-grade gliomas	1	1	1
 STAG2	Ependymoma	1	1	1
 STAG2	Pilocytic astrocytoma	1	1	1
 TP53	Ewing sarcoma	1	1	1
+TP53	Other	1	1	1
 TP53	Other low-grade gliomas	1	1	1
 ZNF469	Choroid plexus papilloma	1	1	1
-ZNF469	Other	1	1	1
+ZNF469	Other embryonal tumors	1	1	1
