@@ -9,7 +9,7 @@ This document contains information about all data files associated with this pro
 	+ *Analysis file*: Any file created by a script in `analyses/*`. 
 + **Origin**
 	+ For _PBTA data files_, a link the relevant D3B Center or Kids First workflow (and version where applicable).
-	+ When applicable, a link to the specific *module* that produced (or modified, for *Modified reference file* types) the data.
+	+ When applicable, a link to the specific module, workflow, or resource that produced (or modified, for *Modified reference file* types) the data.
 + **File description**
 	+ A *brief* one sentence description of what the file contains (e.g., bed files contain coordinates for features XYZ).
 
