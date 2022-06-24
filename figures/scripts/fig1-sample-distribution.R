@@ -157,13 +157,14 @@ data_descriptor_plot <- histologies_df %>%
            broad_histology_hex,
            broad_histology_display, 
            broad_histology_order),
-    by = "broad_histology") %>%
+    by = c("broad_histology")) %>%
   inner_join(
     select(palette_df,
+           broad_histology,
            cancer_group,
            cancer_group_display,
            cancer_group_abbreviation),
-    by = "cancer_group") %>%
+    by = c("broad_histology", "cancer_group")) %>%
   distinct() 
 
 # The NAs in `cancer_group_abbreviation` should _all_ be associated with a cancer_display_group "Other" if we've joined up correctly - 
