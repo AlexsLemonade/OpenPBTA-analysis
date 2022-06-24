@@ -53,7 +53,7 @@ library(RColorBrewer)
 ```
 
 
-We should perform some minimal checking to make sure the provided release is _at least_ at version 21.
+We should perform some minimal checking to make sure the provided release is _at least_ at version 22.
 ```{r}
 minimum_allowed_release <- 22
 release_version <- as.numeric(stringr::str_match(params$release, "-v(\\d+)-")[[2]])
@@ -136,6 +136,10 @@ other_lgg <- c(
     pull(cancer_group)
 )
 
+other_lgg
+```
+
+```{r}
 # To become "Other high-grade gliomas"
 other_hgg <- c(
   "High-grade glioma astrocytoma",
@@ -144,6 +148,10 @@ other_hgg <- c(
     pull(cancer_group)
 )
 
+other_hgg
+```
+
+```{r}
 # To become "Other embryonal tumors"
 other_embryonal <- c(
   "CNS Embryonal tumor",  # Has n >= 10, but we're trying to limit # of colors
@@ -151,6 +159,8 @@ other_embryonal <- c(
   filter(broad_histology == "Embryonal tumor") %>%
   pull(cancer_group)
 )
+
+other_embryonal
 ```
 
 ## Create palettes
@@ -387,6 +397,10 @@ broad_histology_order_df <- histologies_df %>%
   distinct() %>%
   # Count samples within a broad histology
   count(broad_histology_display) %>%
+  # Add Other placeholder
+  bind_rows(data.frame(broad_histology_display = "Other",
+                       n = 0, 
+                       stringsAsFactors = FALSE)) %>%
   # Reorder based on sample size except Benign tumor and Other should come last
   # And then add numeric column with the order
   mutate(broad_histology_display = forcats::fct_reorder(broad_histology_display,
@@ -414,8 +428,8 @@ palette_df <- palette_df %>%
 
 For most plots that make use of the `cancer_group` palette, such as a box or violin plot, we will rely heavily on labels and therefore using the gray hex code for multiple groups will not be a problem.
 
-We will have four panels of individual oncoprints, where many `broad_histology` values.
-We can move the information about which into our palette data frame.
+We will have four panels of individual oncoprints.
+We can move the information about which cancer groups will be included in each panel into our palette data frame.
 
 ```{r}
 # Taken from the current plot oncoprint script as of the writing of this
