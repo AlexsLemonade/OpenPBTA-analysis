@@ -133,7 +133,9 @@ na_color <- divergent_palette %>%
 
 histologies_color_key_df <- readr::read_tsv(file.path(palette_dir,
                                                       "broad_histology_cancer_group_palette.tsv"),
-                                            col_types = readr::cols())
+                                            col_types = readr::cols()) %>%
+  add_row(cancer_group_display = "High-grade gliomas", cancer_group_hex = "#FFFFFF") %>%
+  add_row(cancer_group_display = "Low-grade gliomas", cancer_group_hex = "#FFFFFF")
 
 # create scales for consistent sizing
 # The scales will need to have opts$plotsize elements,
@@ -204,7 +206,10 @@ if (is.na(opts$disease_table)) {
 disease_file <- opts$disease_table
 disease_df <-
   readr::read_tsv(disease_file, col_types = readr::cols()) %>%
-  dplyr::mutate(gene = factor(gene, levels = genes))
+  dplyr::mutate(gene = factor(gene, levels = genes)) %>%
+# add plot header rows
+  add_row(gene = "TP53", mutant_samples = 0.00001, disease = "High-grade gliomas") %>%
+  add_row(gene = "TP53", mutant_samples = 0.00001, disease = "Low-grade gliomas")
 
 # What are the top 10 mutated cancer display groups?
  display_diseases <- disease_df %>%
@@ -222,8 +227,10 @@ disease_df <-
  
  # We want to set the order to have "other" HGG or LGG come last within the groups
  
- display_diseases <- c("Diffuse midline glioma",
+ display_diseases <- c("High-grade gliomas",
+                       "Diffuse midline glioma",
                        "Other high-grade gliomas",
+                       "Low-grade gliomas",
                        "Pilocytic astrocytoma",
                        "Ganglioglioma",
                        "Pleomorphic xanthoastrocytoma",
@@ -235,8 +242,24 @@ disease_df <-
                        "Craniopharyngioma",
                        "Meningioma")
  
+ display_disease_lab <- c(expression(bold("High-grade gliomas")),
+                       "Diffuse midline glioma",
+                       "Other high-grade gliomas",
+                       expression(bold("Low-grade gliomas")),
+                       "Pilocytic astrocytoma",
+                       "Ganglioglioma",
+                       "Pleomorphic xanthoastrocytoma",
+                       "Other low-grade gliomas",
+                       "Medulloblastoma",
+                       "Atypical Teratoid Rhabdoid Tumor",
+                       "Other embryonal tumors",
+                       "Ependymoma",
+                       "Craniopharyngioma",
+                       "Meningioma", 
+                       "Other")
+ 
 
-disease_df <- disease_df %>%
+disease_df_fct <- disease_df %>%
   dplyr::filter(!is.na(disease)) %>%
   dplyr::mutate(disease_factor =
            forcats::fct_other(disease, keep = display_diseases) %>%
@@ -252,15 +275,16 @@ histologies_color_key <- histologies_color_key_df$cancer_group_hex
 names(histologies_color_key) <- histologies_color_key_df$cancer_group_display
 # Adding gray for Other histologies outside the top 10 above
 histologies_color_key <- c(histologies_color_key, "Other" = "#d3d3d3")
-
+histologies_color_key <- c(histologies_color_key, "High-grade gliomas" = "#FFFFFF")
+histologies_color_key <- c(histologies_color_key, "Low-grade gliomas" = "#FFFFFF")
 
 # get scale to match cooccurence plot
 # Extra scale units for the case where there are fewer genes than opts$plotsize
-xscale2 <- levels(disease_df$gene) %>%
+xscale2 <- levels(disease_df_fct$gene) %>%
   c(rep("", opts$plotsize - length(.)))
 
 disease_plot <- ggplot(
-  disease_df,
+  disease_df_fct,
   aes(x = gene,
       y = mutant_samples,
       fill = disease_factor)) +
@@ -272,7 +296,7 @@ disease_plot <- ggplot(
     y = "Samples with mutations",
     fill = "Cancer Group"
   ) +
-  scale_fill_manual(values = histologies_color_key) +
+  scale_fill_manual(values = histologies_color_key, labels = display_disease_lab)+
   scale_x_discrete(
     limits = xscale2,
     breaks = disease_df$gene
@@ -290,8 +314,11 @@ disease_plot <- ggplot(
     legend.position = c(1,1),
     legend.justification = c(1,1),
     legend.key.size = unit(1, "char"),
-    legend.text = element_text(size = rel(0.85))
+    legend.key = element_rect(fill = NA),
+    legend.text = element_text(size = rel(0.85)),
   )
+disease_plot
+
 
 if (!is.na(opts$disease_plot)){
   ggsave(opts$disease_plot, disease_plot)
