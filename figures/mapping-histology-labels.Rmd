@@ -58,7 +58,7 @@ We should perform some minimal checking to make sure the provided release is _at
 minimum_allowed_release <- 22
 release_version <- as.numeric(stringr::str_match(params$release, "-v(\\d+)-")[[2]])
 if (release_version < minimum_allowed_release) {
-  stop("This notebook should only be used with data release version 21 or above.")
+  stop("This notebook should only be used with data release version 22 or above.")
 }
 ```
 
