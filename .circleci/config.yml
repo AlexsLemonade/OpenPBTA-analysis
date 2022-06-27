@@ -10,6 +10,10 @@ jobs:
       - checkout
 
       - run:
+          name: Set up GH PAT for R package install to avoid unauthenticated rate limits
+          command: echo "GITHUB_PAT='${GH_PAT}'" > .Renviron
+
+      - run:
           name: Data Download
           command: OPENPBTA_URL=https://s3.amazonaws.com/d3b-openaccess-us-east-1-prd-pbta/data OPENPBTA_RELEASE=testing ./scripts/run_in_ci.sh bash download-data.sh
 
