@@ -412,7 +412,9 @@ broad_histology_order_df <- histologies_df %>%
                                 after = Inf),
          broad_histology_order = as.numeric(broad_histology_display)) %>%
   # No longer require the sample size
-  select(-n)
+  select(-n) %>%
+  # Sort for easy browsing
+  arrange(broad_histology_display)
 
 broad_histology_order_df
 ```
@@ -465,7 +467,13 @@ palette_df <- palette_df %>%
   ))
 ```
 
-### Save to TSV 
+### Display final table and save to TSV 
+
+```{r}
+# For browsing
+palette_df
+```
+
 
 ```{r}
 readr::write_tsv(palette_df, 
