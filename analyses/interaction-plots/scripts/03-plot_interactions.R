@@ -307,7 +307,8 @@ disease_plot <- ggplot(
   disease_df_fct,
   aes(x = gene,
       y = mutant_samples,
-      fill = disease_factor)) +
+      fill = disease_factor,
+      color = disease_factor)) +
   geom_col(width = 0.7,
            color = "#666666", 
            size = 0.15) +
