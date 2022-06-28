@@ -286,8 +286,6 @@ disease_df_fct <- disease_df %>%
 
 histologies_color_key <- histologies_color_key_df$cancer_group_hex
 names(histologies_color_key) <- histologies_color_key_df$cancer_group_display
-# Adding gray for Other histologies outside the top 10 above
-histologies_color_key <- c(histologies_color_key, "Other" = "#d3d3d3")
 histologies_color_key <- c(histologies_color_key, "High-grade gliomas" = "#FFFFFF")
 histologies_color_key <- c(histologies_color_key, "Low-grade gliomas" = "#FFFFFF")
 
