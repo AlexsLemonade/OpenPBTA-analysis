@@ -338,7 +338,7 @@ disease_plot <- ggplot(
     legend.position = c(1,1),
     legend.justification = c(1,1),
     legend.key.size = unit(1, "char"),
-    legend.text = element_text(size = rel(0.85)),
+    legend.text = element_text(size = rel(0.85))
   )
 
 
