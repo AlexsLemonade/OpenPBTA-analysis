@@ -2,7 +2,7 @@
 
 # PAT for installing R packages from GitHub
 # In the first step of CI, this will use a public access token from a !person's account
-GITHUB_PAT=${GH_PAT:-""}
+GITHUB_PAT=${GITHUB_PAT:-""}
 
 # This script should always run as if it were being called from
 # the directory it lives in.
