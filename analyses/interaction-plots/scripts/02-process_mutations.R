@@ -38,13 +38,10 @@ root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 script_root <-
   file.path(root_dir, "analyses", "interaction-plots", "scripts")
 
-# Magrittr pipe
-`%>%` <- dplyr::`%>%`
-
 # Load libraries:
 library(optparse)
+library(magrittr)
 library(ggplot2)
-library(tidyverse)
 
 
 # Load functions
@@ -191,7 +188,7 @@ maf_df <- data.table::fread(maf_file, data.table = FALSE)
 cnv_df <- data.table::fread(cnv_file, data.table = FALSE)
 palette_df <- data.table::fread(palette_file, data.table = FALSE)
 meta_df <- data.table::fread(meta_file, data.table = FALSE) %>%
-  left_join(palette_df, by = c("broad_histology", "cancer_group"))
+  dplyr::left_join(palette_df, by = c("broad_histology", "cancer_group"))
 if (exists("specimen_file")) {
   specimen_df <- data.table::fread(specimen_file, data.table = FALSE)
 }

@@ -23,14 +23,13 @@
 
 #### Initial Set Up
 
-# Magrittr pipe
-`%>%` <- dplyr::`%>%`
 
 # Load libraries:
 library(optparse)
+library(magrittr)
 library(ggplot2)
 library(patchwork)
-library(tidyverse)
+
 
 # define options
 option_list <- list(
@@ -135,20 +134,20 @@ histologies_color_key_df <- readr::read_tsv(file.path(palette_dir,
                                                       "broad_histology_cancer_group_palette.tsv"),
                                             col_types = readr::cols()) %>%
   # add a border column 
-  mutate(border = "#666666") %>%
+  dplyr::mutate(border = "#666666") %>%
   # colors for headings (NA because these will be blank)
-  add_row(cancer_group_display = "High-grade gliomas", 
-          cancer_group_hex = NA, 
-          border = NA ) %>%
-  add_row(cancer_group_display = "Low-grade gliomas", 
-          cancer_group_hex = NA,
-          border = NA) %>%
-  add_row(cancer_group_display = "Embryonal tumors", 
-          cancer_group_hex = NA,
-          border = NA) %>%
-   add_row(cancer_group_display = "blank", 
-          cancer_group_hex = NA,
-          border = NA) 
+  tibble::add_row(cancer_group_display = "High-grade gliomas", 
+                  cancer_group_hex = NA, 
+                  border = NA ) %>%
+  tibble::add_row(cancer_group_display = "Low-grade gliomas", 
+                  cancer_group_hex = NA,
+                  border = NA) %>%
+  tibble::add_row(cancer_group_display = "Embryonal tumors", 
+                  cancer_group_hex = NA,
+                  border = NA) %>%
+  tibble::add_row(cancer_group_display = "blank", 
+                  cancer_group_hex = NA,
+                  border = NA) 
 
 # create scales for consistent sizing
 # The scales will need to have opts$plotsize elements,
@@ -222,10 +221,10 @@ disease_file <- opts$disease_table
 disease_df <- readr::read_tsv(disease_file, col_types = readr::cols()) %>%
   dplyr::mutate(gene = factor(gene, levels = genes)) %>%
   # add plot header rows
-  add_row(gene = "TP53", mutant_samples = 0.00001, disease = "High-grade gliomas") %>%
-  add_row(gene = "TP53", mutant_samples = 0.00001, disease = "Low-grade gliomas") %>%
-  add_row(gene = "TP53", mutant_samples = 0.00001, disease = "Embryonal tumors") %>%
-  add_row(gene = "TP53", mutant_samples = 0.00001, disease = "blank")
+  tibble::add_row(gene = "TP53", mutant_samples = 0.00001, disease = "High-grade gliomas") %>%
+  tibble::add_row(gene = "TP53", mutant_samples = 0.00001, disease = "Low-grade gliomas") %>%
+  tibble::add_row(gene = "TP53", mutant_samples = 0.00001, disease = "Embryonal tumors") %>%
+  tibble::add_row(gene = "TP53", mutant_samples = 0.00001, disease = "blank")
 
 
 # What are the top 10 mutated cancer display groups?
