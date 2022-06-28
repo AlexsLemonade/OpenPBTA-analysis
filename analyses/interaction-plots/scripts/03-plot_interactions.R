@@ -327,7 +327,6 @@ disease_plot <- ggplot(
     legend.key.size = unit(1, "char"),
     legend.text = element_text(size = rel(0.85)),
   )
-disease_plot
 
 
 if (!is.na(opts$disease_plot)){
