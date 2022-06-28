@@ -255,6 +255,7 @@ disease_df <-
                        "Craniopharyngioma",
                        "Meningioma")
  
+# Add display values with bold for headers and `atop` to add spacing
  display_disease_lab <- c(expression(bold("High-grade gliomas")),
                        "Diffuse midline glioma",
                        "Other high-grade gliomas",
