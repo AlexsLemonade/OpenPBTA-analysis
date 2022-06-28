@@ -134,8 +134,21 @@ na_color <- divergent_palette %>%
 histologies_color_key_df <- readr::read_tsv(file.path(palette_dir,
                                                       "broad_histology_cancer_group_palette.tsv"),
                                             col_types = readr::cols()) %>%
-  add_row(cancer_group_display = "High-grade gliomas", cancer_group_hex = "#FFFFFF") %>%
-  add_row(cancer_group_display = "Low-grade gliomas", cancer_group_hex = "#FFFFFF")
+  # add a border column 
+  mutate(border = "#666666") %>%
+  # colors for headings (NA because these will be blank)
+  add_row(cancer_group_display = "High-grade gliomas", 
+          cancer_group_hex = NA, 
+          border = NA ) %>%
+  add_row(cancer_group_display = "Low-grade gliomas", 
+          cancer_group_hex = NA,
+          border = NA) %>%
+  add_row(cancer_group_display = "Embryonal tumors", 
+          cancer_group_hex = NA,
+          border = NA) %>%
+   add_row(cancer_group_display = "blank", 
+          cancer_group_hex = NA,
+          border = NA) 
 
 # create scales for consistent sizing
 # The scales will need to have opts$plotsize elements,
