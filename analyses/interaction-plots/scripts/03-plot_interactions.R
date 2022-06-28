@@ -250,9 +250,11 @@ disease_df <-
                        "Ganglioglioma",
                        "Pleomorphic xanthoastrocytoma",
                        "Other low-grade gliomas",
+                       "Embryonal tumors",
                        "Medulloblastoma",
                        "Atypical Teratoid Rhabdoid Tumor",
                        "Other embryonal tumors",
+                       "blank",
                        "Ependymoma",
                        "Craniopharyngioma",
                        "Meningioma")
