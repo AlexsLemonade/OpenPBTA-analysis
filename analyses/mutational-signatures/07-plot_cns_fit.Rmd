@@ -92,16 +92,18 @@ Note that we are plotting here only the cancer groups used in the [`interaction-
 # Cancer groups we are showing in figure 4
 cancer_groups_to_plot <- c(
   "Diffuse midline glioma",
-  "Other low-grade gliomas",
-  "Craniopharyngioma",
-  "Other high-grade gliomas",
-  "Ganglioglioma",
-  "Medulloblastoma",
-  "Meningioma",
-  "Ependymoma",
+  "Other high-grade glioma",
   "Pilocytic astrocytoma",
-  "Pleomorphic xanthoastrocytoma"
-)
+  "Ganglioglioma",
+  "Pleomorphic xanthoastrocytoma",
+  "Other low-grade glioma",
+  "Medulloblastoma",
+  "Atypical Teratoid Rhabdoid Tumor",
+  "Other embryonal tumor",
+  "Ependymoma",
+  "Craniopharyngioma",
+  "Meningioma"
+  )
 
 # Join input dataframes together
 results_df <- exposures %>% 
@@ -134,7 +136,8 @@ results_df <- results_df %>%
   # Create wrapped with (n=X) factor column for cancer groups
   dplyr::mutate(cancer_group_display_n = stringr::str_wrap(glue::glue("{cancer_group_display} (N={n})"), 30),
                 cancer_group_display_n = forcats::fct_reorder(cancer_group_display_n, n, .desc=T)) %>%
-  dplyr::inner_join(results_df)
+  dplyr::inner_join(results_df) %>%
+  unique()
 
 # We also write `results_df` to a file since it will be used by the `08` notebooks.
 readr::write_tsv(results_df, results_df_file)
@@ -240,7 +243,8 @@ samples_in_order <- results_df %>%
   dplyr::filter(signature == 1) %>%
   dplyr::select(exposure, Kids_First_Biospecimen_ID) %>%
   dplyr::arrange(-exposure) %>%
-  dplyr::pull(Kids_First_Biospecimen_ID)
+  dplyr::pull(Kids_First_Biospecimen_ID) %>%
+  unique()
 
 
 sample_exposures_barplot <- results_df %>%
@@ -337,7 +341,7 @@ if (!(params$is_ci == 1)) {
     ggplot2::scale_color_manual(values = tumor_colors) +
     # add in mean guiding point
     ggplot2::stat_summary(color = "black") + 
-    ggplot2::facet_wrap(~cancer_group_display_n,nrow = 2) +
+    ggplot2::facet_wrap(~cancer_group_display_n, nrow = 2) +
     ggplot2::labs(
       x = "Tumor descriptor",
       y = "Signature 1 Weight"
@@ -345,8 +349,9 @@ if (!(params$is_ci == 1)) {
     ggpubr::theme_pubr() + 
     ggplot2::theme(
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, size = 8),
+      strip.text = ggplot2::element_text(size = 9),
       legend.position = "none"
-    )
+    ) 
   
   # We can also viz with molecular subtypes, focusing only on subtypes with decent sample sizes. For now let's say N=15.
   subtypes <- sig1_exposures %>%
