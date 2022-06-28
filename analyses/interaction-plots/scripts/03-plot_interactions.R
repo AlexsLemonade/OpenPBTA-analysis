@@ -287,8 +287,10 @@ disease_df_fct <- disease_df %>%
 
 histologies_color_key <- histologies_color_key_df$cancer_group_hex
 names(histologies_color_key) <- histologies_color_key_df$cancer_group_display
-histologies_color_key <- c(histologies_color_key, "High-grade gliomas" = "#FFFFFF")
-histologies_color_key <- c(histologies_color_key, "Low-grade gliomas" = "#FFFFFF")
+
+# set up border colors
+histologies_border_key <- histologies_color_key_df$border
+names(histologies_border_key) <- histologies_color_key_df$cancer_group_display
 
 # get scale to match cooccurence plot
 # Extra scale units for the case where there are fewer genes than opts$plotsize
