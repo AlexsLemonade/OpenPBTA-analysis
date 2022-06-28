@@ -11,7 +11,6 @@
 
 library(tidyverse)
 library(ggpubr)
-library(ggpattern)
 
 #### Directories ---------------------------------------------------------------
 
