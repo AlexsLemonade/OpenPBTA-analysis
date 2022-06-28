@@ -13,9 +13,9 @@ jobs:
           name: Data Download
           command: GITHUB_PAT='${GH_PAT}' OPENPBTA_URL=https://s3.amazonaws.com/d3b-openaccess-us-east-1-prd-pbta/data OPENPBTA_RELEASE=testing ./scripts/run_in_ci.sh bash download-data.sh
 
-      - run:
-          name: List Data Directory Contents
-          command: ./scripts/run_in_ci.sh ls data/testing
+#       - run:
+#           name: List Data Directory Contents
+#           command: ./scripts/run_in_ci.sh ls data/testing
 
 #       - run:
 #           name: Check python packages
