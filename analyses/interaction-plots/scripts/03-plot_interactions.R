@@ -310,15 +310,18 @@ disease_plot <- ggplot(
   disease_df_fct,
   aes(x = gene,
       y = mutant_samples,
-      fill = disease_factor)) +
+      fill = disease_factor,
+      color = disease_factor)) +
   geom_col(width = 0.7,
            size = 0.15) +
   labs(
     x = "",
     y = "Samples with mutations",
-    fill = "Cancer Group"
+    fill = "Cancer Group",
+    color = "Cancer Group"
   ) +
-  scale_fill_manual(values = histologies_color_key, labels = display_disease_lab)+
+  scale_fill_manual(values = histologies_color_key, labels = display_disease_lab) +
+  scale_color_manual(values = histologies_border_key, labels = display_disease_lab) +
   scale_x_discrete(
     limits = xscale2,
     breaks = disease_df$gene
