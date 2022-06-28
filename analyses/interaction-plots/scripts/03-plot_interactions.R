@@ -217,61 +217,64 @@ if (is.na(opts$disease_table)) {
 # otherwise make a gene by disease stacked bar chart
 
 disease_file <- opts$disease_table
-disease_df <-
-  readr::read_tsv(disease_file, col_types = readr::cols()) %>%
+
+# read in diseases by gene file
+disease_df <- readr::read_tsv(disease_file, col_types = readr::cols()) %>%
   dplyr::mutate(gene = factor(gene, levels = genes)) %>%
-# add plot header rows
+  # add plot header rows
   add_row(gene = "TP53", mutant_samples = 0.00001, disease = "High-grade gliomas") %>%
   add_row(gene = "TP53", mutant_samples = 0.00001, disease = "Low-grade gliomas") %>%
   add_row(gene = "TP53", mutant_samples = 0.00001, disease = "Embryonal tumors") %>%
-  add_row(gene = "TP53", mutant_samples = 0.00001, disease = "blank") %>%
+  add_row(gene = "TP53", mutant_samples = 0.00001, disease = "blank")
+
 
 # What are the top 10 mutated cancer display groups?
- display_diseases <- disease_df %>%
-   # remove other from top 10 possibilities
-   dplyr::filter(disease != "Other") %>%
-   dplyr::select(disease, mutant_samples) %>%
-   dplyr::arrange(desc(mutant_samples)) %>%
-   dplyr::select(disease) %>%
-   unique() %>%
-   head(10) %>% # top 10 diseases with highest mutated samples
-   dplyr::pull(disease)
+# display_diseases <- disease_df %>%
+#   # remove other from top 10 possibilities
+#   dplyr::filter(disease != "Other") %>%
+#   dplyr::select(disease, mutant_samples) %>%
+#   dplyr::arrange(desc(mutant_samples)) %>%
+#   dplyr::select(disease) %>%
+#   unique() %>%
+#   head(10) %>% # top 10 diseases with highest mutated samples
+#   dplyr::pull(disease)
  
- # Print
- print(display_diseases)
+# Print
+# print(display_diseases)
  
  # We want to set the order to have "other" HGG or LGG come last within the groups
  
  display_diseases <- c("High-grade gliomas",
                        "Diffuse midline glioma",
-                       "Other high-grade gliomas",
+                       "Other high-grade glioma",
                        "Low-grade gliomas",
                        "Pilocytic astrocytoma",
                        "Ganglioglioma",
                        "Pleomorphic xanthoastrocytoma",
-                       "Other low-grade gliomas",
+                       "Other low-grade glioma",
                        "Embryonal tumors",
                        "Medulloblastoma",
                        "Atypical Teratoid Rhabdoid Tumor",
-                       "Other embryonal tumors",
+                       "Other embryonal tumor",
                        "blank",
                        "Ependymoma",
                        "Craniopharyngioma",
-                       "Meningioma")
+                       "Meningioma",
+                       "Other")
  
 # Add display values with bold for headers and `atop` to add spacing
  display_disease_lab <- c(expression(bold("High-grade gliomas")),
                        "Diffuse midline glioma",
-                       "Other high-grade gliomas",
+                       "Other high-grade glioma",
                        expression(atop(" ", bold("Low-grade gliomas"))),
                        "Pilocytic astrocytoma",
                        "Ganglioglioma",
                        "Pleomorphic xanthoastrocytoma",
-                       "Other low-grade gliomas",
+                       "Other low-grade glioma",
                        expression(atop(" ", bold("Embryonal tumors"))),
                        "Medulloblastoma",
                        "Atypical Teratoid Rhabdoid Tumor",
-                       "Other embryonal tumors",
+                       "Other embryonal tumor",
                        " ",
                        "Ependymoma",
                        "Craniopharyngioma",
@@ -307,10 +310,8 @@ disease_plot <- ggplot(
   disease_df_fct,
   aes(x = gene,
       y = mutant_samples,
-      fill = disease_factor,
-      color = disease_factor)) +
+      fill = disease_factor)) +
   geom_col(width = 0.7,
-           color = "#666666", 
            size = 0.15) +
   labs(
     x = "",
