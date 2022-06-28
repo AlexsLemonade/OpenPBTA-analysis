@@ -222,7 +222,9 @@ disease_df <-
   dplyr::mutate(gene = factor(gene, levels = genes)) %>%
 # add plot header rows
   add_row(gene = "TP53", mutant_samples = 0.00001, disease = "High-grade gliomas") %>%
-  add_row(gene = "TP53", mutant_samples = 0.00001, disease = "Low-grade gliomas")
+  add_row(gene = "TP53", mutant_samples = 0.00001, disease = "Low-grade gliomas") %>%
+  add_row(gene = "TP53", mutant_samples = 0.00001, disease = "Embryonal tumors") %>%
+  add_row(gene = "TP53", mutant_samples = 0.00001, disease = "blank") %>%
 
 # What are the top 10 mutated cancer display groups?
  display_diseases <- disease_df %>%
