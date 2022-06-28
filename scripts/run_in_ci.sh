@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# PAT for installing R packages from GitHub
+# In the first step of CI, this will use a public access token from a !person's account
+GITHUB_PAT=${GH_PAT:-""}
+
 # This script should always run as if it were being called from
 # the directory it lives in.
 script_directory="$(perl -e 'use File::Basename;
@@ -20,6 +24,7 @@ while [ $finished != 0 ] && [ $attempts -lt 3 ]; do
     fi
 
     docker build \
+           --build-arg GITHUB_PAT=${GITHUB_PAT} \
            --tag "open-pbta" \
            --file "Dockerfile" .
     finished=$?

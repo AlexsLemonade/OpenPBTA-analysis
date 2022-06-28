@@ -158,13 +158,17 @@ RUN ./install_bioc.r \
     VennDiagram  \
     viridis
 
-### Install R packages from GitHub ###
-
 # Need to explicitly check via loading
 # bedr package & check to make sure binaries are available by loading
 RUN ./install_bioc.r \
     bedr \
     && Rscript -e "library(bedr)"
+
+### Install R packages from GitHub ###
+
+# To install R packages from GitHub without getting rate limited
+ARG GITHUB_PAT=""
+RUN echo "GITHUB_PAT='${GITHUB_PAT}'" > /home/rstudio/.Renviron
 
 # maftools for proof of concept in create-subset-files
 RUN R -e "remotes::install_github('PoisonAlien/maftools', ref = '9719868262f946e0b8eb2e7ec2510ee18c6cafa3')"
@@ -189,7 +193,7 @@ RUN R -e "remotes::install_github('timelyportfolio/d3treeR', ref = '0eaba7f1c643
 # Need this package to make plots colorblind friendly
 RUN R -e "remotes::install_github('clauswilke/colorblindr', ref = '1ac3d4d62dad047b68bb66c06cee927a4517d678', dependencies = TRUE)"
 
-# remote package EXTEND needed for telomerase-activity-prediciton analysis
+# remote package EXTEND needed for telomerase-activity-prediction analysis
 RUN R -e "remotes::install_github('NNoureen/EXTEND', ref = '467c2724e1324ef05ad9260c3079e5b0b0366420', dependencies = TRUE)"
 
 # package required for shatterseek
@@ -225,6 +229,9 @@ RUN R -e "remotes::install_github('coolbutuseless/ggpattern', ref = '390e13fead0
 # Molecular subtyping MB
 RUN R -e "remotes::install_github('d3b-center/medullo-classifier-package', ref = 'e3d12f64e2e4e00f5ea884f3353eb8c4b612abe8', dependencies = TRUE, upgrade = FALSE)" \
     && Rscript -e "library(medulloPackage)"
+
+# Final image should not contain .Renviron file
+RUN rm -f /home/rstudio/.Renviron
 
 # Install python packages
 ##########################
@@ -352,6 +359,5 @@ WORKDIR /rocker-build/
 
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
-
 
 WORKDIR /rocker-build/
