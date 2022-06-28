@@ -185,7 +185,7 @@ broad_histology_df <- data.frame(
                               "Mesenchymal non-meningothelial tumor",
                               "Neuronal and mixed neuronal-glial tumor",
                               "Tumor of cranial and paraspinal nerves",
-                              "Tumors of sellar region"), 
+                              "Tumor of sellar region"), 
   broad_histology_hex = c("#590024",
                           "#ff80e5",
                           "#220040",
@@ -229,17 +229,17 @@ cancer_group_df <- data.frame(
   cancer_group_display = c("Choroid plexus papilloma",
                            "Diffuse intrinsic pontine glioma",
                            "Diffuse midline glioma",
-                           "Other high-grade gliomas",
+                           "Other high-grade glioma",
                            "Atypical Teratoid Rhabdoid Tumor",
                            "Medulloblastoma",
-                           "Other embryonal tumors",
+                           "Other embryonal tumor",
                            "Ependymoma",
                            "Teratoma",
                            "Ganglioglioma",
                            "Pilocytic astrocytoma",
                            "Pleomorphic xanthoastrocytoma",
                            "Subependymal Giant Cell Astrocytoma",
-                           "Other low-grade gliomas",
+                           "Other low-grade glioma",
                            "Meningioma",
                            "Ewing sarcoma",
                            "Dysembryoplastic neuroepithelial tumor",
@@ -332,16 +332,17 @@ palette_df <- histologies_df %>%
   mutate(broad_histology_display = case_when(
       broad_histology == "Low-grade astrocytic tumor" ~ "Low-grade glioma",
       broad_histology == "Diffuse astrocytic and oligodendroglial tumor" ~ "High-grade glioma", 
+      broad_histology == "Tumors of sellar region" ~ "Tumor of sellar region",
       TRUE ~ broad_histology
     ),
   # For display, group some cancer groups together into a specific "Other"
   # category
   cancer_group_display = case_when(
-    # We must take into account broad histology for (at least) Oligodendroglioma
-    # for individual samples to get color coded correctly
-      (broad_histology == "Diffuse astrocytic and oligodendroglial tumor") & (cancer_group %in% other_hgg) ~ "Other high-grade gliomas",
-      (broad_histology == "Low-grade astrocytic tumor") & (cancer_group %in% other_lgg) ~ "Other low-grade gliomas",
-      cancer_group %in% other_embryonal ~ "Other embryonal tumors",
+    # We must take into account broad histology for (at least) individual
+    # Oligodendroglioma samples to get color coded correctly
+      (broad_histology == "Diffuse astrocytic and oligodendroglial tumor") & (cancer_group %in% other_hgg) ~ "Other high-grade glioma",
+      (broad_histology == "Low-grade astrocytic tumor") & (cancer_group %in% other_lgg) ~ "Other low-grade glioma",
+      cancer_group %in% other_embryonal ~ "Other embryonal tumor",
       TRUE ~ cancer_group
     )
   ) %>%
@@ -411,7 +412,9 @@ broad_histology_order_df <- histologies_df %>%
                                 after = Inf),
          broad_histology_order = as.numeric(broad_histology_display)) %>%
   # No longer require the sample size
-  select(-n)
+  select(-n) %>%
+  # Sort for easy browsing
+  arrange(broad_histology_display)
 
 broad_histology_order_df
 ```
@@ -464,7 +467,13 @@ palette_df <- palette_df %>%
   ))
 ```
 
-### Save to TSV 
+### Display final table and save to TSV 
+
+```{r}
+# For browsing
+palette_df
+```
+
 
 ```{r}
 readr::write_tsv(palette_df, 
