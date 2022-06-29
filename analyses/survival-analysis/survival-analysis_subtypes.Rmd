@@ -216,4 +216,9 @@ pairwise_survdiff(formula = Surv(OS_years, OS_status) ~ molecular_subtype,
 
 
 
+## Session Info
+
+```{r Print session info}
+sessionInfo()
+```
 
