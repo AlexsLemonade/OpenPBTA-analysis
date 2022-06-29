@@ -15,7 +15,7 @@ jobs:
 
       - run:
           name: List Data Directory Contents
-          command: ./scripts/run_in_ci.sh ls data/testing
+          command: GITHUB_PAT=$GH_PAT ./scripts/run_in_ci.sh ls data/testing
 
 #       - run:
 #           name: Check python packages
