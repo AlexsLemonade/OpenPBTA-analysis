@@ -20,7 +20,7 @@ while [ $finished != 0 ] && [ $attempts -lt 3 ]; do
     fi
 
     docker build \
-           --secret id=GITHUB_PAT,env=GH_PAT \
+           --secret id=gh_pat,env=GH_PAT \
            --tag "open-pbta" \
            --file "Dockerfile" .
     finished=$?
