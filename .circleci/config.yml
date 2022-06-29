@@ -173,7 +173,7 @@ jobs:
           name: Chromothripsis
           command: ./scripts/run_in_ci.sh bash analyses/chromothripsis/run-chromothripsis.sh
 
-     - run:
+      - run:
          name: Oncoprint plotting
          command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
 
@@ -181,7 +181,7 @@ jobs:
           name: GISTIC Plots
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd', clean = TRUE)"
 
-     - run:
+      - run:
          name: CN Status Heatmap
          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/cn_status_heatmap.Rmd', clean = TRUE)"
 
