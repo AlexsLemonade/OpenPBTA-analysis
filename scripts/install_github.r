@@ -28,10 +28,8 @@ if(is.null(opts$pat_file)){
   pat <- scan(opts$pat_file, what = "character", n = 1)
 }
 
-# remotes::install_github(repo = opts$repository,
-#                         ref = opts$ref,
-#                         dependencies = !opts$no_deps,
-#                         auth_token = pat,
-#                         dependencies = TRUE,
-#                         upgrade = FALSE)
-print(opts)
+remotes::install_github(repo = opts$repository,
+                        ref = opts$ref,
+                        dependencies = !opts$no_deps,
+                        auth_token = pat,
+                        upgrade = FALSE)
