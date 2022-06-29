@@ -299,7 +299,8 @@ workflows:
   version: 2
   test-and-deploy:
     jobs:
-      - run_analyses
+      - run_analyses:
+          context: openpbta-docker
 
       - deploy:
           requires:
