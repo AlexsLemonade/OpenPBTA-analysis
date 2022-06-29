@@ -300,9 +300,9 @@ workflows:
   test-and-deploy:
     jobs:
       - run_analyses:
-          context: openpbta-docker
 
       - deploy:
+          context: openpbta-docker
           requires:
             - run_analyses
           filters:
