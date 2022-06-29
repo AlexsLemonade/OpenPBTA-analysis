@@ -168,7 +168,6 @@ RUN apt-get -y --no-install-recommends install \
 
 # To install R packages from GitHub without getting rate limited
 ARG GITHUB_PAT=""
-RUN echo "GITHUB_PAT='${GITHUB_PAT}'" > /home/rstudio/.Renviron
 
 # # maftools for proof of concept in create-subset-files
 # RUN R -e "remotes::install_github('PoisonAlien/maftools', ref = '9719868262f946e0b8eb2e7ec2510ee18c6cafa3')"
@@ -230,8 +229,6 @@ RUN R -e "remotes::install_github('Nik-Zainal-Group/signature.tools.lib', ref = 
 # RUN R -e "remotes::install_github('d3b-center/medullo-classifier-package', ref = 'e3d12f64e2e4e00f5ea884f3353eb8c4b612abe8', dependencies = TRUE, upgrade = FALSE)" \
 #     && Rscript -e "library(medulloPackage)"
 
-# Final image should not contain .Renviron file
-RUN rm -f /home/rstudio/.Renviron
 
 # Install python packages
 ##########################
