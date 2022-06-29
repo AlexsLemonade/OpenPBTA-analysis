@@ -7,6 +7,9 @@
 library(tidyverse)
 library(ComplexHeatmap)
 
+# set seed for jitter plots
+set.seed(1979)
+
 
 ## Define paths  -----------------------
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
