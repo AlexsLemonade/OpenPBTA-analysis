@@ -19,7 +19,7 @@ This analysis can be run via the command line from the top directory of the
 repository as follows:
 
 ```
-bash analyses/chromosome-instability/run_breakpoint_analysis.sh
+bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
 ```
 
 ## Methods and Output
