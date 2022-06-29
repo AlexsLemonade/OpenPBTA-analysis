@@ -12,12 +12,12 @@ cd "$script_directory" || exit
 # If this is set to 1, only run code necessary for generating manuscript figures: 01-run-EXTEND.R on stranded.
 RUN_FOR_FIGURES=${OPENPBTA_FOR_FIGURES:-0}
 
+
 mkdir -p results
 mkdir -p plots
 
 if [ "${RUN_FOR_FIGURES}" == "1" ]; then
 
-  
   #generate telomerase activities using gene expression data from collapse RNA seq data files
   Rscript --vanilla 01-run-EXTEND.R --input ../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds --output results/TelomeraseScores_PTBAStranded_FPKM.txt
 
