@@ -10,12 +10,14 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 # If this is set to 1, only run code necessary for generating manuscript figures: 01-run-EXTEND.R on stranded.
-RUN_FOR_FIGURES==${OPENPBTA_FOR_FIGURES:-0}
+RUN_FOR_FIGURES=${OPENPBTA_FOR_FIGURES:-0}
 
 mkdir -p results
 mkdir -p plots
 
-if [[ ${RUN_FOR_FIGURES} -eq "1" ]]; then
+if [ "${RUN_FOR_FIGURES}" == "1" ]; then
+
+  
   #generate telomerase activities using gene expression data from collapse RNA seq data files
   Rscript --vanilla 01-run-EXTEND.R --input ../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds --output results/TelomeraseScores_PTBAStranded_FPKM.txt
 
@@ -48,4 +50,4 @@ else
   echo "Plotting distribution of EXTEND scores in MB subtypes..."
   Rscript --vanilla 05-Comparing-MolecularSubtypes-EXTENDScores.R 
 
-done
+fi
