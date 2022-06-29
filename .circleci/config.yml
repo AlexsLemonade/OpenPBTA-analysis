@@ -17,270 +17,270 @@ jobs:
           name: List Data Directory Contents
           command: ./scripts/run_in_ci.sh ls data/testing
 
-#       - run:
-#           name: Check python packages
-#           command: ./scripts/run_in_ci.sh bash scripts/check-python.sh
+      - run:
+          name: Check python packages
+          command: ./scripts/run_in_ci.sh bash scripts/check-python.sh
 
-#       - run:
-#           name: Sample Distribution Analyses
-#           command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
+      - run:
+          name: Sample Distribution Analyses
+          command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
 
 
-#       - run:
-#           name: Transcriptome dimensionality reduction
-#           command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh
+      - run:
+          name: Transcriptome dimensionality reduction
+          command: ./scripts/run_in_ci.sh ./analyses/transcriptomic-dimension-reduction/ci-dimension-reduction-plots.sh
 
-#       # The analysis no longer needs to be tested as it has been retired and is better covered by 'SNV Caller Analysis' below.
-#       #- run:
-#       #    name: Mutect2 vs Strelka2
-#       #    command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/01-set-up.Rmd', clean = TRUE);
-#       #                                                rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', clean = TRUE)"
+      # The analysis no longer needs to be tested as it has been retired and is better covered by 'SNV Caller Analysis' below.
+      #- run:
+      #    name: Mutect2 vs Strelka2
+      #    command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/mutect2-vs-strelka2/01-set-up.Rmd', clean = TRUE);
+      #                                                rmarkdown::render('analyses/mutect2-vs-strelka2/02-analyze-concordance.Rmd', clean = TRUE)"
 
-#      ### MOLECULAR SUBTYPING ###
+     ### MOLECULAR SUBTYPING ###
 
-#       - run:
-#           name: Molecular Subtyping - HGG
-#           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
+      - run:
+          name: Molecular Subtyping - HGG
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-HGG/run-molecular-subtyping-HGG.sh
 
-#       - run:
-#           name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors
-#           command: OPENPBTA_TESTING=1 OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
+      - run:
+          name: Molecular subtyping - Non-MB/Non-ATRT Embryonal tumors
+          command: OPENPBTA_TESTING=1 OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-embryonal/run-embryonal-subtyping.sh
 
-#       - run:
-#           name: Molecular Subtyping and Plotting - ATRT
-#           command:  OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-ATRT/run-molecular-subtyping-ATRT.sh
+      - run:
+          name: Molecular Subtyping and Plotting - ATRT
+          command:  OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-ATRT/run-molecular-subtyping-ATRT.sh
 
-#       - run:
-#           name: Molecular subtyping Chordoma
-#           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-chordoma/run-molecular-subtyping-chordoma.sh
+      - run:
+          name: Molecular subtyping Chordoma
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-chordoma/run-molecular-subtyping-chordoma.sh
 
-#       - run:
-#           name: Molecular subtyping - Ependymoma
-#           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
+      - run:
+          name: Molecular subtyping - Ependymoma
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EPN/run-molecular-subtyping-EPN.sh
 
-#       - run:
-#           name: Molecular Subtyping - LGAT
-#           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-LGAT/run_subtyping.sh
+      - run:
+          name: Molecular Subtyping - LGAT
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-LGAT/run_subtyping.sh
 
-#       - run:
-#          name: Molecular Subtyping - EWS
-#          command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EWS/run_subtyping.sh
+      - run:
+         name: Molecular Subtyping - EWS
+         command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-EWS/run_subtyping.sh
 
-#       - run:
-#          name: Molecular Subtyping Neurocytoma
-#          command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-neurocytoma/run_subtyping.sh
+      - run:
+         name: Molecular Subtyping Neurocytoma
+         command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-neurocytoma/run_subtyping.sh
 
-#       - run:
-#          name: Molecular Subtyping - Compile and incorporate pathology feedback
-#          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-pathology/run-subtyping-aggregation.sh
+      - run:
+         name: Molecular Subtyping - Compile and incorporate pathology feedback
+         command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-pathology/run-subtyping-aggregation.sh
 
-#       - run:
-#          name: Molecular Subtyping - MB
-#          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-MB/run-molecular-subtyping-mb.sh
+      - run:
+         name: Molecular Subtyping - MB
+         command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-MB/run-molecular-subtyping-mb.sh
 
-#       - run:
-#           name: Molecular Subtyping - CRANIO
-#           command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-CRANIO/run-molecular-subtyping-cranio.sh
+      - run:
+          name: Molecular Subtyping - CRANIO
+          command: OPENPBTA_SUBSET=0 ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-CRANIO/run-molecular-subtyping-cranio.sh
 
-#       - run:
-#          name: Molecular Subtyping - INTEGRATE to BASE histology
-#          command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-integrate/run-subtyping-integrate.sh
+      - run:
+         name: Molecular Subtyping - INTEGRATE to BASE histology
+         command: ./scripts/run_in_ci.sh bash analyses/molecular-subtyping-integrate/run-subtyping-integrate.sh
 
-#       # Deprecated - these results do not include germline calls and therefore are insufficient by subtyping
-#       # - run:
-#       #     name: SHH TP53 Molecular Subtyping
-#       #     command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-SHH-tp53/SHH-tp53-molecular-subtyping-data-prep.Rmd', clean = TRUE)"
+      # Deprecated - these results do not include germline calls and therefore are insufficient by subtyping
+      # - run:
+      #     name: SHH TP53 Molecular Subtyping
+      #     command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/molecular-subtyping-SHH-tp53/SHH-tp53-molecular-subtyping-data-prep.Rmd', clean = TRUE)"
 
-#       ### END MOLECULAR SUBTYPING ###
+      ### END MOLECULAR SUBTYPING ###
 
-#       - run:
-#           name: Collapse RSEM
-#           command: ./scripts/run_in_ci.sh bash analyses/collapse-rnaseq/run-collapse-rnaseq.sh
+      - run:
+          name: Collapse RSEM
+          command: ./scripts/run_in_ci.sh bash analyses/collapse-rnaseq/run-collapse-rnaseq.sh
 
-#       - run:
-#          name: Fusion Summary
-#          command: ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
+      - run:
+         name: Fusion Summary
+         command: ./scripts/run_in_ci.sh bash "analyses/fusion-summary/run-new-analysis.sh"
 
-#       - run:
-#           name: Immune deconvolution using immunedeconv
-#           command: OPENPBTA_QUICK_IMMUNE=1 ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
+      - run:
+          name: Immune deconvolution using immunedeconv
+          command: OPENPBTA_QUICK_IMMUNE=1 ./scripts/run_in_ci.sh bash analyses/immune-deconv/run-immune-deconv.sh
 
-#       - run:
-#           name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded data and creates recurrent fusion list
-#           command: ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
+      - run:
+          name: Fusion standardization and annotation for STARfusion and Arriba with polya and stranded data and creates recurrent fusion list
+          command: ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
 
-#       - run:
-#           name: Fusion standardization and annotation for STARFusio and Arriba for base subtyping
-#           command: OPENPBTA_BASE_SUBTYPING=1 ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
+      - run:
+          name: Fusion standardization and annotation for STARFusio and Arriba for base subtyping
+          command: OPENPBTA_BASE_SUBTYPING=1 ./scripts/run_in_ci.sh bash "analyses/fusion_filtering/run_fusion_merged.sh"
 
-#       - run:
-#           name: Sex prediction from RNA-seq - Clean data-train elasticnet-evaluate model
-#           command: OPENPBTA_PERCENT=0 ./scripts/run_in_ci.sh bash analyses/sex-prediction-from-RNASeq/run-sex-prediction-from-RNASeq.sh
+      - run:
+          name: Sex prediction from RNA-seq - Clean data-train elasticnet-evaluate model
+          command: OPENPBTA_PERCENT=0 ./scripts/run_in_ci.sh bash analyses/sex-prediction-from-RNASeq/run-sex-prediction-from-RNASeq.sh
 
-#       # Deprecated: this comparison is no longer needed after separating Poly-A and stranded.
-#       # - run:
-#       #     name: Selection Strategy Comparison
-#       #     command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/selection-strategy-comparison/01-selection-strategies.rmd', params = list(neighbors = 2), clean = TRUE)"
+      # Deprecated: this comparison is no longer needed after separating Poly-A and stranded.
+      # - run:
+      #     name: Selection Strategy Comparison
+      #     command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/selection-strategy-comparison/01-selection-strategies.rmd', params = list(neighbors = 2), clean = TRUE)"
 
-#       - run:
-#           name: TP53 NF1 classifier run
-#           command: OPENPBTA_POLYAPLOT=0 ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"
+      - run:
+          name: TP53 NF1 classifier run
+          command: OPENPBTA_POLYAPLOT=0 ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier.sh"
 
-# # This is deprecated
-# #      - run:
-# #          name: ssGSEA Analysis
-# #          command: OPENPBTA_ANOVAPVALUE=0.25 OPENPBTA_TUKEYPVALUE=0.50 OPENPBTA_PERCKEEP=0.50 ./scripts/run_in_ci.sh bash analyses/ssgsea-hallmark/run-ssgsea-hallmark.sh
+# This is deprecated
+#      - run:
+#          name: ssGSEA Analysis
+#          command: OPENPBTA_ANOVAPVALUE=0.25 OPENPBTA_TUKEYPVALUE=0.50 OPENPBTA_PERCKEEP=0.50 ./scripts/run_in_ci.sh bash analyses/ssgsea-hallmark/run-ssgsea-hallmark.sh
 
 
-# # The second method - ControlFREEC - was not included as of v6, so the comparison can no longer be performed
-# #      - run:
-# #          name: CNV Caller Comparison
-# #          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-comparison/01-cnv-comparison-plotting.Rmd', clean = TRUE)"
+# The second method - ControlFREEC - was not included as of v6, so the comparison can no longer be performed
+#      - run:
+#          name: CNV Caller Comparison
+#          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-comparison/01-cnv-comparison-plotting.Rmd', clean = TRUE)"
 
-#       - run:
-#           name: Independent samples
-#           command: ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh
+      - run:
+          name: Independent samples
+          command: ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh
 
-#       - run:
-#           name: Independent sample for base subtyping
-#           command: OPENPBTA_BASE_SUBTYPING=1 ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh
+      - run:
+          name: Independent sample for base subtyping
+          command: OPENPBTA_BASE_SUBTYPING=1 ./scripts/run_in_ci.sh bash analyses/independent-samples/run-independent-samples.sh
 
-#       - run:
-#           name: Interaction plot
-#           command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh
+      - run:
+          name: Interaction plot
+          command: OPENPBTA_ALL=0 ./scripts/run_in_ci.sh bash analyses/interaction-plots/01-create-interaction-plots.sh
 
-#       - run:
-#           name: Mutational Signatures
-#           command: OPENPBTA_QUICK_MUTSIGS=1 OPENPBTA_CNS_FIT_ONLY=0 ./scripts/run_in_ci.sh bash analyses/mutational-signatures/run_mutational_signatures.sh
-
-# #      - run:
-# #          name: Chromosomal instability breakpoints
-# #          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
-
-#       - run:
-#           name: Copy number consensus
-#           command: ./scripts/run_in_ci.sh bash "analyses/copy_number_consensus_call/run_consensus_call.sh"
-
-#       - run:
-#           name: Focal CN Preparation
-#           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
+      - run:
+          name: Mutational Signatures
+          command: OPENPBTA_QUICK_MUTSIGS=1 OPENPBTA_CNS_FIT_ONLY=0 ./scripts/run_in_ci.sh bash analyses/mutational-signatures/run_mutational_signatures.sh
+
+#      - run:
+#          name: Chromosomal instability breakpoints
+#          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
+
+      - run:
+          name: Copy number consensus
+          command: ./scripts/run_in_ci.sh bash "analyses/copy_number_consensus_call/run_consensus_call.sh"
+
+      - run:
+          name: Focal CN Preparation
+          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
 
-#       - run:
-#           name: Comparative RNASeq 
-#           command: ./scripts/run_in_ci.sh bash analyses/comparative-RNASeq-analysis/run-comparative-RNAseq.sh
-
-#       - run:
-#           name: Chromothripsis
-#           command: ./scripts/run_in_ci.sh bash analyses/chromothripsis/run-chromothripsis.sh
-
-# #      - run:
-# #          name: Oncoprint plotting
-# #          command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
-
-#       - run:
-#           name: GISTIC Plots
-#           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd', clean = TRUE)"
+      - run:
+          name: Comparative RNASeq 
+          command: ./scripts/run_in_ci.sh bash analyses/comparative-RNASeq-analysis/run-comparative-RNAseq.sh
+
+      - run:
+          name: Chromothripsis
+          command: ./scripts/run_in_ci.sh bash analyses/chromothripsis/run-chromothripsis.sh
+
+#      - run:
+#          name: Oncoprint plotting
+#          command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
+
+      - run:
+          name: GISTIC Plots
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd', clean = TRUE)"
 
-# #      - run:
-# #          name: CN Status Heatmap
-# #          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/cn_status_heatmap.Rmd', clean = TRUE)"
+#      - run:
+#          name: CN Status Heatmap
+#          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/cn_status_heatmap.Rmd', clean = TRUE)"
 
-#       - run:
-#           name: Gene set enrichment analysis to generate GSVA scores
-#           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh"
+      - run:
+          name: Gene set enrichment analysis to generate GSVA scores
+          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh"
 
-#       - run:
-#           name: Gene set enrichment analysis to generate GSVA scores FOR BASE SUBTYPING
-#           command: OPENPBTA_TESTING=1 OPENPBTA_BASE_SUBTYPING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh"
+      - run:
+          name: Gene set enrichment analysis to generate GSVA scores FOR BASE SUBTYPING
+          command: OPENPBTA_TESTING=1 OPENPBTA_BASE_SUBTYPING=1 ./scripts/run_in_ci.sh bash "analyses/gene-set-enrichment-analysis/run-gsea.sh"
 
-#       - run:
-#           name: Telomerase activity
-#           command: ./scripts/run_in_ci.sh bash analyses/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
+      - run:
+          name: Telomerase activity
+          command: ./scripts/run_in_ci.sh bash analyses/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
 
-#       - run:
-#           name: GISTIC Results Comparison
-#           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/compare-gistic/run-compare-gistic.sh
+      - run:
+          name: GISTIC Results Comparison
+          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/compare-gistic/run-compare-gistic.sh
 
 
-#          ################################
-#          #### Add your analysis here ####
-#          ################################
+         ################################
+         #### Add your analysis here ####
+         ################################
 
-# #      - run:
-# #          name: RNA-Seq composition
-# #          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/rna-seq-composition/rna-seq-composition.Rmd', clean = TRUE)"
+#      - run:
+#          name: RNA-Seq composition
+#          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/rna-seq-composition/rna-seq-composition.Rmd', clean = TRUE)"
 
-#       - run:
-#           name: TCGA SNV Caller Analysis
-#           command: ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-tcga.sh
+      - run:
+          name: TCGA SNV Caller Analysis
+          command: ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-tcga.sh
 
-#       - run:
-#           name: SNV Caller Analysis
-#           command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-pbta.sh
+      - run:
+          name: SNV Caller Analysis
+          command: OPENPBTA_VAF_CUTOFF=0.5 ./scripts/run_in_ci.sh bash analyses/snv-callers/run_caller_consensus_analysis-pbta.sh
 
 
-#     # Deprecated
-#     #  - run:
-#     #      name: Tumor mutation burden with TCGA
-#     #      command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tcga-pbta.Rmd', clean = TRUE)"
+    # Deprecated
+    #  - run:
+    #      name: Tumor mutation burden with TCGA
+    #      command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tcga-pbta.Rmd', clean = TRUE)"
 
-#       - run:
-#           name: Exploration of nonsynonymous filter
-#           command: ./scripts/run_in_ci.sh bash analyses/snv-callers/explore_variant_classifications/run_explorations.sh
+      - run:
+          name: Exploration of nonsynonymous filter
+          command: ./scripts/run_in_ci.sh bash analyses/snv-callers/explore_variant_classifications/run_explorations.sh
 
-#       # This analysis was used to explore the TCGA PBTA data when the BED files used to calculate TCGA
-#       # were incorrect https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/568
-#       #- run:
-#       #    name: PBTA vs TCGA explore
-#       #    command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/explore-tcga-pbta.Rmd', clean = TRUE)"
+      # This analysis was used to explore the TCGA PBTA data when the BED files used to calculate TCGA
+      # were incorrect https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/568
+      #- run:
+      #    name: PBTA vs TCGA explore
+      #    command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/explore-tcga-pbta.Rmd', clean = TRUE)"
 
-#       # This analysis arose from 'PBTA vs TCGA explore' and was used to explore Lancet's ability to handle WXS data      #- run:
-#       #    name: Lancet WXS vs WGS test
-#       #    command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/lancet-paired-WXS-WGS.Rmd', clean = TRUE)"
+      # This analysis arose from 'PBTA vs TCGA explore' and was used to explore Lancet's ability to handle WXS data      #- run:
+      #    name: Lancet WXS vs WGS test
+      #    command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/lancet-paired-WXS-WGS.Rmd', clean = TRUE)"
 
-#       # This analysis arose from PBTA vs TCGA explore' and was used to explore Lancet's results with padded vs unpadded
-#       #- run:
-#       #    name: Lancet padded vs unpadded test
-#       #    command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/lancet-padded-vs-unpadded.Rmd', clean = TRUE)"
+      # This analysis arose from PBTA vs TCGA explore' and was used to explore Lancet's results with padded vs unpadded
+      #- run:
+      #    name: Lancet padded vs unpadded test
+      #    command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/lancet-wxs-tests/lancet-padded-vs-unpadded.Rmd', clean = TRUE)"
 
-#       # This analysis was a side concept question and no longer needs to be run.
-#       # - run:
-#           # name: SNV Caller VAF Cutoff Experiment
-#           # command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', clean = TRUE)"
+      # This analysis was a side concept question and no longer needs to be run.
+      # - run:
+          # name: SNV Caller VAF Cutoff Experiment
+          # command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/snv-callers/vaf_cutoff_experiment.Rmd', clean = TRUE)"
 
-#       # This checks that the GISTIC install still works, but not the modules code
-#       - run:
-#           name: GISTIC proof of concept
-#           command: OPENPBTA_CI=1 ./scripts/run_in_ci.sh bash analyses/run-gistic/run-gistic-module.sh
+      # This checks that the GISTIC install still works, but not the modules code
+      - run:
+          name: GISTIC proof of concept
+          command: OPENPBTA_CI=1 ./scripts/run_in_ci.sh bash analyses/run-gistic/run-gistic-module.sh
 
-#     # Deprecated
-#     #  - run:
-#     #      name: TCGA Capture Kit Investigation
-#     #      command: ./scripts/run_in_ci.sh bash analyses/tcga-capture-kit-investigation/run-investigation.sh
+    # Deprecated
+    #  - run:
+    #      name: TCGA Capture Kit Investigation
+    #      command: ./scripts/run_in_ci.sh bash analyses/tcga-capture-kit-investigation/run-investigation.sh
 
-#     # Deprecated - these results are not included in the final TMB results but were used for a comparison at one point
-#     # - run:
-#     #     name: d3b TMB code
-#     #     command: ./scripts/run_in_ci.sh bash analyses/tmb-compare/TMB_d3b_code/run_tmb_d3b.sh
+    # Deprecated - these results are not included in the final TMB results but were used for a comparison at one point
+    # - run:
+    #     name: d3b TMB code
+    #     command: ./scripts/run_in_ci.sh bash analyses/tmb-compare/TMB_d3b_code/run_tmb_d3b.sh
 
 
-#     # Deprecated
-#     #  - run:
-#     #      name: Compare TMB calculations
-#     #      command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tmb-calculations.Rmd', clean = TRUE)"
+    # Deprecated
+    #  - run:
+    #      name: Compare TMB calculations
+    #      command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/tmb-compare/compare-tmb-calculations.Rmd', clean = TRUE)"
 
-#       - run:
-#           name: Survival analysis
-#           command: ./scripts/run_in_ci.sh bash analyses/survival-analysis/run_survival.sh
+      - run:
+          name: Survival analysis
+          command: ./scripts/run_in_ci.sh bash analyses/survival-analysis/run_survival.sh
 
-#       - run:
-#          name: Scavenge back hotspots
-#          command: ./scripts/run_in_ci.sh bash analyses/hotspots-detection/run_overlaps_hotspot.sh
+      - run:
+         name: Scavenge back hotspots
+         command: ./scripts/run_in_ci.sh bash analyses/hotspots-detection/run_overlaps_hotspot.sh
 
 
-#       - run:
-#          name: Compile manuscript tables
-#          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('tables/output_tables.Rmd', params = list(release = 'testing'), clean = TRUE)"
+      - run:
+         name: Compile manuscript tables
+         command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('tables/output_tables.Rmd', params = list(release = 'testing'), clean = TRUE)"
 
 
   deploy:
