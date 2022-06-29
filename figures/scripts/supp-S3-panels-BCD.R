@@ -52,7 +52,7 @@ divergent_col_hex <- readr::read_tsv(
 # Read in metadata and merge with colors
 metadata <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max = 10000) %>%
   # Join on the colors 
-  left_join(histology_label_mapping, by = "cancer_group") %>%
+  left_join(histology_label_mapping, by = c("broad_histology", "cancer_group")) %>%
   # Select what is needed
   select(contains("cancer_group"), 
          Kids_First_Biospecimen_ID) %>%
