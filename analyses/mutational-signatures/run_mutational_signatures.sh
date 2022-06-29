@@ -9,8 +9,9 @@ set -o pipefail
 # Set the working directory to the directory of this file
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-# Only fit for CNS signatures, which we'll do by default
-# This does require us to split the MAF files by strategy, but that's all
+# Only fit for the 8 RefSig CNS signatures, but do NOT run either a) fitting COSMIC, or b) de novo extraction (which does not converge)
+# We will fit the RefSig signatures by default
+# This does require us to split the MAF files by strategy before fitting, but does not require de novo
 CNS_FIT_ONLY=${OPENPBTA_CNS_FIT_ONLY:-1}
 
 # In CI we'll run an abbreviated version of the de novo signatures extraction
@@ -18,6 +19,7 @@ ABBREVIATED_MUTSIGS=${OPENPBTA_QUICK_MUTSIGS:-0}
 
 # Split up the consensus MAF files by experimental strategy (writes to scratch)
 Rscript --vanilla 02-split_experimental_strategy.R
+
 
 if [ "$CNS_FIT_ONLY" == "0" ]; then
 
