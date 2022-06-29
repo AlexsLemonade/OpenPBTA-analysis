@@ -133,27 +133,31 @@ The output below shows hypermutator samples and...
 
 
 ```{r tp53_sigs}
-hypermutator_df <- tmb_sigs_df %>%
-  # filter to the hypermutators
-  dplyr::filter(tmb_type == "coding_tmb", 
-                tmb >= 10, 
-                signature != "Other") %>% 
-  dplyr::select(-tmb_type) %>%
-  # add in molecular subtype information, **which contains tp53 status** AND cancer group
-  dplyr::inner_join(
-    dplyr::select(meta, Kids_First_Biospecimen_ID, molecular_subtype, tumor_descriptor, composition)
-  ) %>%
-  tidyr::spread(signature, exposure) %>%
-  # it's all coding so can remove type column, but a rename is helpful
-  dplyr::rename(coding_tmb = tmb) %>%
-  # order columns so sigs of interest come first
-  dplyr::select(Kids_First_Biospecimen_ID, molecular_subtype, tumor_descriptor, composition, coding_tmb, sigs_of_interest, dplyr::everything()) %>%
-  # we don't need cancer_group_display, the info is in molecular_subtype
-  dplyr::select(-cancer_group_display) %>%
-  # arrange in order of burden
-  dplyr::arrange(-coding_tmb)
-
-hypermutator_df
+# This chunk should NOT run in CI. 
+if (!(params$is_ci == 1)) {
+  
+  hypermutator_df <- tmb_sigs_df %>%
+    # filter to the hypermutators
+    dplyr::filter(tmb_type == "coding_tmb", 
+                  tmb >= 10, 
+                  signature != "Other") %>% 
+    dplyr::select(-tmb_type) %>%
+    # add in molecular subtype information, **which contains tp53 status** AND cancer group
+    dplyr::inner_join(
+      dplyr::select(meta, Kids_First_Biospecimen_ID, molecular_subtype, tumor_descriptor, composition)
+    ) %>%
+    tidyr::spread(signature, exposure) %>%
+    # it's all coding so can remove type column, but a rename is helpful
+    dplyr::rename(coding_tmb = tmb) %>%
+    # order columns so sigs of interest come first
+    dplyr::select(Kids_First_Biospecimen_ID, molecular_subtype, tumor_descriptor, composition, coding_tmb, sigs_of_interest, dplyr::everything()) %>%
+    # we don't need cancer_group_display, the info is in molecular_subtype
+    dplyr::select(-cancer_group_display) %>%
+    # arrange in order of burden
+    dplyr::arrange(-coding_tmb)
+  
+  hypermutator_df
+} 
 ```
 
 A couple interesting observations in the table above:
