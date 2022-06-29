@@ -42,8 +42,7 @@ if [ "$CNS_FIT_ONLY" == "0" ]; then
 fi
 
 # Fit the 8 known CNS signatures with two methods
-Rscript --vanilla 05-fit_cns_signatures.R  \
-  --abbreviated $ABBREVIATED_MUTSIGS
+Rscript --vanilla 05-fit_cns_signatures.R  --abbreviated $ABBREVIATED_MUTSIGS
   
 # Compare the two methods of fitting
 Rscript -e "rmarkdown::render('06-compare_cns_exposures.Rmd', clean = TRUE)"
