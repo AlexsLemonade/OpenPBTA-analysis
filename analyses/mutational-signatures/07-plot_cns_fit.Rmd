@@ -158,7 +158,7 @@ readr::write_tsv(results_df, results_df_file)
 
 
 _All_ samples are included in these sina plots, which show the distribution of exposures for each signature across samples in each cancer group.
-
+Notably, the "rug" of 0's in each distribution represents samples which are unexposed to the given signature. 
 
 ```{r boxplot, fig.width = 14, fig.height = 4.5}
 # Set seed for sina reproducibility
@@ -194,7 +194,7 @@ exposures_sina_boxplot <- results_df %>%
     axis.text.x = ggplot2::element_text(size = 8.5, angle = 45, hjust = 1),
     axis.text.y = ggplot2::element_text(size = 10),
     axis.title = ggplot2::element_text(size = 12),
-    strip.text = ggplot2::element_text(size = 8.5),
+    strip.text = ggplot2::element_text(size = 8),
     legend.position = "none"
   )
 exposures_sina_boxplot
@@ -206,30 +206,31 @@ ggplot2::ggsave(exposures_sina_IQR_file, exposures_sina_boxplot, width = 12, hei
 
 ### Barplots of proportions of samples that are _unexposed_ 
 
-Notably, the "rug" of 0's in each distribution represents samples which are unexposed to the given signature. 
-It's useful to get a clear sense of the proportion of samples that are totally unexposed.
 We do _not_ include "Other" in this plot. 
 
-```{r proportion, fig.width = 7, fig.height = 7}
+```{r proportion, fig.width = 9, fig.height = 7}
 exposures_proportions <- results_df %>%
   # remove "other" - not useful to know if samples are unexposed to signatures that aren't even present.
   dplyr::filter(signature != "Other") %>%
   dplyr::group_by(cancer_group_display_n, cancer_group_hex, signature) %>%
   dplyr::summarize(percent_exposed = sum(exposure > 0)/dplyr::n()) %>%
+  dplyr::ungroup() %>%
+  # wrap strip labels
+  dplyr::mutate(cancer_group_display_n = stringr::str_wrap(cancer_group_display_n, 25)) %>%
   ggplot2::ggplot() + 
   ggplot2::aes(x = signature, y = percent_exposed, fill = cancer_group_hex) + 
   ggplot2::geom_col(color = "black") +
-  ggplot2::facet_wrap(~cancer_group_display_n, nrow = 5) + 
+  ggplot2::facet_wrap(~cancer_group_display_n, nrow = 3) + 
   ggplot2::scale_fill_identity() +
   ggplot2::labs(x = "RefSig Signature", 
                 y = "Percent of samples exposed to signature") +
   ggpubr::theme_pubr() +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(size = 8), 
-                 strip.text = ggplot2::element_text(size = 7))
+  ggplot2::theme(axis.text.x = ggplot2::element_text(size = 10, angle = 45, hjust=1), 
+                 strip.text = ggplot2::element_text(size = 10))
 
 exposures_proportions
 
-ggplot2::ggsave(exposures_presence_barplot_file, exposures_proportions, width = 5, height = 10)
+ggplot2::ggsave(exposures_presence_barplot_file, exposures_proportions, width = 9, height = 7)
 
 ```
 
