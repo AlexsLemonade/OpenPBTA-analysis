@@ -47,8 +47,6 @@ bash ${analyses_dir}/chromothripsis/run-chromothripsis.sh
 # We only run the part of the module used in the manuscript (i.e., not de novo)
 OPENPBTA_CNS_FIT_ONLY=1 bash ${analyses_dir}/mutational-signatures/run_mutational_signatures.sh
 
-# Run the collapse-rnaseq module, which is needed for telomerase, immune deconvolution, and GSVA modules
-OPENPBTA_TP53_FIGURES=1 bash ${analyses_dir}/collapse-rnaseq/run-collapse-rnaseq.sh 
 
 # Run the telomerase activity prediction script, for Figures 4 and S5
 Rscript --vanilla ${analyses_dir}/telomerase-activity-prediction/01-run-EXTEND.R \
