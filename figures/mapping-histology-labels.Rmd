@@ -53,12 +53,12 @@ library(RColorBrewer)
 ```
 
 
-We should perform some minimal checking to make sure the provided release is _at least_ at version 21.
+We should perform some minimal checking to make sure the provided release is _at least_ at version 22.
 ```{r}
-minimum_allowed_release <- 21
+minimum_allowed_release <- 22
 release_version <- as.numeric(stringr::str_match(params$release, "-v(\\d+)-")[[2]])
 if (release_version < minimum_allowed_release) {
-  stop("This notebook should only be used with data release version 21 or above.")
+  stop("This notebook should only be used with data release version 22 or above.")
 }
 ```
 
@@ -103,7 +103,65 @@ included_labels_df <- histologies_df %>%
 included_labels_df
 ```
 
-So the unique values for `broad_histology` and `cancer_group` above are what we need to take into account for our palette.
+### Collapsing "Other" categories
+
+In a later step, we will recode certain cancer groups, e.g., "High-grade glioma astrocytoma" will become "Other high-grade gliomas."
+There are other cancer groups that would fit in that category despite not meeting the sample size threshold above.
+For now, this applies to LGG, HGG, and embryonal tumors.
+
+```{r}
+other_cg_df <- histologies_df %>%
+  filter(sample_type == "Tumor",  # Exclude normal samples
+         !is.na(cancer_group),
+         broad_histology %in% c("Diffuse astrocytic and oligodendroglial tumor",
+                                "Low-grade astrocytic tumor",
+                                "Embryonal tumor")) %>%
+  select(broad_histology, 
+         cancer_group) %>% 
+  distinct() %>%
+  # Drop everything that meets the sample size requirement above
+  anti_join(included_labels_df)  
+
+other_cg_df
+```
+
+We'll create some vectors we'll use in later steps to group different cancer groups under the same "Other" cancer group display category.
+
+```{r}
+# To become "Other low-grade gliomas"
+other_lgg <- c(
+  "Low-grade glioma astrocytoma",
+  other_cg_df %>%
+    filter(broad_histology == "Low-grade astrocytic tumor") %>% 
+    pull(cancer_group)
+)
+
+other_lgg
+```
+
+```{r}
+# To become "Other high-grade gliomas"
+other_hgg <- c(
+  "High-grade glioma astrocytoma",
+    other_cg_df %>%
+    filter(broad_histology == "Diffuse astrocytic and oligodendroglial tumor") %>% 
+    pull(cancer_group)
+)
+
+other_hgg
+```
+
+```{r}
+# To become "Other embryonal tumors"
+other_embryonal <- c(
+  "CNS Embryonal tumor",  # Has n >= 10, but we're trying to limit # of colors
+  other_cg_df %>%
+  filter(broad_histology == "Embryonal tumor") %>%
+  pull(cancer_group)
+)
+
+other_embryonal
+```
 
 ## Create palettes
 
@@ -112,19 +170,22 @@ Check out the discussion on [#1174](https://github.com/AlexsLemonade/OpenPBTA-an
 
 ### `broad_histology`
 
+We will start by creating a palette for broad histology display values.
+Broad histology values will be recoded specifically for display in figures in later step.
+
 ```{r}
 broad_histology_df <- data.frame(
-  broad_histology = c("Benign tumor",
-                      "Diffuse astrocytic and oligodendroglial tumor",
-                      "Embryonal tumor",
-                      "Ependymal tumor",
-                      "Germ cell tumor",
-                      "Low-grade astrocytic tumor",
-                      "Meningioma",
-                      "Mesenchymal non-meningothelial tumor",
-                      "Neuronal and mixed neuronal-glial tumor",
-                      "Tumor of cranial and paraspinal nerves",
-                      "Tumors of sellar region"), 
+  broad_histology_display = c("Benign tumor",
+                              "High-grade glioma",
+                              "Embryonal tumor",
+                              "Ependymal tumor",
+                              "Germ cell tumor",
+                              "Low-grade glioma",
+                              "Meningioma",
+                              "Mesenchymal non-meningothelial tumor",
+                              "Neuronal and mixed neuronal-glial tumor",
+                              "Tumor of cranial and paraspinal nerves",
+                              "Tumor of sellar region"), 
   broad_histology_hex = c("#590024",
                           "#ff80e5",
                           "#220040",
@@ -149,7 +210,7 @@ Now to create a legend with `legend()` (h/t [this StackOverflow answer](https://
 plot(NULL, xaxt = "n", yaxt = "n", bty = "n", ylab = "", xlab = "", 
      xlim = 0:1, ylim = 0:1)
 legend("topleft", 
-       legend = c(broad_histology_df$broad_histology, "Other"),
+       legend = c(broad_histology_df$broad_histology_display, "Other"),
        col = c(broad_histology_df$broad_histology_hex, 
                broad_histology_other_hex),
        pch = 15, pt.cex = 2, cex = 1, bty = "n")
@@ -158,40 +219,40 @@ mtext("Broad Histology", at = 0.135, cex = 1.5)
 
 ### `cancer_group`
 
-There are 17 `cancer_group` values that we need to account for.
+There are 20 `cancer_group` values that we need to account for.
 These are best used in conjunction with _labels_ in figures, but are intended to allow readers to "track" labels _across figures_.
 
 Where there's a 1:1 mapping between `broad_histology` and `cancer_group`, the hex codes will be the same.
 
 ```{r}
 cancer_group_df <- data.frame(
-  cancer_group = c("Choroid plexus papilloma",
-                   "Diffuse intrinsic pontine glioma",
-                   "Diffuse midline glioma",
-                   "High-grade glioma astrocytoma",
-                   "Atypical Teratoid Rhabdoid Tumor",
-                   "CNS Embryonal tumor",
-                   "Medulloblastoma",
-                   "Ependymoma",
-                   "Teratoma",
-                   "Ganglioglioma",
-                   "Pilocytic astrocytoma",
-                   "Pleomorphic xanthoastrocytoma",
-                   "Subependymal Giant Cell Astrocytoma",
-                   "Low-grade glioma astrocytoma",
-                   "Meningioma",
-                   "Ewing sarcoma",
-                   "Dysembryoplastic neuroepithelial tumor",
-                   "Neurofibroma Plexiform",
-                   "Schwannoma",
-                   "Craniopharyngioma"),
+  cancer_group_display = c("Choroid plexus papilloma",
+                           "Diffuse intrinsic pontine glioma",
+                           "Diffuse midline glioma",
+                           "Other high-grade glioma",
+                           "Atypical Teratoid Rhabdoid Tumor",
+                           "Medulloblastoma",
+                           "Other embryonal tumor",
+                           "Ependymoma",
+                           "Teratoma",
+                           "Ganglioglioma",
+                           "Pilocytic astrocytoma",
+                           "Pleomorphic xanthoastrocytoma",
+                           "Subependymal Giant Cell Astrocytoma",
+                           "Other low-grade glioma",
+                           "Meningioma",
+                           "Ewing sarcoma",
+                           "Dysembryoplastic neuroepithelial tumor",
+                           "Neurofibroma Plexiform",
+                           "Schwannoma",
+                           "Craniopharyngioma"),
   cancer_group_abbreviation = c("CPP",
                                 "DIPG",
                                 "DMG",
                                 "HGG",
                                 "ATRT",
-                                "CNS-ET",
                                 "MB",
+                                "ET",
                                 "EPN",
                                 "Teratoma",
                                 "GNG",
@@ -210,8 +271,8 @@ cancer_group_df <- data.frame(
                        "#ff40d9",
                        "#ffccf5",
                        "#4d0d85",
-                       "#b08ccf",
                        "#a340ff",
+                       "#b08ccf",
                        "#2200ff",
                        "#058aff",
                        "#c4c4ff",
@@ -236,9 +297,9 @@ And again, we'll create a legend with `legend()`
 ```{r}
 # Combine cancer groups with their abbreviations, WHEN an abbreviation exists for use in legend
 legend_names <- cancer_group_df %>%
-  mutate(cancer_group_legend = if_else(cancer_group == cancer_group_abbreviation,
-                                       cancer_group, 
-                                       as.character(glue::glue("{cancer_group} ({cancer_group_abbreviation})")))
+  mutate(cancer_group_legend = if_else(cancer_group_display == cancer_group_abbreviation,
+                                       cancer_group_display, 
+                                       as.character(glue::glue("{cancer_group_display} ({cancer_group_abbreviation})")))
   ) %>%
   pull(cancer_group_legend)
 
@@ -255,6 +316,10 @@ mtext("Cancer Group", at = 0.0625, cex = 1)
 
 We can create a data frame that contains both palettes with a series of left joins, where we will then fill the NA values with a single (gray) hex code per column (`r broad_histology_other_hex` for `broad_histology`, `r cancer_group_other_hex` for `cancer_group`.)
 
+When multiple values are using the same color, it can be helpful to have a separate value for the legend, e.g., for all `#808080` broad histologies, we may want to display `Other`. 
+We'll add a couple columns for legend-making convenience.
+We also are recoding some of the disease labels for display per [#1403](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1403) and discussion on [#1401](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1401).
+
 ```{r}
 palette_df <- histologies_df %>%
   # Exclude normal samples
@@ -263,10 +328,28 @@ palette_df <- histologies_df %>%
   select(broad_histology, 
          cancer_group) %>% 
   distinct() %>%
+  # For display specifically, recode broad histology label for LGG and HGG
+  mutate(broad_histology_display = case_when(
+      broad_histology == "Low-grade astrocytic tumor" ~ "Low-grade glioma",
+      broad_histology == "Diffuse astrocytic and oligodendroglial tumor" ~ "High-grade glioma", 
+      broad_histology == "Tumors of sellar region" ~ "Tumor of sellar region",
+      TRUE ~ broad_histology
+    ),
+  # For display, group some cancer groups together into a specific "Other"
+  # category
+  cancer_group_display = case_when(
+    # We must take into account broad histology for (at least) individual
+    # Oligodendroglioma samples to get color coded correctly
+      (broad_histology == "Diffuse astrocytic and oligodendroglial tumor") & (cancer_group %in% other_hgg) ~ "Other high-grade glioma",
+      (broad_histology == "Low-grade astrocytic tumor") & (cancer_group %in% other_lgg) ~ "Other low-grade glioma",
+      cancer_group %in% other_embryonal ~ "Other embryonal tumor",
+      TRUE ~ cancer_group
+    )
+  ) %>%
   # Add broad histology palette
-  left_join(broad_histology_df, by = "broad_histology") %>%
+  left_join(broad_histology_df, by = "broad_histology_display") %>%
   # Add cancer group palette
-  left_join(cancer_group_df, by = "cancer_group") %>%
+  left_join(cancer_group_df, by = "cancer_group_display") %>%
   # Fill all other values with gray colors
   replace_na(list(broad_histology_hex = broad_histology_other_hex,
                   cancer_group_hex = cancer_group_other_hex)) %>%
@@ -274,6 +357,15 @@ palette_df <- histologies_df %>%
   mutate(cancer_group_hex = if_else(is.na(cancer_group), 
                                     NA_character_, 
                                     cancer_group_hex)) %>%
+  # When a cancer group or broad histology display group does not get its
+  # own hex code, we will group those samples into an "Other" category in 
+  # figures
+  mutate(cancer_group_display = if_else(cancer_group_hex == cancer_group_other_hex,
+                                        "Other",
+                                        cancer_group_display),
+         broad_histology_display = if_else(broad_histology_hex == broad_histology_other_hex,
+                                           "Other",
+                                           broad_histology_display)) %>%
   # Sort by broad_histology for easy browsing
   arrange(broad_histology)
 ```
@@ -282,29 +374,6 @@ And now let's take a look!
 
 ```{r}
 palette_df
-```
-
-### Add display names for convenience
-
-When multiple values are using the same color, it can be helpful to have a separate value for the legend, e.g., for all `#808080` broad histologies, we may want to display `Other`. 
-We'll add a couple columns for legend-making convenience.
-We also are recoding some of the disease labels for display per [#1403](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1403).
-
-```{r}
-palette_df <- palette_df %>%
-  mutate(broad_histology_display = case_when(
-      broad_histology_hex == broad_histology_other_hex ~ "Other",
-      broad_histology == "Low-grade astrocytic tumor" ~ "Low-grade glioma",
-      broad_histology == "Diffuse astrocytic and oligodendroglial tumor" ~ "High-grade glioma", 
-      TRUE ~ broad_histology
-    ),
-    cancer_group_display = case_when(
-      cancer_group_hex == cancer_group_other_hex ~ "Other",
-      cancer_group == "High-grade glioma astrocytoma" ~ "Other high-grade gliomas",
-      cancer_group == "Low-grade glioma astrocytoma" ~ "Other low-grade gliomas", 
-      TRUE ~ cancer_group
-    )
-  ) 
 ```
 
 ### Add `broad_histology_order` 
@@ -323,7 +392,7 @@ broad_histology_order_df <- histologies_df %>%
   inner_join(select(palette_df,
                     broad_histology,
                     broad_histology_display)) %>%
-    # Filter to unique sample--broad_histology_display pairs
+  # Filter to unique sample--broad_histology_display pairs
   select(sample_id, 
          broad_histology_display) %>%
   distinct() %>%
@@ -342,8 +411,10 @@ broad_histology_order_df <- histologies_df %>%
                                 "Other",
                                 after = Inf),
          broad_histology_order = as.numeric(broad_histology_display)) %>%
-           # No longer require the sample size
-           select(-n)
+  # No longer require the sample size
+  select(-n) %>%
+  # Sort for easy browsing
+  arrange(broad_histology_display)
 
 broad_histology_order_df
 ```
@@ -360,8 +431,8 @@ palette_df <- palette_df %>%
 
 For most plots that make use of the `cancer_group` palette, such as a box or violin plot, we will rely heavily on labels and therefore using the gray hex code for multiple groups will not be a problem.
 
-We will have four panels of individual oncoprints, where many `broad_histology` values will get grouped together into the `Other CNS` panel which you can see [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/d31c927a27813ec0b8032fbe768002f31723636f/analyses/oncoprint-landscape/02-plot-oncoprint.R#L181).
-We can move this information into our palette data frame.
+We will have four panels of individual oncoprints.
+We can move the information about which cancer groups will be included in each panel into our palette data frame.
 
 ```{r}
 # Taken from the current plot oncoprint script as of the writing of this
@@ -396,47 +467,13 @@ palette_df <- palette_df %>%
   ))
 ```
 
-For cancer groups that do not get their own hex code for display (i.e., due to small sample sizes), we'll use a selection of grey colors as a palette and rely heavily on the ordering of the OncoPrint legend.
-Unfortunately there are over 20 "Other CNS" cancer groups that meet this criterion, so it is not feasible to have a color for each of them and they will not be included in the "Other CNS" OncoPrint.
+### Display final table and save to TSV 
 
 ```{r}
-greys_df <- palette_df %>%
-  filter(cancer_group_display == "Other",
-         !is.na(oncoprint_group),
-         oncoprint_group != "Other CNS")
-
-# Sample the greys sequential palette from color brewer
-set.seed(2021)
-greys_df <- greys_df %>%
-  mutate(oncoprint_hex = sample(brewer.pal(nrow(greys_df), "Greys")))
+# For browsing
+palette_df
 ```
 
-Add `oncoprint_hex` & `oncoprint_include`, the latter will be `FALSE` when the former is `NA`.
-
-Add `oncoprint_hex` for all other cancer groups and `oncoprint_include`.
-The latter will be FALSE when the former is NA.
-
-```{r}
-palette_df <- palette_df %>%
-  left_join(greys_df) %>%
-  # When there's an oncoprint group and a specific cancer group display color,
-  # use the cancer group display color as the oncoprint color
-  mutate(oncoprint_hex = if_else(
-    cancer_group_hex != cancer_group_other_hex & !is.na(oncoprint_group),
-    cancer_group_hex,
-    oncoprint_hex
-  ),
-  # Only when there's a specific oncoprint color -- even if that is a grey 
-  # selected only for the oncoprint -- will a cancer group be included in the
-  # oncoprint
-  oncoprint_include = if_else(
-    is.na(oncoprint_hex),
-    FALSE,
-    TRUE
-  ))
-```
-
-### Save to TSV 
 
 ```{r}
 readr::write_tsv(palette_df, 
