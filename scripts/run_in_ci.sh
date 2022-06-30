@@ -14,13 +14,19 @@ cd ..
 echo "Rebuilding the Docker image."
 finished=1
 attempts=0
+
+# Use BuildKit
+export DOCKER_BUILDKIT=1
+# Simpler output for progress tracking
+export BUILDKIT_PROGRESS=plain
+
 while [ $finished != 0 ] && [ $attempts -lt 3 ]; do
     if [ $attempts -gt 0 ]; then
         echo "Failed to build Docker image, trying again."
     fi
-
+    
     docker build \
-           --secret id=GITHUB_PAT,env=GH_PAT \
+           --secret id=gh_pat,env=GH_PAT \
            --tag "open-pbta" \
            --file "Dockerfile" .
     finished=$?
