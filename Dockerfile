@@ -182,11 +182,13 @@ RUN --mount=type=secret,id=gh_pat ./install_github.r 'icbi-lab/immunedeconv' --r
 
 RUN --mount=type=secret,id=gh_pat ./install_github.r 'const-ae/ggupset' --ref '7a33263cc5fafdd72a5bfcbebe5185fafe050c73' --pat_file /run/secrets/gh_pat
 
+# Used only by deprecated modules
 # This is needed to create the interactive pie chart
-RUN --mount=type=secret,id=gh_pat ./install_github.r 'timelyportfolio/sunburstR' --ref 'd40d7ed71ee87ca4fbb9cb8b7cf1e198a23605a9' --pat_file /run/secrets/gh_pat
+# RUN --mount=type=secret,id=gh_pat ./install_github.r 'timelyportfolio/sunburstR' --ref 'd40d7ed71ee87ca4fbb9cb8b7cf1e198a23605a9' --pat_file /run/secrets/gh_pat
 
+# Used only by deprecated modules
 # This is needed to create the interactive treemap
-RUN --mount=type=secret,id=gh_pat ./install_github.r 'timelyportfolio/d3treeR' --ref '0eaba7f1c6438e977f8a5c082f1474408ac1fd80' --pat_file /run/secrets/gh_pat
+# RUN --mount=type=secret,id=gh_pat ./install_github.r 'timelyportfolio/d3treeR' --ref '0eaba7f1c6438e977f8a5c082f1474408ac1fd80' --pat_file /run/secrets/gh_pat
 
 # Need this package to make plots colorblind friendly
 RUN --mount=type=secret,id=gh_pat ./install_github.r  'clauswilke/colorblindr' --ref '1ac3d4d62dad047b68bb66c06cee927a4517d678' --pat_file /run/secrets/gh_pat
@@ -200,14 +202,15 @@ RUN --mount=type=secret,id=gh_pat R_REMOTES_NO_ERRORS_FROM_WARNINGS='true' ./ins
 # Patchwork for plot compositions
 RUN --mount=type=secret,id=gh_pat ./install_github.r  'thomasp85/patchwork' --ref 'c67c6603ba59dd46899f17197f9858bc5672e9f4' --pat_file /run/secrets/gh_pat
 
+# Used only by deprecated modules
 # This is required for creating a treemap of the broad histology and integrated diagnoses
-RUN --mount=type=secret,id=gh_pat ./install_github.r  'wilkox/treemapify' --ref 'e70adf727f4d13223de8146458db9bef97f872cb' --pat_file /run/secrets/gh_pat
+# RUN --mount=type=secret,id=gh_pat ./install_github.r  'wilkox/treemapify' --ref 'e70adf727f4d13223de8146458db9bef97f872cb' --pat_file /run/secrets/gh_pat
 
 # Need this specific version of circlize so it has hg38
 RUN --mount=type=secret,id=gh_pat ./install_github.r  'jokergoo/circlize' --ref 'b7d86409d7f893e881980b705ba1dbc758df847d' --pat_file /run/secrets/gh_pat
 
 # More recent version of sva required for molecular subtyping MB
-RUN --mount=type=secret,id=gh_pat ./install_github.r  'jtleek/sva-devel@123be9b2b9fd7c7cd495fab7d7d901767964ce9e' --no_deps --pat_file /run/secrets/gh_pat
+RUN --mount=type=secret,id=gh_pat ./install_github.r  'jtleek/sva-devel' --ref '123be9b2b9fd7c7cd495fab7d7d901767964ce9e' --no_deps --pat_file /run/secrets/gh_pat
 
 # To install sigfit, we need a more recent version of rstantools than we can obtain via the MRAN snapshot route
 # We're using the ref for the most recent release on GitHub (2.0.0)
@@ -222,8 +225,9 @@ RUN --mount=type=secret,id=gh_pat ./install_github.r  'd3b-center/annoFuse' --re
 # CNS signatures can be obtained from signature.tools.lib
 RUN --mount=type=secret,id=gh_pat ./install_github.r  'Nik-Zainal-Group/signature.tools.lib' --ref '73e899c9090a215a76a307480bda76c241a4a489' --pat_file /run/secrets/gh_pat
 
+# Unused in current plots
 # Patterned geoms
-RUN --mount=type=secret,id=gh_pat ./install_github.r  'coolbutuseless/ggpattern' --ref '390e13fead028ba240eae9293a5ef422df02bc8e' --pat_file /run/secrets/gh_pat
+# RUN --mount=type=secret,id=gh_pat ./install_github.r  'coolbutuseless/ggpattern' --ref '390e13fead028ba240eae9293a5ef422df02bc8e' --pat_file /run/secrets/gh_pat
 
 # Molecular subtyping MB
 RUN --mount=type=secret,id=gh_pat ./install_github.r  'd3b-center/medullo-classifier-package' --ref 'e3d12f64e2e4e00f5ea884f3353eb8c4b612abe8' --pat_file /run/secrets/gh_pat \

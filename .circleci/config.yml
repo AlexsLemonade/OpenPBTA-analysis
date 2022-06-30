@@ -21,9 +21,10 @@ jobs:
           name: Check python packages
           command: ./scripts/run_in_ci.sh bash scripts/check-python.sh
 
-      - run:
-          name: Sample Distribution Analyses
-          command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
+    # Deprecated module
+    #   - run:
+    #       name: Sample Distribution Analyses
+    #       command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
 
 
       - run:
