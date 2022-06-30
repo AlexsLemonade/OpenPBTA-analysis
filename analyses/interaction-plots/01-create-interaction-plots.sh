@@ -25,6 +25,7 @@ ALL=${OPENPBTA_ALL:-1}
 
 ind_samples=${base_dir}/data/independent-specimens.wgs.primary-plus.tsv
 metadata=${base_dir}/data/pbta-histologies.tsv
+palette=${base_dir}/figures/palettes/broad_histology_cancer_group_palette.tsv
 
 # using consensus
 maf=${base_dir}/data/pbta-snv-consensus-mutation.maf.tsv.gz
@@ -74,6 +75,7 @@ Rscript ${script_dir}/01-disease-specimen-lists.R \
 Rscript ${script_dir}/02-process_mutations.R \
   --maf ${maf} \
   --metadata ${metadata} \
+  --palette ${palette} \
   --specimen_list ${temp_dir}/ALL.tsv \
   --exclude_genes $exclude_file \
   --vaf 0.05 \
@@ -103,6 +105,7 @@ for disease_id in "${!disease[@]}"; do
   Rscript ${script_dir}/02-process_mutations.R \
     --maf ${maf} \
     --metadata ${metadata} \
+    --palette ${palette} \
     --specimen_list ${temp_dir}/${disease_id}.tsv \
     --vaf 0.05 \
     --min_mutated 5 \
