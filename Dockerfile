@@ -178,7 +178,7 @@ RUN --mount=type=secret,id=gh_pat ./install_github.r 'RDocTaskForce/parsetools' 
     && ./install_bioc.r TCGAbiolinks
 
 # package required for immune deconvolution
-RUN --mount=type=secret,id=gh_pat ./install_github.r 'icbi-lab/immunedeconv' --ref '493bcaa9e1f73554ac2d25aff6e6a7925b0ea7a6'--pat_file /run/secrets/gh_pat
+RUN --mount=type=secret,id=gh_pat ./install_github.r 'icbi-lab/immunedeconv' --ref '493bcaa9e1f73554ac2d25aff6e6a7925b0ea7a6' --pat_file /run/secrets/gh_pat
 
 RUN --mount=type=secret,id=gh_pat ./install_github.r 'const-ae/ggupset' --ref '7a33263cc5fafdd72a5bfcbebe5185fafe050c73' --pat_file /run/secrets/gh_pat
 
@@ -214,6 +214,7 @@ RUN --mount=type=secret,id=gh_pat ./install_github.r  'jtleek/sva-devel@123be9b2
 RUN --mount=type=secret,id=gh_pat ./install_github.r  'stan-dev/rstantools' --ref 'd43bf9fb6120d40a60e708853e4b80cdb4689d19' --pat_file /run/secrets/gh_pat
 
 # Build arguments are according to the sigfit instructions
+# does not use install_github.r script because of unusual settings
 RUN R -e "remotes::install_github('kgori/sigfit', ref = '209776ee1d2193ad4b682b2e2472f848bd7c67a6', build_vignettes = TRUE, build_opts = c('--no-resave-data', '--no-manual'), dependencies = TRUE)"
 
 RUN --mount=type=secret,id=gh_pat ./install_github.r  'd3b-center/annoFuse' --ref 'c6a2111b5949ca2aae3853f7f34de3d0db4ffa33' --pat_file /run/secrets/gh_pat
