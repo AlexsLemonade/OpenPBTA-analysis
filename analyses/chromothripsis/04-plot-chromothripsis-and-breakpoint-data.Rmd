@@ -31,6 +31,9 @@ library(RColorBrewer)
 library(readr)
 library(dplyr)
 library(grid)
+
+# set seed for jitter plots
+set.seed(1979)
 ```
 
 
