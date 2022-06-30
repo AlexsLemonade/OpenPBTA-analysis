@@ -180,11 +180,11 @@ RUN R -e "remotes::install_github('icbi-lab/immunedeconv', ref = '493bcaa9e1f735
 
 RUN R -e "remotes::install_github('const-ae/ggupset', ref = '7a33263cc5fafdd72a5bfcbebe5185fafe050c73', dependencies = TRUE)"
 
-# DEPRECATE
+# Deprecated
 # This is needed to create the interactive pie chart
 #RUN R -e "remotes::install_github('timelyportfolio/sunburstR', ref = 'd40d7ed71ee87ca4fbb9cb8b7cf1e198a23605a9', dependencies = TRUE)"
 
-# DEPRECATE
+# Deprecated
 # This is needed to create the interactive treemap
 #RUN R -e "remotes::install_github('timelyportfolio/d3treeR', ref = '0eaba7f1c6438e977f8a5c082f1474408ac1fd80', dependencies = TRUE)"
 
@@ -200,7 +200,7 @@ RUN R -e "withr::with_envvar(c(R_REMOTES_NO_ERRORS_FROM_WARNINGS='true'), remote
 # Patchwork for plot compositions
 RUN R -e "remotes::install_github('thomasp85/patchwork', ref = 'c67c6603ba59dd46899f17197f9858bc5672e9f4')"
 
-# DEPRECATE
+# Deprecated
 # This is required for creating a treemap of the broad histology and integrated diagnoses
 #RUN R -e "remotes::install_github('wilkox/treemapify', ref = 'e70adf727f4d13223de8146458db9bef97f872cb', dependencies = TRUE)"
 
@@ -222,7 +222,7 @@ RUN R -e "remotes::install_github('d3b-center/annoFuse',ref = 'c6a2111b5949ca2aa
 # CNS signatures can be obtained from signature.tools.lib
 RUN R -e "remotes::install_github('Nik-Zainal-Group/signature.tools.lib', ref = '73e899c9090a215a76a307480bda76c241a4a489')"
 
-# DEPRECATE
+# Deprecated
 # Patterned geoms
 #RUN R -e "remotes::install_github('coolbutuseless/ggpattern', ref = '390e13fead028ba240eae9293a5ef422df02bc8e')"
 
