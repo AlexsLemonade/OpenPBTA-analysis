@@ -18,7 +18,7 @@ while [ $finished != 0 ] && [ $attempts -lt 3 ]; do
     if [ $attempts -gt 0 ]; then
         echo "Failed to build Docker image, trying again."
     fi
-
+    DOCKER_BUILDKIT=1
     docker build \
            --secret id=gh_pat,env=GH_PAT \
            --tag "open-pbta" \
