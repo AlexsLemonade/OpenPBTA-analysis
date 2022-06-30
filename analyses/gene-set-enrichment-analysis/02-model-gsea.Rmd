@@ -74,16 +74,16 @@ scores_stranded_file <- file.path(results_dir, "gsva_scores_stranded.tsv")
 scores_polya_file    <- file.path(results_dir, "gsva_scores_polya.tsv")
 
 ######## Define output files
-file_anova_stranded_cancer_group  <- file.path(results_dir, "gsva_anova_stranded_cancer_group.tsv")
-file_anova_polya_cancer_group     <- file.path(results_dir, "gsva_anova_polya_cancer_group.tsv")
-file_anova_stranded_harmonized_diagnosis <- file.path(results_dir, "gsva_anova_stranded_harmonized_diagnosis.tsv")
-file_anova_polya_harmonized_diagnosis    <- file.path(results_dir, "gsva_anova_polya_harmonized_diagnosis.tsv")
+file_anova_stranded_cancer_group  <- file.path(results_dir, "gsva_anova_stranded_cancer_group.tsv.gz")
+file_anova_polya_cancer_group     <- file.path(results_dir, "gsva_anova_polya_cancer_group.tsv.gz")
+file_anova_stranded_harmonized_diagnosis <- file.path(results_dir, "gsva_anova_stranded_harmonized_diagnosis.tsv.gz")
+file_anova_polya_harmonized_diagnosis    <- file.path(results_dir, "gsva_anova_polya_harmonized_diagnosis.tsv.gz")
 
 
-file_tukey_stranded_cancer_group  <- file.path(results_dir, "gsva_tukey_stranded_cancer_group.tsv")
-file_tukey_polya_cancer_group     <- file.path(results_dir, "gsva_tukey_polya_cancer_group.tsv")
-file_tukey_stranded_harmonized_diagnosis <- file.path(results_dir, "gsva_tukey_stranded_harmonized_diagnosis.tsv")
-file_tukey_polya_harmonized_diagnosis    <- file.path(results_dir, "gsva_tukey_polya_harmonized_diagnosis.tsv")
+file_tukey_stranded_cancer_group  <- file.path(results_dir, "gsva_tukey_stranded_cancer_group.tsv.gz")
+file_tukey_polya_cancer_group     <- file.path(results_dir, "gsva_tukey_polya_cancer_group.tsv.gz")
+file_tukey_stranded_harmonized_diagnosis <- file.path(results_dir, "gsva_tukey_stranded_harmonized_diagnosis.tsv.gz")
+file_tukey_polya_harmonized_diagnosis    <- file.path(results_dir, "gsva_tukey_polya_harmonized_diagnosis.tsv.gz")
 
 
 ######## Load input files
