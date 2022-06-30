@@ -173,9 +173,10 @@ jobs:
           name: Chromothripsis
           command: ./scripts/run_in_ci.sh bash analyses/chromothripsis/run-chromothripsis.sh
 
-      - run:
-         name: Oncoprint plotting
-         command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
+    # Oncoprint plotting fails with the CI data subset
+    #   - run:
+    #      name: Oncoprint plotting
+    #      command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
 
       - run:
           name: GISTIC Plots
