@@ -37,7 +37,6 @@ module_dir <- file.path(root_dir, "analyses", "oncoprint-landscape")
 # Source the custom functions script
 source(
   file.path(
-    root_dir,
     module_dir,
     "util",
     "oncoplot-functions.R"

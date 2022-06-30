@@ -9,22 +9,24 @@ Embryonal tumor	Medulloblastoma	data/embryonal-tumor_goi_list.tsv
 Embryonal tumor	CNS Embryonal tumor	data/embryonal-tumor_goi_list.tsv
 Embryonal tumor	Atypical Teratoid Rhabdoid Tumor	data/embryonal-tumor_goi_list.tsv
 Embryonal tumor	Embryonal tumor with multilayer rosettes	data/embryonal-tumor_goi_list.tsv
+Embryonal tumor	Neuroblastoma	data/embryonal-tumor_goi_list.tsv
 Embryonal tumor	Ganglioneuroblastoma	data/embryonal-tumor_goi_list.tsv
 Embryonal tumor	CNS neuroblastoma	data/embryonal-tumor_goi_list.tsv
-Embryonal tumor	Neuroblastoma	data/embryonal-tumor_goi_list.tsv
 Other CNS	Ependymoma	data/other_goi_list.tsv
 Other CNS	Teratoma	data/other_goi_list.tsv
 Other CNS	Germinoma	data/other_goi_list.tsv
-Other CNS	Germinoma-Teratoma	data/other_goi_list.tsv
+Other CNS	Mixed germ cell tumor	data/other_goi_list.tsv
 Other CNS	Rosai-Dorfman disease	data/other_goi_list.tsv
 Other CNS	Langerhans Cell histiocytosis	data/other_goi_list.tsv
 Other CNS	Juvenile xanthogranuloma	data/other_goi_list.tsv
 Low-grade astrocytic tumor	Low-grade glioma astrocytoma	data/lgat_goi_list.tsv
-Low-grade astrocytic tumor	Ganglioglioma	data/lgat_goi_list.tsv
 Low-grade astrocytic tumor	Subependymal Giant Cell Astrocytoma	data/lgat_goi_list.tsv
+Low-grade astrocytic tumor	Pilocytic astrocytoma	data/lgat_goi_list.tsv
+Low-grade astrocytic tumor	Gliomatosis cerebri	data/lgat_goi_list.tsv
+Low-grade astrocytic tumor	Ganglioglioma	data/lgat_goi_list.tsv
 Low-grade astrocytic tumor	Diffuse fibrillary astrocytoma	data/lgat_goi_list.tsv
 Low-grade astrocytic tumor	Pleomorphic xanthoastrocytoma	data/lgat_goi_list.tsv
-Low-grade astrocytic tumor	Pilocytic astrocytoma	data/lgat_goi_list.tsv
+Low-grade astrocytic tumor	Oligodendroglioma	data/lgat_goi_list.tsv
 Other CNS	CNS Burkitt's lymphoma	data/other_goi_list.tsv
 Other CNS	Melanocytic tumor	data/other_goi_list.tsv
 Other CNS	Meningioma	data/other_goi_list.tsv
@@ -35,12 +37,10 @@ Other CNS	Rhabdomyosarcoma	data/other_goi_list.tsv
 Other CNS	Fibromyxoid lesion	data/other_goi_list.tsv
 Other CNS	Cavernoma	data/other_goi_list.tsv
 Other CNS	Myofibroblastoma	data/other_goi_list.tsv
-Other CNS	Metastatic secondary tumors-Neuroblastoma	data/other_goi_list.tsv
 Other CNS	Metastatic secondary tumors	data/other_goi_list.tsv
 Other CNS	Diffuse leptomeningeal glioneuronal tumor	data/other_goi_list.tsv
 Other CNS	Dysembryoplastic neuroepithelial tumor	data/other_goi_list.tsv
 Other CNS	Rosette-forming glioneuronal tumor	data/other_goi_list.tsv
-Other CNS	Dysplasia Gliosis-Glial-neuronal tumor NOS	data/other_goi_list.tsv
 Other CNS	Glial-neuronal tumor NOS	data/other_goi_list.tsv
 Other CNS	Neurocytoma	data/other_goi_list.tsv
 Other CNS	Desmoplastic infantile astrocytoma and ganglioglioma	data/other_goi_list.tsv
