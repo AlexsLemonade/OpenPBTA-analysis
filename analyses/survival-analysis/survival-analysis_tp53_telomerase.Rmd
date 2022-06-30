@@ -78,7 +78,7 @@ tel_stranded_file <- file.path(telomerase_dir,
 # The following patients have discrepant extent of tumor resection
 # 7316-116 has Biopsy only;Gross/Near total resection
 # 7316-182 has Gross/Near total resection;Partial resection
-# Ticket was created [here](https://github.com/PediatricOpenTargets/ticket-tracker/issues/298) to track this database update, and I will recode beloow
+# Ticket was created [here](https://github.com/PediatricOpenTargets/ticket-tracker/issues/298) to track this database update, and I will recode below
 
 # get primary tumor and remove cell lines
 histologies_rna <- read_tsv(metadata_file, guess_max = 10000) %>%
@@ -91,8 +91,17 @@ histologies_rna <- read_tsv(metadata_file, guess_max = 10000) %>%
   mutate(extent_of_tumor_resection = case_when(
     sample_id == "7316-116" ~ "Biopsy only",
     sample_id == "7316-182" ~ "Partial resection",
+    sample_id == "7316-356" ~ "Partial resection", # https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1430#pullrequestreview-1014340267
     TRUE ~ as.character(extent_of_tumor_resection))) %>%
-  select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID_RNA, sample_id, cancer_group, OS_status, OS_days, PFS_days, extent_of_tumor_resection) %>%
+  select(Kids_First_Participant_ID, 
+         Kids_First_Biospecimen_ID_RNA, 
+         sample_id, 
+         broad_histology,
+         cancer_group, 
+         OS_status, 
+         OS_days, 
+         PFS_days, 
+         extent_of_tumor_resection) %>%
   distinct() 
   
 # read in tp53 scores
@@ -110,8 +119,8 @@ tel_scores <- read_tsv(tel_stranded_file) %>%
 # combine tp53 scores and telomerase score to the dataframe
 # note that we do not need to recode categories since the survival_models.R functions will take care of it
 meta_indep <- histologies_rna %>%
-  # add tp53 and telomerase scores by matching Kids_First_Biospecimen_ID_RNA
-  left_join(tp53_scores, by = "Kids_First_Biospecimen_ID_RNA") %>%
+  # add tp53 and telomerase scores by matching Kids_First_Biospecimen_ID_RNA, with only one of them joining sample_id
+  left_join(tp53_scores %>% select(-sample_id), by = "Kids_First_Biospecimen_ID_RNA") %>%
   left_join(tel_scores, by = "Kids_First_Biospecimen_ID_RNA") %>% 
   rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA) %>%
   distinct(Kids_First_Participant_ID, .keep_all=TRUE) %>%
@@ -140,7 +149,7 @@ meta_indep_grouped <- meta_indep %>%
                              hgg_levels[2], # second is HGG 
                              hgg_levels[1]), # first is non-HGG
           hgg_group = factor(hgg_group, levels = hgg_levels), # ensures non-HGG is the reference level
-          lgg_group = ifelse(cancer_group == "Low-grade glioma astrocytoma",
+          lgg_group = ifelse(broad_histology == "Low-grade astrocytic tumor",
                              lgg_levels[2], # second is LGG 
                              lgg_levels[1]), # first is non-LGG
           lgg_group = factor(lgg_group, levels = lgg_levels) # ensures non-HGG is the reference level
@@ -304,8 +313,9 @@ Interaction terms are not significant, except `tp53_score:extent_of_tumor_resect
 
 ### Additive model: `tp53_score+telomerase_score+extent_of_tumor_resection+lgg_group+hgg_group` 
 
-> The strongest predictor here is extent of tumor resection with gross/near total resection having a survival benefit and partial resection nearing significance (both compared to biopsy only) for a survival benefit.
-> High _TP53_ scores, telomerase scores, and non-LGG are all significant risk factors for poorer overall survival.
+> The strongest predictor here is extent of tumor resection with gross/near total resection having improved survival compared to biopsy.
+> Non-LGG is a significant risk factor for poorer overall survival, and similar HGG is a risk factor for poorer survival.
+> We do not see a significant effect of TP53 scores, but we do see a highly significant effect of telomerase scores.
 
 ```{r multi_additive_4terms extent_tumor_resect glioma_group}
 # we save this for the purpose of printing out a p-value below

@@ -36,8 +36,8 @@ It also demonstrates how to run cox regression survival analysis on a continuous
 `survival-analysis_tp53_telomerase.Rmd` runs the following analysis:
 1. Univariate models 
 - extent of tumor resection (cox)
-- LGG group (cox)
-- HGG group (cox)
+- LGG broad histology (cox)
+- HGG broad histology (cox)
 - Cancer group (cox)
 - Cancer group (log rank)
 
@@ -54,8 +54,8 @@ It also demonstrates how to run cox regression survival analysis on a continuous
 
 2. Multivariate models:
 - CD274 (PD-L1) expression, controlling for RNA library
-- `quanTIseq immune cell fractions + extent of tumor resection + LGG group`, across entire PBTA cohort
-- `quanTIseq immune cell fractions + CD274 expression + extent of tumor resection + LGG group` across entire PBTA cohort
+- `quanTIseq immune cell fractions + extent of tumor resection + LGG broad histology`, across entire PBTA cohort
+- `quanTIseq immune cell fractions + CD274 expression + extent of tumor resection + LGG broad histology` across entire PBTA cohort
 - `quanTIseq immune cell fractions + CD274 expression + extent of tumor resection` across suitable `cancer_groups` (DECEASED N>=3, thus no LGG)
 
 
