@@ -229,9 +229,9 @@ ggsave(cg_celltypes_plot_file, cg_plot, width = 11, height = 3.5)
 quantiseq_no_ratio <- quantiseq_subset %>%
   filter(cell_type != "cd8_cd4_ratio")
 subtypes_celltypes_plot <- ggplot(quantiseq_no_ratio) +
-  aes(x = molecular_subtype, y = score, color = cancer_group_hex) + 
+  aes(x = molecular_subtype, y = score) + 
   geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
-  geom_jitter(width = 0.15, size = 0.75, alpha = 0.6) + 
+  geom_jitter(shape = 1, width = 0.15, size = 0.75, alpha = 0.4) + 
   # change to ncol if we want this *Wide*
   facet_wrap(~cell_type, ncol = 5, scales = "free_y") +
   scale_color_identity() +
@@ -383,7 +383,7 @@ ratio_plot <- ggplot(ratio_df) +
       y = score) +
   # remove outliers
   geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
-  geom_jitter(width = 0.15, size = 0.75, alpha = 0.8, aes(color = cancer_group_hex)) + 
+  geom_jitter(shape = 1, width = 0.15, size = 0.75, alpha = 0.6) + 
   scale_color_identity() +
   labs(x = "Molecular subtype of sample",
        y = "Ratio of CD8+/CD4+ T cell fractions") +
