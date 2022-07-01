@@ -164,13 +164,6 @@ expression_pdl1 <- stranded %>%
 
 ```{r cancer_groups_celltypes_plot, fig.width = 14, fig.height = 4.5}
 # Faceted plot of cancer groups, cell types. Jitter points are colored by cancer group.
-# First, find the cancer groups with >=15 samples to match other modules
-#cg_of_interest <- palette_mapping_df %>%
-#  filter(!is.na(cancer_group_display), cancer_group_display != "Other") %>%
-#  count(cancer_group_display) %>%
-#  filter(n >= 15) %>%
-#  pull(cancer_group_display)
-
 # Now, filter to relevant samples and remove uncharacterized fractions
 quantiseq_subset_cg <- quantiseq_gather %>%
   filter(cell_type != "uncharacterized cell" & cell_type != "cd8_cd4_ratio") %>%
