@@ -59,13 +59,11 @@ bash ${analyses_dir}/chromothripsis/run-chromothripsis.sh
 OPENPBTA_CNS_FIT_ONLY=1 bash ${analyses_dir}/mutational-signatures/run_mutational_signatures.sh
 
 # Run the collapse-rnaseq module, which is needed for telomerase, immune deconvolution, and GSVA modules
-OPENPBTA_TP53_FIGURES=1 bash ${analyses_dir}/collapse-rnaseq/run-collapse-rnaseq.sh 
+bash ${analyses_dir}/collapse-rnaseq/run-collapse-rnaseq.sh 
 
 # Run the telomerase activity prediction script, for Figures 4 and S5
-# TODO: should we actually just run the full module script? I don't do that here since it also re-runs collapse rna seq.
-Rscript --vanilla ${analyses_dir}/telomerase-activity-prediction/01-run-EXTEND.R \
- --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
- --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt
+OPENPBTA_FOR_FIGURES=1 bash ${analyses_dir}/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
+
 
 # Run the tp53 classifier, for Figures 4 and S5
 bash ${analyses_dir}/tp53_nf1_score/run_classifier.sh
