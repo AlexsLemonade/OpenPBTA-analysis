@@ -19,6 +19,7 @@ maf_consensus=../../data/pbta-snv-consensus-mutation.maf.tsv.gz
 hotspots_maf=../../data/pbta-snv-scavenged-hotspots.maf.tsv.gz
 fusion_file=../../data/pbta-fusion-putative-oncogenic.tsv
 histologies_file=../../data/pbta-histologies.tsv
+palette_file=../../figures/palettes/broad_histology_cancer_group_palette.tsv
 intermediate_directory=../../scratch/oncoprint_files
 primary_filename="primary_only"
 primaryplus_filename="primary-plus"
@@ -122,6 +123,7 @@ for filename in "${filenames[@]}"; do
     --cnv_file "${intermediate_directory}/${filename}_cnv.tsv" \
     --fusion_file "${intermediate_directory}/${filename}_fusions.tsv" \
     --metadata_file "${histologies_file}" \
+    --palette_file "${palette_file}" \
     --subdirectory "${filename}"
 
 done

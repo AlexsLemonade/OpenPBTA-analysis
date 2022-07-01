@@ -28,7 +28,7 @@ data_dir <-
   file.path(root_dir, "analyses", "oncoprint-landscape", "data")
 
 # Each histology has it's own column, and there are source columns
-all_goi_df <- readr::read_csv(file.path("data", 
+all_goi_df <- readr::read_csv(file.path(data_dir, 
                                         "oncoprint-goi-lists-OpenPBTA.csv"))
 
 # Drop the source columns
@@ -68,7 +68,7 @@ palette_df <- readr::read_tsv(file.path(root_dir,
                                         "broad_histology_cancer_group_palette.tsv"))
 
 cg_df <- palette_df %>% 
-  select(oncoprint_group, cancer_group) %>% 
+  select(oncoprint_group, cancer_group, cancer_group_display) %>% 
   filter(!is.na(oncoprint_group)) %>%
   mutate(goi_list_file = case_when(
     oncoprint_group == "Other CNS" ~ "data/other_goi_list.tsv",
