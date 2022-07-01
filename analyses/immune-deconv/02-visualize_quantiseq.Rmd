@@ -92,29 +92,29 @@ palette_mapping_df <- histologies_df %>%
          contains("cancer_group"),
          molecular_subtype)
 
-#### Array of groups we want to visualize (top 15 groups with highest N samples?)
+#### Array of groups we want to visualize (groups with N >= 15?), remove Other
 cancer_groups_of_interest <- palette_mapping_df %>%
     filter(cancer_group_display != "Other", !is.na(cancer_group_display)) %>%
   group_by(cancer_group_display) %>%
   tally() %>%
   arrange(-n) %>%
-  head(15) %>%
+  filter(n > 15) %>%
   pull(cancer_group_display)
 
-cancer_groups_of_interest <- palette_mapping_df %>%
-  filter(cancer_group_display != "Other", !is.na(cancer_group_display)) %>%
-  pull(cancer_group_display) %>%
-  unique()
-
-#### Array of groups we want to visualize
-#cancer_groups_of_interest <- c("Other high-grade gliomas", 
-#                               "Diffuse midline glioma",
-#                               "Other low-grade gliomas", 
-#                               "Ganglioglioma",
-#                               "Ependymoma", 
-#                               "Medulloblastoma",
-#                               "Schwannoma",
-#                               "Neurofibroma Plexiform")
+#### Array of groups we want to visualize (chose 12/14 above)
+# Exclude other HGG/LGG since the patterns are similar to pilocytic/DMG
+cancer_groups_of_interest <- c("Pilocytic astrocytoma", 
+                               "Diffuse midline glioma",
+                               "Craniopharyngioma", 
+                               "Ganglioglioma",
+                               "Ependymoma", 
+                               "Medulloblastoma",
+                               "Schwannoma",
+                               "Neurofibroma Plexiform",
+                               "Other embryonal tumor",
+                               "Atypical Teratoid Rhabdoid Tumor",
+                               "Meningioma",
+                               "Dysembryoplastic neuroepithelial tumor")
  
 #### Prepare quanTIseq data --> `quantiseq_subset`
 # spread and create cd8/cd4 ratio
@@ -165,17 +165,17 @@ expression_pdl1 <- stranded %>%
 ```{r cancer_groups_celltypes_plot, fig.width = 14, fig.height = 4.5}
 # Faceted plot of cancer groups, cell types. Jitter points are colored by cancer group.
 # First, find the cancer groups with >=15 samples to match other modules
-cg_of_interest <- palette_mapping_df %>%
-  filter(!is.na(cancer_group_display), cancer_group_display != "Other") %>%
-  count(cancer_group_display) %>%
-  filter(n >= 15) %>%
-  pull(cancer_group_display)
+#cg_of_interest <- palette_mapping_df %>%
+#  filter(!is.na(cancer_group_display), cancer_group_display != "Other") %>%
+#  count(cancer_group_display) %>%
+#  filter(n >= 15) %>%
+#  pull(cancer_group_display)
 
 # Now, filter to relevant samples and remove uncharacterized fractions
 quantiseq_subset_cg <- quantiseq_gather %>%
   filter(cell_type != "uncharacterized cell" & cell_type != "cd8_cd4_ratio") %>%
   left_join(palette_mapping_df, by = c("sample" = "Kids_First_Biospecimen_ID")) %>%
-  filter(cancer_group_display %in% cg_of_interest)
+  filter(cancer_group_display %in% cancer_groups_of_interest)
 
 # We need to create a new scheme for labeling that shows wrapped cancer groups with `(n=X)`
 quantiseq_subset_cg <- quantiseq_subset_cg %>%
@@ -391,7 +391,6 @@ ratio_plot <- ggplot(ratio_df) +
   # remove outliers
   geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
   geom_jitter(width = 0.15, size = 0.75, alpha = 0.8, aes(color = cancer_group_hex)) + 
-  #facet_wrap(~cancer_group_display, nrow = 2, scales = "free") +
   scale_color_identity() +
   labs(x = "Molecular subtype of sample",
        y = "Ratio of CD8+/CD4+ T cell fractions") +
