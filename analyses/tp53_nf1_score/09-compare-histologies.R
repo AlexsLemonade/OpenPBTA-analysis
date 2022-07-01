@@ -18,14 +18,24 @@ tp53_file <- file.path(root_dir, "analyses", "tp53_nf1_score",
 tp53_broad_pdf <- file.path(output_dir, "tp53_broad_histology.pdf")
 tp53_cg_pdf <- file.path(output_dir, "tp53_cancer_group.pdf")
 
+# color palette
+color_palette_df <- readr::read_tsv(
+  file.path(palette_dir, "broad_histology_cancer_group_palette.tsv")
+)
 
-# read in histologies file
+
+# read in histologies file, and merge in colors
 histologies <- read_tsv(hist_file, guess_max = 10000) %>%
   filter(sample_type == "Tumor") %>%
   # remove cell lines from plots
   filter(composition != "Derived Cell Line") %>%
   # select only columns of interest
-  select(Kids_First_Biospecimen_ID, sample_id, broad_histology, cancer_group, molecular_subtype)
+  select(Kids_First_Biospecimen_ID, sample_id, broad_histology, cancer_group, molecular_subtype) %>%
+  # join with palette, but not the cancer group abbreviations
+  inner_join(
+    select(color_palette_df, contains("broad_histology"), contains("cancer_group")) 
+  ) %>%
+  select(-cancer_group_abbreviation)
 
 # read in tp53 scores
 tp53 <- readr::read_tsv(tp53_file) %>%
@@ -43,7 +53,7 @@ tp53_hist_for_broad <- tp53 %>%
   filter(!is.na(broad_histology)) %>%
   # remove precancerous lesion, non-tumor, benign
   filter(broad_histology != "Pre-cancerous lesion" & broad_histology != "Non-tumor" &
-           broad_histology != "Other tumor")
+           broad_histology != "Other tumor") 
 
 # remove cancer group == NA
 tp53_hist_for_cancer_group <- tp53 %>%
@@ -51,37 +61,37 @@ tp53_hist_for_cancer_group <- tp53 %>%
   distinct() %>%
   filter(!is.na(cancer_group))
 
-# color palette
-color_palette_df <- readr::read_tsv(
-  file.path(palette_dir, "broad_histology_cancer_group_palette.tsv")
-)
 
 # get palette for cancer group
 cancer_group_palette <- color_palette_df %>%
-  dplyr::select(cancer_group, cancer_group_hex) %>%
+  dplyr::select(cancer_group_display, cancer_group_hex) %>%
   # Remove NA values -- a cancer group hex value will be NA only if the
   # cancer group is NA
-  dplyr::filter(complete.cases(.))
+  dplyr::filter(complete.cases(.)) %>%
+  dplyr::distinct()
 
 # make cancer group color palette suitable for use with ggplot
 col_cg <- cancer_group_palette$cancer_group_hex
-names(col_cg) <- cancer_group_palette$cancer_group
+names(col_cg) <- cancer_group_palette$cancer_group_display
 
 # repeat the steps for the broad histology palette
 broad_histology_palette <- color_palette_df %>%
-  dplyr::select(broad_histology, broad_histology_hex) %>%
+  dplyr::select(broad_histology_display, broad_histology_hex) %>%
   dplyr::distinct() %>%
   dplyr::filter(complete.cases(.))
+
 col_broad <- broad_histology_palette$broad_histology_hex
-names(col_broad) <- broad_histology_palette$broad_histology
+names(col_broad) <- broad_histology_palette$broad_histology_display
+
+
 
 ## boxplot of TP53 scores by broad histology
 broad_histology_plot <- ggplot(tp53_hist_for_broad,
-                               aes(reorder(broad_histology, -tp53_score, FUN = median, na.rm = TRUE),
+                               aes(reorder(broad_histology_display, -tp53_score, FUN = median, na.rm = TRUE),
                                    tp53_score)) +
-  geom_boxplot(aes(color = broad_histology, fill = broad_histology), alpha = 0.3) +
+  geom_boxplot(aes(color = broad_histology_display, fill = broad_histology_display), alpha = 0.3) +
   geom_hline(aes(yintercept=0.5), linetype = "dashed", color = "black") +
-  geom_jitter(aes(color = broad_histology, alpha = 0.2)) +
+  geom_jitter(aes(color = broad_histology_display, alpha = 0.2)) +
   scale_fill_manual(values = col_broad, aesthetics = c("colour", "fill")) +
   xlab("Broad histology") +
   ylab("TP53 scores") +
@@ -93,11 +103,11 @@ ggsave(filename = tp53_broad_pdf, plot = broad_histology_plot)
 
 ## boxplot of TP53 scores by cancer group
 cancer_group_plot <- ggplot(tp53_hist_for_cancer_group,
-                            aes(reorder(cancer_group, -tp53_score, FUN = median, na.rm = TRUE),
+                            aes(reorder(cancer_group_display, -tp53_score, FUN = median, na.rm = TRUE),
                                 tp53_score)) +
-  geom_boxplot(aes(color = cancer_group, fill = cancer_group), alpha = 0.3) +
+  geom_boxplot(aes(color = cancer_group_display, fill = cancer_group_display), alpha = 0.3) +
   geom_hline(aes(yintercept=0.5), linetype = "dashed", color = "gray60") +
-  geom_jitter(aes(color = cancer_group, alpha = 0.2)) +
+  geom_jitter(aes(color = cancer_group_display, alpha = 0.2)) +
   scale_fill_manual(values = col_cg, aesthetics = c("colour", "fill")) +
   xlab("Cancer group") +
   ylab("TP53 scores") +
