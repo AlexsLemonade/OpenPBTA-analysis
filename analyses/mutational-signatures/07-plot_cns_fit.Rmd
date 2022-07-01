@@ -86,21 +86,24 @@ exposures <- exposures_wide %>%
 
 
 Now we prepare the data for visualization, including merging data frames and further setting up palettes.
-Note that we are plotting here only the cancer groups used in the [`interaction-plots` module](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/interaction-plots/scripts/03-plot_interactions.R)
+Note that we are plotting here only the cancer groups used in the [`interaction-plots` module](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/interaction-plots/scripts/03-plot_interactions.R). 
+Also see [this discussion](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1474).
 
 ```{r merge_data}
 # Cancer groups we are showing in figure 4
 cancer_groups_to_plot <- c(
   "Diffuse midline glioma",
-  "Low-grade glioma astrocytoma",
-  "Craniopharyngioma",
-  "High-grade glioma astrocytoma",
+  "Other high-grade glioma",
+  "Pilocytic astrocytoma",
   "Ganglioglioma",
+  "Pleomorphic xanthoastrocytoma",
+  "Other low-grade glioma",
   "Medulloblastoma",
-  "Meningioma",
+  "Atypical Teratoid Rhabdoid Tumor",
+  "Other embryonal tumor",
   "Ependymoma",
-  "Schwannoma",
-  "Dysembryoplastic neuroepithelial tumor"
+  "Craniopharyngioma",
+  "Meningioma"
 )
 
 # Join input dataframes together
@@ -110,9 +113,13 @@ results_df <- exposures %>%
     meta %>%
       dplyr::select(Kids_First_Biospecimen_ID, broad_histology, cancer_group, tumor_descriptor)
   ) %>%
+  # Drop unknown cancer groups - needed for cleaning duplicates.
+  tidyr::drop_na(cancer_group) %>%
   # Grab the cancer group DISPLAY specifically (needed for joining later)
   dplyr::inner_join(
-      dplyr::select(palette_df, cancer_group, cancer_group_display)
+      # Must retain broad_histology in order to properly join the Oligodendroglioma samples
+      #  which can be either high- or low-grade glioma cancer groups
+      dplyr::select(palette_df, broad_histology, cancer_group, cancer_group_display)
   ) %>%
   # no longer need cancer_group
   dplyr::select(-cancer_group) %>%
@@ -128,15 +135,16 @@ results_df <- results_df %>%
   dplyr::select(-signature) %>%
   dplyr::distinct() %>%
   dplyr::inner_join(
-      dplyr::select(palette_df, dplyr::contains("cancer_group"))
+      dplyr::select(palette_df, cancer_group_display, cancer_group_hex)
   ) %>%
   dplyr::select(cancer_group_display, n, cancer_group_hex) %>%
+  dplyr::distinct() %>%
   # Create wrapped with (n=X) factor column for cancer groups
   dplyr::mutate(cancer_group_display_n = stringr::str_wrap(glue::glue("{cancer_group_display} (N={n})"), 30),
                 cancer_group_display_n = forcats::fct_reorder(cancer_group_display_n, n, .desc=T)) %>%
   dplyr::inner_join(results_df)
 
-# We also write `results_df` to a file since it will be used by the `08` notebooks.
+# We also write `results_df` to a file since it will be used by the `08` notebook.
 readr::write_tsv(results_df, results_df_file)
 
 
@@ -150,9 +158,11 @@ readr::write_tsv(results_df, results_df_file)
 
 
 _All_ samples are included in these sina plots, which show the distribution of exposures for each signature across samples in each cancer group.
-
+Notably, the "rug" of 0's in each distribution represents samples which are unexposed to the given signature. 
 
 ```{r boxplot, fig.width = 14, fig.height = 4.5}
+# Set seed for sina reproducibility
+set.seed(2022)
 
 exposures_sina_boxplot <- results_df %>%
   # we DO visualize unknown also, but in case...
@@ -184,7 +194,7 @@ exposures_sina_boxplot <- results_df %>%
     axis.text.x = ggplot2::element_text(size = 8.5, angle = 45, hjust = 1),
     axis.text.y = ggplot2::element_text(size = 10),
     axis.title = ggplot2::element_text(size = 12),
-    strip.text = ggplot2::element_text(size = 8.5),
+    strip.text = ggplot2::element_text(size = 8),
     legend.position = "none"
   )
 exposures_sina_boxplot
@@ -196,29 +206,31 @@ ggplot2::ggsave(exposures_sina_IQR_file, exposures_sina_boxplot, width = 12, hei
 
 ### Barplots of proportions of samples that are _unexposed_ 
 
-Notably, the "rug" of 0's in each distribution represents samples which are unexposed to the given signature. 
-It's useful to get a clear sense of the proportion of samples that are totally unexposed.
 We do _not_ include "Other" in this plot. 
 
-```{r proportion, fig.width = 5, fig.height = 10}
+```{r proportion, fig.width = 9, fig.height = 7}
 exposures_proportions <- results_df %>%
   # remove "other" - not useful to know if samples are unexposed to signatures that aren't even present.
   dplyr::filter(signature != "Other") %>%
   dplyr::group_by(cancer_group_display_n, cancer_group_hex, signature) %>%
   dplyr::summarize(percent_exposed = sum(exposure > 0)/dplyr::n()) %>%
+  dplyr::ungroup() %>%
+  # wrap strip labels
+  dplyr::mutate(cancer_group_display_n = stringr::str_wrap(cancer_group_display_n, 25)) %>%
   ggplot2::ggplot() + 
   ggplot2::aes(x = signature, y = percent_exposed, fill = cancer_group_hex) + 
   ggplot2::geom_col(color = "black") +
-  ggplot2::facet_wrap(~cancer_group_display_n, nrow = 5) + 
+  ggplot2::facet_wrap(~cancer_group_display_n, nrow = 3) + 
   ggplot2::scale_fill_identity() +
   ggplot2::labs(x = "RefSig Signature", 
                 y = "Percent of samples exposed to signature") +
   ggpubr::theme_pubr() +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(size = 8))
+  ggplot2::theme(axis.text.x = ggplot2::element_text(size = 10, angle = 45, hjust=1), 
+                 strip.text = ggplot2::element_text(size = 10))
 
 exposures_proportions
 
-ggplot2::ggsave(exposures_presence_barplot_file, exposures_proportions, width = 5, height = 10)
+ggplot2::ggsave(exposures_presence_barplot_file, exposures_proportions, width = 9, height = 7)
 
 ```
 
@@ -240,8 +252,7 @@ samples_in_order <- results_df %>%
   dplyr::filter(signature == 1) %>%
   dplyr::select(exposure, Kids_First_Biospecimen_ID) %>%
   dplyr::arrange(-exposure) %>%
-  dplyr::pull(Kids_First_Biospecimen_ID)
-
+  dplyr::pull(Kids_First_Biospecimen_ID) 
 
 sample_exposures_barplot <- results_df %>%
   dplyr::mutate(Kids_First_Biospecimen_ID = factor(Kids_First_Biospecimen_ID, levels = samples_in_order)) %>%
@@ -316,16 +327,19 @@ We can also explore this using the signature 1 exposure directly instead of a bi
 
 
 
-```{r sig1_jitter, fig.width = 12, fig.height = 6}
+```{r sig1_jitter, fig.width = 14, fig.height = 6}
 
 # This chunk should NOT run in CI. 
 if (!(params$is_ci == 1)) {
-   
+  
+  # Set seed for reproducibility
+  set.seed(2022)
+  
   # Grab the tumor descriptor colors
   tumor_colors <- tumor_df$hex_codes
   names(tumor_colors) <- tumor_df$color_names
   
-  # First we can display proportions and tumor desriptor, across cancer display groups
+  # First we can display proportions and tumor descriptor, across cancer display groups
   sig1_tumor_cancergroups <- sig1_exposures %>%
     ggplot2::ggplot() + 
     ggplot2::aes(x = tumor_descriptor, 
@@ -345,6 +359,7 @@ if (!(params$is_ci == 1)) {
     ggpubr::theme_pubr() + 
     ggplot2::theme(
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, size = 8),
+      strip.text = ggplot2::element_text(size = 8),
       legend.position = "none"
     )
   
