@@ -547,7 +547,7 @@ forest_plot <- ggplot(survival_df) +
   # log-scale the x-axis
   scale_x_log10(
     # axis label was being cut off - this fixes it
-    limits=c(5e-2, 1e2)
+    limits=c(5e-3, 1e2)
   ) +
   ggpubr::theme_pubr() + 
   theme(
