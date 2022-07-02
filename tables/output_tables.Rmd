@@ -112,9 +112,8 @@ histology_df %>%
 # Gather all BS_IDs (soi = "samples of interest"), whether hypermutant or not, for pts with hypermutant samples
 soi_df <- tmb_hist %>%
   filter(Kids_First_Participant_ID %in% poi$Kids_First_Participant_ID) %>%
-  # Looks like there is a hypermutant metastatic NBL sample we had not caught previously, but let's remove here since we focus on CNS anyway
-  # keep only WGS samples; remove metastases 
-  filter(experimental_strategy == "WGS" & short_histology != "Metastases") %>%
+  # keep only WGS samples 
+  filter(experimental_strategy == "WGS") %>%
   # manually add therapy field and update cancer predispositions not included in histologies file per [ticket](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1318)
   mutate(`Therapy post-biopsy` = case_when(
       Kids_First_Biospecimen_ID == "BS_VW4XN9Y7" ~ "Temozolomide, CCNU, Radiation",
@@ -123,7 +122,8 @@ soi_df <- tmb_hist %>%
       Kids_First_Biospecimen_ID == "BS_85Q5P8GF" ~ "Temozolomide, Radiation",
       sample_id == "7316-3058" ~ "Nivolumab",
       Kids_First_Biospecimen_ID == "BS_P3PF53V8" ~ "Temozolomide, Irinotecan, Radiation",
-      sample_id == "7316-2189" ~ "Unknown"
+      Kids_First_Biospecimen_ID == "BS_F0GNWEJJ" ~ "Nivolumab, Radiation",
+      sample_id == "7316-2189" ~ "Unknown",
     ),
     # add Lynch syndrome
     cancer_predispositions = case_when(
@@ -132,7 +132,11 @@ soi_df <- tmb_hist %>%
       sample_id == "7316-2189" ~ "Lynch Syndrome",
       Kids_First_Biospecimen_ID == "BS_85Q5P8GF" ~"Lynch syndrome",
       TRUE ~ as.character(cancer_predispositions)),
-      ) %>%
+    # update molecular subtype for NBL sample
+    molecular_subtype = case_when(
+     Kids_First_Biospecimen_ID == "BS_F0GNWEJJ" ~ "NBL",
+     TRUE ~ as.character(molecular_subtype))
+    ) %>%
     # select relevant columns
       select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, sample_id, tumor_descriptor, composition, `Therapy post-biopsy`, cancer_predispositions, tmb, molecular_subtype) %>%
     arrange(Kids_First_Participant_ID, tumor_descriptor, composition)
