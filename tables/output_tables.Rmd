@@ -7,7 +7,7 @@ output:
     toc: TRUE
     toc_float: TRUE
 params:
-  release: release-v21-20210820
+  release: release-v22-20220505
 ---
 
 ```{r setup, include=FALSE}
