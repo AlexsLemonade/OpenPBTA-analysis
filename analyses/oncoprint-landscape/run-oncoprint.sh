@@ -13,6 +13,12 @@ script_directory="$(perl -e 'use File::Basename;
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
+
+# Skip embryonal oncoprint plot with a gene list, due to image rendering errors 
+#  that occur only at this step with the test data.
+#  A value of 0 runs everything. A value of 1 skips that one step.
+TESTING=${OPENPBTA_TESTING:-0}
+
 #### Files ---------------------------------------------------------------------
 
 maf_consensus=../../data/pbta-snv-consensus-mutation.maf.tsv.gz
@@ -36,7 +42,6 @@ Rscript --vanilla 00-prepare-goi-lists.R
 #### Map between DNA and RNA specimens -----------------------------------------
 
 ### Primary only samples mapping for oncoprint
-echo "01 primary"
 Rscript --vanilla 01-map-to-sample_id.R \
   --maf_file ${maf_consensus} \
   --hotspots_maf_file ${hotspots_maf} \
@@ -49,7 +54,6 @@ Rscript --vanilla 01-map-to-sample_id.R \
   --independent_specimens ../../data/independent-specimens.wgs.primary.tsv
 
 #### Primary plus samples mapping for oncoprint
-echo "01 primary plus"
 Rscript --vanilla 01-map-to-sample_id.R \
   --maf_file ${maf_consensus} \
   --hotspots_maf_file ${hotspots_maf} \
@@ -62,7 +66,7 @@ Rscript --vanilla 01-map-to-sample_id.R \
   --independent_specimens ../../data/independent-specimens.wgs.primary-plus.tsv
 
 #### Oncoprints by broad histology ---------------------------------------------
-
+echo "here"
 # We'll use a declarative array to loop through pairs of broad histology labels
 # and genes of interest files
 histologies=(lgat embryonal hgat other)
@@ -87,13 +91,9 @@ filenames=($primary_filename $primaryplus_filename)
 # For primary, primary-plus
 for filename in "${filenames[@]}"; do
 
-  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-  $filename
-  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-
-  
 # Print oncoprints by broad histology
   for histology in "${histologies[@]}"; do
+
     # Print the version of the oncoprint without a genes of interest list
     Rscript --vanilla 02-plot-oncoprint.R \
       --maf_file "${intermediate_directory}/${filename}_maf.tsv" \
@@ -102,6 +102,11 @@ for filename in "${filenames[@]}"; do
       --metadata_file "${histologies_file}" \
       --png_name "${filename}_${histology}_oncoprint.png" \
       --broad_histology "${labels[$histology]}"
+
+    # But, in CI, skip Embryonal tumors which aren't able to be plotted
+    if [[ ${histology} == "embryonal" && ${TESTING} == "1" ]]; then
+      continue
+    fi
 
     # Genes of interest only version of oncoprint
     Rscript --vanilla 02-plot-oncoprint.R \
@@ -114,6 +119,7 @@ for filename in "${filenames[@]}"; do
       --png_name "${filename}_${histology}_goi_oncoprint.png" \
       --broad_histology "${labels[$histology]}" \
       --output_table "${filename}_${histology}_oncoprint_summary_n.tsv"
+
   done
 
   echo "03"

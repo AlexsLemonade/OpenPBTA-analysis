@@ -175,7 +175,7 @@ jobs:
 
       - run:
           name: Oncoprint plotting
-          command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
+          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
 
       - run:
           name: GISTIC Plots
