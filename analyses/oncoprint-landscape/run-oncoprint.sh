@@ -36,7 +36,7 @@ Rscript --vanilla 00-prepare-goi-lists.R
 #### Map between DNA and RNA specimens -----------------------------------------
 
 ### Primary only samples mapping for oncoprint
-
+echo "01 primary"
 Rscript --vanilla 01-map-to-sample_id.R \
   --maf_file ${maf_consensus} \
   --hotspots_maf_file ${hotspots_maf} \
@@ -49,7 +49,7 @@ Rscript --vanilla 01-map-to-sample_id.R \
   --independent_specimens ../../data/independent-specimens.wgs.primary.tsv
 
 #### Primary plus samples mapping for oncoprint
-
+echo "01 primary plus"
 Rscript --vanilla 01-map-to-sample_id.R \
   --maf_file ${maf_consensus} \
   --hotspots_maf_file ${hotspots_maf} \
@@ -87,6 +87,11 @@ filenames=($primary_filename $primaryplus_filename)
 # For primary, primary-plus
 for filename in "${filenames[@]}"; do
 
+  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  $filename
+  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+
+  
 # Print oncoprints by broad histology
   for histology in "${histologies[@]}"; do
     # Print the version of the oncoprint without a genes of interest list
@@ -111,6 +116,7 @@ for filename in "${filenames[@]}"; do
       --output_table "${filename}_${histology}_oncoprint_summary_n.tsv"
   done
 
+  echo "03"
   Rscript --vanilla 03-oncoprint-n-count-table.R \
     --maf_file "${intermediate_directory}/${filename}_maf.tsv" \
     --cnv_file "${intermediate_directory}/${filename}_cnv.tsv" \
@@ -118,6 +124,7 @@ for filename in "${filenames[@]}"; do
     --metadata_file "${histologies_file}" \
     --output_file "${filename}_sample_n_in_oncoprint.tsv"
 
+  echo "04"
   Rscript --vanilla 04-alteration-counts-by-cancer-group.R \
     --maf_file "${intermediate_directory}/${filename}_maf.tsv" \
     --cnv_file "${intermediate_directory}/${filename}_cnv.tsv" \
