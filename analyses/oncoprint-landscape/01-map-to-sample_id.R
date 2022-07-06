@@ -19,6 +19,7 @@
 #   --cnv_xy_file ../../data/consensus_seg_annotated_cn_x_and_y.tsv.gz \
 #   --fusion_file ../../data/pbta-fusion-putative-oncogenic.tsv \
 #   --metadata_file ../../data/pbta-histologies.tsv \
+#   --palette_file ../../figures/palettes/broad_histology_cancer_group_palette.tsv \
 #   --output_directory ../../scratch/oncoprint_files \
 #   --filename_lead "primary_only" \
 #   --independent_specimens ../../data/independent-specimens.wgswxs.primary.tsv
@@ -66,6 +67,12 @@ option_list <- list(
     help = "file path to clinical file"
   ),
   optparse::make_option(
+    c("-p", "--palette_file"),
+    type = "character",
+    default = NULL,
+    help = "file path to the palette file"
+  ),  
+  optparse::make_option(
     c("--filename_lead"),
     type = "character",
     default = NULL,
@@ -105,6 +112,8 @@ cnv_output <- file.path(output_dir, paste0(opt$filename_lead, "_cnv.tsv"))
 
 #### Read in data --------------------------------------------------------------
 histologies_df <- readr::read_tsv(opt$metadata_file, guess_max = 10000)
+
+palette_df <- readr::read_tsv(opt$palette_file)
 
 # Only keep required maf columns 
 keep_cols <-c("Hugo_Symbol", 
@@ -353,9 +362,9 @@ gather_n_per_cancer_group <- function(metadata, broad_histology){
   if (broad_histology != "Other CNS") {
     metadata <- metadata %>%
       dplyr::filter(broad_histology == broad_histology) %>%
-      select(cancer_group, sample_id) %>%
+      select(cancer_group_display, sample_id) %>%
       unique() %>%
-      group_by(cancer_group) %>%
+      group_by(cancer_group_display) %>%
       tally() %>%
       as.data.frame()
 
@@ -380,14 +389,20 @@ gather_n_per_cancer_group <- function(metadata, broad_histology){
           "Other tumor"
         )
       )  %>%
-      select(cancer_group, sample_id) %>%
+      select(cancer_group_display, sample_id) %>%
       unique() %>%
-      group_by(cancer_group) %>%
+      group_by(cancer_group_display) %>%
       tally() %>%
       as.data.frame()
 
   }
 }
+
+# Add cancer_group_display into histologies_df
+histologies_df <- histologies_df %>%
+  inner_join(
+    select(palette_df, broad_histology, cancer_group, cancer_group_display)
+  )
 
 output_file <- file.path('tables', paste0(opt$filename_lead, "_n_per_cancer_group.tsv"))
 lapply(as.list(c("Low-grade astrocytic tumor","Embryonal tumor",

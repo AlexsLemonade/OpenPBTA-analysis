@@ -49,6 +49,7 @@ Rscript --vanilla 01-map-to-sample_id.R \
   --cnv_xy_file ${consensus_seg_cnv_xy_cnv_file} \
   --fusion_file ${fusion_file} \
   --metadata_file ${histologies_file} \
+  --palette_file "${palette_file}" \
   --output_directory ${intermediate_directory} \
   --filename_lead ${primary_filename} \
   --independent_specimens ../../data/independent-specimens.wgs.primary.tsv
@@ -61,6 +62,7 @@ Rscript --vanilla 01-map-to-sample_id.R \
   --cnv_xy_file ${consensus_seg_cnv_xy_cnv_file} \
   --fusion_file ${fusion_file} \
   --metadata_file ${histologies_file} \
+  --palette_file "${palette_file}" \
   --output_directory ${intermediate_directory} \
   --filename_lead ${primaryplus_filename} \
   --independent_specimens ../../data/independent-specimens.wgs.primary-plus.tsv
