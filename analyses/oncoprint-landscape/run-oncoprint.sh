@@ -66,7 +66,7 @@ Rscript --vanilla 01-map-to-sample_id.R \
   --independent_specimens ../../data/independent-specimens.wgs.primary-plus.tsv
 
 #### Oncoprints by broad histology ---------------------------------------------
-echo "here"
+
 # We'll use a declarative array to loop through pairs of broad histology labels
 # and genes of interest files
 histologies=(lgat embryonal hgat other)
@@ -122,7 +122,6 @@ for filename in "${filenames[@]}"; do
 
   done
 
-  echo "03"
   Rscript --vanilla 03-oncoprint-n-count-table.R \
     --maf_file "${intermediate_directory}/${filename}_maf.tsv" \
     --cnv_file "${intermediate_directory}/${filename}_cnv.tsv" \
@@ -130,7 +129,6 @@ for filename in "${filenames[@]}"; do
     --metadata_file "${histologies_file}" \
     --output_file "${filename}_sample_n_in_oncoprint.tsv"
 
-  echo "04"
   Rscript --vanilla 04-alteration-counts-by-cancer-group.R \
     --maf_file "${intermediate_directory}/${filename}_maf.tsv" \
     --cnv_file "${intermediate_directory}/${filename}_cnv.tsv" \
