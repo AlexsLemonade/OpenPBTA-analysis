@@ -32,7 +32,7 @@ pbta_tmb_cdf_pdf <- file.path(output_dir, "pbta_tmb_cdf_plot.pdf")
 tcga_tmb_cdf_pdf <- file.path(output_dir, "tcga_tmb_cdf_plot.pdf")
 
 # Read in consensus data from pbta and tcga --------------------------------------------------------------
-tmb_pbta <- data.table::fread(file.path(
+tmb_tcga <- data.table::fread(file.path(
   data_dir,
   "pbta-snv-consensus-mutation-tmb-coding.tsv"
   )) %>%
@@ -45,6 +45,18 @@ tmb_tcga <- data.table::fread(file.path(
   "tcga-snv-mutation-tmb-coding.tsv"
   )) %>%
   select(-region_size)
+
+# Read in manifest to get Primary_diagnosis
+tmb_manifest <- read_tsv(
+  file.path(data_dir, "pbta-tcga-manifest.tsv")
+)
+
+# Join diagnosis information with tmb_tcga
+tmb_tcga <- inner_join(tmb_tcga, 
+                       select(tmb_manifest, 
+                              Tumor_Sample_Barcode = tumorID,
+                              Primary_diagnosis))
+
 
 # Define functions ----------------------------------------------------
 
@@ -106,7 +118,7 @@ baseline_plot <- function(df, tcga_color = NULL) {
       axis.text.x = ggplot2::element_blank(),
       axis.ticks.x = ggplot2::element_blank(),
       strip.placement = "outside",
-      strip.text = ggplot2::element_text(size = 11, angle = 90, hjust = 1),
+      strip.text = ggplot2::element_text(size = 9, angle = 90, hjust = 1),
       strip.background = ggplot2::element_rect(fill = NA, color = NA),
       legend.position = "none"
     ) 
@@ -145,12 +157,12 @@ tmb_pbta_plot_df <- tmb_pbta %>%
 
 # Prepare tcga data
 tmb_tcga_plot_df <- tmb_tcga %>%
-  prepare_data_for_plot(grouping_variable = short_histology) %>%
-  # Order short_histology by ascending n (most n's the same except 1)
+  prepare_data_for_plot(grouping_variable = Primary_diagnosis) %>%
+  # Order Primary_diagnosis by ascending n (most n's the same except 1)
   mutate(
-    short_histology = str_wrap(short_histology, 10),
-    short_histology = fct_infreq(short_histology),
-    short_histology = fct_rev(short_histology)
+    Primary_diagnosis = str_wrap(Primary_diagnosis, 10),
+    Primary_diagnosis = fct_infreq(Primary_diagnosis),
+    Primary_diagnosis = fct_rev(Primary_diagnosis)
   )
 
 # Plot the data ----------------------------------------------------------
@@ -160,7 +172,7 @@ tmb_pbta_plot <- baseline_plot(tmb_pbta_plot_df) +
   
 
 tmb_tcga_plot <- baseline_plot(tmb_tcga_plot_df, tcga_color = "gray60") +
-  facet_wrap(~short_histology + sample_size, nrow = 1, strip.position = "bottom") 
+  facet_wrap(~Primary_diagnosis + sample_size, nrow = 1, strip.position = "bottom") 
 
 # Export both plots ---------------------------------
 ggsave(pbta_tmb_cdf_pdf, tmb_pbta_plot, width = 10, height = 6)
