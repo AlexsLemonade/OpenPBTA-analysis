@@ -95,7 +95,7 @@ palette_mapping_df <- histologies_df %>%
          contains("cancer_group"),
          molecular_subtype)
 
-#### Array of groups we want to visualize (groups with N >= 15?), remove Other
+#### Determine the of groups we want to visualize from those with N>=15, excluding Other
 cancer_groups_of_interest <- palette_mapping_df %>%
     filter(cancer_group_display != "Other", !is.na(cancer_group_display)) %>%
   group_by(cancer_group_display) %>%
