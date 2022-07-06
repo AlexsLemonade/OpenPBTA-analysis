@@ -6,7 +6,7 @@
 library(tidyverse)
 
 ### Define variables 
-release_used <- "release-v21-20210820"
+release_used <- "release-v22-20220505"
 other_cns_color <- "#a9a9a9"
 to_be_classified_color <- "#656565"
 other_lgat_color <- "#000000"
@@ -17,8 +17,8 @@ data_dir <- file.path(root_dir, "data", release_used)
 figure_script_dir <- file.path(root_dir, "figures", "scripts")
 dim_red_dir <- file.path(root_dir, "analyses", "transcriptomic-dimension-reduction")
 
-# define output directory as pdfs/supp/figs5 because these panels are figure S5A-D
-plots_dir <- file.path(root_dir, "figures", "pdfs", "supp", "figs5", "panels")
+# define output directory as pdfs/supp/figs6 because these panels are figure S6A-D
+plots_dir <- file.path(root_dir, "figures", "pdfs", "supp", "figs6", "panels")
 if(!dir.exists(plots_dir)){
   dir.create(plots_dir, recursive = TRUE)
 }
@@ -68,9 +68,9 @@ umap_df_hgg <- umap_df %>%
   ))
 
 # reorder the levels for plotting, and set column names for legend
-umap_df_hgg$`TP53 status` <- factor(umap_df_hgg$tp53_status, levels = c("TP53 unchanged",
-                                                                      "TP53 activated",
-                                                                      "TP53 loss"))
+umap_df_hgg$`TP53 status` <- factor(umap_df_hgg$tp53_status, 
+                                    levels = c("TP53 unchanged","TP53 activated","TP53 loss"),
+                                    labels = c("TP53 unchanged","TP53 activated","TP53 lost"))
 
 umap_df_hgg$subtype <- factor(umap_df_hgg$hgat_subtypes, levels = c("Other CNS tumor",
                                                                           "To be classified",
@@ -97,7 +97,8 @@ p <- p +
 
 # save the plot
 ggsave(file.path(plots_dir, "supp_umap_hgg.pdf"), 
-       p, width = 5, height = 4)
+       p, width = 5, height = 4,
+       useDingbats = FALSE)
 
 ### Plot for LGAT
 # for LGG, we consider LGG, GNG and GNT all as LGG and we remove the prefixes to lumps groups together
@@ -164,7 +165,8 @@ p <- p +
 
 # save the figure
 ggsave(file.path(plots_dir, "supp_umap_lgg.pdf"), 
-       p, width = 5, height = 4)
+       p, width = 5, height = 4,
+       useDingbats = FALSE)
 
 ### Plot for MB 
 # for MB, we keep subtypes and recode everything else as `Other CNS Tumor`
@@ -195,7 +197,8 @@ p <- plot_dimension_reduction(umap_df_mb,
                                                 palette_OkabeIto %>% c(2,4,6,8)))
 # save the figure
 ggsave(file.path(plots_dir, "supp_umap_mb.pdf"), 
-       p, width = 5, height = 4)
+       p, width = 5, height = 4,
+       useDingbats = FALSE)
 
 
 ### Plot for EPN
@@ -226,5 +229,6 @@ p <- plot_dimension_reduction(umap_df_epn,
                                                 palette_OkabeIto %>% c(1,3,6,8)))
 # save the figure
 ggsave(file.path(plots_dir, "supp_umap_epn.pdf"), 
-       p, width = 5, height = 4)
+       p, width = 5, height = 4, 
+       useDingbats = FALSE)
 
