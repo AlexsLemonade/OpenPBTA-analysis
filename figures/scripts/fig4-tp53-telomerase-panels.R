@@ -346,7 +346,7 @@ mutator_pch <- 21
 jitter_width <- 0.15 # not in legend but often in main plot
 
 # Boxplot with overlayed jitter with colors "mapped" to `mutator`
-set.seed(14) # reproducible jitter to ensure we can see all N=6 points in BOTH facets
+set.seed(12) # reproducible jitter to ensure we can see all N=6 points in BOTH facets
 tp53_telo_tmb_boxplot <- ggplot(plot_df) +
   aes(
     x = fct_reorder(cancer_group_display, tp53_forordering), # order cancer groups by tp53 score
