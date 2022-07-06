@@ -68,9 +68,9 @@ umap_df_hgg <- umap_df %>%
   ))
 
 # reorder the levels for plotting, and set column names for legend
-umap_df_hgg$`TP53 status` <- factor(umap_df_hgg$tp53_status, levels = c("TP53 unchanged",
-                                                                      "TP53 activated",
-                                                                      "TP53 loss"))
+umap_df_hgg$`TP53 status` <- factor(umap_df_hgg$tp53_status, 
+                                    levels = c("TP53 unchanged","TP53 activated","TP53 loss"),
+                                    labels = c("TP53 unchanged","TP53 activated","TP53 lost"))
 
 umap_df_hgg$subtype <- factor(umap_df_hgg$hgat_subtypes, levels = c("Other CNS tumor",
                                                                           "To be classified",
