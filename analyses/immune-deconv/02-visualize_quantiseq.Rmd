@@ -20,6 +20,9 @@ params:
 library(tidyverse)
 library(ggpubr)
 
+# set seed
+set.seed(2022)
+
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
@@ -207,7 +210,7 @@ cg_plot <- quantiseq_subset_cg %>%
     axis.text.x = ggplot2::element_text(size = 6, angle = 45, hjust = 1),
     axis.text.y = ggplot2::element_text(size = 8),
     axis.title = ggplot2::element_text(size = 10),
-    strip.text = ggplot2::element_text(size = 6),
+    strip.text = ggplot2::element_text(size = 7),
     axis.line = ggplot2::element_line(size = ggplot2::rel(0.5)),
     axis.ticks = ggplot2::element_line(size = ggplot2::rel(0.5)),
     legend.position = "none"
@@ -215,7 +218,7 @@ cg_plot <- quantiseq_subset_cg %>%
 
 cg_plot
 
-ggsave(cg_celltypes_plot_file, cg_plot, width = 11, height = 3.5)
+ggsave(cg_celltypes_plot_file, cg_plot, width = 11, height = 3.5, useDingbats=FALSE, useDingbats=FALSE)
 ```
 
 
@@ -249,7 +252,7 @@ subtypes_celltypes_plot <- ggplot(quantiseq_no_ratio) +
 
 subtypes_celltypes_plot
 
-ggsave(subtypes_celltypes_plot_file, subtypes_celltypes_plot, width = 13, height = 4)
+ggsave(subtypes_celltypes_plot_file, subtypes_celltypes_plot, width = 13, height = 4, useDingbats=FALSE)
 ```
 
 
@@ -309,7 +312,7 @@ pdl1_distributions_plot <- ggplot(pdl1_cd8) +
 
 pdl1_distributions_plot
 
-ggsave(pdl1_distributions_plot_file, pdl1_distributions_plot, width = 7, height = 5)
+ggsave(pdl1_distributions_plot_file, pdl1_distributions_plot, width = 7, height = 5, useDingbats=FALSE)
 
 ```
 Visualize MB only, since that was the only significant result from the survival analyses
@@ -361,7 +364,7 @@ cd274_plot_mb <- ggplot(df_counts) +
 
 cd274_plot_mb
 
-ggsave(cd274_mb_plot_file, cd274_plot_mb, width = 5, height = 5)
+ggsave(cd274_mb_plot_file, cd274_plot_mb, width = 5, height = 5, useDingbats=FALSE)
 }
 ```
 
@@ -398,7 +401,7 @@ ratio_plot <- ggplot(ratio_df) +
 
 ratio_plot
 
-ggsave(cd8_cd4_ratio_plot_file, ratio_plot, width = 2.75, height = 4)
+ggsave(cd8_cd4_ratio_plot_file, ratio_plot, width = 2.75, height = 4, useDingbats=FALSE)
 
 ```
 
