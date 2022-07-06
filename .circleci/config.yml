@@ -21,9 +21,10 @@ jobs:
           name: Check python packages
           command: ./scripts/run_in_ci.sh bash scripts/check-python.sh
 
-      - run:
-          name: Sample Distribution Analyses
-          command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
+    # Deprecated module
+    #   - run:
+    #       name: Sample Distribution Analyses
+    #       command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
 
 
       - run:
@@ -176,7 +177,7 @@ jobs:
       - run:
           name: Oncoprint plotting
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
-
+         
       - run:
           name: GISTIC Plots
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd', clean = TRUE)"
@@ -302,6 +303,7 @@ workflows:
       - run_analyses
 
       - deploy:
+          context: openpbta-docker
           requires:
             - run_analyses
           filters:

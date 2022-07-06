@@ -78,39 +78,40 @@ tmb_data <- tmb_coding %>%
 
 <br><br>
   
-  ### Explore: Signatures 3, 18, and MMR2 and mutation burden
+### Explore: Signatures 3, 18, and MMR2 and mutation burden
   
-  GitHub references:
+GitHub references:
   
-  + https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1248
++ https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1248
 + https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1227
 
 Which samples have high 3, 18, and/or MMR2, and are these hypermutators? 
   
-  Note that this visualization is strictly exploratory and not exported.  
+Note that this visualization is strictly exploratory and not exported.  
 
 We do **not** observe that samples with high MMR2 or signature 3 exposure have high mutational burdens. 
-Moreover, the hypermutators (all are HGG) are unexposed to signature 3 entirely. 
+Moreover, the hypermutators are unexposed to signature 3 entirely. 
 Notably, three of the hypermutators have >=50% exposure to signature 18. 
 
 
 ```{r tmb_sigs, fig.width = 10, fig.height = 4}
-sigs_of_interest <- c(3, 18, "MMR2")
+sigs_of_interest <- c(3, 18,"MMR2")
 tmb_sigs_df <- exposures %>%
-  dplyr::select(signature, exposure, Kids_First_Biospecimen_ID, cancer_group_display) %>%
+  dplyr::select(signature, exposure, Kids_First_Biospecimen_ID, cancer_group_display, broad_histology) %>%
   dplyr::distinct() %>%
   dplyr::inner_join(tmb_data) %>%
   tidyr::gather(dplyr::contains("tmb"), key = "tmb_type", value = "tmb")
 
 # plot TMB against exposure to those three signatures
+# Note that we fill by *broad_histology* and not cancer_group because there will be insufficient colors
 tmb_sigs_df %>%
   dplyr::filter(signature %in% sigs_of_interest) %>%
   ggplot2::ggplot() + 
-  ggplot2::aes(x = exposure, y = tmb, fill = cancer_group_display) +
+  ggplot2::aes(x = exposure, y = tmb, fill = broad_histology) +
   ggplot2::geom_point(shape = 21, color ="black") + 
   # guiding line for majority of signature exposure, >=0.5
   ggplot2::geom_vline(xintercept = 0.5, color = "red") +
-  # gives a warning because insufficient colors - but OK since points of interest are colored!
+  # gives a warning because insufficient colors
   colorblindr::scale_fill_OkabeIto() +
   ggplot2::labs(x = "Exposure to given signature") +
   ggplot2::facet_grid(tmb_type ~ signature, scales = "free")
@@ -119,13 +120,13 @@ tmb_sigs_df %>%
 
 Do the hypermutators also show dysregulated TP53?
   
-  We define hypermutant samples as > 10 Mut/Mb, and ultrahypermutant samples as >100 Mut/Mb, from reference [Campbell et al., 2017](https://doi.org/10.1016/j.cell.2017.09.048).
+We define hypermutant samples as > 10 Mut/Mb, and ultrahypermutant samples as >100 Mut/Mb, from reference [Campbell et al., 2017](https://doi.org/10.1016/j.cell.2017.09.048).
 
 The output below shows hypermutator samples and...
 
 + their molecular subtypes (which implicitly gives the cancer group)
 + this also gives the **TP53 status**
-  + their tumor descriptor 
++ their tumor descriptor 
 + their _coding_ TMB
 + their exposures to all signatures (with those of interest appearing first: 3, 18, MMR2)
 
@@ -162,11 +163,13 @@ if (!(params$is_ci == 1)) {
 
 A couple interesting observations in the table above:
   
-  + _No samples_ are exposed to signature 3, 8, or N6
++ _No samples_ are exposed to signature 3, 8, or N6.
 
 + The DMG hypermutator sample (TMB=35.89) is mostly exposed to [signature 11](https://signal.mutationalsignatures.com/explore/referenceCancerSignature/40). This signature was thought to be associated with temozolomide, except that original evidence has not been reproduced. 
 
 + The HGG hypermutator sample with lowest TMB (TMB=15.48) is primarily exposed to signature 1, which is a normal signature.
+
++ Six of the samples are HGG, and one is an embryonal tumor.
 
 ### Make heatmap for mutational signatures for patients with hypermutant tumors
 ```{r}
