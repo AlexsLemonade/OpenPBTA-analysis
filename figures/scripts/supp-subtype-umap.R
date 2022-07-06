@@ -6,7 +6,7 @@
 library(tidyverse)
 
 ### Define variables 
-release_used <- "release-v21-20210820"
+release_used <- "release-v22-20220505"
 other_cns_color <- "#a9a9a9"
 to_be_classified_color <- "#656565"
 other_lgat_color <- "#000000"
@@ -97,7 +97,8 @@ p <- p +
 
 # save the plot
 ggsave(file.path(plots_dir, "supp_umap_hgg.pdf"), 
-       p, width = 5, height = 4)
+       p, width = 5, height = 4,
+       useDingbats = FALSE)
 
 ### Plot for LGAT
 # for LGG, we consider LGG, GNG and GNT all as LGG and we remove the prefixes to lumps groups together
@@ -164,7 +165,8 @@ p <- p +
 
 # save the figure
 ggsave(file.path(plots_dir, "supp_umap_lgg.pdf"), 
-       p, width = 5, height = 4)
+       p, width = 5, height = 4,
+       useDingbats = FALSE)
 
 ### Plot for MB 
 # for MB, we keep subtypes and recode everything else as `Other CNS Tumor`
@@ -195,7 +197,8 @@ p <- plot_dimension_reduction(umap_df_mb,
                                                 palette_OkabeIto %>% c(2,4,6,8)))
 # save the figure
 ggsave(file.path(plots_dir, "supp_umap_mb.pdf"), 
-       p, width = 5, height = 4)
+       p, width = 5, height = 4,
+       useDingbats = FALSE)
 
 
 ### Plot for EPN
@@ -226,5 +229,6 @@ p <- plot_dimension_reduction(umap_df_epn,
                                                 palette_OkabeIto %>% c(1,3,6,8)))
 # save the figure
 ggsave(file.path(plots_dir, "supp_umap_epn.pdf"), 
-       p, width = 5, height = 4)
+       p, width = 5, height = 4, 
+       useDingbats = FALSE)
 
