@@ -402,7 +402,9 @@ gather_n_per_cancer_group <- function(metadata, broad_histology){
 histologies_df <- histologies_df %>%
   inner_join(
     select(palette_df, broad_histology, cancer_group, cancer_group_display)
-  )
+  ) %>%
+  # Remove rows with NA in cancer_group_display
+  tidyr::drop_na(cancer_group_display)
 
 output_file <- file.path('tables', paste0(opt$filename_lead, "_n_per_cancer_group.tsv"))
 lapply(as.list(c("Low-grade astrocytic tumor","Embryonal tumor",
