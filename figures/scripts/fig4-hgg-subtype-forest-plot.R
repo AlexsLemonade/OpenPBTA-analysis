@@ -41,9 +41,9 @@ term_order <- rev(c("molecular_subtypeHGG, H3 wildtype",
                     ref_term))
 
 term_labels <- rev(c("HGG - H3 wildtype",
-                     "HGG - H3 wildtype, TP53 loss",
+                     "HGG - H3 wildtype, TP53 lost",
                      "DMG - H3 K28, TP53 activated",
-                     "DMG - H3 K28, TP53 loss",
+                     "DMG - H3 K28, TP53 lost",
                      "DMG - H3 K28 (ref)"))
 
 
