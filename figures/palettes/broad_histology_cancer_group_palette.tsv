@@ -6,10 +6,10 @@ Benign tumor	Adenoma	Benign tumor	Other	#590024	NA	#b5b5b5	11	NA
 Chordoma	Chordoma	Other	Other	#808080	NA	#b5b5b5	12	NA
 Choroid plexus tumor	Choroid plexus carcinoma	Other	Other	#808080	NA	#b5b5b5	12	Other CNS
 Choroid plexus tumor	Choroid plexus cyst	Other	Other	#808080	NA	#b5b5b5	12	Other CNS
-Diffuse astrocytic and oligodendroglial tumor	High-grade glioma astrocytoma	High-grade glioma	Other high-grade glioma	#ff80e5	HGG	#ffccf5	2	Diffuse astrocytic and oligodendroglial tumor
+Diffuse astrocytic and oligodendroglial tumor	High-grade glioma astrocytoma	High-grade glioma	Other high-grade glioma	#ff80e5	Other HGG	#ffccf5	2	Diffuse astrocytic and oligodendroglial tumor
 Diffuse astrocytic and oligodendroglial tumor	Diffuse midline glioma	High-grade glioma	Diffuse midline glioma	#ff80e5	DMG	#ff40d9	2	Diffuse astrocytic and oligodendroglial tumor
 Diffuse astrocytic and oligodendroglial tumor	Diffuse intrinsic pontine glioma	High-grade glioma	Diffuse intrinsic pontine glioma	#ff80e5	DIPG	#bf0099	2	Diffuse astrocytic and oligodendroglial tumor
-Diffuse astrocytic and oligodendroglial tumor	Oligodendroglioma	High-grade glioma	Other high-grade glioma	#ff80e5	HGG	#ffccf5	2	Diffuse astrocytic and oligodendroglial tumor
+Diffuse astrocytic and oligodendroglial tumor	Oligodendroglioma	High-grade glioma	Other high-grade glioma	#ff80e5	Other HGG	#ffccf5	2	Diffuse astrocytic and oligodendroglial tumor
 Embryonal tumor	Medulloblastoma	Embryonal tumor	Medulloblastoma	#220040	MB	#a340ff	3	Embryonal tumor
 Embryonal tumor	CNS Embryonal tumor	Embryonal tumor	Other embryonal tumor	#220040	ET	#b08ccf	3	Embryonal tumor
 Embryonal tumor	Atypical Teratoid Rhabdoid Tumor	Embryonal tumor	Atypical Teratoid Rhabdoid Tumor	#220040	ATRT	#4d0d85	3	Embryonal tumor
@@ -24,14 +24,14 @@ Germ cell tumor	Mixed germ cell tumor	Germ cell tumor	Other	#0074d9	NA	#b5b5b5	1
 Histiocytic tumor	Rosai-Dorfman disease	Other	Other	#808080	NA	#b5b5b5	12	Other CNS
 Histiocytic tumor	Langerhans Cell histiocytosis	Other	Other	#808080	NA	#b5b5b5	12	Other CNS
 Histiocytic tumor	Juvenile xanthogranuloma	Other	Other	#808080	NA	#b5b5b5	12	Other CNS
-Low-grade astrocytic tumor	Low-grade glioma astrocytoma	Low-grade glioma	Other low-grade glioma	#8f8fbf	LGG	#000047	1	Low-grade astrocytic tumor
+Low-grade astrocytic tumor	Low-grade glioma astrocytoma	Low-grade glioma	Other low-grade glioma	#8f8fbf	Other LGG	#000047	1	Low-grade astrocytic tumor
 Low-grade astrocytic tumor	Subependymal Giant Cell Astrocytoma	Low-grade glioma	Subependymal Giant Cell Astrocytoma	#8f8fbf	SEGA	#2828a1	1	Low-grade astrocytic tumor
 Low-grade astrocytic tumor	Pilocytic astrocytoma	Low-grade glioma	Pilocytic astrocytoma	#8f8fbf	PA	#8c8cff	1	Low-grade astrocytic tumor
-Low-grade astrocytic tumor	Gliomatosis cerebri	Low-grade glioma	Other low-grade glioma	#8f8fbf	LGG	#000047	1	Low-grade astrocytic tumor
+Low-grade astrocytic tumor	Gliomatosis cerebri	Low-grade glioma	Other low-grade glioma	#8f8fbf	Other LGG	#000047	1	Low-grade astrocytic tumor
 Low-grade astrocytic tumor	Ganglioglioma	Low-grade glioma	Ganglioglioma	#8f8fbf	GNG	#c4c4ff	1	Low-grade astrocytic tumor
-Low-grade astrocytic tumor	Diffuse fibrillary astrocytoma	Low-grade glioma	Other low-grade glioma	#8f8fbf	LGG	#000047	1	Low-grade astrocytic tumor
+Low-grade astrocytic tumor	Diffuse fibrillary astrocytoma	Low-grade glioma	Other low-grade glioma	#8f8fbf	Other LGG	#000047	1	Low-grade astrocytic tumor
 Low-grade astrocytic tumor	Pleomorphic xanthoastrocytoma	Low-grade glioma	Pleomorphic xanthoastrocytoma	#8f8fbf	PXA	#4e4ede	1	Low-grade astrocytic tumor
-Low-grade astrocytic tumor	Oligodendroglioma	Low-grade glioma	Other low-grade glioma	#8f8fbf	LGG	#000047	1	Low-grade astrocytic tumor
+Low-grade astrocytic tumor	Oligodendroglioma	Low-grade glioma	Other low-grade glioma	#8f8fbf	Other LGG	#000047	1	Low-grade astrocytic tumor
 Lymphoma	CNS Burkitt's lymphoma	Other	Other	#808080	NA	#b5b5b5	12	Other CNS
 Melanocytic tumor	Melanocytic tumor	Other	Other	#808080	NA	#b5b5b5	12	Other CNS
 Meningioma	Meningioma	Meningioma	Meningioma	#2db398	Meningioma	#2db398	8	Other CNS
