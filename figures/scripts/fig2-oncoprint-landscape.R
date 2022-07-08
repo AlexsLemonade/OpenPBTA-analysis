@@ -83,7 +83,7 @@ prep_histology_maf <- function(included_cancer_groups) {
 
   # Get the sample ids to be included
   included_sample_ids <- histologies_df %>%
-    dplyr::filter(cancer_group %in% included_cancer_groups) %>%
+    dplyr::filter(cancer_group_display %in% included_cancer_groups) %>%
     dplyr::pull(Tumor_Sample_Barcode)
 
   # MAF
@@ -98,6 +98,11 @@ prep_histology_maf <- function(included_cancer_groups) {
   histology_fusion_df <- fusion_df %>%
     dplyr::filter(Tumor_Sample_Barcode %in% included_sample_ids)
 
+  # Update histologies_df for palette compatibility
+  histologies_df <- histologies_df %>%
+    dplyr::select(-cancer_group) %>%
+    dplyr::rename(cancer_group = cancer_group_display)
+  
   # MAF object
   histology_maf_object <- prepare_maf_object(
     maf_df = histology_maf_df,
@@ -125,6 +130,11 @@ create_legend <- function(group_vector,
 }
 
 #### Required data files -------------------------------------------------------
+
+# Ensure data_input_dir exists
+if (!(dir.exists(data_input_dir))) {
+  stop("Error: The oncoprint-landscape module must be run first to create and populate the directory `scratch/oncoprint_files/` in order to create these figures.")
+}
 
 # File suffixes for different data types, from the module
 maf_suffix <- "_maf.tsv"
@@ -160,7 +170,7 @@ histologies_df <- readr::read_tsv(
 # For coloring the cells of the oncoprint -- the data frame is for the legend
 oncoprint_palette_df <- readr::read_tsv(
   file.path(palette_dir, "oncoprint_color_palette.tsv")
-)
+) 
 
 # For use with oncoplot()
 oncoprint_palette <- oncoprint_palette_df %>%
@@ -169,18 +179,27 @@ oncoprint_palette <- oncoprint_palette_df %>%
 
 # Generate palette for disease labels, etc.
 group_palette_df <-  readr::read_tsv(
-  file.path(palette_dir, "broad_histology_cancer_group_palette.tsv")
+    file.path(palette_dir, "broad_histology_cancer_group_palette.tsv")
+  ) %>%
+  # Remove NAs from oncoprint_group
+  tidyr::drop_na(oncoprint_group)
+
+# Add cancer_group_display into histologies_df
+histologies_df <- dplyr::inner_join(
+  histologies_df, 
+  dplyr::select(group_palette_df, broad_histology, cancer_group, cancer_group_display)
 )
 
 # Get palette for cancer group that is *specifically* for the oncoprint
 cancer_group_palette <- group_palette_df %>%
-  dplyr::select(cancer_group, oncoprint_hex) %>%
+  dplyr::select(cancer_group_display, cancer_group_hex) %>%
   # Remove NA values
-  dplyr::filter(complete.cases(.))
+  dplyr::filter(complete.cases(.)) %>%
+  dplyr::distinct()
 
 # Make color palette suitable for use later
-cancer_group_colors <- cancer_group_palette$oncoprint_hex
-names(cancer_group_colors) <- cancer_group_palette$cancer_group
+cancer_group_colors <- cancer_group_palette$cancer_group_hex
+names(cancer_group_colors) <- cancer_group_palette$cancer_group_display
 
 # Define array of colors for sex estimates
 germline_sex_estimate_colors <- c("Male"   = "#2166ac",
@@ -192,23 +211,25 @@ annotation_colors <- list(cancer_group = cancer_group_colors,
 
 #### Hardcoding legend ordering ------------------------------------------------
 # These reflect the cancer groups that are included, and their ordering, for
-# the primary plus oncoprints
+# the primary only oncoprints
 
 legend_ordering <- list(
   lgat = c(
-    "Low-grade glioma astrocytoma",
+    "Other low-grade glioma",
+    "Subependymal Giant Cell Astrocytoma",
+    "Pilocytic astrocytoma",
     "Ganglioglioma",
     "Pleomorphic xanthoastrocytoma"
   ),
   hgat = c(
+   "Diffuse intrinsic pontine glioma",
     "Diffuse midline glioma",
-    "High-grade glioma astrocytoma"
+    "Other high-grade glioma"
   ),
   embryonal = c(
     "Medulloblastoma",
     "Atypical Teratoid Rhabdoid Tumor",
-    "CNS Embryonal tumor",
-    "Embryonal tumor with multilayer rosettes"
+    "Other embryonal tumor"
   ),
   other = c(
     "Ependymoma",
@@ -259,20 +280,13 @@ for (type_iter in seq_along(data_input_list)) {
   cnv_df <- readr::read_tsv(data_input_list[[specimen_type]]$cnv)
   fusion_df <- readr::read_tsv(data_input_list[[specimen_type]]$fusion)
 
-  for (histology in unique(group_palette_df$oncoprint_group)) {
-
-    # There are NA values in this column, so if we encounter that skip to the
-    # next one
-    if (is.na(histology)) next
-
-    # Get vector of cancer groups to include
-    included_cancer_groups <- group_palette_df %>%
-      dplyr::filter(oncoprint_include,
-                    oncoprint_group == histology) %>%
-      dplyr::pull(cancer_group)
+  for (histology in names(goi_files_list)) {
 
     # For convenience, save the shorthand (e.g., "lgat") for filenames, etc.
     histology_shorthand <- goi_files_list[[histology]]$shorthand
+    
+    # Get vector of cancer groups to include from hard-coded legend order
+    included_cancer_groups <- legend_ordering[[histology_shorthand]]
 
     # Prep MAF object for plot
     histology_maf_object <- prep_histology_maf(included_cancer_groups)
@@ -328,18 +342,17 @@ for (type_iter in seq_along(data_input_list)) {
     # only include cancer groups that have mutated samples -- this is captured
     # in the legend ordering list
     legend_df <- group_palette_df %>%
-      dplyr::filter(oncoprint_include,
-                    oncoprint_group == histology,
-                    cancer_group %in% legend_ordering[[histology_shorthand]])
+      dplyr::filter(oncoprint_group == histology,
+                    cancer_group_display %in% legend_ordering[[histology_shorthand]])
 
     # Order according to the legend ordering list such that the cancer groups
     # are in the same order in the legend and the oncoprint
     legend_df <- legend_df[match(legend_ordering[[histology_shorthand]],
-                                 legend_df$cancer_group), ]
+                                 legend_df$cancer_group_display), ]
 
     # Save the legend as PDF
     create_legend(legend_df$cancer_group,
-                  legend_df$oncoprint_hex,
+                  legend_df$cancer_group_hex,
                   legend_output_pdf)
 
     #### Supplemental display item ####
@@ -350,8 +363,7 @@ for (type_iter in seq_along(data_input_list)) {
       # Get vector of cancer groups to include
       # These will be Other CNS oncoprint groups with a FALSE oncoprint_include
       included_cancer_groups <- group_palette_df %>%
-        dplyr::filter(!oncoprint_include,
-                      oncoprint_group == histology) %>%
+        dplyr::filter(oncoprint_group == histology) %>%
         dplyr::pull(cancer_group)
 
       # Prep MAF object for plot
