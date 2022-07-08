@@ -249,18 +249,18 @@ ggsave(tp53_expression_altered_pdf, tp53_expression_plot, width = 3.75, height =
 
 
 # Define cancer groups to show in boxplots
-cancer_groups_to_plot <- c(
-  "Diffuse midline glioma",
-  "Low-grade glioma astrocytoma",
-  "Craniopharyngioma",
-  "High-grade glioma astrocytoma",
-  "Ganglioglioma",
-  "Medulloblastoma",
-  "Meningioma",
-  "Ependymoma",
-  "Schwannoma",
-  "Dysembryoplastic neuroepithelial tumor"
-)
+cancer_groups_to_plot <- c("Diffuse midline glioma",
+                        "Other high-grade glioma",
+                        "Pilocytic astrocytoma",
+                        "Ganglioglioma",
+                        "Pleomorphic xanthoastrocytoma",
+                        "Other low-grade glioma",
+                        "Medulloblastoma",
+                        "Atypical Teratoid Rhabdoid Tumor",
+                        "Other embryonal tumor",
+                        "Ependymoma",
+                        "Craniopharyngioma",
+                        "Meningioma")
 
 # Cancer group wrap number of characters for labeling x-axis in boxplots
 cg_wrap <- 20
@@ -304,17 +304,19 @@ plot_df <- tp53_telo_mutator_df %>%
   inner_join(
     select(histologies_df,
            Kids_First_Biospecimen_ID,
-           cancer_group)
+           cancer_group,
+           broad_histology)
   ) %>%
   # add in palette information
-  inner_join(
+  inner_join(by = c("broad_histology", "cancer_group"),
     select(histologies_palette_df,
            cancer_group,
            cancer_group_display, 
-           cancer_group_hex)
+           cancer_group_hex,
+           broad_histology)
   ) %>%
   # filter to cancer groups of interest
-  filter(cancer_group %in% cancer_groups_to_plot) %>%
+  filter(cancer_group_display %in% cancer_groups_to_plot) %>%
   # duplicate the tp53 scores column so we can eventually order can groups by it
   mutate(tp53_forordering = tp53_score) %>%
   # we want a single column for all scores so we can facet by scores
@@ -344,7 +346,7 @@ mutator_pch <- 21
 jitter_width <- 0.15 # not in legend but often in main plot
 
 # Boxplot with overlayed jitter with colors "mapped" to `mutator`
-set.seed(14) # reproducible jitter to ensure we can see all N=6 points in BOTH facets
+set.seed(12) # reproducible jitter to ensure we can see all N=6 points in BOTH facets
 tp53_telo_tmb_boxplot <- ggplot(plot_df) +
   aes(
     x = fct_reorder(cancer_group_display, tp53_forordering), # order cancer groups by tp53 score
@@ -547,7 +549,7 @@ forest_plot <- ggplot(survival_df) +
   # log-scale the x-axis
   scale_x_log10(
     # axis label was being cut off - this fixes it
-    limits=c(5e-2, 1e2)
+    limits=c(5e-3, 1e2)
   ) +
   ggpubr::theme_pubr() + 
   theme(
