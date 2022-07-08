@@ -1,21 +1,14 @@
-Hugo_Symbol	3'Flank	5'Flank	Frame_Shift_Del	Frame_Shift_Ins	Fusion	In_Frame_Ins	Missense_Mutation	Multi_Hit_Fusion	Splice_Site	3'UTR	Silent	total	MutatedSamples	AlteredSamples
-BRAF	3	0	1	1	104	5	25	3	0	3	1	146	136	136
-KIAA1549	0	0	0	0	102	0	0	0	0	0	0	102	102	102
-FGFR1	0	0	0	0	0	0	11	0	0	0	0	11	7	7
-PIK3CA	0	0	0	0	0	0	6	0	0	0	0	6	6	6
-NTRK2	0	0	0	0	4	0	0	0	0	0	0	4	4	4
-QKI	0	0	0	0	1	0	0	2	0	1	0	4	4	4
-TP53	0	0	1	0	0	0	1	0	2	0	0	4	4	4
-RAF1	0	0	0	0	2	0	0	1	0	0	0	3	3	3
-ROS1	0	0	0	0	3	0	0	0	0	0	0	3	3	3
-KRAS	0	0	0	0	0	0	2	0	0	0	2	4	2	2
-MYB	0	0	0	0	1	0	0	1	0	0	0	2	2	2
-NTRK3	2	0	0	0	0	0	0	0	0	0	0	2	2	2
-ALK	0	0	0	0	1	0	0	0	0	0	0	1	1	1
-ATRX	0	0	0	1	0	0	0	0	0	0	0	1	1	1
-CDKN2A	0	1	0	0	0	0	0	0	0	0	0	1	1	1
-H3F3A	0	1	0	0	0	0	0	0	0	0	0	1	1	1
-PRKCA	0	0	0	0	1	0	0	0	0	0	0	1	1	1
-PTPN11	0	0	0	0	0	0	1	0	0	0	0	1	1	1
-TACC1	0	0	0	0	0	0	1	0	0	0	0	1	1	1
-TSC1	0	0	0	0	1	0	0	0	0	0	0	1	1	1
+Hugo_Symbol	3'Flank	5'Flank	Fusion	In_Frame_Ins	Missense_Mutation	Multi_Hit_Fusion	Splice_Site	3'UTR	total	MutatedSamples	AlteredSamples
+BRAF	3	0	21	2	13	1	0	1	41	38	38
+KIAA1549	0	0	20	0	0	0	0	0	20	20	20
+PIK3CA	0	0	0	0	5	0	0	0	5	5	5
+FGFR1	0	0	0	0	6	0	0	0	6	4	4
+QKI	0	0	1	0	0	2	0	0	3	3	3
+MYB	0	0	1	0	0	1	0	0	2	2	2
+ROS1	0	0	2	0	0	0	0	0	2	2	2
+TP53	0	0	0	0	1	0	1	0	2	2	2
+CDKN2A	0	1	0	0	0	0	0	0	1	1	1
+NTRK2	0	0	1	0	0	0	0	0	1	1	1
+NTRK3	1	0	0	0	0	0	0	0	1	1	1
+PTPN11	0	0	0	0	1	0	0	0	1	1	1
+RAF1	0	0	1	0	0	0	0	0	1	1	1
