@@ -1,5 +1,5 @@
 Hugo_Symbol	3'Flank	5'Flank	Frame_Shift_Del	Frame_Shift_Ins	Fusion	In_Frame_Del	In_Frame_Ins	Missense_Mutation	Multi_Hit_Fusion	Nonsense_Mutation	Splice_Site	Silent	3'UTR	Splice_Region	5'UTR	RNA	total	Amp	Del	CNV_total	MutatedSamples	AlteredSamples
-TP53	6	0	2	0	0	0	0	16	0	5	1	2	1	0	0	0	33	0	0	0	17	17
+TP53	6	0	2	0	0	0	0	17	0	5	1	2	1	0	0	0	34	0	0	0	18	18
 ATRX	0	1	3	2	1	0	0	9	0	2	1	1	2	0	0	0	22	0	1	1	11	12
 EGFR	1	0	0	0	0	0	1	13	0	0	0	2	5	0	1	0	23	0	0	0	10	10
 NF1	1	2	5	2	0	0	0	3	0	3	1	1	2	0	0	0	20	0	0	0	10	10
@@ -11,6 +11,7 @@ TSC2	0	0	1	0	0	0	0	8	0	0	0	3	0	1	0	0	13	0	0	0	6	6
 PIK3R1	2	2	0	0	0	1	0	2	0	1	1	0	3	0	0	0	12	0	0	0	6	6
 CDK6	1	1	0	0	1	0	0	1	0	0	0	1	4	0	0	0	9	0	0	0	6	6
 IDH1	1	3	0	0	0	0	0	3	0	0	0	1	0	0	1	0	9	0	0	0	6	6
+ACVR1	3	0	0	0	0	0	0	3	0	0	0	1	0	0	1	0	8	0	0	0	6	6
 NTRK1	0	2	0	0	1	0	0	2	0	0	0	1	0	2	0	0	8	0	0	0	6	6
 ROS1	1	0	0	0	2	0	0	3	0	0	0	1	1	0	0	0	8	0	0	0	6	6
 ATM	0	1	1	0	0	0	0	9	0	1	0	2	4	0	0	0	18	0	0	0	5	5
@@ -24,7 +25,6 @@ PIK3C2G	2	5	1	0	0	0	0	0	0	0	1	1	0	0	0	0	10	0	0	0	5	5
 CCND2	2	1	0	0	0	0	0	0	1	0	0	1	4	0	0	0	9	0	0	0	5	5
 CDKN2A	4	0	1	0	1	0	0	0	0	1	0	1	1	0	0	0	9	0	2	2	5	7
 PIK3CA	0	1	0	0	0	1	0	5	0	0	0	0	2	0	0	0	9	0	0	0	5	5
-ACVR1	3	0	0	0	0	0	0	2	0	0	0	1	0	0	1	0	7	0	0	0	5	5
 ALK	0	0	0	0	0	0	0	2	1	2	0	2	0	0	0	0	7	0	0	0	5	5
 PDGFRA	0	0	0	0	0	0	0	4	0	0	1	1	0	0	0	0	6	0	0	0	5	5
 IGF1R	0	3	0	0	0	0	0	2	0	0	0	3	13	0	0	0	21	1	0	1	4	5

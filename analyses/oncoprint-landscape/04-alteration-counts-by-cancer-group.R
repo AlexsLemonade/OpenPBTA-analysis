@@ -13,7 +13,8 @@
 #    --maf_file ../../scratch/oncoprint_files/primary_only_maf.tsv \
 #    --cnv_file ../../scratch/oncoprint_files/primary_only_cnv.tsv \
 #    --fusion_file ../../scratch/oncoprint_files/primary_only_fusions.tsv \
-#    --metadata_file ../../data/pbta-histologies.tsv
+#    --metadata_file ../../data/pbta-histologies.tsv \
+#    --palette_file ../../figures/palettes/broad_histology_cancer_group_palette.tsv \
 #    --subdirectory primary_only
 
 
@@ -37,7 +38,6 @@ module_dir <- file.path(root_dir, "analyses", "oncoprint-landscape")
 # Source the custom functions script
 source(
   file.path(
-    root_dir,
     module_dir,
     "util",
     "oncoplot-functions.R"
@@ -72,6 +72,12 @@ option_list <- list(
     default = NULL,
     help = "file path to the histologies file"
   ),
+  optparse::make_option(
+    c("-p", "--palette_file"),
+    type = "character",
+    default = NULL,
+    help = "file path to the palette file"
+  ),    
   optparse::make_option(
     c("-d", "--subdirectory"),
     type = "character",
@@ -122,6 +128,13 @@ cnv_df <- readr::read_tsv(opt$cnv_file)
 # Read in fusion file
 fusion_df <- readr::read_tsv(opt$fusion_file)
 
+# Read in palette file, and join with the metadata file
+palette_df <- readr::read_tsv(opt$palette_file)
+metadata <- left_join(
+  select(palette_df, cancer_group, cancer_group_display, broad_histology), 
+  metadata
+)
+
 #### Read in cancer group to goi list mapping ----------------------------------
 
 goi_file <- file.path(module_dir,
@@ -129,11 +142,11 @@ goi_file <- file.path(module_dir,
                       "cancer_group_goi_list_mapping.tsv")
 cancer_group_goi_df <- readr::read_tsv(goi_file)
 
-for (cg in cancer_group_goi_df$cancer_group) {
+for (cg in cancer_group_goi_df$cancer_group_display) {
   
   # Filtered metadata by cancer group
   filtered_metadata_df <- metadata %>%
-    filter(cancer_group == cg)
+    filter(cancer_group_display == cg)
   
   # Get list of samples
   cg_samples <- filtered_metadata_df %>%
@@ -149,7 +162,10 @@ for (cg in cancer_group_goi_df$cancer_group) {
   
   # We need to read in the GOI to get the correct counts
   cg_goi_path <- cancer_group_goi_df %>%
-    filter(cancer_group == cg) %>%
+    filter(cancer_group_display == cg) %>%
+    # Have to ensure only 1 file is returned
+    select(goi_list_file) %>%
+    distinct() %>%
     pull(goi_list_file)
   
   goi_list <- readr::read_tsv(file.path(module_dir, cg_goi_path)) %>%
