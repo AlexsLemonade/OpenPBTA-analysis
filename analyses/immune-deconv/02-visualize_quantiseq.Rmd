@@ -235,7 +235,7 @@ quantiseq_no_ratio <- quantiseq_subset %>%
 subtypes_celltypes_plot <- ggplot(quantiseq_no_ratio) +
   aes(x = molecular_subtype, y = score) + 
   geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
-  geom_jitter(width = 0.15, size = 0.75, alpha = 0.4, aes(color = broad_histology_hex)) + 
+  geom_jitter(width = 0.15, size = 0.75, alpha = 0.6, aes(color = broad_histology_hex)) + 
   # change to ncol if we want this *Wide*
   facet_wrap(~cell_type, ncol = 5, scales = "free_y") +
   scale_color_identity() +
