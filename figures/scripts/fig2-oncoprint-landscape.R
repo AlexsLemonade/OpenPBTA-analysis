@@ -351,7 +351,7 @@ for (type_iter in seq_along(data_input_list)) {
                                  legend_df$cancer_group_display), ]
 
     # Save the legend as PDF
-    create_legend(legend_df$cancer_group,
+    create_legend(legend_df$cancer_group_display,
                   legend_df$cancer_group_hex,
                   legend_output_pdf)
 
