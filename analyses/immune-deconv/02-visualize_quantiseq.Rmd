@@ -235,7 +235,7 @@ quantiseq_no_ratio <- quantiseq_subset %>%
 subtypes_celltypes_plot <- ggplot(quantiseq_no_ratio) +
   aes(x = molecular_subtype, y = score) + 
   geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
-  geom_jitter(width = 0.15, size = 0.75, alpha = 0.4, aes(color = cancer_group_hex)) + 
+  geom_jitter(width = 0.15, size = 0.75, alpha = 0.4, aes(color = broad_histology_hex)) + 
   # change to ncol if we want this *Wide*
   facet_wrap(~cell_type, ncol = 5, scales = "free_y") +
   scale_color_identity() +
@@ -245,7 +245,7 @@ subtypes_celltypes_plot <- ggplot(quantiseq_no_ratio) +
   ) +
   ggpubr::theme_pubr() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 4),
-        axis.title = element_text(size = rel(0.8)),
+        axis.title = element_text(size = rel(0.7)),
         axis.text.y = element_text(size = rel(0.7)),
         strip.text = element_text(size = rel(0.7)),
         axis.line = element_line(size = rel(0.7)),
@@ -253,16 +253,16 @@ subtypes_celltypes_plot <- ggplot(quantiseq_no_ratio) +
 
 # Add legend
 cg_color_df <- quantiseq_no_ratio %>%
-  select(cancer_group_hex, cancer_group_display) %>%
+  select(broad_histology_hex, broad_histology_display) %>%
   distinct()
 
-cg_color_list <- cg_color_df$cancer_group_hex
-names(cg_color_list) <- cg_color_df$cancer_group_display
+cg_color_list <- cg_color_df$broad_histology_hex
+names(cg_color_list) <- cg_color_df$broad_histology_display
 
 legend_plot <- ggplot(quantiseq_no_ratio) + 
-  aes(x = score, y = score, color = cancer_group_display) + 
+  aes(x = score, y = score, color = broad_histology_display) + 
   geom_point() +
-  scale_color_manual(name = "Cancer group", values = cg_color_list) + 
+  scale_color_manual(name = "Broad Histology", values = cg_color_list) + 
   theme_pubr() +
   # Need to make text very small
   theme(
@@ -274,7 +274,7 @@ legend_panel <- cowplot::get_legend(legend_plot)
 
 full_plot <- cowplot::plot_grid(subtypes_celltypes_plot, legend_panel, 
                                 nrow = 2, 
-                                rel_heights = c(1, 0.2))
+                                rel_heights = c(1, 0.1))
 
 full_plot
 
@@ -412,7 +412,7 @@ ratio_plot <- ggplot(ratio_df) +
       y = score) +
   # remove outliers
   geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
-  geom_jitter(width = 0.15, size = 0.75, alpha = 0.6,  aes(color = cancer_group_hex)) + 
+  geom_jitter(width = 0.15, size = 0.75, alpha = 0.6,  aes(color = broad_histology_hex)) + 
   scale_color_identity() +
   labs(x = "Molecular subtype of sample",
        y = "Ratio of CD8+/CD4+ T cell fractions") +
