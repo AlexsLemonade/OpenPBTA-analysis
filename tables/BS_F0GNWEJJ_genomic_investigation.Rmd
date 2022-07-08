@@ -1,0 +1,53 @@
+---
+title: "BS_F0GNWEJJ hypermutator genomic investigation"
+author: "Jo Lynne Rokita (D3b)"
+date: "2022"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+```
+
+## Define directories and files
+```{r define directories and input files}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+analysis_dir <- file.path(root_dir, "analyses")
+data_dir <- file.path(root_dir, "data")
+
+# Define input files
+focal_cn_file <- file.path(data_dir, "consensus_seg_annotated_cn_autosomes.tsv.gz")
+tp53_file <- file.path(analysis_dir, "tp53_nf1_score", "results", "tp53_altered_status.tsv")
+```
+
+## Read in files
+```{r read in files}
+tp53 <- read_tsv(tp53_file) 
+focal_cn <- read_tsv(focal_cn_file) 
+```
+
+## Does this sample have a high TP53 score and/or TP53 copy loss
+> No evidence for TP53 CNV, SV, Fusion, or hotspot SNV, but high TP53 score
+
+```{r TP53 investigation}
+tp53 %>%
+  filter(Kids_First_Biospecimen_ID_DNA == "BS_F0GNWEJJ") %>%
+  select(tp53_score, CNV_loss_evidence, SV_type, Fusion_evidence, hotspot, activating, tp53_altered)
+```
+
+## Does this sample have MYCN amplification?
+> No evidence of MYCN amplification
+
+```{r MYCN investigation}
+focal_cn %>%
+  filter(biospecimen_id == "BS_F0GNWEJJ",
+         gene_symbol == "MYCN")
+```
+
+## Session Info
+```{r session info}
+sessionInfo()
+```

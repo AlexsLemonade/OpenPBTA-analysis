@@ -127,18 +127,27 @@ soi_df <- tmb_hist %>%
     ),
     # add Lynch syndrome
     cancer_predispositions = case_when(
-      Kids_First_Biospecimen_ID == "BS_8AY2GM4G" ~ "NF-1, Lynch syndrome, pathogenic MSH6",
-      sample_id == "7316-3058" ~ "Lynch Syndrome, pathogenic MSH2",
+      Kids_First_Biospecimen_ID == "BS_8AY2GM4G" ~ "NF-1, Lynch syndrome",
+      sample_id == "7316-3058" ~ "Lynch Syndrome",
       sample_id == "7316-2189" ~ "Lynch Syndrome",
-      Kids_First_Biospecimen_ID == "BS_85Q5P8GF" ~"Lynch syndrome",
+      Kids_First_Biospecimen_ID == "BS_85Q5P8GF" ~ "Lynch syndrome",
       TRUE ~ as.character(cancer_predispositions)),
+    # add pathogenic germline variants
+    `Pathogenic germline variant` = case_when(
+      Kids_First_Participant_ID == "PT_3CHB9PK5" ~ "MSH6",
+      Kids_First_Participant_ID == "PT_0SPKM4S8" ~ "PMS2",
+      Kids_First_Participant_ID == "PT_VTM2STE3" ~ "None detected",
+      Kids_First_Participant_ID == "PT_EB0D3BXG" ~ "None detected",
+      Kids_First_Participant_ID == "PT_S0Q27J13" ~ "None detected",
+      Kids_First_Participant_ID == "PT_JNEV57VK" ~ "MSH2"
+      ),
     # update molecular subtype for NBL sample
     molecular_subtype = case_when(
-     Kids_First_Biospecimen_ID == "BS_F0GNWEJJ" ~ "NBL",
+     Kids_First_Biospecimen_ID == "BS_F0GNWEJJ" ~ "Metastatic NBL, MYCN non-amplified",
      TRUE ~ as.character(molecular_subtype))
     ) %>%
     # select relevant columns
-      select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, sample_id, tumor_descriptor, composition, `Therapy post-biopsy`, cancer_predispositions, tmb, molecular_subtype) %>%
+      select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, sample_id, tumor_descriptor, composition, `Therapy post-biopsy`, cancer_predispositions, `Pathogenic germline variant`, tmb, molecular_subtype) %>%
     arrange(Kids_First_Participant_ID, tumor_descriptor, composition)
 
 soi_df    

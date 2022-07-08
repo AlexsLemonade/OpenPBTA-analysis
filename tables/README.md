@@ -1,13 +1,15 @@
 ## Tables Generation for paper
 
-This module creates tables and supplementary tables for the manuscript 
+This module (`output_tables.Rmd`) creates tables and supplementary tables for the manuscript 
 
 Table 1: Molecular subtypes determined for this project
 - This table shows the type and number of different molecular subtypes profiled in the project.
 
 Table 2: Patients with hypermutant tumors
 - Listed are patients with at least one hypermutant or ultra-hypermutant tumor (inclusive of derived cell lines and all phases of therapy).
-Coding region TMB, phase of therapy, therapeutic interventions, cancer predispositions, and molecular subtypes are included.
+Coding region TMB, phase of therapy, therapeutic interventions, cancer predispositions, pathogenic germline variants, and molecular subtypes are included.
+
+The accessory script `BS_F0GNWEJJ_genomic_investigation.Rmd` checks this hypermutant sample for TP53 activation or loss, as well as MYCN amplification, since it is a metastatic neuroblastoma sample which is not being subtyped similarly to HGG samples.
 
 Table S1: V22 histologies table
 - This table displays the histologies file from v21 release of OpenPBTA in an excel format.
