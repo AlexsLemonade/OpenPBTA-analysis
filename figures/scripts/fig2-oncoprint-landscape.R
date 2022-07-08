@@ -170,7 +170,7 @@ histologies_df <- readr::read_tsv(
 # For coloring the cells of the oncoprint -- the data frame is for the legend
 oncoprint_palette_df <- readr::read_tsv(
   file.path(palette_dir, "oncoprint_color_palette.tsv")
-) 
+)
 
 # For use with oncoplot()
 oncoprint_palette <- oncoprint_palette_df %>%
