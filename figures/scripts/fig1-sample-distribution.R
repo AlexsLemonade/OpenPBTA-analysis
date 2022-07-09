@@ -194,16 +194,23 @@ descriptor_plot <- data_descriptor_plot %>%
     fill = "Tumor descriptor"
   ) +
   ggpubr::theme_pubr() +
-  theme(axis.text.x = element_text(size = 12, 
+  theme(axis.text.x = element_text(size = 6, 
                                    angle = 45, 
                                    hjust = 0.8, 
                                    vjust = 0.9),
-        axis.text.y = element_text(size = 12),
-        strip.text = element_text(size = 12))
+        axis.text.y = element_text(size = 6),
+        axis.title = element_text(size = 7),
+        axis.line = element_line(size = 0.3),
+        axis.ticks = element_line(size = 0.3),
+        strip.text = element_text(size = 5.25),
+        legend.title = element_text(size = 5.5),
+        legend.text = element_text(size = 4.5),
+        legend.key.size = unit(0.2, "cm"),
+        legend.box.margin = margin(0, 0, 0, -20))
 
 #Save!
 ggsave(filename = file.path(main_output_dir,
                             "tumor_descriptor_proportion_panel.pdf"),
        plot = descriptor_plot,
-       width = 10,
-       height = 12)
+       width = 4.6,
+       height = 5.5)
