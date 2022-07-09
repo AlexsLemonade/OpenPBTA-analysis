@@ -140,7 +140,7 @@ results_df <- results_df %>%
   dplyr::select(cancer_group_display, n, cancer_group_hex) %>%
   dplyr::distinct() %>%
   # Create wrapped with (n=X) factor column for cancer groups
-  dplyr::mutate(cancer_group_display_n = stringr::str_wrap(glue::glue("{cancer_group_display} (N={n})"), 30),
+  dplyr::mutate(cancer_group_display_n = stringr::str_wrap(glue::glue("{cancer_group_display} (N={n})"), 25),
                 cancer_group_display_n = forcats::fct_reorder(cancer_group_display_n, n, .desc=T)) %>%
   dplyr::inner_join(results_df)
 
@@ -171,9 +171,9 @@ exposures_sina_boxplot <- results_df %>%
   ggplot2::aes(x = signature, 
                y = exposure,
                color = cancer_group_hex) + 
-  ggforce::geom_sina(size = 0.7) + 
+  ggforce::geom_sina(size = 0.35) + 
   ggplot2::geom_boxplot(outlier.size = 0, 
-                        size = 0.3, 
+                        size = 0.2, 
                         color = "black", 
                         alpha = 0,
                         # remove whiskers
@@ -191,15 +191,19 @@ exposures_sina_boxplot <- results_df %>%
   cowplot::panel_border() +
   ggplot2::theme(
     # angle needed to fit "Other" category
-    axis.text.x = ggplot2::element_text(size = 8.5, angle = 45, hjust = 1),
-    axis.text.y = ggplot2::element_text(size = 10),
-    axis.title = ggplot2::element_text(size = 12),
-    strip.text = ggplot2::element_text(size = 8),
+    axis.text.x = ggplot2::element_text(size = 5, angle = 45, hjust = 1),
+    axis.text.y = ggplot2::element_text(size = 7),
+    axis.title = ggplot2::element_text(size = 8),
+    strip.text = ggplot2::element_text(size = 5.85),
+    axis.line = ggplot2::element_line(size = 0.3),
+    axis.ticks = ggplot2::element_line(size = 0.3),
     legend.position = "none"
   )
 exposures_sina_boxplot
 
-ggplot2::ggsave(exposures_sina_IQR_file, exposures_sina_boxplot, width = 12, height = 5)
+# Sizing is based on full figure compilation:
+ggplot2::ggsave(exposures_sina_IQR_file, exposures_sina_boxplot, width = 7.2, height = 3, 
+                useDingbats = FALSE)
 
 ```
 
