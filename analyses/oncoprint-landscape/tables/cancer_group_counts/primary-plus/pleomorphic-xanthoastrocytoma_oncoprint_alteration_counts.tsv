@@ -1,3 +1,4 @@
-Hugo_Symbol	5'Flank	Missense_Mutation	total	MutatedSamples	AlteredSamples
-BRAF	0	1	1	1	1
-NTRK2	1	0	1	1	1
+Hugo_Symbol	5'Flank	Fusion	Missense_Mutation	total	MutatedSamples	AlteredSamples
+BRAF	0	0	6	6	6	6
+NTRK2	1	1	0	2	2	2
+TACC1	0	0	1	1	1	1
