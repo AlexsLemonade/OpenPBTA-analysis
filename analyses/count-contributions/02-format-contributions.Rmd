@@ -1,0 +1,179 @@
+---
+title: "Format analyses directories contributions"
+output: html_notebook
+author: JN Taroni for ALSF CCDL
+date: 2022
+---
+
+## Set up
+
+```{r}
+library(tidyverse)
+```
+
+In the first script, we created TXT files that contain the authors of contributions to each module in `analyses/`.
+Those files live in a directory called `scratch/count-contributions/` (relative to the root of the repo).
+We're going to save the wrangled results to a `results/` directory
+
+```{r}
+components_dir <- file.path("..", "..", "scratch", "count-contributions")
+results_dir <- "results"
+dir.create(results_dir, showWarnings = FALSE)
+```
+
+We're going save the file that maps contributors to modules _and_ a file that counts the number of modules someone has contributed to.
+
+```{r}
+module_contributions_file <- file.path(results_dir, 
+                                       "module_contributors.tsv")
+count_modules_file <- file.path(results_dir,
+                                "module_contribution_counts.tsv")
+total_countributions_file <- file.path(results_dir,
+                                       "total_contributions_clean.tsv")
+```
+
+## Mapping different IDs to the same contributor
+
+Some folks contributed under two "names" (usually their GH handle and their name), or just their first name, or just their GH handle.
+So let's clean this up in the interest of readability in the final data frames.
+
+```{r}
+name_recoding <- c(
+  jashapiro = "Joshua Shapiro",
+  Stephanie = "Stephanie J. Spielman",
+  Bailey = "Bailey Farrow",
+  runjin326 = "Run Jin",
+  Mateusz = "Mateusz P. Koptyra",
+  tkoganti = "Teja Koganti",
+  NNoureen = "Nighat Noureen",
+  `Jo Lynne` = "Jo Lynne Rokita",
+  `e-t-k` = "Ellen Kephardt",
+  yangyangclover = "Yang Yang",
+  PichaiRaman = "Pichai Raman",
+  hbeale = "Holly Beale"
+)
+```
+
+## Module contributions
+
+There are some modules that did not generate results that are included in the manuscript.
+For our purposes, we want to skip those lists of contributors.
+The not included list is shorter than the included list, so that's why we'll take this approach!
+
+```{r}
+# We're not counting these because they didn't make it to the manuscript
+not_included_analyses <- c(
+  "cnv-comparison",
+  "comparative-RNASeq-analysis",
+  "compare-gistic",
+  "count-contributions",
+  "create-subset-files",
+  "molecular-subtyping-ATRT",
+  "molecular-subtyping-SHH-tp53",
+  "mutect2-vs-strelka2",
+  "rna-seq-composition",
+  "selection-strategy-comparison",
+  "sex-prediction-from-RNASeq",
+  "ssgsea-hallmark",
+  "tcga-capture-kit-investigation",
+  "sample-distribution-analysis"
+)
+```
+
+All of the _relevant files_ are those TXT files in `components/` that do not match one of the not included modules listed above.
+We're also going to skip `components/total_contributions.txt` for now. 
+
+```{r}
+# All of the files that were included in components directory
+contribution_files <- list.files(components_dir)
+
+# We'll count the files that come from modules that are included in the 
+# manuscript by removing the modules that *are not* included
+count_files <- contribution_files[str_detect(contribution_files, 
+                                             pattern = paste(
+                                               not_included_analyses, 
+                                               collapse = "|"),
+                                             negate = TRUE)]
+
+# We're also not going to look at total contributions here
+count_files <- setdiff(count_files, "total_contributions.tsv")
+
+count_files
+```
+
+Now read in the relevant contribution files to a data frame that we can use to count.
+
+```{r}
+count_contributions_df <- suppressMessages(  # This is chatty!
+  # For all the files we'll consider
+  file.path(components_dir, count_files) %>%
+    # Read them in, but skip the first (blank) line and don't use colnames
+    # This step produces a list
+    map(read_tsv, skip = 1, col_names = FALSE) %>%
+    # Use the file names themselves to set the names of the list
+    # This will be the name of the module
+    set_names(str_remove(count_files, "_contributors.txt")) %>% 
+    # Create a data frame where we use the module names to keep track of where
+    # the data frame of contributors came from
+    bind_rows(.id = "module") %>% 
+    # Rectify lack of colnames by renaming to "author"
+    rename(author = X1) %>%
+    distinct()
+)
+```
+
+Recode names/handles to be consistent and more readable.
+
+```{r}
+# Recode GitHub names to be more readable and de-duplicated in some cases
+count_contributions_df <- count_contributions_df %>%
+  mutate(author = recode_factor(author, !!!name_recoding)) %>%
+  # If people had two names/IDs, this will de-duplicate now that things have 
+  # been recoded
+  distinct()
+
+# Write this less summarized data to file
+write_tsv(count_contributions_df, module_contributions_file)
+```
+
+Now we can count the number of modules each person contributed to.
+
+```{r}
+# Count the number of modules each person contributed to, which we can simply
+# do with count
+counts_df <- count_contributions_df %>%
+  count(author, name = "num_modules") %>%
+  arrange(desc(num_modules))
+
+# Write the summarized modules counted
+write_tsv(counts_df, count_modules_file)
+```
+
+## Total contributions
+
+We'll clean up the total contributions generated with `git shortlog` by summarizing commits by a single person and generally making things more readable.
+
+```{r}
+total_contributions_df <- read_tsv(file.path(components_dir,
+                                             "total_contributions.tsv"),
+                                   col_names = FALSE) %>%
+  # Resolve lack of header
+  rename(num_commits = X1, author = X2) %>%
+  # Reorder
+  select(author, num_commits) %>%
+  # Recode names/IDs to be consistent
+  mutate(author = recode_factor(author, !!!name_recoding)) %>%
+  # For folks that had multiple names included, summarize the total commits
+  group_by(author) %>%
+  summarize(num_commits = sum(num_commits)) %>%
+  # Restore descending order for number of commits
+  arrange(desc(num_commits))
+```
+
+Write to file.
+
+```{r}
+write_tsv(total_contributions_df, path = total_countributions_file)
+```
+
+
