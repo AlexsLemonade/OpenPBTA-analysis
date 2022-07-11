@@ -215,14 +215,13 @@ annotation_colors <- list(cancer_group = cancer_group_colors,
 
 legend_ordering <- list(
   lgat = c(
-    "Other low-grade glioma",
-    "Subependymal Giant Cell Astrocytoma",
     "Pilocytic astrocytoma",
+    "Other low-grade glioma",
     "Ganglioglioma",
-    "Pleomorphic xanthoastrocytoma"
+    "Pleomorphic xanthoastrocytoma",
+    "Subependymal Giant Cell Astrocytoma"
   ),
   hgat = c(
-   "Diffuse intrinsic pontine glioma",
     "Diffuse midline glioma",
     "Other high-grade glioma"
   ),
