@@ -2,9 +2,15 @@ name: cronjob for counting git contributions and filing a PR with results
 
 # Run every Wednesday at 14:00 UTC
 # On Wednesdays, we count git contributions
+# on:
+#   schedule:
+#     - cron: "0 14 * * WED"
+
 on:
-  schedule:
-    - cron: "0 14 * * WED"
+  pull_request:
+    branches: [ master ]
+    paths: 
+    - '.github/workflows/count-git-contrbutions.yml'
 
 jobs:
   file-count-contributions-pr:
