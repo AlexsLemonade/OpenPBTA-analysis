@@ -11,7 +11,6 @@
 
 library(tidyverse)
 library(ggpubr)
-library(ggpattern)
 
 #### Directories ---------------------------------------------------------------
 
@@ -31,6 +30,8 @@ dir.create(supp_output_dir, recursive = TRUE, showWarnings = FALSE)
 
 # Metadata we'll use to calculate counts
 histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
+histologies_df <- histologies_df %>%
+  filter(tumor_descriptor != "Unavailable")
 
 #### Palette setup -------------------------------------------------------------
 
@@ -45,9 +46,9 @@ tumor_descriptor_palette <- read_tsv(file.path(figures_dir,
                                                "tumor_descriptor_palette.tsv")) %>%
   tibble::deframe()
 
-# Will mostly be using the cancer group palette
+# Will mostly be using the cancer group display palette
 cancer_group_palette <- palette_df$cancer_group_hex
-names(cancer_group_palette) <- palette_df$cancer_group
+names(cancer_group_palette) <- palette_df$cancer_group_display
 
 
 
@@ -55,11 +56,12 @@ names(cancer_group_palette) <- palette_df$cancer_group
 
 ## Stacked bar plot that shows the assay types ##
 experimental_strategy_df <- histologies_df %>%
+  left_join(palette_df, by = c("broad_histology", "cancer_group")) %>%
   # Remove the Normal samples
   filter(sample_type != "Normal") %>%
   group_by(sample_id,  # We use sample_id to join genomic + transcriptomic samples
            broad_histology,
-           cancer_group) %>%
+           cancer_group_display) %>%
   # Summarize the experimental strategy -- we'll use this column to mutate in
   # the very next step
   summarize(summarized_experimental_strategy = paste(sort(unique(experimental_strategy)),
@@ -80,12 +82,12 @@ experimental_strategy_df <- histologies_df %>%
   select(-sample_id) %>%
   # New grouping to count
   group_by(broad_histology,
-           cancer_group,
+           cancer_group_display,
            experimental_strategy) %>%
   count() %>%
   ungroup() %>%
   # Drop benign tumors and pre-cancerous lesions (i.e., NA in cancer_group)
-  filter(!is.na(cancer_group)) %>%
+  filter(!is.na(cancer_group_display)) %>%
   # Reorder the experimental strategy for plotting
   mutate(experimental_strategy = factor(experimental_strategy,
                                         levels = c("Both",
@@ -97,13 +99,13 @@ experimental_strategy_df <- histologies_df %>%
              by = "broad_histology") %>%
   distinct() %>%
   # Tack on the cancer group sample size
-  group_by(cancer_group) %>%
+  group_by(cancer_group_display) %>%
   mutate(cancer_group_n = sum(n))
 
 # Set the y coordinate for the label based on the counts
 cancer_group_counts_df <- experimental_strategy_df %>%
   select(broad_histology_display,
-         cancer_group,
+         cancer_group_display,
          cancer_group_n) %>%
   distinct() %>%
   group_by(broad_histology_display) %>%
@@ -154,13 +156,14 @@ data_descriptor_plot <- histologies_df %>%
            broad_histology_hex,
            broad_histology_display, 
            broad_histology_order),
-    by = "broad_histology") %>%
+    by = c("broad_histology")) %>%
   inner_join(
     select(palette_df,
+           broad_histology,
            cancer_group,
            cancer_group_display,
            cancer_group_abbreviation),
-    by = "cancer_group") %>%
+    by = c("broad_histology", "cancer_group")) %>%
   distinct() 
 
 # The NAs in `cancer_group_abbreviation` should _all_ be associated with a cancer_display_group "Other" if we've joined up correctly - 
@@ -191,110 +194,23 @@ descriptor_plot <- data_descriptor_plot %>%
     fill = "Tumor descriptor"
   ) +
   ggpubr::theme_pubr() +
-  theme(axis.text.x = element_text(size = 12, 
+  theme(axis.text.x = element_text(size = 6, 
                                    angle = 45, 
                                    hjust = 0.8, 
                                    vjust = 0.9),
-        axis.text.y = element_text(size = 12),
-        strip.text = element_text(size = 12))
+        axis.text.y = element_text(size = 6),
+        axis.title = element_text(size = 7),
+        axis.line = element_line(size = 0.3),
+        axis.ticks = element_line(size = 0.3),
+        strip.text = element_text(size = 5.25),
+        legend.title = element_text(size = 5.5),
+        legend.text = element_text(size = 4.5),
+        legend.key.size = unit(0.2, "cm"),
+        legend.box.margin = margin(0, 0, 0, -20))
 
 #Save!
 ggsave(filename = file.path(main_output_dir,
                             "tumor_descriptor_proportion_panel.pdf"),
        plot = descriptor_plot,
-       width = 10,
-       height = 12)
-
-
-#### Assay types bar plots -----------------------------------------------------
-
-# "Palettes" for the pattern
-pattern_key <- c(
-  Both = "none",
-  `RNA-Seq` = "circle",
-  `DNA-Seq` = "stripe"
-)
-
-density_key <- c(
-  Both = 0.2,
-  `RNA-Seq` = 0.7,
-  `DNA-Seq` = 0.2
-)
-
-spacing_key <- c(
-  Both = 0.05,
-  `RNA-Seq` = 0.01,
-  `DNA-Seq` = 0.05
-)
-
-
-# Create a bar plot that shows the sample size, where the stacked pattern
-# shows the experimental strategy
-exp_strat_plot <- experimental_strategy_df %>%
-  # Order based on display order
-  mutate(broad_histology_display = factor(broad_histology_display,
-                                          levels = broad_histologies)) %>%
-  ggplot(aes(x = cancer_group,
-             y = n)) +
-  geom_bar_pattern(aes(fill = cancer_group,
-                       pattern = experimental_strategy),
-                   color = "#666666",
-                   pattern_fill = "#FFFFFF",
-                   pattern_color = "#333333",
-                   pattern_alpha = 1,
-                   stat = "identity") +
-  geom_text(aes(y = y_coord,
-                label = cancer_group_n)) +
-  scale_fill_manual(values = cancer_group_palette) +
-  scale_pattern_manual(values =  pattern_key) +
-  scale_pattern_density_manual(values = density_key) +
-  scale_pattern_spacing_manual(values = spacing_key) +
-  theme_pubr() +
-  facet_wrap(~ broad_histology_display,
-             nrow = 3,
-             scales = "free") +
-  theme(axis.text.x = element_text(angle = 90,
-                                   vjust = 0.5,
-                                   hjust = 1),
-        plot.title = element_text(hjust = 0.5,
-                                  face = "bold",
-                                  size = 9),
-        axis.title.x = element_text(size = 18),
-        axis.title.y = element_text(size = 18)) +
-  labs(x = "Cancer Group",
-       y = "Sample Size") +
-  guides(fill = FALSE,
-         color = FALSE,
-         pattern = FALSE)
-
-# Save the assay type plot as a supplemental panel
-ggsave(filename = file.path(supp_output_dir, "assay_type_stacked_panel.pdf"),
-       plot = exp_strat_plot,
-       width = 14,
-       height = 21)
-
-# We need a little ore control over this legend to make sure the patterns are
-# legible
-as_ggplot(get_legend(
-  experimental_strategy_df %>%
-    filter(broad_histology_display == "Diffuse astrocytic and oligodendroglial tumor") %>%
-    ggplot(aes(x = cancer_group,
-               y = n)) +
-    geom_bar_pattern(aes(fill = cancer_group,
-                         pattern = experimental_strategy),
-                     color = "#666666",
-                     pattern_fill = "#FFFFFF",
-                     pattern_color = "#333333",
-                     stat = "identity") +
-    scale_pattern_manual(values = pattern_key) +
-    scale_pattern_density_manual(values = density_key) +
-    scale_pattern_spacing_manual(values = spacing_key) +
-    theme_classic() +
-  labs(pattern = "Assay") +
-  guides(pattern = guide_legend(override.aes = list(fill = "white")),
-         fill = FALSE,
-         color = FALSE)
-))  %>%
-  ggsave(filename = file.path(supp_output_dir, "assay_pattern_legend.pdf"),
-         height = 2,
-         width = 2)
+       width = 4.6,
+       height = 5.5)

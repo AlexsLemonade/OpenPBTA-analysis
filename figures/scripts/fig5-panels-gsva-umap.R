@@ -144,7 +144,7 @@ umap_plot <- read_tsv(rsem_umap_file) %>%
   theme(text = element_text(size = 10),
         legend.position = "none")
 
-# Save temporary PNG
+# Save PDF
 ggsave(umap_pdf, plot = umap_plot, width = 4, height = 4)
 
 #### GSVA scores ---------------------------------------------------------------
@@ -163,7 +163,7 @@ gsva_scores_file <- file.path(
 gsva_stats_file <- file.path(
   gsva_dir,
   "results",
-  "gsva_anova_stranded_cancer_group.tsv"
+  "gsva_anova_stranded_cancer_group.tsv.gz"
 )
 
 gsva_scores_df <- read_tsv(gsva_scores_file)
