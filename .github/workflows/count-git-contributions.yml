@@ -1,0 +1,43 @@
+name: cronjob for counting git contributions and filing a PR with results
+
+# Run every Wednesday at 14:00 UTC
+# On Wednesdays, we count git contributions
+on:
+  schedule:
+    - cron: "0 14 * * WED"
+
+jobs:
+  file-count-contributions-pr:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # We want to count the contributions to the master branch
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: "master"
+
+      # Rerun the module we want new results for
+      - name: Rerun count-contributions module
+        run: bash analyses/count-contributions/run-count-contributions.sh
+
+      # Create a pull request with the updated results
+      - name: Create PR with updated contribution module
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.DOCS_BOT_GITHUB_TOKEN }}
+          commit-message: Rerun count-contributions analysis module
+          signoff: false
+          branch: auto_count_contributions
+          delete-branch: true
+          title: 'GHA: Updated git contribution stats'
+          body: |
+            ### Description
+
+            This PR auto-generated from GitHub Actions rerunning `analyses/count-contributions`
+ 
+            ### Instruction for reviewers
+
+            Review the updates in `analyses/count-contributions/results/` for accuracy
+          reviewers: $GITHUB_ACTOR
