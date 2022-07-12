@@ -27,8 +27,8 @@ jobs:
       # Rerun the module we want new results for
       - name: Rerun count-contributions module
         run: |
-        git config --global --add safe.directory "$GITHUB_WORKSPACE"
-        bash analyses/count-contributions/run-count-contributions.sh
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          bash analyses/count-contributions/run-count-contributions.sh
 
       # Create a pull request with the updated results
       - name: Create PR with updated contribution module
