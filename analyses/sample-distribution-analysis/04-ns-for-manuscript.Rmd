@@ -7,7 +7,7 @@ output:
     toc: TRUE
     toc_float: TRUE
 params:
-  release: release-v21-20210820
+  release: release-v22-20220505 
 ---
 
 ```{r setup, include=FALSE}
@@ -40,18 +40,18 @@ hist %>%
   unique() %>%
   length()
 
-# Tota N of biospecimens - tumor & normal
+# Total N of biospecimens - tumor & normal
 hist %>%
   pull(Kids_First_Biospecimen_ID) %>%
   unique() %>%
   length()
 
 # Total number of tumors
-hist %>%
+n_tumors <- hist %>%
   filter(sample_type == "Tumor" & composition != "Derived Cell Line") %>%
   pull(sample_id) %>%
-  unique() %>%
-  length()
+  unique()
+length(n_tumors)
 
 # Total number of unique tumor biospecimens, including cell lines (DNA or RNA)
 hist %>%
@@ -60,36 +60,45 @@ hist %>%
   unique() %>%
   length()
 
-# Total number of tumor biospecimens subtyped
-hist %>%
-  filter(sample_type == "Tumor" & !is.na(molecular_subtype) & 
-           !grepl("To be classified", molecular_subtype)) %>%
-  pull(Kids_First_Biospecimen_ID) %>%
-  unique() %>%
-  length()
+# Total number of tumor samples subtyped - include cell lines separately
+samples_subtyped <- hist %>%
+  filter(!is.na(pathology_diagnosis), 
+          !is.na(molecular_subtype), 
+          !grepl("To be classified", molecular_subtype)) %>% 
+   # Count broad histology and subtype combinations 
+  count(sample_id, molecular_subtype, composition) #%>%
+nrow(samples_subtyped)
+
+# percent of samples subtyped
+(nrow(samples_subtyped)/length(n_tumors))*100
+
+# which have non-identical tumor/cell line subtypes?
+dup_samples <- samples_subtyped %>%
+  filter(duplicated(.[["sample_id"]])) %>%
+  pull(sample_id)
+
+samples_subtyped %>%
+  filter(sample_id %in% dup_samples) %>%
+  count(sample_id, molecular_subtype) %>%
+  filter(n == 1) %>%
+  arrange(sample_id)
 
 # Total number of unique tumor biospecimens (tumor only)
 tumor_bs <- hist %>%
   filter(sample_type == "Tumor" & composition != "Derived Cell Line")
 nrow(tumor_bs)
 
-# Total number of unique cell line biospecimens (cell lines)
+# Total number of unique cell lines
 cellline_bs <- hist %>%
-  filter(sample_type == "Tumor" & composition == "Derived Cell Line")
+  filter(sample_type == "Tumor" & composition == "Derived Cell Line") %>%
+  left_join(cell_lines, by = c("Kids_First_Participant_ID", "Kids_First_Biospecimen_ID", "sample_id")) %>%
+  count(sample_id, cell_line_composition)
 nrow(cellline_bs)
 
-# Total number of cell lines
-cell_lines %>%
-  select(sample_id, cell_line_composition) %>%
-  unique() %>%
-  nrow()
-
-# Total number of tumor biospecimens with WHO-aligned integrated diagnosis
-hist %>%
+# Total number of samples with WHO-aligned integrated diagnosis
+who_dx <- hist %>%
   filter(!is.na(integrated_diagnosis)) %>%
-  pull(Kids_First_Biospecimen_ID) %>%
-  unique() %>%
-  length()
+  count(sample_id, composition, molecular_subtype) 
 
 # Total number of annotated histologies
 hist %>%
@@ -99,11 +108,10 @@ hist %>%
   length()
 
 # Total number of broad histologies
-tumor_only_broad_hist <- hist %>%
-  filter(!is.na(pathology_diagnosis) & !is.na(broad_histology) & broad_histology != "Non-tumor") 
-
-unique(tumor_only_broad_hist$broad_histology)
-length(unique(tumor_only_broad_hist$broad_histology))
+hist %>%
+  filter(!is.na(pathology_diagnosis) & !is.na(broad_histology) & broad_histology != "Non-tumor") %>%
+  count(broad_histology) %>%
+  nrow()
 
 # Total N assays by whether sample is a tumor (adding here, paired normal) or cell line (also adding paired normal)
 hist <- hist %>%
