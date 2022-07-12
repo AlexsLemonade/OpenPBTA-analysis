@@ -156,9 +156,12 @@ We'll clean up the total contributions generated with `git shortlog` by summariz
 ```{r}
 total_contributions_df <- read_tsv(file.path(components_dir,
                                              "total_contributions.tsv"),
-                                   col_names = FALSE) %>%
-  # Resolve lack of header
-  rename(num_commits = X1, author = X2) %>%
+                                   col_names = FALSE) 
+# Resolve lack of header
+colnames(total_contributions_df) <- c("num_commits", "author")
+
+# Update with new column names
+total_contributions_df <- total_contributions_df %>%
   # Reorder
   select(author, num_commits) %>%
   # Recode names/IDs to be consistent
