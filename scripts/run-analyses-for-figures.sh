@@ -54,7 +54,7 @@ Rscript --vanilla ${analyses_dir}/telomerase-activity-prediction/01-run-EXTEND.R
  --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt
 
 # Run the tp53 classifier, for Figures 4 and S5
-bash ${analyses_dir}/tp53_nf1_score/run_classifier.sh
+OPENPBTA_TP53_FIGURES=1 bash ${analyses_dir}/tp53_nf1_score/run_classifier.sh
 
 # Run the survival module, for Figures 4 and 5
 bash ${analyses_dir}/survival-analysis/run_survival.sh
