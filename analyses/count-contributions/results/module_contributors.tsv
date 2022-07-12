@@ -4,7 +4,9 @@ chromosomal-instability	Jaclyn Taroni
 chromosomal-instability	Joshua Shapiro
 chromosomal-instability	Jo Lynne Rokita
 chromosomal-instability	Laura Egolf
+chromosomal-instability	Stephanie J. Spielman
 chromothripsis	Jaclyn Taroni
+chromothripsis	Jo Lynne Rokita
 chromothripsis	Krutika Gaonkar
 chromothripsis	Laura Egolf
 chromothripsis	Stephanie J. Spielman
@@ -19,6 +21,7 @@ collapse-rnaseq	Jaclyn Taroni
 collapse-rnaseq	Joshua Shapiro
 collapse-rnaseq	Komal Rathi
 collapse-rnaseq	Krutika Gaonkar
+collapse-rnaseq	Run Jin
 copy_number_consensus_call	Joshua Shapiro
 copy_number_consensus_call	Krutika Gaonkar
 copy_number_consensus_call	Nhat Duong
@@ -30,10 +33,12 @@ focal-cn-file-preparation	Jo Lynne Rokita
 focal-cn-file-preparation	Komal Rathi
 focal-cn-file-preparation	Krutika Gaonkar
 focal-cn-file-preparation	Laura Egolf
+focal-cn-file-preparation	Run Jin
 fusion_filtering	Casey Greene
 fusion_filtering	Jaclyn Taroni
 fusion_filtering	Jo Lynne Rokita
 fusion_filtering	Krutika Gaonkar
+fusion_filtering	Run Jin
 fusion_filtering	Stephanie J. Spielman
 fusion-summary	Chante Bethell
 fusion-summary	Dan Miller
@@ -47,6 +52,7 @@ gene-set-enrichment-analysis	Joshua Shapiro
 gene-set-enrichment-analysis	Krutika Gaonkar
 gene-set-enrichment-analysis	Stephanie J. Spielman
 hotspots-detection	Krutika Gaonkar
+hotspots-detection	Run Jin
 immune-deconv	Candace Savonen
 immune-deconv	Jaclyn Taroni
 immune-deconv	Joshua Shapiro
@@ -56,6 +62,7 @@ immune-deconv	Stephanie J. Spielman
 independent-samples	Jaclyn Taroni
 independent-samples	Joshua Shapiro
 independent-samples	Krutika Gaonkar
+independent-samples	Run Jin
 interaction-plots	Bailey Farrow
 interaction-plots	Chante Bethell
 interaction-plots	Jaclyn Taroni
@@ -69,6 +76,7 @@ molecular-subtyping-chordoma	Candace Savonen
 molecular-subtyping-chordoma	Chante Bethell
 molecular-subtyping-chordoma	Jaclyn Taroni
 molecular-subtyping-chordoma	Joshua Shapiro
+molecular-subtyping-chordoma	Jo Lynne Rokita
 molecular-subtyping-chordoma	Krutika Gaonkar
 molecular-subtyping-chordoma	Mateusz P. Koptyra
 molecular-subtyping-CRANIO	Dan Miller
@@ -77,6 +85,7 @@ molecular-subtyping-CRANIO	Krutika Gaonkar
 molecular-subtyping-embryonal	Chante Bethell
 molecular-subtyping-embryonal	Jaclyn Taroni
 molecular-subtyping-embryonal	Joshua Shapiro
+molecular-subtyping-embryonal	Jo Lynne Rokita
 molecular-subtyping-embryonal	Krutika Gaonkar
 molecular-subtyping-EPN	Candace Savonen
 molecular-subtyping-EPN	Chante Bethell
@@ -95,6 +104,7 @@ molecular-subtyping-HGG	Jaclyn Taroni
 molecular-subtyping-HGG	Joshua Shapiro
 molecular-subtyping-HGG	Jo Lynne Rokita
 molecular-subtyping-HGG	Krutika Gaonkar
+molecular-subtyping-integrate	Jo Lynne Rokita
 molecular-subtyping-integrate	Krutika Gaonkar
 molecular-subtyping-integrate	Run Jin
 molecular-subtyping-LGAT	Jaclyn Taroni
@@ -106,6 +116,7 @@ molecular-subtyping-MB	Jaclyn Taroni
 molecular-subtyping-MB	Jo Lynne Rokita
 molecular-subtyping-MB	Komal Rathi
 molecular-subtyping-MB	Krutika Gaonkar
+molecular-subtyping-neurocytoma	Jo Lynne Rokita
 molecular-subtyping-neurocytoma	Krutika Gaonkar
 molecular-subtyping-pathology	Jaclyn Taroni
 molecular-subtyping-pathology	Joshua Shapiro
@@ -124,9 +135,11 @@ oncoprint-landscape	Joshua Shapiro
 oncoprint-landscape	Jo Lynne Rokita
 oncoprint-landscape	Krutika Gaonkar
 oncoprint-landscape	Run Jin
+oncoprint-landscape	Stephanie J. Spielman
 oncoprint-landscape	Yuankun Zhu
 run-gistic	Jaclyn Taroni
 run-gistic	Krutika Gaonkar
+run-gistic	Run Jin
 snv-callers	Candace Savonen
 snv-callers	Jaclyn Taroni
 snv-callers	Joshua Shapiro
@@ -145,6 +158,7 @@ telomerase-activity-prediction	Candace Savonen
 telomerase-activity-prediction	Joshua Shapiro
 telomerase-activity-prediction	Komal Rathi
 telomerase-activity-prediction	Nighat Noureen
+telomerase-activity-prediction	Stephanie J. Spielman
 tmb-compare	Candace Savonen
 tmb-compare	Stephanie J. Spielman
 tp53_nf1_score	Candace Savonen

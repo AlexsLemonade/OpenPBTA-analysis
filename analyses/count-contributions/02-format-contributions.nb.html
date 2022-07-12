@@ -1775,28 +1775,29 @@ $(document).ready(function () {
 <h2>Set up</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoibGlicmFyeSh0aWR5dmVyc2UpIn0= -->
 <pre class="r"><code>library(tidyverse)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RwbHlyJzpcbiAgbWV0aG9kICAgICAgICAgICBmcm9tXG4gIHByaW50LnJvd3dpc2VfZGYgICAgIFxuXHUwMDFiWzM3beKUgOKUgCBcdTAwMWJbMW1BdHRhY2hpbmcgcGFja2FnZXNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2UgMS4yLjEg4pSA4pSAXHUwMDFiWzM5bVxuXHUwMDFiWzM3bVx1MDAxYlszMm3inJRcdTAwMWJbMzdtIFx1MDAxYlszNG1nZ3Bsb3QyXHUwMDFiWzM3bSAzLjIuMCAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszN20gXHUwMDFiWzM0bXB1cnJyICBcdTAwMWJbMzdtIDAuMy4yXG5cdTAwMWJbMzJt4pyUXHUwMDFiWzM3bSBcdTAwMWJbMzRtdGliYmxlIFx1MDAxYlszN20gMi4xLjMgICAgIFx1MDAxYlszMm3inJRcdTAwMWJbMzdtIFx1MDAxYlszNG1kcGx5ciAgXHUwMDFiWzM3bSAwLjguM1xuXHUwMDFiWzMybeKclFx1MDAxYlszN20gXHUwMDFiWzM0bXRpZHlyICBcdTAwMWJbMzdtIDAuOC4zICAgICBcdTAwMWJbMzJt4pyUXHUwMDFiWzM3bSBcdTAwMWJbMzRtc3RyaW5nclx1MDAxYlszN20gMS40LjBcblx1MDAxYlszMm3inJRcdTAwMWJbMzdtIFx1MDAxYlszNG1yZWFkciAgXHUwMDFiWzM3bSAxLjMuMSAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszN20gXHUwMDFiWzM0bWZvcmNhdHNcdTAwMWJbMzdtIDAuNC4wXHUwMDFiWzM5bVxuXHUwMDFiWzM3beKUgOKUgCBcdTAwMWJbMW1Db25mbGljdHNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2VfY29uZmxpY3RzKCkg4pSA4pSAXG5cdTAwMWJbMzFt4pyWXHUwMDFiWzM3bSBcdTAwMWJbMzRtZHBseXJcdTAwMWJbMzdtOjpcdTAwMWJbMzJtZmlsdGVyKClcdTAwMWJbMzdtIG1hc2tzIFx1MDAxYlszNG1zdGF0c1x1MDAxYlszN206OmZpbHRlcigpXG5cdTAwMWJbMzFt4pyWXHUwMDFiWzM3bSBcdTAwMWJbMzRtZHBseXJcdTAwMWJbMzdtOjpcdTAwMWJbMzJtbGFnKClcdTAwMWJbMzdtICAgIG1hc2tzIFx1MDAxYlszNG1zdGF0c1x1MDAxYlszN206OmxhZygpXHUwMDFiWzM5bVxuIn0= -->
-<pre><code>Registered S3 method overwritten by 'dplyr':
-  method           from
-  print.rowwise_df     
-[37m── [1mAttaching packages[22m ──────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──[39m
-[37m[32m✔[37m [34mggplot2[37m 3.2.0     [32m✔[37m [34mpurrr  [37m 0.3.2
-[32m✔[37m [34mtibble [37m 2.1.3     [32m✔[37m [34mdplyr  [37m 0.8.3
-[32m✔[37m [34mtidyr  [37m 0.8.3     [32m✔[37m [34mstringr[37m 1.4.0
-[32m✔[37m [34mreadr  [37m 1.3.1     [32m✔[37m [34mforcats[37m 0.4.0[39m
-[37m── [1mConflicts[22m ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-[31m✖[37m [34mdplyr[37m::[32mfilter()[37m masks [34mstats[37m::filter()
-[31m✖[37m [34mdplyr[37m::[32mlag()[37m    masks [34mstats[37m::lag()[39m</code></pre>
-<!-- rnb-output-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIEF0dGFjaGluZyBwYWNrYWdlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlIDEuMi4xIOKUgOKUgFxuIn0= -->
+<pre><code>── Attaching packages ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pyUIGdncGxvdDIgMy4yLjAgICAgIOKclCBwdXJyciAgIDAuMy4yXG7inJQgdGliYmxlICAyLjEuMyAgICAg4pyUIGRwbHlyICAgMC44LjNcbuKclCB0aWR5ciAgIDAuOC4zICAgICDinJQgc3RyaW5nciAxLjQuMFxu4pyUIHJlYWRyICAgMS4zLjEgICAgIOKclCBmb3JjYXRzIDAuNC4wXG4ifQ== -->
+<pre><code>✔ ggplot2 3.2.0     ✔ purrr   0.3.2
+✔ tibble  2.1.3     ✔ dplyr   0.8.3
+✔ tidyr   0.8.3     ✔ stringr 1.4.0
+✔ readr   1.3.1     ✔ forcats 0.4.0</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIENvbmZsaWN0cyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlX2NvbmZsaWN0cygpIOKUgOKUgFxu4pyWIGRwbHlyOjpmaWx0ZXIoKSBtYXNrcyBzdGF0czo6ZmlsdGVyKClcbuKcliBkcGx5cjo6bGFnKCkgICAgbWFza3Mgc3RhdHM6OmxhZygpXG4ifQ== -->
+<pre><code>── Conflicts ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>In the first script, we created TXT files that contain the authors of contributions to each module in <code>analyses/</code>. Those files live in a directory called <code>scratch/count-contributions/</code> (relative to the root of the repo). We’re going to save the wrangled results to a <code>results/</code> directory</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29tcG9uZW50c19kaXIgPC0gZmlsZS5wYXRoKFwiLi5cIiwgXCIuLlwiLCBcInNjcmF0Y2hcIiwgXCJjb3VudC1jb250cmlidXRpb25zXCIpXG5yZXN1bHRzX2RpciA8LSBcInJlc3VsdHNcIlxuZGlyLmNyZWF0ZShyZXN1bHRzX2Rpciwgc2hvd1dhcm5pbmdzID0gRkFMU0UpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbImNvbXBvbmVudHNfZGlyIDwtIGZpbGUucGF0aChcIi4uXCIsIFwiLi5cIiwgXCJzY3JhdGNoXCIsIFwiY291bnQtY29udHJpYnV0aW9uc1wiKSIsInJlc3VsdHNfZGlyIDwtIFwicmVzdWx0c1wiIiwiZGlyLmNyZWF0ZShyZXN1bHRzX2Rpciwgc2hvd1dhcm5pbmdzID0gRkFMU0UpIl19 -->
 <pre class="r"><code>components_dir &lt;- file.path(&quot;..&quot;, &quot;..&quot;, &quot;scratch&quot;, &quot;count-contributions&quot;)
 results_dir &lt;- &quot;results&quot;
 dir.create(results_dir, showWarnings = FALSE)</code></pre>
@@ -1806,7 +1807,7 @@ dir.create(results_dir, showWarnings = FALSE)</code></pre>
 <p>We’re going save the file that maps contributors to modules <em>and</em> a file that counts the number of modules someone has contributed to.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubW9kdWxlX2NvbnRyaWJ1dGlvbnNfZmlsZSA8LSBmaWxlLnBhdGgocmVzdWx0c19kaXIsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJtb2R1bGVfY29udHJpYnV0b3JzLnRzdlwiKVxuY291bnRfbW9kdWxlc19maWxlIDwtIGZpbGUucGF0aChyZXN1bHRzX2RpcixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJtb2R1bGVfY29udHJpYnV0aW9uX2NvdW50cy50c3ZcIilcbnRvdGFsX2NvdW50cmlidXRpb25zX2ZpbGUgPC0gZmlsZS5wYXRoKHJlc3VsdHNfZGlyLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJ0b3RhbF9jb250cmlidXRpb25zX2NsZWFuLnRzdlwiKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIm1vZHVsZV9jb250cmlidXRpb25zX2ZpbGUgPC0gZmlsZS5wYXRoKHJlc3VsdHNfZGlyLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwibW9kdWxlX2NvbnRyaWJ1dG9ycy50c3ZcIikiLCJjb3VudF9tb2R1bGVzX2ZpbGUgPC0gZmlsZS5wYXRoKHJlc3VsdHNfZGlyLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIm1vZHVsZV9jb250cmlidXRpb25fY291bnRzLnRzdlwiKSIsInRvdGFsX2NvdW50cmlidXRpb25zX2ZpbGUgPC0gZmlsZS5wYXRoKHJlc3VsdHNfZGlyLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJ0b3RhbF9jb250cmlidXRpb25zX2NsZWFuLnRzdlwiKSJdfQ== -->
 <pre class="r"><code>module_contributions_file &lt;- file.path(results_dir, 
                                        &quot;module_contributors.tsv&quot;)
 count_modules_file &lt;- file.path(results_dir,
@@ -1822,7 +1823,7 @@ total_countributions_file &lt;- file.path(results_dir,
 <p>Some folks contributed under two “names” (usually their GH handle and their name), or just their first name, or just their GH handle. So let’s clean this up in the interest of readability in the final data frames.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmFtZV9yZWNvZGluZyA8LSBjKFxuICBqYXNoYXBpcm8gPSBcIkpvc2h1YSBTaGFwaXJvXCIsXG4gIFN0ZXBoYW5pZSA9IFwiU3RlcGhhbmllIEouIFNwaWVsbWFuXCIsXG4gIEJhaWxleSA9IFwiQmFpbGV5IEZhcnJvd1wiLFxuICBydW5qaW4zMjYgPSBcIlJ1biBKaW5cIixcbiAgTWF0ZXVzeiA9IFwiTWF0ZXVzeiBQLiBLb3B0eXJhXCIsXG4gIHRrb2dhbnRpID0gXCJUZWphIEtvZ2FudGlcIixcbiAgTk5vdXJlZW4gPSBcIk5pZ2hhdCBOb3VyZWVuXCIsXG4gIGBKbyBMeW5uZWAgPSBcIkpvIEx5bm5lIFJva2l0YVwiLFxuICBgZS10LWtgID0gXCJFbGxlbiBLZXBoYXJkdFwiLFxuICB5YW5neWFuZ2Nsb3ZlciA9IFwiWWFuZyBZYW5nXCIsXG4gIFBpY2hhaVJhbWFuID0gXCJQaWNoYWkgUmFtYW5cIixcbiAgaGJlYWxlID0gXCJIb2xseSBCZWFsZVwiXG4pXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoibmFtZV9yZWNvZGluZyA8LSBjKFxuICBqYXNoYXBpcm8gPSBcIkpvc2h1YSBTaGFwaXJvXCIsXG4gIFN0ZXBoYW5pZSA9IFwiU3RlcGhhbmllIEouIFNwaWVsbWFuXCIsXG4gIEJhaWxleSA9IFwiQmFpbGV5IEZhcnJvd1wiLFxuICBydW5qaW4zMjYgPSBcIlJ1biBKaW5cIixcbiAgTWF0ZXVzeiA9IFwiTWF0ZXVzeiBQLiBLb3B0eXJhXCIsXG4gIHRrb2dhbnRpID0gXCJUZWphIEtvZ2FudGlcIixcbiAgTk5vdXJlZW4gPSBcIk5pZ2hhdCBOb3VyZWVuXCIsXG4gIGBKbyBMeW5uZWAgPSBcIkpvIEx5bm5lIFJva2l0YVwiLFxuICBgZS10LWtgID0gXCJFbGxlbiBLZXBoYXJkdFwiLFxuICB5YW5neWFuZ2Nsb3ZlciA9IFwiWWFuZyBZYW5nXCIsXG4gIFBpY2hhaVJhbWFuID0gXCJQaWNoYWkgUmFtYW5cIixcbiAgaGJlYWxlID0gXCJIb2xseSBCZWFsZVwiXG4pIn0= -->
 <pre class="r"><code>name_recoding &lt;- c(
   jashapiro = &quot;Joshua Shapiro&quot;,
   Stephanie = &quot;Stephanie J. Spielman&quot;,
@@ -1846,7 +1847,7 @@ total_countributions_file &lt;- file.path(results_dir,
 <p>There are some modules that did not generate results that are included in the manuscript. For our purposes, we want to skip those lists of contributors. The not included list is shorter than the included list, so that’s why we’ll take this approach!</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBXZSdyZSBub3QgY291bnRpbmcgdGhlc2UgYmVjYXVzZSB0aGV5IGRpZG4ndCBtYWtlIGl0IHRvIHRoZSBtYW51c2NyaXB0XG5ub3RfaW5jbHVkZWRfYW5hbHlzZXMgPC0gYyhcbiAgXCJjbnYtY29tcGFyaXNvblwiLFxuICBcImNvbXBhcmF0aXZlLVJOQVNlcS1hbmFseXNpc1wiLFxuICBcImNvbXBhcmUtZ2lzdGljXCIsXG4gIFwiY291bnQtY29udHJpYnV0aW9uc1wiLFxuICBcImNyZWF0ZS1zdWJzZXQtZmlsZXNcIixcbiAgXCJtb2xlY3VsYXItc3VidHlwaW5nLUFUUlRcIixcbiAgXCJtb2xlY3VsYXItc3VidHlwaW5nLVNISC10cDUzXCIsXG4gIFwibXV0ZWN0Mi12cy1zdHJlbGthMlwiLFxuICBcInJuYS1zZXEtY29tcG9zaXRpb25cIixcbiAgXCJzZWxlY3Rpb24tc3RyYXRlZ3ktY29tcGFyaXNvblwiLFxuICBcInNleC1wcmVkaWN0aW9uLWZyb20tUk5BU2VxXCIsXG4gIFwic3Nnc2VhLWhhbGxtYXJrXCIsXG4gIFwidGNnYS1jYXB0dXJlLWtpdC1pbnZlc3RpZ2F0aW9uXCIsXG4gIFwic2FtcGxlLWRpc3RyaWJ1dGlvbi1hbmFseXNpc1wiXG4pXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgV2UncmUgbm90IGNvdW50aW5nIHRoZXNlIGJlY2F1c2UgdGhleSBkaWRuJ3QgbWFrZSBpdCB0byB0aGUgbWFudXNjcmlwdCIsIm5vdF9pbmNsdWRlZF9hbmFseXNlcyA8LSBjKFxuICBcImNudi1jb21wYXJpc29uXCIsXG4gIFwiY29tcGFyYXRpdmUtUk5BU2VxLWFuYWx5c2lzXCIsXG4gIFwiY29tcGFyZS1naXN0aWNcIixcbiAgXCJjb3VudC1jb250cmlidXRpb25zXCIsXG4gIFwiY3JlYXRlLXN1YnNldC1maWxlc1wiLFxuICBcIm1vbGVjdWxhci1zdWJ0eXBpbmctQVRSVFwiLFxuICBcIm1vbGVjdWxhci1zdWJ0eXBpbmctU0hILXRwNTNcIixcbiAgXCJtdXRlY3QyLXZzLXN0cmVsa2EyXCIsXG4gIFwicm5hLXNlcS1jb21wb3NpdGlvblwiLFxuICBcInNlbGVjdGlvbi1zdHJhdGVneS1jb21wYXJpc29uXCIsXG4gIFwic2V4LXByZWRpY3Rpb24tZnJvbS1STkFTZXFcIixcbiAgXCJzc2dzZWEtaGFsbG1hcmtcIixcbiAgXCJ0Y2dhLWNhcHR1cmUta2l0LWludmVzdGlnYXRpb25cIixcbiAgXCJzYW1wbGUtZGlzdHJpYnV0aW9uLWFuYWx5c2lzXCJcbikiXX0= -->
 <pre class="r"><code># We're not counting these because they didn't make it to the manuscript
 not_included_analyses &lt;- c(
   &quot;cnv-comparison&quot;,
@@ -1870,7 +1871,7 @@ not_included_analyses &lt;- c(
 <p>All of the <em>relevant files</em> are those TXT files in <code>components/</code> that do not match one of the not included modules listed above. We’re also going to skip <code>components/total_contributions.txt</code> for now.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBBbGwgb2YgdGhlIGZpbGVzIHRoYXQgd2VyZSBpbmNsdWRlZCBpbiBjb21wb25lbnRzIGRpcmVjdG9yeVxuY29udHJpYnV0aW9uX2ZpbGVzIDwtIGxpc3QuZmlsZXMoY29tcG9uZW50c19kaXIpXG5cbiMgV2UnbGwgY291bnQgdGhlIGZpbGVzIHRoYXQgY29tZSBmcm9tIG1vZHVsZXMgdGhhdCBhcmUgaW5jbHVkZWQgaW4gdGhlIFxuIyBtYW51c2NyaXB0IGJ5IHJlbW92aW5nIHRoZSBtb2R1bGVzIHRoYXQgKmFyZSBub3QqIGluY2x1ZGVkXG5jb3VudF9maWxlcyA8LSBjb250cmlidXRpb25fZmlsZXNbc3RyX2RldGVjdChjb250cmlidXRpb25fZmlsZXMsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcGF0dGVybiA9IHBhc3RlKFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBub3RfaW5jbHVkZWRfYW5hbHlzZXMsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xsYXBzZSA9IFwifFwiKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG5lZ2F0ZSA9IFRSVUUpXVxuXG4jIFdlJ3JlIGFsc28gbm90IGdvaW5nIHRvIGxvb2sgYXQgdG90YWwgY29udHJpYnV0aW9ucyBoZXJlXG5jb3VudF9maWxlcyA8LSBzZXRkaWZmKGNvdW50X2ZpbGVzLCBcInRvdGFsX2NvbnRyaWJ1dGlvbnMudHN2XCIpXG5cbmNvdW50X2ZpbGVzXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgQWxsIG9mIHRoZSBmaWxlcyB0aGF0IHdlcmUgaW5jbHVkZWQgaW4gY29tcG9uZW50cyBkaXJlY3RvcnkiLCJjb250cmlidXRpb25fZmlsZXMgPC0gbGlzdC5maWxlcyhjb21wb25lbnRzX2RpcikiLCIiLCIjIFdlJ2xsIGNvdW50IHRoZSBmaWxlcyB0aGF0IGNvbWUgZnJvbSBtb2R1bGVzIHRoYXQgYXJlIGluY2x1ZGVkIGluIHRoZSAiLCIjIG1hbnVzY3JpcHQgYnkgcmVtb3ZpbmcgdGhlIG1vZHVsZXMgdGhhdCAqYXJlIG5vdCogaW5jbHVkZWQiLCJjb3VudF9maWxlcyA8LSBjb250cmlidXRpb25fZmlsZXNbc3RyX2RldGVjdChjb250cmlidXRpb25fZmlsZXMsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcGF0dGVybiA9IHBhc3RlKFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBub3RfaW5jbHVkZWRfYW5hbHlzZXMsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xsYXBzZSA9IFwifFwiKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG5lZ2F0ZSA9IFRSVUUpXSIsIiIsIiMgV2UncmUgYWxzbyBub3QgZ29pbmcgdG8gbG9vayBhdCB0b3RhbCBjb250cmlidXRpb25zIGhlcmUiLCJjb3VudF9maWxlcyA8LSBzZXRkaWZmKGNvdW50X2ZpbGVzLCBcInRvdGFsX2NvbnRyaWJ1dGlvbnMudHN2XCIpIiwiIiwiY291bnRfZmlsZXMiXX0= -->
 <pre class="r"><code># All of the files that were included in components directory
 contribution_files &lt;- list.files(components_dir)
 
@@ -1887,31 +1888,114 @@ count_files &lt;- setdiff(count_files, &quot;total_contributions.tsv&quot;)
 
 count_files</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcImNocm9tb3NvbWFsLWluc3RhYmlsaXR5X2NvbnRyaWJ1dG9ycy50eHRcIiAgICAgICAgICAgIFwiY2hyb21vdGhyaXBzaXNfY29udHJpYnV0b3JzLnR4dFwiICAgICAgICAgICAgICAgICAgICBcbiBbM10gXCJjbnYtY2hyb20tcGxvdF9jb250cmlidXRvcnMudHh0XCIgICAgICAgICAgICAgICAgICAgICBcImNvbGxhcHNlLXJuYXNlcV9jb250cmlidXRvcnMudHh0XCIgICAgICAgICAgICAgICAgICAgXG4gWzVdIFwiY29weV9udW1iZXJfY29uc2Vuc3VzX2NhbGxfY29udHJpYnV0b3JzLnR4dFwiICAgICAgICAgXCJmb2NhbC1jbi1maWxlLXByZXBhcmF0aW9uX2NvbnRyaWJ1dG9ycy50eHRcIiAgICAgICAgIFxuIFs3XSBcImZ1c2lvbl9maWx0ZXJpbmdfY29udHJpYnV0b3JzLnR4dFwiICAgICAgICAgICAgICAgICAgIFwiZnVzaW9uLXN1bW1hcnlfY29udHJpYnV0b3JzLnR4dFwiICAgICAgICAgICAgICAgICAgICBcbiBbOV0gXCJnZW5lLXNldC1lbnJpY2htZW50LWFuYWx5c2lzX2NvbnRyaWJ1dG9ycy50eHRcIiAgICAgICBcImhvdHNwb3RzLWRldGVjdGlvbl9jb250cmlidXRvcnMudHh0XCIgICAgICAgICAgICAgICAgXG5bMTFdIFwiaW1tdW5lLWRlY29udl9jb250cmlidXRvcnMudHh0XCIgICAgICAgICAgICAgICAgICAgICAgXCJpbmRlcGVuZGVudC1zYW1wbGVzX2NvbnRyaWJ1dG9ycy50eHRcIiAgICAgICAgICAgICAgIFxuWzEzXSBcImludGVyYWN0aW9uLXBsb3RzX2NvbnRyaWJ1dG9ycy50eHRcIiAgICAgICAgICAgICAgICAgIFwibW9sZWN1bGFyLXN1YnR5cGluZy1jaG9yZG9tYV9jb250cmlidXRvcnMudHh0XCIgICAgICBcblsxNV0gXCJtb2xlY3VsYXItc3VidHlwaW5nLUNSQU5JT19jb250cmlidXRvcnMudHh0XCIgICAgICAgICBcIm1vbGVjdWxhci1zdWJ0eXBpbmctZW1icnlvbmFsX2NvbnRyaWJ1dG9ycy50eHRcIiAgICAgXG5bMTddIFwibW9sZWN1bGFyLXN1YnR5cGluZy1FUE5fY29udHJpYnV0b3JzLnR4dFwiICAgICAgICAgICAgXCJtb2xlY3VsYXItc3VidHlwaW5nLUVXU19jb250cmlidXRvcnMudHh0XCIgICAgICAgICAgIFxuWzE5XSBcIm1vbGVjdWxhci1zdWJ0eXBpbmctSEdHX2NvbnRyaWJ1dG9ycy50eHRcIiAgICAgICAgICAgIFwibW9sZWN1bGFyLXN1YnR5cGluZy1pbnRlZ3JhdGVfY29udHJpYnV0b3JzLnR4dFwiICAgICBcblsyMV0gXCJtb2xlY3VsYXItc3VidHlwaW5nLUxHQVRfY29udHJpYnV0b3JzLnR4dFwiICAgICAgICAgICBcIm1vbGVjdWxhci1zdWJ0eXBpbmctTUJfY29udHJpYnV0b3JzLnR4dFwiICAgICAgICAgICAgXG5bMjNdIFwibW9sZWN1bGFyLXN1YnR5cGluZy1uZXVyb2N5dG9tYV9jb250cmlidXRvcnMudHh0XCIgICAgXCJtb2xlY3VsYXItc3VidHlwaW5nLXBhdGhvbG9neV9jb250cmlidXRvcnMudHh0XCIgICAgIFxuWzI1XSBcIm11dGF0aW9uYWwtc2lnbmF0dXJlc19jb250cmlidXRvcnMudHh0XCIgICAgICAgICAgICAgIFwib25jb3ByaW50LWxhbmRzY2FwZV9jb250cmlidXRvcnMudHh0XCIgICAgICAgICAgICAgICBcblsyN10gXCJydW4tZ2lzdGljX2NvbnRyaWJ1dG9ycy50eHRcIiAgICAgICAgICAgICAgICAgICAgICAgICBcInNudi1jYWxsZXJzX2NvbnRyaWJ1dG9ycy50eHRcIiAgICAgICAgICAgICAgICAgICAgICAgXG5bMjldIFwic3Vydml2YWwtYW5hbHlzaXNfY29udHJpYnV0b3JzLnR4dFwiICAgICAgICAgICAgICAgICAgXCJ0ZWxvbWVyYXNlLWFjdGl2aXR5LXByZWRpY3Rpb25fY29udHJpYnV0b3JzLnR4dFwiICAgIFxuWzMxXSBcInRtYi1jb21wYXJlX2NvbnRyaWJ1dG9ycy50eHRcIiAgICAgICAgICAgICAgICAgICAgICAgIFwidHA1M19uZjFfc2NvcmVfY29udHJpYnV0b3JzLnR4dFwiICAgICAgICAgICAgICAgICAgICBcblszM10gXCJ0cmFuc2NyaXB0b21pYy1kaW1lbnNpb24tcmVkdWN0aW9uX2NvbnRyaWJ1dG9ycy50eHRcIlxuIn0= -->
-<pre><code> [1] &quot;chromosomal-instability_contributors.txt&quot;            &quot;chromothripsis_contributors.txt&quot;                    
- [3] &quot;cnv-chrom-plot_contributors.txt&quot;                     &quot;collapse-rnaseq_contributors.txt&quot;                   
- [5] &quot;copy_number_consensus_call_contributors.txt&quot;         &quot;focal-cn-file-preparation_contributors.txt&quot;         
- [7] &quot;fusion_filtering_contributors.txt&quot;                   &quot;fusion-summary_contributors.txt&quot;                    
- [9] &quot;gene-set-enrichment-analysis_contributors.txt&quot;       &quot;hotspots-detection_contributors.txt&quot;                
-[11] &quot;immune-deconv_contributors.txt&quot;                      &quot;independent-samples_contributors.txt&quot;               
-[13] &quot;interaction-plots_contributors.txt&quot;                  &quot;molecular-subtyping-chordoma_contributors.txt&quot;      
-[15] &quot;molecular-subtyping-CRANIO_contributors.txt&quot;         &quot;molecular-subtyping-embryonal_contributors.txt&quot;     
-[17] &quot;molecular-subtyping-EPN_contributors.txt&quot;            &quot;molecular-subtyping-EWS_contributors.txt&quot;           
-[19] &quot;molecular-subtyping-HGG_contributors.txt&quot;            &quot;molecular-subtyping-integrate_contributors.txt&quot;     
-[21] &quot;molecular-subtyping-LGAT_contributors.txt&quot;           &quot;molecular-subtyping-MB_contributors.txt&quot;            
-[23] &quot;molecular-subtyping-neurocytoma_contributors.txt&quot;    &quot;molecular-subtyping-pathology_contributors.txt&quot;     
-[25] &quot;mutational-signatures_contributors.txt&quot;              &quot;oncoprint-landscape_contributors.txt&quot;               
-[27] &quot;run-gistic_contributors.txt&quot;                         &quot;snv-callers_contributors.txt&quot;                       
-[29] &quot;survival-analysis_contributors.txt&quot;                  &quot;telomerase-activity-prediction_contributors.txt&quot;    
-[31] &quot;tmb-compare_contributors.txt&quot;                        &quot;tp53_nf1_score_contributors.txt&quot;                    
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcImNocm9tb3NvbWFsLWluc3RhYmlsaXR5X2NvbnRyaWJ1dG9ycy50eHRcIiAgICAgICAgICAgXG4gWzJdIFwiY2hyb21vdGhyaXBzaXNfY29udHJpYnV0b3JzLnR4dFwiICAgICAgICAgICAgICAgICAgICBcbiBbM10gXCJjbnYtY2hyb20tcGxvdF9jb250cmlidXRvcnMudHh0XCIgICAgICAgICAgICAgICAgICAgIFxuIFs0XSBcImNvbGxhcHNlLXJuYXNlcV9jb250cmlidXRvcnMudHh0XCIgICAgICAgICAgICAgICAgICAgXG4gWzVdIFwiY29weV9udW1iZXJfY29uc2Vuc3VzX2NhbGxfY29udHJpYnV0b3JzLnR4dFwiICAgICAgICBcbiBbNl0gXCJmb2NhbC1jbi1maWxlLXByZXBhcmF0aW9uX2NvbnRyaWJ1dG9ycy50eHRcIiAgICAgICAgIFxuIFs3XSBcImZ1c2lvbl9maWx0ZXJpbmdfY29udHJpYnV0b3JzLnR4dFwiICAgICAgICAgICAgICAgICAgXG4gWzhdIFwiZnVzaW9uLXN1bW1hcnlfY29udHJpYnV0b3JzLnR4dFwiICAgICAgICAgICAgICAgICAgICBcbiBbOV0gXCJnZW5lLXNldC1lbnJpY2htZW50LWFuYWx5c2lzX2NvbnRyaWJ1dG9ycy50eHRcIiAgICAgIFxuWzEwXSBcImhvdHNwb3RzLWRldGVjdGlvbl9jb250cmlidXRvcnMudHh0XCIgICAgICAgICAgICAgICAgXG5bMTFdIFwiaW1tdW5lLWRlY29udl9jb250cmlidXRvcnMudHh0XCIgICAgICAgICAgICAgICAgICAgICBcblsxMl0gXCJpbmRlcGVuZGVudC1zYW1wbGVzX2NvbnRyaWJ1dG9ycy50eHRcIiAgICAgICAgICAgICAgIFxuWzEzXSBcImludGVyYWN0aW9uLXBsb3RzX2NvbnRyaWJ1dG9ycy50eHRcIiAgICAgICAgICAgICAgICAgXG5bMTRdIFwibW9sZWN1bGFyLXN1YnR5cGluZy1jaG9yZG9tYV9jb250cmlidXRvcnMudHh0XCIgICAgICBcblsxNV0gXCJtb2xlY3VsYXItc3VidHlwaW5nLUNSQU5JT19jb250cmlidXRvcnMudHh0XCIgICAgICAgIFxuWzE2XSBcIm1vbGVjdWxhci1zdWJ0eXBpbmctZW1icnlvbmFsX2NvbnRyaWJ1dG9ycy50eHRcIiAgICAgXG5bMTddIFwibW9sZWN1bGFyLXN1YnR5cGluZy1FUE5fY29udHJpYnV0b3JzLnR4dFwiICAgICAgICAgICBcblsxOF0gXCJtb2xlY3VsYXItc3VidHlwaW5nLUVXU19jb250cmlidXRvcnMudHh0XCIgICAgICAgICAgIFxuWzE5XSBcIm1vbGVjdWxhci1zdWJ0eXBpbmctSEdHX2NvbnRyaWJ1dG9ycy50eHRcIiAgICAgICAgICAgXG5bMjBdIFwibW9sZWN1bGFyLXN1YnR5cGluZy1pbnRlZ3JhdGVfY29udHJpYnV0b3JzLnR4dFwiICAgICBcblsyMV0gXCJtb2xlY3VsYXItc3VidHlwaW5nLUxHQVRfY29udHJpYnV0b3JzLnR4dFwiICAgICAgICAgIFxuWzIyXSBcIm1vbGVjdWxhci1zdWJ0eXBpbmctTUJfY29udHJpYnV0b3JzLnR4dFwiICAgICAgICAgICAgXG5bMjNdIFwibW9sZWN1bGFyLXN1YnR5cGluZy1uZXVyb2N5dG9tYV9jb250cmlidXRvcnMudHh0XCIgICBcblsyNF0gXCJtb2xlY3VsYXItc3VidHlwaW5nLXBhdGhvbG9neV9jb250cmlidXRvcnMudHh0XCIgICAgIFxuWzI1XSBcIm11dGF0aW9uYWwtc2lnbmF0dXJlc19jb250cmlidXRvcnMudHh0XCIgICAgICAgICAgICAgXG5bMjZdIFwib25jb3ByaW50LWxhbmRzY2FwZV9jb250cmlidXRvcnMudHh0XCIgICAgICAgICAgICAgICBcblsyN10gXCJydW4tZ2lzdGljX2NvbnRyaWJ1dG9ycy50eHRcIiAgICAgICAgICAgICAgICAgICAgICAgIFxuWzI4XSBcInNudi1jYWxsZXJzX2NvbnRyaWJ1dG9ycy50eHRcIiAgICAgICAgICAgICAgICAgICAgICAgXG5bMjldIFwic3Vydml2YWwtYW5hbHlzaXNfY29udHJpYnV0b3JzLnR4dFwiICAgICAgICAgICAgICAgICBcblszMF0gXCJ0ZWxvbWVyYXNlLWFjdGl2aXR5LXByZWRpY3Rpb25fY29udHJpYnV0b3JzLnR4dFwiICAgIFxuWzMxXSBcInRtYi1jb21wYXJlX2NvbnRyaWJ1dG9ycy50eHRcIiAgICAgICAgICAgICAgICAgICAgICAgXG5bMzJdIFwidHA1M19uZjFfc2NvcmVfY29udHJpYnV0b3JzLnR4dFwiICAgICAgICAgICAgICAgICAgICBcblszM10gXCJ0cmFuc2NyaXB0b21pYy1kaW1lbnNpb24tcmVkdWN0aW9uX2NvbnRyaWJ1dG9ycy50eHRcIlxuIn0= -->
+<pre><code> [1] &quot;chromosomal-instability_contributors.txt&quot;           
+ [2] &quot;chromothripsis_contributors.txt&quot;                    
+ [3] &quot;cnv-chrom-plot_contributors.txt&quot;                    
+ [4] &quot;collapse-rnaseq_contributors.txt&quot;                   
+ [5] &quot;copy_number_consensus_call_contributors.txt&quot;        
+ [6] &quot;focal-cn-file-preparation_contributors.txt&quot;         
+ [7] &quot;fusion_filtering_contributors.txt&quot;                  
+ [8] &quot;fusion-summary_contributors.txt&quot;                    
+ [9] &quot;gene-set-enrichment-analysis_contributors.txt&quot;      
+[10] &quot;hotspots-detection_contributors.txt&quot;                
+[11] &quot;immune-deconv_contributors.txt&quot;                     
+[12] &quot;independent-samples_contributors.txt&quot;               
+[13] &quot;interaction-plots_contributors.txt&quot;                 
+[14] &quot;molecular-subtyping-chordoma_contributors.txt&quot;      
+[15] &quot;molecular-subtyping-CRANIO_contributors.txt&quot;        
+[16] &quot;molecular-subtyping-embryonal_contributors.txt&quot;     
+[17] &quot;molecular-subtyping-EPN_contributors.txt&quot;           
+[18] &quot;molecular-subtyping-EWS_contributors.txt&quot;           
+[19] &quot;molecular-subtyping-HGG_contributors.txt&quot;           
+[20] &quot;molecular-subtyping-integrate_contributors.txt&quot;     
+[21] &quot;molecular-subtyping-LGAT_contributors.txt&quot;          
+[22] &quot;molecular-subtyping-MB_contributors.txt&quot;            
+[23] &quot;molecular-subtyping-neurocytoma_contributors.txt&quot;   
+[24] &quot;molecular-subtyping-pathology_contributors.txt&quot;     
+[25] &quot;mutational-signatures_contributors.txt&quot;             
+[26] &quot;oncoprint-landscape_contributors.txt&quot;               
+[27] &quot;run-gistic_contributors.txt&quot;                        
+[28] &quot;snv-callers_contributors.txt&quot;                       
+[29] &quot;survival-analysis_contributors.txt&quot;                 
+[30] &quot;telomerase-activity-prediction_contributors.txt&quot;    
+[31] &quot;tmb-compare_contributors.txt&quot;                       
+[32] &quot;tp53_nf1_score_contributors.txt&quot;                    
 [33] &quot;transcriptomic-dimension-reduction_contributors.txt&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjpbImNocm9tb3NvbWFsLWluc3RhYmlsaXR5X2NvbnRyaWJ1dG9ycy50eHRcbiIsImNocm9tb3Rocmlwc2lzX2NvbnRyaWJ1dG9ycy50eHRcbiIsImNudi1jaHJvbS1wbG90X2NvbnRyaWJ1dG9ycy50eHRcbiIsImNvbGxhcHNlLXJuYXNlcV9jb250cmlidXRvcnMudHh0XG4iLCJjb3B5X251bWJlcl9jb25zZW5zdXNfY2FsbF9jb250cmlidXRvcnMudHh0XG4iLCJmb2NhbC1jbi1maWxlLXByZXBhcmF0aW9uX2NvbnRyaWJ1dG9ycy50eHRcbiIsImZ1c2lvbl9maWx0ZXJpbmdfY29udHJpYnV0b3JzLnR4dFxuIiwiZnVzaW9uLXN1bW1hcnlfY29udHJpYnV0b3JzLnR4dFxuIiwiZ2VuZS1zZXQtZW5yaWNobWVudC1hbmFseXNpc19jb250cmlidXRvcnMudHh0XG4iLCJob3RzcG90cy1kZXRlY3Rpb25fY29udHJpYnV0b3JzLnR4dFxuIiwiaW1tdW5lLWRlY29udl9jb250cmlidXRvcnMudHh0XG4iLCJpbmRlcGVuZGVudC1zYW1wbGVzX2NvbnRyaWJ1dG9ycy50eHRcbiIsImludGVyYWN0aW9uLXBsb3RzX2NvbnRyaWJ1dG9ycy50eHRcbiIsIm1vbGVjdWxhci1zdWJ0eXBpbmctY2hvcmRvbWFfY29udHJpYnV0b3JzLnR4dFxuIiwibW9sZWN1bGFyLXN1YnR5cGluZy1DUkFOSU9fY29udHJpYnV0b3JzLnR4dFxuIiwibW9sZWN1bGFyLXN1YnR5cGluZy1lbWJyeW9uYWxfY29udHJpYnV0b3JzLnR4dFxuIiwibW9sZWN1bGFyLXN1YnR5cGluZy1FUE5fY29udHJpYnV0b3JzLnR4dFxuIiwibW9sZWN1bGFyLXN1YnR5cGluZy1FV1NfY29udHJpYnV0b3JzLnR4dFxuIiwibW9sZWN1bGFyLXN1YnR5cGluZy1IR0dfY29udHJpYnV0b3JzLnR4dFxuIiwibW9sZWN1bGFyLXN1YnR5cGluZy1pbnRlZ3JhdGVfY29udHJpYnV0b3JzLnR4dFxuIiwibW9sZWN1bGFyLXN1YnR5cGluZy1MR0FUX2NvbnRyaWJ1dG9ycy50eHRcbiIsIm1vbGVjdWxhci1zdWJ0eXBpbmctTUJfY29udHJpYnV0b3JzLnR4dFxuIiwibW9sZWN1bGFyLXN1YnR5cGluZy1uZXVyb2N5dG9tYV9jb250cmlidXRvcnMudHh0XG4iLCJtb2xlY3VsYXItc3VidHlwaW5nLXBhdGhvbG9neV9jb250cmlidXRvcnMudHh0XG4iLCJtdXRhdGlvbmFsLXNpZ25hdHVyZXNfY29udHJpYnV0b3JzLnR4dFxuIiwib25jb3ByaW50LWxhbmRzY2FwZV9jb250cmlidXRvcnMudHh0XG4iLCJydW4tZ2lzdGljX2NvbnRyaWJ1dG9ycy50eHRcbiIsInNudi1jYWxsZXJzX2NvbnRyaWJ1dG9ycy50eHRcbiIsInN1cnZpdmFsLWFuYWx5c2lzX2NvbnRyaWJ1dG9ycy50eHRcbiIsInRlbG9tZXJhc2UtYWN0aXZpdHktcHJlZGljdGlvbl9jb250cmlidXRvcnMudHh0XG4iLCJ0bWItY29tcGFyZV9jb250cmlidXRvcnMudHh0XG4iLCJ0cDUzX25mMV9zY29yZV9jb250cmlidXRvcnMudHh0XG4iLCJ0cmFuc2NyaXB0b21pYy1kaW1lbnNpb24tcmVkdWN0aW9uX2NvbnRyaWJ1dG9ycy50eHRcbiJdfQ== -->
+<pre><code>chromosomal-instability_contributors.txt
+
+chromothripsis_contributors.txt
+
+cnv-chrom-plot_contributors.txt
+
+collapse-rnaseq_contributors.txt
+
+copy_number_consensus_call_contributors.txt
+
+focal-cn-file-preparation_contributors.txt
+
+fusion_filtering_contributors.txt
+
+fusion-summary_contributors.txt
+
+gene-set-enrichment-analysis_contributors.txt
+
+hotspots-detection_contributors.txt
+
+immune-deconv_contributors.txt
+
+independent-samples_contributors.txt
+
+interaction-plots_contributors.txt
+
+molecular-subtyping-chordoma_contributors.txt
+
+molecular-subtyping-CRANIO_contributors.txt
+
+molecular-subtyping-embryonal_contributors.txt
+
+molecular-subtyping-EPN_contributors.txt
+
+molecular-subtyping-EWS_contributors.txt
+
+molecular-subtyping-HGG_contributors.txt
+
+molecular-subtyping-integrate_contributors.txt
+
+molecular-subtyping-LGAT_contributors.txt
+
+molecular-subtyping-MB_contributors.txt
+
+molecular-subtyping-neurocytoma_contributors.txt
+
+molecular-subtyping-pathology_contributors.txt
+
+mutational-signatures_contributors.txt
+
+oncoprint-landscape_contributors.txt
+
+run-gistic_contributors.txt
+
+snv-callers_contributors.txt
+
+survival-analysis_contributors.txt
+
+telomerase-activity-prediction_contributors.txt
+
+tmb-compare_contributors.txt
+
+tp53_nf1_score_contributors.txt
+
+transcriptomic-dimension-reduction_contributors.txt</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Now read in the relevant contribution files to a data frame that we can use to count.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY291bnRfY29udHJpYnV0aW9uc19kZiA8LSBzdXBwcmVzc01lc3NhZ2VzKCAgIyBUaGlzIGlzIGNoYXR0eSFcbiAgIyBGb3IgYWxsIHRoZSBmaWxlcyB3ZSdsbCBjb25zaWRlclxuICBmaWxlLnBhdGgoY29tcG9uZW50c19kaXIsIGNvdW50X2ZpbGVzKSAlPiVcbiAgICAjIFJlYWQgdGhlbSBpbiwgYnV0IHNraXAgdGhlIGZpcnN0IChibGFuaykgbGluZSBhbmQgZG9uJ3QgdXNlIGNvbG5hbWVzXG4gICAgIyBUaGlzIHN0ZXAgcHJvZHVjZXMgYSBsaXN0XG4gICAgbWFwKHJlYWRfdHN2LCBza2lwID0gMSwgY29sX25hbWVzID0gRkFMU0UpICU+JVxuICAgICMgVXNlIHRoZSBmaWxlIG5hbWVzIHRoZW1zZWx2ZXMgdG8gc2V0IHRoZSBuYW1lcyBvZiB0aGUgbGlzdFxuICAgICMgVGhpcyB3aWxsIGJlIHRoZSBuYW1lIG9mIHRoZSBtb2R1bGVcbiAgICBzZXRfbmFtZXMoc3RyX3JlbW92ZShjb3VudF9maWxlcywgXCJfY29udHJpYnV0b3JzLnR4dFwiKSkgJT4lIFxuICAgICMgQ3JlYXRlIGEgZGF0YSBmcmFtZSB3aGVyZSB3ZSB1c2UgdGhlIG1vZHVsZSBuYW1lcyB0byBrZWVwIHRyYWNrIG9mIHdoZXJlXG4gICAgIyB0aGUgZGF0YSBmcmFtZSBvZiBjb250cmlidXRvcnMgY2FtZSBmcm9tXG4gICAgYmluZF9yb3dzKC5pZCA9IFwibW9kdWxlXCIpICU+JSBcbiAgICAjIFJlY3RpZnkgbGFjayBvZiBjb2xuYW1lcyBieSByZW5hbWluZyB0byBcImF1dGhvclwiXG4gICAgcmVuYW1lKGF1dGhvciA9IFgxKSAlPiVcbiAgICBkaXN0aW5jdCgpXG4pXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbImNvdW50X2NvbnRyaWJ1dGlvbnNfZGYgPC0gc3VwcHJlc3NNZXNzYWdlcyggICMgVGhpcyBpcyBjaGF0dHkhXG4gICMgRm9yIGFsbCB0aGUgZmlsZXMgd2UnbGwgY29uc2lkZXJcbiAgZmlsZS5wYXRoKGNvbXBvbmVudHNfZGlyLCBjb3VudF9maWxlcykgJT4lXG4gICAgIyBSZWFkIHRoZW0gaW4sIGJ1dCBza2lwIHRoZSBmaXJzdCAoYmxhbmspIGxpbmUgYW5kIGRvbid0IHVzZSBjb2xuYW1lc1xuICAgICMgVGhpcyBzdGVwIHByb2R1Y2VzIGEgbGlzdFxuICAgIG1hcChyZWFkX3Rzdiwgc2tpcCA9IDEsIGNvbF9uYW1lcyA9IEZBTFNFKSAlPiVcbiAgICAjIFVzZSB0aGUgZmlsZSBuYW1lcyB0aGVtc2VsdmVzIHRvIHNldCB0aGUgbmFtZXMgb2YgdGhlIGxpc3RcbiAgICAjIFRoaXMgd2lsbCBiZSB0aGUgbmFtZSBvZiB0aGUgbW9kdWxlXG4gICAgc2V0X25hbWVzKHN0cl9yZW1vdmUoY291bnRfZmlsZXMsIFwiX2NvbnRyaWJ1dG9ycy50eHRcIikpICU+JSBcbiAgICAjIENyZWF0ZSBhIGRhdGEgZnJhbWUgd2hlcmUgd2UgdXNlIHRoZSBtb2R1bGUgbmFtZXMgdG8ga2VlcCB0cmFjayBvZiB3aGVyZVxuICAgICMgdGhlIGRhdGEgZnJhbWUgb2YgY29udHJpYnV0b3JzIGNhbWUgZnJvbVxuICAgIGJpbmRfcm93cyguaWQgPSBcIm1vZHVsZVwiKSAlPiUgXG4gICAgZGlzdGluY3QoKVxuKSIsIiIsImNvbG5hbWVzKGNvdW50X2NvbnRyaWJ1dGlvbnNfZGYpIDwtIGMoXCJtb2R1bGVcIiwgXCJhdXRob3JcIikiXX0= -->
 <pre class="r"><code>count_contributions_df &lt;- suppressMessages(  # This is chatty!
   # For all the files we'll consider
   file.path(components_dir, count_files) %&gt;%
@@ -1924,17 +2008,17 @@ count_files</code></pre>
     # Create a data frame where we use the module names to keep track of where
     # the data frame of contributors came from
     bind_rows(.id = &quot;module&quot;) %&gt;% 
-    # Rectify lack of colnames by renaming to &quot;author&quot;
-    rename(author = X1) %&gt;%
     distinct()
-)</code></pre>
+)
+
+colnames(count_contributions_df) &lt;- c(&quot;module&quot;, &quot;author&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Recode names/handles to be consistent and more readable.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBSZWNvZGUgR2l0SHViIG5hbWVzIHRvIGJlIG1vcmUgcmVhZGFibGUgYW5kIGRlLWR1cGxpY2F0ZWQgaW4gc29tZSBjYXNlc1xuY291bnRfY29udHJpYnV0aW9uc19kZiA8LSBjb3VudF9jb250cmlidXRpb25zX2RmICU+JVxuICBtdXRhdGUoYXV0aG9yID0gcmVjb2RlX2ZhY3RvcihhdXRob3IsICEhIW5hbWVfcmVjb2RpbmcpKSAlPiVcbiAgIyBJZiBwZW9wbGUgaGFkIHR3byBuYW1lcy9JRHMsIHRoaXMgd2lsbCBkZS1kdXBsaWNhdGUgbm93IHRoYXQgdGhpbmdzIGhhdmUgXG4gICMgYmVlbiByZWNvZGVkXG4gIGRpc3RpbmN0KClcblxuIyBXcml0ZSB0aGlzIGxlc3Mgc3VtbWFyaXplZCBkYXRhIHRvIGZpbGVcbndyaXRlX3Rzdihjb3VudF9jb250cmlidXRpb25zX2RmLCBtb2R1bGVfY29udHJpYnV0aW9uc19maWxlKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgUmVjb2RlIEdpdEh1YiBuYW1lcyB0byBiZSBtb3JlIHJlYWRhYmxlIGFuZCBkZS1kdXBsaWNhdGVkIGluIHNvbWUgY2FzZXMiLCJjb3VudF9jb250cmlidXRpb25zX2RmIDwtIGNvdW50X2NvbnRyaWJ1dGlvbnNfZGYgJT4lXG4gIG11dGF0ZShhdXRob3IgPSByZWNvZGVfZmFjdG9yKGF1dGhvciwgISEhbmFtZV9yZWNvZGluZykpICU+JVxuICAjIElmIHBlb3BsZSBoYWQgdHdvIG5hbWVzL0lEcywgdGhpcyB3aWxsIGRlLWR1cGxpY2F0ZSBub3cgdGhhdCB0aGluZ3MgaGF2ZSBcbiAgIyBiZWVuIHJlY29kZWRcbiAgZGlzdGluY3QoKSIsIiIsIiMgV3JpdGUgdGhpcyBsZXNzIHN1bW1hcml6ZWQgZGF0YSB0byBmaWxlIiwid3JpdGVfdHN2KGNvdW50X2NvbnRyaWJ1dGlvbnNfZGYsIG1vZHVsZV9jb250cmlidXRpb25zX2ZpbGUpIl19 -->
 <pre class="r"><code># Recode GitHub names to be more readable and de-duplicated in some cases
 count_contributions_df &lt;- count_contributions_df %&gt;%
   mutate(author = recode_factor(author, !!!name_recoding)) %&gt;%
@@ -1950,7 +2034,7 @@ write_tsv(count_contributions_df, module_contributions_file)</code></pre>
 <p>Now we can count the number of modules each person contributed to.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBDb3VudCB0aGUgbnVtYmVyIG9mIG1vZHVsZXMgZWFjaCBwZXJzb24gY29udHJpYnV0ZWQgdG8sIHdoaWNoIHdlIGNhbiBzaW1wbHlcbiMgZG8gd2l0aCBjb3VudFxuY291bnRzX2RmIDwtIGNvdW50X2NvbnRyaWJ1dGlvbnNfZGYgJT4lXG4gIGNvdW50KGF1dGhvciwgbmFtZSA9IFwibnVtX21vZHVsZXNcIikgJT4lXG4gIGFycmFuZ2UoZGVzYyhudW1fbW9kdWxlcykpXG5cbiMgV3JpdGUgdGhlIHN1bW1hcml6ZWQgbW9kdWxlcyBjb3VudGVkXG53cml0ZV90c3YoY291bnRzX2RmLCBjb3VudF9tb2R1bGVzX2ZpbGUpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgQ291bnQgdGhlIG51bWJlciBvZiBtb2R1bGVzIGVhY2ggcGVyc29uIGNvbnRyaWJ1dGVkIHRvLCB3aGljaCB3ZSBjYW4gc2ltcGx5IiwiIyBkbyB3aXRoIGNvdW50IiwiY291bnRzX2RmIDwtIGNvdW50X2NvbnRyaWJ1dGlvbnNfZGYgJT4lXG4gIGNvdW50KGF1dGhvciwgbmFtZSA9IFwibnVtX21vZHVsZXNcIikgJT4lXG4gIGFycmFuZ2UoZGVzYyhudW1fbW9kdWxlcykpIiwiIiwiIyBXcml0ZSB0aGUgc3VtbWFyaXplZCBtb2R1bGVzIGNvdW50ZWQiLCJ3cml0ZV90c3YoY291bnRzX2RmLCBjb3VudF9tb2R1bGVzX2ZpbGUpIl19 -->
 <pre class="r"><code># Count the number of modules each person contributed to, which we can simply
 # do with count
 counts_df &lt;- count_contributions_df %&gt;%
@@ -1968,7 +2052,7 @@ write_tsv(counts_df, count_modules_file)</code></pre>
 <p>We’ll clean up the total contributions generated with <code>git shortlog</code> by summarizing commits by a single person and generally making things more readable.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudG90YWxfY29udHJpYnV0aW9uc19kZiA8LSByZWFkX3RzdihmaWxlLnBhdGgoY29tcG9uZW50c19kaXIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcInRvdGFsX2NvbnRyaWJ1dGlvbnMudHN2XCIpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xfbmFtZXMgPSBGQUxTRSkgJT4lXG4gICMgUmVzb2x2ZSBsYWNrIG9mIGhlYWRlclxuICByZW5hbWUobnVtX2NvbW1pdHMgPSBYMSwgYXV0aG9yID0gWDIpICU+JVxuICAjIFJlb3JkZXJcbiAgc2VsZWN0KGF1dGhvciwgbnVtX2NvbW1pdHMpICU+JVxuICAjIFJlY29kZSBuYW1lcy9JRHMgdG8gYmUgY29uc2lzdGVudFxuICBtdXRhdGUoYXV0aG9yID0gcmVjb2RlX2ZhY3RvcihhdXRob3IsICEhIW5hbWVfcmVjb2RpbmcpKSAlPiVcbiAgIyBGb3IgZm9sa3MgdGhhdCBoYWQgbXVsdGlwbGUgbmFtZXMgaW5jbHVkZWQsIHN1bW1hcml6ZSB0aGUgdG90YWwgY29tbWl0c1xuICBncm91cF9ieShhdXRob3IpICU+JVxuICBzdW1tYXJpemUobnVtX2NvbW1pdHMgPSBzdW0obnVtX2NvbW1pdHMpKSAlPiVcbiAgIyBSZXN0b3JlIGRlc2NlbmRpbmcgb3JkZXIgZm9yIG51bWJlciBvZiBjb21taXRzXG4gIGFycmFuZ2UoZGVzYyhudW1fY29tbWl0cykpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoidG90YWxfY29udHJpYnV0aW9uc19kZiA8LSByZWFkX3RzdihmaWxlLnBhdGgoY29tcG9uZW50c19kaXIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcInRvdGFsX2NvbnRyaWJ1dGlvbnMudHN2XCIpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xfbmFtZXMgPSBGQUxTRSkgJT4lXG4gICMgUmVzb2x2ZSBsYWNrIG9mIGhlYWRlclxuICByZW5hbWUobnVtX2NvbW1pdHMgPSBYMSwgYXV0aG9yID0gWDIpICU+JVxuICAjIFJlb3JkZXJcbiAgc2VsZWN0KGF1dGhvciwgbnVtX2NvbW1pdHMpICU+JVxuICAjIFJlY29kZSBuYW1lcy9JRHMgdG8gYmUgY29uc2lzdGVudFxuICBtdXRhdGUoYXV0aG9yID0gcmVjb2RlX2ZhY3RvcihhdXRob3IsICEhIW5hbWVfcmVjb2RpbmcpKSAlPiVcbiAgIyBGb3IgZm9sa3MgdGhhdCBoYWQgbXVsdGlwbGUgbmFtZXMgaW5jbHVkZWQsIHN1bW1hcml6ZSB0aGUgdG90YWwgY29tbWl0c1xuICBncm91cF9ieShhdXRob3IpICU+JVxuICBzdW1tYXJpemUobnVtX2NvbW1pdHMgPSBzdW0obnVtX2NvbW1pdHMpKSAlPiVcbiAgIyBSZXN0b3JlIGRlc2NlbmRpbmcgb3JkZXIgZm9yIG51bWJlciBvZiBjb21taXRzXG4gIGFycmFuZ2UoZGVzYyhudW1fY29tbWl0cykpIn0= -->
 <pre class="r"><code>total_contributions_df &lt;- read_tsv(file.path(components_dir,
                                              &quot;total_contributions.tsv&quot;),
                                    col_names = FALSE) %&gt;%
@@ -1984,12 +2068,19 @@ write_tsv(counts_df, count_modules_file)</code></pre>
   # Restore descending order for number of commits
   arrange(desc(num_commits))</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBYMSA9IGNvbF9kb3VibGUoKSxcbiAgWDIgPSBjb2xfY2hhcmFjdGVyKClcbilcbiJ9 -->
+<pre><code>Parsed with column specification:
+cols(
+  X1 = col_double(),
+  X2 = col_character()
+)</code></pre>
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Write to file.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JpdGVfdHN2KHRvdGFsX2NvbnRyaWJ1dGlvbnNfZGYsIHBhdGggPSB0b3RhbF9jb3VudHJpYnV0aW9uc19maWxlKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoid3JpdGVfdHN2KHRvdGFsX2NvbnRyaWJ1dGlvbnNfZGYsIHBhdGggPSB0b3RhbF9jb3VudHJpYnV0aW9uc19maWxlKSJ9 -->
 <pre class="r"><code>write_tsv(total_contributions_df, path = total_countributions_file)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -1997,7 +2088,7 @@ write_tsv(counts_df, count_modules_file)</code></pre>
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiRm9ybWF0IGFuYWx5c2VzIGRpcmVjdG9yaWVzIGNvbnRyaWJ1dGlvbnMiCm91dHB1dDogaHRtbF9ub3RlYm9vawphdXRob3I6IEpOIFRhcm9uaSBmb3IgQUxTRiBDQ0RMCmRhdGU6IDIwMjIKLS0tCgojIyBTZXQgdXAKCmBgYHtyfQpsaWJyYXJ5KHRpZHl2ZXJzZSkKYGBgCgpJbiB0aGUgZmlyc3Qgc2NyaXB0LCB3ZSBjcmVhdGVkIFRYVCBmaWxlcyB0aGF0IGNvbnRhaW4gdGhlIGF1dGhvcnMgb2YgY29udHJpYnV0aW9ucyB0byBlYWNoIG1vZHVsZSBpbiBgYW5hbHlzZXMvYC4KVGhvc2UgZmlsZXMgbGl2ZSBpbiBhIGRpcmVjdG9yeSBjYWxsZWQgYHNjcmF0Y2gvY291bnQtY29udHJpYnV0aW9ucy9gIChyZWxhdGl2ZSB0byB0aGUgcm9vdCBvZiB0aGUgcmVwbykuCldlJ3JlIGdvaW5nIHRvIHNhdmUgdGhlIHdyYW5nbGVkIHJlc3VsdHMgdG8gYSBgcmVzdWx0cy9gIGRpcmVjdG9yeQoKYGBge3J9CmNvbXBvbmVudHNfZGlyIDwtIGZpbGUucGF0aCgiLi4iLCAiLi4iLCAic2NyYXRjaCIsICJjb3VudC1jb250cmlidXRpb25zIikKcmVzdWx0c19kaXIgPC0gInJlc3VsdHMiCmRpci5jcmVhdGUocmVzdWx0c19kaXIsIHNob3dXYXJuaW5ncyA9IEZBTFNFKQpgYGAKCldlJ3JlIGdvaW5nIHNhdmUgdGhlIGZpbGUgdGhhdCBtYXBzIGNvbnRyaWJ1dG9ycyB0byBtb2R1bGVzIF9hbmRfIGEgZmlsZSB0aGF0IGNvdW50cyB0aGUgbnVtYmVyIG9mIG1vZHVsZXMgc29tZW9uZSBoYXMgY29udHJpYnV0ZWQgdG8uCgpgYGB7cn0KbW9kdWxlX2NvbnRyaWJ1dGlvbnNfZmlsZSA8LSBmaWxlLnBhdGgocmVzdWx0c19kaXIsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAibW9kdWxlX2NvbnRyaWJ1dG9ycy50c3YiKQpjb3VudF9tb2R1bGVzX2ZpbGUgPC0gZmlsZS5wYXRoKHJlc3VsdHNfZGlyLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJtb2R1bGVfY29udHJpYnV0aW9uX2NvdW50cy50c3YiKQp0b3RhbF9jb3VudHJpYnV0aW9uc19maWxlIDwtIGZpbGUucGF0aChyZXN1bHRzX2RpciwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInRvdGFsX2NvbnRyaWJ1dGlvbnNfY2xlYW4udHN2IikKYGBgCgojIyBNYXBwaW5nIGRpZmZlcmVudCBJRHMgdG8gdGhlIHNhbWUgY29udHJpYnV0b3IKClNvbWUgZm9sa3MgY29udHJpYnV0ZWQgdW5kZXIgdHdvICJuYW1lcyIgKHVzdWFsbHkgdGhlaXIgR0ggaGFuZGxlIGFuZCB0aGVpciBuYW1lKSwgb3IganVzdCB0aGVpciBmaXJzdCBuYW1lLCBvciBqdXN0IHRoZWlyIEdIIGhhbmRsZS4KU28gbGV0J3MgY2xlYW4gdGhpcyB1cCBpbiB0aGUgaW50ZXJlc3Qgb2YgcmVhZGFiaWxpdHkgaW4gdGhlIGZpbmFsIGRhdGEgZnJhbWVzLgoKYGBge3J9Cm5hbWVfcmVjb2RpbmcgPC0gYygKICBqYXNoYXBpcm8gPSAiSm9zaHVhIFNoYXBpcm8iLAogIFN0ZXBoYW5pZSA9ICJTdGVwaGFuaWUgSi4gU3BpZWxtYW4iLAogIEJhaWxleSA9ICJCYWlsZXkgRmFycm93IiwKICBydW5qaW4zMjYgPSAiUnVuIEppbiIsCiAgTWF0ZXVzeiA9ICJNYXRldXN6IFAuIEtvcHR5cmEiLAogIHRrb2dhbnRpID0gIlRlamEgS29nYW50aSIsCiAgTk5vdXJlZW4gPSAiTmlnaGF0IE5vdXJlZW4iLAogIGBKbyBMeW5uZWAgPSAiSm8gTHlubmUgUm9raXRhIiwKICBgZS10LWtgID0gIkVsbGVuIEtlcGhhcmR0IiwKICB5YW5neWFuZ2Nsb3ZlciA9ICJZYW5nIFlhbmciLAogIFBpY2hhaVJhbWFuID0gIlBpY2hhaSBSYW1hbiIsCiAgaGJlYWxlID0gIkhvbGx5IEJlYWxlIgopCmBgYAoKIyMgTW9kdWxlIGNvbnRyaWJ1dGlvbnMKClRoZXJlIGFyZSBzb21lIG1vZHVsZXMgdGhhdCBkaWQgbm90IGdlbmVyYXRlIHJlc3VsdHMgdGhhdCBhcmUgaW5jbHVkZWQgaW4gdGhlIG1hbnVzY3JpcHQuCkZvciBvdXIgcHVycG9zZXMsIHdlIHdhbnQgdG8gc2tpcCB0aG9zZSBsaXN0cyBvZiBjb250cmlidXRvcnMuClRoZSBub3QgaW5jbHVkZWQgbGlzdCBpcyBzaG9ydGVyIHRoYW4gdGhlIGluY2x1ZGVkIGxpc3QsIHNvIHRoYXQncyB3aHkgd2UnbGwgdGFrZSB0aGlzIGFwcHJvYWNoIQoKYGBge3J9CiMgV2UncmUgbm90IGNvdW50aW5nIHRoZXNlIGJlY2F1c2UgdGhleSBkaWRuJ3QgbWFrZSBpdCB0byB0aGUgbWFudXNjcmlwdApub3RfaW5jbHVkZWRfYW5hbHlzZXMgPC0gYygKICAiY252LWNvbXBhcmlzb24iLAogICJjb21wYXJhdGl2ZS1STkFTZXEtYW5hbHlzaXMiLAogICJjb21wYXJlLWdpc3RpYyIsCiAgImNvdW50LWNvbnRyaWJ1dGlvbnMiLAogICJjcmVhdGUtc3Vic2V0LWZpbGVzIiwKICAibW9sZWN1bGFyLXN1YnR5cGluZy1BVFJUIiwKICAibW9sZWN1bGFyLXN1YnR5cGluZy1TSEgtdHA1MyIsCiAgIm11dGVjdDItdnMtc3RyZWxrYTIiLAogICJybmEtc2VxLWNvbXBvc2l0aW9uIiwKICAic2VsZWN0aW9uLXN0cmF0ZWd5LWNvbXBhcmlzb24iLAogICJzZXgtcHJlZGljdGlvbi1mcm9tLVJOQVNlcSIsCiAgInNzZ3NlYS1oYWxsbWFyayIsCiAgInRjZ2EtY2FwdHVyZS1raXQtaW52ZXN0aWdhdGlvbiIsCiAgInNhbXBsZS1kaXN0cmlidXRpb24tYW5hbHlzaXMiCikKYGBgCgpBbGwgb2YgdGhlIF9yZWxldmFudCBmaWxlc18gYXJlIHRob3NlIFRYVCBmaWxlcyBpbiBgY29tcG9uZW50cy9gIHRoYXQgZG8gbm90IG1hdGNoIG9uZSBvZiB0aGUgbm90IGluY2x1ZGVkIG1vZHVsZXMgbGlzdGVkIGFib3ZlLgpXZSdyZSBhbHNvIGdvaW5nIHRvIHNraXAgYGNvbXBvbmVudHMvdG90YWxfY29udHJpYnV0aW9ucy50eHRgIGZvciBub3cuIAoKYGBge3J9CiMgQWxsIG9mIHRoZSBmaWxlcyB0aGF0IHdlcmUgaW5jbHVkZWQgaW4gY29tcG9uZW50cyBkaXJlY3RvcnkKY29udHJpYnV0aW9uX2ZpbGVzIDwtIGxpc3QuZmlsZXMoY29tcG9uZW50c19kaXIpCgojIFdlJ2xsIGNvdW50IHRoZSBmaWxlcyB0aGF0IGNvbWUgZnJvbSBtb2R1bGVzIHRoYXQgYXJlIGluY2x1ZGVkIGluIHRoZSAKIyBtYW51c2NyaXB0IGJ5IHJlbW92aW5nIHRoZSBtb2R1bGVzIHRoYXQgKmFyZSBub3QqIGluY2x1ZGVkCmNvdW50X2ZpbGVzIDwtIGNvbnRyaWJ1dGlvbl9maWxlc1tzdHJfZGV0ZWN0KGNvbnRyaWJ1dGlvbl9maWxlcywgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBhdHRlcm4gPSBwYXN0ZSgKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBub3RfaW5jbHVkZWRfYW5hbHlzZXMsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbGxhcHNlID0gInwiKSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbmVnYXRlID0gVFJVRSldCgojIFdlJ3JlIGFsc28gbm90IGdvaW5nIHRvIGxvb2sgYXQgdG90YWwgY29udHJpYnV0aW9ucyBoZXJlCmNvdW50X2ZpbGVzIDwtIHNldGRpZmYoY291bnRfZmlsZXMsICJ0b3RhbF9jb250cmlidXRpb25zLnRzdiIpCgpjb3VudF9maWxlcwpgYGAKCk5vdyByZWFkIGluIHRoZSByZWxldmFudCBjb250cmlidXRpb24gZmlsZXMgdG8gYSBkYXRhIGZyYW1lIHRoYXQgd2UgY2FuIHVzZSB0byBjb3VudC4KCmBgYHtyfQpjb3VudF9jb250cmlidXRpb25zX2RmIDwtIHN1cHByZXNzTWVzc2FnZXMoICAjIFRoaXMgaXMgY2hhdHR5IQogICMgRm9yIGFsbCB0aGUgZmlsZXMgd2UnbGwgY29uc2lkZXIKICBmaWxlLnBhdGgoY29tcG9uZW50c19kaXIsIGNvdW50X2ZpbGVzKSAlPiUKICAgICMgUmVhZCB0aGVtIGluLCBidXQgc2tpcCB0aGUgZmlyc3QgKGJsYW5rKSBsaW5lIGFuZCBkb24ndCB1c2UgY29sbmFtZXMKICAgICMgVGhpcyBzdGVwIHByb2R1Y2VzIGEgbGlzdAogICAgbWFwKHJlYWRfdHN2LCBza2lwID0gMSwgY29sX25hbWVzID0gRkFMU0UpICU+JQogICAgIyBVc2UgdGhlIGZpbGUgbmFtZXMgdGhlbXNlbHZlcyB0byBzZXQgdGhlIG5hbWVzIG9mIHRoZSBsaXN0CiAgICAjIFRoaXMgd2lsbCBiZSB0aGUgbmFtZSBvZiB0aGUgbW9kdWxlCiAgICBzZXRfbmFtZXMoc3RyX3JlbW92ZShjb3VudF9maWxlcywgIl9jb250cmlidXRvcnMudHh0IikpICU+JSAKICAgICMgQ3JlYXRlIGEgZGF0YSBmcmFtZSB3aGVyZSB3ZSB1c2UgdGhlIG1vZHVsZSBuYW1lcyB0byBrZWVwIHRyYWNrIG9mIHdoZXJlCiAgICAjIHRoZSBkYXRhIGZyYW1lIG9mIGNvbnRyaWJ1dG9ycyBjYW1lIGZyb20KICAgIGJpbmRfcm93cyguaWQgPSAibW9kdWxlIikgJT4lIAogICAgIyBSZWN0aWZ5IGxhY2sgb2YgY29sbmFtZXMgYnkgcmVuYW1pbmcgdG8gImF1dGhvciIKICAgIHJlbmFtZShhdXRob3IgPSBYMSkgJT4lCiAgICBkaXN0aW5jdCgpCikKYGBgCgpSZWNvZGUgbmFtZXMvaGFuZGxlcyB0byBiZSBjb25zaXN0ZW50IGFuZCBtb3JlIHJlYWRhYmxlLgoKYGBge3J9CiMgUmVjb2RlIEdpdEh1YiBuYW1lcyB0byBiZSBtb3JlIHJlYWRhYmxlIGFuZCBkZS1kdXBsaWNhdGVkIGluIHNvbWUgY2FzZXMKY291bnRfY29udHJpYnV0aW9uc19kZiA8LSBjb3VudF9jb250cmlidXRpb25zX2RmICU+JQogIG11dGF0ZShhdXRob3IgPSByZWNvZGVfZmFjdG9yKGF1dGhvciwgISEhbmFtZV9yZWNvZGluZykpICU+JQogICMgSWYgcGVvcGxlIGhhZCB0d28gbmFtZXMvSURzLCB0aGlzIHdpbGwgZGUtZHVwbGljYXRlIG5vdyB0aGF0IHRoaW5ncyBoYXZlIAogICMgYmVlbiByZWNvZGVkCiAgZGlzdGluY3QoKQoKIyBXcml0ZSB0aGlzIGxlc3Mgc3VtbWFyaXplZCBkYXRhIHRvIGZpbGUKd3JpdGVfdHN2KGNvdW50X2NvbnRyaWJ1dGlvbnNfZGYsIG1vZHVsZV9jb250cmlidXRpb25zX2ZpbGUpCmBgYAoKTm93IHdlIGNhbiBjb3VudCB0aGUgbnVtYmVyIG9mIG1vZHVsZXMgZWFjaCBwZXJzb24gY29udHJpYnV0ZWQgdG8uCgpgYGB7cn0KIyBDb3VudCB0aGUgbnVtYmVyIG9mIG1vZHVsZXMgZWFjaCBwZXJzb24gY29udHJpYnV0ZWQgdG8sIHdoaWNoIHdlIGNhbiBzaW1wbHkKIyBkbyB3aXRoIGNvdW50CmNvdW50c19kZiA8LSBjb3VudF9jb250cmlidXRpb25zX2RmICU+JQogIGNvdW50KGF1dGhvciwgbmFtZSA9ICJudW1fbW9kdWxlcyIpICU+JQogIGFycmFuZ2UoZGVzYyhudW1fbW9kdWxlcykpCgojIFdyaXRlIHRoZSBzdW1tYXJpemVkIG1vZHVsZXMgY291bnRlZAp3cml0ZV90c3YoY291bnRzX2RmLCBjb3VudF9tb2R1bGVzX2ZpbGUpCmBgYAoKIyMgVG90YWwgY29udHJpYnV0aW9ucwoKV2UnbGwgY2xlYW4gdXAgdGhlIHRvdGFsIGNvbnRyaWJ1dGlvbnMgZ2VuZXJhdGVkIHdpdGggYGdpdCBzaG9ydGxvZ2AgYnkgc3VtbWFyaXppbmcgY29tbWl0cyBieSBhIHNpbmdsZSBwZXJzb24gYW5kIGdlbmVyYWxseSBtYWtpbmcgdGhpbmdzIG1vcmUgcmVhZGFibGUuCgpgYGB7cn0KdG90YWxfY29udHJpYnV0aW9uc19kZiA8LSByZWFkX3RzdihmaWxlLnBhdGgoY29tcG9uZW50c19kaXIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0b3RhbF9jb250cmlidXRpb25zLnRzdiIpLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbF9uYW1lcyA9IEZBTFNFKSAlPiUKICAjIFJlc29sdmUgbGFjayBvZiBoZWFkZXIKICByZW5hbWUobnVtX2NvbW1pdHMgPSBYMSwgYXV0aG9yID0gWDIpICU+JQogICMgUmVvcmRlcgogIHNlbGVjdChhdXRob3IsIG51bV9jb21taXRzKSAlPiUKICAjIFJlY29kZSBuYW1lcy9JRHMgdG8gYmUgY29uc2lzdGVudAogIG11dGF0ZShhdXRob3IgPSByZWNvZGVfZmFjdG9yKGF1dGhvciwgISEhbmFtZV9yZWNvZGluZykpICU+JQogICMgRm9yIGZvbGtzIHRoYXQgaGFkIG11bHRpcGxlIG5hbWVzIGluY2x1ZGVkLCBzdW1tYXJpemUgdGhlIHRvdGFsIGNvbW1pdHMKICBncm91cF9ieShhdXRob3IpICU+JQogIHN1bW1hcml6ZShudW1fY29tbWl0cyA9IHN1bShudW1fY29tbWl0cykpICU+JQogICMgUmVzdG9yZSBkZXNjZW5kaW5nIG9yZGVyIGZvciBudW1iZXIgb2YgY29tbWl0cwogIGFycmFuZ2UoZGVzYyhudW1fY29tbWl0cykpCmBgYAoKV3JpdGUgdG8gZmlsZS4KCmBgYHtyfQp3cml0ZV90c3YodG90YWxfY29udHJpYnV0aW9uc19kZiwgcGF0aCA9IHRvdGFsX2NvdW50cmlidXRpb25zX2ZpbGUpCmBgYAoKCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRm9ybWF0IGFuYWx5c2VzIGRpcmVjdG9yaWVzIGNvbnRyaWJ1dGlvbnMiCm91dHB1dDogaHRtbF9ub3RlYm9vawphdXRob3I6IEpOIFRhcm9uaSBmb3IgQUxTRiBDQ0RMCmRhdGU6IDIwMjIKLS0tCgojIyBTZXQgdXAKCmBgYHtyfQpsaWJyYXJ5KHRpZHl2ZXJzZSkKYGBgCgpJbiB0aGUgZmlyc3Qgc2NyaXB0LCB3ZSBjcmVhdGVkIFRYVCBmaWxlcyB0aGF0IGNvbnRhaW4gdGhlIGF1dGhvcnMgb2YgY29udHJpYnV0aW9ucyB0byBlYWNoIG1vZHVsZSBpbiBgYW5hbHlzZXMvYC4KVGhvc2UgZmlsZXMgbGl2ZSBpbiBhIGRpcmVjdG9yeSBjYWxsZWQgYHNjcmF0Y2gvY291bnQtY29udHJpYnV0aW9ucy9gIChyZWxhdGl2ZSB0byB0aGUgcm9vdCBvZiB0aGUgcmVwbykuCldlJ3JlIGdvaW5nIHRvIHNhdmUgdGhlIHdyYW5nbGVkIHJlc3VsdHMgdG8gYSBgcmVzdWx0cy9gIGRpcmVjdG9yeQoKYGBge3J9CmNvbXBvbmVudHNfZGlyIDwtIGZpbGUucGF0aCgiLi4iLCAiLi4iLCAic2NyYXRjaCIsICJjb3VudC1jb250cmlidXRpb25zIikKcmVzdWx0c19kaXIgPC0gInJlc3VsdHMiCmRpci5jcmVhdGUocmVzdWx0c19kaXIsIHNob3dXYXJuaW5ncyA9IEZBTFNFKQpgYGAKCldlJ3JlIGdvaW5nIHNhdmUgdGhlIGZpbGUgdGhhdCBtYXBzIGNvbnRyaWJ1dG9ycyB0byBtb2R1bGVzIF9hbmRfIGEgZmlsZSB0aGF0IGNvdW50cyB0aGUgbnVtYmVyIG9mIG1vZHVsZXMgc29tZW9uZSBoYXMgY29udHJpYnV0ZWQgdG8uCgpgYGB7cn0KbW9kdWxlX2NvbnRyaWJ1dGlvbnNfZmlsZSA8LSBmaWxlLnBhdGgocmVzdWx0c19kaXIsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAibW9kdWxlX2NvbnRyaWJ1dG9ycy50c3YiKQpjb3VudF9tb2R1bGVzX2ZpbGUgPC0gZmlsZS5wYXRoKHJlc3VsdHNfZGlyLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJtb2R1bGVfY29udHJpYnV0aW9uX2NvdW50cy50c3YiKQp0b3RhbF9jb3VudHJpYnV0aW9uc19maWxlIDwtIGZpbGUucGF0aChyZXN1bHRzX2RpciwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInRvdGFsX2NvbnRyaWJ1dGlvbnNfY2xlYW4udHN2IikKYGBgCgojIyBNYXBwaW5nIGRpZmZlcmVudCBJRHMgdG8gdGhlIHNhbWUgY29udHJpYnV0b3IKClNvbWUgZm9sa3MgY29udHJpYnV0ZWQgdW5kZXIgdHdvICJuYW1lcyIgKHVzdWFsbHkgdGhlaXIgR0ggaGFuZGxlIGFuZCB0aGVpciBuYW1lKSwgb3IganVzdCB0aGVpciBmaXJzdCBuYW1lLCBvciBqdXN0IHRoZWlyIEdIIGhhbmRsZS4KU28gbGV0J3MgY2xlYW4gdGhpcyB1cCBpbiB0aGUgaW50ZXJlc3Qgb2YgcmVhZGFiaWxpdHkgaW4gdGhlIGZpbmFsIGRhdGEgZnJhbWVzLgoKYGBge3J9Cm5hbWVfcmVjb2RpbmcgPC0gYygKICBqYXNoYXBpcm8gPSAiSm9zaHVhIFNoYXBpcm8iLAogIFN0ZXBoYW5pZSA9ICJTdGVwaGFuaWUgSi4gU3BpZWxtYW4iLAogIEJhaWxleSA9ICJCYWlsZXkgRmFycm93IiwKICBydW5qaW4zMjYgPSAiUnVuIEppbiIsCiAgTWF0ZXVzeiA9ICJNYXRldXN6IFAuIEtvcHR5cmEiLAogIHRrb2dhbnRpID0gIlRlamEgS29nYW50aSIsCiAgTk5vdXJlZW4gPSAiTmlnaGF0IE5vdXJlZW4iLAogIGBKbyBMeW5uZWAgPSAiSm8gTHlubmUgUm9raXRhIiwKICBgZS10LWtgID0gIkVsbGVuIEtlcGhhcmR0IiwKICB5YW5neWFuZ2Nsb3ZlciA9ICJZYW5nIFlhbmciLAogIFBpY2hhaVJhbWFuID0gIlBpY2hhaSBSYW1hbiIsCiAgaGJlYWxlID0gIkhvbGx5IEJlYWxlIgopCmBgYAoKIyMgTW9kdWxlIGNvbnRyaWJ1dGlvbnMKClRoZXJlIGFyZSBzb21lIG1vZHVsZXMgdGhhdCBkaWQgbm90IGdlbmVyYXRlIHJlc3VsdHMgdGhhdCBhcmUgaW5jbHVkZWQgaW4gdGhlIG1hbnVzY3JpcHQuCkZvciBvdXIgcHVycG9zZXMsIHdlIHdhbnQgdG8gc2tpcCB0aG9zZSBsaXN0cyBvZiBjb250cmlidXRvcnMuClRoZSBub3QgaW5jbHVkZWQgbGlzdCBpcyBzaG9ydGVyIHRoYW4gdGhlIGluY2x1ZGVkIGxpc3QsIHNvIHRoYXQncyB3aHkgd2UnbGwgdGFrZSB0aGlzIGFwcHJvYWNoIQoKYGBge3J9CiMgV2UncmUgbm90IGNvdW50aW5nIHRoZXNlIGJlY2F1c2UgdGhleSBkaWRuJ3QgbWFrZSBpdCB0byB0aGUgbWFudXNjcmlwdApub3RfaW5jbHVkZWRfYW5hbHlzZXMgPC0gYygKICAiY252LWNvbXBhcmlzb24iLAogICJjb21wYXJhdGl2ZS1STkFTZXEtYW5hbHlzaXMiLAogICJjb21wYXJlLWdpc3RpYyIsCiAgImNvdW50LWNvbnRyaWJ1dGlvbnMiLAogICJjcmVhdGUtc3Vic2V0LWZpbGVzIiwKICAibW9sZWN1bGFyLXN1YnR5cGluZy1BVFJUIiwKICAibW9sZWN1bGFyLXN1YnR5cGluZy1TSEgtdHA1MyIsCiAgIm11dGVjdDItdnMtc3RyZWxrYTIiLAogICJybmEtc2VxLWNvbXBvc2l0aW9uIiwKICAic2VsZWN0aW9uLXN0cmF0ZWd5LWNvbXBhcmlzb24iLAogICJzZXgtcHJlZGljdGlvbi1mcm9tLVJOQVNlcSIsCiAgInNzZ3NlYS1oYWxsbWFyayIsCiAgInRjZ2EtY2FwdHVyZS1raXQtaW52ZXN0aWdhdGlvbiIsCiAgInNhbXBsZS1kaXN0cmlidXRpb24tYW5hbHlzaXMiCikKYGBgCgpBbGwgb2YgdGhlIF9yZWxldmFudCBmaWxlc18gYXJlIHRob3NlIFRYVCBmaWxlcyBpbiBgY29tcG9uZW50cy9gIHRoYXQgZG8gbm90IG1hdGNoIG9uZSBvZiB0aGUgbm90IGluY2x1ZGVkIG1vZHVsZXMgbGlzdGVkIGFib3ZlLgpXZSdyZSBhbHNvIGdvaW5nIHRvIHNraXAgYGNvbXBvbmVudHMvdG90YWxfY29udHJpYnV0aW9ucy50eHRgIGZvciBub3cuIAoKYGBge3J9CiMgQWxsIG9mIHRoZSBmaWxlcyB0aGF0IHdlcmUgaW5jbHVkZWQgaW4gY29tcG9uZW50cyBkaXJlY3RvcnkKY29udHJpYnV0aW9uX2ZpbGVzIDwtIGxpc3QuZmlsZXMoY29tcG9uZW50c19kaXIpCgojIFdlJ2xsIGNvdW50IHRoZSBmaWxlcyB0aGF0IGNvbWUgZnJvbSBtb2R1bGVzIHRoYXQgYXJlIGluY2x1ZGVkIGluIHRoZSAKIyBtYW51c2NyaXB0IGJ5IHJlbW92aW5nIHRoZSBtb2R1bGVzIHRoYXQgKmFyZSBub3QqIGluY2x1ZGVkCmNvdW50X2ZpbGVzIDwtIGNvbnRyaWJ1dGlvbl9maWxlc1tzdHJfZGV0ZWN0KGNvbnRyaWJ1dGlvbl9maWxlcywgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBhdHRlcm4gPSBwYXN0ZSgKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBub3RfaW5jbHVkZWRfYW5hbHlzZXMsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbGxhcHNlID0gInwiKSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbmVnYXRlID0gVFJVRSldCgojIFdlJ3JlIGFsc28gbm90IGdvaW5nIHRvIGxvb2sgYXQgdG90YWwgY29udHJpYnV0aW9ucyBoZXJlCmNvdW50X2ZpbGVzIDwtIHNldGRpZmYoY291bnRfZmlsZXMsICJ0b3RhbF9jb250cmlidXRpb25zLnRzdiIpCgpjb3VudF9maWxlcwpgYGAKCk5vdyByZWFkIGluIHRoZSByZWxldmFudCBjb250cmlidXRpb24gZmlsZXMgdG8gYSBkYXRhIGZyYW1lIHRoYXQgd2UgY2FuIHVzZSB0byBjb3VudC4KCmBgYHtyfQpjb3VudF9jb250cmlidXRpb25zX2RmIDwtIHN1cHByZXNzTWVzc2FnZXMoICAjIFRoaXMgaXMgY2hhdHR5IQogICMgRm9yIGFsbCB0aGUgZmlsZXMgd2UnbGwgY29uc2lkZXIKICBmaWxlLnBhdGgoY29tcG9uZW50c19kaXIsIGNvdW50X2ZpbGVzKSAlPiUKICAgICMgUmVhZCB0aGVtIGluLCBidXQgc2tpcCB0aGUgZmlyc3QgKGJsYW5rKSBsaW5lIGFuZCBkb24ndCB1c2UgY29sbmFtZXMKICAgICMgVGhpcyBzdGVwIHByb2R1Y2VzIGEgbGlzdAogICAgbWFwKHJlYWRfdHN2LCBza2lwID0gMSwgY29sX25hbWVzID0gRkFMU0UpICU+JQogICAgIyBVc2UgdGhlIGZpbGUgbmFtZXMgdGhlbXNlbHZlcyB0byBzZXQgdGhlIG5hbWVzIG9mIHRoZSBsaXN0CiAgICAjIFRoaXMgd2lsbCBiZSB0aGUgbmFtZSBvZiB0aGUgbW9kdWxlCiAgICBzZXRfbmFtZXMoc3RyX3JlbW92ZShjb3VudF9maWxlcywgIl9jb250cmlidXRvcnMudHh0IikpICU+JSAKICAgICMgQ3JlYXRlIGEgZGF0YSBmcmFtZSB3aGVyZSB3ZSB1c2UgdGhlIG1vZHVsZSBuYW1lcyB0byBrZWVwIHRyYWNrIG9mIHdoZXJlCiAgICAjIHRoZSBkYXRhIGZyYW1lIG9mIGNvbnRyaWJ1dG9ycyBjYW1lIGZyb20KICAgIGJpbmRfcm93cyguaWQgPSAibW9kdWxlIikgJT4lIAogICAgZGlzdGluY3QoKQopCgpjb2xuYW1lcyhjb3VudF9jb250cmlidXRpb25zX2RmKSA8LSBjKCJtb2R1bGUiLCAiYXV0aG9yIikKYGBgCgpSZWNvZGUgbmFtZXMvaGFuZGxlcyB0byBiZSBjb25zaXN0ZW50IGFuZCBtb3JlIHJlYWRhYmxlLgoKYGBge3J9CiMgUmVjb2RlIEdpdEh1YiBuYW1lcyB0byBiZSBtb3JlIHJlYWRhYmxlIGFuZCBkZS1kdXBsaWNhdGVkIGluIHNvbWUgY2FzZXMKY291bnRfY29udHJpYnV0aW9uc19kZiA8LSBjb3VudF9jb250cmlidXRpb25zX2RmICU+JQogIG11dGF0ZShhdXRob3IgPSByZWNvZGVfZmFjdG9yKGF1dGhvciwgISEhbmFtZV9yZWNvZGluZykpICU+JQogICMgSWYgcGVvcGxlIGhhZCB0d28gbmFtZXMvSURzLCB0aGlzIHdpbGwgZGUtZHVwbGljYXRlIG5vdyB0aGF0IHRoaW5ncyBoYXZlIAogICMgYmVlbiByZWNvZGVkCiAgZGlzdGluY3QoKQoKIyBXcml0ZSB0aGlzIGxlc3Mgc3VtbWFyaXplZCBkYXRhIHRvIGZpbGUKd3JpdGVfdHN2KGNvdW50X2NvbnRyaWJ1dGlvbnNfZGYsIG1vZHVsZV9jb250cmlidXRpb25zX2ZpbGUpCmBgYAoKTm93IHdlIGNhbiBjb3VudCB0aGUgbnVtYmVyIG9mIG1vZHVsZXMgZWFjaCBwZXJzb24gY29udHJpYnV0ZWQgdG8uCgpgYGB7cn0KIyBDb3VudCB0aGUgbnVtYmVyIG9mIG1vZHVsZXMgZWFjaCBwZXJzb24gY29udHJpYnV0ZWQgdG8sIHdoaWNoIHdlIGNhbiBzaW1wbHkKIyBkbyB3aXRoIGNvdW50CmNvdW50c19kZiA8LSBjb3VudF9jb250cmlidXRpb25zX2RmICU+JQogIGNvdW50KGF1dGhvciwgbmFtZSA9ICJudW1fbW9kdWxlcyIpICU+JQogIGFycmFuZ2UoZGVzYyhudW1fbW9kdWxlcykpCgojIFdyaXRlIHRoZSBzdW1tYXJpemVkIG1vZHVsZXMgY291bnRlZAp3cml0ZV90c3YoY291bnRzX2RmLCBjb3VudF9tb2R1bGVzX2ZpbGUpCmBgYAoKIyMgVG90YWwgY29udHJpYnV0aW9ucwoKV2UnbGwgY2xlYW4gdXAgdGhlIHRvdGFsIGNvbnRyaWJ1dGlvbnMgZ2VuZXJhdGVkIHdpdGggYGdpdCBzaG9ydGxvZ2AgYnkgc3VtbWFyaXppbmcgY29tbWl0cyBieSBhIHNpbmdsZSBwZXJzb24gYW5kIGdlbmVyYWxseSBtYWtpbmcgdGhpbmdzIG1vcmUgcmVhZGFibGUuCgpgYGB7cn0KdG90YWxfY29udHJpYnV0aW9uc19kZiA8LSByZWFkX3RzdihmaWxlLnBhdGgoY29tcG9uZW50c19kaXIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJ0b3RhbF9jb250cmlidXRpb25zLnRzdiIpLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbF9uYW1lcyA9IEZBTFNFKSAlPiUKICAjIFJlc29sdmUgbGFjayBvZiBoZWFkZXIKICByZW5hbWUobnVtX2NvbW1pdHMgPSBYMSwgYXV0aG9yID0gWDIpICU+JQogICMgUmVvcmRlcgogIHNlbGVjdChhdXRob3IsIG51bV9jb21taXRzKSAlPiUKICAjIFJlY29kZSBuYW1lcy9JRHMgdG8gYmUgY29uc2lzdGVudAogIG11dGF0ZShhdXRob3IgPSByZWNvZGVfZmFjdG9yKGF1dGhvciwgISEhbmFtZV9yZWNvZGluZykpICU+JQogICMgRm9yIGZvbGtzIHRoYXQgaGFkIG11bHRpcGxlIG5hbWVzIGluY2x1ZGVkLCBzdW1tYXJpemUgdGhlIHRvdGFsIGNvbW1pdHMKICBncm91cF9ieShhdXRob3IpICU+JQogIHN1bW1hcml6ZShudW1fY29tbWl0cyA9IHN1bShudW1fY29tbWl0cykpICU+JQogICMgUmVzdG9yZSBkZXNjZW5kaW5nIG9yZGVyIGZvciBudW1iZXIgb2YgY29tbWl0cwogIGFycmFuZ2UoZGVzYyhudW1fY29tbWl0cykpCmBgYAoKV3JpdGUgdG8gZmlsZS4KCmBgYHtyfQp3cml0ZV90c3YodG90YWxfY29udHJpYnV0aW9uc19kZiwgcGF0aCA9IHRvdGFsX2NvdW50cmlidXRpb25zX2ZpbGUpCmBgYAoKCg==</div>
 
 
 

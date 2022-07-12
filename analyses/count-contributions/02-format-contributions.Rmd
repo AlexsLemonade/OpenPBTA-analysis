@@ -116,10 +116,10 @@ count_contributions_df <- suppressMessages(  # This is chatty!
     # Create a data frame where we use the module names to keep track of where
     # the data frame of contributors came from
     bind_rows(.id = "module") %>% 
-    # Rectify lack of colnames by renaming to "author"
-    rename(author = X1) %>%
     distinct()
 )
+
+colnames(count_contributions_df) <- c("module", "author")
 ```
 
 Recode names/handles to be consistent and more readable.
