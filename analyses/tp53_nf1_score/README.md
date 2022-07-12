@@ -20,6 +20,18 @@ The analysis can be run with the following (assuming you are in the root reposit
 bash analyses/tp53_nf1_score/run_classifier.sh
 ```
 
+The script contains several additional flags that can be specified:
+- `OPENPBTA_BASE_SUBTYPING`: 
+  - if value is 1, then uses pbta-histologies-base.tsv for subtyping. 
+  - if value is 0 (DEFAULT), runs all modules with pbta-histologies.tsv
+- `OPENPBTA_TP53_FIGURES`: 
+  - if value is 1, uses expression data in the data release for prediction
+  - if value is 0 (DEFAULT), uses expression data in the `collapse-rnaseq` module for prediction
+- `OPENPBTA_POLYAPLOT`: 
+  - if value is 1 (DEFAULT), runs the POLYA steps
+  - if value is 0, skips the POLYA steps
+
+
 ### Inputs from data download
 
 * `pbta-snv-consensus-mutation.maf.tsv.gz`: from `snv-callers` module which gathers calls that are present in all 3 callers (strelka2,mutect2 and lancet) 

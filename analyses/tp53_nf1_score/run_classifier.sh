@@ -6,8 +6,16 @@
 # NF1 inactivation classifier https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-017-3519-7
 # Predicts TP53 and NF1 inactivation score per polya and stranded RNAseq samples
 
-# The script takes one environment variable, `OPENPBTA_BASE_SUBTYPING`, if value is 1 then
-# uses pbta-histologies-base.tsv for subtyping if value is 0 runs all modules with pbta-histologies.tsv(Default)
+# The script can tak three environment variables:
+# `OPENPBTA_BASE_SUBTYPING`: 
+#     if value is 1, then uses pbta-histologies-base.tsv for subtyping. 
+#     if value is 0 (DEFAULT), runs module with pbta-histologies.tsv
+# `OPENPBTA_TP53_FIGURES`: 
+#     if value is 1, uses expression data in the data release for prediction
+#     if value is 0 (DEFAULT), uses expression data in the `collapse-rnaseq` module for prediction
+# `OPENPBTA_POLYAPLOT`: 
+#     if value is 1 (DEFAULT), runs the POLYA steps
+#     if value is 0, skips the POLYA steps
 
 set -e
 set -o pipefail
