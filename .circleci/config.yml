@@ -21,9 +21,10 @@ jobs:
           name: Check python packages
           command: ./scripts/run_in_ci.sh bash scripts/check-python.sh
 
-      - run:
-          name: Sample Distribution Analyses
-          command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
+    # Deprecated module
+    #   - run:
+    #       name: Sample Distribution Analyses
+    #       command: ./scripts/run_in_ci.sh bash "analyses/sample-distribution-analysis/run-sample-distribution.sh"
 
 
       - run:
@@ -153,9 +154,9 @@ jobs:
           name: Mutational Signatures
           command: OPENPBTA_QUICK_MUTSIGS=1 OPENPBTA_CNS_FIT_ONLY=0 ./scripts/run_in_ci.sh bash analyses/mutational-signatures/run_mutational_signatures.sh
 
-#      - run:
-#          name: Chromosomal instability breakpoints
-#          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
+      - run:
+          name: Chromosomal instability breakpoints
+          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/chromosomal-instability/run_breakpoint_analysis.sh
 
       - run:
           name: Copy number consensus
@@ -173,17 +174,17 @@ jobs:
           name: Chromothripsis
           command: ./scripts/run_in_ci.sh bash analyses/chromothripsis/run-chromothripsis.sh
 
-#      - run:
-#          name: Oncoprint plotting
-#          command: ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
-
+      - run:
+          name: Oncoprint plotting
+          command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
+         
       - run:
           name: GISTIC Plots
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd', clean = TRUE)"
 
-#      - run:
-#          name: CN Status Heatmap
-#          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/cn_status_heatmap.Rmd', clean = TRUE)"
+      - run:
+          name: CN Status Heatmap
+          command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/cn_status_heatmap.Rmd', clean = TRUE)"
 
       - run:
           name: Gene set enrichment analysis to generate GSVA scores
@@ -302,6 +303,7 @@ workflows:
       - run_analyses
 
       - deploy:
+          context: openpbta-docker
           requires:
             - run_analyses
           filters:
