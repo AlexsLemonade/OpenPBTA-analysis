@@ -8,8 +8,8 @@
 
 # The script can tak three environment variables:
 # `OPENPBTA_BASE_SUBTYPING`: 
-#     if value is 1, then uses pbta-histologies-base.tsv for subtyping. 
-#     if value is 0 (DEFAULT), runs module with pbta-histologies.tsv
+#     if value is 1, then uses `pbta-histologies-base.tsv` for subtyping. 
+#     if value is 0 (DEFAULT), runs module with `pbta-histologies.tsv`
 # `OPENPBTA_TP53_FIGURES`: 
 #     if value is 1, uses expression data in the data release for prediction
 #     if value is 0 (DEFAULT), uses expression data in the `collapse-rnaseq` module for prediction
