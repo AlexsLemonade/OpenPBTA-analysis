@@ -22,8 +22,8 @@ bash analyses/tp53_nf1_score/run_classifier.sh
 
 The script contains several additional flags that can be specified:
 - `OPENPBTA_BASE_SUBTYPING`: 
-  - if value is 1, then uses pbta-histologies-base.tsv for subtyping. 
-  - if value is 0 (DEFAULT), runs all modules with pbta-histologies.tsv
+  - if value is 1, then uses `pbta-histologies-base.tsv` for subtyping. 
+  - if value is 0 (DEFAULT), runs all modules with `pbta-histologies.tsv`
 - `OPENPBTA_TP53_FIGURES`: 
   - if value is 1, uses expression data in the data release for prediction
   - if value is 0 (DEFAULT), uses expression data in the `collapse-rnaseq` module for prediction
