@@ -2,13 +2,9 @@ name: cronjob for counting git contributions and filing a PR with results
 
 # Run every Wednesday at 14:00 UTC
 # On Wednesdays, we count git contributions
-# on:
-#   schedule:
-#     - cron: "0 14 * * WED"
-
 on:
-  push:
-    branches: [ jaclyn-taroni/measure-contributions-no-fork ]
+  schedule:
+    - cron: "0 14 * * WED"
 
 jobs:
   file-count-contributions-pr:
@@ -22,7 +18,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: "jaclyn-taroni/measure-contributions-no-fork"
+          ref: "master"
           fetch-depth: 0
 
       - name: Configure git
