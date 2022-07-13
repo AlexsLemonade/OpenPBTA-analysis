@@ -13,7 +13,7 @@ comp_dir="../../scratch/count-contributions"
 mkdir -p ${comp_dir}
 
 # Total contributors in this branch, removing the leading whitespace
-git shortlog -sn | sed 's/^ *//g' > "${comp_dir}/total_contributions.tsv"
+git shortlog -sn HEAD | sed 's/^ *//g' > "${comp_dir}/total_contributions.tsv"
 
 # This will capture all the directories in analyses/
 analyses_directories=(../*/)

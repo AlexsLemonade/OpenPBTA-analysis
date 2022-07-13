@@ -7,12 +7,8 @@ set -euo pipefail
 # Set the working directory to the directory of this file
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-git shortlog -sn 
-
 # Shell script wrapped around git shortlog and git log
-# bash 01-count-contributions.sh
-# 
-# Rscript -e "readr::read_tsv('../../scratch/count-contributions/total_contributions.tsv', col_names = FALSE)"
+bash 01-count-contributions.sh
 
-
-# Rscript -e "rmarkdown::render('02-format-contributions.Rmd', clean = TRUE)"
+# Run notebook with data wrangling
+Rscript -e "rmarkdown::render('02-format-contributions.Rmd', clean = TRUE)"
