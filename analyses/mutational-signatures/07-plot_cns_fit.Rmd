@@ -284,7 +284,7 @@ sample_exposures_barplot <- results_df %>%
   )
 
 sample_exposures_barplot
-ggplot2::ggsave(exposures_sample_barplot_file, sample_exposures_barplot, width = 8, height = 7)
+ggplot2::ggsave(exposures_sample_barplot_file, sample_exposures_barplot, width = 8, height = 6.5)
   
 ```
 
@@ -413,7 +413,7 @@ if (!(params$is_ci == 1)) {
   print(sig1_tumor_molsubs)
   
   # Save the plots
-  ggplot2::ggsave(signature1_tumor_cancergroups_file, sig1_tumor_cancergroups, width = 8, height = 5)
+  ggplot2::ggsave(signature1_tumor_cancergroups_file, sig1_tumor_cancergroups, width = 8, height = 4)
   ggplot2::ggsave(signature1_tumor_molecularsubtypes_file, sig1_tumor_molsubs, width = 14, height = 6)
 }
 
