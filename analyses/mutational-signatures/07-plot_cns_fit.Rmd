@@ -413,8 +413,8 @@ if (!(params$is_ci == 1)) {
   print(sig1_tumor_molsubs)
   
   # Save the plots
-  ggplot2::ggsave(signature1_tumor_cancergroups_file, sig1_tumor_cancergroups, width = 8, height = 4)
-  ggplot2::ggsave(signature1_tumor_molecularsubtypes_file, sig1_tumor_molsubs, width = 14, height = 6)
+  ggplot2::ggsave(signature1_tumor_cancergroups_file, sig1_tumor_cancergroups, width = 8, height = 4, useDingbats = FALSE)
+  ggplot2::ggsave(signature1_tumor_molecularsubtypes_file, sig1_tumor_molsubs, width = 14, height = 6, useDingbats = FALSE)
 }
 
 ```
