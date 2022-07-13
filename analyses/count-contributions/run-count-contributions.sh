@@ -7,7 +7,7 @@ set -euo pipefail
 # Set the working directory to the directory of this file
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-git shortlog -sn HEAD
+git shortlog -sn 
 
 # Shell script wrapped around git shortlog and git log
 # bash 01-count-contributions.sh
