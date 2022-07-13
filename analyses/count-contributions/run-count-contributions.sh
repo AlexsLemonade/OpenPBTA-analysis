@@ -11,6 +11,8 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 bash 01-count-contributions.sh
 
 ls ../../scratch/count-contributions
+Rscript -e "readr::read_tsv('../../scratch/count-contributions/total_contributions.tsv', col_names = FALSE)"
 
-# Notebook that cleans things up
+
+
 # Rscript -e "rmarkdown::render('02-format-contributions.Rmd', clean = TRUE)"
