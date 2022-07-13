@@ -4,7 +4,7 @@
 
 The purpose of this module is to count the git contributions to this repo in two ways:
 
-1. Count the number of analysis modules – directories in `analyses/` that are included in the manuscript, specifially – that individual contributors have authored commits in. 
+1. Count the number of analysis modules – directories in `analyses/` that are included in the manuscript, specifically – that individual contributors have authored commits in. 
   You can find that information in `results/module_contribution_counts.tsv` and a _less summarized_ version that lists all contributors to a module in `results/module_contributors.tsv`.
 2. Count the number of commits to the entire repository individual contributors have authored.
 
