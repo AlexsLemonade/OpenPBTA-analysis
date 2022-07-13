@@ -25,10 +25,15 @@ jobs:
           ref: "jaclyn-taroni/measure-contributions-no-fork"
           fetch-depth: 0
 
+      - name: Configure git
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+
       # Rerun the module we want new results for
       - name: Rerun count-contributions module
         run: |
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           bash analyses/count-contributions/run-count-contributions.sh
 
       # Create a pull request with the updated results
