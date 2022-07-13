@@ -108,9 +108,9 @@ Now read in the relevant contribution files to a data frame that we can use to c
 count_contributions_df <- suppressMessages(  # This is chatty!
   # For all the files we'll consider
   file.path(components_dir, count_files) %>%
-    # Read them in, but skip the first (blank) line and don't use colnames
+    # Read them in, but skip the first (blank) line and set the (only) column name
     # This step produces a list
-    map(read_tsv, skip = 1, col_names = FALSE) %>%
+    map(read_tsv, skip = 1, col_names = "author") %>%
     # Use the file names themselves to set the names of the list
     # This will be the name of the module
     set_names(str_remove(count_files, "_contributors.txt")) %>% 
@@ -157,9 +157,7 @@ We'll clean up the total contributions generated with `git shortlog` by summariz
 ```{r}
 total_contributions_df <- read_tsv(file.path(components_dir,
                                              "total_contributions.tsv"),
-                                   col_names = FALSE) 
-# Resolve lack of header
-colnames(total_contributions_df) <- c("num_commits", "author")
+                                   col_names = c("num_commits", "author")) 
 
 # Update with new column names
 total_contributions_df <- total_contributions_df %>%
