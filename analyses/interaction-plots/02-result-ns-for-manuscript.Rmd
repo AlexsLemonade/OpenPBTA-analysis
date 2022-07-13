@@ -1,6 +1,6 @@
 ---
-title: "Table numbers for manuscript"
-author: "Jo Lynne Rokita for D3b"
+title: "Interaction plot numbers for manuscript"
+author: "Jo Lynne Rokita, D3b & Joshua Shapiro, ALSF"
 date: "2022"
 output: 
   html_notebook:
@@ -78,11 +78,12 @@ hgg_sig_genepairs <- hgg_results_sig %>%
 sum(hgg_sig_genepairs %in% all_sig_genepairs)
 ```
 
-HGG mutual exclusivity counts
+### HGG mutual exclusivity counts
+
 ```{r}
 # Number of hggs with mutually exclusive TP53 and PPM1D mutations (52/54)
 hgg_results %>%
-  filter(gene1 == "TP53" & gene2 == "PPM1D") %>%
+  filter((gene1 == "TP53" & gene2 == "PPM1D") | (gene2 == "TP53" & gene1 == "PPM1D"))%>%
   # sum mutually exclusive
   dplyr::rowwise() %>%
   dplyr::mutate(n_mut_excl = sum(mut10,mut01)) %>%
@@ -90,7 +91,7 @@ hgg_results %>%
 
 # Total number of hggs with a mutation in _either_ gene (this has already gone into the `perc_mutexcl` calculation)
 hgg_results %>%
-  filter(gene1 == "TP53" & gene2 == "PPM1D") %>%
+  filter((gene1 == "TP53" & gene2 == "PPM1D") | (gene2 == "TP53" & gene1 == "PPM1D")) %>%
   # sum mutually exclusive
   dplyr::rowwise() %>%
   dplyr::mutate(n_mut = sum(mut10,mut01,mut11)) %>%
@@ -98,7 +99,7 @@ hgg_results %>%
 
 # Percent of hggs with with mutually exclusive TP53 and PPM1D mutations
 hgg_results %>%
-  filter(gene1 == "TP53" & gene2 == "PPM1D") %>%
+  filter((gene1 == "TP53" & gene2 == "PPM1D") | (gene2 == "TP53" & gene1 == "PPM1D")) %>%
   pull(perc_mutexcl)
 ```
 
