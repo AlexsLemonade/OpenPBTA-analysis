@@ -12,6 +12,10 @@ output:
 library(tidyverse)
 ```
 
+## Investigation of BS_F0GNWEJJ for TP53 or MYCN genomic alterations for subtyping purposes
+
+This Rmarkdown investigates specific genomic alterations in metastatic neuroblastoma tumor specimen BS_F0GNWEJJ for Table 2. All other hypermutated tumors were HGG and have undergone molecular subtyping _and_ are _TP53_ altered. Here, we are investigating whether this NBL sample, which has not undergone subtyping, harbors any _TP53_ alteration or MYCN amplification.
+
 ## Define directories and files
 ```{r define directories and input files}
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
@@ -33,8 +37,10 @@ focal_cn <- read_tsv(focal_cn_file)
 > No evidence for TP53 CNV, SV, Fusion, or hotspot SNV, but high TP53 score
 
 ```{r TP53 investigation}
+id_of_interest <- "BS_F0GNWEJJ"
+
 tp53 %>%
-  filter(Kids_First_Biospecimen_ID_DNA == "BS_F0GNWEJJ") %>%
+  filter(Kids_First_Biospecimen_ID_DNA %in% id_of_interest) %>%
   select(tp53_score, CNV_loss_evidence, SV_type, Fusion_evidence, hotspot, activating, tp53_altered)
 ```
 
@@ -43,7 +49,7 @@ tp53 %>%
 
 ```{r MYCN investigation}
 focal_cn %>%
-  filter(biospecimen_id == "BS_F0GNWEJJ",
+  filter(biospecimen_id %in% id_of_interest,
          gene_symbol == "MYCN")
 ```
 
