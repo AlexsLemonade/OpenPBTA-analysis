@@ -6,8 +6,6 @@ output:
   html_notebook:
     toc: TRUE
     toc_float: TRUE
-params:
-  release: release-v21-20210820
 ---
 
 ```{r setup, include=FALSE}
@@ -57,7 +55,7 @@ n_sig <- all_results_sig %>%
 n_sig
 
 # Number of hgg significant events
-hgg_results_sig %>%
+n_hgg_sig <- hgg_results_sig %>%
   nrow()
 n_hgg_sig
 
@@ -78,8 +76,10 @@ hgg_sig_genepairs <- hgg_results_sig %>%
   pull(pairs)
 
 sum(hgg_sig_genepairs %in% all_sig_genepairs)
+```
 
-
+HGG mutual exclusivity counts
+```{r}
 # Number of hggs with mutually exclusive TP53 and PPM1D mutations (52/54)
 hgg_results %>%
   filter(gene1 == "TP53" & gene2 == "PPM1D") %>%
