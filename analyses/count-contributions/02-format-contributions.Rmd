@@ -16,7 +16,8 @@ Those files live in a directory called `scratch/count-contributions/` (relative 
 We're going to save the wrangled results to a `results/` directory
 
 ```{r}
-components_dir <- file.path("..", "..", "scratch", "count-contributions")
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git")) 
+components_dir <- file.path(root_dir, "scratch", "count-contributions")
 results_dir <- "results"
 dir.create(results_dir, showWarnings = FALSE)
 ```
