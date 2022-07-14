@@ -210,8 +210,8 @@ hist_text <- ComplexHeatmap::anno_mark(
   labels = levels(samples_for_heatmap$cancer_group_display),
   which = "row",
   side = "right",
-  labels_gp = grid::gpar(cex = 0.6),
-  link_width = grid::unit(15, "mm")
+  labels_gp = grid::gpar(cex = 0.5),
+  link_width = grid::unit(5, "mm")
 )
 
 # Create the Heatmap annotation object
@@ -244,7 +244,7 @@ heatmap <- ComplexHeatmap::Heatmap(
   row_split = samples_for_heatmap$cancer_group_display,
   cluster_columns = FALSE,
   cluster_rows = FALSE,
-  rect_gp = grid::gpar(col = "black", lwd = .0005),
+  rect_gp = grid::gpar(col = "black", lwd = .0000005),
   show_column_names = FALSE,
   show_row_names = FALSE,
   row_labels = FALSE,
@@ -257,7 +257,7 @@ heatmap <- ComplexHeatmap::Heatmap(
 )
 
 # Save heatmap.
-pdf(figure_s3b_file, width = 11, height = 8.5) # 11 width to read chr labels
+pdf(figure_s3b_file, width = 8, height = 7)
 ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom")
 dev.off()
 
@@ -304,22 +304,42 @@ merged_data <- chromoth_per_sample %>%
 fig_s3c <- merged_data %>%
   ggplot(aes(x = count_regions_any_conf_truncated, 
              y = cnv_breaks_count)) +
-  geom_jitter(width = 0.3, alpha = 0.6) +
-  geom_boxplot(color = "black", alpha = 0, outlier.shape=NA) +
-  theme(legend.position = "none") +
+  geom_jitter(width = 0.3, alpha = 0.5, size = 0.4) +
+  geom_boxplot(color = "black", alpha = 0, outlier.shape=NA,
+               # fatten controls *median line* width
+               size = 0.4, fatten = 1) +
   xlab("Number of Chromothripsis Regions") + 
-  ylab("Number of CNV Breaks") 
-ggsave(figure_s3c_file, fig_s3c, width = 5, height = 3)
+  ylab("Number of CNV Breaks") +
+  theme(
+    legend.position = "none",
+    axis.text = element_text(size = 7),
+    axis.title = element_text(size = 8),
+    axis.line = element_line(size = 0.25),
+    axis.ticks = element_line(size = 0.25)
+  )
+    
+ggsave(figure_s3c_file, fig_s3c, width = 2.65, height = 1.65, 
+       useDingbats=FALSE)
 
 #### Figure S3D
 fig_s3d <- merged_data %>%
   ggplot(aes(x = count_regions_any_conf_truncated, 
              y = sv_breaks_count)) +
-  geom_jitter(width = 0.3, alpha = 0.6) +
-  geom_boxplot(color = "black", alpha = 0, outlier.shape=NA) +
-  theme(legend.position = "none") +
+  geom_jitter(width = 0.3, alpha = 0.5, size = 0.4) +
+  geom_boxplot(color = "black", alpha = 0, outlier.shape=NA,
+               # fatten controls *median line* width
+               size = 0.4, fatten = 1) +
   xlab("Number of Chromothripsis Regions") + 
-  ylab("Number of SV Breaks") 
-ggsave(figure_s3d_file, fig_s3d, width = 5, height = 3)
+  ylab("Number of SV Breaks") +
+  theme(
+    legend.position = "none",
+    axis.text = element_text(size = 7),
+    axis.title = element_text(size = 8),
+    axis.line = element_line(size = 0.25),
+    axis.ticks = element_line(size = 0.25)
+  )
+ggsave(figure_s3d_file, fig_s3d, width = 2.65, height = 1.65,
+       useDingbats=FALSE)
+
 
 
