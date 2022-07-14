@@ -227,11 +227,21 @@ ggsave(cg_celltypes_plot_file, cg_plot, width = 11, height = 3.5, useDingbats=FA
 ### Visualize fraction distributions across cell types and molecular subtypes
 
 ```{r subtypes_celltypes_plot, fig.width = 12, fig.height = 4}
-# Faceted plot of subtypes, cell types. Jitter points are colored by underlying cancer group.
 # First, remove cd8_cd4_ratio
 quantiseq_no_ratio <- quantiseq_subset %>%
   filter(cell_type != "cd8_cd4_ratio")
 
+# add an ordering to molecular subtypes based on broad_histology_display labels
+quantiseq_no_ratio <- quantiseq_no_ratio %>%
+  select(broad_histology_display, molecular_subtype) %>%
+  unique() %>%
+  arrange(broad_histology_display, molecular_subtype) %>%
+  mutate(mol_subtype_order = 1:n()) %>%
+  #join back to df
+  inner_join(quantiseq_no_ratio, by = c("broad_histology_display", "molecular_subtype")) %>%
+  dplyr::mutate(molecular_subtype = forcats::fct_reorder(molecular_subtype, mol_subtype_order)) 
+
+# Faceted plot of subtypes, cell types. Jitter points are colored by underlying cancer group.
 subtypes_celltypes_plot <- ggplot(quantiseq_no_ratio) +
   aes(x = molecular_subtype, y = score) + 
   geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
@@ -253,7 +263,7 @@ subtypes_celltypes_plot <- ggplot(quantiseq_no_ratio) +
 
 # Add legend
 cg_color_df <- quantiseq_no_ratio %>%
-  select(broad_histology_hex, broad_histology_display) %>%
+  select(broad_histology_hex, broad_histology) %>%
   distinct()
 
 cg_color_list <- cg_color_df$broad_histology_hex
