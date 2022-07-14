@@ -257,7 +257,7 @@ heatmap <- ComplexHeatmap::Heatmap(
 )
 
 # Save heatmap.
-pdf(figure_s3b_file, width = 11, height = 8.5) # 11 width to read chr labels
+pdf(figure_s3b_file, width = 8, height = 7)
 ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom")
 dev.off()
 
