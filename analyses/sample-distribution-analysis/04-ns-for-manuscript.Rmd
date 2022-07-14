@@ -57,10 +57,11 @@ length(n_tumors)
 
 # Total N assays by based on whether it is a cell line or tumor/normal tissue
 hist <- hist %>%
-  mutate(id = ifelse(composition == "Derived Cell Line", "Cell Line", "Non-Cell Line"),
+  mutate(type = case_when(composition == "Derived Cell Line" ~ "Cell Line",
+                                                sample_type == "Tumor" ~ "Tumor Sample",
+                                                TRUE ~ "Normal Sample"),
          experimental_strategy = ifelse(experimental_strategy == "WXS" | experimental_strategy == "Targeted Sequencing", "WXS/Panel", experimental_strategy))
-
-table(hist$id, hist$experimental_strategy)
+table(hist$type, hist$experimental_strategy)
 
 ```
 
