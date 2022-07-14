@@ -77,7 +77,8 @@ histology_df <- read_tsv(histology_file, guess_max =10000)
 
 histology_df %>%
   # remove rows to not include
-  filter(!is.na(pathology_diagnosis),
+  filter(composition != "Derived Cell Line",
+         !is.na(pathology_diagnosis),
          !is.na(molecular_subtype),
          !grepl("To be classified", molecular_subtype)) %>%
   # remove doubled samples (WGS/RNA-seq etc.)
