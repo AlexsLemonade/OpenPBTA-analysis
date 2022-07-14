@@ -139,7 +139,7 @@ plot_extend_scatter <- function(plot_df, stats_df, gene_name, annotation_y) {
              y = annotation_y,
              size = 2.5) + 
     labs(x = "Telomerase score",
-         y = paste0(gene_name, " log(FPKM)")
+         y = paste0(gene_name, " log2(FPKM+1)")
     ) +
     ggpubr::theme_pubr() + 
     theme(axis.text = element_text(size = 8),
