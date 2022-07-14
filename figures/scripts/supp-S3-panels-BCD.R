@@ -125,7 +125,7 @@ chr_text <- ComplexHeatmap::anno_mark(
   which = "column",
   side = "bottom",
   labels_rot = 45,
-  labels_gp = grid::gpar(cex = 0.65)
+  labels_gp = grid::gpar(cex = 0.6)
 )
 
 # Create the Heatmap annotation object
@@ -210,8 +210,8 @@ hist_text <- ComplexHeatmap::anno_mark(
   labels = levels(samples_for_heatmap$cancer_group_display),
   which = "row",
   side = "right",
-  labels_gp = grid::gpar(cex = 0.6),
-  link_width = grid::unit(15, "mm")
+  labels_gp = grid::gpar(cex = 0.7),
+  link_width = grid::unit(5, "mm")
 )
 
 # Create the Heatmap annotation object
@@ -224,6 +224,13 @@ hist_annot <- ComplexHeatmap::HeatmapAnnotation(
   mark = hist_text, # Put the text in
   border = TRUE
   )
+
+
+
+
+
+
+
 
 
 # Format `bin_calls_df` as a matrix with rownames for `ComplexHeatmap` to use. 
@@ -257,7 +264,7 @@ heatmap <- ComplexHeatmap::Heatmap(
 )
 
 # Save heatmap.
-pdf(figure_s3b_file, width = 11, height = 8.5) # 11 width to read chr labels
+pdf(figure_s3b_file, width = 8.5, height = 6.5)
 ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom")
 dev.off()
 
@@ -304,22 +311,40 @@ merged_data <- chromoth_per_sample %>%
 fig_s3c <- merged_data %>%
   ggplot(aes(x = count_regions_any_conf_truncated, 
              y = cnv_breaks_count)) +
-  geom_jitter(width = 0.3, alpha = 0.6) +
-  geom_boxplot(color = "black", alpha = 0, outlier.shape=NA) +
-  theme(legend.position = "none") +
+  geom_jitter(width = 0.3, alpha = 0.5, size = 0.4) +
+  geom_boxplot(color = "black", alpha = 0, outlier.shape=NA, 
+               # fatten changes *median line* size, and size changes rest of boxplot
+               size = 0.4, fatten = 1) +
   xlab("Number of Chromothripsis Regions") + 
-  ylab("Number of CNV Breaks") 
-ggsave(figure_s3c_file, fig_s3c, width = 5, height = 3)
+  ylab("Number of CNV Breaks") +
+  theme(
+    legend.position = "none", 
+    axis.text = element_text(size = 7),
+    axis.title = element_text(size = 8),
+    axis.line = element_line(size = 0.4),
+    axis.ticks = element_line(size = 0.4)
+  )
+ggsave(figure_s3c_file, fig_s3c, width = 2.65, height = 1.65, 
+       useDingbats = FALSE)
 
 #### Figure S3D
 fig_s3d <- merged_data %>%
   ggplot(aes(x = count_regions_any_conf_truncated, 
              y = sv_breaks_count)) +
-  geom_jitter(width = 0.3, alpha = 0.6) +
-  geom_boxplot(color = "black", alpha = 0, outlier.shape=NA) +
-  theme(legend.position = "none") +
+  geom_jitter(width = 0.3, alpha = 0.5, size = 0.4) +
+  geom_boxplot(color = "black", alpha = 0, outlier.shape=NA, 
+               # fatten changes *median line* size, and size changes rest of boxplot
+               size = 0.4, fatten = 1) +
   xlab("Number of Chromothripsis Regions") + 
-  ylab("Number of SV Breaks") 
-ggsave(figure_s3d_file, fig_s3d, width = 5, height = 3)
+  ylab("Number of SV Breaks") +
+  theme(
+    legend.position = "none", 
+    axis.text = element_text(size = 7),
+    axis.title = element_text(size = 8),
+    axis.line = element_line(size = 0.25),
+    axis.ticks = element_line(size = 0.25)
+  )
+ggsave(figure_s3d_file, fig_s3d, width = 2.65, height = 1.65, 
+       useDingbats = FALSE)
 
 
