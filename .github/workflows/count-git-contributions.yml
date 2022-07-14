@@ -2,9 +2,11 @@ name: cronjob for counting git contributions and filing a PR with results
 
 # Run every Wednesday at 14:00 UTC
 # On Wednesdays, we count git contributions
+# But we can also manually trigger this
 on:
   schedule:
     - cron: "0 14 * * WED"
+  workflow_dispatch:
 
 jobs:
   file-count-contributions-pr:

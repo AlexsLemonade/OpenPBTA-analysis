@@ -1,13 +1,11 @@
 ---
-title: "Table numbers for manuscript"
-author: "Jo Lynne Rokita for D3b"
+title: "Interaction plot numbers for manuscript"
+author: "Jo Lynne Rokita, D3b & Joshua Shapiro, ALSF"
 date: "2022"
 output: 
   html_notebook:
     toc: TRUE
     toc_float: TRUE
-params:
-  release: release-v21-20210820
 ---
 
 ```{r setup, include=FALSE}
@@ -47,7 +45,10 @@ all_results_n <- all_results_sig %>%
   unique()
 
 all_results_n
+```
 
+
+```{r}
 # Number of significant events
 n_sig <- all_results_sig %>%
   nrow()
@@ -58,12 +59,31 @@ n_hgg_sig <- hgg_results_sig %>%
   nrow()
 n_hgg_sig
 
-# Ratio of hgg:total significant events
-n_hgg_sig/n_sig
+# Find HGG gene pairs within All set
+# Note that this comparison is not statistically valid, 
+# as significance cutoffs are different, and comparing significant sets 
+# is problematic anyway
 
+# get pairs, alphabetically
+all_sig_genepairs <- all_results_sig %>%
+  mutate(pairs = case_when(gene1 < gene2 ~ paste(gene1, gene2, sep = "-"),
+                           gene1 > gene2 ~ paste(gene2, gene1, sep = "-"))) %>%
+  pull(pairs)
+
+hgg_sig_genepairs <- hgg_results_sig %>%
+  mutate(pairs = case_when(gene1 < gene2 ~ paste(gene1, gene2, sep = "-"),
+                           gene1 > gene2 ~ paste(gene2, gene1, sep = "-"))) %>%
+  pull(pairs)
+
+sum(hgg_sig_genepairs %in% all_sig_genepairs)
+```
+
+### HGG mutual exclusivity counts
+
+```{r}
 # Number of hggs with mutually exclusive TP53 and PPM1D mutations (52/54)
 hgg_results %>%
-  filter(gene1 == "TP53" & gene2 == "PPM1D") %>%
+  filter((gene1 == "TP53" & gene2 == "PPM1D") | (gene2 == "TP53" & gene1 == "PPM1D"))%>%
   # sum mutually exclusive
   dplyr::rowwise() %>%
   dplyr::mutate(n_mut_excl = sum(mut10,mut01)) %>%
@@ -71,7 +91,7 @@ hgg_results %>%
 
 # Total number of hggs with a mutation in _either_ gene (this has already gone into the `perc_mutexcl` calculation)
 hgg_results %>%
-  filter(gene1 == "TP53" & gene2 == "PPM1D") %>%
+  filter((gene1 == "TP53" & gene2 == "PPM1D") | (gene2 == "TP53" & gene1 == "PPM1D")) %>%
   # sum mutually exclusive
   dplyr::rowwise() %>%
   dplyr::mutate(n_mut = sum(mut10,mut01,mut11)) %>%
@@ -79,7 +99,7 @@ hgg_results %>%
 
 # Percent of hggs with with mutually exclusive TP53 and PPM1D mutations
 hgg_results %>%
-  filter(gene1 == "TP53" & gene2 == "PPM1D") %>%
+  filter((gene1 == "TP53" & gene2 == "PPM1D") | (gene2 == "TP53" & gene1 == "PPM1D")) %>%
   pull(perc_mutexcl)
 ```
 
