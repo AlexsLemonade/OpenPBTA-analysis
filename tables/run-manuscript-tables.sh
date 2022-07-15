@@ -9,7 +9,7 @@ set -e
 set -o pipefail
 
 # run the notebook to investigate hypermutator BS_F0GNWEJJ
-Rscript -e "rmarkdown::render('util/BS_F0GNWEJJ_genomic_investigation.Rmd')"
+Rscript -e "rmarkdown::render(file.path('util', 'BS_F0GNWEJJ_genomic_investigation.Rmd'))"
 
 # run the notebook to create manuscript tables
 Rscript -e "rmarkdown::render('output_tables.Rmd')"
