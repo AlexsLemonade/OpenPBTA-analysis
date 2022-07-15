@@ -7,7 +7,7 @@ output:
     toc: TRUE
     toc_float: TRUE
 params:
-  release: release-v21-20210820
+  release: release-v22-20220505
 ---
 
 ```{r setup, include=FALSE}
@@ -77,9 +77,12 @@ histology_df <- read_tsv(histology_file, guess_max =10000)
 
 histology_df %>%
   # remove rows to not include
-  filter(!is.na(pathology_diagnosis),
+  filter(composition != "Derived Cell Line",
+         !is.na(pathology_diagnosis),
          !is.na(molecular_subtype),
          !grepl("To be classified", molecular_subtype)) %>%
+  # remove doubled samples (WGS/RNA-seq etc.)
+  distinct(broad_histology, molecular_subtype, sample_id) %>%
   # Count broad histology and subtype combinations
   count(broad_histology, molecular_subtype) %>%
   # export
@@ -110,9 +113,8 @@ histology_df %>%
 # Gather all BS_IDs (soi = "samples of interest"), whether hypermutant or not, for pts with hypermutant samples
 soi_df <- tmb_hist %>%
   filter(Kids_First_Participant_ID %in% poi$Kids_First_Participant_ID) %>%
-  # Looks like there is a hypermutant metastatic NBL sample we had not caught previously, but let's remove here since we focus on CNS anyway
-  # keep only WGS samples; remove metastases 
-  filter(experimental_strategy == "WGS" & short_histology != "Metastases") %>%
+  # keep only WGS samples 
+  filter(experimental_strategy == "WGS") %>%
   # manually add therapy field and update cancer predispositions not included in histologies file per [ticket](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1318)
   mutate(`Therapy post-biopsy` = case_when(
       Kids_First_Biospecimen_ID == "BS_VW4XN9Y7" ~ "Temozolomide, CCNU, Radiation",
@@ -121,18 +123,32 @@ soi_df <- tmb_hist %>%
       Kids_First_Biospecimen_ID == "BS_85Q5P8GF" ~ "Temozolomide, Radiation",
       sample_id == "7316-3058" ~ "Nivolumab",
       Kids_First_Biospecimen_ID == "BS_P3PF53V8" ~ "Temozolomide, Irinotecan, Radiation",
-      sample_id == "7316-2189" ~ "Unknown"
+      Kids_First_Biospecimen_ID == "BS_F0GNWEJJ" ~ "Nivolumab, Radiation",
+      sample_id == "7316-2189" ~ "Unknown",
     ),
     # add Lynch syndrome
     cancer_predispositions = case_when(
-      Kids_First_Biospecimen_ID == "BS_8AY2GM4G" ~ "NF-1, Lynch syndrome, pathogenic MSH6",
-      sample_id == "7316-3058" ~ "Lynch Syndrome, pathogenic MSH2",
+      Kids_First_Biospecimen_ID == "BS_8AY2GM4G" ~ "NF-1, Lynch syndrome",
+      sample_id == "7316-3058" ~ "Lynch Syndrome",
       sample_id == "7316-2189" ~ "Lynch Syndrome",
-      Kids_First_Biospecimen_ID == "BS_85Q5P8GF" ~"Lynch syndrome",
+      Kids_First_Biospecimen_ID == "BS_85Q5P8GF" ~ "Lynch syndrome",
       TRUE ~ as.character(cancer_predispositions)),
-      ) %>%
+    # add pathogenic germline variants
+    `Pathogenic germline variant` = case_when(
+      Kids_First_Participant_ID == "PT_3CHB9PK5" ~ "MSH6",
+      Kids_First_Participant_ID == "PT_0SPKM4S8" ~ "PMS2",
+      Kids_First_Participant_ID == "PT_VTM2STE3" ~ "None detected",
+      Kids_First_Participant_ID == "PT_EB0D3BXG" ~ "None detected",
+      Kids_First_Participant_ID == "PT_S0Q27J13" ~ "None detected",
+      Kids_First_Participant_ID == "PT_JNEV57VK" ~ "MSH2"
+      ),
+    # update molecular subtype for NBL sample
+    molecular_subtype = case_when(
+     Kids_First_Biospecimen_ID == "BS_F0GNWEJJ" ~ "Metastatic NBL, MYCN non-amplified",
+     TRUE ~ as.character(molecular_subtype))
+    ) %>%
     # select relevant columns
-      select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, sample_id, tumor_descriptor, composition, `Therapy post-biopsy`, cancer_predispositions, tmb, molecular_subtype) %>%
+      select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, sample_id, tumor_descriptor, composition, `Therapy post-biopsy`, cancer_predispositions, `Pathogenic germline variant`, tmb, molecular_subtype) %>%
     arrange(Kids_First_Participant_ID, tumor_descriptor, composition)
 
 soi_df    
@@ -152,9 +168,9 @@ soi_df %>%
 
 ```
 
-## Table S1: V21 histologies table
+## Table S1: V22 histologies table
 
-```{r v21 histology as excel}
+```{r v22 histology as excel}
 # Sheet 1: README tab
 
 readme <- tribble(
@@ -183,7 +199,6 @@ readme <- tribble(
 "Notes","Free text field describing changes from `pathology_diagnosis` to `integrated_diagnosis` or manner in which molecular_subtype was determined","text",
 "OS_days","Overall survival in days","numeric",
 "OS_status","Overall survival status",paste(unique(histology_df$OS_status), collapse = "; "),
-"parent_aliquot_id","External identifier combining sample_id; sample_type; aliquot_id; sequencing_strategy for some samples","alphanumeric",
 "pathology_diagnosis","Reported and/or harmonized patient diagnosis from pathology reports","text",
 "pathology_free_text_diagnosis","Free text patient diagnosis from pathology reports","text",
 "PFS_days","Progression-free survival in days","numeric",
@@ -200,16 +215,7 @@ readme <- tribble(
 "tumor_ploidy","Control-FREEC ploidy","numeric"
 )
 
-# Sheet 2: Define array of samples that need to be classified from [ticket](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1206) which are not in v21, but set to be changed in final release [v22](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1207)
-to_be_classified_samples <- c("BS_3J4T2YYW", "BS_7F07M7JG", "BS_AG0BZN6F", "BS_HZNKSQ17", "BS_V6HKXX1Z", "BS_WP9J88EB", "BS_YYAPSA5P")
-
-histologies_table <- histology_df %>% 
-  # Update definitions of molecular subtype for TBD samples
-  mutate(molecular_subtype = ifelse(
-    Kids_First_Biospecimen_ID %in% to_be_classified_samples,
-    "MB, To be classified",
-    molecular_subtype
-  ))
+# Sheet 2: Histologies file (histology_df)
 
 # Sheet 3: CNS region definition based on definitions from [Cassie Kline](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/tables/input/CNS_primary_site_match.json) with additional manual review of [HGG primary_site](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1025). 
 # This is integrated upstream of molecular subtyping
@@ -221,7 +227,7 @@ cns_regions_df <- purrr::imap_dfr(jsonlite::fromJSON(CNS_match_json),
 
 # Combine and output
 list_s1_table <- list(README = readme,
-                      histologies_file = histologies_table,
+                      histologies_file = histology_df,
                       CNS_region_definitions = cns_regions_df
                       )
 write.xlsx(list_s1_table, 
@@ -467,7 +473,9 @@ workflow_tools <- tribble(
   "VarDict Java v1.5.8","1.5.8","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-vardict-wf.cwl",
   "VEP","r93","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_annot_vcf_sub_wf.cwl",
   "bcftools","1.7","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_annot_vcf_sub_wf.cwl",
-  "GISTIC","2.0.23","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/bash/run-gistic.sh ; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/bash/run_gistic_consensus.sh"
+  "RSEM", "1.3.1", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl",
+  "AnnotSV", "2.1", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/annotsv.cwl",
+  "FusionAnnotator", "0.2.0", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/fusion_annotator.cwl"
 )
 
 
