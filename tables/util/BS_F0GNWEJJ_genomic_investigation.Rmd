@@ -14,7 +14,7 @@ library(tidyverse)
 
 ## Investigation of BS_F0GNWEJJ for TP53 or MYCN genomic alterations for subtyping purposes
 
-This Rmarkdown investigates specific genomic alterations in metastatic neuroblastoma tumor specimen BS_F0GNWEJJ for Table 2. All other hypermutated tumors were HGG and have undergone molecular subtyping _and_ are _TP53_ altered. Here, we are investigating whether this NBL sample, which has not undergone subtyping, harbors any _TP53_ alteration or MYCN amplification.
+This Rmarkdown investigates specific genomic alterations in metastatic neuroblastoma (NBL) tumor specimen BS_F0GNWEJJ for Table 2. All other hypermutated tumors were HGG and have undergone molecular subtyping _and_ are _TP53_ altered. Here, we are investigating whether this NBL sample, which has not undergone subtyping, harbors any _TP53_ alteration or _MYCN_ amplification.
 
 ## Define directories and files
 ```{r define directories and input files}
