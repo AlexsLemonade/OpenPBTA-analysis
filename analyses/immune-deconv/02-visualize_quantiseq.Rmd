@@ -239,7 +239,10 @@ quantiseq_no_ratio <- quantiseq_no_ratio %>%
   mutate(mol_subtype_order = 1:n()) %>%
   #join back to df
   inner_join(quantiseq_no_ratio, by = c("broad_histology_display", "molecular_subtype")) %>%
-  dplyr::mutate(molecular_subtype = forcats::fct_reorder(molecular_subtype, mol_subtype_order)) 
+  dplyr::mutate(molecular_subtype = ifelse(molecular_subtype == "DMG, H3 K28, TP53 loss", 
+                                           "DMG, H3 K28, TP53 lost", 
+                                           molecular_subtype),
+                molecular_subtype = forcats::fct_reorder(molecular_subtype, mol_subtype_order)) 
 
 # Faceted plot of subtypes, cell types. Jitter points are colored by underlying cancer group.
 subtypes_celltypes_plot <- ggplot(quantiseq_no_ratio) +
