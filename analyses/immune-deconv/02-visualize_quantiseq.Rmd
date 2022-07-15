@@ -20,6 +20,9 @@ params:
 library(tidyverse)
 library(ggpubr)
 
+# set seed
+set.seed(2022)
+
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
@@ -92,15 +95,29 @@ palette_mapping_df <- histologies_df %>%
          contains("cancer_group"),
          molecular_subtype)
 
-#### Array of groups we want to visualize
-cancer_groups_of_interest <- c("High-grade glioma astrocytoma", 
+#### Determine the of groups we want to visualize from those with N>=15, excluding Other
+cancer_groups_of_interest <- palette_mapping_df %>%
+    filter(cancer_group_display != "Other", !is.na(cancer_group_display)) %>%
+  group_by(cancer_group_display) %>%
+  tally() %>%
+  arrange(-n) %>%
+  filter(n > 15) %>%
+  pull(cancer_group_display)
+
+#### Array of groups we want to visualize (chose 12/14 above)
+# Exclude other HGG/LGG since the patterns are similar to pilocytic/DMG
+cancer_groups_of_interest <- c("Pilocytic astrocytoma", 
                                "Diffuse midline glioma",
-                               "Low-grade glioma astrocytoma", 
+                               "Craniopharyngioma", 
                                "Ganglioglioma",
                                "Ependymoma", 
                                "Medulloblastoma",
                                "Schwannoma",
-                               "Neurofibroma Plexiform")
+                               "Neurofibroma Plexiform",
+                               "Other embryonal tumor",
+                               "Atypical Teratoid Rhabdoid Tumor",
+                               "Meningioma",
+                               "Dysembryoplastic neuroepithelial tumor")
  
 #### Prepare quanTIseq data --> `quantiseq_subset`
 # spread and create cd8/cd4 ratio
@@ -150,18 +167,11 @@ expression_pdl1 <- stranded %>%
 
 ```{r cancer_groups_celltypes_plot, fig.width = 14, fig.height = 4.5}
 # Faceted plot of cancer groups, cell types. Jitter points are colored by cancer group.
-# First, find the cancer groups with >=15 samples to match other modules
-cg_of_interest <- palette_mapping_df %>%
-  filter(!is.na(cancer_group)) %>%
-  count(cancer_group_display) %>%
-  filter(n >= 15) %>%
-  pull(cancer_group_display)
-
 # Now, filter to relevant samples and remove uncharacterized fractions
 quantiseq_subset_cg <- quantiseq_gather %>%
   filter(cell_type != "uncharacterized cell" & cell_type != "cd8_cd4_ratio") %>%
   left_join(palette_mapping_df, by = c("sample" = "Kids_First_Biospecimen_ID")) %>%
-  filter(cancer_group %in% cg_of_interest)
+  filter(cancer_group_display %in% cancer_groups_of_interest)
 
 # We need to create a new scheme for labeling that shows wrapped cancer groups with `(n=X)`
 quantiseq_subset_cg <- quantiseq_subset_cg %>%
@@ -200,7 +210,7 @@ cg_plot <- quantiseq_subset_cg %>%
     axis.text.x = ggplot2::element_text(size = 6, angle = 45, hjust = 1),
     axis.text.y = ggplot2::element_text(size = 8),
     axis.title = ggplot2::element_text(size = 10),
-    strip.text = ggplot2::element_text(size = 6),
+    strip.text = ggplot2::element_text(size = 7),
     axis.line = ggplot2::element_line(size = ggplot2::rel(0.5)),
     axis.ticks = ggplot2::element_line(size = ggplot2::rel(0.5)),
     legend.position = "none"
@@ -208,7 +218,7 @@ cg_plot <- quantiseq_subset_cg %>%
 
 cg_plot
 
-ggsave(cg_celltypes_plot_file, cg_plot, width = 11, height = 3.5)
+ggsave(cg_celltypes_plot_file, cg_plot, width = 11, height = 3.5, useDingbats=FALSE)
 ```
 
 
@@ -217,14 +227,25 @@ ggsave(cg_celltypes_plot_file, cg_plot, width = 11, height = 3.5)
 ### Visualize fraction distributions across cell types and molecular subtypes
 
 ```{r subtypes_celltypes_plot, fig.width = 12, fig.height = 4}
-# Faceted plot of subtypes, cell types. Jitter points are colored by underlying cancer group.
 # First, remove cd8_cd4_ratio
 quantiseq_no_ratio <- quantiseq_subset %>%
   filter(cell_type != "cd8_cd4_ratio")
+
+# add an ordering to molecular subtypes based on broad_histology_display labels
+quantiseq_no_ratio <- quantiseq_no_ratio %>%
+  select(broad_histology_display, molecular_subtype) %>%
+  unique() %>%
+  arrange(broad_histology_display, molecular_subtype) %>%
+  mutate(mol_subtype_order = 1:n()) %>%
+  #join back to df
+  inner_join(quantiseq_no_ratio, by = c("broad_histology_display", "molecular_subtype")) %>%
+  dplyr::mutate(molecular_subtype = forcats::fct_reorder(molecular_subtype, mol_subtype_order)) 
+
+# Faceted plot of subtypes, cell types. Jitter points are colored by underlying cancer group.
 subtypes_celltypes_plot <- ggplot(quantiseq_no_ratio) +
-  aes(x = molecular_subtype, y = score, color = cancer_group_hex) + 
+  aes(x = molecular_subtype, y = score) + 
   geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
-  geom_jitter(width = 0.15, size = 0.75, alpha = 0.6) + 
+  geom_jitter(width = 0.15, size = 0.75, alpha = 0.6, aes(color = broad_histology_hex)) + 
   # change to ncol if we want this *Wide*
   facet_wrap(~cell_type, ncol = 5, scales = "free_y") +
   scale_color_identity() +
@@ -233,16 +254,41 @@ subtypes_celltypes_plot <- ggplot(quantiseq_no_ratio) +
     y = "Estimated fraction in sample"
   ) +
   ggpubr::theme_pubr() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 3.5),
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 4),
         axis.title = element_text(size = rel(0.7)),
         axis.text.y = element_text(size = rel(0.7)),
         strip.text = element_text(size = rel(0.7)),
         axis.line = element_line(size = rel(0.7)),
         axis.ticks = element_line(size = rel(0.7)))
 
-subtypes_celltypes_plot
+# Add legend
+cg_color_df <- quantiseq_no_ratio %>%
+  select(broad_histology_hex, broad_histology) %>%
+  distinct()
 
-ggsave(subtypes_celltypes_plot_file, subtypes_celltypes_plot, width = 13, height = 4)
+cg_color_list <- cg_color_df$broad_histology_hex
+names(cg_color_list) <- cg_color_df$broad_histology_display
+
+legend_plot <- ggplot(quantiseq_no_ratio) + 
+  aes(x = score, y = score, color = broad_histology_display) + 
+  geom_point() +
+  scale_color_manual(name = "Broad Histology", values = cg_color_list) + 
+  theme_pubr() +
+  # Need to make text very small
+  theme(
+    legend.text = element_text(size = 6),
+    legend.title = element_text(size = 8)
+  )
+
+legend_panel <- cowplot::get_legend(legend_plot)
+
+full_plot <- cowplot::plot_grid(subtypes_celltypes_plot, legend_panel, 
+                                nrow = 2, 
+                                rel_heights = c(1, 0.1))
+
+full_plot
+
+ggsave(subtypes_celltypes_plot_file, full_plot, width = 11, height = 3.5, useDingbats=FALSE)
 ```
 
 
@@ -302,7 +348,7 @@ pdl1_distributions_plot <- ggplot(pdl1_cd8) +
 
 pdl1_distributions_plot
 
-ggsave(pdl1_distributions_plot_file, pdl1_distributions_plot, width = 7, height = 5)
+ggsave(pdl1_distributions_plot_file, pdl1_distributions_plot, width = 7, height = 5, useDingbats=FALSE)
 
 ```
 Visualize MB only, since that was the only significant result from the survival analyses
@@ -354,7 +400,7 @@ cd274_plot_mb <- ggplot(df_counts) +
 
 cd274_plot_mb
 
-ggsave(cd274_mb_plot_file, cd274_plot_mb, width = 5, height = 5)
+ggsave(cd274_mb_plot_file, cd274_plot_mb, width = 5, height = 5, useDingbats=FALSE)
 }
 ```
 
@@ -376,8 +422,7 @@ ratio_plot <- ggplot(ratio_df) +
       y = score) +
   # remove outliers
   geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
-  geom_jitter(width = 0.15, size = 0.75, alpha = 0.8, aes(color = cancer_group_hex)) + 
-  #facet_wrap(~cancer_group_display, nrow = 2, scales = "free") +
+  geom_jitter(width = 0.15, size = 0.75, alpha = 0.6,  aes(color = broad_histology_hex)) + 
   scale_color_identity() +
   labs(x = "Molecular subtype of sample",
        y = "Ratio of CD8+/CD4+ T cell fractions") +
@@ -392,7 +437,7 @@ ratio_plot <- ggplot(ratio_df) +
 
 ratio_plot
 
-ggsave(cd8_cd4_ratio_plot_file, ratio_plot, width = 2.75, height = 4)
+ggsave(cd8_cd4_ratio_plot_file, ratio_plot, width = 2.75, height = 4, useDingbats = FALSE)
 
 ```
 
