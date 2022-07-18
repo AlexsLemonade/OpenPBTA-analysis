@@ -428,7 +428,7 @@ ratio_plot <- ggplot(ratio_df) +
   geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
   geom_jitter(width = 0.15, size = 0.75, alpha = 0.6,  aes(color = broad_histology_hex)) + 
   scale_color_identity() +
-  labs(x = "Molecular subtype of tumor8 sample",
+  labs(x = "Molecular subtype of tumor sample",
        y = "Ratio of CD8+/CD4+ T cell fractions") +
   ggpubr::theme_pubr() + 
   theme(axis.text.x = element_text(hjust = 1, 
