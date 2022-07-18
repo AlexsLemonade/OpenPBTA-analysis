@@ -142,7 +142,11 @@ subtypes_of_interest <- palette_mapping_df %>%
 quantiseq_subset <- quantiseq_gather %>%
   left_join(palette_mapping_df, by = c("sample" = "Kids_First_Biospecimen_ID")) %>%
   filter(molecular_subtype %in% subtypes_of_interest, 
-         cell_type != "uncharacterized cell")
+         cell_type != "uncharacterized cell") %>%
+  # Change loss --> loss here so inherited by all
+  mutate(molecular_subtype = ifelse(molecular_subtype == "DMG, H3 K28, TP53 loss", 
+                                           "DMG, H3 K28, TP53 lost", 
+                                           molecular_subtype))
 
 
 #### Prepare expression data to explore PDL1 aka CD274 ---> `expression_pdl1`
@@ -239,10 +243,7 @@ quantiseq_no_ratio <- quantiseq_no_ratio %>%
   mutate(mol_subtype_order = 1:n()) %>%
   #join back to df
   inner_join(quantiseq_no_ratio, by = c("broad_histology_display", "molecular_subtype")) %>%
-  dplyr::mutate(molecular_subtype = ifelse(molecular_subtype == "DMG, H3 K28, TP53 loss", 
-                                           "DMG, H3 K28, TP53 lost", 
-                                           molecular_subtype),
-                molecular_subtype = forcats::fct_reorder(molecular_subtype, mol_subtype_order)) 
+  dplyr::mutate(molecular_subtype = forcats::fct_reorder(molecular_subtype, mol_subtype_order)) 
 
 # Faceted plot of subtypes, cell types. Jitter points are colored by underlying cancer group.
 subtypes_celltypes_plot <- ggplot(quantiseq_no_ratio) +
@@ -427,7 +428,7 @@ ratio_plot <- ggplot(ratio_df) +
   geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
   geom_jitter(width = 0.15, size = 0.75, alpha = 0.6,  aes(color = broad_histology_hex)) + 
   scale_color_identity() +
-  labs(x = "Molecular subtype of tumor sample",
+  labs(x = "Molecular subtype of tumor8 sample",
        y = "Ratio of CD8+/CD4+ T cell fractions") +
   ggpubr::theme_pubr() + 
   theme(axis.text.x = element_text(hjust = 1, 
