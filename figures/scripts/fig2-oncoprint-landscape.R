@@ -79,13 +79,32 @@ get_histology_goi <- function(filename) {
 # Also not to be used outside of this context!
 # Given a vector of cancer groups, prep a MAF object to be used with
 # oncoplot() -- filters & combines the SNV, CNV, and fusion data
-prep_histology_maf <- function(included_cancer_groups) {
-
+prep_histology_maf <- function(included_cancer_groups, 
+                               main = TRUE) {
+  # The `main` argument indicates whether this is main text figure (TRUE), 
+  #  or a supplemental figure (FALSE). Main and supp use different cancer group
+  #  columns.
+  
   # Get the sample ids to be included
-  included_sample_ids <- histologies_df %>%
-    dplyr::filter(cancer_group_display %in% included_cancer_groups) %>%
-    dplyr::pull(Tumor_Sample_Barcode)
-
+  if (main) {
+    included_sample_ids <- histologies_df %>%
+      dplyr::filter(cancer_group_display %in% included_cancer_groups) %>%
+      dplyr::pull(Tumor_Sample_Barcode) 
+    
+    # Update histologies_df for palette compatibility
+    histologies_df_temp <- histologies_df %>%
+      dplyr::select(-cancer_group) %>%
+      dplyr::rename(cancer_group = cancer_group_display)
+    
+  } else {
+    included_sample_ids <- histologies_df %>%
+      dplyr::filter(cancer_group %in% included_cancer_groups) %>%
+      dplyr::pull(Tumor_Sample_Barcode)    
+    
+    # Create the temp variable as is
+    histologies_df_temp <- histologies_df
+  }
+  
   # MAF
   histology_maf_df <- maf_df %>%
     dplyr::filter(Tumor_Sample_Barcode %in% included_sample_ids)
@@ -98,16 +117,13 @@ prep_histology_maf <- function(included_cancer_groups) {
   histology_fusion_df <- fusion_df %>%
     dplyr::filter(Tumor_Sample_Barcode %in% included_sample_ids)
 
-  # Update histologies_df for palette compatibility
-  histologies_df <- histologies_df %>%
-    dplyr::select(-cancer_group) %>%
-    dplyr::rename(cancer_group = cancer_group_display)
+
   
   # MAF object
   histology_maf_object <- prepare_maf_object(
     maf_df = histology_maf_df,
     cnv_df = histology_cnv_df,
-    metadata = histologies_df,
+    metadata = histologies_df_temp,
     fusion_df = histology_fusion_df
   )
 }
@@ -360,13 +376,15 @@ for (type_iter in seq_along(data_input_list)) {
     if (histology == "Other CNS") {
 
       # Get vector of cancer groups to include
-      # These will be Other CNS oncoprint groups with a FALSE oncoprint_include
+      # These will be Other CNS oncoprint groups with a FALSE oncoprint_main
       included_cancer_groups <- group_palette_df %>%
-        dplyr::filter(oncoprint_group == histology) %>%
+        dplyr::filter(oncoprint_group == histology, 
+                      oncoprint_main == FALSE) %>%
         dplyr::pull(cancer_group)
 
       # Prep MAF object for plot
-      histology_maf_object <- prep_histology_maf(included_cancer_groups)
+      histology_maf_object <- prep_histology_maf(included_cancer_groups,
+                                                 main = FALSE)
 
       # We need a new palette for the cancer groups but we only show samples
       # with alterations in our genes of interest list
