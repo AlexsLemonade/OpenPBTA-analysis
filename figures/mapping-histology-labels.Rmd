@@ -427,11 +427,11 @@ palette_df <- palette_df %>%
             by = "broad_histology_display")
 ```
 
-### Add `oncoprint_group` and `oncoprint_hex`
+### Add `oncoprint_group` and `oncoprint_main`
 
 For most plots that make use of the `cancer_group` palette, such as a box or violin plot, we will rely heavily on labels and therefore using the gray hex code for multiple groups will not be a problem.
 
-We will have four panels of individual oncoprints.
+We will have four panels of individual oncoprints, where many `broad_histology` values will get grouped together into the `Other CNS` panel which you can see [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/d31c927a27813ec0b8032fbe768002f31723636f/analyses/oncoprint-landscape/02-plot-oncoprint.R#L181).
 We can move the information about which cancer groups will be included in each panel into our palette data frame.
 
 ```{r}
@@ -466,6 +466,22 @@ palette_df <- palette_df %>%
     TRUE ~ NA_character_
   ))
 ```
+
+
+Now, we need to establish `oncoprint_main`, which is used to delineate whether "Other" cancer groups belong in the main text (`TRUE` value) or in the supplementary information (`FALSE`) oncoprint plots.
+Groups that belong in the supplement (`oncoprint_main` will be `FALSE`) should be "Other CNS" oncoprint groups that have an "Other" `cancer_group_display` value.
+
+```{r}
+palette_df <- palette_df %>%
+  mutate(
+    oncoprint_main = case_when(
+    oncoprint_group == "Other CNS" & cancer_group_display == "Other" ~ TRUE,
+    oncoprint_group == "Other CNS" & cancer_group_display != "Other" ~ FALSE,
+    TRUE ~ NA
+    )
+  )
+```
+
 
 ### Display final table and save to TSV 
 
