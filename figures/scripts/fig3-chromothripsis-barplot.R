@@ -57,20 +57,22 @@ palette_df <- read_tsv(palette_file)
 
 #### Prep ----------------------------------------------------------------------
 
+# Need a data frame that contains the identifiers + cancer group
+cancer_group_df <- histologies_df %>%
+  left_join(palette_df, by = c("broad_histology", "cancer_group")) %>%
+  mutate(cancer_group_display = case_when(cancer_group_display == "Other" ~ cancer_group,
+                                          TRUE ~ cancer_group_display)) %>%
+  select(Kids_First_Biospecimen_ID, broad_histology, cancer_group_display, cancer_group, cancer_group_hex)
+
 # We'll only be using the cancer group palette and we need a named vector of
 # hexcodes
-cancer_group_col_df <- palette_df %>%
+cancer_group_col_df <- cancer_group_df %>%
   select(cancer_group_display, cancer_group_hex) %>%
   distinct()
 
 # Can't do pull with names with our versions
 cancer_group_palette <- cancer_group_col_df$cancer_group_hex
 names(cancer_group_palette) <- cancer_group_col_df$cancer_group_display
-
-# Need a data frame that contains the identifiers + cancer group
-cancer_group_df <- histologies_df %>%
-  left_join(palette_df, by = c("broad_histology", "cancer_group")) %>%
-  select(Kids_First_Biospecimen_ID, broad_histology, cancer_group_display)
 
 # Add cancer group and palette information
 chromo_per_sample_df <- chromo_per_sample_df %>%
