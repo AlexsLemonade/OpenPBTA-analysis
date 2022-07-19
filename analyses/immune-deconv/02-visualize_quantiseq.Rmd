@@ -142,7 +142,11 @@ subtypes_of_interest <- palette_mapping_df %>%
 quantiseq_subset <- quantiseq_gather %>%
   left_join(palette_mapping_df, by = c("sample" = "Kids_First_Biospecimen_ID")) %>%
   filter(molecular_subtype %in% subtypes_of_interest, 
-         cell_type != "uncharacterized cell")
+         cell_type != "uncharacterized cell") %>%
+  # Change loss --> loss here so inherited by all
+  mutate(molecular_subtype = ifelse(molecular_subtype == "DMG, H3 K28, TP53 loss", 
+                                           "DMG, H3 K28, TP53 lost", 
+                                           molecular_subtype))
 
 
 #### Prepare expression data to explore PDL1 aka CD274 ---> `expression_pdl1`
@@ -424,7 +428,7 @@ ratio_plot <- ggplot(ratio_df) +
   geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
   geom_jitter(width = 0.15, size = 0.75, alpha = 0.6,  aes(color = broad_histology_hex)) + 
   scale_color_identity() +
-  labs(x = "Molecular subtype of sample",
+  labs(x = "Molecular subtype of tumor sample",
        y = "Ratio of CD8+/CD4+ T cell fractions") +
   ggpubr::theme_pubr() + 
   theme(axis.text.x = element_text(hjust = 1, 

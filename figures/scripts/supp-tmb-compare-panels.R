@@ -32,7 +32,7 @@ pbta_tmb_cdf_pdf <- file.path(output_dir, "pbta_tmb_cdf_plot.pdf")
 tcga_tmb_cdf_pdf <- file.path(output_dir, "tcga_tmb_cdf_plot.pdf")
 
 # Read in consensus data from pbta and tcga --------------------------------------------------------------
-tmb_tcga <- data.table::fread(file.path(
+tmb_pbta <- data.table::fread(file.path(
   data_dir,
   "pbta-snv-consensus-mutation-tmb-coding.tsv"
   )) %>%
@@ -175,8 +175,10 @@ tmb_tcga_plot <- baseline_plot(tmb_tcga_plot_df, tcga_color = "gray60") +
   facet_wrap(~Primary_diagnosis + sample_size, nrow = 1, strip.position = "bottom") 
 
 # Export both plots ---------------------------------
-ggsave(pbta_tmb_cdf_pdf, tmb_pbta_plot, width = 10, height = 6)
-ggsave(tcga_tmb_cdf_pdf, tmb_tcga_plot, width = 5, height = 6.15)  # because labels are diff sizes, making this 6.25 matches the other plot at 6
+ggsave(pbta_tmb_cdf_pdf, tmb_pbta_plot, width = 10, height = 6, 
+useDingbats = FALSE)
+ggsave(tcga_tmb_cdf_pdf, tmb_tcga_plot, width = 5, height = 6.15, # because labels are diff sizes, making this 6.25 matches the other plot at 6
+useDingbats = FALSE)  
 
 
 
