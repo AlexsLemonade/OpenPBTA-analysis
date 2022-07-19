@@ -402,10 +402,17 @@ for (type_iter in seq_along(data_input_list)) {
 
       # Use the paired color brewer palette for the cancer groups that will
       # be included
-      supp_colors <- RColorBrewer::brewer.pal(length(mutated_cancer_groups),
+      supp_colors <- RColorBrewer::brewer.pal(length(mutated_cancer_groups), 
                                               "Paired")
-      names(supp_colors) <- mutated_cancer_groups
+      names(supp_colors) <- sort(mutated_cancer_groups) # oncoprint will only do alphabetical
 
+      # Have samples go in order of these mutated_cancer_groups
+      sample_order <- histologies_df %>%
+        dplyr::filter(cancer_group %in% mutated_cancer_groups) %>%
+        dplyr::distinct() %>%
+        dplyr::arrange(cancer_group) %>%
+        dplyr::pull(Tumor_Sample_Barcode)
+      
       # Construct the output PDF name
       output_pdf <- paste(specimen_type,
                           goi_files_list[[histology]]$shorthand,
@@ -437,7 +444,8 @@ for (type_iter in seq_along(data_input_list)) {
         drawRowBar = FALSE,
         titleText = histology,
         titleFontSize = 1.3,
-        gene_mar = 10
+        gene_mar = 10, 
+        sampleOrder = sample_order
       )
 
       dev.off()
