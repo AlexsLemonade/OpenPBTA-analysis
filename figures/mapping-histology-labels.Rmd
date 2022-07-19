@@ -475,8 +475,8 @@ Groups that belong in the supplement (`oncoprint_main` will be `FALSE`) should b
 palette_df <- palette_df %>%
   mutate(
     oncoprint_main = case_when(
-    oncoprint_group == "Other CNS" & cancer_group_display == "Other" ~ TRUE,
-    oncoprint_group == "Other CNS" & cancer_group_display != "Other" ~ FALSE,
+    oncoprint_group == "Other CNS" & cancer_group_display == "Other" ~ FALSE,
+    oncoprint_group == "Other CNS" & cancer_group_display != "Other" ~ TRUE,
     TRUE ~ NA
     )
   )
