@@ -90,10 +90,16 @@ histology_df %>%
            broad_histology,
            broad_histology_display)
   ) %>%
+  # Set column name
+  mutate(pbta_broad_histology = ifelse(
+    broad_histology_display == "Other", 
+    broad_histology, 
+    broad_histology_display
+  )) %>%
   # remove doubled samples (WGS/RNA-seq etc.)
-  distinct(broad_histology_display, molecular_subtype, sample_id) %>%
+  distinct(pbta_broad_histology, molecular_subtype, sample_id) %>%
   # Count broad histology and subtype combinations
-  count(broad_histology_display, molecular_subtype) %>%
+  count(pbta_broad_histology, molecular_subtype) %>%
   # export
   write_tsv(table_1_file)
 

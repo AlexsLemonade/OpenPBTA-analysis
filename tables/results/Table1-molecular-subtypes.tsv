@@ -1,4 +1,6 @@
-broad_histology_display	molecular_subtype	n
+pbta_broad_histology	molecular_subtype	n
+Chordoma	CHDM, conventional	2
+Chordoma	CHDM, poorly differentiated	4
 Embryonal tumor	CNS Embryonal, NOS	13
 Embryonal tumor	CNS HGNET-MN1	1
 Embryonal tumor	CNS NB-FOXR2	3
@@ -62,6 +64,4 @@ Neuronal and mixed neuronal-glial tumor	GNT, KIAA1549-BRAF	2
 Neuronal and mixed neuronal-glial tumor	GNT, other MAPK	1
 Neuronal and mixed neuronal-glial tumor	GNT, other MAPK, FGFR	1
 Neuronal and mixed neuronal-glial tumor	GNT, RTK	2
-Other	CHDM, conventional	2
-Other	CHDM, poorly differentiated	4
 Tumor of sellar region	CRANIO, ADAM	27
