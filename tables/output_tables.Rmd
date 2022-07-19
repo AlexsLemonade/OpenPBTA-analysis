@@ -24,6 +24,7 @@ This Rmarkdown generates tables used in the manuscript, including both main text
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 working_dir <- file.path(root_dir, "tables")
 analyses_dir <- file.path(root_dir, "analyses")
+palette_dir <- file.path(root_dir, "figures", "palettes")
 
 # Define data_dir based on ci. The `testing` param covers if we are in CI where 1 is CI.
 if (params$release == "testing") {
@@ -40,6 +41,7 @@ if(!dir.exists(results_dir)){
 
 # Define input files
 histology_file <- file.path(data_dir, "pbta-histologies.tsv")
+palette_file <- file.path(palette_dir, "broad_histology_cancer_group_palette.tsv")
 tmb_all_file <- file.path(data_dir, "pbta-snv-consensus-mutation-tmb-all.tsv")
 tmb_coding_file <- file.path(data_dir, "pbta-snv-consensus-mutation-tmb-coding.tsv")
 mutsigs_file <- file.path(analyses_dir, "mutational-signatures", "results", "deconstructsigs_exposures_merged.tsv")
@@ -74,6 +76,7 @@ table_s5_file <- file.path(results_dir, "TableS5-Key-Resources-table.xlsx")
 ## Table 1: Molecular subtypes determined for this project
 ```{r table 1}
 histology_df <- read_tsv(histology_file, guess_max =10000)
+palette_df <- read_tsv(palette_file)
 
 histology_df %>%
   # remove rows to not include
@@ -81,10 +84,16 @@ histology_df %>%
          !is.na(pathology_diagnosis),
          !is.na(molecular_subtype),
          !grepl("To be classified", molecular_subtype)) %>%
+  # Join with palette to get broad_histology_display column
+  inner_join(
+    select(palette_df, 
+           broad_histology,
+           broad_histology_display)
+  ) %>%
   # remove doubled samples (WGS/RNA-seq etc.)
-  distinct(broad_histology, molecular_subtype, sample_id) %>%
+  distinct(broad_histology_display, molecular_subtype, sample_id) %>%
   # Count broad histology and subtype combinations
-  count(broad_histology, molecular_subtype) %>%
+  count(broad_histology_display, molecular_subtype) %>%
   # export
   write_tsv(table_1_file)
 
