@@ -1,0 +1,184 @@
+---
+title: "Setting authorship order for AlexsLemonade/OpenPBTA-manuscript"
+output: 
+  html_notebook:
+    toc: true
+    toc_float: true
+author: Jaclyn Taroni for ALSF CCDL
+date: 2022
+---
+
+This notebook updates the current [manuscript metadata](https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/master/content/metadata.yaml) such that the authors are ordered in the following way:
+
+* The first, last 4 authors, and consortia authors positions are pinned to reflect scholarship and contributor roles that are not captured in the Git history of this repository (e.g., substantive analytical code review, conceptualization, supervision, or project administration).
+* Manuscript authors that have contributed to the code base for the analysis repository -- specifically the number of analysis modules that were included in the paper that a manuscript author has contributed to -- are then ordered from the second position on in decreasing order.
+In the case of ties, the order is randomly selected.
+* Manuscript authors that did not directly contribute to the code base are then randomly ordered. 
+We set a seed directly before that shuffling step, using the year as the seed, to keep a consistent order in future runs if and when the Git contributions change.
+
+## Set up
+
+```{r}
+library(tidyverse)
+```
+
+We will be using `sample()` in this notebook, so we set a seed here.
+
+```{r}
+set.seed(2022)
+```
+
+### Metadata download
+
+Grab the metadata YAML file from the `master` branch of the repository and save to the directory this notebook is in.
+
+```{r}
+manuscript_metadata_url <- "https://raw.githubusercontent.com/AlexsLemonade/OpenPBTA-manuscript/master/content/metadata.yaml"
+download.file(manuscript_metadata_url, "metadata.yaml",)
+```
+
+### Module contributions file
+
+We calculate the number of modules an author has contributed to in `analyses/count-contributions`. 
+
+```{r}
+module_contributions_file <- file.path("..", 
+                                       "analyses", 
+                                       "count-contributions", 
+                                       "results", 
+                                       "module_contribution_counts.tsv")
+```
+
+
+## Read in metadata and extract author information
+
+We will only be updating the order of the author metadata, not the title or any other author information.
+We can read the YAML file in directly with `read_yaml()` and snag the author list
+
+```{r}
+manuscript_metadata <- yaml::read_yaml("metadata.yaml")
+author_list <- manuscript_metadata$authors
+```
+
+Get a vector of author names out of the metadata.
+
+```{r}
+author_names <- purrr::map_chr(author_list, "name")
+```
+
+## Set authorship order
+
+### Pinned positions
+
+We are going to pin some of the author positioned based on scholarship that is not well-captured in git commits alone (e.g., review & discussion) or based on the conceptualization and management of the project.
+
+```{r}
+pinned_authors <- c("Joshua A. Shapiro", 
+                    "Adam C. Resnick", 
+                    "Casey S. Greene",
+                    # Asterisks are in the name field for corresponding authors
+                    "Jo Lynne Rokita*",  
+                    "Jaclyn N. Taroni*",
+                    "Children's Brain Tumor Network",
+                    "Pacific Pediatric Neuro-Oncology Consortium")
+
+# The indices of the pinned author positions
+pinned_positions <- str_which(author_names, 
+                              paste(pinned_authors, collapse = "|"))
+# (Author) named vector of indices
+names(pinned_positions) <- author_names[pinned_positions] 
+```
+
+### Code contributors
+
+For folks that contributed to the code base that are not pinned in position, we'll use the number of analysis modules included in the paper that they've contributed to to determine their position in the author list.
+
+```{r}
+module_contributions_df <- read_tsv(module_contributions_file)
+```
+
+In the case of ties, we want to randomly set the authorship order, so we shuffle the contribution dataset before sorting by the number of modules.
+
+```{r}
+# If there are ties, shuffling the entire data frame before the arrange() step
+# is a way to randomly select the ordering of ties
+module_contributions_df <- module_contributions_df[sample(nrow(module_contributions_df)), ]
+
+code_contributors <- module_contributions_df %>%
+  # For corresponding authors, we need to add an * to their names in order to
+  # filter them out in the next step
+  mutate(author = if_else(author %in% c("Jaclyn N. Taroni", "Jo Lynne Rokita"),
+                          str_c(author, "*"),
+                          author)
+  ) %>%
+  # Authors with more contributions should come first
+  arrange(desc(num_modules)) %>%
+  pull(author)
+
+# Remove pinned authors from consideration here
+code_contributors <- setdiff(code_contributors, pinned_authors)
+
+# Code contributors come after the pinned first author position
+code_contributor_positions <- 1:length(code_contributors) + 1
+names(code_contributor_positions) <- code_contributors
+```
+
+### Non-code contributors
+
+We have a number of authors that contributed to the manuscript but did not directly contribute to the code base.
+For those authors, we will randomly determine their position in the author list _after_ the code contributors.
+
+```{r}
+# Non-code contributors are authors that did not contribute to code and are
+# not otherwise pinned
+noncode_contributors <- setdiff(author_names, c(pinned_authors,
+                                                code_contributors))
+
+# Shuffle the order of the noncode contributors 
+# Set seed again to minimize changes to the ordering of this group
+set.seed(2022)
+noncode_contributors <- sample(noncode_contributors)
+
+# These positions will come after the code contributor positions
+noncode_contributor_positions <- 1:length(noncode_contributors) + max(code_contributor_positions)
+names(noncode_contributor_positions) <- noncode_contributors
+```
+
+### All positions and update metadata
+
+Now to put all of the positions together and sort appropriately.
+
+```{r}
+all_contributors_positions <- sort(c(pinned_positions,
+                                     code_contributor_positions,
+                                     noncode_contributor_positions), 
+                                   decreasing = FALSE)
+data.frame(all_contributors_positions)
+```
+
+Now we need to reorder the author list.
+
+```{r}
+# Match the order of the author list we read in to the new order
+new_order_index <- order(match(author_names, names(all_contributors_positions)))
+# Use the new indices to update the author order
+reordered_author_list <- author_list[new_order_index]
+```
+
+We'll add the reordered author metadata back into the manuscript metadata and write to file.
+
+```{r}
+# We only want to update the author element of the manuscript metadata list
+updated_manuscript_metadata <- manuscript_metadata
+updated_manuscript_metadata$authors <- reordered_author_list
+
+# Write updated metadata to file
+yaml::write_yaml(updated_manuscript_metadata, "updated_metadata.yaml")
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
