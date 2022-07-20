@@ -1,16 +1,6 @@
-broad_histology	molecular_subtype	n
+pbta_broad_histology	molecular_subtype	n
 Chordoma	CHDM, conventional	2
 Chordoma	CHDM, poorly differentiated	4
-Diffuse astrocytic and oligodendroglial tumor	DMG, H3 K28	24
-Diffuse astrocytic and oligodendroglial tumor	DMG, H3 K28, TP53 activated	13
-Diffuse astrocytic and oligodendroglial tumor	DMG, H3 K28, TP53 loss	40
-Diffuse astrocytic and oligodendroglial tumor	HGG, H3 G35	3
-Diffuse astrocytic and oligodendroglial tumor	HGG, H3 G35, TP53 loss	1
-Diffuse astrocytic and oligodendroglial tumor	HGG, H3 wildtype	31
-Diffuse astrocytic and oligodendroglial tumor	HGG, H3 wildtype, TP53 activated	5
-Diffuse astrocytic and oligodendroglial tumor	HGG, H3 wildtype, TP53 loss	21
-Diffuse astrocytic and oligodendroglial tumor	HGG, IDH, TP53 activated	2
-Diffuse astrocytic and oligodendroglial tumor	HGG, IDH, TP53 loss	1
 Embryonal tumor	CNS Embryonal, NOS	13
 Embryonal tumor	CNS HGNET-MN1	1
 Embryonal tumor	CNS NB-FOXR2	3
@@ -23,39 +13,49 @@ Embryonal tumor	MB, WNT	10
 Ependymal tumor	EPN, H3 K28	1
 Ependymal tumor	EPN, ST RELA	28
 Ependymal tumor	EPN, ST YAP1	1
-Low-grade astrocytic tumor	GNG, BRAF V600E	13
-Low-grade astrocytic tumor	GNG, BRAF V600E, CDKN2A/B	1
-Low-grade astrocytic tumor	GNG, FGFR	1
-Low-grade astrocytic tumor	GNG, H3	1
-Low-grade astrocytic tumor	GNG, IDH	2
-Low-grade astrocytic tumor	GNG, KIAA1549-BRAF	5
-Low-grade astrocytic tumor	GNG, MYB/MYBL1	1
-Low-grade astrocytic tumor	GNG, NF1-germline	1
-Low-grade astrocytic tumor	GNG, NF1-somatic, BRAF V600E	1
-Low-grade astrocytic tumor	GNG, other MAPK	4
-Low-grade astrocytic tumor	GNG, other MAPK, IDH	1
-Low-grade astrocytic tumor	GNG, RTK	3
-Low-grade astrocytic tumor	GNG, wildtype	14
-Low-grade astrocytic tumor	LGG, BRAF V600E	27
-Low-grade astrocytic tumor	LGG, BRAF V600E, CDKN2A/B	5
-Low-grade astrocytic tumor	LGG, FGFR	8
-Low-grade astrocytic tumor	LGG, IDH	3
-Low-grade astrocytic tumor	LGG, KIAA1549-BRAF	113
-Low-grade astrocytic tumor	LGG, KIAA1549-BRAF, NF1-germline	1
-Low-grade astrocytic tumor	LGG, KIAA1549-BRAF, other MAPK	1
-Low-grade astrocytic tumor	LGG, MYB/MYBL1	2
-Low-grade astrocytic tumor	LGG, NF1-germline	6
-Low-grade astrocytic tumor	LGG, NF1-germline, CDKN2A/B	1
-Low-grade astrocytic tumor	LGG, NF1-germline, FGFR	2
-Low-grade astrocytic tumor	LGG, NF1-somatic	2
-Low-grade astrocytic tumor	LGG, NF1-somatic, FGFR	1
-Low-grade astrocytic tumor	LGG, NF1-somatic, NF1-germline, CDKN2A/B	1
-Low-grade astrocytic tumor	LGG, other MAPK	12
-Low-grade astrocytic tumor	LGG, RTK	10
-Low-grade astrocytic tumor	LGG, RTK, CDKN2A/B	1
-Low-grade astrocytic tumor	LGG, wildtype	34
-Low-grade astrocytic tumor	SEGA, RTK	1
-Low-grade astrocytic tumor	SEGA, wildtype	11
+High-grade glioma	DMG, H3 K28	24
+High-grade glioma	DMG, H3 K28, TP53 activated	13
+High-grade glioma	DMG, H3 K28, TP53 loss	40
+High-grade glioma	HGG, H3 G35	3
+High-grade glioma	HGG, H3 G35, TP53 loss	1
+High-grade glioma	HGG, H3 wildtype	31
+High-grade glioma	HGG, H3 wildtype, TP53 activated	5
+High-grade glioma	HGG, H3 wildtype, TP53 loss	21
+High-grade glioma	HGG, IDH, TP53 activated	2
+High-grade glioma	HGG, IDH, TP53 loss	1
+Low-grade glioma	GNG, BRAF V600E	13
+Low-grade glioma	GNG, BRAF V600E, CDKN2A/B	1
+Low-grade glioma	GNG, FGFR	1
+Low-grade glioma	GNG, H3	1
+Low-grade glioma	GNG, IDH	2
+Low-grade glioma	GNG, KIAA1549-BRAF	5
+Low-grade glioma	GNG, MYB/MYBL1	1
+Low-grade glioma	GNG, NF1-germline	1
+Low-grade glioma	GNG, NF1-somatic, BRAF V600E	1
+Low-grade glioma	GNG, other MAPK	4
+Low-grade glioma	GNG, other MAPK, IDH	1
+Low-grade glioma	GNG, RTK	3
+Low-grade glioma	GNG, wildtype	14
+Low-grade glioma	LGG, BRAF V600E	27
+Low-grade glioma	LGG, BRAF V600E, CDKN2A/B	5
+Low-grade glioma	LGG, FGFR	8
+Low-grade glioma	LGG, IDH	3
+Low-grade glioma	LGG, KIAA1549-BRAF	113
+Low-grade glioma	LGG, KIAA1549-BRAF, NF1-germline	1
+Low-grade glioma	LGG, KIAA1549-BRAF, other MAPK	1
+Low-grade glioma	LGG, MYB/MYBL1	2
+Low-grade glioma	LGG, NF1-germline	6
+Low-grade glioma	LGG, NF1-germline, CDKN2A/B	1
+Low-grade glioma	LGG, NF1-germline, FGFR	2
+Low-grade glioma	LGG, NF1-somatic	2
+Low-grade glioma	LGG, NF1-somatic, FGFR	1
+Low-grade glioma	LGG, NF1-somatic, NF1-germline, CDKN2A/B	1
+Low-grade glioma	LGG, other MAPK	12
+Low-grade glioma	LGG, RTK	10
+Low-grade glioma	LGG, RTK, CDKN2A/B	1
+Low-grade glioma	LGG, wildtype	34
+Low-grade glioma	SEGA, RTK	1
+Low-grade glioma	SEGA, wildtype	11
 Mesenchymal non-meningothelial tumor	EWS	11
 Neuronal and mixed neuronal-glial tumor	CNC	2
 Neuronal and mixed neuronal-glial tumor	EVN	1
@@ -64,4 +64,4 @@ Neuronal and mixed neuronal-glial tumor	GNT, KIAA1549-BRAF	2
 Neuronal and mixed neuronal-glial tumor	GNT, other MAPK	1
 Neuronal and mixed neuronal-glial tumor	GNT, other MAPK, FGFR	1
 Neuronal and mixed neuronal-glial tumor	GNT, RTK	2
-Tumors of sellar region	CRANIO, ADAM	27
+Tumor of sellar region	CRANIO, ADAM	27
