@@ -358,10 +358,10 @@ readr::write_tsv(cnv_df, cnv_output)
 
 message("Gathering N per cancer_group...")
 # Gather Ns
-gather_n_per_cancer_group <- function(metadata, broad_histology){
-  if (broad_histology != "Other CNS") {
+gather_n_per_cancer_group <- function(metadata, bh){
+  if (bh != "Other CNS") {
     metadata <- metadata %>%
-      dplyr::filter(broad_histology == broad_histology) %>%
+      dplyr::filter(broad_histology == bh) %>%
       select(cancer_group_display, sample_id) %>%
       unique() %>%
       group_by(cancer_group_display) %>%
@@ -411,6 +411,6 @@ lapply(as.list(c("Low-grade astrocytic tumor","Embryonal tumor",
          "Diffuse astrocytic and oligodendroglial tumor",
          "Other CNS")), function(x) gather_n_per_cancer_group(histologies_df,x)) %>%
 	bind_rows() %>%
-        unique() %>% 
+        unique() %>%
         readr::write_tsv(output_file)
 
