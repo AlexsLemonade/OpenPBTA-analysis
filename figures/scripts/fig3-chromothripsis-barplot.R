@@ -59,24 +59,50 @@ palette_df <- read_tsv(palette_file)
 
 # Need a data frame that contains the identifiers + cancer group
 cancer_group_df <- histologies_df %>%
+  filter(!is.na(pathology_diagnosis),
+         !is.na(cancer_group)) %>%
   left_join(palette_df, by = c("broad_histology", "cancer_group")) %>%
-  mutate(cancer_group_display = case_when(cancer_group_display == "Other" ~ cancer_group,
-                                          TRUE ~ cancer_group_display)) %>%
   select(Kids_First_Biospecimen_ID, broad_histology, cancer_group_display, cancer_group, cancer_group_hex)
-
-# We'll only be using the cancer group palette and we need a named vector of
-# hexcodes
-cancer_group_col_df <- cancer_group_df %>%
-  select(cancer_group_display, cancer_group_hex) %>%
-  distinct()
-
-# Can't do pull with names with our versions
-cancer_group_palette <- cancer_group_col_df$cancer_group_hex
-names(cancer_group_palette) <- cancer_group_col_df$cancer_group_display
 
 # Add cancer group and palette information
 chromo_per_sample_df <- chromo_per_sample_df %>%
-  left_join(cancer_group_df)
+  left_join(cancer_group_df) %>%
+  mutate(was_other = ifelse(cancer_group_display == "Other", "yes", "no"),
+        cancer_group_display = case_when(cancer_group_display == "Other" ~ cancer_group,
+                                        TRUE ~ cancer_group_display))
+
+
+# We'll only be using the cancer group palette and we need a named vector of
+# hexcodes
+cancer_group_col_df <- chromo_per_sample_df %>%
+  select(cancer_group_display, cancer_group_hex) %>%
+  distinct()
+
+cancer_group_palette <- cancer_group_col_df$cancer_group_hex
+names(cancer_group_palette) <- cancer_group_col_df$cancer_group_display
+
+
+### Check to determine that the correct Ns are being plotted with "Other" cancer_group_display --> cancer_group 
+# Previously, we had 9/60 in the "Other" group:
+previously_other <- chromo_per_sample_df %>%
+  filter(was_other == "yes") %>%
+  count(cancer_group_display)
+sum(previously_other$n)
+
+# N samples not being plotted because N < 3 is 22:
+n_less_3 <- chromo_per_sample_df %>%
+  filter(was_other == "yes") %>%
+  count(cancer_group_display) %>%
+  filter(n < 3)
+sum(n_less_3$n)
+
+# N samples being plotted because N >= 3 is 38:
+n_greater_3 <- chromo_per_sample_df %>%
+  filter(was_other == "yes") %>%
+  count(cancer_group_display) %>%
+  filter(n >=3)
+sum(n_greater_3$n)
+
 
 ### Repeat all of these steps for cancer_group instead of display_group
 chromoth_cancer_group_df <- chromo_per_sample_df %>%
