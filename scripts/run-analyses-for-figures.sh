@@ -43,6 +43,13 @@ bash ${analyses_dir}/interaction-plots/01-create-interaction-plots.sh
 bash ${analyses_dir}/chromosomal-instability/run_breakpoint_analysis.sh
 bash ${analyses_dir}/chromothripsis/run-chromothripsis.sh
 
+# Run the tp53 classifier, for Figures 4 and S5
+#  Note this module is run earlier in this script than the relevant 
+#  figures' placement because these modules use the TP53 scores:
+#  `mutational-signatures` and `survival-analysis`
+OPENPBTA_TP53_FIGURES=1 bash ${analyses_dir}/tp53_nf1_score/run_classifier.sh
+
+
 # Run the mutational-signatures module for Figures 3 and S4
 # We only run the part of the module used in the manuscript (i.e., not de novo)
 OPENPBTA_CNS_FIT_ONLY=1 bash ${analyses_dir}/mutational-signatures/run_mutational_signatures.sh
@@ -52,9 +59,6 @@ OPENPBTA_CNS_FIT_ONLY=1 bash ${analyses_dir}/mutational-signatures/run_mutationa
 Rscript --vanilla ${analyses_dir}/telomerase-activity-prediction/01-run-EXTEND.R \
  --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
  --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt
-
-# Run the tp53 classifier, for Figures 4 and S5
-OPENPBTA_TP53_FIGURES=1 bash ${analyses_dir}/tp53_nf1_score/run_classifier.sh
 
 # Run the survival module, for Figures 4 and 5
 bash ${analyses_dir}/survival-analysis/run_survival.sh
