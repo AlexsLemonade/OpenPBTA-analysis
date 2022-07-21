@@ -30,14 +30,6 @@ input_dir <- file.path(root_dir,
                        "mutational-signatures", 
                        "results")
 
-# The real signature names: https://signal.mutationalsignatures.com/explore/studyTissueType/1-6
-signature_names_df <- tibble::tibble(
-  signature = factor(
-    c("11", "1", "N6", "8", "MMR2", "18", "19", "3", "Other"), 
-    levels = c("1", "3", "8", "11", "18", "19", "N6", "MMR2", "Other")),
-  cns_names   = c(paste0("CNS_",LETTERS[1:8]), "Other")
-)
-
 
 # Cancer groups we are showing in panel 3E, 
 #  in same order as 3A but _without_ "Other"
