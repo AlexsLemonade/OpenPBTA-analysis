@@ -146,11 +146,11 @@ tmb_pbta_plot_df <- tmb_pbta %>%
   drop_na(cancer_group_display) %>%
   # Perform calculations needed for plot
   prepare_data_for_plot(grouping_variable = cancer_group_display) %>%
-  # Order cancer groups by median TMB, but ensure Other is still last
+  # remove "Other" cancer group
+  filter(cancer_group_display != "Other") %>%
+  # Order cancer groups by median TMB
   mutate(cancer_group_display = str_wrap(cancer_group_display, 18),
-         cancer_group_display = fct_reorder(cancer_group_display, tmb, .fun = median),
-         # move "Other" to the end
-         cancer_group_display = fct_relevel(cancer_group_display, "Other", after = Inf)
+         cancer_group_display = fct_reorder(cancer_group_display, tmb, .fun = median)
   ) 
 
 # Prepare tcga data
