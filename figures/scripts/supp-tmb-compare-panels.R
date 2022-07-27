@@ -146,23 +146,20 @@ tmb_pbta_plot_df <- tmb_pbta %>%
   drop_na(cancer_group_display) %>%
   # Perform calculations needed for plot
   prepare_data_for_plot(grouping_variable = cancer_group_display) %>%
-  # Order cancer groups in frequency, but ensure Other is still last
+  # remove "Other" cancer group
+  filter(cancer_group_display != "Other") %>%
+  # Order cancer groups by median TMB
   mutate(cancer_group_display = str_wrap(cancer_group_display, 18),
-         cancer_group_display = fct_infreq(cancer_group_display),
-         # reverse since infreq does most --> least
-         cancer_group_display = fct_rev(cancer_group_display),
-         # move "Other" to the end
-         cancer_group_display = fct_relevel(cancer_group_display, "Other", after = Inf)
+         cancer_group_display = fct_reorder(cancer_group_display, tmb, .fun = median)
   ) 
 
 # Prepare tcga data
 tmb_tcga_plot_df <- tmb_tcga %>%
   prepare_data_for_plot(grouping_variable = Primary_diagnosis) %>%
-  # Order Primary_diagnosis by ascending n (most n's the same except 1)
+  # Order Primary_diagnosis by median TMB
   mutate(
     Primary_diagnosis = str_wrap(Primary_diagnosis, 10),
-    Primary_diagnosis = fct_infreq(Primary_diagnosis),
-    Primary_diagnosis = fct_rev(Primary_diagnosis)
+    Primary_diagnosis = fct_reorder(Primary_diagnosis, tmb, .fun = median),
   )
 
 # Plot the data ----------------------------------------------------------
