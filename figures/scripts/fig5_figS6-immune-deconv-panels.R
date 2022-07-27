@@ -150,7 +150,7 @@ cancer_group_plot <- ggplot(quantiseq_cg) +
     axis.text.x = element_text(size = 4, angle = 45, hjust = 1),
     axis.text.y = element_text(size = 5.5),
     axis.title = element_text(size = 7),
-    strip.text = element_text(size = 4.45),
+    strip.text = element_text(size = rel(0.374)), # there is a HUGE jump 0.374 --> 0.375!
     strip.background = element_rect(size = 0.4),
     axis.line = element_line(size = rel(0.4)),
     axis.ticks = element_line(size = rel(0.4)),
@@ -221,7 +221,7 @@ cd274_expression_mb_plot <- ggplot(CD274_cd8_mb) +
       y = expression) +
   # remove outliers
   geom_boxplot(outlier.shape = NA, 
-               color = "grey40", 
+               color = "grey20", 
                size = 0.2) + 
   geom_jitter(width = 0.15, 
               size = 0.55, 
@@ -256,16 +256,27 @@ ggsave(cd274_expression_mb_pdf,
 ## Plot S6E -----------------------------------
 
 
-# Definene molecular subtypes to include in this panel
-# CAUTION: This is hardcoded for V22 to be all N>=3 that are in these groups: https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1575#discussion_r930516213
-# This hardcoding facilitates the factor order as well by frequency of broad histologies
-subtype_order <- c("CRANIO, ADAM", "EPN, ST RELA",
-                   "MB, SHH", "MB, WNT", "MB, Group3", "MB, Group4",
-                   "DMG, H3 K28", "DMG, H3 K28, TP53 activated", "DMG, H3 K28, TP53 lost",
-                   "HGG, H3 G35", "HGG, H3 wildtype", "HGG, H3 wildtype, TP53 activated", "HGG, H3 wildtype, TP53 lost"
-                   )
+# Histologies to include in this panel and in the next panel S6F - https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1575#discussion_r930516213
 broad_histology_order <- c("Tumor of sellar region", "Ependymal tumor", "Embryonal tumor", "High-grade glioma")
 
+
+# Find molecular subtypes, and their order, to include in this panel
+subtype_order <- palette_mapping_df %>%
+  select(broad_histology_display, molecular_subtype) %>%
+  # keep only relevant histologies
+  filter(broad_histology_display %in% broad_histology_order) %>%
+  # remove NA and unclassified subtypes
+  filter(!is.na(molecular_subtype),
+         !str_detect(molecular_subtype, "To be classified")) %>%
+  # Keep only combinations with N>=3
+  count(broad_histology_display, molecular_subtype) %>% 
+  filter(n >= 3) %>%
+  # Factor/arrange broad_histology_display to obtain the final molecular_subtype order
+  mutate(broad_histology_display = fct_relevel(broad_histology_display, broad_histology_order)) %>%
+  arrange(broad_histology_display) %>%
+  pull(molecular_subtype)
+
+  
 
 # Establish data for this plot
 data_for_s6e <- quantiseq %>%
@@ -327,22 +338,13 @@ ggsave(quantiseq_subtypes_pdf,
 
 ## Plot S6F -----------------------------------
 
-
-# Calculate cd8+/cd4+ ratio, join with subtype/histology, and set up factors
-# There is no EPN data here, so we have a slightly modified subtype order without EPN:
-subtype_order <- c("CRANIO, ADAM", 
-                   "MB, SHH", "MB, WNT", "MB, Group3", "MB, Group4",
-                   "DMG, H3 K28", "DMG, H3 K28, TP53 activated", "DMG, H3 K28, TP53 lost",
-                   "HGG, H3 G35", "HGG, H3 wildtype", "HGG, H3 wildtype, TP53 activated", "HGG, H3 wildtype, TP53 lost"
-)
-
+# Calculate cd8+/cd4+ ratio for all subtypes, join with subtype/histology, and set up factors
 ratio_df <- quantiseq %>%
   spread(cell_type, score) %>% 
   mutate(cd8_cd4_ratio = `T cell CD8+` / `T cell CD4+ (non-regulatory)`)  %>%
   gather(cell_type, score, -sample) %>%
   # Keep only the known ratios
   filter(cell_type == "cd8_cd4_ratio", 
-         # NOTE: after filtering here in V22, there are NO EPNs to include.
          !(is.infinite(score)), 
          !(is.nan(score))) %>%
   rename(cd8_cd4_ratio = cell_type) %>%
@@ -352,13 +354,22 @@ ratio_df <- quantiseq %>%
            sample = Kids_First_Biospecimen_ID, 
            broad_histology_display, broad_histology_hex, molecular_subtype)
   ) %>%
-  # Filter and order subtypes
-  filter(molecular_subtype %in% subtype_order) %>%
-  mutate(molecular_subtype = fct_relevel(molecular_subtype, subtype_order)) 
+  # Filter to subtype_order set up for Figure S6E
+  filter(molecular_subtype %in% subtype_order)
+
+# Update the subtype order to only keep those that are in the ratio_df
+#  Some may not have been retained if they were all NaN or Inf
+subtype_order <- subtype_order[subtype_order %in% unique(ratio_df$molecular_subtype)]
+
+# Similarly update the histology order to only keep those that are in the ratio_df
+broad_histology_order <- broad_histology_order[broad_histology_order %in% unique(ratio_df$broad_histology_display)]
 
 
-# Plot the ratio:
-cd8_cd4_ratio_plot <- ggplot(ratio_df) + 
+# Update factor order for subtypes and histology and plot
+cd8_cd4_ratio_plot <- ratio_df %>%
+  mutate(molecular_subtype = fct_relevel(molecular_subtype, subtype_order), 
+         broad_histology_display = fct_relevel(broad_histology_display, broad_histology_order)) %>%
+  ggplot() + 
   aes(x = molecular_subtype,
       y = score) +
   # remove outliers
