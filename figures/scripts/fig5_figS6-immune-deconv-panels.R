@@ -373,8 +373,8 @@ cd8_cd4_ratio_plot <- ratio_df %>%
   aes(x = molecular_subtype,
       y = score) +
   # remove outliers
-  geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
-  geom_jitter(width = 0.1, size = 1, alpha = 0.6,  
+  geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.5) + 
+  geom_jitter(width = 0.1, size = 2, alpha = 0.6,  
               aes(color = broad_histology_hex),
               # Helpful shape for compiling
               shape = 16) + 
@@ -383,7 +383,7 @@ cd8_cd4_ratio_plot <- ratio_df %>%
        y = "Ratio of CD8+/CD4+ T cell fractions") +
   ggpubr::theme_pubr() + 
   theme(axis.text.x = element_text(hjust = 1, 
-                                   size = rel(0.3), 
+                                   size = rel(0.6), 
                                    angle = 45),
         axis.text.y = element_text(size = rel(0.7)),
         axis.title = element_text(size = rel(0.7)),
@@ -393,5 +393,5 @@ cd8_cd4_ratio_plot <- ratio_df %>%
 
 ggsave(cd8_cd4_ratio_pdf, 
        cd8_cd4_ratio_plot, 
-       width = 2.75, height = 4, useDingbats = FALSE)
+       width = 3.5, height = 4, useDingbats = FALSE)
 
