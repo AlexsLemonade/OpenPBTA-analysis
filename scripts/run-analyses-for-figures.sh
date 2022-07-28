@@ -56,9 +56,7 @@ OPENPBTA_CNS_FIT_ONLY=1 bash ${analyses_dir}/mutational-signatures/run_mutationa
 
 
 # Run the telomerase activity prediction script, for Figures 4 and S5
-Rscript --vanilla ${analyses_dir}/telomerase-activity-prediction/01-run-EXTEND.R \
- --input ${analyses_dir}/collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds \
- --output ${analyses_dir}/telomerase-activity-prediction/results/TelomeraseScores_PTBAStranded_FPKM.txt
+OPENPBTA_FOR_FIGURES=1 bash ${analyses_dir}/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
 
 # Run the survival module, for Figures 4 and 5
 bash ${analyses_dir}/survival-analysis/run_survival.sh
