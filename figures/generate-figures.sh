@@ -30,13 +30,72 @@ mkdir -p pdfs
 
 #### Make sure color palettes are up-to-date
 Rscript --vanilla scripts/color_palettes.R
-Rscript -e "rmarkdown::render('mapping-histology-labels.Rmd', clean = TRUE, params = list(release = 'release-v21-20210820'))"
+Rscript -e "rmarkdown::render('mapping-histology-labels.Rmd', clean = TRUE, params = list(release = 'release-v22-20220505'))"
+
+
+##### Run all analysis modules required for figures ---------------------------------------
+
+# Run modules that cannot be run locally due to memory requirements
+if [ "$RUN_LOCAL" -lt "1" ]; then
+  bash ${analyses_dir}/focal-cn-file-preparation/run-prepare-cn.sh       # Figures 2 and S3
+  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh # Figure S2
+  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh # Figure S2
+  bash ${analyses_dir}/copy_number_consensus_call/run_consensus_call.sh  # Figure S3 (heatmap)
+fi
+
+# Run the `oncoprint-landscape` module shell script, for Figure 2 and S3
+bash ${analyses_dir}/oncoprint-landscape/run-oncoprint.sh
+
+# Run the interaction plots script for Figures 3 and S3
+bash ${analyses_dir}/interaction-plots/01-create-interaction-plots.sh
+
+
+# Run the chromothripsis module, which requires the chromosomal-instability module, for Figure 3
+bash ${analyses_dir}/chromosomal-instability/run_breakpoint_analysis.sh
+bash ${analyses_dir}/chromothripsis/run-chromothripsis.sh
+
+# Run the mutational-signatures module for Figures 3 and S4
+# We only run the part of the module used in the manuscript (i.e., not de novo)
+OPENPBTA_CNS_FIT_ONLY=1 bash ${analyses_dir}/mutational-signatures/run_mutational_signatures.sh
+
+# Run the collapse-rnaseq module, which is needed for telomerase, immune deconvolution, and GSVA modules
+bash ${analyses_dir}/collapse-rnaseq/run-collapse-rnaseq.sh 
+
+# Run the telomerase activity prediction script, for Figures 4 and S5
+OPENPBTA_FOR_FIGURES=1 bash ${analyses_dir}/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
+
+
+# Run the tp53 classifier, for Figures 4 and S5
+bash ${analyses_dir}/tp53_nf1_score/run_classifier.sh
+
+# Run the survival module, for Figures 4 and 5
+bash ${analyses_dir}/survival-analysis/run_survival.sh
+
+# Run the dimension reduction module, for Figures 5 and S6
+bash ${analyses_dir}/transcriptomic-dimension-reduction/dimension-reduction-plots.sh
+
+# Run the immune deconvolution module, for Figures 5 and S6
+bash ${analyses_dir}/immune-deconv/run-immune-deconv.sh
+
+# Generate GSVA scores and test for cancer group differences, for Figure 5
+bash ${analyses_dir}/gene-set-enrichment-analysis/run-gsea.sh
+
+
+#### Make all output figure directories ------------------------------------
+mkdir -p pdfs/fig1/panels
+mkdir -p pdfs/fig2/panels
+mkdir -p pdfs/fig3/panels
+mkdir -p pdfs/fig4/panels 
+mkdir -p pdfs/fig5/panels
+mkdir -p pdfs/supp/figs1/panels
+mkdir -p pdfs/supp/figs2/panels
+mkdir -p pdfs/supp/figs3/panels
+mkdir -p pdfs/supp/figs4/panels
+mkdir -p pdfs/supp/figs5/panels
+mkdir -p pdfs/supp/figs6/panels
 
 
 ##### Figure 1: Workflow and sample distribution ------------------------------------
-
-# Create directories
-mkdir -p pdfs/fig1/panels
 
 # Generate sample distribution panel for Figure 1 (and supplementary panels)
 Rscript --vanilla scripts/fig1-sample-distribution.R
@@ -44,23 +103,13 @@ Rscript --vanilla scripts/fig1-sample-distribution.R
 
 ##### Figure 2: Oncoprint ------------------------------------------------------------
 
-# Create directory
-mkdir -p pdfs/fig2/panels
-
-
 # Create single panel PDFs and legends
-# Note: This script also generates a panel for Figure S3
-Rscript --vanilla scripts/fig2-oncoprint-landscape.R
-
+# Note: This script also generates a panel Figure S3A
+Rscript --vanilla scripts/fig2_figS3-oncoprint-landscape.R
 
 
 
 ##### Figure 3: Mutation overview ----------------------------------------------------
-
-# Create directory
-mkdir -p pdfs/fig3/panels
-# This directory is also created here because one of the scripts also generates S4 panels
-mkdir -p pdfs/supp/figs4/panels 
 
 # Copy the main figure to final directory - panels A,B
 cp ${analyses_dir}/interaction-plots/plots/combined_top50.pdf pdfs/fig3/panels/mutation_cooccurrence_figure.pdf
@@ -78,34 +127,22 @@ Rscript --vanilla scripts/fig3_figS4-mutational-signatures-panels.R
 
 ##### Figure 4: TP53 and telomerase ---------------------------------------------------
 
-# Create directory
-mkdir -p pdfs/fig4/panels
-
 
 # Generate TP53 and telomerase figures 
 Rscript --vanilla scripts/fig4-tp53-telomerase-panels.R # panels A, B, C, D, F
+Rscript --vanilla scripts/fig4-heatmap.R  # panel E
 Rscript --vanilla scripts/fig4-hgg-subtype-forest-plot.R # panel G
 Rscript --vanilla scripts/fig4-hgg-kaplan-meier.R # panel H
-
-# Generate hypermutator heatmap panel and legend, panel E
-Rscript --vanilla scripts/fig4-heatmap.R
-
 
 
 ##### Figure 5: GSVA and immune deconvolution -----------------------------------------
 
-# Create directory
-mkdir -p pdfs/fig5/panels
-
-
 # Generate the GSVA, UMAP, and legend panels: panels A and B
 Rscript --vanilla scripts/fig5-panels-gsva-umap.R
 
-
-# Copy the figures to final directory - panels C and E, in order:
-cp ${analyses_dir}/immune-deconv/plots/cell_types-cancer_groups.pdf  pdfs/fig5/panels/quantiseq-cell_types-cancer_groups.pdf
-cp ${analyses_dir}/immune-deconv/plots/cd274_expression_mb_subtypes.pdf  pdfs/fig5/panels/cd274_expression_mb_subtypes.pdf
-
+# Generate panels C and E:
+# This script additionally generates panels S6E and S6F
+Rscript --vanilla scripts/fig5_figS6-immune-deconv-panels.R
 
 # Generate the forest plot for panel D
 Rscript --vanilla scripts/fig5-forest-plot.R
@@ -113,19 +150,15 @@ Rscript --vanilla scripts/fig5-forest-plot.R
 
 
 
-
-
-
 ##### Figure S2: Consensus SNV calls and TMB --------------------------------------------
 
-# Create directory
-mkdir -p pdfs/supp/figs2/panels
-
-# Generate SNV and TMB figures, **but only if NOT LOCAL**. Signficant memory requirements.
+# Generate SNV figures, **but only if NOT LOCAL**. Significant memory requirements.
 if [ "$RUN_LOCAL" -lt "1" ]; then
-  Rscript --vanilla scripts/supp-snv-callers-panels.R   # Figure S2
-  Rscript --vanilla scripts/supp-tmb-compare-panels.R   # Figure S2
+  Rscript --vanilla scripts/figS2-snv-callers-panels.R  # Figure S2 panels A-G
 fi
+# Generate TMB panels, which does not have the same significant memory requirements
+Rscript --vanilla scripts/figS2-tmb-compare-panels.R  # Figure S2 panels H, I
+
 
 
 
@@ -133,17 +166,10 @@ fi
 
 ##### Figure S3: Other oncoprint and CNV landscape --------------------------------------
 
-
-# Create directory
-mkdir -p pdfs/supp/figs3/panels
-
-
-# Note the oncoprint panel A for this figure was already generated by a Figure 2 step: `Rscript --vanilla scripts/fig2-oncoprint-landscape.R`
+# Note the oncoprint panel A for this figure was already generated by a Figure 2 step: `Rscript --vanilla scripts/fig2_figS3-oncoprint-landscape.R`
 
 # Generate remaining three panels for S3: B, C, and D
-Rscript --vanilla scripts/supp-S3-panels-BCD.R
-
-
+Rscript --vanilla scripts/figS3-panels-BCD.R
 
 
 
@@ -155,38 +181,23 @@ Rscript --vanilla scripts/supp-S3-panels-BCD.R
 
 
 
-
 ##### Figure S5: More TP53/telomerase --------------------------------------------------
 
 
-# Create directory
-mkdir -p pdfs/supp/figs5/panels
-
-# Generate figure panels 
-Rscript --vanilla scripts/supp-S5-panels.R
-
-
+# Generate all figure panels A,B,C 
+Rscript --vanilla scripts/figS5-all-panels.R
 
 
 
 
 ##### Figure S6: More UMAP and other molecular subtypes --------------------------------
 
-# Create directory
-mkdir -p pdfs/supp/figs6/panels
-
 
 # Generate UMAP panels - A, B, C, D
-Rscript --vanilla scripts/supp-subtype-umap.R
+Rscript --vanilla scripts/figS6-subtype-umap-panels.R
 
 
-# Copy panel E
-cp ${analyses_dir}/immune-deconv/plots/cell_types-molecular_subtypes.pdf pdfs/supp/figs6/panels/quantiseq-cell_types-molecular_subtypes.pdf
-# Copy panel F
-cp ${analyses_dir}/immune-deconv/plots/cd8_cd4_ratio.pdf pdfs/supp/figs6/panels/cd8_cd4_ratio.pdf
-
-
-
+# Panels E and F were previously generated with `scripts/fig5_figS6-immune-deconv-panels.R` in a Figure 5 step
 
 
 
