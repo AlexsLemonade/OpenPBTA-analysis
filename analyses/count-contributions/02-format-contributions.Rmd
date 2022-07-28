@@ -191,3 +191,8 @@ write_tsv(total_contributions_df, path = total_countributions_file)
 ```
 
 
+Finally, let's print session info:
+
+```{r}
+sessionInfo()
+```
