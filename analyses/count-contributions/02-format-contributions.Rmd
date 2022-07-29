@@ -40,19 +40,29 @@ So let's clean this up in the interest of readability in the final data frames.
 
 ```{r}
 name_recoding <- c(
-  jashapiro = "Joshua Shapiro",
+  jashapiro = "Joshua A. Shapiro",
+  `Joshua Shapiro` = "Joshua A. Shapiro",
   Stephanie = "Stephanie J. Spielman",
   Bailey = "Bailey Farrow",
   runjin326 = "Run Jin",
   Mateusz = "Mateusz P. Koptyra",
-  tkoganti = "Teja Koganti",
+  tkoganti = "Tejaswi Koganti",
   NNoureen = "Nighat Noureen",
   `Jo Lynne` = "Jo Lynne Rokita",
   jharenza = "Jo Lynne Rokita",
   `e-t-k` = "Ellen Kephardt",
   yangyangclover = "Yang Yang",
   PichaiRaman = "Pichai Raman",
-  hbeale = "Holly Beale"
+  hbeale = "Holly Beale",
+  `Jaclyn Taroni` = "Jaclyn N. Taroni",
+  `Krutika Gaonkar` = "Krutika S. Gaonkar",
+  `Candace Savonen` = "Candace L. Savonen",
+  `Chante Bethell` = "Chante J. Bethell",
+  `Komal Rathi` = "Komal S. Rathi",
+  `Laura Egolf` = "Laura E. Egolf",
+  `Dan Miller` = "Daniel P. Miller",
+  `Casey Greene` = "Casey S. Greene",
+  `Teja Koganti` = "Tejaswi Koganti"
 )
 ```
 

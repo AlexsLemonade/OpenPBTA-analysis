@@ -357,6 +357,8 @@ RUN mkdir -p gistic_install && \
     chmod 755 /home/rstudio/gistic_install
 WORKDIR /rocker-build/
 
+# Required for authorship ordering
+RUN ./install_bioc.r yaml
 
 #### Please install your dependencies immediately above this comment.
 #### Add a comment to indicate what analysis it is required for
