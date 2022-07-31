@@ -66,6 +66,15 @@ name_recoding <- c(
 )
 ```
 
+## Removing bot contributors
+
+We have a bot `alexslemonade-docs-bot` that may make commits, including via GHA (GitHub Actions) to run this very module and produce the final author contribution lists.
+We should not include the bot itself as a contributor.
+
+```{r}
+remove_names <- c("alexslemonade-docs-bot")
+```
+
 ## Module contributions
 
 There are some modules that did not generate results that are included in the manuscript.
@@ -174,6 +183,8 @@ total_contributions_df <- read_tsv(file.path(components_dir,
 total_contributions_df <- total_contributions_df %>%
   # Reorder
   select(author, num_commits) %>%
+  # Remove authors which we should not keep, namely bots %>%
+  filter(!(author %in% remove_names)) %>%
   # Recode names/IDs to be consistent
   mutate(author = recode_factor(author, !!!name_recoding)) %>%
   # For folks that had multiple names included, summarize the total commits
@@ -189,4 +200,10 @@ Write to file.
 write_tsv(total_contributions_df, path = total_countributions_file)
 ```
 
+
+Finally, let's print session info:
+
+```{r}
+sessionInfo()
+```
 
