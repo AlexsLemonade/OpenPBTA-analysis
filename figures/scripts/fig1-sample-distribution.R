@@ -22,9 +22,6 @@ figures_dir <- file.path(root_dir, "figures")
 main_output_dir <- file.path(figures_dir, "pdfs", "fig1", "panels")
 dir.create(main_output_dir, recursive = TRUE, showWarnings = FALSE)
 
-# Assay type stacked bar plots
-supp_output_dir <- file.path(figures_dir, "pdfs", "supp", "sample-distribution")
-dir.create(supp_output_dir, recursive = TRUE, showWarnings = FALSE)
 
 #### Read in histologies -------------------------------------------------------
 
