@@ -42,10 +42,7 @@ download.file(manuscript_metadata_url, "metadata.yaml",)
 We calculate the number of modules an author has contributed to in `analyses/count-contributions`. 
 
 ```{r}
-module_contributions_file <- file.path("..", 
-                                       "analyses", 
-                                       "count-contributions", 
-                                       "results", 
+module_contributions_file <- file.path("results", 
                                        "module_contribution_counts.tsv")
 ```
 
@@ -173,7 +170,11 @@ updated_manuscript_metadata <- manuscript_metadata
 updated_manuscript_metadata$authors <- reordered_author_list
 
 # Write updated metadata to file
-yaml::write_yaml(updated_manuscript_metadata, "updated_metadata.yaml")
+yaml::write_yaml(updated_manuscript_metadata, 
+                 file.path("results", "updated_metadata.yaml"))
+
+# Remove original metadata from directory
+file.remove("metadata.yaml")
 ```
 
 ## Session Info
