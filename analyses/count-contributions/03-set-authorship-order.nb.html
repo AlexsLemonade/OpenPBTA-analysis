@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Jaclyn Taroni for ALSF CCDL" />
@@ -2559,7 +2559,7 @@ window.initializeCodeFolding = function(show) {
 
     // create a collapsable div to wrap the code in
     var div = $('<div class="collapse r-code-collapse"></div>');
-    if (show)
+    if (show || $(this)[0].classList.contains('fold-show'))
       div.addClass('in');
     var id = 'rcode-643E0F36' + currentIndex++;
     div.attr('id', id);
@@ -2689,7 +2689,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -2775,6 +2774,7 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -2787,57 +2787,12 @@ summary {
 }
 </style>
 
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
 <!-- code folding -->
 <style type="text/css">
 .code-folding-btn { margin-bottom: 4px; }
 </style>
-<script>
-$(document).ready(function () {
-  window.initializeSourceEmbed("03-set-authorship-order.Rmd");
-  window.initializeCodeFolding("show" === "show");
-});
-</script>
 
 
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <style type="text/css">
 
@@ -2851,6 +2806,12 @@ $(document).ready(function ()  {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -2949,28 +2910,29 @@ div.tocify {
 <h2>Set up</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoibGlicmFyeSh0aWR5dmVyc2UpIn0= -->
 <pre class="r"><code>library(tidyverse)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RwbHlyJzpcbiAgbWV0aG9kICAgICAgICAgICBmcm9tXG4gIHByaW50LnJvd3dpc2VfZGYgICAgIFxuXHUwMDFiWzM3beKUgOKUgCBcdTAwMWJbMW1BdHRhY2hpbmcgcGFja2FnZXNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2UgMS4yLjEg4pSA4pSAXHUwMDFiWzM5bVxuXHUwMDFiWzM3bVx1MDAxYlszMm3inJRcdTAwMWJbMzdtIFx1MDAxYlszNG1nZ3Bsb3QyXHUwMDFiWzM3bSAzLjIuMCAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszN20gXHUwMDFiWzM0bXB1cnJyICBcdTAwMWJbMzdtIDAuMy4yXG5cdTAwMWJbMzJt4pyUXHUwMDFiWzM3bSBcdTAwMWJbMzRtdGliYmxlIFx1MDAxYlszN20gMi4xLjMgICAgIFx1MDAxYlszMm3inJRcdTAwMWJbMzdtIFx1MDAxYlszNG1kcGx5ciAgXHUwMDFiWzM3bSAwLjguM1xuXHUwMDFiWzMybeKclFx1MDAxYlszN20gXHUwMDFiWzM0bXRpZHlyICBcdTAwMWJbMzdtIDAuOC4zICAgICBcdTAwMWJbMzJt4pyUXHUwMDFiWzM3bSBcdTAwMWJbMzRtc3RyaW5nclx1MDAxYlszN20gMS40LjBcblx1MDAxYlszMm3inJRcdTAwMWJbMzdtIFx1MDAxYlszNG1yZWFkciAgXHUwMDFiWzM3bSAxLjMuMSAgICAgXHUwMDFiWzMybeKclFx1MDAxYlszN20gXHUwMDFiWzM0bWZvcmNhdHNcdTAwMWJbMzdtIDAuNC4wXHUwMDFiWzM5bVxuXHUwMDFiWzM3beKUgOKUgCBcdTAwMWJbMW1Db25mbGljdHNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2VfY29uZmxpY3RzKCkg4pSA4pSAXG5cdTAwMWJbMzFt4pyWXHUwMDFiWzM3bSBcdTAwMWJbMzRtZHBseXJcdTAwMWJbMzdtOjpcdTAwMWJbMzJtZmlsdGVyKClcdTAwMWJbMzdtIG1hc2tzIFx1MDAxYlszNG1zdGF0c1x1MDAxYlszN206OmZpbHRlcigpXG5cdTAwMWJbMzFt4pyWXHUwMDFiWzM3bSBcdTAwMWJbMzRtZHBseXJcdTAwMWJbMzdtOjpcdTAwMWJbMzJtbGFnKClcdTAwMWJbMzdtICAgIG1hc2tzIFx1MDAxYlszNG1zdGF0c1x1MDAxYlszN206OmxhZygpXHUwMDFiWzM5bVxuIn0= -->
-<pre><code>Registered S3 method overwritten by 'dplyr':
-  method           from
-  print.rowwise_df     
-[37m── [1mAttaching packages[22m ─────────────────────────────────────────── tidyverse 1.2.1 ──[39m
-[37m[32m✔[37m [34mggplot2[37m 3.2.0     [32m✔[37m [34mpurrr  [37m 0.3.2
-[32m✔[37m [34mtibble [37m 2.1.3     [32m✔[37m [34mdplyr  [37m 0.8.3
-[32m✔[37m [34mtidyr  [37m 0.8.3     [32m✔[37m [34mstringr[37m 1.4.0
-[32m✔[37m [34mreadr  [37m 1.3.1     [32m✔[37m [34mforcats[37m 0.4.0[39m
-[37m── [1mConflicts[22m ────────────────────────────────────────────── tidyverse_conflicts() ──
-[31m✖[37m [34mdplyr[37m::[32mfilter()[37m masks [34mstats[37m::filter()
-[31m✖[37m [34mdplyr[37m::[32mlag()[37m    masks [34mstats[37m::lag()[39m</code></pre>
-<!-- rnb-output-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIEF0dGFjaGluZyBwYWNrYWdlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlIDEuMy4wIOKUgOKUgFxuIn0= -->
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pyUIGdncGxvdDIgMy4zLjAgICAgIOKclCBwdXJyciAgIDAuMy40XG7inJQgdGliYmxlICAzLjAuMSAgICAg4pyUIGRwbHlyICAgMC44LjVcbuKclCB0aWR5ciAgIDEuMC4yICAgICDinJQgc3RyaW5nciAxLjQuMFxu4pyUIHJlYWRyICAgMS4zLjEgICAgIOKclCBmb3JjYXRzIDAuNS4wXG4ifQ== -->
+<pre><code>✔ ggplot2 3.3.0     ✔ purrr   0.3.4
+✔ tibble  3.0.1     ✔ dplyr   0.8.5
+✔ tidyr   1.0.2     ✔ stringr 1.4.0
+✔ readr   1.3.1     ✔ forcats 0.5.0</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIENvbmZsaWN0cyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlX2NvbmZsaWN0cygpIOKUgOKUgFxu4pyWIGRwbHlyOjpmaWx0ZXIoKSBtYXNrcyBzdGF0czo6ZmlsdGVyKClcbuKcliBkcGx5cjo6bGFnKCkgICAgbWFza3Mgc3RhdHM6OmxhZygpXG4ifQ== -->
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>We will be using <code>sample()</code> in this notebook, so we set a seed here.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2V0LnNlZWQoMjAyMilcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoic2V0LnNlZWQoMjAyMikifQ== -->
 <pre class="r"><code>set.seed(2022)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -2980,16 +2942,10 @@ div.tocify {
 <p>Grab the metadata YAML file from the <code>master</code> branch of the repository and save to the directory this notebook is in.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWFudXNjcmlwdF9tZXRhZGF0YV91cmwgPC0gXCJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vQWxleHNMZW1vbmFkZS9PcGVuUEJUQS1tYW51c2NyaXB0L21hc3Rlci9jb250ZW50L21ldGFkYXRhLnlhbWxcIlxuZG93bmxvYWQuZmlsZShtYW51c2NyaXB0X21ldGFkYXRhX3VybCwgXCJtZXRhZGF0YS55YW1sXCIsKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIm1hbnVzY3JpcHRfbWV0YWRhdGFfdXJsIDwtIFwiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0FsZXhzTGVtb25hZGUvT3BlblBCVEEtbWFudXNjcmlwdC9tYXN0ZXIvY29udGVudC9tZXRhZGF0YS55YW1sXCIiLCJkb3dubG9hZC5maWxlKG1hbnVzY3JpcHRfbWV0YWRhdGFfdXJsLCBcIm1ldGFkYXRhLnlhbWxcIiwpIl19 -->
 <pre class="r"><code>manuscript_metadata_url &lt;- &quot;https://raw.githubusercontent.com/AlexsLemonade/OpenPBTA-manuscript/master/content/metadata.yaml&quot;
 download.file(manuscript_metadata_url, &quot;metadata.yaml&quot;,)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoidHJ5aW5nIFVSTCAnaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0FsZXhzTGVtb25hZGUvT3BlblBCVEEtbWFudXNjcmlwdC9tYXN0ZXIvY29udGVudC9tZXRhZGF0YS55YW1sJ1xuQ29udGVudCB0eXBlICd0ZXh0L3BsYWluOyBjaGFyc2V0PXV0Zi04JyBsZW5ndGggMjEwMzIgYnl0ZXMgKDIwIEtCKVxuPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT1cbmRvd25sb2FkZWQgMjAgS0JcbiJ9 -->
-<pre><code>trying URL 'https://raw.githubusercontent.com/AlexsLemonade/OpenPBTA-manuscript/master/content/metadata.yaml'
-Content type 'text/plain; charset=utf-8' length 21032 bytes (20 KB)
-==================================================
-downloaded 20 KB</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -2998,7 +2954,7 @@ downloaded 20 KB</code></pre>
 <p>We calculate the number of modules an author has contributed to in <code>analyses/count-contributions</code>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubW9kdWxlX2NvbnRyaWJ1dGlvbnNfZmlsZSA8LSBmaWxlLnBhdGgoXCJyZXN1bHRzXCIsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJtb2R1bGVfY29udHJpYnV0aW9uX2NvdW50cy50c3ZcIilcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoibW9kdWxlX2NvbnRyaWJ1dGlvbnNfZmlsZSA8LSBmaWxlLnBhdGgoXCJyZXN1bHRzXCIsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJtb2R1bGVfY29udHJpYnV0aW9uX2NvdW50cy50c3ZcIikifQ== -->
 <pre class="r"><code>module_contributions_file &lt;- file.path(&quot;results&quot;, 
                                        &quot;module_contribution_counts.tsv&quot;)</code></pre>
 <!-- rnb-source-end -->
@@ -3011,7 +2967,7 @@ downloaded 20 KB</code></pre>
 <p>We will only be updating the order of the author metadata, not the title or any other author information. We can read the YAML file in directly with <code>read_yaml()</code> and snag the author list</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWFudXNjcmlwdF9tZXRhZGF0YSA8LSB5YW1sOjpyZWFkX3lhbWwoXCJtZXRhZGF0YS55YW1sXCIpXG5hdXRob3JfbGlzdCA8LSBtYW51c2NyaXB0X21ldGFkYXRhJGF1dGhvcnNcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIm1hbnVzY3JpcHRfbWV0YWRhdGEgPC0geWFtbDo6cmVhZF95YW1sKFwibWV0YWRhdGEueWFtbFwiKSIsImF1dGhvcl9saXN0IDwtIG1hbnVzY3JpcHRfbWV0YWRhdGEkYXV0aG9ycyJdfQ== -->
 <pre class="r"><code>manuscript_metadata &lt;- yaml::read_yaml(&quot;metadata.yaml&quot;)
 author_list &lt;- manuscript_metadata$authors</code></pre>
 <!-- rnb-source-end -->
@@ -3020,7 +2976,7 @@ author_list &lt;- manuscript_metadata$authors</code></pre>
 <p>Get a vector of author names out of the metadata.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYXV0aG9yX25hbWVzIDwtIHB1cnJyOjptYXBfY2hyKGF1dGhvcl9saXN0LCBcIm5hbWVcIilcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYXV0aG9yX25hbWVzIDwtIHB1cnJyOjptYXBfY2hyKGF1dGhvcl9saXN0LCBcIm5hbWVcIikifQ== -->
 <pre class="r"><code>author_names &lt;- purrr::map_chr(author_list, &quot;name&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -3033,7 +2989,7 @@ author_list &lt;- manuscript_metadata$authors</code></pre>
 <p>We are going to pin some of the author positioned based on scholarship that is not well-captured in git commits alone (e.g., review &amp; discussion) or based on the conceptualization and management of the project.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGlubmVkX2F1dGhvcnMgPC0gYyhcIkpvc2h1YSBBLiBTaGFwaXJvXCIsIFxuICAgICAgICAgICAgICAgICAgICBcIkFkYW0gQy4gUmVzbmlja1wiLCBcbiAgICAgICAgICAgICAgICAgICAgXCJDYXNleSBTLiBHcmVlbmVcIixcbiAgICAgICAgICAgICAgICAgICAgIyBBc3Rlcmlza3MgYXJlIGluIHRoZSBuYW1lIGZpZWxkIGZvciBjb3JyZXNwb25kaW5nIGF1dGhvcnNcbiAgICAgICAgICAgICAgICAgICAgXCJKbyBMeW5uZSBSb2tpdGEqXCIsICBcbiAgICAgICAgICAgICAgICAgICAgXCJKYWNseW4gTi4gVGFyb25pKlwiLFxuICAgICAgICAgICAgICAgICAgICBcIkNoaWxkcmVuJ3MgQnJhaW4gVHVtb3IgTmV0d29ya1wiLFxuICAgICAgICAgICAgICAgICAgICBcIlBhY2lmaWMgUGVkaWF0cmljIE5ldXJvLU9uY29sb2d5IENvbnNvcnRpdW1cIilcblxuIyBUaGUgaW5kaWNlcyBvZiB0aGUgcGlubmVkIGF1dGhvciBwb3NpdGlvbnNcbnBpbm5lZF9wb3NpdGlvbnMgPC0gc3RyX3doaWNoKGF1dGhvcl9uYW1lcywgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwYXN0ZShwaW5uZWRfYXV0aG9ycywgY29sbGFwc2UgPSBcInxcIikpXG4jIChBdXRob3IpIG5hbWVkIHZlY3RvciBvZiBpbmRpY2VzXG5uYW1lcyhwaW5uZWRfcG9zaXRpb25zKSA8LSBhdXRob3JfbmFtZXNbcGlubmVkX3Bvc2l0aW9uc10gXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbInBpbm5lZF9hdXRob3JzIDwtIGMoXCJKb3NodWEgQS4gU2hhcGlyb1wiLCBcbiAgICAgICAgICAgICAgICAgICAgXCJBZGFtIEMuIFJlc25pY2tcIiwgXG4gICAgICAgICAgICAgICAgICAgIFwiQ2FzZXkgUy4gR3JlZW5lXCIsXG4gICAgICAgICAgICAgICAgICAgICMgQXN0ZXJpc2tzIGFyZSBpbiB0aGUgbmFtZSBmaWVsZCBmb3IgY29ycmVzcG9uZGluZyBhdXRob3JzXG4gICAgICAgICAgICAgICAgICAgIFwiSm8gTHlubmUgUm9raXRhKlwiLCAgXG4gICAgICAgICAgICAgICAgICAgIFwiSmFjbHluIE4uIFRhcm9uaSpcIixcbiAgICAgICAgICAgICAgICAgICAgXCJDaGlsZHJlbidzIEJyYWluIFR1bW9yIE5ldHdvcmtcIixcbiAgICAgICAgICAgICAgICAgICAgXCJQYWNpZmljIFBlZGlhdHJpYyBOZXVyby1PbmNvbG9neSBDb25zb3J0aXVtXCIpIiwiIiwiIyBUaGUgaW5kaWNlcyBvZiB0aGUgcGlubmVkIGF1dGhvciBwb3NpdGlvbnMiLCJwaW5uZWRfcG9zaXRpb25zIDwtIHN0cl93aGljaChhdXRob3JfbmFtZXMsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcGFzdGUocGlubmVkX2F1dGhvcnMsIGNvbGxhcHNlID0gXCJ8XCIpKSIsIiMgKEF1dGhvcikgbmFtZWQgdmVjdG9yIG9mIGluZGljZXMiLCJuYW1lcyhwaW5uZWRfcG9zaXRpb25zKSA8LSBhdXRob3JfbmFtZXNbcGlubmVkX3Bvc2l0aW9uc10gIl19 -->
 <pre class="r"><code>pinned_authors &lt;- c(&quot;Joshua A. Shapiro&quot;, 
                     &quot;Adam C. Resnick&quot;, 
                     &quot;Casey S. Greene&quot;,
@@ -3057,22 +3013,22 @@ names(pinned_positions) &lt;- author_names[pinned_positions] </code></pre>
 <p>For folks that contributed to the code base that are not pinned in position, we’ll use the number of analysis modules included in the paper that they’ve contributed to to determine their position in the author list.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubW9kdWxlX2NvbnRyaWJ1dGlvbnNfZGYgPC0gcmVhZF90c3YobW9kdWxlX2NvbnRyaWJ1dGlvbnNfZmlsZSlcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoibW9kdWxlX2NvbnRyaWJ1dGlvbnNfZGYgPC0gcmVhZF90c3YobW9kdWxlX2NvbnRyaWJ1dGlvbnNfZmlsZSkifQ== -->
 <pre class="r"><code>module_contributions_df &lt;- read_tsv(module_contributions_file)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBhdXRob3IgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgbnVtX21vZHVsZXMgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bVxuKVxuIn0= -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBhdXRob3IgPSBjb2xfY2hhcmFjdGVyKCksXG4gIG51bV9tb2R1bGVzID0gY29sX2RvdWJsZSgpXG4pXG4ifQ== -->
 <pre><code>Parsed with column specification:
 cols(
-  author = [31mcol_character()[39m,
-  num_modules = [32mcol_double()[39m
+  author = col_character(),
+  num_modules = col_double()
 )</code></pre>
-<!-- rnb-output-end -->
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>In the case of ties, we want to randomly set the authorship order, so we shuffle the contribution dataset before sorting by the number of modules.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBJZiB0aGVyZSBhcmUgdGllcywgc2h1ZmZsaW5nIHRoZSBlbnRpcmUgZGF0YSBmcmFtZSBiZWZvcmUgdGhlIGFycmFuZ2UoKSBzdGVwXG4jIGlzIGEgd2F5IHRvIHJhbmRvbWx5IHNlbGVjdCB0aGUgb3JkZXJpbmcgb2YgdGllc1xubW9kdWxlX2NvbnRyaWJ1dGlvbnNfZGYgPC0gbW9kdWxlX2NvbnRyaWJ1dGlvbnNfZGZbc2FtcGxlKG5yb3cobW9kdWxlX2NvbnRyaWJ1dGlvbnNfZGYpKSwgXVxuXG5jb2RlX2NvbnRyaWJ1dG9ycyA8LSBtb2R1bGVfY29udHJpYnV0aW9uc19kZiAlPiVcbiAgIyBGb3IgY29ycmVzcG9uZGluZyBhdXRob3JzLCB3ZSBuZWVkIHRvIGFkZCBhbiAqIHRvIHRoZWlyIG5hbWVzIGluIG9yZGVyIHRvXG4gICMgZmlsdGVyIHRoZW0gb3V0IGluIHRoZSBuZXh0IHN0ZXBcbiAgbXV0YXRlKGF1dGhvciA9IGlmX2Vsc2UoYXV0aG9yICVpbiUgYyhcIkphY2x5biBOLiBUYXJvbmlcIiwgXCJKbyBMeW5uZSBSb2tpdGFcIiksXG4gICAgICAgICAgICAgICAgICAgICAgICAgIHN0cl9jKGF1dGhvciwgXCIqXCIpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICBhdXRob3IpXG4gICkgJT4lXG4gICMgQXV0aG9ycyB3aXRoIG1vcmUgY29udHJpYnV0aW9ucyBzaG91bGQgY29tZSBmaXJzdFxuICBhcnJhbmdlKGRlc2MobnVtX21vZHVsZXMpKSAlPiVcbiAgcHVsbChhdXRob3IpXG5cbiMgUmVtb3ZlIHBpbm5lZCBhdXRob3JzIGZyb20gY29uc2lkZXJhdGlvbiBoZXJlXG5jb2RlX2NvbnRyaWJ1dG9ycyA8LSBzZXRkaWZmKGNvZGVfY29udHJpYnV0b3JzLCBwaW5uZWRfYXV0aG9ycylcblxuIyBDb2RlIGNvbnRyaWJ1dG9ycyBjb21lIGFmdGVyIHRoZSBwaW5uZWQgZmlyc3QgYXV0aG9yIHBvc2l0aW9uXG5jb2RlX2NvbnRyaWJ1dG9yX3Bvc2l0aW9ucyA8LSAxOmxlbmd0aChjb2RlX2NvbnRyaWJ1dG9ycykgKyAxXG5uYW1lcyhjb2RlX2NvbnRyaWJ1dG9yX3Bvc2l0aW9ucykgPC0gY29kZV9jb250cmlidXRvcnNcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgSWYgdGhlcmUgYXJlIHRpZXMsIHNodWZmbGluZyB0aGUgZW50aXJlIGRhdGEgZnJhbWUgYmVmb3JlIHRoZSBhcnJhbmdlKCkgc3RlcCIsIiMgaXMgYSB3YXkgdG8gcmFuZG9tbHkgc2VsZWN0IHRoZSBvcmRlcmluZyBvZiB0aWVzIiwibW9kdWxlX2NvbnRyaWJ1dGlvbnNfZGYgPC0gbW9kdWxlX2NvbnRyaWJ1dGlvbnNfZGZbc2FtcGxlKG5yb3cobW9kdWxlX2NvbnRyaWJ1dGlvbnNfZGYpKSwgXSIsIiIsImNvZGVfY29udHJpYnV0b3JzIDwtIG1vZHVsZV9jb250cmlidXRpb25zX2RmICU+JVxuICAjIEZvciBjb3JyZXNwb25kaW5nIGF1dGhvcnMsIHdlIG5lZWQgdG8gYWRkIGFuICogdG8gdGhlaXIgbmFtZXMgaW4gb3JkZXIgdG9cbiAgIyBmaWx0ZXIgdGhlbSBvdXQgaW4gdGhlIG5leHQgc3RlcFxuICBtdXRhdGUoYXV0aG9yID0gaWZfZWxzZShhdXRob3IgJWluJSBjKFwiSmFjbHluIE4uIFRhcm9uaVwiLCBcIkpvIEx5bm5lIFJva2l0YVwiKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgc3RyX2MoYXV0aG9yLCBcIipcIiksXG4gICAgICAgICAgICAgICAgICAgICAgICAgIGF1dGhvcilcbiAgKSAlPiVcbiAgIyBBdXRob3JzIHdpdGggbW9yZSBjb250cmlidXRpb25zIHNob3VsZCBjb21lIGZpcnN0XG4gIGFycmFuZ2UoZGVzYyhudW1fbW9kdWxlcykpICU+JVxuICBwdWxsKGF1dGhvcikiLCIiLCIjIFJlbW92ZSBwaW5uZWQgYXV0aG9ycyBmcm9tIGNvbnNpZGVyYXRpb24gaGVyZSIsImNvZGVfY29udHJpYnV0b3JzIDwtIHNldGRpZmYoY29kZV9jb250cmlidXRvcnMsIHBpbm5lZF9hdXRob3JzKSIsIiIsIiMgQ29kZSBjb250cmlidXRvcnMgY29tZSBhZnRlciB0aGUgcGlubmVkIGZpcnN0IGF1dGhvciBwb3NpdGlvbiIsImNvZGVfY29udHJpYnV0b3JfcG9zaXRpb25zIDwtIDE6bGVuZ3RoKGNvZGVfY29udHJpYnV0b3JzKSArIDEiLCJuYW1lcyhjb2RlX2NvbnRyaWJ1dG9yX3Bvc2l0aW9ucykgPC0gY29kZV9jb250cmlidXRvcnMiXX0= -->
 <pre class="r"><code># If there are ties, shuffling the entire data frame before the arrange() step
 # is a way to randomly select the ordering of ties
 module_contributions_df &lt;- module_contributions_df[sample(nrow(module_contributions_df)), ]
@@ -3103,7 +3059,7 @@ names(code_contributor_positions) &lt;- code_contributors</code></pre>
 <p>We have a number of authors that contributed to the manuscript but did not directly contribute to the code base. For those authors, we will randomly determine their position in the author list <em>after</em> the code contributors.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBOb24tY29kZSBjb250cmlidXRvcnMgYXJlIGF1dGhvcnMgdGhhdCBkaWQgbm90IGNvbnRyaWJ1dGUgdG8gY29kZSBhbmQgYXJlXG4jIG5vdCBvdGhlcndpc2UgcGlubmVkXG5ub25jb2RlX2NvbnRyaWJ1dG9ycyA8LSBzZXRkaWZmKGF1dGhvcl9uYW1lcywgYyhwaW5uZWRfYXV0aG9ycyxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvZGVfY29udHJpYnV0b3JzKSlcblxuIyBTaHVmZmxlIHRoZSBvcmRlciBvZiB0aGUgbm9uY29kZSBjb250cmlidXRvcnMgXG4jIFNldCBzZWVkIGFnYWluIHRvIG1pbmltaXplIGNoYW5nZXMgdG8gdGhlIG9yZGVyaW5nIG9mIHRoaXMgZ3JvdXBcbnNldC5zZWVkKDIwMjIpXG5ub25jb2RlX2NvbnRyaWJ1dG9ycyA8LSBzYW1wbGUobm9uY29kZV9jb250cmlidXRvcnMpXG5cbiMgVGhlc2UgcG9zaXRpb25zIHdpbGwgY29tZSBhZnRlciB0aGUgY29kZSBjb250cmlidXRvciBwb3NpdGlvbnNcbm5vbmNvZGVfY29udHJpYnV0b3JfcG9zaXRpb25zIDwtIDE6bGVuZ3RoKG5vbmNvZGVfY29udHJpYnV0b3JzKSArIG1heChjb2RlX2NvbnRyaWJ1dG9yX3Bvc2l0aW9ucylcbm5hbWVzKG5vbmNvZGVfY29udHJpYnV0b3JfcG9zaXRpb25zKSA8LSBub25jb2RlX2NvbnRyaWJ1dG9yc1xuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgTm9uLWNvZGUgY29udHJpYnV0b3JzIGFyZSBhdXRob3JzIHRoYXQgZGlkIG5vdCBjb250cmlidXRlIHRvIGNvZGUgYW5kIGFyZSIsIiMgbm90IG90aGVyd2lzZSBwaW5uZWQiLCJub25jb2RlX2NvbnRyaWJ1dG9ycyA8LSBzZXRkaWZmKGF1dGhvcl9uYW1lcywgYyhwaW5uZWRfYXV0aG9ycyxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvZGVfY29udHJpYnV0b3JzKSkiLCIiLCIjIFNodWZmbGUgdGhlIG9yZGVyIG9mIHRoZSBub25jb2RlIGNvbnRyaWJ1dG9ycyAiLCIjIFNldCBzZWVkIGFnYWluIHRvIG1pbmltaXplIGNoYW5nZXMgdG8gdGhlIG9yZGVyaW5nIG9mIHRoaXMgZ3JvdXAiLCJzZXQuc2VlZCgyMDIyKSIsIm5vbmNvZGVfY29udHJpYnV0b3JzIDwtIHNhbXBsZShub25jb2RlX2NvbnRyaWJ1dG9ycykiLCIiLCIjIFRoZXNlIHBvc2l0aW9ucyB3aWxsIGNvbWUgYWZ0ZXIgdGhlIGNvZGUgY29udHJpYnV0b3IgcG9zaXRpb25zIiwibm9uY29kZV9jb250cmlidXRvcl9wb3NpdGlvbnMgPC0gMTpsZW5ndGgobm9uY29kZV9jb250cmlidXRvcnMpICsgbWF4KGNvZGVfY29udHJpYnV0b3JfcG9zaXRpb25zKSIsIm5hbWVzKG5vbmNvZGVfY29udHJpYnV0b3JfcG9zaXRpb25zKSA8LSBub25jb2RlX2NvbnRyaWJ1dG9ycyJdfQ== -->
 <pre class="r"><code># Non-code contributors are authors that did not contribute to code and are
 # not otherwise pinned
 noncode_contributors &lt;- setdiff(author_names, c(pinned_authors,
@@ -3126,26 +3082,24 @@ names(noncode_contributor_positions) &lt;- noncode_contributors</code></pre>
 <p>Now to put all of the positions together and sort appropriately.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWxsX2NvbnRyaWJ1dG9yc19wb3NpdGlvbnMgPC0gc29ydChjKHBpbm5lZF9wb3NpdGlvbnMsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29kZV9jb250cmlidXRvcl9wb3NpdGlvbnMsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbm9uY29kZV9jb250cmlidXRvcl9wb3NpdGlvbnMpLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZGVjcmVhc2luZyA9IEZBTFNFKVxuZGF0YS5mcmFtZShhbGxfY29udHJpYnV0b3JzX3Bvc2l0aW9ucylcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbImFsbF9jb250cmlidXRvcnNfcG9zaXRpb25zIDwtIHNvcnQoYyhwaW5uZWRfcG9zaXRpb25zLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvZGVfY29udHJpYnV0b3JfcG9zaXRpb25zLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG5vbmNvZGVfY29udHJpYnV0b3JfcG9zaXRpb25zKSwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRlY3JlYXNpbmcgPSBGQUxTRSkiLCJkYXRhLmZyYW1lKGFsbF9jb250cmlidXRvcnNfcG9zaXRpb25zKSJdfQ== -->
 <pre class="r"><code>all_contributors_positions &lt;- sort(c(pinned_positions,
                                      code_contributor_positions,
                                      noncode_contributor_positions), 
                                    decreasing = FALSE)
 data.frame(all_contributors_positions)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibmNvbCI6MSwibnJvdyI6NTJ9LCJyZGYiOiJVa1JZTXdwWUNnQUFBQU1BQXdZQUFBTUZBQUFBQUFWVlZFWXRPQUFBQkFJQUFBQUJBQVFBQ1FBQUFBRjRBQUFERXdBQUFBRUFBQUFPQUFBQU5EL3dBQUFBQUFBQVFBQUFBQUFBQUFCQUNBQUFBQUFBQUVBUUFBQUFBQUFBUUJRQUFBQUFBQUJBR0FBQUFBQUFBRUFjQUFBQUFBQUFRQ0FBQUFBQUFBQkFJZ0FBQUFBQUFFQWtBQUFBQUFBQVFDWUFBQUFBQUFCQUtBQUFBQUFBQUVBcUFBQUFBQUFBUUN3QUFBQUFBQUJBTGdBQUFBQUFBRUF3QUFBQUFBQUFRREVBQUFBQUFBQkFNZ0FBQUFBQUFFQXpBQUFBQUFBQVFEUUFBQUFBQUFCQU5RQUFBQUFBQUVBMkFBQUFBQUFBUURjQUFBQUFBQUJBT0FBQUFBQUFBRUE1QUFBQUFBQUFRRG9BQUFBQUFBQkFPd0FBQUFBQUFFQThBQUFBQUFBQVFEMEFBQUFBQUFCQVBnQUFBQUFBQUVBL0FBQUFBQUFBUUVBQUFBQUFBQUJBUUlBQUFBQUFBRUJCQUFBQUFBQUFRRUdBQUFBQUFBQkFRZ0FBQUFBQUFFQkNnQUFBQUFBQVFFTUFBQUFBQUFCQVE0QUFBQUFBQUVCRUFBQUFBQUFBUUVTQUFBQUFBQUJBUlFBQUFBQUFBRUJGZ0FBQUFBQUFRRVlBQUFBQUFBQkFSb0FBQUFBQUFFQkhBQUFBQUFBQVFFZUFBQUFBQUFCQVNBQUFBQUFBQUVCSWdBQUFBQUFBUUVrQUFBQUFBQUJBU1lBQUFBQUFBRUJLQUFBQUFBQUFBQUFFQWdBQUFBRUFCQUFKQUFBQUJXNWhiV1Z6QUFBQUVBQUFBQUVBQkFBSkFBQUFHbUZzYkY5amIyNTBjbWxpZFhSdmNuTmZjRzl6YVhScGIyNXpBQUFFQWdBQUFBRUFCQUFKQUFBQUNYSnZkeTV1WVcxbGN3QUFBQkFBQUFBMEFBUUFDUUFBQUJGS2IzTm9kV0VnUVM0Z1UyaGhjR2x5YndBRUFBa0FBQUFTUzNKMWRHbHJZU0JUTGlCSFlXOXVhMkZ5QUFRQUNRQUFBQkpEWVc1a1lXTmxJRXd1SUZOaGRtOXVaVzRBQkFBSkFBQUFGVk4wWlhCb1lXNXBaU0JLTGlCVGNHbGxiRzFoYmdBRUFBa0FBQUFSUTJoaGJuUmxJRW91SUVKbGRHaGxiR3dBQkFBSkFBQUFCMUoxYmlCS2FXNEFCQUFKQUFBQURrdHZiV0ZzSUZNdUlGSmhkR2hwQUFRQUNRQUFBQXRaZFdGdWEzVnVJRnBvZFFBRUFBa0FBQUFPVEdGMWNtRWdSUzRnUldkdmJHWUFCQUFKQUFBQURVSmhhV3hsZVNCR1lYSnliM2NBQkFBSkFBQUFFRVJoYm1sbGJDQlFMaUJOYVd4c1pYSUFCQUFKQUFBQUVrMWhkR1YxYzNvZ1VDNGdTMjl3ZEhseVlRQUVBQWtBQUFBS1RtaGhkQ0JFZFc5dVp3QUVBQWtBQUFBUFZHVnFZWE4zYVNCTGIyZGhiblJwQUFRQUNRQUFBQTVPYVdkb1lYUWdUbTkxY21WbGJnQUVBQWtBQUFBSldXRnVaeUJaWVc1bkFBUUFDUUFBQUExQmJtZGxiR0VnVm1saFpXNWxBQVFBQ1FBQUFBOVRhR0Z1Ym05dUlGSnZZbUpwYm5NQUJBQUpBQUFBRDBGdVoyVnNZU0JYWVdGdVpHVnljd0FFQUFrQUFBQUtVR0Y1WVd3Z1NtRnBiZ0FFQUFrQUFBQVBVR2hwYkdsd0lFSXVJRk4wYjNKdEFBUUFDUUFBQUExTlpXVnVJRU5vZFd3Z1MybHRBQVFBQ1FBQUFBOVFaWFJsY2lCS0xpQk5ZV1J6Wlc0QUJBQUpBQUFBRGtwbGJtNXBabVZ5SUUxaGMyOXVBQVFBQ1FBQUFBeEVaWEpsYXlCSVlXNXpiMjRBQkFBSkFBQUFEMU5vY21sMllYUnpJRXRoYm01aGJnQUVBQWtBQUFBUFRXRnlhV0Z5YVhSaElGTmhiblJwQUFRQUNRQUFBQTFZYVdGdmVXRnVJRWgxWVc1bkFBUUFDUUFBQUJGT2FXTnZiR0Z6SUZaaGJpQkxkWEpsYmdBRUFBa0FBQUFQVFdsbmRXVnNJRUV1SUVKeWIzZHVBQVFBQ1FBQUFBNUNjbWxoYmlCTkxpQkZibTVwY3dBRUFBa0FBQUFNU21WemMybGpZU0JYYjI1bkFBUUFDUUFBQUFoQ2J5QmFhR0Z1WndBRUFBa0FBQUFQUVc1dVlTQlNMaUJRYjJWMGMyTm9BQVFBQ1FBQUFCQlRhR0Z5YjI0Z1NpNGdSR2x6YTJsdUFBUUFDUUFBQUE5VGRHVjJaVzRnVFM0Z1JtOXNkSG9BQkFBSkFBQUFEVUZrWVcwZ1FTNGdTM0poZVdFQUJBQUpBQUFBREZOcGVYVmhiaUJhYUdWdVp3QUVBQWtBQUFBTlRHRjFjbUVnVTJOdmJHRnlid0FFQUFrQUFBQU5TbVZ1WVNCV0xpQk1hV3hzZVFBRUFBa0FBQUFOU0c5dVoySnZJRTB1SUZocFpRQUVBQWtBQUFBUVFXeHNhWE52YmlCUUxpQklaV0YwYUFBRUFBa0FBQUFQUTJGemMybGxJRTR1SUV0c2FXNWxBQVFBQ1FBQUFCQlNaV0psWTJOaElFdGhkV1ptYldGdUFBUUFDUUFBQUF4UWFXTm9ZV2tnVW1GdFlXNEFCQUFKQUFBQUNWbHBjbUZ1SUVkMWJ3QUVBQWtBQUFBUFFXUmhiU0JETGlCU1pYTnVhV05yQUFRQUNRQUFBQTlEWVhObGVTQlRMaUJIY21WbGJtVUFCQUFKQUFBQUVFcHZJRXg1Ym01bElGSnZhMmwwWVNvQUJBQUpBQUFBRVVwaFkyeDViaUJPTGlCVVlYSnZibWtxQUFRQUNRQUFBQjVEYUdsc1pISmxiaWR6SUVKeVlXbHVJRlIxYlc5eUlFNWxkSGR2Y21zQUJBQUpBQUFBSzFCaFkybG1hV01nVUdWa2FXRjBjbWxqSUU1bGRYSnZMVTl1WTI5c2IyZDVJRU52Ym5OdmNuUnBkVzBBQUFRQ0FBQUFBUUFFQUFrQUFBQUZZMnhoYzNNQUFBQVFBQUFBQVFBRUFBa0FBQUFLWkdGMFlTNW1jbUZ0WlFBQUFQNEFBQVFDQUFBQUFRQUVBQWtBQUFBSGIzQjBhVzl1Y3dBQUFoTUFBQUFGQUFBQUVBQUFBQUVBQkFBSkFBQUFBWElBQUFBUUFBQUFBUUFFQUFrQUFBQVFkVzV1WVcxbFpDMWphSFZ1YXkweE1RQUFBQW9BQUFBQkFBQUFBUUFBQUEwQUFBQUJBQUFBTkFBQUFBMEFBQUFCQUFBQUFRQUFCQUlBQUFML0FBQUFFQUFBQUFVQUJBQUpBQUFBQm1WdVoybHVaUUFFQUFrQUFBQUZiR0ZpWld3QUJBQUpBQUFBRG5KdmQyNWhiV1Z6TG5CeWFXNTBBQVFBQ1FBQUFBcHliM2R6TG5SdmRHRnNBQVFBQ1FBQUFBcGpiMnh6TG5SdmRHRnNBQUFBL2dBQUFQND0ifQ== -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["all_contributors_positions"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","_rn_":"Joshua A. Shapiro"},{"1":"2","_rn_":"Krutika S. Gaonkar"},{"1":"3","_rn_":"Candace L. Savonen"},{"1":"4","_rn_":"Stephanie J. Spielman"},{"1":"5","_rn_":"Chante J. Bethell"},{"1":"6","_rn_":"Run Jin"},{"1":"7","_rn_":"Komal S. Rathi"},{"1":"8","_rn_":"Yuankun Zhu"},{"1":"9","_rn_":"Laura E. Egolf"},{"1":"10","_rn_":"Bailey Farrow"},{"1":"11","_rn_":"Daniel P. Miller"},{"1":"12","_rn_":"Mateusz P. Koptyra"},{"1":"13","_rn_":"Nhat Duong"},{"1":"14","_rn_":"Tejaswi Koganti"},{"1":"15","_rn_":"Nighat Noureen"},{"1":"16","_rn_":"Yang Yang"},{"1":"17","_rn_":"Angela Viaene"},{"1":"18","_rn_":"Shannon Robbins"},{"1":"19","_rn_":"Angela Waanders"},{"1":"20","_rn_":"Payal Jain"},{"1":"21","_rn_":"Philip B. Storm"},{"1":"22","_rn_":"Meen Chul Kim"},{"1":"23","_rn_":"Peter J. Madsen"},{"1":"24","_rn_":"Jennifer Mason"},{"1":"25","_rn_":"Derek Hanson"},{"1":"26","_rn_":"Shrivats Kannan"},{"1":"27","_rn_":"Mariarita Santi"},{"1":"28","_rn_":"Xiaoyan Huang"},{"1":"29","_rn_":"Nicolas Van Kuren"},{"1":"30","_rn_":"Miguel A. Brown"},{"1":"31","_rn_":"Brian M. Ennis"},{"1":"32","_rn_":"Jessica Wong"},{"1":"33","_rn_":"Bo Zhang"},{"1":"34","_rn_":"Anna R. Poetsch"},{"1":"35","_rn_":"Sharon J. Diskin"},{"1":"36","_rn_":"Steven M. Foltz"},{"1":"37","_rn_":"Adam A. Kraya"},{"1":"38","_rn_":"Siyuan Zheng"},{"1":"39","_rn_":"Laura Scolaro"},{"1":"40","_rn_":"Jena V. Lilly"},{"1":"41","_rn_":"Hongbo M. Xie"},{"1":"42","_rn_":"Allison P. Heath"},{"1":"43","_rn_":"Cassie N. Kline"},{"1":"44","_rn_":"Rebecca Kauffman"},{"1":"45","_rn_":"Pichai Raman"},{"1":"46","_rn_":"Yiran Guo"},{"1":"47","_rn_":"Adam C. Resnick"},{"1":"48","_rn_":"Casey S. Greene"},{"1":"49","_rn_":"Jo Lynne Rokita*"},{"1":"50","_rn_":"Jaclyn N. Taroni*"},{"1":"51","_rn_":"Children's Brain Tumor Network"},{"1":"52","_rn_":"Pacific Pediatric Neuro-Oncology Consortium"}],"options":{"columns":{"min":{},"max":[10],"total":[1]},"rows":{"min":[10],"max":[10],"total":[52]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["all_contributors_positions"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","_rn_":"Joshua A. Shapiro"},{"1":"2","_rn_":"Krutika S. Gaonkar"},{"1":"3","_rn_":"Candace L. Savonen"},{"1":"4","_rn_":"Stephanie J. Spielman"},{"1":"5","_rn_":"Chante J. Bethell"},{"1":"6","_rn_":"Run Jin"},{"1":"7","_rn_":"Komal S. Rathi"},{"1":"8","_rn_":"Yuankun Zhu"},{"1":"9","_rn_":"Laura E. Egolf"},{"1":"10","_rn_":"Bailey Farrow"},{"1":"11","_rn_":"Daniel P. Miller"},{"1":"12","_rn_":"Mateusz P. Koptyra"},{"1":"13","_rn_":"Nhat Duong"},{"1":"14","_rn_":"Tejaswi Koganti"},{"1":"15","_rn_":"Nighat Noureen"},{"1":"16","_rn_":"Yang Yang"},{"1":"17","_rn_":"Angela Viaene"},{"1":"18","_rn_":"Shannon Robbins"},{"1":"19","_rn_":"Angela Waanders"},{"1":"20","_rn_":"Payal Jain"},{"1":"21","_rn_":"Philip B. Storm"},{"1":"22","_rn_":"Meen Chul Kim"},{"1":"23","_rn_":"Peter J. Madsen"},{"1":"24","_rn_":"Jennifer Mason"},{"1":"25","_rn_":"Derek Hanson"},{"1":"26","_rn_":"Shrivats Kannan"},{"1":"27","_rn_":"Mariarita Santi"},{"1":"28","_rn_":"Xiaoyan Huang"},{"1":"29","_rn_":"Nicolas Van Kuren"},{"1":"30","_rn_":"Miguel A. Brown"},{"1":"31","_rn_":"Brian M. Ennis"},{"1":"32","_rn_":"Jessica Wong"},{"1":"33","_rn_":"Bo Zhang"},{"1":"34","_rn_":"Anna R. Poetsch"},{"1":"35","_rn_":"Sharon J. Diskin"},{"1":"36","_rn_":"Steven M. Foltz"},{"1":"37","_rn_":"Adam A. Kraya"},{"1":"38","_rn_":"Siyuan Zheng"},{"1":"39","_rn_":"Laura Scolaro"},{"1":"40","_rn_":"Jena V. Lilly"},{"1":"41","_rn_":"Hongbo M. Xie"},{"1":"42","_rn_":"Allison P. Heath"},{"1":"43","_rn_":"Cassie N. Kline"},{"1":"44","_rn_":"Rebecca Kauffman"},{"1":"45","_rn_":"Pichai Raman"},{"1":"46","_rn_":"Yiran Guo"},{"1":"47","_rn_":"Adam C. Resnick"},{"1":"48","_rn_":"Casey S. Greene"},{"1":"49","_rn_":"Jo Lynne Rokita*"},{"1":"50","_rn_":"Jaclyn N. Taroni*"},{"1":"51","_rn_":"Children's Brain Tumor Network"},{"1":"52","_rn_":"Pacific Pediatric Neuro-Oncology Consortium"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Now we need to reorder the author list.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBNYXRjaCB0aGUgb3JkZXIgb2YgdGhlIGF1dGhvciBsaXN0IHdlIHJlYWQgaW4gdG8gdGhlIG5ldyBvcmRlclxubmV3X29yZGVyX2luZGV4IDwtIG9yZGVyKG1hdGNoKGF1dGhvcl9uYW1lcywgbmFtZXMoYWxsX2NvbnRyaWJ1dG9yc19wb3NpdGlvbnMpKSlcbiMgVXNlIHRoZSBuZXcgaW5kaWNlcyB0byB1cGRhdGUgdGhlIGF1dGhvciBvcmRlclxucmVvcmRlcmVkX2F1dGhvcl9saXN0IDwtIGF1dGhvcl9saXN0W25ld19vcmRlcl9pbmRleF1cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgTWF0Y2ggdGhlIG9yZGVyIG9mIHRoZSBhdXRob3IgbGlzdCB3ZSByZWFkIGluIHRvIHRoZSBuZXcgb3JkZXIiLCJuZXdfb3JkZXJfaW5kZXggPC0gb3JkZXIobWF0Y2goYXV0aG9yX25hbWVzLCBuYW1lcyhhbGxfY29udHJpYnV0b3JzX3Bvc2l0aW9ucykpKSIsIiMgVXNlIHRoZSBuZXcgaW5kaWNlcyB0byB1cGRhdGUgdGhlIGF1dGhvciBvcmRlciIsInJlb3JkZXJlZF9hdXRob3JfbGlzdCA8LSBhdXRob3JfbGlzdFtuZXdfb3JkZXJfaW5kZXhdIl19 -->
 <pre class="r"><code># Match the order of the author list we read in to the new order
 new_order_index &lt;- order(match(author_names, names(all_contributors_positions)))
 # Use the new indices to update the author order
@@ -3156,7 +3110,7 @@ reordered_author_list &lt;- author_list[new_order_index]</code></pre>
 <p>We’ll add the reordered author metadata back into the manuscript metadata and write to file.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBXZSBvbmx5IHdhbnQgdG8gdXBkYXRlIHRoZSBhdXRob3IgZWxlbWVudCBvZiB0aGUgbWFudXNjcmlwdCBtZXRhZGF0YSBsaXN0XG51cGRhdGVkX21hbnVzY3JpcHRfbWV0YWRhdGEgPC0gbWFudXNjcmlwdF9tZXRhZGF0YVxudXBkYXRlZF9tYW51c2NyaXB0X21ldGFkYXRhJGF1dGhvcnMgPC0gcmVvcmRlcmVkX2F1dGhvcl9saXN0XG5cbiMgV3JpdGUgdXBkYXRlZCBtZXRhZGF0YSB0byBmaWxlXG55YW1sOjp3cml0ZV95YW1sKHVwZGF0ZWRfbWFudXNjcmlwdF9tZXRhZGF0YSwgXG4gICAgICAgICAgICAgICAgIGZpbGUucGF0aChcInJlc3VsdHNcIiwgXCJ1cGRhdGVkX21ldGFkYXRhLnlhbWxcIikpXG5cbiMgUmVtb3ZlIG9yaWdpbmFsIG1ldGFkYXRhIGZyb20gZGlyZWN0b3J5XG5maWxlLnJlbW92ZShcIm1ldGFkYXRhLnlhbWxcIilcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgV2Ugb25seSB3YW50IHRvIHVwZGF0ZSB0aGUgYXV0aG9yIGVsZW1lbnQgb2YgdGhlIG1hbnVzY3JpcHQgbWV0YWRhdGEgbGlzdCIsInVwZGF0ZWRfbWFudXNjcmlwdF9tZXRhZGF0YSA8LSBtYW51c2NyaXB0X21ldGFkYXRhIiwidXBkYXRlZF9tYW51c2NyaXB0X21ldGFkYXRhJGF1dGhvcnMgPC0gcmVvcmRlcmVkX2F1dGhvcl9saXN0IiwiIiwiIyBXcml0ZSB1cGRhdGVkIG1ldGFkYXRhIHRvIGZpbGUiLCJ5YW1sOjp3cml0ZV95YW1sKHVwZGF0ZWRfbWFudXNjcmlwdF9tZXRhZGF0YSwgXG4gICAgICAgICAgICAgICAgIGZpbGUucGF0aChcInJlc3VsdHNcIiwgXCJ1cGRhdGVkX21ldGFkYXRhLnlhbWxcIikpIiwiIiwiIyBSZW1vdmUgb3JpZ2luYWwgbWV0YWRhdGEgZnJvbSBkaXJlY3RvcnkiLCJmaWxlLnJlbW92ZShcIm1ldGFkYXRhLnlhbWxcIikiXX0= -->
 <pre class="r"><code># We only want to update the author element of the manuscript metadata list
 updated_manuscript_metadata &lt;- manuscript_metadata
 updated_manuscript_metadata$authors &lt;- reordered_author_list
@@ -3179,16 +3133,16 @@ file.remove(&quot;metadata.yaml&quot;)</code></pre>
 <h2>Session Info</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoic2Vzc2lvbkluZm8oKSJ9 -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgIFxuIFszXSBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgIFxuWzExXSBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcblsxXSBmb3JjYXRzXzAuNC4wICAgc3RyaW5ncl8xLjQuMCAgIGRwbHlyXzAuOC4zICAgICBwdXJycl8wLjMuMiAgICAgcmVhZHJfMS4zLjEgICAgXG5bNl0gdGlkeXJfMC44LjMgICAgIHRpYmJsZV8yLjEuMyAgICBnZ3Bsb3QyXzMuMi4wICAgdGlkeXZlcnNlXzEuMi4xXG5cbmxvYWRlZCB2aWEgYSBuYW1lc3BhY2UgKGFuZCBub3QgYXR0YWNoZWQpOlxuIFsxXSBSY3BwXzEuMC4xICAgICAgIGNlbGxyYW5nZXJfMS4xLjAgcGlsbGFyXzEuNC4yICAgICBjb21waWxlcl8zLjYuMCAgXG4gWzVdIHRvb2xzXzMuNi4wICAgICAganNvbmxpdGVfMS42ICAgICBsdWJyaWRhdGVfMS43LjQgIG5sbWVfMy4xLTE0MCAgICBcbiBbOV0gZ3RhYmxlXzAuMy4wICAgICBsYXR0aWNlXzAuMjAtMzggIHBrZ2NvbmZpZ18yLjAuMiAgcmxhbmdfMC40LjAgICAgIFxuWzEzXSBjbGlfMS4xLjAgICAgICAgIHJzdHVkaW9hcGlfMC4xMCAgeWFtbF8yLjIuMCAgICAgICBoYXZlbl8yLjEuMSAgICAgXG5bMTddIHhmdW5fMC44ICAgICAgICAgd2l0aHJfMi4xLjIgICAgICB4bWwyXzEuMi4wICAgICAgIGh0dHJfMS40LjAgICAgICBcblsyMV0ga25pdHJfMS4yMyAgICAgICBnZW5lcmljc18wLjAuMiAgIGhtc18wLjQuMiAgICAgICAgZ3JpZF8zLjYuMCAgICAgIFxuWzI1XSB0aWR5c2VsZWN0XzAuMi41IGdsdWVfMS4zLjEgICAgICAgUjZfMi40LjAgICAgICAgICByZWFkeGxfMS4zLjEgICAgXG5bMjldIG1vZGVscl8wLjEuNCAgICAgbWFncml0dHJfMS41ICAgICBiYWNrcG9ydHNfMS4xLjQgIHNjYWxlc18xLjAuMCAgICBcblszM10gcnZlc3RfMC4zLjQgICAgICBhc3NlcnR0aGF0XzAuMi4xIGNvbG9yc3BhY2VfMS40LTEgc3RyaW5naV8xLjQuMyAgIFxuWzM3XSBsYXp5ZXZhbF8wLjIuMiAgIG11bnNlbGxfMC41LjAgICAgYnJvb21fMC41LjIgICAgICBjcmF5b25fMS4zLjQgICAgXG4ifQ== -->
-<pre><code>R version 3.6.0 (2019-04-26)
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4zICgyMDIwLTAyLTI5KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggMTAgKGJ1c3RlcilcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIveDg2XzY0LWxpbnV4LWdudS9saWJvcGVuYmxhc3AtcjAuMy41LnNvXG5cbmxvY2FsZTpcbiBbMV0gTENfQ1RZUEU9ZW5fVVMuVVRGLTggICAgICAgTENfTlVNRVJJQz1DICAgICAgICAgICAgICBcbiBbM10gTENfVElNRT1lbl9VUy5VVEYtOCAgICAgICAgTENfQ09MTEFURT1lbl9VUy5VVEYtOCAgICBcbiBbNV0gTENfTU9ORVRBUlk9ZW5fVVMuVVRGLTggICAgTENfTUVTU0FHRVM9QyAgICAgICAgICAgICBcbiBbN10gTENfUEFQRVI9ZW5fVVMuVVRGLTggICAgICAgTENfTkFNRT1DICAgICAgICAgICAgICAgICBcbiBbOV0gTENfQUREUkVTUz1DICAgICAgICAgICAgICAgTENfVEVMRVBIT05FPUMgICAgICAgICAgICBcblsxMV0gTENfTUVBU1VSRU1FTlQ9ZW5fVVMuVVRGLTggTENfSURFTlRJRklDQVRJT049QyAgICAgICBcblxuYXR0YWNoZWQgYmFzZSBwYWNrYWdlczpcblsxXSBzdGF0cyAgICAgZ3JhcGhpY3MgIGdyRGV2aWNlcyB1dGlscyAgICAgZGF0YXNldHMgIG1ldGhvZHMgICBiYXNlICAgICBcblxub3RoZXIgYXR0YWNoZWQgcGFja2FnZXM6XG5bMV0gZm9yY2F0c18wLjUuMCAgIHN0cmluZ3JfMS40LjAgICBkcGx5cl8wLjguNSAgICAgcHVycnJfMC4zLjQgICAgXG5bNV0gcmVhZHJfMS4zLjEgICAgIHRpZHlyXzEuMC4yICAgICB0aWJibGVfMy4wLjEgICAgZ2dwbG90Ml8zLjMuMCAgXG5bOV0gdGlkeXZlcnNlXzEuMy4wXG5cbmxvYWRlZCB2aWEgYSBuYW1lc3BhY2UgKGFuZCBub3QgYXR0YWNoZWQpOlxuIFsxXSB0aWR5c2VsZWN0XzEuMC4wIHhmdW5fMC4xMyAgICAgICAgaGF2ZW5fMi4yLjAgICAgICBsYXR0aWNlXzAuMjAtMzggXG4gWzVdIGNvbG9yc3BhY2VfMS40LTEgdmN0cnNfMC4yLjQgICAgICBnZW5lcmljc18wLjAuMiAgIGh0bWx0b29sc18wLjQuMCBcbiBbOV0geWFtbF8yLjIuMSAgICAgICBiYXNlNjRlbmNfMC4xLTMgIHJsYW5nXzAuNC41ICAgICAgcGlsbGFyXzEuNC4zICAgIFxuWzEzXSBnbHVlXzEuNC4wICAgICAgIHdpdGhyXzIuMi4wICAgICAgREJJXzEuMS4wICAgICAgICBkYnBseXJfMS40LjMgICAgXG5bMTddIG1vZGVscl8wLjEuNiAgICAgcmVhZHhsXzEuMy4xICAgICBsaWZlY3ljbGVfMC4yLjAgIG11bnNlbGxfMC41LjAgICBcblsyMV0gZ3RhYmxlXzAuMy4wICAgICBjZWxscmFuZ2VyXzEuMS4wIHJ2ZXN0XzAuMy41ICAgICAgZXZhbHVhdGVfMC4xNCAgIFxuWzI1XSBrbml0cl8xLjI4ICAgICAgIGZhbnNpXzAuNC4xICAgICAgYnJvb21fMC41LjYgICAgICBSY3BwXzEuMC40LjYgICAgXG5bMjldIHNjYWxlc18xLjEuMCAgICAgYmFja3BvcnRzXzEuMS42ICBqc29ubGl0ZV8xLjYuMSAgIGZzXzEuNC4xICAgICAgICBcblszM10gaG1zXzAuNS4zICAgICAgICBkaWdlc3RfMC42LjI1ICAgIHN0cmluZ2lfMS40LjYgICAgZ3JpZF8zLjYuMyAgICAgIFxuWzM3XSBjbGlfMi4wLjIgICAgICAgIHRvb2xzXzMuNi4zICAgICAgbWFncml0dHJfMS41ICAgICBjcmF5b25fMS4zLjQgICAgXG5bNDFdIHBrZ2NvbmZpZ18yLjAuMyAgZWxsaXBzaXNfMC4zLjAgICB4bWwyXzEuMy4yICAgICAgIHJlcHJleF8wLjMuMCAgICBcbls0NV0gbHVicmlkYXRlXzEuNy44ICBhc3NlcnR0aGF0XzAuMi4xIHJtYXJrZG93bl8yLjEgICAgaHR0cl8xLjQuMSAgICAgIFxuWzQ5XSByc3R1ZGlvYXBpXzAuMTEgIFI2XzIuNC4xICAgICAgICAgbmxtZV8zLjEtMTQ0ICAgICBjb21waWxlcl8zLjYuMyAgXG4ifQ== -->
+<pre><code>R version 3.6.3 (2020-02-29)
 Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Debian GNU/Linux 9 (stretch)
+Running under: Debian GNU/Linux 10 (buster)
 
 Matrix products: default
-BLAS/LAPACK: /usr/lib/libopenblasp-r0.2.19.so
+BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/libopenblasp-r0.3.5.so
 
 locale:
  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
@@ -3202,20 +3156,24 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] forcats_0.4.0   stringr_1.4.0   dplyr_0.8.3     purrr_0.3.2     readr_1.3.1    
-[6] tidyr_0.8.3     tibble_2.1.3    ggplot2_3.2.0   tidyverse_1.2.1
+[1] forcats_0.5.0   stringr_1.4.0   dplyr_0.8.5     purrr_0.3.4    
+[5] readr_1.3.1     tidyr_1.0.2     tibble_3.0.1    ggplot2_3.3.0  
+[9] tidyverse_1.3.0
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.1       cellranger_1.1.0 pillar_1.4.2     compiler_3.6.0  
- [5] tools_3.6.0      jsonlite_1.6     lubridate_1.7.4  nlme_3.1-140    
- [9] gtable_0.3.0     lattice_0.20-38  pkgconfig_2.0.2  rlang_0.4.0     
-[13] cli_1.1.0        rstudioapi_0.10  yaml_2.2.0       haven_2.1.1     
-[17] xfun_0.8         withr_2.1.2      xml2_1.2.0       httr_1.4.0      
-[21] knitr_1.23       generics_0.0.2   hms_0.4.2        grid_3.6.0      
-[25] tidyselect_0.2.5 glue_1.3.1       R6_2.4.0         readxl_1.3.1    
-[29] modelr_0.1.4     magrittr_1.5     backports_1.1.4  scales_1.0.0    
-[33] rvest_0.3.4      assertthat_0.2.1 colorspace_1.4-1 stringi_1.4.3   
-[37] lazyeval_0.2.2   munsell_0.5.0    broom_0.5.2      crayon_1.3.4    </code></pre>
+ [1] tidyselect_1.0.0 xfun_0.13        haven_2.2.0      lattice_0.20-38 
+ [5] colorspace_1.4-1 vctrs_0.2.4      generics_0.0.2   htmltools_0.4.0 
+ [9] yaml_2.2.1       base64enc_0.1-3  rlang_0.4.5      pillar_1.4.3    
+[13] glue_1.4.0       withr_2.2.0      DBI_1.1.0        dbplyr_1.4.3    
+[17] modelr_0.1.6     readxl_1.3.1     lifecycle_0.2.0  munsell_0.5.0   
+[21] gtable_0.3.0     cellranger_1.1.0 rvest_0.3.5      evaluate_0.14   
+[25] knitr_1.28       fansi_0.4.1      broom_0.5.6      Rcpp_1.0.4.6    
+[29] scales_1.1.0     backports_1.1.6  jsonlite_1.6.1   fs_1.4.1        
+[33] hms_0.5.3        digest_0.6.25    stringi_1.4.6    grid_3.6.3      
+[37] cli_2.0.2        tools_3.6.3      magrittr_1.5     crayon_1.3.4    
+[41] pkgconfig_2.0.3  ellipsis_0.3.0   xml2_1.3.2       reprex_0.3.0    
+[45] lubridate_1.7.8  assertthat_0.2.1 rmarkdown_2.1    httr_1.4.1      
+[49] rstudioapi_0.11  R6_2.4.1         nlme_3.1-144     compiler_3.6.3  </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3252,6 +3210,55 @@ $(document).ready(function () {
   });
 });
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("03-set-authorship-order.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
