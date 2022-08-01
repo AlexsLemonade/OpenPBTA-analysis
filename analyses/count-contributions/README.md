@@ -16,6 +16,15 @@ The shell script `run-count-contributions.sh` runs the following steps:
 * `02-format-contributions.Rmd` which turns the output of `git shortlog` and `git log` into readable files. 
 This notebook additionally collapses people that have their contributions divided across multiple names by the logs and is responsible for removing the analysis modules that are not included in the manuscript. 
 See the notebook for more details!
+* `03-set-authorship-order.Rmd` which downloads and reads in the current manuscript metadata file (i.e., from `AlexsLemonade/OpenPBTA-manuscript` `master` branch) and sets the author order based on the following criteria (quoting from the notebook itself):
+
+> * The first, last 4 authors, and consortia authors positions are pinned to reflect scholarship and contributor roles that are not captured in the Git history of this repository (e.g., substantive analytical code review, conceptualization, supervision, or project administration).
+> * Manuscript authors that have contributed to the code base for the analysis repository -- specifically the number of analysis modules that were included in the paper that a manuscript author has contributed to -- are then ordered from the second position on in decreasing order.
+> In the case of ties, the order is randomly selected.
+> * Manuscript authors that did not directly contribute to the code base are then randomly ordered. 
+> We set a seed directly before that shuffling step, using the year as the seed, to keep a consistent order in future runs if and when the Git contributions change.
+
+The updated metadata YAML file is ignored by this repository, but can be found at `results/updated_metadata.yaml`.
 
 ### GitHub Actions workflow
 

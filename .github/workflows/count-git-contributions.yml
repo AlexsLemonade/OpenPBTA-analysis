@@ -29,6 +29,10 @@ jobs:
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
 
+      # We need this package for one of the notebooks run via the shell script below
+      - name: Install yaml R package
+        run: Rscript -e "install.packages('yaml')"
+
       # Rerun the module we want new results for
       - name: Rerun count-contributions module
         run: |
