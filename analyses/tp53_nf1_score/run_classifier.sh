@@ -7,13 +7,13 @@
 # Predicts TP53 and NF1 inactivation score per polya and stranded RNAseq samples
 
 # The script can tak three environment variables:
-# `OPENPBTA_BASE_SUBTYPING`: 
-#     if value is 1, then uses `pbta-histologies-base.tsv` for subtyping. 
+# `OPENPBTA_BASE_SUBTYPING`:
+#     if value is 1, then uses `pbta-histologies-base.tsv` for subtyping.
 #     if value is 0 (DEFAULT), runs module with `pbta-histologies.tsv`
-# `OPENPBTA_TP53_FIGURES`: 
+# `OPENPBTA_TP53_FIGURES`:
 #     if value is 1, uses expression data in the data release for prediction
 #     if value is 0 (DEFAULT), uses expression data in the `collapse-rnaseq` module for prediction
-# `OPENPBTA_POLYAPLOT`: 
+# `OPENPBTA_POLYAPLOT`:
 #     if value is 1 (DEFAULT), runs the POLYA steps
 #     if value is 0, skips the POLYA steps
 
@@ -73,7 +73,7 @@ Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
 
 # If running for the purpose of figure generation (RUN_FOR_FIGURES will be 1),
 # use the data in the analysis directory that has been freshly collapsed
-if [[ "$RUN_FOR_FIGURES" -eq "0" ]]
+if [[ "$RUN_FOR_FIGURES" -eq "1" ]]
 then
   # expression files for prediction
   collapsed_stranded="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
