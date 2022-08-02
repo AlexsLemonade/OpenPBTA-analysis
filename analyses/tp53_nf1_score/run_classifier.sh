@@ -72,7 +72,7 @@ Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
   --gencode ${cds_file}
 
 # If running for the purpose of figure generation (RUN_FOR_FIGURES will be 1),
-# use the data in the analysis directory that has been freshly collapsed
+# use the data in the data release directory
 if [[ "$RUN_FOR_FIGURES" -eq "1" ]]
 then
   # expression files for prediction
