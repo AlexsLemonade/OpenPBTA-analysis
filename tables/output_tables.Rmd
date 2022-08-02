@@ -143,7 +143,8 @@ soi_df <- tmb_hist %>%
     ),
     # add Lynch syndrome
     cancer_predispositions = case_when(
-      Kids_First_Biospecimen_ID == "BS_8AY2GM4G" ~ "NF-1, Lynch syndrome",
+      Kids_First_Biospecimen_ID == "BS_8AY2GM4G" ~ "Lynch syndrome",
+      sample_id == "7316-515" ~ "Other inherited conditions NOS",
       sample_id == "7316-3058" ~ "Lynch Syndrome",
       sample_id == "7316-2189" ~ "Lynch Syndrome",
       Kids_First_Biospecimen_ID == "BS_85Q5P8GF" ~ "Lynch syndrome",
@@ -481,19 +482,20 @@ workflow_tools <- tribble(
   "Arriba","1.1.0","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl",
   "bwa","0.7.17","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-wf.cwl",
   "sambamba","0.6.3","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-mendqc-wf.cwl",
-  "GATK","4.0.3.0","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-wf.cwl",
+  "GATK (alignment)","4.0.3.0","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-wf.cwl",
+  "GATK (single sample genotyping)","4.0.12.0","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-single-genotype-basic.cwl",
+  "GATK (VariantFiltration)","3.8.0","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-single-genotype-basic.cwl",
   "lancet","1.0.7","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-lancet-wf.cwl",
   "UCSC-Treehouse MendQC","1.1.1","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-mendqc-wf.cwl",
-  "GATK","4.0.12.0","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-mutect2_strelka2-wf.cwl",
   "VarDict Java","1.5.8","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-vardict-wf.cwl",
   "VEP","r93","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_annot_vcf_sub_wf.cwl",
   "bcftools","1.7","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_annot_vcf_sub_wf.cwl",
   "RSEM", "1.3.1", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl",
+  "RNA-SeQC", "2.3.4", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl",
   "AnnotSV", "2.1", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/annotsv.cwl",
   "FusionAnnotator", "0.2.0", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/fusion_annotator.cwl",
-  "SNPeff", "4.3t", "https://sourceforge.net/projects/snpeff/files/snpEff_v4_3t_core.zip",
-  "ANNOVAR", "2020Jun08", "https://annovar.openbioinformatics.org/",
-  "InterVar", "2.2.2", "https://github.com/WGLab/InterVar/blob/4801682d37982bb3e99b50392790878a568b42cd/Intervar.py"
+  "SNPeff", "4.3t", "FILL IN",
+  "ANNOVAR", "20190319", "FILL IN"
 )
 
 
