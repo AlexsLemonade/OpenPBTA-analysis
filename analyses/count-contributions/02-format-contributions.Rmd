@@ -40,20 +40,39 @@ So let's clean this up in the interest of readability in the final data frames.
 
 ```{r}
 name_recoding <- c(
-  jashapiro = "Joshua Shapiro",
+  jashapiro = "Joshua A. Shapiro",
+  `Joshua Shapiro` = "Joshua A. Shapiro",
   Stephanie = "Stephanie J. Spielman",
   Bailey = "Bailey Farrow",
   runjin326 = "Run Jin",
   Mateusz = "Mateusz P. Koptyra",
-  tkoganti = "Teja Koganti",
+  tkoganti = "Tejaswi Koganti",
   NNoureen = "Nighat Noureen",
   `Jo Lynne` = "Jo Lynne Rokita",
   jharenza = "Jo Lynne Rokita",
   `e-t-k` = "Ellen Kephardt",
   yangyangclover = "Yang Yang",
   PichaiRaman = "Pichai Raman",
-  hbeale = "Holly Beale"
+  hbeale = "Holly Beale",
+  `Jaclyn Taroni` = "Jaclyn N. Taroni",
+  `Krutika Gaonkar` = "Krutika S. Gaonkar",
+  `Candace Savonen` = "Candace L. Savonen",
+  `Chante Bethell` = "Chante J. Bethell",
+  `Komal Rathi` = "Komal S. Rathi",
+  `Laura Egolf` = "Laura E. Egolf",
+  `Dan Miller` = "Daniel P. Miller",
+  `Casey Greene` = "Casey S. Greene",
+  `Teja Koganti` = "Tejaswi Koganti"
 )
+```
+
+## Removing bot contributors
+
+We have a bot `alexslemonade-docs-bot` that may make commits, including via GHA (GitHub Actions) to run this very module and produce the final author contribution lists.
+We should not include the bot itself as a contributor.
+
+```{r}
+remove_names <- c("alexslemonade-docs-bot")
 ```
 
 ## Module contributions
@@ -164,6 +183,8 @@ total_contributions_df <- read_tsv(file.path(components_dir,
 total_contributions_df <- total_contributions_df %>%
   # Reorder
   select(author, num_commits) %>%
+  # Remove authors which we should not keep, namely bots %>%
+  filter(!(author %in% remove_names)) %>%
   # Recode names/IDs to be consistent
   mutate(author = recode_factor(author, !!!name_recoding)) %>%
   # For folks that had multiple names included, summarize the total commits
@@ -179,4 +200,10 @@ Write to file.
 write_tsv(total_contributions_df, path = total_countributions_file)
 ```
 
+
+Finally, let's print session info:
+
+```{r}
+sessionInfo()
+```
 
