@@ -82,7 +82,7 @@ OPENPBTA_BASE_SUBTYPING=1 bash analyses/tp53_nf1_score/run_classifier.sh
 ## Re-generating analysis files after subtyping
 
 Once `pbta-histologies.tsv` has been generated to include subtyping information after a new data release, several analyses need to be re-run with the subtyping information.
-Specifically, analyses whose results are used to make publication-ready figures and are inputted to [`generate-figures.sh`](../figures/generate-figures.sh) should be re-run.
+Specifically, analyses whose results are used to make publication-ready figures and are inputted to [`figures/generate-figures.sh`](../figures/generate-figures.sh) should be re-run.
 The script `run-analyses-for-figures.sh` can be used for this purpose as:
 
 ```
