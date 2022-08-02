@@ -29,7 +29,6 @@ if [ "$RUN_LOCAL" -lt "1" ]; then
   bash ${analyses_dir}/focal-cn-file-preparation/run-prepare-cn.sh       # Figures 2 and S3
   bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh # Figure S2
   bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh # Figure S2
-  bash ${analyses_dir}/copy_number_consensus_call/run_consensus_call.sh  # Figure S3 (heatmap)
 fi
 
 # Run the `oncoprint-landscape` module shell script, for Figure 2 and S3
@@ -44,7 +43,7 @@ bash ${analyses_dir}/chromosomal-instability/run_breakpoint_analysis.sh
 bash ${analyses_dir}/chromothripsis/run-chromothripsis.sh
 
 # Run the tp53 classifier, for Figures 4 and S5
-#  Note this module is run earlier in this script than the relevant 
+#  Note this module is run earlier in this script than the relevant
 #  figures' placement because these modules use the TP53 scores:
 #  `mutational-signatures` and `survival-analysis`
 OPENPBTA_TP53_FIGURES=1 bash ${analyses_dir}/tp53_nf1_score/run_classifier.sh
@@ -54,9 +53,14 @@ OPENPBTA_TP53_FIGURES=1 bash ${analyses_dir}/tp53_nf1_score/run_classifier.sh
 # We only run the part of the module used in the manuscript (i.e., not de novo)
 OPENPBTA_CNS_FIT_ONLY=1 bash ${analyses_dir}/mutational-signatures/run_mutational_signatures.sh
 
-
 # Run the telomerase activity prediction script, for Figures 4 and S5
 OPENPBTA_FOR_FIGURES=1 bash ${analyses_dir}/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
+
+# Run the immune deconvolution module, for Figures 5 and S6
+#  Note this module is run earlier in this script than the relevant
+#  figures' placement because the module `survival-analysis`
+#  uses the deconvolution results
+bash ${analyses_dir}/immune-deconv/run-immune-deconv.sh
 
 # Run the survival module, for Figures 4 and 5
 bash ${analyses_dir}/survival-analysis/run_survival.sh
@@ -64,10 +68,10 @@ bash ${analyses_dir}/survival-analysis/run_survival.sh
 # Run the dimension reduction module, for Figures 5 and S6
 bash ${analyses_dir}/transcriptomic-dimension-reduction/dimension-reduction-plots.sh
 
-# Run the immune deconvolution module, for Figures 5 and S6
-bash ${analyses_dir}/immune-deconv/run-immune-deconv.sh
-
 # Generate GSVA scores and test for cancer group differences, for Figure 5
 bash ${analyses_dir}/gene-set-enrichment-analysis/run-gsea.sh
+
+# Generate `cn_status_bp_per_bin.tsv` results for Figure S3 heatmap
+Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.Rmd')"
 
 
