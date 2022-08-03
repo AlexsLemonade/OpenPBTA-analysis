@@ -10,9 +10,6 @@
 # `OPENPBTA_BASE_SUBTYPING`:
 #     if value is 1, then uses `pbta-histologies-base.tsv` for subtyping.
 #     if value is 0 (DEFAULT), runs module with `pbta-histologies.tsv`
-# `OPENPBTA_TP53_FIGURES`:
-#     if value is 1, uses expression data in the data release for prediction
-#     if value is 0 (DEFAULT), uses expression data in the `collapse-rnaseq` module for prediction
 # `OPENPBTA_POLYAPLOT`:
 #     if value is 1 (DEFAULT), runs the POLYA steps
 #     if value is 0, skips the POLYA steps
@@ -22,9 +19,6 @@ set -o pipefail
 
 # If running for subtyping, use the base histologies file by setting this to 1
 RUN_FOR_SUBTYPING=${OPENPBTA_BASE_SUBTYPING:-0}
-
-# If we're running for figure generation, set to 1
-RUN_FOR_FIGURES=${OPENPBTA_TP53_FIGURES:-0}
 
 # we want to skip the poly-A steps in CI
 # if POLYA=1, poly-A steps will be run
@@ -71,18 +65,9 @@ Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
   --outputFolder ${analysis_dir}/results \
   --gencode ${cds_file}
 
-# If running for the purpose of figure generation (RUN_FOR_FIGURES will be 1),
-# use the data in the data release directory
-if [[ "$RUN_FOR_FIGURES" -eq "1" ]]
-then
-  # expression files for prediction
-  collapsed_stranded="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
-  collapsed_polya="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
-else
-  # expression files for prediction
-  collapsed_stranded="../collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
-  collapsed_polya="../collapse-rnaseq/results/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
-fi
+# expression files for prediction from data release
+collapsed_stranded="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+collapsed_polya="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds"
 
 # Skip poly-A steps in CI
 if [ "$POLYA" -gt "0" ]; then

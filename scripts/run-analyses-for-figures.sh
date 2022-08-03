@@ -26,7 +26,11 @@ analyses_dir="$BASEDIR/analyses"
 
 # Run modules that cannot be run locally due to memory requirements
 if [ "$RUN_LOCAL" -lt "1" ]; then
-  bash ${analyses_dir}/focal-cn-file-preparation/run-prepare-cn.sh       # Figures 2 and S3
+  # This module is not strictly needed for figure scripts, but we should ensure it's up-to-date
+  #  and re-run after subtyping. That can be done here elsewhere; commenting out for now.
+  #bash ${analyses_dir}/focal-cn-file-preparation/run-prepare-cn.sh
+
+  # Must be run to SQL databases needed to make Figure S2 panels
   bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh # Figure S2
   bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh # Figure S2
 fi
@@ -46,7 +50,7 @@ bash ${analyses_dir}/chromothripsis/run-chromothripsis.sh
 #  Note this module is run earlier in this script than the relevant
 #  figures' placement because these modules use the TP53 scores:
 #  `mutational-signatures` and `survival-analysis`
-OPENPBTA_TP53_FIGURES=1 bash ${analyses_dir}/tp53_nf1_score/run_classifier.sh
+bash ${analyses_dir}/tp53_nf1_score/run_classifier.sh
 
 
 # Run the mutational-signatures module for Figures 3 and S4
