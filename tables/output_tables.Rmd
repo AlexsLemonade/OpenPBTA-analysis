@@ -495,7 +495,7 @@ workflow_tools <- tribble(
   "AnnotSV", "2.1", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/annotsv.cwl",
   "FusionAnnotator", "0.2.0", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/fusion_annotator.cwl",
   "SNPeff", "4.3t", "FILL IN",
-  "ANNOVAR", "20190319", "FILL IN"
+  "ANNOVAR", "2018-04-16", "FILL IN"
 )
 
 
