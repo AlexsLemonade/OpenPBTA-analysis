@@ -26,13 +26,9 @@ analyses_dir="$BASEDIR/analyses"
 
 # Run modules that cannot be run locally due to memory requirements
 if [ "$RUN_LOCAL" -lt "1" ]; then
-  # This module is not strictly needed for figure scripts, but we should ensure it's up-to-date
-  #  and re-run after subtyping. That can be done here elsewhere; commenting out for now.
-  #bash ${analyses_dir}/focal-cn-file-preparation/run-prepare-cn.sh
-
-  # Must be run to SQL databases needed to make Figure S2 panels
+  # This module be run to SQL databases needed to make Figure S2 panels
+  # Note that the TCGA version would have been run in `generate-analysis-files-for-release.sh`
   bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh # Figure S2
-  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh # Figure S2
 fi
 
 # Run the `oncoprint-landscape` module shell script, for Figure 2 and S3
