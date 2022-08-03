@@ -1,12 +1,12 @@
 Kids First Participant ID	Kids First Biospecimen ID	CBTN ID	Phase of therapy	Composition	Therapy post-biopsy	Cancer predisposition(s)	Pathogenic germline variant	TMB	OpenPBTA molecular subtype
-PT_0SPKM4S8	BS_VW4XN9Y7	7316-2640	Initial CNS Tumor	Solid Tissue	Temozolomide, CCNU, Radiation	None documented	PMS2	187.38765454966892	HGG, H3 wildtype, TP53 activated
-PT_3CHB9PK5	BS_20TBZG09	7316-515	Initial CNS Tumor	Solid Tissue	Temozolomide, Irinotecan, Bevacizumab, Radiation	Other inherited conditions NOS	MSH6	307.0492167109247	HGG, H3 wildtype, TP53 loss
-PT_3CHB9PK5	BS_8AY2GM4G	7316-2085	Progressive	Solid Tissue	Unknown	Lynch syndrome	MSH6	321.6079467820181	HGG, H3 wildtype, TP53 loss
+PT_0SPKM4S8	BS_VW4XN9Y7	7316-2640	Initial CNS Tumor	Solid Tissue	Temozolomide, CCNU, Radiation	None documented	PMS2 p.S46I (LP)	187.38765454966892	HGG, H3 wildtype, TP53 activated
+PT_3CHB9PK5	BS_20TBZG09	7316-515	Initial CNS Tumor	Solid Tissue	Temozolomide, Irinotecan, Bevacizumab, Radiation	Other inherited conditions NOS	MSH6 NM_000179.2 c.3439-2A>G splice (P)	307.0492167109247	HGG, H3 wildtype, TP53 loss
+PT_3CHB9PK5	BS_8AY2GM4G	7316-2085	Progressive	Solid Tissue	Unknown	Lynch syndrome	MSH6 NM_000179.2 c.3439-2A>G splice (P)	321.6079467820181	HGG, H3 wildtype, TP53 loss
 PT_EB0D3BXG	BS_F0GNWEJJ	7316-3311	Progressive	Solid Tissue	Nivolumab, Radiation	None documented	None detected	26.261709243626097	Metastatic NBL, MYCN non-amplified
-PT_JNEV57VK	BS_85Q5P8GF	7316-2594	Initial CNS Tumor	Solid Tissue	Temozolomide, Radiation	Lynch syndrome	MSH2	4.731587273105341	DMG, H3 K28, TP53 loss
-PT_JNEV57VK	BS_HM5GFJN8	7316-3058	Progressive	Derived Cell Line	Nivolumab	Lynch Syndrome	MSH2	35.89286913681093	DMG, H3 K28, TP53 loss
-PT_JNEV57VK	BS_QWM9BPDY	7316-3058	Progressive	Derived Cell Line	Nivolumab	Lynch Syndrome	MSH2	7.363357709033756	DMG, H3 K28, TP53 loss
-PT_JNEV57VK	BS_P0QJ1QAH	7316-3058	Progressive	Solid Tissue	Nivolumab	Lynch Syndrome	MSH2	6.271452953701754	DMG, H3 K28, TP53 activated
+PT_JNEV57VK	BS_85Q5P8GF	7316-2594	Initial CNS Tumor	Solid Tissue	Temozolomide, Radiation	Lynch syndrome	MSH2 p.A636P (P)	4.731587273105341	DMG, H3 K28, TP53 loss
+PT_JNEV57VK	BS_HM5GFJN8	7316-3058	Progressive	Derived Cell Line	Nivolumab	Lynch Syndrome	MSH2 p.A636P (P)	35.89286913681093	DMG, H3 K28, TP53 loss
+PT_JNEV57VK	BS_QWM9BPDY	7316-3058	Progressive	Derived Cell Line	Nivolumab	Lynch Syndrome	MSH2 p.A636P (P)	7.363357709033756	DMG, H3 K28, TP53 loss
+PT_JNEV57VK	BS_P0QJ1QAH	7316-3058	Progressive	Solid Tissue	Nivolumab	Lynch Syndrome	MSH2 p.A636P (P)	6.271452953701754	DMG, H3 K28, TP53 activated
 PT_S0Q27J13	BS_P3PF53V8	7316-2307	Initial CNS Tumor	Solid Tissue	Temozolomide, Irinotecan, Radiation	None documented	None detected	15.482649479451206	HGG, H3 wildtype, TP53 activated
 PT_VTM2STE3	BS_ERFMPQN3	7316-2189	Progressive	Derived Cell Line	Unknown	Lynch Syndrome	None detected	5.739499354950266	HGG, H3 wildtype, TP53 loss
 PT_VTM2STE3	BS_02YBZSBY	7316-2189	Progressive	Solid Tissue	Unknown	Lynch Syndrome	None detected	274.48805695576783	HGG, H3 wildtype, TP53 activated

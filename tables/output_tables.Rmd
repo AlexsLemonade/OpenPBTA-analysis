@@ -151,12 +151,12 @@ soi_df <- tmb_hist %>%
       TRUE ~ as.character(cancer_predispositions)),
     # add pathogenic germline variants
     `Pathogenic germline variant` = case_when(
-      Kids_First_Participant_ID == "PT_3CHB9PK5" ~ "MSH6",
-      Kids_First_Participant_ID == "PT_0SPKM4S8" ~ "PMS2",
+      Kids_First_Participant_ID == "PT_3CHB9PK5" ~ "MSH6 NM_000179.2 c.3439-2A>G splice (P)",
+      Kids_First_Participant_ID == "PT_0SPKM4S8" ~ "PMS2 p.S46I (LP)",
       Kids_First_Participant_ID == "PT_VTM2STE3" ~ "None detected",
       Kids_First_Participant_ID == "PT_EB0D3BXG" ~ "None detected",
       Kids_First_Participant_ID == "PT_S0Q27J13" ~ "None detected",
-      Kids_First_Participant_ID == "PT_JNEV57VK" ~ "MSH2"
+      Kids_First_Participant_ID == "PT_JNEV57VK" ~ "MSH2 p.A636P (P)"
       ),
     # update molecular subtype for NBL sample
     molecular_subtype = case_when(
@@ -494,8 +494,8 @@ workflow_tools <- tribble(
   "RNA-SeQC", "2.3.4", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl",
   "AnnotSV", "2.1", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/annotsv.cwl",
   "FusionAnnotator", "0.2.0", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/fusion_annotator.cwl",
-  "SNPeff", "4.3t", "FILL IN",
-  "ANNOVAR", "2018-04-16", "FILL IN"
+  "SNPeff", "4.3t", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/clinvar_pathogenic_filter.cwl",
+  "ANNOVAR", "2018-04-16", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/annovar_20190319.cwl"
 )
 
 
