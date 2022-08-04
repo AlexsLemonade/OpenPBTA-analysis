@@ -26,62 +26,6 @@ scratch_dir="$BASEDIR/scratch"
 
 # Make output folders for all figures
 mkdir -p pngs
-mkdir -p pdfs
-
-#### Make sure color palettes are up-to-date
-Rscript --vanilla scripts/color_palettes.R
-Rscript -e "rmarkdown::render('mapping-histology-labels.Rmd', clean = TRUE, params = list(release = 'release-v22-20220505'))"
-
-
-##### Run all analysis modules required for figures ---------------------------------------
-
-# Run modules that cannot be run locally due to memory requirements
-if [ "$RUN_LOCAL" -lt "1" ]; then
-  bash ${analyses_dir}/focal-cn-file-preparation/run-prepare-cn.sh       # Figures 2 and S3
-  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh # Figure S2
-  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh # Figure S2
-  bash ${analyses_dir}/copy_number_consensus_call/run_consensus_call.sh  # Figure S3 (heatmap)
-fi
-
-# Run the `oncoprint-landscape` module shell script, for Figure 2 and S3
-bash ${analyses_dir}/oncoprint-landscape/run-oncoprint.sh
-
-# Run the interaction plots script for Figures 3 and S3
-bash ${analyses_dir}/interaction-plots/01-create-interaction-plots.sh
-
-
-# Run the chromothripsis module, which requires the chromosomal-instability module, for Figure 3
-bash ${analyses_dir}/chromosomal-instability/run_breakpoint_analysis.sh
-bash ${analyses_dir}/chromothripsis/run-chromothripsis.sh
-
-# Run the mutational-signatures module for Figures 3 and S4
-# We only run the part of the module used in the manuscript (i.e., not de novo)
-OPENPBTA_CNS_FIT_ONLY=1 bash ${analyses_dir}/mutational-signatures/run_mutational_signatures.sh
-
-# Run the collapse-rnaseq module, which is needed for telomerase, immune deconvolution, and GSVA modules
-bash ${analyses_dir}/collapse-rnaseq/run-collapse-rnaseq.sh 
-
-# Run the telomerase activity prediction script, for Figures 4 and S5
-OPENPBTA_FOR_FIGURES=1 bash ${analyses_dir}/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
-
-
-# Run the tp53 classifier, for Figures 4 and S5
-bash ${analyses_dir}/tp53_nf1_score/run_classifier.sh
-
-# Run the survival module, for Figures 4 and 5
-bash ${analyses_dir}/survival-analysis/run_survival.sh
-
-# Run the dimension reduction module, for Figures 5 and S6
-bash ${analyses_dir}/transcriptomic-dimension-reduction/dimension-reduction-plots.sh
-
-# Run the immune deconvolution module, for Figures 5 and S6
-bash ${analyses_dir}/immune-deconv/run-immune-deconv.sh
-
-# Generate GSVA scores and test for cancer group differences, for Figure 5
-bash ${analyses_dir}/gene-set-enrichment-analysis/run-gsea.sh
-
-
-#### Make all output figure directories ------------------------------------
 mkdir -p pdfs/fig1/panels
 mkdir -p pdfs/fig2/panels
 mkdir -p pdfs/fig3/panels
@@ -95,9 +39,14 @@ mkdir -p pdfs/supp/figs5/panels
 mkdir -p pdfs/supp/figs6/panels
 
 
+#### Make sure color palettes are up-to-date ------------------------
+Rscript --vanilla scripts/color_palettes.R
+Rscript -e "rmarkdown::render('mapping-histology-labels.Rmd', clean = TRUE, params = list(release = 'release-v22-20220505'))"
+
+
 ##### Figure 1: Workflow and sample distribution ------------------------------------
 
-# Generate sample distribution panel for Figure 1 (and supplementary panels)
+# Generate sample distribution panel for Figure 1
 Rscript --vanilla scripts/fig1-sample-distribution.R
 
 
@@ -123,7 +72,6 @@ Rscript --vanilla scripts/fig3-chromothripsis-barplot.R
 # Run the Rscript that creates the sina and IQR plot - panel E
 # This script also creates both panels for S4
 Rscript --vanilla scripts/fig3_figS4-mutational-signatures-panels.R
-
 
 
 ##### Figure 4: TP53 and telomerase ---------------------------------------------------

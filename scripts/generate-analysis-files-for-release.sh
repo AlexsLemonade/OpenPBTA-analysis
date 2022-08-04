@@ -111,8 +111,8 @@ if [ "$RUN_LOCAL" -lt "1" ]; then
   # Copy over focal CN
   cp ${analyses_dir}/focal-cn-file-preparation/results/consensus_seg_annotated_cn_autosomes.tsv.gz ${compiled_dir}
   cp ${analyses_dir}/focal-cn-file-preparation/results/consensus_seg_annotated_cn_x_and_y.tsv.gz ${compiled_dir}
-  
-  # Move over the consensus with status file 
+
+  # Move over the consensus with status file
   cp ${scratch_dir}/consensus_seg_with_status.tsv ${compiled_dir}
 
 fi
