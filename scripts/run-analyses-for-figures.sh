@@ -26,9 +26,9 @@ analyses_dir="$BASEDIR/analyses"
 
 # Run modules that cannot be run locally due to memory requirements
 if [ "$RUN_LOCAL" -lt "1" ]; then
-  # This module be run to SQL databases needed to make Figure S2 panels
-  # Note that the TCGA version would have been run in `generate-analysis-files-for-release.sh`
-  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh # Figure S2
+  # This module will generate SQL databases needed to make Figure S2 panels
+  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh
+  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh
 fi
 
 # Run the `oncoprint-landscape` module shell script, for Figure 2 and S3
