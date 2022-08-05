@@ -8,22 +8,23 @@ There are two main strategies for creating individual panels: 1. scripts that ar
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-  - [Running the figure generation script](#running-the-figure-generation-script)
-      - [1. Obtain the current dataset.](#1-obtain-the-current-dataset)
-      - [2. Set up an up-to-date project Docker container.](#2-set-up-an-up-to-date-project-docker-container)
-      - [3. Run the bash script that generates the figures (`scripts/generate-figures.sh`).](#3-run-the-bash-script-that-generates-the-figures-scriptsgenerate-figuressh)
-  - [Adding or updating figures](#adding-or-updating-figures)
-    - [Individual panels and where to find them](#individual-panels-and-where-to-find-them)
-    - [Compiled multipanel figures](#compiled-multipanel-figures)
-    - [Documenting individual figures & scripts](#documenting-individual-figures--scripts)
-  - [Figure Guidelines](#figure-guidelines)
-    - [Color Palettes](#color-palettes)
-      - [Updating color palettes](#updating-color-palettes)
-      - [Examples palette usage in R](#examples-palette-usage-in-r)
-        - [Example 1) Color coding by disease label in `ggplot2`](#example-1-color-coding-by-disease-label-in-ggplot2)
-        - [Example 2) Color coding by numeric data](#example-2-color-coding-by-numeric-data)
-    - [Overall figure theme](#overall-figure-theme)
-    - [Statistics](#statistics)
+- [Running the figure generation script](#running-the-figure-generation-script)
+    - [1. Obtain the current dataset.](#1-obtain-the-current-dataset)
+    - [2. Set up an up-to-date project Docker container.](#2-set-up-an-up-to-date-project-docker-container)
+    - [3. Ensure that required analyses are up-to-date.](#3-ensure-that-required-analyses-are-up-to-date)
+    - [4. Run the bash script that generates the figures.](#4-run-the-bash-script-that-generates-the-figures)
+- [Adding or updating figures](#adding-or-updating-figures)
+  - [Individual panels and where to find them](#individual-panels-and-where-to-find-them)
+  - [Compiled multipanel figures](#compiled-multipanel-figures)
+  - [Documenting individual figures & scripts](#documenting-individual-figures--scripts)
+- [Figure Guidelines](#figure-guidelines)
+  - [Color Palettes](#color-palettes)
+    - [Updating color palettes](#updating-color-palettes)
+    - [Examples palette usage in R](#examples-palette-usage-in-r)
+      - [Example 1) Color coding by disease label in `ggplot2`](#example-1-color-coding-by-disease-label-in-ggplot2)
+      - [Example 2) Color coding by numeric data](#example-2-color-coding-by-numeric-data)
+  - [Overall figure theme](#overall-figure-theme)
+  - [Statistics](#statistics)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -52,16 +53,45 @@ docker run \
 ```
 You may choose to use [`docker exec`](https://docs.docker.com/engine/reference/commandline/exec/) to interact with the container from there or if you'd prefer the RStudio interface, you can navigate to `localhost:8787` and enter username `rstudio` and the password you set with the `run` command above.
 
-#### 3. Run the bash script that generates the figures (`scripts/generate-figures.sh`).
+#### 3. Ensure that required analyses are up-to-date.
 
 _⚠️ This requires 64GB of RAM to run successfully! You can set `RUN_LOCAL=1` for local testing that skips the RAM-intensive steps._
 
-This script runs **_all_** the intermediate steps needed to generate figures starting with the files in the data release.
-Earlier versions of this script ran the consensus SNV modules, but the consensus SNV files are included in the data download and the downstream modules use the files in the `data/` directory, so this is no longer necessary.
+In order to generate figures, there are several analyses whose results you should ensure are up-to-date such that all input files to for generating figures are available.
+All necessary analyses can be run with:
+
+```
+bash ../scripts/run-analyses-for-figures.sh
+```
+
+Because some of those analyses have significant memory requirements which are generally not available on local machines, you may wish to only run analyses that can be locally processed.
+For this option, set `RUN_LOCAL=1`:
+
+```
+RUN_LOCAL=1 bash ../scripts/run-analyses-for-figures.sh
+```
+
+
+
+#### 4. Run the bash script that generates the figures.
+
+_⚠️ This requires 64GB of RAM to run successfully! You can set `RUN_LOCAL=1` for local testing that skips the RAM-intensive steps._
+
+The script [`generate-figures.sh`](./generate-figures.sh) runs all scripts in [`figures/scripts/`](./scripts/) to generate manuscript-ready figure panels, as well as copies certain panels from analyses that are meant for the manuscript.
+Resulting figure panels are all saved as PDF files in [`figures/pdfs/`](./figures/pdfs/), as is described [here](./README.md#individual-panels-and-where-to-find-them).
+Generate all figure panels via:
 
 ```bash
-bash figures/generate-figures.sh
+bash ./generate-figures.sh
 ```
+
+Again, to run only analyses that do not have signficant memory requirements, set the flag `RUN_LOCAL=1`:
+
+
+```
+RUN_LOCAL=1 bash ./generate-figures.sh
+```
+
 
 In some cases, the shell script will copy plots to the appropriate locations in the `figures/` directory.
 
@@ -73,9 +103,9 @@ This section includes details for file organization and guidelines that are not 
 ### Individual panels and where to find them
 
 Individual panels, including any standalone legends, intended for the main text should be saved as **PDFs** in `figures/pdfs/<figure>/panels`.
-Each figure has its own subdirectory within `figures/pdfs`; individual panels for Figure 1 would be saved in `figures/pdfs/fig1/panels`, for Figure 2 in `figures/pdfs/fig2/panels` and so on and so forth.  
+Each figure has its own subdirectory within `figures/pdfs`; individual panels for Figure 1 would be saved in `figures/pdfs/fig1/panels`, for Figure 2 in `figures/pdfs/fig2/panels` and so on and so forth.
 
-Similarly, panels and standalone legends intended for the supplementary materials should be saved as **PDFs** in `figures/pdfs/supp/<figure>/panels`. 
+Similarly, panels and standalone legends intended for the supplementary materials should be saved as **PDFs** in `figures/pdfs/supp/<figure>/panels`.
 As for main text figures, individual panels for Figure S1 would be saved in `figures/pdfs/supp/figs1/panels`, and so on.
 
 ### Compiled multipanel figures
@@ -99,7 +129,7 @@ Scripts should generally begin with which figure(s) they are generating panels f
 
 ## Figure Guidelines
 
-### Color Palettes 
+### Color Palettes
 
 This project has a set of unified color palettes.
 There are 6 sets of hex color keys to be used for all final figures, stored as 6 TSV files in the `figures/palettes` folder.
@@ -121,7 +151,7 @@ To see a summary of what colors are used for histology labeling, see [`mapping-h
 | `tumor_descriptor_palette.tsv` | A named vector of hex codes assigned to each `tumor_descriptor` | For plotting sample distributions, this vector provides color for tumor descriptor categories |
 |`broad_histology_cancer_group_palette.tsv` | Contains multiple columns having to do with the display by disease label (i.e., `broad_histology` or `cancer_group`) | To be used for any plots that require coloring by `broad_histology` or `cancer_group`; please see `figures/mapping-histology-labels.Rmd` for more information |
 
-_⚠️ `histology_label_color_table.tsv` is a deprecated version of the palettes used for `broad_histology` and `cancer_group`._ 
+_⚠️ `histology_label_color_table.tsv` is a deprecated version of the palettes used for `broad_histology` and `cancer_group`._
 _It has been retained, for the moment, to prevent the introduction of breaking changes to multiple analysis modules._
 _It is not to be used for any future development and the relationships between individual biospecimens and disease labels may be out of date._
 
@@ -155,7 +185,7 @@ cancer_group_palette <- readr::read_tsv(
 
 # Make color palette suitable for use with ggplot
 annotation_colors <- cancer_group_palette$cancer_group_hex
-names(annotation_colors) <- cancer_group_palette$cancer_group  
+names(annotation_colors) <- cancer_group_palette$cancer_group
 ```
 
 **Step 2)** Make your ggplot using the named vector as a manual palette
@@ -165,7 +195,7 @@ You will be able to use the named vector with `ggplot2` functions such as `scale
 ```r
 ggplot2::ggplot(
   ggplot2::aes(x = cancer_group,
-               y = y_value, 
+               y = y_value,
                fill = cancer_group)
 ) +
   geom_boxplot() +
@@ -194,7 +224,7 @@ gradient_col_palette <- gradient_col_palette %>%
   dplyr::filter(color_names != "na_color")
 ```
 
-**Step 2)** Make a color function.  
+**Step 2)** Make a color function.
 
 In this example, we are building a `colorRamp2` function based on a regular interval between the minimum and maximum of our variable `df$variable` by using `seq`.
 However, depending on your data's distribution a regular interval based palette might not represent your data well on the plot.
@@ -208,7 +238,7 @@ col_fun <- circlize::colorRamp2(gradient_col_val,
                                 gradient_col_palette$hex_codes)
 ```
 
-**Step 3)** Apply to numeric data, or supply to your plotting code.  
+**Step 3)** Apply to numeric data, or supply to your plotting code.
 
 This step depends on how your main plotting function would like the data supplied.
 For example, `ComplexHeatmap` wants a function to be supplied to their `col` argument.
@@ -243,9 +273,9 @@ For 2+ group comparisons, we will use violin or boxplots with jitter.
 
 ### Statistics
 
-Some modules perform group-wise comparisons. 
+Some modules perform group-wise comparisons.
 For the manuscript, we may want to output tables of the statistics and/or print the statistical test and p-value directly on the plot.
-We use the functions `ggpubr::compare_means()` and `ggpubr::stat_compare_means()` for this. 
+We use the functions `ggpubr::compare_means()` and `ggpubr::stat_compare_means()` for this.
 Below are the default tests, parameters, and method options for 2 groups or [more than two groups](http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/76-add-p-values-and-significance-levels-to-ggplots/#compare-more-than-two-groups) for your convenience.
 Caution: the default p-values on the plots are uncorrected.
 
@@ -266,11 +296,11 @@ if(length(unique(df$var_x)) > 2){
   }
 
 
-p <- ggviolin(df, x = "var_x", y = "var_y", 
-           color = "var_color", 
+p <- ggviolin(df, x = "var_x", y = "var_y",
+           color = "var_color",
            palette = "simpsons",
            order = c("a", "b", "c"),
-           add = c("boxplot", "jitter"),  
+           add = c("boxplot", "jitter"),
            ggtheme = theme_pubr()) +
     # Add pairwise comparisons p-value
     stat_compare_means(method = method, label.y = 1.2, label.x.npc = "center") +
