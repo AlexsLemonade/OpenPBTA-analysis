@@ -478,6 +478,7 @@ workflow_tools <- tribble(
   "manta","1.4.0","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_strelka2_mutect2_manta_workflow.cwl",
   "STAR aligner","2.6.1d","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl",
   "rsem","1.3.1","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl",
+  "Cutadapt","2.5","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl",
   "STAR-Fusion","1.5.0","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl",
   "Arriba","1.1.0","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl",
   "bwa","0.7.17","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-wf.cwl",
@@ -489,13 +490,15 @@ workflow_tools <- tribble(
   "UCSC-Treehouse MendQC","1.1.1","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-mendqc-wf.cwl",
   "VarDict Java","1.5.8","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-vardict-wf.cwl",
   "VEP","r93","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_annot_vcf_sub_wf.cwl",
+  "VCFtools","0.1.15","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_annot_vcf_sub_wf.cwl",
   "bcftools","1.7","https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_annot_vcf_sub_wf.cwl",
   "RSEM", "1.3.1", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl",
-  "RNA-SeQC", "2.3.4", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl",
+  "RNA-SeQC", "2.4.2", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl",
   "AnnotSV", "2.1", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/annotsv.cwl",
   "FusionAnnotator", "0.2.0", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/fusion_annotator.cwl",
   "SNPeff", "4.3t", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/clinvar_pathogenic_filter.cwl",
-  "ANNOVAR", "2018-04-16", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/annovar_20190319.cwl"
+  "ANNOVAR", "2018-04-16", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/annovar_20190319.cwl",
+  "Picard Tools", "2.18.2-SNAPSHOT", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-mendqc-wf.cwl"
 )
 
 
