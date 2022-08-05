@@ -1,6 +1,7 @@
 #!/bin/bash
 #
-# Run all analysis modules that are used for manuscript figures
+# S. Spielman for CCDL ALSF, 2022
+# Run all analysis modules that are used in the manuscript
 
 #enviroment settings
 set -e
@@ -24,54 +25,84 @@ analyses_dir="$BASEDIR/analyses"
 
 #################################
 
-# Run modules that cannot be run locally due to memory requirements
+# Analyses are run in alphabetical order, except when their results are required
+#  as input to other modules. For analysis details, see:
+#  https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/README.md
+
+# First, run modules that cannot be run locally due to memory requirements
 if [ "$RUN_LOCAL" -lt "1" ]; then
-  # This module will generate SQL databases needed to make Figure S2 panels
+
+  # Run the `focal-cn-file-preparation` module
+  bash ${analyses_dir}/focal-cn-file-preparation/run-prepare-cn.sh
+
+  # Run the `snv-callers` module
   bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh
   bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh
 fi
 
-# Run the `oncoprint-landscape` module shell script, for Figure 2 and S3
-bash ${analyses_dir}/oncoprint-landscape/run-oncoprint.sh
+# Next, run modules that can be run locally
 
-# Run the interaction plots script for Figures 3 and S3
-bash ${analyses_dir}/interaction-plots/01-create-interaction-plots.sh
-
-
-# Run the chromothripsis module, which requires the chromosomal-instability module, for Figure 3
+# Run the `chromosomal-instability` module
+#  Generates input required for `chromothripsis` module
 bash ${analyses_dir}/chromosomal-instability/run_breakpoint_analysis.sh
+
+# Run the `chromothripsis` module
 bash ${analyses_dir}/chromothripsis/run-chromothripsis.sh
 
-# Run the tp53 classifier, for Figures 4 and S5
-#  Note this module is run earlier in this script than the relevant
-#  figures' placement because these modules use the TP53 scores:
-#  `mutational-signatures` and `survival-analysis`
-bash ${analyses_dir}/tp53_nf1_score/run_classifier.sh
-
-
-# Run the mutational-signatures module for Figures 3 and S4
-# We only run the part of the module used in the manuscript (i.e., not de novo)
-OPENPBTA_CNS_FIT_ONLY=1 bash ${analyses_dir}/mutational-signatures/run_mutational_signatures.sh
-
-# Run the telomerase activity prediction script, for Figures 4 and S5
-OPENPBTA_FOR_FIGURES=1 bash ${analyses_dir}/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
-
-# Run the immune deconvolution module, for Figures 5 and S6
-#  Note this module is run earlier in this script than the relevant
-#  figures' placement because the module `survival-analysis`
-#  uses the deconvolution results
-bash ${analyses_dir}/immune-deconv/run-immune-deconv.sh
-
-# Run the survival module, for Figures 4 and 5
-bash ${analyses_dir}/survival-analysis/run_survival.sh
-
-# Run the dimension reduction module, for Figures 5 and S6
-bash ${analyses_dir}/transcriptomic-dimension-reduction/dimension-reduction-plots.sh
-
-# Generate GSVA scores and test for cancer group differences, for Figure 5
-bash ${analyses_dir}/gene-set-enrichment-analysis/run-gsea.sh
-
-# Generate `cn_status_bp_per_bin.tsv` results for Figure S3 heatmap
+# Run the `cnv-chrom-plot` module, which contains an Rmd file that generates
+#  `cn_status_bp_per_bin.tsv` results for use in Figure S3 heatmap
 Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.Rmd')"
 
+# Run the `collapse-rnaseq` module
+bash ${analyses_dir}/collapse-rnaseq/bash run-collapse-rnaseq.sh
+
+# Run the `copy_number_consensus_call` module
+bash ${analyses_dir}/copy_number_consensus_call/bash run_consensus_call.sh
+
+# Run the `fusion_filtering` module
+bash ${analyses_dir}/fusion_filtering/run_fusion_merged.sh
+
+# Run the `fusion-summary` module
+bash ${analyses_dir}/fusion-summary/run-new-analysis.sh
+
+# Run the `gene-set-enrichment-analysis` module
+bash ${analyses_dir}/gene-set-enrichment-analysis/run-gsea.sh
+
+# Run the `hotspot-detections` module
+bash ${analyses_dir}/hotspots-detection/run_overlaps_hotspot.sh
+
+# Run the `immune-deconv` module
+#  Generates input required for the `survival-analysis` module
+bash ${analyses_dir}/immune-deconv/run-immune-deconv.sh
+
+# Run the `independent-samples` module
+bash ${analyses_dir}/independent-samples/run-independent-samples.sh
+
+# Run the `interaction-plots` module
+bash ${analyses_dir}/interaction-plots/01-create-interaction-plots.sh
+
+# Run the `tp53_nf1_score` module
+#  Generates input required for `mutational-signatures` and `survival-analysis` modules
+bash ${analyses_dir}/tp53_nf1_score/run_classifier.sh
+
+# Run the `mutational-signatures` module
+#  This only runs the part of the module used in the manuscript (i.e., not de novo)
+OPENPBTA_CNS_FIT_ONLY=1 bash ${analyses_dir}/mutational-signatures/run_mutational_signatures.sh
+
+# Run the `oncoprint-landscape` module
+bash ${analyses_dir}/oncoprint-landscape/run-oncoprint.sh
+
+# Run the `run-gistic` module
+bash ${analyses_dir}/run-gistic/run-gistic-module.sh
+
+# Run the `survival-analysis` module
+bash ${analyses_dir}/survival-analysis/run_survival.sh
+
+# Run the `telomerase-activity-prediction` module
+# one of these: it will be the latter if we remove the flag.
+OPENPBTA_FOR_FIGURES=1 bash ${analyses_dir}/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
+bash ${analyses_dir}/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
+
+# Run the `transcriptomic-dimension-reduction` module
+bash ${analyses_dir}/transcriptomic-dimension-reduction/dimension-reduction-plots.sh
 
