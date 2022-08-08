@@ -157,9 +157,9 @@ soi_df <- tmb_hist %>%
     ),
     # add Lynch syndrome
     cancer_predispositions = case_when(
-      Kids_First_Participant_ID %in% c("PT_3CHB9PK5", "PT_JNEV57VK", "PT_VTM2STE3") ~ "Lynch Syndrome",
-      Kids_First_Participant_ID == "PT_3CHB9PK5" ~ "Other inherited conditions NOS",
-      TRUE ~ as.character(cancer_predispositions)),
+      Kids_First_Participant_ID %in% c("PT_JNEV57VK", "PT_VTM2STE3") ~ "Lynch Syndrome",
+      Kids_First_Participant_ID == "PT_3CHB9PK5" ~ "CMMRD",
+      TRUE ~ "None documented"),
     # update molecular subtype for NBL sample
     molecular_subtype = case_when(
      Kids_First_Biospecimen_ID == "BS_F0GNWEJJ" ~ "Metastatic NBL, MYCN non-amplified",
