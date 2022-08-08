@@ -125,9 +125,10 @@ tmb_hist <- read_tsv(file.path(data_dir, "pbta-snv-consensus-mutation-tmb-coding
   # add germline variants
   left_join(clinvar) %>%     
   # add "None detected" to pathogenic germline variant column
+  Spacing, and removing what should be an unnecessary `as.character`
+```suggestion
   mutate(`Pathogenic germline variant` = case_when(is.na(`Pathogenic germline variant`) ~ "None detected",
-                                              TRUE ~ as.character(`Pathogenic germline variant`))
-  )
+                                                   TRUE ~ `Pathogenic germline variant`))
 
 # Gather all PT_IDs (poi = "patients of interest") for those with any hypermutant samples which are not cell lines
 poi <- tmb_hist %>%
