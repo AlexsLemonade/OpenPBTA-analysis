@@ -23,6 +23,7 @@ This Rmarkdown generates tables used in the manuscript, including both main text
 ```{r define directories and result files}
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 working_dir <- file.path(root_dir, "tables")
+input_dir <- file.path(working_dir, "input")
 analyses_dir <- file.path(root_dir, "analyses")
 palette_dir <- file.path(root_dir, "figures", "palettes")
 
@@ -44,6 +45,7 @@ histology_file <- file.path(data_dir, "pbta-histologies.tsv")
 palette_file <- file.path(palette_dir, "broad_histology_cancer_group_palette.tsv")
 tmb_all_file <- file.path(data_dir, "pbta-snv-consensus-mutation-tmb-all.tsv")
 tmb_coding_file <- file.path(data_dir, "pbta-snv-consensus-mutation-tmb-coding.tsv")
+clinvar_file <- file.path(input_dir, "clinvar_plp_hypermutator_variants.tsv")
 mutsigs_file <- file.path(analyses_dir, "mutational-signatures", "results", "deconstructsigs_exposures_merged.tsv")
 chromo_file <- file.path(analyses_dir, "chromothripsis", "results", "chromothripsis_summary_per_sample.txt")
 tp53_file <- file.path(analyses_dir, "tp53_nf1_score", "results", "tp53_altered_status.tsv")
@@ -107,12 +109,25 @@ histology_df %>%
 
 ## Table 2: Patients with hypermutant or ultra-hypermutant tumors
 ```{r table 2}
+# read in clinvar variant annotations / add P/LP annotation
+clinvar <- read_tsv(clinvar_file) %>%
+  mutate(`Pathogenic germline variant` = case_when(ClinicalSignificance == "Pathogenic" ~ paste0(Name, " (P)"),
+                          ClinicalSignificance == "Likely pathogenic" ~ paste0(Name, " (LP)"))) %>%
+  select(Kids_First_Participant_ID, `Pathogenic germline variant`)
+
 # Read in coding TMB file, merge with histologies data
 tmb_hist <- read_tsv(file.path(data_dir, "pbta-snv-consensus-mutation-tmb-coding.tsv")) %>%
     # rename TSB to Kids_First_Biospecimen_ID
   rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>%
+  mutate(tmb = round(tmb,1)) %>%
   select(Kids_First_Biospecimen_ID, tmb) %>%
-  left_join(histology_df) 
+  left_join(histology_df) %>%
+  # add germline variants
+  left_join(clinvar) %>%     
+  # add "None detected" to pathogenic germline variant column
+  mutate(`Pathogenic germline variant` = case_when(is.na(`Pathogenic germline variant`) ~ "None detected",
+                                              TRUE ~ as.character(`Pathogenic germline variant`))
+  )
 
 # Gather all PT_IDs (poi = "patients of interest") for those with any hypermutant samples which are not cell lines
 poi <- tmb_hist %>%
@@ -149,15 +164,6 @@ soi_df <- tmb_hist %>%
       sample_id == "7316-2189" ~ "Lynch Syndrome",
       Kids_First_Biospecimen_ID == "BS_85Q5P8GF" ~ "Lynch syndrome",
       TRUE ~ as.character(cancer_predispositions)),
-    # add pathogenic germline variants
-    `Pathogenic germline variant` = case_when(
-      Kids_First_Participant_ID == "PT_3CHB9PK5" ~ "MSH6 NM_000179.2 c.3439-2A>G splice (P)",
-      Kids_First_Participant_ID == "PT_0SPKM4S8" ~ "PMS2 p.S46I (LP)",
-      Kids_First_Participant_ID == "PT_VTM2STE3" ~ "None detected",
-      Kids_First_Participant_ID == "PT_EB0D3BXG" ~ "None detected",
-      Kids_First_Participant_ID == "PT_S0Q27J13" ~ "None detected",
-      Kids_First_Participant_ID == "PT_JNEV57VK" ~ "MSH2 p.A636P (P)"
-      ),
     # update molecular subtype for NBL sample
     molecular_subtype = case_when(
      Kids_First_Biospecimen_ID == "BS_F0GNWEJJ" ~ "Metastatic NBL, MYCN non-amplified",
