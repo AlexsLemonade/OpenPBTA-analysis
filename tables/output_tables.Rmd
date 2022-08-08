@@ -112,7 +112,7 @@ histology_df %>%
 # read in clinvar variant annotations / add P/LP annotation
 clinvar <- read_tsv(clinvar_file) %>%
   mutate(`Pathogenic germline variant` = case_when(ClinicalSignificance == "Pathogenic" ~ paste0(Name, " (P)"),
-                          ClinicalSignificance == "Likely pathogenic" ~ paste0(Name, " (LP)"))) %>%
+                                                   ClinicalSignificance == "Likely pathogenic" ~ paste0(Name, " (LP)"))) %>%
   select(Kids_First_Participant_ID, `Pathogenic germline variant`)
 
 # Read in coding TMB file, merge with histologies data
