@@ -125,8 +125,6 @@ tmb_hist <- read_tsv(file.path(data_dir, "pbta-snv-consensus-mutation-tmb-coding
   # add germline variants
   left_join(clinvar) %>%     
   # add "None detected" to pathogenic germline variant column
-  Spacing, and removing what should be an unnecessary `as.character`
-```suggestion
   mutate(`Pathogenic germline variant` = case_when(is.na(`Pathogenic germline variant`) ~ "None detected",
                                                    TRUE ~ `Pathogenic germline variant`))
 
@@ -159,11 +157,8 @@ soi_df <- tmb_hist %>%
     ),
     # add Lynch syndrome
     cancer_predispositions = case_when(
-      Kids_First_Biospecimen_ID == "BS_8AY2GM4G" ~ "Lynch syndrome",
-      sample_id == "7316-515" ~ "Other inherited conditions NOS",
-      sample_id == "7316-3058" ~ "Lynch Syndrome",
-      sample_id == "7316-2189" ~ "Lynch Syndrome",
-      Kids_First_Biospecimen_ID == "BS_85Q5P8GF" ~ "Lynch syndrome",
+      Kids_First_Participant_ID %in% c("PT_3CHB9PK5", "PT_JNEV57VK", "PT_VTM2STE3	") ~ "Lynch Syndrome",
+      Kids_First_Participant_ID == "PT_3CHB9PK5" ~ "Other inherited conditions NOS",
       TRUE ~ as.character(cancer_predispositions)),
     # update molecular subtype for NBL sample
     molecular_subtype = case_when(
@@ -183,7 +178,7 @@ soi_df %>%
              `CBTN ID` = sample_id,
              `Phase of therapy` = tumor_descriptor,
               Composition = composition,
-             `Cancer predisposition(s)` = cancer_predispositions,
+             `Cancer predisposition` = cancer_predispositions,
              TMB = tmb,
              `OpenPBTA molecular subtype` = molecular_subtype
              ) %>%
