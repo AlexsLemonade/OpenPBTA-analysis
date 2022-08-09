@@ -81,15 +81,16 @@ OPENPBTA_BASE_SUBTYPING=1 bash analyses/tp53_nf1_score/run_classifier.sh
 
 ## Generating analysis files for the manuscript
 
-Once a new data release has been cut, analysis modules should be run to update results and use the updated data.
-Specifically, analyses whose results are used in the manuscript should be re-run.
+Once a new data release has been cut, analysis modules should be run with the new data release.
+Specifically, non-deprecated analyses which appear in manuscript should be run, and as well as certain analyses that were run in `generate-analysis-files-for-release.sh` which export output files in `scratch/` that are needed for figure generation or require disease label information in the released histologies file.
+Note that subtyping modules do not need to be re-run, since subtyping was performed to create the data release itself.
 The script `run-manuscript-analyses.sh` can be used for this purpose as:
 
 ```
 bash run-manuscript-analyses.sh
 ```
 
-By default, this script will run _all_ analyses used in the manuscript.
+By default, this script will run all relevant analyses as described.
 However, some of those analyses have significant memory requirements which are generally not available on local machines.
 Therefore, to run only analyses that can be run locally, set `RUN_LOCAL=1`:
 

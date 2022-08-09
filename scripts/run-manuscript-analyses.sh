@@ -53,12 +53,6 @@ bash ${analyses_dir}/chromothripsis/run-chromothripsis.sh
 #  `cn_status_bp_per_bin.tsv` results for use in Figure S3 heatmap
 Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.Rmd')"
 
-# Run the `collapse-rnaseq` module
-bash ${analyses_dir}/collapse-rnaseq/bash run-collapse-rnaseq.sh
-
-# Run the `copy_number_consensus_call` module
-bash ${analyses_dir}/copy_number_consensus_call/bash run_consensus_call.sh
-
 # Run the `fusion_filtering` module
 bash ${analyses_dir}/fusion_filtering/run_fusion_merged.sh
 
@@ -68,15 +62,9 @@ bash ${analyses_dir}/fusion-summary/run-new-analysis.sh
 # Run the `gene-set-enrichment-analysis` module
 bash ${analyses_dir}/gene-set-enrichment-analysis/run-gsea.sh
 
-# Run the `hotspot-detections` module
-bash ${analyses_dir}/hotspots-detection/run_overlaps_hotspot.sh
-
 # Run the `immune-deconv` module
 #  Generates input required for the `survival-analysis` module
 bash ${analyses_dir}/immune-deconv/run-immune-deconv.sh
-
-# Run the `independent-samples` module
-bash ${analyses_dir}/independent-samples/run-independent-samples.sh
 
 # Run the `interaction-plots` module
 bash ${analyses_dir}/interaction-plots/01-create-interaction-plots.sh
@@ -99,9 +87,7 @@ bash ${analyses_dir}/run-gistic/run-gistic-module.sh
 bash ${analyses_dir}/survival-analysis/run_survival.sh
 
 # Run the `telomerase-activity-prediction` module
-# one of these: it will be the latter if we remove the flag.
 OPENPBTA_FOR_FIGURES=1 bash ${analyses_dir}/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
-bash ${analyses_dir}/telomerase-activity-prediction/RUN-telomerase-activity-prediction.sh
 
 # Run the `transcriptomic-dimension-reduction` module
 bash ${analyses_dir}/transcriptomic-dimension-reduction/dimension-reduction-plots.sh
