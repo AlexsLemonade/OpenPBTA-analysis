@@ -151,7 +151,11 @@ count_contributions_df <- count_contributions_df %>%
   mutate(author = recode_factor(author, !!!name_recoding)) %>%
   # If people had two names/IDs, this will de-duplicate now that things have 
   # been recoded
-  distinct()
+  distinct() %>%
+# Add Yang Yang to the list for contributions to the `chromothripsis` module. This was renamed from
+# `sv-analysis` since those contributions, so those were missed. [Ticket](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1599) and [rename PR](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1069)
+  add_row(module = "chromothripsis", author = "Yang Yang") %>%
+  arrange(module)
 
 # Write this less summarized data to file
 write_tsv(count_contributions_df, module_contributions_file)

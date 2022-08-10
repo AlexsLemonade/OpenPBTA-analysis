@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 
 <meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Jaclyn Taroni for ALSF CCDL" />
@@ -2559,7 +2559,7 @@ window.initializeCodeFolding = function(show) {
 
     // create a collapsable div to wrap the code in
     var div = $('<div class="collapse r-code-collapse"></div>');
-    if (show || $(this)[0].classList.contains('fold-show'))
+    if (show)
       div.addClass('in');
     var id = 'rcode-643E0F36' + currentIndex++;
     div.attr('id', id);
@@ -2689,6 +2689,7 @@ code {
 }
 img {
   max-width:100%;
+  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -2774,7 +2775,6 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
-  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -2787,12 +2787,57 @@ summary {
 }
 </style>
 
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
 <!-- code folding -->
 <style type="text/css">
 .code-folding-btn { margin-bottom: 4px; }
 </style>
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("03-set-authorship-order.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
 
 
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <style type="text/css">
 
@@ -2806,12 +2851,6 @@ summary {
 }
 }
 
-@media print {
-.toc-content {
-  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
-  float: right;
-}
-}
 
 .toc-content {
   padding-left: 30px;
@@ -2913,17 +2952,17 @@ div.tocify {
 <!-- rnb-source-begin eyJkYXRhIjoibGlicmFyeSh0aWR5dmVyc2UpIn0= -->
 <pre class="r"><code>library(tidyverse)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIEF0dGFjaGluZyBwYWNrYWdlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlIDEuMy4wIOKUgOKUgFxuIn0= -->
-<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIEF0dGFjaGluZyBwYWNrYWdlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlIDEuMi4xIOKUgOKUgFxuIn0= -->
+<pre><code>── Attaching packages ────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoi4pyUIGdncGxvdDIgMy4zLjAgICAgIOKclCBwdXJyciAgIDAuMy40XG7inJQgdGliYmxlICAzLjAuMSAgICAg4pyUIGRwbHlyICAgMC44LjVcbuKclCB0aWR5ciAgIDEuMC4yICAgICDinJQgc3RyaW5nciAxLjQuMFxu4pyUIHJlYWRyICAgMS4zLjEgICAgIOKclCBmb3JjYXRzIDAuNS4wXG4ifQ== -->
-<pre><code>✔ ggplot2 3.3.0     ✔ purrr   0.3.4
-✔ tibble  3.0.1     ✔ dplyr   0.8.5
-✔ tidyr   1.0.2     ✔ stringr 1.4.0
-✔ readr   1.3.1     ✔ forcats 0.5.0</code></pre>
+<!-- rnb-message-begin eyJkYXRhIjoi4pyUIGdncGxvdDIgMy4yLjAgICAgIOKclCBwdXJyciAgIDAuMy4yXG7inJQgdGliYmxlICAyLjEuMyAgICAg4pyUIGRwbHlyICAgMC44LjNcbuKclCB0aWR5ciAgIDAuOC4zICAgICDinJQgc3RyaW5nciAxLjQuMFxu4pyUIHJlYWRyICAgMS4zLjEgICAgIOKclCBmb3JjYXRzIDAuNC4wXG4ifQ== -->
+<pre><code>✔ ggplot2 3.2.0     ✔ purrr   0.3.2
+✔ tibble  2.1.3     ✔ dplyr   0.8.3
+✔ tidyr   0.8.3     ✔ stringr 1.4.0
+✔ readr   1.3.1     ✔ forcats 0.4.0</code></pre>
 <!-- rnb-message-end -->
-<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIENvbmZsaWN0cyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlX2NvbmZsaWN0cygpIOKUgOKUgFxu4pyWIGRwbHlyOjpmaWx0ZXIoKSBtYXNrcyBzdGF0czo6ZmlsdGVyKClcbuKcliBkcGx5cjo6bGFnKCkgICAgbWFza3Mgc3RhdHM6OmxhZygpXG4ifQ== -->
-<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+<!-- rnb-message-begin eyJkYXRhIjoi4pSA4pSAIENvbmZsaWN0cyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlX2NvbmZsaWN0cygpIOKUgOKUgFxu4pyWIGRwbHlyOjpmaWx0ZXIoKSBtYXNrcyBzdGF0czo6ZmlsdGVyKClcbuKcliBkcGx5cjo6bGFnKCkgICAgbWFza3Mgc3RhdHM6OmxhZygpXG4ifQ== -->
+<pre><code>── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <!-- rnb-message-end -->
@@ -3091,7 +3130,7 @@ data.frame(all_contributors_positions)</code></pre>
 <!-- rnb-source-end -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["all_contributors_positions"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","_rn_":"Joshua A. Shapiro"},{"1":"2","_rn_":"Krutika S. Gaonkar"},{"1":"3","_rn_":"Candace L. Savonen"},{"1":"4","_rn_":"Stephanie J. Spielman"},{"1":"5","_rn_":"Chante J. Bethell"},{"1":"6","_rn_":"Run Jin"},{"1":"7","_rn_":"Komal S. Rathi"},{"1":"8","_rn_":"Yuankun Zhu"},{"1":"9","_rn_":"Laura E. Egolf"},{"1":"10","_rn_":"Bailey Farrow"},{"1":"11","_rn_":"Daniel P. Miller"},{"1":"12","_rn_":"Mateusz P. Koptyra"},{"1":"13","_rn_":"Nhat Duong"},{"1":"14","_rn_":"Tejaswi Koganti"},{"1":"15","_rn_":"Nighat Noureen"},{"1":"16","_rn_":"Shannon Robbins"},{"1":"17","_rn_":"Payal Jain"},{"1":"18","_rn_":"Yang Yang"},{"1":"19","_rn_":"Meen Chul Kim"},{"1":"20","_rn_":"Philip B. Storm"},{"1":"21","_rn_":"Steven M. Foltz"},{"1":"22","_rn_":"Derek Hanson"},{"1":"23","_rn_":"Jennifer Mason"},{"1":"24","_rn_":"Siyuan Zheng"},{"1":"25","_rn_":"Douglas R. Stewart"},{"1":"26","_rn_":"Shrivats Kannan"},{"1":"27","_rn_":"Mariarita Santi"},{"1":"28","_rn_":"Xiaoyan Huang"},{"1":"29","_rn_":"Nicolas Van Kuren"},{"1":"30","_rn_":"Miguel A. Brown"},{"1":"31","_rn_":"Angela Viaene"},{"1":"32","_rn_":"Laura Scolaro"},{"1":"33","_rn_":"Bo Zhang"},{"1":"34","_rn_":"Anna R. Poetsch"},{"1":"35","_rn_":"Sharon J. Diskin"},{"1":"36","_rn_":"Allison P. Heath"},{"1":"37","_rn_":"Adam A. Kraya"},{"1":"38","_rn_":"Angela Waanders"},{"1":"39","_rn_":"Cassie N. Kline"},{"1":"40","_rn_":"Yiran Guo"},{"1":"41","_rn_":"Jena V. Lilly"},{"1":"42","_rn_":"Rebecca S. Kaufman"},{"1":"43","_rn_":"Brian M. Ennis"},{"1":"44","_rn_":"Peter J. Madsen"},{"1":"45","_rn_":"Zalman Vaksman"},{"1":"46","_rn_":"Hongbo M. Xie"},{"1":"47","_rn_":"Jessica Wong"},{"1":"48","_rn_":"Pichai Raman"},{"1":"49","_rn_":"Jung Kim"},{"1":"50","_rn_":"Adam C. Resnick"},{"1":"51","_rn_":"Casey S. Greene"},{"1":"52","_rn_":"Jo Lynne Rokita*"},{"1":"53","_rn_":"Jaclyn N. Taroni*"},{"1":"54","_rn_":"Children's Brain Tumor Network"},{"1":"55","_rn_":"Pacific Pediatric Neuro-Oncology Consortium"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["all_contributors_positions"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","_rn_":"Joshua A. Shapiro"},{"1":"2","_rn_":"Krutika S. Gaonkar"},{"1":"3","_rn_":"Candace L. Savonen"},{"1":"4","_rn_":"Stephanie J. Spielman"},{"1":"5","_rn_":"Chante J. Bethell"},{"1":"6","_rn_":"Run Jin"},{"1":"7","_rn_":"Komal S. Rathi"},{"1":"8","_rn_":"Yuankun Zhu"},{"1":"9","_rn_":"Laura E. Egolf"},{"1":"10","_rn_":"Bailey Farrow"},{"1":"11","_rn_":"Daniel P. Miller"},{"1":"12","_rn_":"Mateusz P. Koptyra"},{"1":"13","_rn_":"Yang Yang"},{"1":"14","_rn_":"Nhat Duong"},{"1":"15","_rn_":"Tejaswi Koganti"},{"1":"16","_rn_":"Nighat Noureen"},{"1":"17","_rn_":"Yiran Guo"},{"1":"18","_rn_":"Douglas R. Stewart"},{"1":"19","_rn_":"Adam A. Kraya"},{"1":"20","_rn_":"Nicolas Van Kuren"},{"1":"21","_rn_":"Shrivats Kannan"},{"1":"22","_rn_":"Philip B. Storm"},{"1":"23","_rn_":"Steven M. Foltz"},{"1":"24","_rn_":"Anna R. Poetsch"},{"1":"25","_rn_":"Hongbo M. Xie"},{"1":"26","_rn_":"Sharon J. Diskin"},{"1":"27","_rn_":"Pichai Raman"},{"1":"28","_rn_":"Angela Viaene"},{"1":"29","_rn_":"Jessica Wong"},{"1":"30","_rn_":"Meen Chul Kim"},{"1":"31","_rn_":"Miguel A. Brown"},{"1":"32","_rn_":"Laura Scolaro"},{"1":"33","_rn_":"Bo Zhang"},{"1":"34","_rn_":"Payal Jain"},{"1":"35","_rn_":"Jena V. Lilly"},{"1":"36","_rn_":"Shannon Robbins"},{"1":"37","_rn_":"Allison P. Heath"},{"1":"38","_rn_":"Angela Waanders"},{"1":"39","_rn_":"Siyuan Zheng"},{"1":"40","_rn_":"Xiaoyan Huang"},{"1":"41","_rn_":"Peter J. Madsen"},{"1":"42","_rn_":"Rebecca S. Kaufman"},{"1":"43","_rn_":"Brian M. Ennis"},{"1":"44","_rn_":"Cassie N. Kline"},{"1":"45","_rn_":"Zalman Vaksman"},{"1":"46","_rn_":"Derek Hanson"},{"1":"47","_rn_":"Mariarita Santi"},{"1":"48","_rn_":"Jennifer Mason"},{"1":"49","_rn_":"Jung Kim"},{"1":"50","_rn_":"Adam C. Resnick"},{"1":"51","_rn_":"Casey S. Greene"},{"1":"52","_rn_":"Jo Lynne Rokita*"},{"1":"53","_rn_":"Jaclyn N. Taroni*"},{"1":"54","_rn_":"Children's Brain Tumor Network"},{"1":"55","_rn_":"Pacific Pediatric Neuro-Oncology Consortium"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <!-- rnb-chunk-end -->
@@ -3136,13 +3175,13 @@ file.remove(&quot;metadata.yaml&quot;)</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoic2Vzc2lvbkluZm8oKSJ9 -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4zICgyMDIwLTAyLTI5KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggMTAgKGJ1c3RlcilcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIveDg2XzY0LWxpbnV4LWdudS9saWJvcGVuYmxhc3AtcjAuMy41LnNvXG5cbmxvY2FsZTpcbiBbMV0gTENfQ1RZUEU9ZW5fVVMuVVRGLTggICAgICAgTENfTlVNRVJJQz1DICAgICAgICAgICAgICBcbiBbM10gTENfVElNRT1lbl9VUy5VVEYtOCAgICAgICAgTENfQ09MTEFURT1lbl9VUy5VVEYtOCAgICBcbiBbNV0gTENfTU9ORVRBUlk9ZW5fVVMuVVRGLTggICAgTENfTUVTU0FHRVM9QyAgICAgICAgICAgICBcbiBbN10gTENfUEFQRVI9ZW5fVVMuVVRGLTggICAgICAgTENfTkFNRT1DICAgICAgICAgICAgICAgICBcbiBbOV0gTENfQUREUkVTUz1DICAgICAgICAgICAgICAgTENfVEVMRVBIT05FPUMgICAgICAgICAgICBcblsxMV0gTENfTUVBU1VSRU1FTlQ9ZW5fVVMuVVRGLTggTENfSURFTlRJRklDQVRJT049QyAgICAgICBcblxuYXR0YWNoZWQgYmFzZSBwYWNrYWdlczpcblsxXSBzdGF0cyAgICAgZ3JhcGhpY3MgIGdyRGV2aWNlcyB1dGlscyAgICAgZGF0YXNldHMgIG1ldGhvZHMgICBiYXNlICAgICBcblxub3RoZXIgYXR0YWNoZWQgcGFja2FnZXM6XG5bMV0gZm9yY2F0c18wLjUuMCAgIHN0cmluZ3JfMS40LjAgICBkcGx5cl8wLjguNSAgICAgcHVycnJfMC4zLjQgICAgXG5bNV0gcmVhZHJfMS4zLjEgICAgIHRpZHlyXzEuMC4yICAgICB0aWJibGVfMy4wLjEgICAgZ2dwbG90Ml8zLjMuMCAgXG5bOV0gdGlkeXZlcnNlXzEuMy4wXG5cbmxvYWRlZCB2aWEgYSBuYW1lc3BhY2UgKGFuZCBub3QgYXR0YWNoZWQpOlxuIFsxXSB0aWR5c2VsZWN0XzEuMC4wIHhmdW5fMC4xMyAgICAgICAgaGF2ZW5fMi4yLjAgICAgICBsYXR0aWNlXzAuMjAtMzggXG4gWzVdIGNvbG9yc3BhY2VfMS40LTEgdmN0cnNfMC4yLjQgICAgICBnZW5lcmljc18wLjAuMiAgIGh0bWx0b29sc18wLjQuMCBcbiBbOV0geWFtbF8yLjIuMSAgICAgICBiYXNlNjRlbmNfMC4xLTMgIHJsYW5nXzAuNC41ICAgICAgcGlsbGFyXzEuNC4zICAgIFxuWzEzXSBnbHVlXzEuNC4wICAgICAgIHdpdGhyXzIuMi4wICAgICAgREJJXzEuMS4wICAgICAgICBkYnBseXJfMS40LjMgICAgXG5bMTddIG1vZGVscl8wLjEuNiAgICAgcmVhZHhsXzEuMy4xICAgICBsaWZlY3ljbGVfMC4yLjAgIG11bnNlbGxfMC41LjAgICBcblsyMV0gZ3RhYmxlXzAuMy4wICAgICBjZWxscmFuZ2VyXzEuMS4wIHJ2ZXN0XzAuMy41ICAgICAgZXZhbHVhdGVfMC4xNCAgIFxuWzI1XSBrbml0cl8xLjI4ICAgICAgIGZhbnNpXzAuNC4xICAgICAgYnJvb21fMC41LjYgICAgICBSY3BwXzEuMC40LjYgICAgXG5bMjldIHNjYWxlc18xLjEuMCAgICAgYmFja3BvcnRzXzEuMS42ICBqc29ubGl0ZV8xLjYuMSAgIGZzXzEuNC4xICAgICAgICBcblszM10gaG1zXzAuNS4zICAgICAgICBkaWdlc3RfMC42LjI1ICAgIHN0cmluZ2lfMS40LjYgICAgZ3JpZF8zLjYuMyAgICAgIFxuWzM3XSBjbGlfMi4wLjIgICAgICAgIHRvb2xzXzMuNi4zICAgICAgbWFncml0dHJfMS41ICAgICBjcmF5b25fMS4zLjQgICAgXG5bNDFdIHBrZ2NvbmZpZ18yLjAuMyAgZWxsaXBzaXNfMC4zLjAgICB4bWwyXzEuMy4yICAgICAgIHJlcHJleF8wLjMuMCAgICBcbls0NV0gbHVicmlkYXRlXzEuNy44ICBhc3NlcnR0aGF0XzAuMi4xIHJtYXJrZG93bl8yLjEgICAgaHR0cl8xLjQuMSAgICAgIFxuWzQ5XSByc3R1ZGlvYXBpXzAuMTEgIFI2XzIuNC4xICAgICAgICAgbmxtZV8zLjEtMTQ0ICAgICBjb21waWxlcl8zLjYuMyAgXG4ifQ== -->
-<pre><code>R version 3.6.3 (2020-02-29)
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgIFxuIFszXSBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgIFxuWzExXSBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcblsxXSBmb3JjYXRzXzAuNC4wICAgc3RyaW5ncl8xLjQuMCAgIGRwbHlyXzAuOC4zICAgICBwdXJycl8wLjMuMiAgICBcbls1XSByZWFkcl8xLjMuMSAgICAgdGlkeXJfMC44LjMgICAgIHRpYmJsZV8yLjEuMyAgICBnZ3Bsb3QyXzMuMi4wICBcbls5XSB0aWR5dmVyc2VfMS4yLjFcblxubG9hZGVkIHZpYSBhIG5hbWVzcGFjZSAoYW5kIG5vdCBhdHRhY2hlZCk6XG4gWzFdIFJjcHBfMS4wLjEgICAgICAgY2VsbHJhbmdlcl8xLjEuMCBwaWxsYXJfMS40LjIgICAgIGNvbXBpbGVyXzMuNi4wICBcbiBbNV0gYmFzZTY0ZW5jXzAuMS0zICB0b29sc18zLjYuMCAgICAgIGRpZ2VzdF8wLjYuMjAgICAgbHVicmlkYXRlXzEuNy40IFxuIFs5XSBqc29ubGl0ZV8xLjYgICAgIGV2YWx1YXRlXzAuMTQgICAgbmxtZV8zLjEtMTQwICAgICBndGFibGVfMC4zLjAgICAgXG5bMTNdIGxhdHRpY2VfMC4yMC0zOCAgcGtnY29uZmlnXzIuMC4yICBybGFuZ18wLjQuMCAgICAgIGNsaV8xLjEuMCAgICAgICBcblsxN10gcnN0dWRpb2FwaV8wLjEwICB5YW1sXzIuMi4wICAgICAgIGhhdmVuXzIuMS4xICAgICAgeGZ1bl8wLjggICAgICAgIFxuWzIxXSB3aXRocl8yLjEuMiAgICAgIHhtbDJfMS4yLjAgICAgICAgaHR0cl8xLjQuMCAgICAgICBrbml0cl8xLjIzICAgICAgXG5bMjVdIGdlbmVyaWNzXzAuMC4yICAgaG1zXzAuNC4yICAgICAgICBncmlkXzMuNi4wICAgICAgIHRpZHlzZWxlY3RfMC4yLjVcblsyOV0gZ2x1ZV8xLjMuMSAgICAgICBSNl8yLjQuMCAgICAgICAgIHJlYWR4bF8xLjMuMSAgICAgcm1hcmtkb3duXzEuMTMgIFxuWzMzXSBtb2RlbHJfMC4xLjQgICAgIG1hZ3JpdHRyXzEuNSAgICAgYmFja3BvcnRzXzEuMS40ICBzY2FsZXNfMS4wLjAgICAgXG5bMzddIGh0bWx0b29sc18wLjMuNiAgcnZlc3RfMC4zLjQgICAgICBhc3NlcnR0aGF0XzAuMi4xIGNvbG9yc3BhY2VfMS40LTFcbls0MV0gc3RyaW5naV8xLjQuMyAgICBsYXp5ZXZhbF8wLjIuMiAgIG11bnNlbGxfMC41LjAgICAgYnJvb21fMC41LjIgICAgIFxuWzQ1XSBjcmF5b25fMS4zLjQgICAgXG4ifQ== -->
+<pre><code>R version 3.6.0 (2019-04-26)
 Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Debian GNU/Linux 10 (buster)
+Running under: Debian GNU/Linux 9 (stretch)
 
 Matrix products: default
-BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/libopenblasp-r0.3.5.so
+BLAS/LAPACK: /usr/lib/libopenblasp-r0.2.19.so
 
 locale:
  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
@@ -3156,24 +3195,23 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] forcats_0.5.0   stringr_1.4.0   dplyr_0.8.5     purrr_0.3.4    
-[5] readr_1.3.1     tidyr_1.0.2     tibble_3.0.1    ggplot2_3.3.0  
-[9] tidyverse_1.3.0
+[1] forcats_0.4.0   stringr_1.4.0   dplyr_0.8.3     purrr_0.3.2    
+[5] readr_1.3.1     tidyr_0.8.3     tibble_2.1.3    ggplot2_3.2.0  
+[9] tidyverse_1.2.1
 
 loaded via a namespace (and not attached):
- [1] tidyselect_1.0.0 xfun_0.13        haven_2.2.0      lattice_0.20-38 
- [5] colorspace_1.4-1 vctrs_0.2.4      generics_0.0.2   htmltools_0.4.0 
- [9] yaml_2.2.1       base64enc_0.1-3  rlang_0.4.5      pillar_1.4.3    
-[13] glue_1.4.0       withr_2.2.0      DBI_1.1.0        dbplyr_1.4.3    
-[17] modelr_0.1.6     readxl_1.3.1     lifecycle_0.2.0  munsell_0.5.0   
-[21] gtable_0.3.0     cellranger_1.1.0 rvest_0.3.5      evaluate_0.14   
-[25] knitr_1.28       fansi_0.4.1      broom_0.5.6      Rcpp_1.0.4.6    
-[29] scales_1.1.0     backports_1.1.6  jsonlite_1.6.1   fs_1.4.1        
-[33] hms_0.5.3        digest_0.6.25    stringi_1.4.6    grid_3.6.3      
-[37] cli_2.0.2        tools_3.6.3      magrittr_1.5     crayon_1.3.4    
-[41] pkgconfig_2.0.3  ellipsis_0.3.0   xml2_1.3.2       reprex_0.3.0    
-[45] lubridate_1.7.8  assertthat_0.2.1 rmarkdown_2.1    httr_1.4.1      
-[49] rstudioapi_0.11  R6_2.4.1         nlme_3.1-144     compiler_3.6.3  </code></pre>
+ [1] Rcpp_1.0.1       cellranger_1.1.0 pillar_1.4.2     compiler_3.6.0  
+ [5] base64enc_0.1-3  tools_3.6.0      digest_0.6.20    lubridate_1.7.4 
+ [9] jsonlite_1.6     evaluate_0.14    nlme_3.1-140     gtable_0.3.0    
+[13] lattice_0.20-38  pkgconfig_2.0.2  rlang_0.4.0      cli_1.1.0       
+[17] rstudioapi_0.10  yaml_2.2.0       haven_2.1.1      xfun_0.8        
+[21] withr_2.1.2      xml2_1.2.0       httr_1.4.0       knitr_1.23      
+[25] generics_0.0.2   hms_0.4.2        grid_3.6.0       tidyselect_0.2.5
+[29] glue_1.3.1       R6_2.4.0         readxl_1.3.1     rmarkdown_1.13  
+[33] modelr_0.1.4     magrittr_1.5     backports_1.1.4  scales_1.0.0    
+[37] htmltools_0.3.6  rvest_0.3.4      assertthat_0.2.1 colorspace_1.4-1
+[41] stringi_1.4.3    lazyeval_0.2.2   munsell_0.5.0    broom_0.5.2     
+[45] crayon_1.3.4    </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3210,55 +3248,6 @@ $(document).ready(function () {
   });
 });
 
-</script>
-
-<!-- tabsets -->
-
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
-<!-- code folding -->
-<script>
-$(document).ready(function () {
-  window.initializeSourceEmbed("03-set-authorship-order.Rmd");
-  window.initializeCodeFolding("show" === "show");
-});
-</script>
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
