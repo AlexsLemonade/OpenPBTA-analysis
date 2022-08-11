@@ -15,7 +15,6 @@ set.seed(1979)
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 analyses_dir <- file.path(root_dir, "analyses")
-scratch_dir <- file.path(root_dir, "scratch")
 figure_dir <- file.path(root_dir, "figures")
 palettes_dir <- file.path(figure_dir, "palettes")
 supp_figures_dir <- file.path(figure_dir, "pdfs", "supp", "figs3", "panels")
@@ -54,16 +53,16 @@ divergent_col_hex <- readr::read_tsv(
 
 # Read in metadata and merge with colors
 metadata <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max = 10000) %>%
-  # Join on the colors 
+  # Join on the colors
   left_join(histology_label_mapping, by = c("broad_histology", "cancer_group")) %>%
   # Select what is needed
-  select(contains("cancer_group"), 
+  select(contains("cancer_group"),
          Kids_First_Biospecimen_ID) %>%
   # remove "Other"
   filter(cancer_group != "Other")
 
 
-### Set up chromosomal sizes for making bins. 
+### Set up chromosomal sizes for making bins.
 chr_sizes <- read_tsv(
   file.path(data_dir, "WGS.hg38.strelka2.unpadded.bed"),
   col_names = c("chrom", "start", "end")
@@ -90,7 +89,7 @@ names(chr_sizes_vector) <- chr_sizes$chrom
 sample_ids <- bin_calls_df$biospecimen_id
 
 
-# Make color key. 
+# Make color key.
 color_key <- structure(
   c(divergent_col_hex, "#9932CC", "#fed8b1"),
   names = c("loss", "neutral", "gain", "unstable", "uncallable")
@@ -147,12 +146,12 @@ chr_annot <- HeatmapAnnotation(
 # Figure out cancer group counts, where NA display groups are _excluded_
 cancer_group_counts <- metadata %>%
   drop_na(cancer_group_display) %>%
-  # IDs of interest 
+  # IDs of interest
   filter(Kids_First_Biospecimen_ID %in% sample_ids) %>%
   # count and create new label. we run factor code to ensure the right order
   count(cancer_group_display, name = "cancer_group_n") %>%
   mutate(
-    cancer_group_display = fct_reorder(cancer_group_display, cancer_group_n, .desc=T), 
+    cancer_group_display = fct_reorder(cancer_group_display, cancer_group_n, .desc=T),
     # and now make the label
     cancer_group_display_n = glue::glue("{cancer_group_display} (N = {cancer_group_n})")
   ) %>%
@@ -162,7 +161,7 @@ cancer_group_counts <- metadata %>%
 samples_for_heatmap <- metadata %>%
   # again, filter to IDs of interest
   filter(Kids_First_Biospecimen_ID %in% sample_ids) %>%
-  select(Kids_First_Biospecimen_ID, 
+  select(Kids_First_Biospecimen_ID,
          cancer_group_display, # display names needed for factoring
          cancer_group_hex) %>%
   inner_join(
@@ -173,7 +172,7 @@ samples_for_heatmap <- metadata %>%
     )
   ) %>%
   mutate(
-    cancer_group_display = fct_reorder(cancer_group_display, cancer_group_n, .desc=T), 
+    cancer_group_display = fct_reorder(cancer_group_display, cancer_group_n, .desc=T),
     # and now relabel
     cancer_group_display = factor(cancer_group_display, labels = cancer_group_counts$cancer_group_display_n)
   ) %>%
@@ -183,7 +182,7 @@ samples_for_heatmap <- metadata %>%
   column_to_rownames("Kids_First_Biospecimen_ID") %>%
   # remove coumn
   select(-cancer_group_n)
- 
+
 # Make a color key that's formatted for ComplexHeatmap
 # Get a distinct version of the color keys
 cancer_color_key_df <- samples_for_heatmap %>%
@@ -226,7 +225,7 @@ hist_annot <- ComplexHeatmap::HeatmapAnnotation(
   )
 
 
-# Format `bin_calls_df` as a matrix with rownames for `ComplexHeatmap` to use. 
+# Format `bin_calls_df` as a matrix with rownames for `ComplexHeatmap` to use.
 bin_calls_mat <- bin_calls_df %>%
   tibble::column_to_rownames("biospecimen_id") %>%
   as.matrix()
@@ -235,7 +234,7 @@ bin_calls_mat <- bin_calls_mat[rownames(samples_for_heatmap), ]
 if (all.equal(rownames(bin_calls_mat), rownames(samples_for_heatmap)) != TRUE) {
   stop("Bad data processing for Figure S2 Panel B")
 }
- 
+
 ## Assemble CN status heatmap
 heatmap <- ComplexHeatmap::Heatmap(
   bin_calls_mat,
@@ -251,8 +250,8 @@ heatmap <- ComplexHeatmap::Heatmap(
   bottom_annotation = chr_annot,
   right_annotation = hist_annot,
   heatmap_legend_param = list(nrow = 1, border = "black"),
-  raster_quality = 8, 
-  border = "black", 
+  raster_quality = 8,
+  border = "black",
   row_title = NULL
 )
 
@@ -292,23 +291,23 @@ sv_densities <- sv_densities %>%
   rename(sv_breaks_count = breaks_count)
 
 # Merge chromothripsis data and breakpoint data
-merged_data <- chromoth_per_sample %>% 
+merged_data <- chromoth_per_sample %>%
   inner_join(cnv_densities, by = "Kids_First_Biospecimen_ID") %>%
   inner_join(sv_densities, by = "Kids_First_Biospecimen_ID") %>%
-  # Truncate # chromothripsis regions above 5 
+  # Truncate # chromothripsis regions above 5
   mutate(count_regions_any_conf_truncated = ifelse(count_regions_any_conf>=5, ">=5", count_regions_any_conf),
          count_regions_any_conf_truncated = forcats::fct_relevel(count_regions_any_conf_truncated, ">=5", after = Inf))
 
 
 ##### Figure S3C
 fig_s3c <- merged_data %>%
-  ggplot(aes(x = count_regions_any_conf_truncated, 
+  ggplot(aes(x = count_regions_any_conf_truncated,
              y = cnv_breaks_count)) +
   geom_jitter(width = 0.3, alpha = 0.5, size = 0.4) +
   geom_boxplot(color = "black", alpha = 0, outlier.shape=NA,
                # fatten controls *median line* width
                size = 0.4, fatten = 1) +
-  xlab("Number of Chromothripsis Regions") + 
+  xlab("Number of Chromothripsis Regions") +
   ylab("Number of CNV Breaks") +
   theme(
     legend.position = "none",
@@ -317,19 +316,19 @@ fig_s3c <- merged_data %>%
     axis.line = element_line(size = 0.25),
     axis.ticks = element_line(size = 0.25)
   )
-    
-ggsave(figure_s3c_file, fig_s3c, width = 2.65, height = 1.65, 
+
+ggsave(figure_s3c_file, fig_s3c, width = 2.65, height = 1.65,
        useDingbats=FALSE)
 
 #### Figure S3D
 fig_s3d <- merged_data %>%
-  ggplot(aes(x = count_regions_any_conf_truncated, 
+  ggplot(aes(x = count_regions_any_conf_truncated,
              y = sv_breaks_count)) +
   geom_jitter(width = 0.3, alpha = 0.5, size = 0.4) +
   geom_boxplot(color = "black", alpha = 0, outlier.shape=NA,
                # fatten controls *median line* width
                size = 0.4, fatten = 1) +
-  xlab("Number of Chromothripsis Regions") + 
+  xlab("Number of Chromothripsis Regions") +
   ylab("Number of SV Breaks") +
   theme(
     legend.position = "none",
