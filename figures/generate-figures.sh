@@ -58,8 +58,7 @@ if [ ! -f $oncoprint_file_check ]; then
   exit 0
 fi
 if [ $oncoprint_scratch_days -gt ${MAX_DAYS} ]; then
-  echo "The 'oncoprint-landscape' module scratch files may be out of date. Please re-run the 'oncoprint-landscape' module first, or run the script 'scripts/run-manuscript-analyses.sh'."
-  exit 0
+  echo "WARNING: The 'oncoprint-landscape' module scratch files may be out of date. You may want to re-run the 'oncoprint-landscape' module first, or run the script 'scripts/run-manuscript-analyses.sh'."
 fi
 
 # Check for snv-callers databases:
@@ -72,8 +71,7 @@ if [ ! -f $snv_pbta_db_check ] || [ ! -f $snv_tcga_db_check ]; then
   exit 0
 fi
 if [ $snv_pbta_scratch_days -gt ${MAX_DAYS} ] || [ $snv_tcga_scratch_days -gt ${MAX_DAYS} ]; then
-  echo "The 'snv-callers' module scratch databases may be out of date. Please re-run the 'snv-callers' module first, or run the script 'scripts/run-manuscript-analyses.sh'."
-  exit 0
+  echo "WARNING: The 'snv-callers' module scratch databases may be out of date. You may want to re-run the 'snv-callers' module first, or run the script 'scripts/run-manuscript-analyses.sh'."
 fi
 
 
