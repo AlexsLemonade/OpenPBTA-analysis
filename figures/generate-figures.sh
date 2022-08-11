@@ -52,11 +52,11 @@ MAX_DAYS=10
 
 # Check for an oncoprint file:
 oncoprint_file_check=${scratch_dir}/oncoprint_files/primary_only_maf.tsv # use one of the input files in the check
-oncoprint_scratch_days=$((($(date +%s) - $(date +%s -r "$oncoprint_file_check")) / 86400))  # https://unix.stackexchange.com/questions/102691/get-age-of-given-file
 if [ ! -f $oncoprint_file_check ]; then
   echo "The 'oncoprint-landscape' module scratch files do not all exist. Please re-run the 'oncoprint-landscape' module first, or run the script 'scripts/run-manuscript-analyses.sh'."
-  exit 0
+  exit 1
 fi
+oncoprint_scratch_days=$((($(date +%s) - $(date +%s -r "$oncoprint_file_check")) / 86400))  # https://unix.stackexchange.com/questions/102691/get-age-of-given-file
 if [ $oncoprint_scratch_days -gt ${MAX_DAYS} ]; then
   echo "WARNING: The 'oncoprint-landscape' module scratch files may be out of date. You may want to re-run the 'oncoprint-landscape' module first, or run the script 'scripts/run-manuscript-analyses.sh'."
 fi
@@ -64,12 +64,13 @@ fi
 # Check for snv-callers databases:
 snv_pbta_db_check=${scratch_dir}/snv-callers/snv_db.sqlite
 snv_tcga_db_check=${scratch_dir}/snv-callers/tcga_snv_db.sqlite
-snv_pbta_scratch_days=$((($(date +%s) - $(date +%s -r "$snv_pbta_db_check")) / 86400))  # https://unix.stackexchange.com/questions/102691/get-age-of-given-file
-snv_tcga_scratch_days=$((($(date +%s) - $(date +%s -r "$snv_tcga_db_check")) / 86400))  # https://unix.stackexchange.com/questions/102691/get-age-of-given-file
 if [ ! -f $snv_pbta_db_check ] || [ ! -f $snv_tcga_db_check ]; then
   echo "The 'snv-callers' module scratch databases do not exist. Please re-run the 'snv-callers' module first, or run the script 'scripts/run-manuscript-analyses.sh'."
-  exit 0
+  exit 1
 fi
+
+snv_pbta_scratch_days=$((($(date +%s) - $(date +%s -r "$snv_pbta_db_check")) / 86400))  # https://unix.stackexchange.com/questions/102691/get-age-of-given-file
+snv_tcga_scratch_days=$((($(date +%s) - $(date +%s -r "$snv_tcga_db_check")) / 86400))  # https://unix.stackexchange.com/questions/102691/get-age-of-given-file
 if [ $snv_pbta_scratch_days -gt ${MAX_DAYS} ] || [ $snv_tcga_scratch_days -gt ${MAX_DAYS} ]; then
   echo "WARNING: The 'snv-callers' module scratch databases may be out of date. You may want to re-run the 'snv-callers' module first, or run the script 'scripts/run-manuscript-analyses.sh'."
 fi
