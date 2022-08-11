@@ -56,9 +56,6 @@ Rscript -e "rmarkdown::render('${analyses_dir}/cnv-chrom-plot/cn_status_heatmap.
 # Run the `fusion_filtering` module
 bash ${analyses_dir}/fusion_filtering/run_fusion_merged.sh
 
-# Run the `fusion-summary` module
-bash ${analyses_dir}/fusion-summary/run-new-analysis.sh
-
 # Run the `gene-set-enrichment-analysis` module
 bash ${analyses_dir}/gene-set-enrichment-analysis/run-gsea.sh
 
