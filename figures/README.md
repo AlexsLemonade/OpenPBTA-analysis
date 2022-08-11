@@ -78,7 +78,9 @@ RUN_LOCAL=1 bash ../scripts/run-manuscript-analyses.sh
 _⚠️ This requires 64GB of RAM to run successfully! You can set `RUN_LOCAL=1` for local testing that skips the RAM-intensive steps._
 
 The script [`generate-figures.sh`](./generate-figures.sh) runs all scripts in [`figures/scripts/`](./scripts/) to generate manuscript-ready figure panels, as well as copies certain panels from analyses that are meant for the manuscript.
-**Note that it is ASSUMED that all results, including certain files in `scratch/`, will have been generated with `../scripts/run-manuscript-analyses.sh` before running this script.**
+This script will also specifically check for the presence of necessary `scratch/` directory input files, which should have been generated with `../scripts/run-manuscript-analyses.sh` before running this script.
+If necessary `scratch/` files are missing, this script will error out; if necessary `scratch/` files are older than 10 days, a warning will be printed that files may be out of date.
+No further checks are performed.
 Resulting figure panels are all saved as PDF files in [`figures/pdfs/`](./figures/pdfs/), as is described [here](./README.md#individual-panels-and-where-to-find-them).
 Generate all figure panels via:
 
