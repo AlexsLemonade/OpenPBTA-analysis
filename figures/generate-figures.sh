@@ -29,7 +29,7 @@ mkdir -p pngs
 mkdir -p pdfs/fig1/panels
 mkdir -p pdfs/fig2/panels
 mkdir -p pdfs/fig3/panels
-mkdir -p pdfs/fig4/panels 
+mkdir -p pdfs/fig4/panels
 mkdir -p pdfs/fig5/panels
 mkdir -p pdfs/supp/figs1/panels
 mkdir -p pdfs/supp/figs2/panels
@@ -43,6 +43,40 @@ mkdir -p pdfs/supp/figs6/panels
 Rscript --vanilla scripts/color_palettes.R
 Rscript -e "rmarkdown::render('mapping-histology-labels.Rmd', clean = TRUE, params = list(release = 'release-v22-20220505'))"
 
+### Make sure relevant scratch/ files are up to date ------------------------------
+
+# We will check that necessary input files exist and are <=10 days old,
+#  assuming that <=10 days is likely up-to-date.
+#   If input files are older, exit with code 0 and prompt to run the module.
+MAX_DAYS=10
+
+# Check for an oncoprint file:
+oncoprint_file_check=${scratch_dir}/oncoprint_files/primary_only_maf.tsv # use one of the input files in the check
+if [ ! -f $oncoprint_file_check ]; then
+  echo "The 'oncoprint-landscape' module scratch files do not all exist. Please re-run the 'oncoprint-landscape' module first, or run the script 'scripts/run-manuscript-analyses.sh'."
+  exit 1
+fi
+oncoprint_scratch_days=$((($(date +%s) - $(date +%s -r "$oncoprint_file_check")) / 86400))  # https://unix.stackexchange.com/questions/102691/get-age-of-given-file
+if [ $oncoprint_scratch_days -gt ${MAX_DAYS} ]; then
+  echo "WARNING: The 'oncoprint-landscape' module scratch files may be out of date. You may want to re-run the 'oncoprint-landscape' module first, or run the script 'scripts/run-manuscript-analyses.sh'."
+fi
+
+# Check for snv-callers databases:
+snv_pbta_db_check=${scratch_dir}/snv-callers/snv_db.sqlite
+snv_tcga_db_check=${scratch_dir}/snv-callers/tcga_snv_db.sqlite
+if [ ! -f $snv_pbta_db_check ] || [ ! -f $snv_tcga_db_check ]; then
+  echo "The 'snv-callers' module scratch databases do not exist. Please re-run the 'snv-callers' module first, or run the script 'scripts/run-manuscript-analyses.sh'."
+  exit 1
+fi
+
+snv_pbta_scratch_days=$((($(date +%s) - $(date +%s -r "$snv_pbta_db_check")) / 86400))  # https://unix.stackexchange.com/questions/102691/get-age-of-given-file
+snv_tcga_scratch_days=$((($(date +%s) - $(date +%s -r "$snv_tcga_db_check")) / 86400))  # https://unix.stackexchange.com/questions/102691/get-age-of-given-file
+if [ $snv_pbta_scratch_days -gt ${MAX_DAYS} ] || [ $snv_tcga_scratch_days -gt ${MAX_DAYS} ]; then
+  echo "WARNING: The 'snv-callers' module scratch databases may be out of date. You may want to re-run the 'snv-callers' module first, or run the script 'scripts/run-manuscript-analyses.sh'."
+fi
+
+
+
 
 ##### Figure 1: Workflow and sample distribution ------------------------------------
 
@@ -55,7 +89,6 @@ Rscript --vanilla scripts/fig1-sample-distribution.R
 # Create single panel PDFs and legends
 # Note: This script also generates a panel Figure S3A
 Rscript --vanilla scripts/fig2_figS3-oncoprint-landscape.R
-
 
 
 ##### Figure 3: Mutation overview ----------------------------------------------------
@@ -77,7 +110,7 @@ Rscript --vanilla scripts/fig3_figS4-mutational-signatures-panels.R
 ##### Figure 4: TP53 and telomerase ---------------------------------------------------
 
 
-# Generate TP53 and telomerase figures 
+# Generate TP53 and telomerase figures
 Rscript --vanilla scripts/fig4-tp53-telomerase-panels.R # panels A, B, C, D, F
 Rscript --vanilla scripts/fig4-heatmap.R  # panel E
 Rscript --vanilla scripts/fig4-hgg-subtype-forest-plot.R # panel G
@@ -133,7 +166,7 @@ Rscript --vanilla scripts/figS3-panels-BCD.R
 ##### Figure S5: More TP53/telomerase --------------------------------------------------
 
 
-# Generate all figure panels A,B,C 
+# Generate all figure panels A,B,C
 Rscript --vanilla scripts/figS5-all-panels.R
 
 

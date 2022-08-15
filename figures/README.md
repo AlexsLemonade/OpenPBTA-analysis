@@ -57,18 +57,18 @@ You may choose to use [`docker exec`](https://docs.docker.com/engine/reference/c
 
 _⚠️ This requires 64GB of RAM to run successfully! You can set `RUN_LOCAL=1` for local testing that skips the RAM-intensive steps._
 
-In order to generate figures, there are several analyses whose results you should ensure are up-to-date such that all input files to for generating figures are available.
-All necessary analyses can be run with:
+In order to generate figures, analysis modules should contain up-to-date results for the given data release.
+All analyses that are included in the manuscript can be run with:
 
 ```
-bash ../scripts/run-analyses-for-figures.sh
+bash ../scripts/run-manuscript-analyses.sh
 ```
 
 Because some of those analyses have significant memory requirements which are generally not available on local machines, you may wish to only run analyses that can be locally processed.
 For this option, set `RUN_LOCAL=1`:
 
 ```
-RUN_LOCAL=1 bash ../scripts/run-analyses-for-figures.sh
+RUN_LOCAL=1 bash ../scripts/run-manuscript-analyses.sh
 ```
 
 
@@ -78,6 +78,9 @@ RUN_LOCAL=1 bash ../scripts/run-analyses-for-figures.sh
 _⚠️ This requires 64GB of RAM to run successfully! You can set `RUN_LOCAL=1` for local testing that skips the RAM-intensive steps._
 
 The script [`generate-figures.sh`](./generate-figures.sh) runs all scripts in [`figures/scripts/`](./scripts/) to generate manuscript-ready figure panels, as well as copies certain panels from analyses that are meant for the manuscript.
+This script will also specifically check for the presence of necessary `scratch/` directory input files, which should have been generated with `../scripts/run-manuscript-analyses.sh` before running this script.
+If necessary `scratch/` files are missing, this script will error out; if necessary `scratch/` files are older than 10 days, a warning will be printed that files may be out of date.
+No further checks are performed.
 Resulting figure panels are all saved as PDF files in [`figures/pdfs/`](./figures/pdfs/), as is described [here](./README.md#individual-panels-and-where-to-find-them).
 Generate all figure panels via:
 

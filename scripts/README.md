@@ -8,7 +8,7 @@
   - [Analysis file generation](#analysis-file-generation)
   - [Molecular subtyping](#molecular-subtyping)
     - [Adding summary analyses to `run-for-subtyping.sh`](#adding-summary-analyses-to-run-for-subtypingsh)
-- [Re-generating analysis files after subtyping](#re-generating-analysis-files-after-subtyping)
+- [Generating analysis files for the manuscript](#generating-analysis-files-for-the-manuscript)
 - [Other scripts](#other-scripts)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -79,22 +79,23 @@ OPENPBTA_BASE_SUBTYPING=1 bash analyses/tp53_nf1_score/run_classifier.sh
 
 ```
 
-## Re-generating analysis files after subtyping
+## Generating analysis files for the manuscript
 
-Once `pbta-histologies.tsv` has been generated to include subtyping information after a new data release, several analyses need to be re-run with the subtyping information.
-Specifically, analyses whose results are used to make publication-ready figures and are inputted to [`figures/generate-figures.sh`](../figures/generate-figures.sh) should be re-run.
-The script `run-analyses-for-figures.sh` can be used for this purpose as:
+Once a new data release has been cut, analysis modules should be run with the new data release.
+Specifically, non-deprecated analyses which appear in manuscript should be run, and as well as certain analyses that were run in `generate-analysis-files-for-release.sh` which export output files in `scratch/` that are needed for figure generation or require disease label information in the released histologies file.
+Note that subtyping modules do not need to be re-run, since subtyping was performed to create the data release itself.
+The script `run-manuscript-analyses.sh` can be used for this purpose as:
 
 ```
-bash run-analyses-for-figures.sh
+bash run-manuscript-analyses.sh
 ```
 
-By default, this script will run _all_ analyses needed for figures.
+By default, this script will run all relevant analyses as described.
 However, some of those analyses have significant memory requirements which are generally not available on local machines.
 Therefore, to run only analyses that can be run locally, set `RUN_LOCAL=1`:
 
 ```
-RUN_LOCAL=1 bash run-analyses-for-figures.sh
+RUN_LOCAL=1 bash run-manuscript-analyses.sh
 ```
 
 
