@@ -38,6 +38,13 @@ jobs:
         run: |
           bash analyses/count-contributions/run-count-contributions.sh
 
+      # Upload the manuscript YAML as an artifact
+      - name: Upload metadata YAML artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: manuscript_metadata
+          path: analyses/count-countributions/results/updated_metadata.yaml
+
       # Create a pull request with the updated results
       - name: Create PR with updated contribution module
         uses: peter-evans/create-pull-request@v3
@@ -57,13 +64,6 @@ jobs:
 
             Review the updates in `analyses/count-contributions/results/` for accuracy
           reviewers: $GITHUB_ACTOR
-
-      # Upload the manuscript YAML as an artifact
-      - name: Upload metadata YAML artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: manuscript_metadata
-          path: analyses/count-countributions/results/updated_metadata.yaml
 
   file-metadata-yaml-pr:
     # The type of runner that the job will run on
