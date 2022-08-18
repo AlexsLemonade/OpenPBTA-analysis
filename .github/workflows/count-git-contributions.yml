@@ -7,9 +7,6 @@ on:
   schedule:
     - cron: "0 14 * * WED"
   workflow_dispatch:
-  push:
-    branches:
-      - jaclyn-taroni/auto-update-ms-metadata 
 
 jobs:
   file-count-contributions-pr:
