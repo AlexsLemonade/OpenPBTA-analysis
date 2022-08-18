@@ -85,7 +85,7 @@ jobs:
 
       # You can not overwrite an existing file with an artifact
       - name: Remove existing metadata file
-      - run: |
+        run: |
           rm content/metadata.yaml
 
       - name: Download the metadata artifact
