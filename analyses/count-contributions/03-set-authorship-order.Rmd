@@ -164,7 +164,7 @@ updated_manuscript_metadata$authors <- reordered_author_list
 
 # Write updated metadata to file
 yaml::write_yaml(updated_manuscript_metadata, 
-                 file.path("results", "updated_metadata.yaml"))
+                 file.path("results", "metadata.yaml"))
 
 # Remove original metadata from directory
 file.remove("metadata.yaml")

@@ -43,7 +43,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: manuscript_metadata
-          path: analyses/count-contributions/results/updated_metadata.yaml
+          path: analyses/count-contributions/results/metadata.yaml
 
       # Create a pull request with the updated results
       - name: Create PR with updated contribution module
@@ -92,7 +92,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: manuscript_metadata
-          path: content/metadata.yaml
+          path: content
 
       # Create a pull request with the updated results
       - name: Create PR with updated manuscript metadata YAML
