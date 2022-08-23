@@ -38,6 +38,13 @@ jobs:
         run: |
           bash analyses/count-contributions/run-count-contributions.sh
 
+      # Upload the manuscript YAML as an artifact
+      - name: Upload metadata YAML artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: manuscript_metadata
+          path: analyses/count-contributions/results/metadata.yaml
+
       # Create a pull request with the updated results
       - name: Create PR with updated contribution module
         uses: peter-evans/create-pull-request@v3
@@ -56,4 +63,55 @@ jobs:
             ### Instruction for reviewers
 
             Review the updates in `analyses/count-contributions/results/` for accuracy
+          reviewers: $GITHUB_ACTOR
+
+  file-metadata-yaml-pr:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    needs: file-count-contributions-pr
+
+    # We want to add the updated metadata to the manuscript repo
+    steps:
+      - name: Checkout manuscript repository
+        uses: actions/checkout@v3
+        with:
+          repository: AlexsLemonade/OpenPBTA-manuscript
+      
+      - name: Configure git
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+
+      # You can not overwrite an existing file with an artifact
+      - name: Remove existing metadata file
+        run: |
+          rm content/metadata.yaml
+
+      - name: Download the metadata artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: manuscript_metadata
+          path: content
+
+      # Create a pull request with the updated results
+      - name: Create PR with updated manuscript metadata YAML
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.DOCS_BOT_GITHUB_TOKEN }}
+          commit-message: Update manuscript metadata
+          signoff: false
+          branch: auto_author_order
+          delete-branch: true
+          title: 'GHA: Updated author order'
+          body: |
+            ### Description
+
+            This PR auto-generated from GitHub Actions workflow that counts git contributions and sets author order accordingly in the `AlexsLemonade/OpenPBTA-analysis` repo.
+            See [the relevant module](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/analyses/count-contributions) for more info.
+ 
+            ### Instruction for reviewers
+
+            Review the updates in `content/metadata.yaml` for accuracy.
+
           reviewers: $GITHUB_ACTOR

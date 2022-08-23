@@ -73,9 +73,8 @@ We are going to pin some of the author positioned based on scholarship that is n
 pinned_authors <- c("Joshua A. Shapiro", 
                     "Adam C. Resnick", 
                     "Casey S. Greene",
-                    # Asterisks are in the name field for corresponding authors
-                    "Jo Lynne Rokita*",  
-                    "Jaclyn N. Taroni*",
+                    "Jo Lynne Rokita",
+                    "Jaclyn N. Taroni",
                     "Children's Brain Tumor Network",
                     "Pacific Pediatric Neuro-Oncology Consortium")
 
@@ -102,12 +101,6 @@ In the case of ties, we want to randomly set the authorship order, so we shuffle
 module_contributions_df <- module_contributions_df[sample(nrow(module_contributions_df)), ]
 
 code_contributors <- module_contributions_df %>%
-  # For corresponding authors, we need to add an * to their names in order to
-  # filter them out in the next step
-  mutate(author = if_else(author %in% c("Jaclyn N. Taroni", "Jo Lynne Rokita"),
-                          str_c(author, "*"),
-                          author)
-  ) %>%
   # Authors with more contributions should come first
   arrange(desc(num_modules)) %>%
   pull(author)
@@ -171,7 +164,7 @@ updated_manuscript_metadata$authors <- reordered_author_list
 
 # Write updated metadata to file
 yaml::write_yaml(updated_manuscript_metadata, 
-                 file.path("results", "updated_metadata.yaml"))
+                 file.path("results", "metadata.yaml"))
 
 # Remove original metadata from directory
 file.remove("metadata.yaml")

@@ -24,7 +24,7 @@ See the notebook for more details!
 > * Manuscript authors that did not directly contribute to the code base are then randomly ordered. 
 > We set a seed directly before that shuffling step, using the year as the seed, to keep a consistent order in future runs if and when the Git contributions change.
 
-The updated metadata YAML file is ignored by this repository, but can be found at `results/updated_metadata.yaml`.
+The updated metadata YAML file is ignored by this repository, but can be found at `results/metadata.yaml`.
 
 ### GitHub Actions workflow
 
@@ -33,7 +33,9 @@ To keep these stats reasonably up-to-date, we use a GitHub Actions (GHA) workflo
 The workflow runs `bash run-count-contributions.sh` on the `master` branch and files a new pull request with the updated tables and HTML file from the notebook.
 This PR is intended to be reviewed by an organizer for accuracy before merging.
 
-The GHA workflow is the main way we expect the module to be used.
+If the author order changes – i.e., the YAML output from `03-set-authorship-order.Rmd` is different from the `master` branch of `AlexsLemonade/OpenPBTA-manuscript` – a pull request will be filed in the manuscript repository.
+
+The _scheduled_ GHA workflow is the main way we expect the module to be used, but you can also make use of the [`workflow_dispatch`](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch)  trigger [in the GitHub browser interface](https://docs.github.com/en/actions/managing-workflow-runs/manually-running-a-workflow).
 
 ### Running the module manually
 
