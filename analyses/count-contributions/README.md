@@ -26,6 +26,10 @@ See the notebook for more details!
 
 The updated metadata YAML file is ignored by this repository, but can be found at `results/metadata.yaml`.
 
+
+* `04-get-author-information.Rmd` which extracts relevant author information (name, email, affiliation, and ORCID) into a TSV for use during manuscript.
+It creates a file `author_information.tsv`, which is ignored by this repository but will be included in the `AlexsLemonade/OpenPBTA-manuscript` repository in `submission_info/` once the GitHub Actions workflow is run.
+
 ### GitHub Actions workflow
 
 To keep these stats reasonably up-to-date, we use a GitHub Actions (GHA) workflow ([`.github/workflows/count-git-contributions.yml`](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/.github/workflows/count-git-contributions.yml)) to rerun the module every Wednesday at 14:00 UTC.
@@ -34,6 +38,7 @@ The workflow runs `bash run-count-contributions.sh` on the `master` branch and f
 This PR is intended to be reviewed by an organizer for accuracy before merging.
 
 If the author order changes – i.e., the YAML output from `03-set-authorship-order.Rmd` is different from the `master` branch of `AlexsLemonade/OpenPBTA-manuscript` – a pull request will be filed in the manuscript repository.
+The updated author TSV file `author_information.tsv` will be filed as part of this pull request.
 
 The _scheduled_ GHA workflow is the main way we expect the module to be used, but you can also make use of the [`workflow_dispatch`](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch)  trigger [in the GitHub browser interface](https://docs.github.com/en/actions/managing-workflow-runs/manually-running-a-workflow).
 
