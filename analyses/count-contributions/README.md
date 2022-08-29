@@ -27,7 +27,7 @@ See the notebook for more details!
 The updated metadata YAML file is ignored by this repository, but can be found at `results/metadata.yaml`.
 
 
-* `04-get-author-information-tsv.Rmd` which extracts relevant author information (name, email, affiliation, and ORCID) into a TSV for use during manuscript.
+* `04-get-author-information.Rmd` which extracts relevant author information (name, email, affiliation, and ORCID) into a TSV for use during manuscript.
 It creates a file `author_information.tsv`, which is ignored by this repository but will be included in the `AlexsLemonade/OpenPBTA-manuscript` repository in `submission_info/` once the GitHub Actions workflow is run.
 
 ### GitHub Actions workflow

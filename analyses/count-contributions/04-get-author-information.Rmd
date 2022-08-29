@@ -23,11 +23,13 @@ This notebook parses the `metadata.yaml` file to obtain a TSV of author informat
 
 ## Read in metadata 
 
-The previously-run notebook `03-set-authorship-order.Rmd` will have obtained the most recent metadata YAML file, so we can directly read it in and grab the author list.
+The previously-run notebook `03-set-authorship-order.Rmd` will have created an updated metadata YAML file in `results/metadata.yaml`, so we can directly read it in and grab the author list.
 
 
 ```{r}
-manuscript_metadata <- yaml::read_yaml("metadata.yaml")
+manuscript_metadata <- yaml::read_yaml(
+  file.path("results", "metadata.yaml")
+)
 author_list <- manuscript_metadata$author
 ```
 
