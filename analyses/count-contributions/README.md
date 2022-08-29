@@ -38,7 +38,7 @@ The workflow runs `bash run-count-contributions.sh` on the `master` branch and f
 This PR is intended to be reviewed by an organizer for accuracy before merging.
 
 If the author order changes – i.e., the YAML output from `03-set-authorship-order.Rmd` is different from the `master` branch of `AlexsLemonade/OpenPBTA-manuscript` – a pull request will be filed in the manuscript repository.
-The updated author TSV file `author_information.tsv` will be filed as part of this pull request.
+The updated author TSV file `submission_info/author_information.tsv` will be filed as part of this pull request.
 
 The _scheduled_ GHA workflow is the main way we expect the module to be used, but you can also make use of the [`workflow_dispatch`](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch)  trigger [in the GitHub browser interface](https://docs.github.com/en/actions/managing-workflow-runs/manually-running-a-workflow).
 
