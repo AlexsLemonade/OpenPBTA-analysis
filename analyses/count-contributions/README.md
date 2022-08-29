@@ -4,7 +4,7 @@
 
 The purpose of this module is to count the git contributions to this repo in two ways:
 
-1. Count the number of analysis modules – directories in `analyses/` that are included in the manuscript, specifically – that individual contributors have authored commits in. 
+1. Count the number of analysis modules – directories in `analyses/` that are included in the manuscript, specifically – that individual contributors have authored commits in.
   You can find that information in `results/module_contribution_counts.tsv` and a _less summarized_ version that lists all contributors to a module in `results/module_contributors.tsv`.
 2. Count the number of commits to the entire repository individual contributors have authored.
 
@@ -13,21 +13,21 @@ The purpose of this module is to count the git contributions to this repo in two
 The shell script `run-count-contributions.sh` runs the following steps:
 
 * `01-count-contributions.sh` which is a shell script that generates intermediate TXT files (in `scratch/count-contributions`) with the output of `git shortlog` and `git log`.
-* `02-format-contributions.Rmd` which turns the output of `git shortlog` and `git log` into readable files. 
-This notebook additionally collapses people that have their contributions divided across multiple names by the logs and is responsible for removing the analysis modules that are not included in the manuscript. 
+* `02-format-contributions.Rmd` which turns the output of `git shortlog` and `git log` into readable files.
+This notebook additionally collapses people that have their contributions divided across multiple names by the logs and is responsible for removing the analysis modules that are not included in the manuscript.
 See the notebook for more details!
 * `03-set-authorship-order.Rmd` which downloads and reads in the current manuscript metadata file (i.e., from `AlexsLemonade/OpenPBTA-manuscript` `master` branch) and sets the author order based on the following criteria (quoting from the notebook itself):
 
 > * The first, last 4 authors, and consortia authors positions are pinned to reflect scholarship and contributor roles that are not captured in the Git history of this repository (e.g., substantive analytical code review, conceptualization, supervision, or project administration).
 > * Manuscript authors that have contributed to the code base for the analysis repository -- specifically the number of analysis modules that were included in the paper that a manuscript author has contributed to -- are then ordered from the second position on in decreasing order.
 > In the case of ties, the order is randomly selected.
-> * Manuscript authors that did not directly contribute to the code base are then randomly ordered. 
+> * Manuscript authors that did not directly contribute to the code base are then randomly ordered.
 > We set a seed directly before that shuffling step, using the year as the seed, to keep a consistent order in future runs if and when the Git contributions change.
 
 The updated metadata YAML file is ignored by this repository, but can be found at `results/metadata.yaml`.
 
 
-* `04-get-author-information.Rmd` which extracts relevant author information (name, email, affiliation, and ORCID) into a TSV for use during manuscript.
+* `04-get-author-information-tsv.Rmd` which extracts relevant author information (name, email, affiliation, and ORCID) into a TSV for use during manuscript.
 It creates a file `author_information.tsv`, which is ignored by this repository but will be included in the `AlexsLemonade/OpenPBTA-manuscript` repository in `submission_info/` once the GitHub Actions workflow is run.
 
 ### GitHub Actions workflow
