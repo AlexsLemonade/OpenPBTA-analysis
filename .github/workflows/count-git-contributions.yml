@@ -45,6 +45,13 @@ jobs:
           name: manuscript_metadata
           path: analyses/count-contributions/results/metadata.yaml
 
+      # Upload the author information as an artifact
+      - name: Upload author information TSV artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: author_information
+          path: analyses/count-contributions/author_information.tsv
+
       # Create a pull request with the updated results
       - name: Create PR with updated contribution module
         uses: peter-evans/create-pull-request@v3
@@ -83,9 +90,13 @@ jobs:
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
 
-      # You can not overwrite an existing file with an artifact
-      - name: Remove existing metadata file
+      # Set up directories to be able to receive artifacts
+      # Note, You can not overwrite an existing file with an artifact,
+      #  so this step also removes existing files.
+      - name: Directory setup
         run: |
+          mkdir -p submission_info/
+          rm -f submission_info/author_information.tsv
           rm content/metadata.yaml
 
       - name: Download the metadata artifact
@@ -93,6 +104,14 @@ jobs:
         with:
           name: manuscript_metadata
           path: content
+
+
+      - name: Download the author information artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: author_information
+          path: submission_info
+
 
       # Create a pull request with the updated results
       - name: Create PR with updated manuscript metadata YAML
@@ -112,6 +131,6 @@ jobs:
  
             ### Instruction for reviewers
 
-            Review the updates in `content/metadata.yaml` for accuracy.
+            Review the updates in `content/metadata.yaml` and `submission_info/author_information.tsv` for accuracy.
 
           reviewers: $GITHUB_ACTOR
