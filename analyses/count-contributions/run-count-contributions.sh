@@ -15,3 +15,6 @@ Rscript -e "rmarkdown::render('02-format-contributions.Rmd', clean = TRUE)"
 
 # Run notebook reordering author list to account for git contributions
 Rscript -e "rmarkdown::render('03-set-authorship-order.Rmd', clean = TRUE)"
+
+# Run notebook generating author list as TSV for submission
+Rscript -e "rmarkdown::render('04-get-author-information.Rmd', clean = TRUE)"
