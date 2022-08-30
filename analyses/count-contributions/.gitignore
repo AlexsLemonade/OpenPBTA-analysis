@@ -1,2 +1,5 @@
 # Ignore updated manuscript metadata file
 results/metadata.yaml
+
+# Ignore authorship TSV
+author_information.tsv

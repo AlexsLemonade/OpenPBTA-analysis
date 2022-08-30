@@ -1,0 +1,106 @@
+---
+title: "Creating a TSV of author information for AlexsLemonade/OpenPBTA-manuscript"
+output: 
+  html_notebook:
+    toc: true
+    toc_float: true
+author: Stephanie Spielman for ALSF CCDL
+date: 2022
+---
+
+```{r setup}
+library(magrittr) # load for piping
+```
+
+
+This notebook parses the `metadata.yaml` file to obtain a TSV of author information relevant for manuscript submission, including:
+
+- Name
+- Affiliation(s)
+- ORCID
+- Email 
+
+
+## Read in metadata 
+
+The previously-run notebook `03-set-authorship-order.Rmd` will have created an updated metadata YAML file in `results/metadata.yaml`, so we can directly read it in and grab the author list.
+
+
+```{r}
+manuscript_metadata <- yaml::read_yaml(
+  file.path("results", "metadata.yaml")
+)
+author_list <- manuscript_metadata$author
+```
+
+## Parse the metadata
+
+First, we'll define a function that is useful for parsing fields out of the metadata. 
+This function allows for the fact that some keys may be missing for some authors (e.g. `ORCID` or `email`), and the function will fill these in as `NA`s.
+
+```{r}
+# Function to parse out a given field
+# This function allows us to extract fields
+#  that might missing, which get assigned NA
+extract_yaml_value <- function(x, name) {
+  
+  # If the name is not present, return NA
+  if (!(name %in% names(x))) {
+    return_list <- list(NA)
+    names(return_list) <- name
+    return(return_list)
+  } else {
+    # Process affiliations specifically since there can be >1
+    #  and at least 1 has superscripts that should be removed
+    if (name == "affiliations") {
+      list("affiliations" =
+             paste(x[["affiliations"]], collapse = "; ") %>%
+             # Remove any superscripts
+             stringr::str_replace_all(., "<sup>.+<\\/sup>", "")
+      )
+    } else {
+      # Extract the value directly
+      return(magrittr::extract(x, name))
+    }
+  }
+  
+}
+```
+
+
+Now, we can use this function to parse the metadata into a data frame.
+
+
+```{r}
+
+# Extract info
+author_info <- dplyr::bind_cols(
+ purrr::map_dfr(author_list, extract_yaml_value, "name"),
+ purrr::map_dfr(author_list, extract_yaml_value, "affiliations"),
+ purrr::map_dfr(author_list, extract_yaml_value, "orcid"),
+ purrr::map_dfr(author_list, extract_yaml_value, "email")
+)
+
+
+# Make names titlecase, except ORCID which should be all uppercase
+names(author_info) <- stringr::str_to_title(names(author_info))
+author_info <- dplyr::rename(author_info, ORCID = Orcid)
+```
+
+### Save
+
+And we're ready to save!
+
+```{r}
+readr::write_tsv(
+  author_info,
+  "author_information.tsv"
+)
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
