@@ -146,13 +146,13 @@ soi_df <- tmb_hist %>%
   filter(experimental_strategy == "WGS") %>%
   # manually add therapy field and update cancer predispositions not included in histologies file per [ticket](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1318)
   mutate(`Therapy post-biopsy` = case_when(
-      Kids_First_Biospecimen_ID == "BS_VW4XN9Y7" ~ "Temozolomide, CCNU, Radiation",
-      Kids_First_Biospecimen_ID == "BS_20TBZG09" ~ "Temozolomide, Irinotecan, Bevacizumab, Radiation",
+      Kids_First_Biospecimen_ID == "BS_VW4XN9Y7" ~ "Radiation, Temozolomide, CCNU",
+      Kids_First_Participant_ID == "PT_3CHB9PK5" ~ "Radiation, Temozolomide, Irinotecan, Bevacizumab",
       Kids_First_Biospecimen_ID == "BS_8AY2GM4G" ~ "Unknown",
-      Kids_First_Biospecimen_ID == "BS_85Q5P8GF" ~ "Temozolomide, Radiation",
-      sample_id == "7316-3058" ~ "Nivolumab",
-      Kids_First_Biospecimen_ID == "BS_P3PF53V8" ~ "Temozolomide, Irinotecan, Radiation",
-      Kids_First_Biospecimen_ID == "BS_F0GNWEJJ" ~ "Nivolumab, Radiation",
+      Kids_First_Biospecimen_ID == "BS_85Q5P8GF" ~ "Radiation, Temozolomide",
+      sample_id == "7316-3058" ~ "Radiation, Temozolomide, Nivolumab",
+      Kids_First_Biospecimen_ID == "BS_P3PF53V8" ~ "Radiation, Temozolomide, Irinotecan",
+      Kids_First_Biospecimen_ID == "BS_F0GNWEJJ" ~ "Radiation, Nivolumab",
       sample_id == "7316-2189" ~ "Unknown",
     ),
     # add Lynch syndrome
@@ -498,7 +498,7 @@ workflow_tools <- tribble(
   "RNA-SeQC", "2.3.4", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl",
   "AnnotSV", "2.1", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/annotsv.cwl",
   "FusionAnnotator", "0.2.0", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/fusion_annotator.cwl",
-  "SNPeff", "4.3t", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/clinvar_pathogenic_filter.cwl",
+  "SnpEff/SnpSift", "4.3t", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/clinvar_pathogenic_filter.cwl",
   "ANNOVAR", "2018-04-16", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/annovar_20190319.cwl",
   "Picard Tools", "2.18.2-SNAPSHOT", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-mendqc-wf.cwl"
 )
