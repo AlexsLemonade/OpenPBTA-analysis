@@ -498,7 +498,7 @@ workflow_tools <- tribble(
   "RNA-SeQC", "2.3.4", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc_RNAseq_workflow.cwl",
   "AnnotSV", "2.1", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/annotsv.cwl",
   "FusionAnnotator", "0.2.0", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/fusion_annotator.cwl",
-  "SNPeff", "4.3t", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/clinvar_pathogenic_filter.cwl",
+  "SnpEff/SnpSift", "4.3t", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/clinvar_pathogenic_filter.cwl",
   "ANNOVAR", "2018-04-16", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/annovar_20190319.cwl",
   "Picard Tools", "2.18.2-SNAPSHOT", "https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-fq-input-cram-only-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-alignment-wf.cwl; https://github.com/d3b-center/OpenPBTA-workflows/blob/master/cwl/kfdrc-mendqc-wf.cwl"
 )
