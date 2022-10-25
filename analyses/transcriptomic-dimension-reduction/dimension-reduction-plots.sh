@@ -25,4 +25,4 @@ COLOR=${COLORVAR} bash 02-get-dimension-reduction-plot-lists.sh
 bash 03-multipanel-plots.sh
 
 # Exploration of batch effects
-Rscript --vanilla -e 'rmarkdown::render("analyses/transcriptomic-dimension-reduction/04-explore-sequencing-center-effects.Rmd")'
+Rscript --vanilla -e 'rmarkdown::render("04-explore-sequencing-center-effects.Rmd")'
