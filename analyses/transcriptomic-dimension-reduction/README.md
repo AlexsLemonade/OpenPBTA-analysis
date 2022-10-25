@@ -137,3 +137,7 @@ plot_dimension_reduction(aligned_scores_df = pca_df,
 ```
 
 The `point_color` argument of `plot_dimension_reduction` can be changed to any variable that is a column in the original TSV file.
+
+### Explore potential batch effects from the sequencing center 
+
+The notebook `04-explore-sequencing-center-effects.Rmd` performs exploratory analyses and visualization to roughly assess the extent to which sequencing center is expected to induce batch effects.

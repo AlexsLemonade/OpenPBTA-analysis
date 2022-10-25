@@ -45,3 +45,6 @@ Rscript --vanilla scripts/get-plot-list.R  \
 
 # Run all the multipanel plots!
 bash 03-multipanel-plots.sh
+
+# Exploration of batch effects
+Rscript --vanilla -e 'rmarkdown::render("analyses/transcriptomic-dimension-reduction/04-explore-sequencing-center-effects.Rmd")'
