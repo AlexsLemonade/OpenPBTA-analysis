@@ -23,6 +23,7 @@ rsem_umap_file <- file.path(
 output_dir <- file.path("figures", "pdfs", "supp", "figS5", "panels")
 umap_all_bh_pdf <- file.path(output_dir, "umap_sequencing_all_histologies.pdf")
 umap_shared_bh_pdf <- file.path(output_dir, "umap_sequencing_shared_histologies.pdf")
+umap_centers_only_pdf <- file.path(output_dir, "umap_sequencing_centers.pdf")
 
 
 # Source the UMAP plotting function -------------
@@ -98,12 +99,21 @@ umap_shared_bh <- plot_dimension_reduction(dplyr::filter(umap_df, broad_histolog
                 color = "Broad histology", 
                 shape = "Sequencing center")
 
+# UMAP colored by sequencing center, ignoring histology:
+umap_centers_only <- plot_dimension_reduction(umap_df,
+                                              point_color = "seq_center",
+                                              x_label = "UMAP1",
+                                              y_label = "UMAP2",
+                                              alpha_value = 0.2) +
+  ggplot2::labs(title = "Broad histologies sequenced at multiple centers", 
+                color = "Broad histology", 
+                shape = "Sequencing center") +
+  # colorblind friendly palette:
+  colorblindr::scale_color_OkabeIto()
+
 
 # Export panels ----------
 ggplot2::ggsave(umap_all_bh_pdf, umap_all_bh, width = 8, height = 5)
 ggplot2::ggsave(umap_shared_bh_pdf, umap_shared_bh, width = 8, height = 5)
-
-
-
-
+ggplot2::ggsave(umap_centers_only_pdf, umap_centers_only, width = 8, height = 5)
 
