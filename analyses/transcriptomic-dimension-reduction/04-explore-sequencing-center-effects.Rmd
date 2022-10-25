@@ -214,6 +214,35 @@ ggplot(stranded_df) +
 ```
 
 
+We can also make this plot only for broad histologies which were processed at >1 center:
+
+```{r}
+# first, which histologies are shared, aka processed at >1 center?
+shared_bh <- multiple_centers_bh %>%
+  dplyr::filter(RNA_library == "stranded") %>%
+  dplyr::distinct(broad_histology_display) %>%
+  dplyr::pull(broad_histology_display)
+
+
+stranded_df %>%
+  dplyr::filter(broad_histology_display %in% shared_bh) %>%
+  ggplot() + 
+  aes(x = UMAP1, y = UMAP2, 
+      shape = seq_center, 
+      fill = broad_histology_display, 
+      color = seq_center, 
+      alpha = seq_center) + 
+  geom_point() + 
+  scale_shape_manual(values = c(21, 22, 24)) + 
+  scale_fill_manual(values  = pal_bh) +
+  scale_color_manual(values = c("grey70", "black", "black")) +
+  scale_alpha_manual(values = c(0.6, 0.8, 0.8)) +
+  ggpubr::theme_pubr() + 
+  guides(fill = FALSE, alpha = FALSE)
+```
+
+
+
 
 ### Cancer group UMAP
 
@@ -235,6 +264,36 @@ ggplot(stranded_df) +
   ggpubr::theme_pubr() + 
   guides(fill = FALSE, alpha = FALSE)
 ```
+
+
+
+We can also make this plot only for cancer groups which were processed at >1 center:
+
+```{r}
+# first, which histologies are shared, aka processed at >1 center?
+shared_cg <- multiple_centers_cg %>%
+  dplyr::filter(RNA_library == "stranded") %>%
+  dplyr::distinct(cancer_group_display) %>%
+  dplyr::pull(cancer_group_display)
+
+
+stranded_df %>%
+  dplyr::filter(cancer_group_display %in% shared_cg) %>%
+  ggplot() + 
+  aes(x = UMAP1, y = UMAP2, 
+      shape = seq_center, 
+      fill = cancer_group_display, 
+      color = seq_center, 
+      alpha = seq_center) + 
+  geom_point() + 
+  scale_shape_manual(values = c(21, 22, 24)) + 
+  scale_fill_manual(values  = pal_cg) +
+  scale_color_manual(values = c("grey70", "black", "black")) +
+  scale_alpha_manual(values = c(0.6, 0.8, 0.8)) +
+  ggpubr::theme_pubr() + 
+  guides(fill = FALSE, alpha = FALSE)
+```
+
 
 ## sessionInfo
 
