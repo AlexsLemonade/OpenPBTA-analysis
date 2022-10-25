@@ -47,4 +47,4 @@ Rscript --vanilla scripts/get-plot-list.R  \
 bash 03-multipanel-plots.sh
 
 # Exploration of batch effects
-Rscript --vanilla -e 'rmarkdown::render("04-explore-sequencing-center-effects.Rmd")'
+Rscript --vanilla -e 'rmarkdown::render("04-explore-sequencing-center-effects.Rmd", params = list(is_ci = 1))'

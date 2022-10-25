@@ -6,6 +6,8 @@ output:
   html_notebook:
     toc: TRUE
     toc_float: TRUE
+params:
+  is_ci: 0
 ---
 
 ```{r setup, include=FALSE}
@@ -51,15 +53,22 @@ palette_mapping_df <- readr::read_tsv(pal_file) %>%
 # ensure compatible columns to read in UMAPs
 umap_columns <- c("X1", "X2", "Kids_First_Biospecimen_ID", "RNA_library", "broad_histology", "cancer_group", "seq_center")
 stranded_umaps <- readr::read_tsv(umap_stranded_file) %>% dplyr::select(umap_columns)
-polya_umaps <- readr::read_tsv(umap_polya_file) %>% dplyr::select(umap_columns)
 
-# Combine palette info and umaps:
-umap_df <- dplyr::bind_rows(stranded_umaps, polya_umaps) %>%
+# polya is only read if NOT CI
+if (params$is_ci == 0) {
+  polya_umaps <- readr::read_tsv(umap_polya_file) %>% dplyr::select(umap_columns)
+  # Combine palette info and umaps:
+  umap_df <- dplyr::bind_rows(stranded_umaps, polya_umaps)
+} else {
+  umap_df <- stranded_umaps
+}
+ 
+umap_df <- umap_df %>%
   dplyr::inner_join(palette_mapping_df) %>%
-  # remove columns
-  dplyr::select(-cancer_group, -broad_histology) %>%
-  # rename umaps
-  dplyr::rename(UMAP1 = X1, UMAP2= X2)
+    # remove columns
+    dplyr::select(-cancer_group, -broad_histology) %>%
+    # rename umaps
+    dplyr::rename(UMAP1 = X1, UMAP2= X2)
 
 
 # The data this notebook will be exploring:
