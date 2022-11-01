@@ -108,7 +108,7 @@ diagnosis_center_summary_bh <- umap_df %>%
   tidyr::spread(seq_center, n)
 diagnosis_center_summary_bh
 
-# How many cancer groups have samples that were processed at >1 center?
+# How many broad histologies have samples that were processed at >1 center?
 multiple_centers_bh <- umap_df %>% 
   dplyr::count(RNA_library, seq_center, broad_histology_display) %>%
   dplyr::count(RNA_library, broad_histology_display) %>%
