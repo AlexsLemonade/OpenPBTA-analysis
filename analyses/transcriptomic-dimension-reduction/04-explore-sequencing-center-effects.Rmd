@@ -115,7 +115,7 @@ multiple_centers_bh <- umap_df %>%
   dplyr::filter(n>1) 
 multiple_centers_bh
 
-# Hone in on cancer groups at multiple centers?
+# Hone in on broad histologies at multiple centers?
 diagnosis_center_summary_bh %>%
   dplyr::inner_join(
     dplyr::select(multiple_centers_bh, -n)
