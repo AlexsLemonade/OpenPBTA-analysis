@@ -23,12 +23,16 @@ First, define directories and file names:
 
 # Directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
 palette_dir <- file.path(root_dir, "figures", "palettes")
 dim_red_dir <- file.path(
   root_dir,
   "analyses",
   "transcriptomic-dimension-reduction"
 )
+
+# metadata file
+meta_file <- file.path(data_dir, "pbta-histologies.tsv")
 
 # palette mapping file
 pal_file <- file.path(palette_dir,  "broad_histology_cancer_group_palette.tsv")
@@ -50,6 +54,8 @@ palette_mapping_df <- readr::read_tsv(pal_file) %>%
   dplyr::select(broad_histology, broad_histology_display, broad_histology_hex, 
                 cancer_group, cancer_group_display, cancer_group_hex) 
 
+meta_df <- readr::read_tsv(meta_file, guess_max = 10000)
+
 # ensure compatible columns to read in UMAPs
 umap_columns <- c("X1", "X2", "Kids_First_Biospecimen_ID", "RNA_library", "broad_histology", "cancer_group", "seq_center")
 stranded_umaps <- readr::read_tsv(umap_stranded_file) %>% dplyr::select(umap_columns)
@@ -62,17 +68,33 @@ if (params$is_ci == 0) {
 } else {
   umap_df <- stranded_umaps
 }
- 
+
 umap_df <- umap_df %>%
+ # rename umaps
+  dplyr::rename(UMAP1 = X1, UMAP2 = X2)
+```
+
+
+We'll explore two versions of this data, as defined in the chunk below:
+
+
+```{r}
+# First, broad histology and cancer groups DISPLAY groups based around the fixed palettes
+umap_df_palette <- umap_df %>%
   dplyr::inner_join(palette_mapping_df) %>%
-    # remove columns
-    dplyr::select(-cancer_group, -broad_histology) %>%
-    # rename umaps
-    dplyr::rename(UMAP1 = X1, UMAP2= X2)
+  # select for ease of exploration
+  dplyr::select(UMAP1, UMAP2, Kids_First_Biospecimen_ID, seq_center, RNA_library,
+                cancer_group_display, cancer_group_hex,
+                broad_histology_display, broad_histology_hex) 
+umap_df_palette  
 
+# Second, cancer group WITHOUT collapsing into larger groups for their palettes,
+# This is a more fine-grained representation
+umap_df_full <- umap_df %>%
+  # select for ease of exploration
+  dplyr::select(UMAP1, UMAP2, Kids_First_Biospecimen_ID, seq_center, RNA_library, cancer_group)
+umap_df_full
 
-# The data this notebook will be exploring:
-umap_df
 ```
 
 
@@ -87,13 +109,14 @@ When multiple centers analyze the same diagnosis, one center generally has most 
 ### All diagnoses
 
 ```{r}
-# How many sample for each diagnosis/center?
-umap_df %>%
+# How many samples for each diagnosis/center?
+umap_df_palette %>%
   dplyr::count(RNA_library, seq_center) %>%
   tidyr::spread(seq_center, n)
 
 # Lets hone in on stranded BGI and BGI@CHOP - what are the diagnoses?
-umap_df %>%
+# These have the fewest stranded samples, so may have more limited diagnoses
+umap_df_palette %>%
   dplyr::filter(RNA_library == "stranded", stringr::str_detect(seq_center, "BGI")) %>%
   dplyr::count(seq_center, broad_histology_display, cancer_group_display) %>%
   dplyr::filter(n>1)
@@ -103,23 +126,26 @@ umap_df %>%
 
 ```{r}
 # How many sample for each diagnosis/center?
-diagnosis_center_summary_bh <- umap_df %>%
+diagnosis_center_summary_bh <- umap_df_palette %>%
   dplyr::count(RNA_library, seq_center, broad_histology_display) %>%
   tidyr::spread(seq_center, n)
 diagnosis_center_summary_bh
 
 # How many broad histologies have samples that were processed at >1 center?
-multiple_centers_bh <- umap_df %>% 
+n_centers_bh <- umap_df_palette %>% 
   dplyr::count(RNA_library, seq_center, broad_histology_display) %>%
-  dplyr::count(RNA_library, broad_histology_display) %>%
-  dplyr::filter(n>1) 
-multiple_centers_bh
+  dplyr::count(RNA_library, broad_histology_display)
 
-# Hone in on broad histologies at multiple centers?
-diagnosis_center_summary_bh %>%
-  dplyr::inner_join(
-    dplyr::select(multiple_centers_bh, -n)
-  )
+n_centers_bh %>%
+  dplyr::filter(n > 1) %>%
+  dplyr::select(-n) %>%
+  dplyr::inner_join(diagnosis_center_summary_bh)
+
+# At one center?
+n_centers_bh %>%
+  dplyr::filter(n == 1) %>%
+  dplyr::select(-n) %>%
+  dplyr::inner_join(diagnosis_center_summary_bh)
 ```
 
 
@@ -128,23 +154,52 @@ diagnosis_center_summary_bh %>%
 
 ```{r}
 # How many sample for each diagnosis/center?
-diagnosis_center_summary_cg <- umap_df %>%
+diagnosis_center_summary_cg <- umap_df_palette %>%
   dplyr::count(RNA_library, seq_center, cancer_group_display) %>%
   tidyr::spread(seq_center, n)
 diagnosis_center_summary_cg
 
 # How many cancer groups have samples that were processed at >1 center?
-multiple_centers_cg <- umap_df %>% 
+n_centers_cg <- umap_df_palette %>% 
   dplyr::count(RNA_library, seq_center, cancer_group_display) %>%
-  dplyr::count(RNA_library, cancer_group_display) %>%
-  dplyr::filter(n>1) 
-multiple_centers_cg
+  dplyr::count(RNA_library, cancer_group_display) 
 
-# Hone in on cancer groups at multiple centers?
-diagnosis_center_summary_cg %>%
-  dplyr::inner_join(
-    dplyr::select(multiple_centers_cg, -n)
-  )
+n_centers_cg %>%
+  dplyr::filter(n > 1) %>%
+  dplyr::select(-n) %>%
+  dplyr::inner_join(diagnosis_center_summary_cg)
+
+# At one center?
+n_centers_cg %>%
+  dplyr::filter(n == 1) %>%
+  dplyr::select(-n) %>%
+  dplyr::inner_join(diagnosis_center_summary_cg)
+```
+
+
+
+### _Finer grained_ Cancer groups
+
+Cancer groups presented in this section are finer-grained groupings than what are directly reported in the manuscript.
+
+```{r}
+# How many sample for each diagnosis/center?
+diagnosis_center_summary_cg_full <- umap_df_full %>%
+  dplyr::count(RNA_library, seq_center, cancer_group) %>%
+  tidyr::spread(seq_center, n)
+diagnosis_center_summary_cg
+
+# How many cancer groups have samples that were processed at >1 center?
+n_centers_cg_full <- umap_df_full %>% 
+  dplyr::count(RNA_library, seq_center, cancer_group) %>%
+  dplyr::count(RNA_library, cancer_group) 
+
+n_centers_cg_full %>%
+  dplyr::filter(n > 1)
+
+# At one center?
+n_centers_cg_full %>%
+  dplyr::filter(n == 1)
 ```
 
 
@@ -155,7 +210,7 @@ Here, we'll make some UMAPs to explore potential batch effects specifically in t
 First, let's prepare the data a little further:
 ```{r}
 # only keep stranded for the rest and set order for `seq_center` as group size
-stranded_df <- umap_df %>%
+stranded_df <- umap_df_palette %>%
   dplyr::filter(RNA_library == "stranded") %>%
   dplyr::select(-RNA_library) %>%
   dplyr::mutate(seq_center = forcats::fct_infreq(seq_center)) %>%
@@ -227,8 +282,9 @@ We can also make this plot only for broad histologies which were processed at >1
 
 ```{r}
 # first, which histologies are shared, aka processed at >1 center?
-shared_bh <- multiple_centers_bh %>%
-  dplyr::filter(RNA_library == "stranded") %>%
+shared_bh <- n_centers_bh %>%
+  dplyr::filter(n > 1, 
+                RNA_library == "stranded") %>%
   dplyr::distinct(broad_histology_display) %>%
   dplyr::pull(broad_histology_display)
 
@@ -280,8 +336,9 @@ We can also make this plot only for cancer groups which were processed at >1 cen
 
 ```{r}
 # first, which histologies are shared, aka processed at >1 center?
-shared_cg <- multiple_centers_cg %>%
-  dplyr::filter(RNA_library == "stranded") %>%
+shared_cg <- n_centers_cg %>%
+  dplyr::filter(n > 1,
+                RNA_library == "stranded") %>%
   dplyr::distinct(cancer_group_display) %>%
   dplyr::pull(cancer_group_display)
 
@@ -301,6 +358,71 @@ stranded_df %>%
   scale_alpha_manual(values = c(0.6, 0.8, 0.8)) +
   ggpubr::theme_pubr() + 
   guides(fill = FALSE, alpha = FALSE)
+```
+
+
+## _Finer-grained_ cancer group UMAP
+
+First we'll set up with the other data frame, but we don't set the palette since there is no pre-defined palette here.
+```{r}
+# only keep stranded for the rest and set order for `seq_center` as group size
+stranded_df <- umap_df_full %>%
+  dplyr::filter(RNA_library == "stranded") %>%
+  dplyr::select(-RNA_library) %>%
+  dplyr::mutate(seq_center = forcats::fct_infreq(seq_center)) %>%
+  # arranging will help see points:
+  dplyr::arrange(seq_center)
+
+# How many cancer groups are there in total?
+total_cg <- unique(stranded_df$cancer_group)
+length(total_cg)
+
+# How many cancer groups _processed at >1 center_ are there?
+shared_cg_full <- n_centers_cg_full %>%
+  dplyr::filter(n > 1,
+                RNA_library == "stranded") %>%
+  dplyr::distinct(cancer_group) %>%
+  dplyr::pull(cancer_group)
+length(shared_cg_full)
+shared_cg_full
+```
+
+Since there are `r length(total_cg)` cancer groups, we'll focus on visualizing only the `r length(shared_cg_full)` cancer groups that are processed at >1 center.
+
+
+```{r}
+stranded_df_subset <- stranded_df %>%
+  dplyr::filter(cancer_group %in% shared_cg_full)
+
+# Legend does not render for cancer group colors properly, so create a hack legend first - 
+legend_plot <- ggplot(stranded_df_subset) + 
+  aes(x = UMAP1, y = UMAP2, color = cancer_group) + 
+  geom_point() + 
+  theme_classic() +
+  theme(legend.position = "bottom") + 
+  # make it 4 rows to fit in the final plot frame
+  guides(color = guide_legend(nrow=4))
+legend_panel <- cowplot::get_legend(legend_plot)
+
+
+# plot itself:
+umap_panel <-  ggplot(stranded_df_subset) + 
+  aes(x = UMAP1, y = UMAP2, 
+      shape = seq_center, 
+      fill = cancer_group, 
+      color = seq_center, 
+      alpha = seq_center) + 
+  geom_point() + 
+  scale_shape_manual(values = c(21, 22, 24)) + 
+  scale_color_manual(values = c("grey70", "black", "black")) +
+  scale_alpha_manual(values = c(0.4, 0.6, 0.6)) +
+  ggpubr::theme_pubr() + 
+  guides(fill = FALSE, color = FALSE, alpha =FALSE)
+
+
+# combine plot and color legend:
+cowplot::plot_grid(umap_panel, legend_panel, 
+                   nrow = 2, rel_heights = c(1, 0.1))
 ```
 
 
