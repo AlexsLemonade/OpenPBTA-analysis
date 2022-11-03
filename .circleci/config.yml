@@ -280,7 +280,7 @@ jobs:
 
       - run:
          name: Tumor purity exploration module
-         command: ./scripts/run_in_ci.sh bash analyses/tumor-purity-exploration/run_tumor-purity.R
+         command: ./scripts/run_in_ci.sh bash analyses/tumor-purity-exploration/run_tumor-purity.sh
 
       - run:
          name: Compile manuscript tables
