@@ -167,7 +167,7 @@ jobs:
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash analyses/focal-cn-file-preparation/run-prepare-cn.sh
 
       - run:
-          name: Comparative RNASeq 
+          name: Comparative RNASeq
           command: ./scripts/run_in_ci.sh bash analyses/comparative-RNASeq-analysis/run-comparative-RNAseq.sh
 
       - run:
@@ -177,7 +177,7 @@ jobs:
       - run:
           name: Oncoprint plotting
           command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash "analyses/oncoprint-landscape/run-oncoprint.sh"
-         
+
       - run:
           name: GISTIC Plots
           command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('analyses/cnv-chrom-plot/gistic_plot.Rmd', clean = TRUE)"
@@ -278,6 +278,9 @@ jobs:
          name: Scavenge back hotspots
          command: ./scripts/run_in_ci.sh bash analyses/hotspots-detection/run_overlaps_hotspot.sh
 
+      - run:
+         name: Tumor purity exploration module
+         command: ./scripts/run_in_ci.sh bash analyses/tumor-purity-exploration/run_tumor-purity.R
 
       - run:
          name: Compile manuscript tables

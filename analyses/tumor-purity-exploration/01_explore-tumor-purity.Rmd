@@ -1,0 +1,148 @@
+---
+title: "Tumor purity exploration"
+author: "SJ Spielman for CCDL"
+date: "2022"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+params:
+  release: release-v22-20220505 
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+```
+This notebook explores the distribution of tumor purity values as well as their relationship to other metadata values.
+
+## Set directories and files
+```{r}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+pal_dir <- file.path(root_dir, "figures", "palettes")
+
+metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+pal_file <- file.path(pal_dir, "broad_histology_cancer_group_palette.tsv")
+
+metadata <- read_tsv(metadata_file) # variable is `tumor_fraction`
+palette_mapping_df <- read_tsv(pal_file)
+```
+
+The quantity `tumor_fraction` provides information about what pecent of the sample was likely tumor. 
+We'll explore this variable:
+
+```{r}
+
+# Note that this quantity is only recorded, if ever, with WGS libraries: 
+presence_table <- table(metadata$experimental_strategy,
+                        is.na(metadata$tumor_fraction))
+colnames(presence_table) <- c("Tumor fraction known", "Tumor fraction unknown")
+presence_table
+
+# So let's focus on only WGS tumor samples:
+metadata_tumor <- metadata %>%
+  filter(experimental_strategy == "WGS", 
+         sample_type == "Tumor")
+
+# For what percentage of tumor samples is purity known? Nearly all of them!
+sum(!is.na(metadata_tumor$tumor_fraction)) / nrow(metadata_tumor)
+
+# What about for stranded RNA-Seq samples, specifically?
+# We'll need to map back via the patient ID here
+# This will help give a sense for exploring transcriptomic quantities later
+stranded_patient_ids <- metadata %>%
+  filter(experimental_strategy == "RNA-Seq", 
+         RNA_library == "stranded") %>%
+  pull(Kids_First_Participant_ID)
+
+stranded_tumor <- metadata_tumor %>%
+  filter(Kids_First_Participant_ID %in% stranded_patient_ids)
+
+# Even more nearly all of them - 
+sum(!is.na(stranded_tumor$tumor_fraction)) / nrow(stranded_tumor)
+```
+
+
+Distribution of tumor purity:
+```{r}
+summary(metadata_tumor$tumor_fraction)
+
+ggplot(metadata_tumor) + 
+  aes(x = tumor_fraction) + 
+  geom_histogram(color = "black", fill = "skyblue") + 
+  theme_bw()
+```
+
+
+Distribution by cancer group and broad histology:
+
+```{r}
+# combine metadata with palette:
+tumor_palette_df <- metadata_tumor %>%
+  inner_join(palette_mapping_df) %>%
+  select(Kids_First_Biospecimen_ID, 
+         tumor_fraction, 
+         cancer_group_display, 
+         cancer_group_hex, 
+         broad_histology_display,
+         broad_histology_order,
+         broad_histology_hex) %>%
+  drop_na() %>%
+  # reorder by median fraction and ensure "Other" is always last
+  mutate(cancer_group_display = forcats::fct_reorder(cancer_group_display, tumor_fraction), 
+         cancer_group_display = forcats::fct_relevel(cancer_group_display, "Other", after = Inf),
+         broad_histology_display = forcats::fct_reorder(broad_histology_display, tumor_fraction), 
+         broad_histology_display = forcats::fct_relevel(broad_histology_display, "Other", after = Inf))
+         
+# plotting function:
+tumor_violins <- function(df, display_name, display_hex) {
+  ggplot(df) + 
+    aes(x = {{display_name}},
+        y = tumor_fraction, 
+        fill = {{display_hex}}) + 
+    geom_violin(alpha = 0.5) +
+    stat_summary() + 
+    scale_fill_identity() + 
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 30, hjust = 1)) 
+}
+
+# Cancer group
+tumor_violins(tumor_palette_df, cancer_group_display, cancer_group_hex)
+
+# Broad histology
+tumor_violins(tumor_palette_df, broad_histology_display, broad_histology_hex)
+```
+
+
+
+
+Distribution across sequencing centers, highlighting cancer groups:
+
+```{r}
+# use jitter to highlight diagnoses
+seq_center_df <- tumor_palette_df %>%
+  inner_join(
+    select(metadata, 
+           Kids_First_Biospecimen_ID, 
+           seq_center)
+  )
+
+ggplot(seq_center_df) +
+  aes(x = seq_center, 
+      y = tumor_fraction, 
+      color = cancer_group_hex) + 
+  geom_jitter() + 
+  scale_color_identity() + 
+  theme_bw()
+
+# What are the cancer groups at the smaller centers?
+seq_center_df %>%
+  count(seq_center, cancer_group_display) %>%
+  arrange(seq_center)
+```
+
+## Session info
+```{r}
+sessionInfo()
+```
