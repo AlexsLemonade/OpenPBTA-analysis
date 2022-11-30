@@ -12,6 +12,7 @@ params:
 
 ```{r setup, include=FALSE}
 library(tidyverse)
+theme_set(theme_bw())
 ```
 This notebook explores the distribution of tumor purity values as well as their relationship to other metadata values.
 
@@ -27,6 +28,7 @@ pal_file <- file.path(pal_dir, "broad_histology_cancer_group_palette.tsv")
 metadata <- read_tsv(metadata_file) # variable is `tumor_fraction`
 palette_mapping_df <- read_tsv(pal_file)
 ```
+## Exploration of `tumor_fraction`
 
 The quantity `tumor_fraction` provides information about what pecent of the sample was likely tumor. 
 We'll explore this variable:
@@ -69,8 +71,7 @@ summary(metadata_tumor$tumor_fraction)
 
 ggplot(metadata_tumor) + 
   aes(x = tumor_fraction) + 
-  geom_histogram(color = "black", fill = "skyblue") + 
-  theme_bw()
+  geom_histogram(color = "black", fill = "skyblue")
 ```
 
 
@@ -103,7 +104,6 @@ tumor_violins <- function(df, display_name, display_hex) {
     geom_violin(alpha = 0.5) +
     stat_summary() + 
     scale_fill_identity() + 
-    theme_bw() +
     theme(axis.text.x = element_text(angle = 30, hjust = 1)) 
 }
 
@@ -133,14 +133,114 @@ ggplot(seq_center_df) +
       y = tumor_fraction, 
       color = cancer_group_hex) + 
   geom_jitter() + 
-  scale_color_identity() + 
-  theme_bw()
+  scale_color_identity()
 
 # What are the cancer groups at the smaller centers?
 seq_center_df %>%
   count(seq_center, cancer_group_display) %>%
   arrange(seq_center)
 ```
+
+
+## Exploring thresholding
+
+If we were to potentially limit analyses to only tumors with a certain level of purity, how would that affect sample distributions? 
+In particular, how many samples would be left from each grouping if we removed at a certain threshold which might be, for example...
+
+- Overall unweighted median or mean tumor fraction
+- Weighted mean by group-size tumor fraction (but what is the grouping variable?)
+
+Let's look at these threshold themselves:
+```{r}
+unweighted_median <- median(tumor_palette_df$tumor_fraction, na.rm = TRUE)
+unweighted_median
+
+unweighted_mean <- mean(tumor_palette_df$tumor_fraction, na.rm = TRUE)
+unweighted_mean
+
+calc_weighted_mean <- function(df, group_var) {
+  tumor_palette_df %>%
+    drop_na(tumor_fraction) %>%
+    add_count({{group_var}}) %>%
+    mutate(contribution = tumor_fraction * (n/sum(n))) %>%
+    summarize(weighted = sum(contribution)) %>% 
+    pull(weighted)
+}
+
+weighted_mean_bh <- calc_weighted_mean(tumor_palette_df, broad_histology_display)
+weighted_mean_bh # surprisingly similar to unweighted_mean!
+
+weighted_mean_cg <- calc_weighted_mean(tumor_palette_df, cancer_group_display)
+weighted_mean_cg # surprisingly similar to unweighted_mean!
+
+```
+
+The weighted means are about the same as the overall mean, which is somewhat lower than the overall median. 
+
+Let's explore what fraction of samples remain when filtering down based on the unweighted median and means at both broad histology and cancer group levels.
+The y-axes show how the fraction of samples which would remain after filtering.
+
+
+```{r}
+calc_frac <- function(df, 
+                      threshold, 
+                      group_var) {
+  # establish total counts
+  total_count <- df %>%
+    count({{group_var}}, name = "total") 
+  
+  df %>%
+    filter(tumor_fraction <= threshold) %>%
+    # count after filtering
+    count({{group_var}}) %>%
+    # divide after/before
+    inner_join(total_count) %>%
+    mutate(frac_remaining = n/total) %>%
+    distinct()
+}
+
+plot_remaining_frac <- function(df, 
+                                mean_threshold, 
+                                median_threshold, 
+                                group_var) {
+  
+  remaining_df <- bind_rows(
+    calc_frac(df, mean_threshold, {{group_var}}) %>%
+      mutate(threshold = "mean threshold"),
+    calc_frac(df, median_threshold, {{group_var}}) %>%
+      mutate(threshold = "median threshold")
+  )
+  
+  ggplot(remaining_df) + 
+    aes(x = {{group_var}}, 
+        y = frac_remaining, 
+        fill = threshold) + 
+    geom_col(color = "black", size = 0.5, 
+             position = position_dodge()) +
+    geom_hline(yintercept = 0.5) +
+    theme(axis.text.x = element_text(angle = 30, hjust = 1))
+}
+```
+
+
+```{r}
+plot_remaining_frac(tumor_palette_df,
+                    unweighted_mean, 
+                    unweighted_median,
+                    broad_histology_display) + 
+  ggtitle("Broad histology display after filtering")
+```
+
+
+```{r, fig.width = 8}
+plot_remaining_frac(tumor_palette_df,
+                    unweighted_mean, 
+                    unweighted_median,
+                    cancer_group_display) + 
+  theme(legend.position = "bottom") +
+  ggtitle("Cancer group display after filtering")
+```
+
 
 ## Session info
 ```{r}
