@@ -1,0 +1,66 @@
+---
+title: "00-prepare-extraction-table"
+author: "Jo Lynne Rokita"
+date: 2022
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load library/input files
+```{r}
+library(tidyverse)
+
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+input_dir <- file.path(root_dir,
+                      "analyses",
+                      "molecular-subtyping-integrate",
+                       "input")
+
+results_dir <- file.path(root_dir,
+                         "analyses",
+                         "molecular-subtyping-integrate",
+                         "results")
+
+
+pnoc_aliquots <- read_tsv(file.path(input_dir, "pnoc_aliquots.tsv"))
+cbtn_aliquots <- read_tsv(file.path(input_dir, "cbtn_aliquots.tsv")) %>%
+  # necessary for combining with PNOC later
+  mutate(aliquot_id = as.character(aliquot_id))
+```
+
+# Get extraction status from PNOC cohort
+```{r}
+
+pnoc_aliquots_status <- pnoc_aliquots %>%
+  mutate(sample_id_rna = ifelse(experimental_strategy == "RNA-Seq", sample_id, ""),
+         sample_id_wxs = ifelse(experimental_strategy == "WXS", sample_id, ""),
+         sample_id_wgs = ifelse(experimental_strategy == "WGS", sample_id, ""),
+         aliquot_id_rna = ifelse(experimental_strategy == "RNA-Seq", aliquot_id, ""),
+         aliquot_id_wxs = ifelse(experimental_strategy == "WXS", aliquot_id, ""),
+         aliquot_id_wgs = ifelse(experimental_strategy == "WGS", aliquot_id, "")) %>%
+  distinct() %>%
+  select(-c(experimental_strategy, sample_id, aliquot_id)) %>%
+  group_by(parent_aliquot_id) %>%
+  summarise_all(funs(trimws(paste(., collapse = '')))) %>%
+  mutate(extraction_type = ifelse(aliquot_id_rna != "" & (aliquot_id_wxs != "" | aliquot_id_wgs != ""),
+                                    "Same extraction", NA_character_)) %>%
+  mutate_all(na_if,"") %>%
+  dplyr::rename(parental_aliquot_id = parent_aliquot_id)
+```
+
+# Combine CBTN and PNOC RNA sample and aliquot ids with extraction status
+```{r}
+combined <- pnoc_aliquots_status %>%
+  filter(!is.na(extraction_type)) %>%
+  dplyr::rename(sample_id = sample_id_rna,
+                aliquot_id = aliquot_id_rna) %>%
+  select(sample_id, aliquot_id, parental_aliquot_id, extraction_type) %>%
+  bind_rows(cbtn_aliquots) %>%
+  # clean up parental_aliquot id just because
+  mutate(parental_aliquot_id = gsub("^.*\\[|\\]", "", parental_aliquot_id)) %>%
+  write_tsv(file.path(results_dir, "pbta_extraction_status.tsv"))
+```
+
