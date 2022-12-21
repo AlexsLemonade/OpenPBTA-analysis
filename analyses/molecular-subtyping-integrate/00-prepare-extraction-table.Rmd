@@ -73,3 +73,15 @@ combined <- pnoc_aliquots_status %>%
   write_tsv(file.path(results_dir, "pbta_extraction_status.tsv"))
 ```
 
+# How many samples in each group
+```{r}
+combined %>%
+count(extraction_type) %>%
+  arrange(desc(n))
+```
+
+
+```{r}
+sessionInfo()
+```
+
