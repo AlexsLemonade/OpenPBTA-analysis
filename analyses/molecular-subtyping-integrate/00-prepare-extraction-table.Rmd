@@ -2,12 +2,11 @@
 title: "00-prepare-extraction-table"
 author: "Jo Lynne Rokita"
 date: 2022
-output: html_document
+output: 
+  html_notebook:
+    toc: true
+    toc_float: true
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 ## This notebook wrangles manually curated files which have been collated to designate whether a tuomor DNA and RNA specimen came from the same extraction, same tissue chunk ("same tissue aliquot"), or different tissue chunk ("different tissue aliquot"). 
 
