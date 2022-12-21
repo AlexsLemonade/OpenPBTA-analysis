@@ -21,6 +21,9 @@ input_dir <- file.path(root_dir,
                       "molecular-subtyping-integrate",
                        "input")
 
+data_dir <- file.path(root_dir,
+                      "data")
+
 results_dir <- file.path(root_dir,
                          "analyses",
                          "molecular-subtyping-integrate",
@@ -30,7 +33,17 @@ results_dir <- file.path(root_dir,
 pnoc_aliquots <- read_tsv(file.path(input_dir, "pnoc_aliquots.tsv"))
 cbtn_aliquots <- read_tsv(file.path(input_dir, "cbtn_aliquots.tsv")) %>%
   # necessary for combining with PNOC later
-  mutate(aliquot_id = as.character(aliquot_id))
+  mutate(aliquot_id = as.character(aliquot_id),
+         # update aliquot id for id which was split into 3
+         aliquot_id = case_when(sample_id == "7316-135" ~ "116304.116311.116318",
+         TRUE ~ aliquot_id)) %>%
+  distinct()
+
+# Read in histologies file to get all RNA sample and aliquot ids
+rna_aliquots <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max = 3000) %>%
+  filter(experimental_strategy == "RNA-Seq") %>%
+  select(sample_id, aliquot_id) %>%
+  distinct()
 ```
 
 # Get extraction status from PNOC cohort
@@ -61,14 +74,19 @@ pnoc_aliquots_status <- pnoc_aliquots %>%
 ```{r}
 combined <- pnoc_aliquots_status %>%
   # only keep those with RNA-Seq (had extraction annotated)
-  filter(!is.na(extraction_type)) %>%
+  filter(!is.na(sample_id_rna)) %>%
   dplyr::rename(sample_id = sample_id_rna,
                 aliquot_id = aliquot_id_rna) %>%
   select(sample_id, aliquot_id, parental_aliquot_id, extraction_type) %>%
   # combine with CBTN
   bind_rows(cbtn_aliquots) %>%
   # clean up parental_aliquot id
-  mutate(parental_aliquot_id = gsub("^.*\\[|\\]", "", parental_aliquot_id)) %>%
+  mutate(parental_aliquot_id = gsub("^.*\\[|\\]", "", parental_aliquot_id)) 
+
+# Add remaining rna aliquot ids not found 
+full_rna_data <- rna_aliquots %>%
+  filter(!aliquot_id %in% combined$aliquot_id) %>%
+  bind_rows(combined) %>%
   write_tsv(file.path(results_dir, "pbta_extraction_status.tsv"))
 ```
 
