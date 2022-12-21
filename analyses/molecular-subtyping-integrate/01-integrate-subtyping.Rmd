@@ -313,7 +313,7 @@ But first need to remove broad_histology.base, broad_histology.subtyped and shor
  and short_histology.subtyped
 
 ```{r}
-histology %>% 
+final_histology <- histology %>% 
   select(-broad_histology.base,
          -broad_histology.subtyped,
          - short_histology.base,
