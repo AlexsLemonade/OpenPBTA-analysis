@@ -40,7 +40,7 @@ cbtn_aliquots <- read_tsv(file.path(input_dir, "cbtn_aliquots.tsv")) %>%
   distinct()
 
 # Read in histologies file to get all RNA sample and aliquot ids
-rna_aliquots <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"), guess_max = 3000) %>%
+rna_aliquots <- read_tsv(file.path(data_dir, "pbta-histologies-base.tsv"), guess_max = 3000) %>%
   filter(experimental_strategy == "RNA-Seq") %>%
   select(sample_id, aliquot_id) %>%
   distinct()
