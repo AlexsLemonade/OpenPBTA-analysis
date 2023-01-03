@@ -34,7 +34,7 @@ hist <- read_tsv(hist_file, guess_max = 10000)
 cell_lines <- read_tsv(cell_lines_file)
 ```
 
-## Calculate patient level Ns used for manuscript
+## Calculate patient level Ns used for manuscript and by cohort
 
 
 ```{r sample size - patient-level}
@@ -43,6 +43,13 @@ hist %>%
   pull(Kids_First_Participant_ID) %>%
   unique() %>%
   length()
+
+# Total N patients by cohort
+hist %>%
+  select(Kids_First_Participant_ID, cohort) %>%
+  unique() %>%
+  count(cohort)
+  
 ```
 
 ## Calculate sample (tumor/normal) level Ns used for manuscript
