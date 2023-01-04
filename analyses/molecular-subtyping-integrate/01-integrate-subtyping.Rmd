@@ -45,6 +45,23 @@ base_histology <- read_tsv(file.path(data_dir,"pbta-histologies-base.tsv"),
                            broad_histology = readr::col_character(),
                            Notes = readr::col_character())) %>%
   unique()
+
+extraction_status <- read_tsv(file.path("results","pbta_extraction_status.tsv")) %>%
+  select(-parental_aliquot_id)
+  
+```
+
+## Add aliqout extraction status to base histology file
+```{r}
+base_histology <- base_histology %>%
+  left_join(extraction_status, by = c("sample_id", "aliquot_id"))
+
+```
+
+## Add nucleic acid extraction details
+
+```{r}
+
 ```
 
 ### Read molecular-subtyping-pathology results
@@ -296,7 +313,7 @@ But first need to remove broad_histology.base, broad_histology.subtyped and shor
  and short_histology.subtyped
 
 ```{r}
-histology %>% 
+final_histology <- histology %>% 
   select(-broad_histology.base,
          -broad_histology.subtyped,
          - short_histology.base,

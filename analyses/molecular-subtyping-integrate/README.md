@@ -11,6 +11,11 @@ bash run-subtyping-integrate.sh
 
 ### Module contents
 
+`00-prepare-extraction-table.Rmd`creates a table `pbta_extraction_status.tsv` of RNA samples with `extraction_type` as one of the following:
+- Same extraction = these were co-extracted with tumor DNA with matching `aliquot_id`
+- Same tissue extract = these were extracted from a same chunk of tissue, but different piece, than the matching DNA aliquot
+- Different tissue extract = these were extracted from a different chunk of tissue than the matching DNA aliquot
+
 `01-integrate-subtyping.Rmd` integrates results from compiled results in `compiled_molecular_subtypes_with_clinical_pathology_feedback.tsv` to `pbta-histologies-base.tsv`
 
 To assign `cancer_group`, we follow a two-step procedure:
