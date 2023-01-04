@@ -80,7 +80,7 @@ table_s5_file <- file.path(results_dir, "TableS5-Key-Resources-table.xlsx")
 histology_df <- read_tsv(histology_file, guess_max =10000)
 palette_df <- read_tsv(palette_file)
 
-histology_df %>%
+subtype_n <- histology_df %>%
   # remove rows to not include
   filter(composition != "Derived Cell Line",
          !is.na(pathology_diagnosis),
@@ -99,16 +99,33 @@ histology_df %>%
     broad_histology_display
   )) %>%
   # remove doubled samples (WGS/RNA-seq etc.)
-  distinct(pbta_broad_histology, molecular_subtype, sample_id) %>%
-  # Count broad histology and subtype combinations
-  count(pbta_broad_histology, molecular_subtype) %>%
+  distinct(pbta_broad_histology, Kids_First_Participant_ID, molecular_subtype, sample_id) %>%
+  dplyr::rename(`Broad Histology` = pbta_broad_histology,
+         `Molecular Subtype` = molecular_subtype)
+
+# Count broad histology and subtype combinations
+tumor_level <- subtype_n %>%
+  select(-Kids_First_Participant_ID) %>%
+  count(`Broad Histology`, `Molecular Subtype`) %>%
+  dplyr::rename(Tumors = n)
+
+# Patient level
+pt_level <- subtype_n %>%
+  select(-sample_id) %>%
+  distinct() %>%
+  count(`Broad Histology`, `Molecular Subtype`) %>%
+  dplyr::rename(Patients = n)
+
+# combine patient level and tumor level tables
+table1 <- pt_level %>%
+  full_join(tumor_level) %>%
   # export
   write_tsv(table_1_file)
-
 ```
 
 ## Table 2: Patients with hypermutant or ultra-hypermutant tumors
 ```{r table 2}
+
 # read in clinvar variant annotations / add P/LP annotation
 clinvar <- read_tsv(clinvar_file) %>%
   mutate(`Pathogenic germline variant` = case_when(ClinicalSignificance == "Pathogenic" ~ paste0(Name, " (P)"),
@@ -183,7 +200,6 @@ soi_df %>%
              `OpenPBTA molecular subtype` = molecular_subtype
              ) %>%
   write_tsv(table_2_file)
-
 ```
 
 ## Table S1: V22 histologies table
