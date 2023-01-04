@@ -100,20 +100,20 @@ subtype_n <- histology_df %>%
   )) %>%
   # remove doubled samples (WGS/RNA-seq etc.)
   distinct(pbta_broad_histology, Kids_First_Participant_ID, molecular_subtype, sample_id) %>%
-  dplyr::rename(`Broad Histology` = pbta_broad_histology,
-         `Molecular Subtype` = molecular_subtype)
+  dplyr::rename(`Broad histology group` = pbta_broad_histology,
+         `OpenPBTA molecular subtype` = molecular_subtype)
 
 # Count broad histology and subtype combinations
 tumor_level <- subtype_n %>%
   select(-Kids_First_Participant_ID) %>%
-  count(`Broad Histology`, `Molecular Subtype`) %>%
+  count(`Broad histology group`, `OpenPBTA molecular subtype`) %>%
   dplyr::rename(Tumors = n)
 
 # Patient level
 pt_level <- subtype_n %>%
   select(-sample_id) %>%
   distinct() %>%
-  count(`Broad Histology`, `Molecular Subtype`) %>%
+  count(`Broad histology group`, `OpenPBTA molecular subtype`) %>%
   dplyr::rename(Patients = n)
 
 # combine patient level and tumor level tables
