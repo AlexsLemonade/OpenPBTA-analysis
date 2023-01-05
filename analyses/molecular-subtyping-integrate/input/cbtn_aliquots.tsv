@@ -1,0 +1,983 @@
+sample_id	aliquot_id	parental_aliquot_id	extraction_type
+7316-10	717108	RNA [554634]	Same extraction
+7316-100	601598	RNA [591582]	Different tissue aliquot
+7316-101	588338	RNA [582983]	Same extraction
+7316-1038	711661	RNA [650578]	Same extraction
+7316-104	717154	RNA [582033]	Same tissue aliquot
+7316-1052	577728	RNA [575900]	Same extraction
+7316-1055	577725	RNA [575895]	Same extraction
+7316-1057	401550	Not found	Same extraction
+7316-1059	577727	RNA [575897]	Same extraction
+7316-1060	577726	RNA [575896]	Same extraction
+7316-1062	574555	RNA [573680]	Same extraction
+7316-1064	739974	RNA [604299]	Same extraction
+7316-1068	574556	RNA [573681]	Same extraction
+7316-1070	717137	RNA [591121]	Same extraction
+7316-1071	731919	RNA [731327]	Same extraction
+7316-1073	549566	RNA [447482]	Different tissue aliquot
+7316-1075	588351	RNA [583302]	Same extraction
+7316-1076	571410	RNA [567604]	Same extraction
+7316-1077	731885	RNA [729727]	Same extraction
+7316-1078	588352	RNA [583303]	Same extraction
+7316-1079	731888	RNA [730397]	Same extraction
+7316-1080	731870	RNA [728668]	Same extraction
+7316-1081	731897	RNA [731062]	Same extraction
+7316-1082	728285	RNA [727863]	Same extraction
+7316-1083	588302	RNA [581282]	Same extraction
+7316-1084	731871	RNA [728669]	Same extraction
+7316-1085	711673	RNA [665666]	Same extraction
+7316-1086	711674	RNA [665667]	Same extraction
+7316-1087	711721	RNA [665948]	Same extraction
+7316-1088	717180	RNA [665949]	Same extraction
+7316-1089	717173	RNA [585473]	Same extraction
+7316-109	1030652	Not found	Different tissue aliquot
+7316-1090	717127	RNA [570429]	Same extraction
+7316-1093	654179	RNA [648540]	Same extraction
+7316-1094	731855	RNA [728437]	Same extraction
+7316-1095	588303	RNA [581283]	Same extraction
+7316-1096	731908	RNA [731098]	Same extraction
+7316-1099	470025	RNA [415897]	Same extraction
+7316-1100	470028	RNA [415898]	Same extraction
+7316-1101	654189	RNA [644959]	Same extraction
+7316-1102	470031	RNA [415899]	Same extraction
+7316-1103	588353	RNA [583304]	Same extraction
+7316-1104	564479	RNA [560765]	Same extraction
+7316-1105	470017	RNA [416630]	Same extraction
+7316-1106	549575	RNA [478634]	Same extraction
+7316-1107	588441	RNA [585474]	Same extraction
+7316-1108	654212	RNA [645183]	Same extraction
+7316-1109	571411	RNA [567605]	Same extraction
+7316-111	470423	RNA [455484]	Same tissue aliquot
+7316-1111	717118	RNA [567653]	Same extraction
+7316-1113	571406	RNA [567655]	Same extraction
+7316-1114	717121	RNA [568032]	Same extraction
+7316-1115	717122	RNA [568033]	Same extraction
+7316-1116	571419	RNA [568034]	Same extraction
+7316-1117	588354	RNA [583305]	Same extraction
+7316-1118	564480	RNA [560766]	Same extraction
+7316-1134	588313	RNA [582035]	Same extraction
+7316-1137	746100	RNA [744179]	Same extraction
+7316-114	577714	RNA [574704]	Same extraction
+7316-116	588297	RNA [581275]	Same extraction
+7316-117	570116	RNA [563012]	Same extraction
+7316-1187	577723	RNA [575893]	Same extraction
+7316-119	573170	RNA [571295]	Same extraction
+7316-120	571417	RNA [567510]	Same extraction
+7316-121	571416	RNA [567509]	Same extraction
+7316-1214	470430	RNA [455923]	Same extraction
+7316-122	549561	RNA [447252]	Same extraction
+7316-1226	731856	RNA [728438]	Same extraction
+7316-123	717120	RNA [567511]	Same extraction
+7316-124	573169	RNA [571294]	Different tissue aliquot
+7316-125	739982	RNA [667629]	Same extraction
+7316-1252	470433	RNA [455924]	Same extraction
+7316-126	746063	RNA [475807]	Same tissue aliquot
+7316-127	588296	RNA [580771]	Same extraction
+7316-1279	470420	RNA [456743]	Same tissue aliquot
+7316-128	571418	RNA [567512]	Same extraction
+7316-13	717149	RNA [581548]	Same extraction
+7316-1312	739930	RNA [603411]	Same extraction
+7316-133	717143	RNA [580772]	Same extraction
+7316-134	570120	RNA [563017]	Same extraction
+7316-135	116318	This is a tissue aliquot	NA
+7316-135	116311	This is a tissue aliquot	NA
+7316-135	116304	This is a tissue aliquot	NA
+7316-136	717145	RNA [685559]	Same extraction
+7316-14	654201	RNA [645176]	Same extraction
+7316-1455	994695	7316-1455-RNA [407008]	Different tissue aliquot
+7316-1455	400856	Not found	Different tissue aliquot
+7316-1456	717123	RNA [568035]	Same tissue aliquot
+7316-1459	746101	RNA [744180]	Same extraction
+7316-146	717187	RNA [677110]	Same extraction
+7316-1460	1030647	Not found	Different tissue aliquot
+7316-1461	731879	RNA [729721]	Same extraction
+7316-1462	588355	RNA [583306]	Same extraction
+7316-1463	571407	RNA [567601]	Different tissue aliquot
+7316-1464	470021	RNA [416632]	Same extraction
+7316-147	564462	RNA [559559]	Same extraction
+7316-1473	470024	RNA [415511]	Same extraction
+7316-1476	588298	RNA [581277]	Same extraction
+7316-148	564460	RNA [555705]	Same extraction
+7316-1480	470425	RNA [456745]	Same extraction
+7316-152	717113	RNA [565698]	Same extraction
+7316-153	549583	RNA [440137]	Same tissue aliquot
+7316-154	588334	RNA [582979]	Same extraction
+7316-155	406957	Not found	Different tissue aliquot
+7316-156	588333	RNA [582978]	Same extraction
+7316-158	1030653	Not found	Different tissue aliquot
+7316-16	588306	RNA [581549]	Same extraction
+7316-160	549587	RNA [466883]	Same extraction
+7316-161	994696	RNA [466884]	Same extraction
+7316-161	406959	Not found	Different tissue aliquot
+7316-162	564459	RNA [555704]	Same extraction
+7316-1635	731920	RNA [731328]	Same extraction
+7316-1636	731857	RNA [728439]	Same extraction
+7316-1637	654208	RNA [612280]	Same extraction
+7316-164	734523	RNA [571288]	Different tissue aliquot
+7316-1641	711695	RNA [587842]	Same extraction
+7316-1643	601593	RNA [591129]	Same extraction
+7316-1646	711669	RNA [665661]	Same extraction
+7316-1648	711722	RNA [665950]	Same extraction
+7316-1649	717181	RNA [665951]	Same extraction
+7316-1650	608926	RNA [600528]	Same extraction
+7316-1651	608927	RNA [600529]	Same extraction
+7316-1652	654184	RNA [649216]	Same extraction
+7316-1653	717103	RNA [649217]	Same extraction
+7316-1654	573145	RNA [570514]	Same extraction
+7316-1655	588454	RNA [585525]	Same extraction
+7316-1656	711676	RNA [591124]	Same extraction
+7316-1658	601589	RNA [591125]	Same extraction
+7316-1659	731889	RNA [730398]	Same extraction
+7316-166	573166	RNA [571289]	Same tissue aliquot
+7316-1660	711653	RNA [655144]	Same extraction
+7316-1661	711709	RNA [606896]	Same extraction
+7316-1664	731890	RNA [730399]	Same extraction
+7316-1666	731858	RNA [728440]	Same extraction
+7316-1668	717160	RNA [645178]	Same extraction
+7316-1669	654209	RNA [612281]	Same extraction
+7316-167	734512	RNA [548880]	Same extraction
+7316-1670	654193	RNA [612333]	Same extraction
+7316-1671	654203	RNA [645179]	Same extraction
+7316-1674	717182	RNA [665952]	Same extraction
+7316-1675	717184	RNA [667950]	Same extraction
+7316-1676	711755	RNA [677367]	Same extraction
+7316-1678	711654	RNA [655145]	Same extraction
+7316-1679	654185	RNA [649218]	Same extraction
+7316-168	564463	RNA [559560]	Same extraction
+7316-1680	588455	RNA [585526]	Same extraction
+7316-1681	731875	RNA [728673]	Same extraction
+7316-1683	588456	RNA [586303]	Same extraction
+7316-1693	731859	RNA [728441]	Same extraction
+7316-1694	470027	RNA [415512]	Same tissue aliquot
+7316-1695	549605	RNA [489732]	Same extraction
+7316-170	717109	RNA [559562]	Same extraction
+7316-1700	564490	RNA [561568]	Same extraction
+7316-1702	654191	RNA [644962]	Same extraction
+7316-1703	654192	RNA [644963]	Same extraction
+7316-1704	564456	RNA [555700]	Same extraction
+7316-1705	588310	RNA [581555]	Same extraction
+7316-1706	731909	RNA [731099]	Same extraction
+7316-1708	746064	RNA [499991]	Same tissue aliquot
+7316-171	564465	RNA [559563]	Same extraction
+7316-1710	728274	RNA [727815]	Same extraction
+7316-1711	739945	RNA [555699]	Same extraction
+7316-1714	711680	RNA [652371]	Same extraction
+7316-1715	711662	RNA [650580]	Same extraction
+7316-172	564464	RNA [559561]	Same extraction
+7316-1723	470023	RNA [416633]	Same extraction
+7316-173	549618	RNA [533749]	Same tissue aliquot
+7316-1744	717174	RNA [585516]	Same extraction
+7316-1745	549619	RNA [533750]	Different tissue aliquot
+7316-1746	574552	RNA [573677]	Different tissue aliquot
+7316-1747	588447	RNA [585517]	Same extraction
+7316-1748	573141	RNA [570508]	Same extraction
+7316-175	564466	RNA [559564]	Same extraction
+7316-1750	717128	RNA [570510]	Same extraction
+7316-1751	588446	RNA [585479]	Same extraction
+7316-1757	717183	RNA [667633]	Same extraction
+7316-176	573167	RNA [571290]	Same extraction
+7316-1760	588344	RNA [583407]	Same extraction
+7316-1763	549574	RNA [467903]	Different tissue aliquot
+7316-1765	728295	RNA [727785]	Different tissue aliquot
+7316-1766	717142	RNA [644960]	Same extraction
+7316-1767	654190	RNA [644961]	Same extraction
+7316-1769	470030	RNA [415513]	Different tissue aliquot
+7316-1771	549560	RNA [440132]	Same tissue aliquot
+7316-1772	717124	RNA [569335]	Same extraction
+7316-1773	717165	RNA [583408]	Same extraction
+7316-1774	574549	RNA [573674]	Same extraction
+7316-1775	571427	RNA [569336]	Same extraction
+7316-1776	731860	RNA [728442]	Same extraction
+7316-1778	549584	RNA [442025]	Different tissue aliquot
+7316-1779	731884	RNA [729726]	Same extraction
+7316-178	608917	RNA [466885]	Same extraction
+7316-1781	549570	RNA [440136]	Different tissue aliquot
+7316-1782	549614	RNA [502644]	Same extraction
+7316-1783	728286	RNA [727864]	Same extraction
+7316-1784	588345	RNA [583409]	Same extraction
+7316-1785	588459	RNA [586306]	Same extraction
+7316-1786	588460	RNA [586307]	Same extraction
+7316-1789	608930	RNA [582686]	Same extraction
+7316-1790	573148	RNA [570518]	Same extraction
+7316-1792	573140	RNA [570435]	Same extraction
+7316-1793	588448	RNA [585518]	Same extraction
+7316-1794	731892	RNA [730401]	Same extraction
+7316-1797	588326	RNA [582682]	Same extraction
+7316-1799	470428	RNA [456746]	Same extraction
+7316-1801	564481	RNA [560767]	Same extraction
+7316-1802	731929	RNA [731557]	Same extraction
+7316-1803	717139	RNA [580680]	Same extraction
+7316-1805	731898	RNA [731063]	Same extraction
+7316-1806	588281	RNA [569342]	Same extraction
+7316-1808	571440	RNA [569516]	Same extraction
+7316-182	739962	RNA [685561]	Same extraction
+7316-183	717156	RNA [582036]	Same extraction
+7316-184	717146	RNA [685562]	Same extraction
+7316-1844	470026	RNA [416634]	Same extraction
+7316-1845	571408	RNA [567602]	Same extraction
+7316-185	570121	RNA [565700]	Same extraction
+7316-1851	711733	RNA [667632]	Same extraction
+7316-1854	728253	RNA [725580]	Same extraction
+7316-1855	711731	RNA [667630]	Same extraction
+7316-1856	746080	RNA [743298]	Same extraction
+7316-186	570122	RNA [565701]	Same extraction
+7316-1866	731899	RNA [731064]	Same extraction
+7316-187	717110	RNA [559566]	Same extraction
+7316-188	570099	RNA [559565]	Same extraction
+7316-1884	1030648	Not found	Different tissue aliquot
+7316-1886	711732	RNA [667631]	Same extraction
+7316-1889	549576	RNA [415514]	Different tissue aliquot
+7316-189	470426	RNA [455485]	Same extraction
+7316-1890	731921	RNA [731329]	Same extraction
+7316-1893	746067	RNA [551471]	Same extraction
+7316-19	717106	RNA [554629]	Same extraction
+7316-1926	571409	RNA [567603]	Same extraction
+7316-1927	573139	RNA [570434]	Same extraction
+7316-1928	654214	RNA [645185]	Same extraction
+7316-193	601586	RNA [591120]	Same extraction
+7316-1936	731922	RNA [731330]	Same extraction
+7316-1937	731930	RNA [731558]	Same extraction
+7316-1938	731900	RNA [731065]	Same extraction
+7316-1940	588346	RNA [583410]	Same extraction
+7316-1941	588347	RNA [583411]	Same extraction
+7316-1942	654211	RNA [645182]	Same extraction
+7316-1943	588304	RNA [581284]	Same extraction
+7316-1944	588348	RNA [583412]	Same extraction
+7316-1945	571428	RNA [569337]	Same extraction
+7316-1946	654216	RNA [645100]	Same extraction
+7316-1948	571429	RNA [569338]	Same extraction
+7316-1949	728287	RNA [727865]	Same extraction
+7316-195	564443	RNA [548798]	Different tissue aliquot
+7316-1950	588370	RNA [584369]	Same extraction
+7316-1952	571447	RNA [569684]	Same extraction
+7316-1953	731901	RNA [731066]	Same extraction
+7316-1954	588371	RNA [584370]	Same extraction
+7316-1955	588307	RNA [581550]	Same extraction
+7316-1956	564446	RNA [548801]	Same extraction
+7316-1957	571448	RNA [569985]	Same extraction
+7316-1958	588372	RNA [584371]	Same extraction
+7316-1959	731878	RNA [729720]	Same extraction
+7316-196	588335	RNA [582980]	Same extraction
+7316-1960	728288	RNA [727866]	Same extraction
+7316-1962	588449	RNA [585519]	Same extraction
+7316-1963	601587	RNA [591122]	Same extraction
+7316-1965	728289	RNA [727867]	Same extraction
+7316-1968	717171	RNA [666256]	Same extraction
+7316-1969	564448	RNA [548804]	Same extraction
+7316-197	570123	RNA [565703]	Same extraction
+7316-1970	728296	RNA [727787]	Same extraction
+7316-1972	601588	RNA [591123]	Same extraction
+7316-1975	601601	RNA [587844]	Same extraction
+7316-1977	601602	RNA [587845]	Same extraction
+7316-1978	731883	RNA [729725]	Same extraction
+7316-198	549592	RNA [470150]	Same extraction
+7316-1981	731872	RNA [728670]	Same extraction
+7316-1983	573153	RNA [570806]	Same extraction
+7316-1985	573160	RNA [571519]	Same extraction
+7316-1986	717155	RNA [587846]	Same extraction
+7316-1987	573161	RNA [571520]	Same extraction
+7316-20	564452	RNA [554631]	Same extraction
+7316-2005	573147	RNA [570517]	Same extraction
+7316-2006	601590	RNA [591126]	Same extraction
+7316-2009	470439	RNA [450683]	Same extraction
+7316-202	564467	RNA [559567]	Same extraction
+7316-204	398058	Not found	Different tissue aliquot
+7316-205	570124	RNA [565704]	Same extraction
+7316-206	570125	RNA [565705]	Same extraction
+7316-2069	573154	RNA [571208]	Same extraction
+7316-207	570126	RNA [565706]	Same extraction
+7316-2071	717176	RNA [586309]	Same extraction
+7316-2075	588360	RNA [584282]	Same extraction
+7316-2079	731910	RNA [731100]	Same extraction
+7316-2084	731882	RNA [729724]	Same extraction
+7316-2085	577730	RNA [576850]	Same extraction
+7316-209	717114	RNA [565702]	Same extraction
+7316-2091	577718	RNA [574708]	Same extraction
+7316-2092	739928	RNA [606566]	Same extraction
+7316-2099	588369	RNA [584368]	Same extraction
+7316-2100	574551	RNA [573676]	Same extraction
+7316-2106	717162	RNA [582684]	Same extraction
+7316-2107	570102	RNA [560769]	Same extraction
+7316-2109	731893	RNA [730404]	Same extraction
+7316-2110	731931	RNA [731559]	Same extraction
+7316-2118	711663	RNA [650582]	Same extraction
+7316-2125	717167	RNA [584287]	Same extraction
+7316-2130	746069	RNA [541386]	Same tissue aliquot
+7316-2133	717125	RNA [569517]	Same extraction
+7316-2134	571441	RNA [569518]	Same extraction
+7316-2135	571442	RNA [569519]	Same extraction
+7316-2138	728297	RNA [727788]	Same extraction
+7316-2139	571430	RNA [569339]	Same extraction
+7316-214	717119	RNA [567503]	Same extraction
+7316-2140	470436	RNA [455490]	Same extraction
+7316-2141	571446	RNA [569683]	Same extraction
+7316-2142	588361	RNA [584283]	Same extraction
+7316-2144	734532	RNA [677115]	Same extraction
+7316-2146	564445	RNA [548800]	Same extraction
+7316-2147	588305	RNA [581285]	Same extraction
+7316-2148	571431	RNA [569340]	Same extraction
+7316-2149	717161	RNA [582681]	Same extraction
+7316-215	571412	RNA [567502]	Same extraction
+7316-2150	571432	RNA [569341]	Same extraction
+7316-2151	711713	RNA [606900]	Same extraction
+7316-2152	574550	RNA [573675]	Same extraction
+7316-2153	571439	RNA [569515]	Same extraction
+7316-2154	549612	RNA [535907]	Same tissue aliquot
+7316-2155	564491	RNA [561569]	Same extraction
+7316-2156	588365	RNA [584288]	Same extraction
+7316-2157	588366	RNA [584289]	Same extraction
+7316-2158	588367	RNA [584290]	Same extraction
+7316-2159	571443	RNA [569520]	Same extraction
+7316-216	717116	RNA [565708]	Same extraction
+7316-2166	588368	RNA [584292]	Same extraction
+7316-2167	571444	RNA [569681]	Same extraction
+7316-2169	570101	RNA [560768]	Same extraction
+7316-217	734530	RNA [541516]	Different tissue aliquot
+7316-2170	728298	RNA [727789]	Same extraction
+7316-2171	571445	RNA [569682]	Same extraction
+7316-2172	571451	RNA [569988]	Same extraction
+7316-2174	588373	RNA [584372]	Same extraction
+7316-2176	588280	RNA [548802]	Same extraction
+7316-2177	571452	RNA [569989]	Same extraction
+7316-2178	564482	RNA [560770]	Same extraction
+7316-2180	588374	RNA [584373]	Same extraction
+7316-2181	588435	RNA [584374]	Same extraction
+7316-2182	734542	RNA [734369]	Same tissue aliquot
+7316-2183	571455	RNA [569993]	Same extraction
+7316-2184	571456	RNA [569994]	Same extraction
+7316-2186	654180	RNA [648541]	Same extraction
+7316-2187	608922	RNA [548881]	Same extraction
+7316-2189	734533	RNA [606559]	Same tissue aliquot
+7316-219	1030641	DNA and RNA listed as virtual	NA
+7316-2191	588450	RNA [585520]	Same extraction
+7316-2193	588451	RNA [585521]	Same extraction
+7316-2195	573144	RNA [570513]	Same extraction
+7316-2197	731873	RNA [728671]	Same extraction
+7316-22	564485	RNA [560773]	Same extraction
+7316-220	571413	RNA [567504]	Same extraction
+7316-2203	731874	RNA [728672]	Same extraction
+7316-2204	731912	RNA [731102]	Same extraction
+7316-2208	731894	RNA [730405]	Same extraction
+7316-2215	731923	RNA [731332]	Same extraction
+7316-2216	731932	RNA [731560]	Same extraction
+7316-2217	731933	RNA [731561]	Same extraction
+7316-222	571414	RNA [567505]	Same extraction
+7316-2221	711677	RNA [655095]	Same extraction
+7316-2224	571449	RNA [569986]	Same extraction
+7316-2227	564492	RNA [561570]	Same extraction
+7316-223	717172	RNA [681545]	Same extraction
+7316-2230	564493	RNA [561571]	Same extraction
+7316-2237	731903	RNA [731068]	Same extraction
+7316-224	588336	RNA [582981]	Same extraction
+7316-2240	731904	RNA [731069]	Same extraction
+7316-2241	549573	RNA [508446]	Same extraction
+7316-2243	746082	RNA [743301]	Same extraction
+7316-2244	571453	RNA [569991]	Same extraction
+7316-2245	571454	RNA [569992]	Same extraction
+7316-2248	588282	RNA [570512]	Same extraction
+7316-2249	573155	RNA [571209]	Same extraction
+7316-2250	564483	RNA [560771]	Same extraction
+7316-2251	573149	RNA [570801]	Same extraction
+7316-2252	564484	RNA [560772]	Same extraction
+7316-2255	717166	RNA [612272]	Same extraction
+7316-226	601596	RNA [591580]	Same extraction
+7316-2266	717104	RNA [649220]	Same extraction
+7316-2267	711708	RNA [666255]	Same extraction
+7316-2268	717136	RNA [644953]	Same extraction
+7316-2269	717185	RNA [668172]	Same extraction
+7316-2271	717138	RNA [644954]	Same extraction
+7316-2274	728249	RNA [725631]	Same extraction
+7316-2275	724090	RNA [723505]	Same extraction
+7316-2276	711756	RNA [677368]	Same extraction
+7316-2278	654197	RNA [612338]	Same extraction
+7316-2285	717163	RNA [582685]	Same extraction
+7316-2287	711707	RNA [666254]	Same extraction
+7316-2288	577719	RNA [574709]	Same extraction
+7316-2291	731905	RNA [731070]	Same extraction
+7316-23	717107	RNA [554630]	Same extraction
+7316-230	588314	RNA [582038]	Same extraction
+7316-2300	571450	RNA [569987]	Same extraction
+7316-2305	588436	RNA [584375]	Same extraction
+7316-2306	731881	RNA [729723]	Same extraction
+7316-2307	731934	RNA [731562]	Same extraction
+7316-2308	731861	RNA [728443]	Same extraction
+7316-2309	564494	RNA [561572]	Same extraction
+7316-231	549571	RNA [478004]	Different tissue aliquot
+7316-2310	588437	RNA [584376]	Same extraction
+7316-2311	731913	RNA [731103]	Same extraction
+7316-2313	717126	RNA [569995]	Same extraction
+7316-2322	564495	RNA [561573]	Same extraction
+7316-2324	717147	RNA [685566]	Same extraction
+7316-2329	746072	RNA [741114]	Same extraction
+7316-234	717141	RNA [580762]	Same extraction
+7316-235	564458	RNA [555703]	Same extraction
+7316-238	1030655	Not found	Same tissue aliquot
+7316-240	746085	RNA [743304]	Same extraction
+7316-242	750189	RNA [744904]	Same extraction
+7316-245	711727	RNA [665958]	Same extraction
+7316-247	588291	RNA [580763]	Same extraction
+7316-249	577724	RNA [575894]	Same extraction
+7316-2536	574557	RNA [573682]	Same extraction
+7316-255	994697	RNA [924320]	Same tissue aliquot
+7316-255	401560	Not found	Same extraction
+7316-2554	564449	RNA [548805]	Same extraction
+7316-2556	728254	RNA [725581]	Same extraction
+7316-2557	731862	RNA [728444]	Same extraction
+7316-2558	654219	RNA [645104]	Same extraction
+7316-2561	577720	RNA [574710]	Same extraction
+7316-2562	728255	RNA [725582]	Same extraction
+7316-2566	717134	RNA [571500]	Same extraction
+7316-2567	570103	RNA [561563]	Same extraction
+7316-2569	717168	RNA [612276]	Same extraction
+7316-257	711729	RNA [667627]	Same extraction
+7316-2571	588452	RNA [585523]	Same extraction
+7316-2572	588453	RNA [585524]	Same extraction
+7316-2575	654215	RNA [645186]	Same extraction
+7316-2576	654181	RNA [648542]	Same extraction
+7316-2577	601591	RNA [591127]	Same extraction
+7316-2578	588462	RNA [586310]	Same extraction
+7316-258	717112	RNA [562101]	Same extraction
+7316-2581	573156	RNA [571210]	Same extraction
+7316-2582	573157	RNA [571211]	Same extraction
+7316-2583	573158	RNA [571212]	Same extraction
+7316-2588	588463	RNA [586311]	Same extraction
+7316-2589	739960	RNA [705319]	Same tissue aliquot
+7316-259	588315	RNA [582040]	Same extraction
+7316-2590	717130	RNA [570800]	Different tissue aliquot
+7316-2591	717151	RNA [587840]	Same extraction
+7316-2594	574553	RNA [573678]	Same extraction
+7316-2599	711766	RNA [607874]	Same extraction
+7316-2608	717177	RNA [586312]	Same extraction
+7316-2609	573159	RNA [571213]	Same extraction
+7316-261	750191	RNA [744907]	Same extraction
+7316-2610	577721	RNA [574711]	Same extraction
+7316-2614	717175	RNA [585522]	Same extraction
+7316-262	750190	RNA [744906]	Same extraction
+7316-2622	717178	RNA [586313]	Same extraction
+7316-2626	728290	RNA [727868]	Same extraction
+7316-263	711706	RNA [666252]	Same extraction
+7316-2632	711748	RNA [668177]	Same extraction
+7316-264	549616	RNA [534723]	Same extraction
+7316-2640	573150	RNA [570802]	Same extraction
+7316-2641	717129	RNA [570683]	Same tissue aliquot
+7316-2647	717152	RNA [587841]	Same extraction
+7316-2648	573151	RNA [570803]	Same extraction
+7316-265	549621	RNA [535803]	Same tissue aliquot
+7316-2653	717131	RNA [570804]	Same extraction
+7316-2658	654182	RNA [648543]	Same extraction
+7316-2659	717140	RNA [580684]	Same extraction
+7316-2660	577722	RNA [574712]	Different tissue aliquot
+7316-2661	731863	RNA [728445]	Same extraction
+7316-2662	717100	RNA [655140]	Same extraction
+7316-2663	601603	RNA [587847]	Same extraction
+7316-2664	711710	RNA [606893]	Same extraction
+7316-2665	717135	RNA [571521]	Different tissue aliquot
+7316-2666	711711	RNA [606895]	Same extraction
+7316-2667	549620	RNA [533753]	Different tissue aliquot
+7316-2668	573162	RNA [571522]	Same extraction
+7316-2669	601604	RNA [587848]	Same extraction
+7316-267	564455	RNA [555698]	Same extraction
+7316-2671	573164	RNA [571524]	Same extraction
+7316-2672	601592	RNA [591128]	Same extraction
+7316-2673	711749	RNA [668178]	Same extraction
+7316-2680	573163	RNA [571523]	Same extraction
+7316-2686	717179	RNA [645103]	Same tissue aliquot
+7316-2688	731924	RNA [731333]	Same extraction
+7316-2689	728291	RNA [727869]	Same extraction
+7316-2699	728275	RNA [727816]	Same extraction
+7316-2703	739972	RNA [603420]	Same extraction
+7316-2707	588356	RNA [583307]	Same extraction
+7316-2708	711753	RNA [677365]	Same extraction
+7316-2719	717132	RNA [571497]	Same extraction
+7316-272	588287	RNA [578426]	Same extraction
+7316-2720	717133	RNA [571498]	Same extraction
+7316-2723	601605	RNA [587849]	Same extraction
+7316-2724	717144	RNA [591583]	Same tissue aliquot
+7316-2725	601594	RNA [591130]	Same extraction
+7316-2729	728276	RNA [727817]	Same extraction
+7316-2732	654204	RNA [612273]	Same extraction
+7316-2737	711767	RNA [606564]	Same extraction
+7316-2743	654205	RNA [612274]	Same extraction
+7316-2744	654202	RNA [645177]	Same extraction
+7316-275	731866	RNA [728664]	Same extraction
+7316-2751	711698	RNA [658780]	Same extraction
+7316-2753	728292	RNA [727870]	Same extraction
+7316-2755	654207	RNA [612278]	Same extraction
+7316-2756	731915	RNA [731105]	Same extraction
+7316-2757	654206	RNA [612277]	Same extraction
+7316-2758	717153	RNA [658779]	Same extraction
+7316-2760	717164	RNA [658788]	Same extraction
+7316-2777	739968	RNA [600532]	Same extraction
+7316-278	257637	Not found	NA
+7316-2780	608928	RNA [600530]	Same extraction
+7316-2782	711735	RNA [667636]	Same extraction
+7316-279	711726	RNA [665957]	Same extraction
+7316-280	549615	RNA [502645]	Same extraction
+7316-2809	717170	RNA [612279]	Same extraction
+7316-2810	739977	RNA [606565]	Same extraction
+7316-2811	711666	RNA [665658]	Same extraction
+7316-2856	717157	RNA [612335]	Same extraction
+7316-2857	654195	RNA [612336]	Same extraction
+7316-2858	654196	RNA [612337]	Same extraction
+7316-286	746103	RNA [744185]	Same extraction
+7316-2860	711754	RNA [677366]	Same extraction
+7316-2862	746097	RNA [743158]	Same extraction
+7316-2864	739952	RNA [644956]	Same extraction
+7316-2865	608924	RNA [600526]	Same extraction
+7316-287	398451	Not found	Same extraction
+7316-288	398450	Not found	Same extraction
+7316-2893	711702	RNA [658787]	Same extraction
+7316-2897	717105	RNA [649223]	Same extraction
+7316-2899	711700	RNA [658784]	Same extraction
+7316-29	564461	RNA [559558]	Same extraction
+7316-290	711705	RNA [666251]	Same extraction
+7316-2901	711701	RNA [658786]	Same tissue aliquot
+7316-291	739981	RNA [665956]	Same extraction
+7316-292	470438	RNA [459123]	Same extraction
+7316-2933	654194	RNA [612334]	Same extraction
+7316-2934	711703	RNA [666247]	Same extraction
+7316-2935	654210	RNA [645180]	Same extraction
+7316-2939	711667	RNA [665659]	Same extraction
+7316-294	746104	RNA [744186]	Same extraction
+7316-2959	711699	RNA [658783]	Same extraction
+7316-2962	654187	RNA [649222]	Same extraction
+7316-2966	739996	RNA [738043]	Same extraction
+7316-297	564469	RNA [560229]	Same extraction
+7316-2970	740003	RNA [738050]	Same extraction
+7316-2971	711720	RNA [651935]	Same extraction
+7316-2972	654186	RNA [649221]	Same extraction
+7316-2980	731864	RNA [728446]	Same extraction
+7316-2984	728277	RNA [727818]	Same extraction
+7316-2986	711762	RNA [677494]	Same extraction
+7316-2987	731906	RNA [731071]	Same extraction
+7316-2988	731876	RNA [728674]	Same extraction
+7316-2989	731916	RNA [731106]	Same extraction
+7316-2990	731925	RNA [731334]	Same extraction
+7316-3	470422	RNA [450677]	Same extraction
+7316-30	564453	RNA [554635]	Same extraction
+7316-3000	746068	RNA [608383]	Same extraction
+7316-3010	711679	RNA [652369]	Same extraction
+7316-3019	731877	RNA [729719]	Same extraction
+7316-302	1030642	Not found	Different tissue aliquot
+7316-3020	654198	RNA [612339]	Same extraction
+7316-3022	734535	RNA [733616]	Same extraction
+7316-3023	654199	RNA [612340]	Same extraction
+7316-3025	711716	RNA [606903]	Same extraction
+7316-3028	717101	RNA [655142]	Same extraction
+7316-3029	654183	RNA [649215]	Same extraction
+7316-3030	731895	RNA [730406]	Same extraction
+7316-304	549598	RNA [468431]	Same extraction
+7316-3040	654200	RNA [612341]	Same extraction
+7316-3045	717158	RNA [658781]	Same extraction
+7316-3048	739978	RNA [606894]	Same extraction
+7316-305	711664	RNA [650583]	Same extraction
+7316-3052	711652	RNA [655143]	Same extraction
+7316-3054	739925	RNA [649219]	Same extraction
+7316-3055	711655	RNA [655146]	Same extraction
+7316-3057	711656	RNA [655147]	Same extraction
+7316-3058	739933	RNA [729926]	Different tissue aliquot
+7316-3058	739934	RNA [729927]	Same extraction
+7316-3058	746065	RNA [566828]	Different tissue aliquot
+7316-306	734529	RNA [667634]	Same extraction
+7316-3060	734511	RNA [655148]	Same extraction
+7316-3061	739956	RNA [689827]	Same extraction
+7316-3062	711697	RNA [658778]	Same extraction
+7316-3064	654220	RNA [645105]	Same extraction
+7316-3065	654221	RNA [645106]	Same extraction
+7316-3066	654222	RNA [645107]	Same extraction
+7316-3067	654176	RNA [648536]	Same extraction
+7316-3068	734528	RNA [606897]	Same extraction
+7316-3069	654177	RNA [648537]	Same extraction
+7316-307	549607	RNA [475622]	Same extraction
+7316-3070	734513	RNA [648533]	Same extraction
+7316-3071	711723	RNA [665953]	Same extraction
+7316-3072	711725	RNA [665954]	Same extraction
+7316-3073	711736	RNA [667945]	Same extraction
+7316-3074	711758	RNA [677370]	Same extraction
+7316-3075	717186	RNA [676941]	Same extraction
+7316-3076	731865	RNA [728447]	Same extraction
+7316-309	549595	RNA [470151]	Same extraction
+7316-310	549588	RNA [467896]	Same extraction
+7316-312	711657	RNA [650574]	Same extraction
+7316-3122	739929	RNA [685601]	Same extraction
+7316-313	549600	RNA [468960]	Same extraction
+7316-3132	654188	RNA [644958]	Same extraction
+7316-3138	711761	RNA [677490]	Same extraction
+7316-3139	739980	RNA [668381]	Same extraction
+7316-314	549608	RNA [475623]	Same extraction
+7316-3140	711719	RNA [668382]	Same extraction
+7316-3147	724091	RNA [723506]	Same extraction
+7316-3148	724075	RNA [720408]	Same extraction
+7316-3149	724076	RNA [720409]	Same extraction
+7316-315	549610	RNA [477330]	Same extraction
+7316-3150	724078	RNA [720411]	Same extraction
+7316-3151	724079	RNA [723249]	Same extraction
+7316-3152	724080	RNA [723250]	Same extraction
+7316-3153	724074	RNA [720407]	Same extraction
+7316-3154	724077	RNA [720410]	Same extraction
+7316-3169	728256	RNA [725584]	Same extraction
+7316-319	711734	RNA [667635]	Same extraction
+7316-3192	608929	RNA [600531]	Same extraction
+7316-32	734517	RNA [555695]	Same extraction
+7316-3202	711746	RNA [668173]	Same extraction
+7316-3203	711747	RNA [668174]	Same extraction
+7316-3204	728278	RNA [727819]	Same extraction
+7316-3206	728248	RNA [725630]	Same extraction
+7316-3208	728247	RNA [725629]	Same extraction
+7316-321	711728	RNA [667626]	Same extraction
+7316-322	564470	RNA [560230]	Same extraction
+7316-324	588292	RNA [580765]	Same extraction
+7316-325	577729	RNA [576849]	Same extraction
+7316-329	588308	RNA [581553]	Same extraction
+7316-3292	734527	RNA [658782]	Different tissue aliquot
+7316-3295	654175	RNA [648534]	Same extraction
+7316-3299	654178	RNA [648539]	Same extraction
+7316-330	728279	RNA [727820]	Same extraction
+7316-3300	711715	RNA [606902]	Same extraction
+7316-3303	734524	RNA [644955]	Same extraction
+7316-3306	711670	RNA [665662]	Same extraction
+7316-3308	711671	RNA [665664]	Same extraction
+7316-331	711724	RNA [665955]	Same extraction
+7316-3311	711752	RNA [672669]	Same extraction
+7316-3312	711712	RNA [606898]	Same extraction
+7316-3316	711737	RNA [667946]	Same extraction
+7316-3317	711738	RNA [667947]	Same extraction
+7316-3319	711675	RNA [607506]	Same extraction
+7316-332	571415	RNA [567506]	Same extraction
+7316-3323	711672	RNA [665665]	Same extraction
+7316-3326	711704	RNA [666250]	Same extraction
+7316-333	398057	Not found	Same extraction
+7316-3336	739926	RNA [649224]	Same extraction
+7316-334	470437	RNA [456741]	Same extraction
+7316-3345	739993	RNA [677495]	Same extraction
+7316-340	549613	RNA [502643]	Same extraction
+7316-341	571435	RNA [569344]	Same extraction
+7316-343	401742	Not found	NA
+7316-344	734525	RNA [580767]	Same extraction
+7316-345	571434	RNA [569343]	Same extraction
+7316-346	588362	RNA [584284]	Same extraction
+7316-347	549567	RNA [448064]	Different tissue aliquot
+7316-3485	724092	RNA [723507]	Same extraction
+7316-3488	724084	RNA [723254]	Same extraction
+7316-349	731867	RNA [728665]	Same extraction
+7316-3491	728257	RNA [725587]	Same extraction
+7316-350	588290	RNA [580687]	Same extraction
+7316-3504	711759	RNA [677371]	Same extraction
+7316-3510	724101	RNA [723825]	Same extraction
+7316-3511	717188	RNA [677117]	Same extraction
+7316-3513	739989	RNA [677372]	Same extraction
+7316-3515	717189	RNA [677118]	Same extraction
+7316-3516	728280	RNA [727821]	Same extraction
+7316-3519	717190	RNA [677119]	Same extraction
+7316-3520	739991	RNA [677374]	Same extraction
+7316-3521	739979	RNA [668379]	Same extraction
+7316-3522	724102	RNA [723826]	Same extraction
+7316-355	739954	RNA [580768]	Same extraction
+7316-3554	711739	RNA [667949]	Same extraction
+7316-3555	711740	RNA [667951]	Same extraction
+7316-3556	711741	RNA [667952]	Same extraction
+7316-3557	739984	RNA [667953]	Same extraction
+7316-3558	739985	RNA [667954]	Same extraction
+7316-356	570112	RNA [562102]	Same extraction
+7316-3566	711743	RNA [668168]	Same extraction
+7316-3567	728251	RNA [725633]	Same extraction
+7316-3570	711744	RNA [668169]	Same extraction
+7316-3571	711745	RNA [668170]	Same extraction
+7316-3572	734531	RNA [668175]	Same extraction
+7316-3574	711750	RNA [672667]	Same extraction
+7316-3575	711751	RNA [672668]	Same extraction
+7316-3576	739959	RNA [689834]	Same extraction
+7316-358	549577	RNA [440133]	Different tissue aliquot
+7316-359	588324	RNA [582351]	Same extraction
+7316-361	588328	RNA [582973]	Same extraction
+7316-362	570113	RNA [562103]	Same extraction
+7316-3621	711718	RNA [668380]	Same extraction
+7316-3622	711760	RNA [677375]	Same extraction
+7316-3623	724103	RNA [723827]	Same extraction
+7316-3624	724104	RNA [723828]	Same extraction
+7316-3625	728243	RNA [725624]	Same tissue aliquot
+7316-3626	728242	RNA [725623]	Same tissue aliquot
+7316-3627	724093	RNA [723508]	Same extraction
+7316-3628	724094	RNA [723509]	Same extraction
+7316-3629	724095	RNA [723510]	Same extraction
+7316-3630	724096	RNA [723511]	Same extraction
+7316-3631	724097	RNA [723512]	Same extraction
+7316-3632	724098	RNA [723513]	Same extraction
+7316-364	570114	RNA [562104]	Same extraction
+7316-365	739957	RNA [689831]	Same extraction
+7316-367	564487	RNA [561565]	Same extraction
+7316-368	734536	RNA [733617]	Same tissue aliquot
+7316-3680	739987	RNA [672670]	Same extraction
+7316-3689	728244	RNA [725626]	Same extraction
+7316-370	588329	RNA [582974]	Same extraction
+7316-371	734516	RNA [546524]	Different tissue aliquot
+7316-373	734518	RNA [562047]	Same extraction
+7316-375	588330	RNA [582975]	Same extraction
+7316-3751	728259	RNA [725680]	Same extraction
+7316-3755	728260	RNA [725681]	Same extraction
+7316-3756	728261	RNA [725682]	Same extraction
+7316-376	549569	RNA [441625]	Different tissue aliquot
+7316-3762	728272	RNA [725896]	Same extraction
+7316-3765	728273	RNA [725897]	Same extraction
+7316-3768	728250	RNA [725632]	Same extraction
+7316-3769	728271	RNA [725895]	Same extraction
+7316-377	588293	RNA [580766]	Same extraction
+7316-3771	728245	RNA [725627]	Same extraction
+7316-3773	717191	RNA [677120]	Same extraction
+7316-3774	728246	RNA [725628]	Same extraction
+7316-3775	711757	RNA [677369]	Same extraction
+7316-3776	739992	RNA [677492]	Same extraction
+7316-38	564486	RNA [561564]	Same extraction
+7316-380	573168	RNA [571292]	Same extraction
+7316-3809	724081	RNA [723251]	Same extraction
+7316-381	746070	RNA [534725]	Same extraction
+7316-3817	724088	RNA [723258]	Same extraction
+7316-382	588337	RNA [582982]	Same extraction
+7316-384	549606	RNA [475809]	Same extraction
+7316-3844	728262	RNA [725683]	Same extraction
+7316-3846	728263	RNA [725684]	Same extraction
+7316-3856	724082	RNA [723252]	Same extraction
+7316-3857	724083	RNA [723253]	Same extraction
+7316-386	549563	RNA [447478]	Same extraction
+7316-387	711730	RNA [667628]	Same extraction
+7316-388	398449	Not found	NA
+7316-389	588295	RNA [580770]	Same extraction
+7316-3890	724085	RNA [723255]	Same extraction
+7316-3891	724086	RNA [723256]	Same extraction
+7316-3892	724087	RNA [723257]	Same extraction
+7316-3893	728258	RNA [725588]	Same extraction
+7316-39	739964	RNA [581552]	Same extraction
+7316-390	588438	RNA [585469]	Same extraction
+7316-391	549604	RNA [468962]	Same extraction
+7316-3917	728265	RNA [725687]	Same extraction
+7316-3919	728266	RNA [725688]	Same extraction
+7316-392	401743	Not found	Same extraction
+7316-3922	728268	RNA [725690]	Same extraction
+7316-3923	728269	RNA [725892]	Same extraction
+7316-393	588332	RNA [582977]	Same extraction
+7316-3935	724105	RNA [723831]	Same extraction
+7316-3936	724106	RNA [723832]	Same extraction
+7316-3937	724107	RNA [723833]	Same extraction
+7316-394	549591	RNA [468963]	Same extraction
+7316-395	739961	RNA [705323]	Same tissue aliquot
+7316-3963	734537	RNA [733618]	Different tissue aliquot
+7316-397	588320	RNA [582347]	Same extraction
+7316-398	570104	RNA [562048]	Same extraction
+7316-399	588294	RNA [580769]	Same extraction
+7316-400	588331	RNA [582976]	Same extraction
+7316-4028	724089	RNA [723259]	Same extraction
+7316-4033	724099	RNA [723514]	Same extraction
+7316-4034	724100	RNA [723515]	Same extraction
+7316-4035	724108	RNA [723835]	Same extraction
+7316-405	728293	RNA [727871]	Same extraction
+7316-406	571403	RNA [568277]	Same extraction
+7316-4062	728270	RNA [725894]	Same extraction
+7316-407	588283	RNA [578422]	Same extraction
+7316-408	739947	RNA [568271]	Same extraction
+7316-409	398448	Not found	Same tissue aliquot
+7316-41	549586	RNA [468271]	Same tissue aliquot
+7316-423	470419	RNA [455920]	Same extraction
+7316-425	470441	RNA [456742]	Same extraction
+7316-429	570127	RNA [566829]	Same extraction
+7316-430	470019	RNA [415509]	Same extraction
+7316-431	570128	RNA [566830]	Same extraction
+7316-4341	734538	RNA [733619]	Same extraction
+7316-435	549589	RNA [467898]	Same extraction
+7316-436	564451	RNA [554625]	Same extraction
+7316-437	731868	RNA [728666]	Same extraction
+7316-438	588284	RNA [578423]	Same extraction
+7316-440	746066	RNA [551468]	Same extraction
+7316-441	588439	RNA [585470]	Same extraction
+7316-442	549597	RNA [470153]	Same extraction
+7316-443	571398	RNA [568272]	Same extraction
+7316-445	401741	Not found	Same tissue aliquot
+7316-447	588300	RNA [581279]	Same extraction
+7316-448	571402	RNA [568276]	Same extraction
+7316-449	564468	RNA [559568]	Same extraction
+7316-451	571397	RNA [568270]	Same extraction
+7316-452	571401	RNA [568275]	Same extraction
+7316-455	588317	RNA [582342]	Same extraction
+7316-456	570107	RNA [562051]	Same extraction
+7316-458	571399	RNA [568273]	Same extraction
+7316-459	549601	RNA [468433]	Same extraction
+7316-460	574548	RNA [568278]	Same extraction
+7316-461	739958	RNA [689832]	Same extraction
+7316-462	588301	RNA [581281]	Same extraction
+7316-464	746062	RNA [416629]	Same extraction
+7316-466	401561	Not found	Same extraction
+7316-47	549602	RNA [470148]	Same extraction
+7316-470	549594	RNA [468964]	Same extraction
+7316-471	564471	RNA [560232]	Same extraction
+7316-472	571400	RNA [568274]	Same extraction
+7316-474	564472	RNA [560233]	Same extraction
+7316-475	588339	RNA [583402]	Same extraction
+7316-476	588340	RNA [583403]	Same extraction
+7316-477	739950	RNA [568280]	Same extraction
+7316-479	734514	RNA [448311]	Different tissue aliquot
+7316-480	588319	RNA [582345]	Same extraction
+7316-485	570106	RNA [562050]	Same extraction
+7316-487	588341	RNA [583404]	Same extraction
+7316-488	571426	RNA [569334]	Same extraction
+7316-489	549579	RNA [441620]	Same tissue aliquot
+7316-490	570108	RNA [562052]	Same extraction
+7316-493	570105	RNA [562049]	Same extraction
+7316-495	564473	RNA [560234]	Same extraction
+7316-496	734515	RNA [490109]	Different tissue aliquot
+7316-497	570100	RNA [560235]	Same extraction
+7316-498	588342	RNA [583405]	Same extraction
+7316-499	571425	RNA [568279]	Same extraction
+7316-5	549581	RNA [442019]	Different tissue aliquot
+7316-50	601585	RNA [593246]	Same extraction
+7316-502	588359	RNA [583310]	Same extraction
+7316-505	731887	RNA [729729]	Same extraction
+7316-506	588299	RNA [581278]	Same extraction
+7316-51	601599	RNA [591584]	Same extraction
+7316-512	401962	Not found	Same tissue aliquot
+7316-515	711651	RNA [551469]	Same extraction
+7316-516	571424	RNA [568197]	Same extraction
+7316-519	711764	RNA [603418]	Same extraction
+7316-521	731926	RNA [731335]	Same extraction
+7316-523	588343	RNA [583406]	Same extraction
+7316-525	549578	RNA [441619]	Same tissue aliquot
+7316-529	470022	RNA [415510]	Same extraction
+7316-532	470434	RNA [458218]	Same extraction
+7316-535	577717	RNA [574707]	Same extraction
+7316-536	994694	7316-536-RNA [400788]	Same extraction
+7316-536	400788	Not found	Same extraction
+7316-544	577731	RNA [576851]	Same tissue aliquot
+7316-545	739973	RNA [604296]	Same tissue aliquot
+7316-548	549596	RNA [469538]	Same extraction
+7316-549	549609	RNA [476258]	Same extraction
+7316-550	739943	RNA [470310]	Same tissue aliquot
+7316-553	564489	RNA [561567]	Same extraction
+7316-554	746089	RNA [743150]	Same extraction
+7316-556	564478	RNA [560764]	Same extraction
+7316-561	739967	RNA [582346]	Same extraction
+7316-562	746090	RNA [743151]	Same extraction
+7316-6	573165	RNA [571286]	Same extraction
+7316-612	746105	RNA [744187]	Same extraction
+7316-619	400121	Not found	Same extraction
+7316-620	400120	Not found	Same extraction
+7316-622	400789	Not found	Same extraction
+7316-624	400268	Not found	Same extraction
+7316-639	711763	RNA [603417]	Same extraction
+7316-641	588309	RNA [581554]	Same extraction
+7316-642	731935	RNA [731563]	Same extraction
+7316-643	731896	RNA [730407]	Same extraction
+7316-644	739975	RNA [604300]	Same extraction
+7316-658	573146	RNA [570515]	Same extraction
+7316-659	470424	RNA [455921]	Same tissue aliquot
+7316-663	728294	RNA [727872]	Same extraction
+7316-666	588457	RNA [586304]	Same extraction
+7316-670	588289	RNA [580683]	Same extraction
+7316-676	731927	RNA [731336]	Same extraction
+7316-677	728281	RNA [727822]	Same extraction
+7316-681	728252	RNA [725579]	Same extraction
+7316-692	549617	RNA [534727]	Same extraction
+7316-70	601597	RNA [591581]	Different tissue aliquot
+7316-71	470015	RNA [415506]	Different tissue aliquot
+7316-714	470018	RNA [415894]	Same tissue aliquot
+7316-715	549599	RNA [469539]	Same extraction
+7316-716	400787	Not found	Same extraction
+7316-719	739976	RNA [604302]	Same extraction
+7316-723	731869	RNA [728667]	Same extraction
+7316-725	739965	RNA [581557]	Same extraction
+7316-726	588311	RNA [581556]	Same extraction
+7316-729	711678	RNA [652368]	Same extraction
+7316-73	739948	RNA [567507]	Same extraction
+7316-733	564457	RNA [555702]	Same extraction
+7316-735	728282	RNA [727823]	Same extraction
+7316-736	470432	RNA [450680]	Same extraction
+7316-737	711665	RNA [650584]	Same extraction
+7316-739	731886	RNA [729728]	Same extraction
+7316-740	470429	RNA [455486]	Same extraction
+7316-741	588458	RNA [586305]	Same extraction
+7316-746	588285	RNA [578424]	Same extraction
+7316-747	588286	RNA [578425]	Same extraction
+7316-749	588461	RNA [586308]	Same extraction
+7316-76	588349	RNA [583300]	Same extraction
+7316-762	471264	RNA [469540]	Same extraction
+7316-764	470427	RNA [455922]	Same extraction
+7316-765	470731	Not found	NA
+7316-77	601595	RNA [591579]	Different tissue aliquot
+7316-775	470421	RNA [462743]	Same extraction
+7316-78	564476	RNA [560239]	Same extraction
+7316-784	401961	Not found	Same tissue aliquot
+7316-80	739946	RNA [563013]	Same extraction
+7316-820	570097	RNA [554628]	Same extraction
+7316-839	711660	RNA [650577]	Same extraction
+7316-84	549593	RNA [468956]	Same extraction
+7316-842	711659	RNA [650576]	Same extraction
+7316-843	711658	RNA [650575]	Same extraction
+7316-85	398059	Not found	NA
+7316-85	994693	7316-85-RNA [398059]	Different tissue aliquot
+7316-851	739971	RNA [603415]	Same extraction
+7316-853	746106	RNA [744189]	Same extraction
+7316-869	564474	RNA [560237]	Same extraction
+7316-87	1030650	Not found	Different tissue aliquot
+7316-87	401963	Not found	Same tissue aliquot
+7316-870	398453	Not found	NA
+7316-872	470435	RNA [455489]	Same extraction
+7316-873	570111	RNA [562056]	Same extraction
+7316-874	588321	RNA [582348]	Same extraction
+7316-875	734520	RNA [562105]	Same extraction
+7316-876	731907	RNA [731072]	Same extraction
+7316-877	570110	RNA [562055]	Same extraction
+7316-878	549572	RNA [446721]	Same extraction
+7316-879	570115	RNA [562106]	Same extraction
+7316-88	734540	RNA [733633]	Same tissue aliquot
+7316-882	588322	RNA [582349]	Same extraction
+7316-884	588323	RNA [582350]	Same extraction
+7316-889	571421	RNA [568193]	Same extraction
+7316-89	577715	RNA [574705]	Same extraction
+7316-891	734522	RNA [569512]	Same extraction
+7316-892	588357	RNA [583308]	Same extraction
+7316-893	588358	RNA [583309]	Same extraction
+7316-894	571437	RNA [569511]	Same extraction
+7316-895	470020	RNA [415895]	Same extraction
+7316-896	588363	RNA [584285]	Same extraction
+7316-897	549568	RNA [448065]	Same tissue aliquot
+7316-898	734539	RNA [733620]	Same extraction
+7316-9	570098	RNA [554633]	Same extraction
+7316-901	588364	RNA [584286]	Same extraction
+7316-903	577716	RNA [574706]	Same extraction
+7316-905	734521	RNA [568194]	Same extraction
+7316-906	588279	RNA [442022]	Same extraction
+7316-908	549564	RNA [441623]	Different tissue aliquot
+7316-91	570119	RNA [563016]	Same extraction
+7316-913	564444	RNA [548799]	Same extraction
+7316-914	571422	RNA [568195]	Same extraction
+7316-915	571423	RNA [568196]	Same extraction
+7316-917	739955	RNA [581276]	Same extraction
+7316-918	549562	RNA [447255]	Same tissue aliquot
+7316-92	570118	RNA [563015]	Same extraction
+7316-921	571436	RNA [569510]	Same extraction
+7316-922	549582	RNA [442023]	Different tissue aliquot
+7316-923	728283	RNA [727824]	Same extraction
+7316-924	739951	RNA [580686]	Same extraction
+7316-925	564450	RNA [549468]	Same extraction
+7316-929	588327	RNA [582683]	Same extraction
+7316-93	588325	RNA [582043]	Same extraction
+7316-931	608925	RNA [600527]	Same extraction
+7316-932	571438	RNA [569514]	Same extraction
+7316-934	654217	RNA [645101]	Same extraction
+7316-935	573137	RNA [570431]	Same extraction
+7316-936	588442	RNA [585475]	Same extraction
+7316-937	549585	RNA [442817]	Different tissue aliquot
+7316-938	588443	RNA [585476]	Same extraction
+7316-944	549611	RNA [477333]	Same extraction
+7316-946	588444	RNA [585477]	Same extraction
+7316-948	588445	RNA [585478]	Same extraction
+7316-949	734543	RNA [734417]	Same extraction
+7316-95	608916	RNA [448714]	Same extraction
+7316-950	731928	RNA [731337]	Same extraction
+7316-952	734519	RNA [562053]	Same extraction
+7316-954	549590	RNA [467900]	Same extraction
+7316-956	573138	RNA [570432]	Same extraction
+7316-957	571420	RNA [568192]	Same extraction
+7316-96	564488	RNA [561566]	Same extraction
+7316-965	564475	RNA [560238]	Same extraction
+7316-966	731918	RNA [731108]	Same extraction
+7316-968	1030646	DNA and RNA listed as virtual	NA
+7316-97	588350	RNA [583301]	Same extraction
+7316-974	549622	RNA [535807]	Same tissue aliquot
