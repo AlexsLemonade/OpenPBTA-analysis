@@ -3139,8 +3139,8 @@ all_samples_subtyped &lt;- hist %&gt;%
   count(sample_id, molecular_subtype)
 nrow(all_samples_subtyped)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDY1MFxuIn0= -->
-<pre><code>[1] 650</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDY1M1xuIn0= -->
+<pre><code>[1] 653</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgbnVtYmVyIG9mIHNhbXBsZXMgc3VidHlwZWQsIG5vdCBpbmNsdWRpbmcgY2VsbCBsaW5lcyIsInR1bW9yc19ub3RfbGluZXNfc3VidHlwZWQgPC0gaGlzdCAlPiVcbiAgZmlsdGVyKGNvbXBvc2l0aW9uICE9IFwiRGVyaXZlZCBDZWxsIExpbmVcIixcbiAgICAgICAgICFpcy5uYShwYXRob2xvZ3lfZGlhZ25vc2lzKSwgXG4gICAgICAgICAhaXMubmEobW9sZWN1bGFyX3N1YnR5cGUpLCBcbiAgICAgICAgICFncmVwbChcIlRvIGJlIGNsYXNzaWZpZWRcIiwgbW9sZWN1bGFyX3N1YnR5cGUpKSAlPiUgXG4gICAjIENvdW50IHNhbXBsZV9pZCBhbmQgc3VidHlwZSBjb21iaW5hdGlvbnMgXG4gIGNvdW50KHNhbXBsZV9pZCwgbW9sZWN1bGFyX3N1YnR5cGUpIiwibnJvdyh0dW1vcnNfbm90X2xpbmVzX3N1YnR5cGVkKSJdfQ== -->
 <pre class="r"><code># Total number of samples subtyped, not including cell lines
@@ -3153,15 +3153,15 @@ tumors_not_lines_subtyped &lt;- hist %&gt;%
   count(sample_id, molecular_subtype)
 nrow(tumors_not_lines_subtyped)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDY0MVxuIn0= -->
-<pre><code>[1] 641</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDY0NFxuIn0= -->
+<pre><code>[1] 644</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-source-begin eyJkYXRhIjpbIiMgcGVyY2VudCBvZiB0dW1vciBzYW1wbGVzIHN1YnR5cGVkIiwiKG5yb3codHVtb3JzX25vdF9saW5lc19zdWJ0eXBlZCkvbGVuZ3RoKG5fdHVtb3JzKSkqMTAwIl19 -->
 <pre class="r"><code># percent of tumor samples subtyped
 (nrow(tumors_not_lines_subtyped)/length(n_tumors))*100</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDU5LjY4MzQzXG4ifQ== -->
-<pre><code>[1] 59.68343</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDU5Ljk2Mjc2XG4ifQ== -->
+<pre><code>[1] 59.96276</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-source-begin eyJkYXRhIjpbIiMgd2hpY2ggaGF2ZSBub24taWRlbnRpY2FsIHR1bW9yL2NlbGwgbGluZSBzdWJ0eXBlcz8iLCJkdXBfc2FtcGxlcyA8LSBhbGxfc2FtcGxlc19zdWJ0eXBlZCAlPiVcbiAgZmlsdGVyKGR1cGxpY2F0ZWQoLltbXCJzYW1wbGVfaWRcIl1dKSkgJT4lXG4gIHB1bGwoc2FtcGxlX2lkKSIsIiIsImhpc3QgJT4lXG4gIGZpbHRlcighaXMubmEobW9sZWN1bGFyX3N1YnR5cGUpLFxuICAgICAgICAgc2FtcGxlX2lkICVpbiUgZHVwX3NhbXBsZXMpICU+JVxuICBjb3VudChzYW1wbGVfaWQsIG1vbGVjdWxhcl9zdWJ0eXBlLCBjb21wb3NpdGlvbikgJT4lXG4gIGFycmFuZ2Uoc2FtcGxlX2lkLCBjb21wb3NpdGlvbikiXX0= -->
 <pre class="r"><code># which have non-identical tumor/cell line subtypes?
@@ -3198,10 +3198,10 @@ who_dx &lt;- hist %&gt;%
   count(sample_id, composition, molecular_subtype) 
 table(who_dx$composition)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG5EZXJpdmVkIENlbGwgTGluZSAgICAgIFNvbGlkIFRpc3N1ZSBcbiAgICAgICAgICAgICAgIDE2ICAgICAgICAgICAgICAgNjMwIFxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5EZXJpdmVkIENlbGwgTGluZSAgICAgIFNvbGlkIFRpc3N1ZSBcbiAgICAgICAgICAgICAgIDE2ICAgICAgICAgICAgICAgNjMzIFxuIn0= -->
 <pre><code>
 Derived Cell Line      Solid Tissue 
-               16               630 </code></pre>
+               16               633 </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
