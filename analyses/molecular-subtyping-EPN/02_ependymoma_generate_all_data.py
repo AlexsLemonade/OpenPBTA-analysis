@@ -147,7 +147,7 @@ EPN_notebook["NFKB_pathway_GSEAscore"] = EPN_notebook["Kids_First_Biospecimen_ID
 
 # Adding all fusions to a list so they can use the function
 # fill_df to fill appropriate fusion summary information under each fusion
-fusions_list = ["C11orf95--RELA", "LTBP3--RELA", "PTEN--TAS2R1",  "C11orf95--YAP1", "YAP1--MAMLD1", "YAP1--FAM118B", "C11orf95--MAML2"]
+fusions_list = ["C11orf95--RELA", "LTBP3--RELA", "PTEN--TAS2R1",  "C11orf95--YAP1", "YAP1--MAMLD1", "YAP1--FAM118B", "C11orf95--MAML2", "YAP1--MAML2"]
 for fusion in fusions_list:
 	EPN_notebook[fusion] = EPN_notebook["Kids_First_Biospecimen_ID_RNA"].apply(
         fill_df,
