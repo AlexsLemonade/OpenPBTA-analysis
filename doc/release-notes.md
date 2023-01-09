@@ -1,5 +1,105 @@
 # release notes
 ## current release
+- release date: 2023-01-15
+- status: available
+- changes:
+  - Ependymoma subtyping module was corrected to capture `YAP1--MAML2` per [ticket 1618](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1618) and `pbta-histologies.tsv` has been updated to include newly subtyped samples.
+  - Rerun of `fusion_filtering` resulted in a minor update to `pbta-fusion-recurrent-fusion-bysample.tsv` and `pbta-fusion-recurrently-fused-genes-byhistology.tsv` to correctly capture _EWSR1::FLI1_ recurrent fusions/genes (see PR review [here](https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1631#pullrequestreview-1219972909).
+```
+data
+└──release-v23-20230115
+  ├── StrexomeLite_Targets_CrossMap_hg38_filtered_chr_prefixed.bed
+  ├── StrexomeLite_hg38_liftover_100bp_padded.bed
+  ├── WGS.hg38.lancet.300bp_padded.bed
+  ├── WGS.hg38.lancet.unpadded.bed
+  ├── WGS.hg38.mutect2.vardict.unpadded.bed
+  ├── WGS.hg38.strelka2.unpadded.bed
+  ├── WGS.hg38.vardict.100bp_padded.bed
+  ├── WXS.hg38.100bp_padded.bed
+  ├── WXS.hg38.lancet.400bp_padded.bed
+  ├── consensus_seg_annotated_cn_autosomes.tsv.gz
+  ├── consensus_seg_annotated_cn_x_and_y.tsv.gz
+  ├── consensus_seg_with_status.tsv
+  ├── data-files-description.md
+  ├── fusion_summary_embryonal_foi.tsv
+  ├── fusion_summary_ependymoma_foi.tsv
+  ├── fusion_summary_ewings_foi.tsv
+  ├── fusion_summary_lgat_foi.tsv
+  ├── independent-specimens.rnaseq.primary-plus-polya.tsv
+  ├── independent-specimens.rnaseq.primary-plus-stranded.tsv
+  ├── independent-specimens.wgs.primary-plus.tsv
+  ├── independent-specimens.wgs.primary.tsv
+  ├── independent-specimens.wgswxs.primary-plus.tsv
+  ├── independent-specimens.wgswxs.primary.tsv
+  ├── intersect_cds_lancet_WXS.bed
+  ├── intersect_cds_lancet_strelka_mutect_WGS.bed
+  ├── intersect_strelka_mutect_WGS.bed
+  ├── intersected_whole_exome_agilent_designed_120_AND_tcga_6k_genes.Gh38.bed
+  ├── intersected_whole_exome_agilent_plus_tcga_6k_AND_tcga_6k_genes.Gh38.bed
+  ├── md5sum.txt
+  ├── pbta-cnv-cnvkit-gistic.zip
+  ├── pbta-cnv-cnvkit.seg.gz
+  ├── pbta-cnv-consensus-gistic.zip
+  ├── pbta-cnv-consensus.seg.gz
+  ├── pbta-cnv-controlfreec.tsv.gz
+  ├── pbta-fusion-arriba.tsv.gz
+  ├── pbta-fusion-putative-oncogenic.tsv
+  ├── pbta-fusion-recurrently-fused-genes-byhistology.tsv
+  ├── pbta-fusion-recurrently-fused-genes-bysample.tsv
+  ├── pbta-fusion-starfusion.tsv.gz
+  ├── pbta-gene-counts-rsem-expected_count.polya.rds
+  ├── pbta-gene-counts-rsem-expected_count.stranded.rds
+  ├── pbta-gene-expression-kallisto.polya.rds
+  ├── pbta-gene-expression-kallisto.stranded.rds
+  ├── pbta-gene-expression-rsem-fpkm-collapsed.polya.rds
+  ├── pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds
+  ├── pbta-gene-expression-rsem-fpkm.polya.rds
+  ├── pbta-gene-expression-rsem-fpkm.stranded.rds
+  ├── pbta-gene-expression-rsem-tpm.polya.rds
+  ├── pbta-gene-expression-rsem-tpm.stranded.rds
+  ├── pbta-histologies-base.tsv
+  ├── pbta-histologies.tsv
+  ├── pbta-isoform-counts-rsem-expected_count.polya.rds
+  ├── pbta-isoform-counts-rsem-expected_count.stranded.rds
+  ├── pbta-isoform-expression-rsem-tpm.polya.rds
+  ├── pbta-isoform-expression-rsem-tpm.stranded.rds
+  ├── pbta-mb-pathology-subtypes.tsv
+  ├── pbta-mend-qc-manifest.tsv
+  ├── pbta-mend-qc-results.tar.gz
+  ├── pbta-snv-consensus-mutation-tmb-all.tsv
+  ├── pbta-snv-consensus-mutation-tmb-coding.tsv
+  ├── pbta-snv-consensus-mutation.maf.tsv.gz
+  ├── pbta-snv-lancet.vep.maf.gz
+  ├── pbta-snv-mutation-tmb-all.tsv
+  ├── pbta-snv-mutation-tmb-coding.tsv
+  ├── pbta-snv-mutect2.vep.maf.gz
+  ├── pbta-snv-scavenged-hotspots.maf.tsv.gz
+  ├── pbta-snv-strelka2.vep.maf.gz
+  ├── pbta-snv-vardict.vep.maf.gz
+  ├── pbta-star-log-final.tar.gz
+  ├── pbta-star-log-manifest.tsv
+  ├── pbta-sv-manta.tsv.gz
+  ├── pbta-tcga-manifest.tsv
+  ├── pbta-tcga-snv-lancet.vep.maf.gz
+  ├── pbta-tcga-snv-mutect2.vep.maf.gz
+  ├── pbta-tcga-snv-strelka2.vep.maf.gz
+  ├── release-notes.md
+  ├── tcga-snv-consensus-snv.maf.tsv.gz
+  ├── tcga-snv-mutation-tmb-all.tsv
+  ├── tcga-snv-mutation-tmb-coding.tsv
+  ├── tcga_6k_genes.targetIntervals.Gh38.bed
+  ├── tcga_6k_genes.targetIntervals.bed
+  ├── whole_exome_agilent_1.1_refseq_plus_3_boosters.targetIntervals.Gh38.bed
+  ├── whole_exome_agilent_1.1_refseq_plus_3_boosters.targetIntervals.bed
+  ├── whole_exome_agilent_designed_120.targetIntervals.Gh38.bed
+  ├── whole_exome_agilent_designed_120.targetIntervals.bed
+  ├── whole_exome_agilent_plus_tcga_6k.targetIntervals.Gh38.bed
+  └── whole_exome_agilent_plus_tcga_6k.targetIntervals.bed
+```
+
+
+
+## archived release
 ### release-v22-20220505
 - release date: 2022-06-08
 - status: available
@@ -107,7 +207,6 @@ data
     └── whole_exome_agilent_plus_tcga_6k.targetIntervals.bed
 ```
 
-## archived release
 ### release-v21-20210820
 - release date: 2021-08-20
 - status: available

@@ -1,0 +1,104 @@
+---
+title: "00-prepare-extraction-table"
+author: "Jo Lynne Rokita"
+date: 2022
+output: 
+  html_notebook:
+    toc: true
+    toc_float: true
+---
+
+## This notebook wrangles manually curated files which have been collated to designate whether a tuomor DNA and RNA specimen came from the same extraction, same tissue chunk ("same tissue aliquot"), or different tissue chunk ("different tissue aliquot"). 
+
+
+## Load library/input files
+```{r}
+library(tidyverse)
+
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+input_dir <- file.path(root_dir,
+                      "analyses",
+                      "molecular-subtyping-integrate",
+                       "input")
+
+data_dir <- file.path(root_dir,
+                      "data")
+
+results_dir <- file.path(root_dir,
+                         "analyses",
+                         "molecular-subtyping-integrate",
+                         "results")
+
+# Read in PNOC and CBTN metadata files
+pnoc_aliquots <- read_tsv(file.path(input_dir, "pnoc_aliquots.tsv"))
+cbtn_aliquots <- read_tsv(file.path(input_dir, "cbtn_aliquots.tsv")) %>%
+  # necessary for combining with PNOC later
+  mutate(aliquot_id = as.character(aliquot_id),
+         # update aliquot id for id which was split into 3
+         aliquot_id = case_when(sample_id == "7316-135" ~ "116304.116311.116318",
+         TRUE ~ aliquot_id)) %>%
+  distinct()
+
+# Read in histologies file to get all RNA sample and aliquot ids
+rna_aliquots <- read_tsv(file.path(data_dir, "pbta-histologies-base.tsv"), guess_max = 3000) %>%
+  filter(experimental_strategy == "RNA-Seq") %>%
+  select(sample_id, aliquot_id) %>%
+  distinct()
+```
+
+# Get extraction status from PNOC cohort
+```{r}
+# Using the parental_aliquot_id, determine which DNA + RNA pair together (ie came from the same extraction).
+pnoc_aliquots_status <- pnoc_aliquots %>%
+  # split sample and aliquot id by experimental strategy to group by parental aliquot id later
+  mutate(sample_id_rna = ifelse(experimental_strategy == "RNA-Seq", sample_id, ""),
+         sample_id_wxs = ifelse(experimental_strategy == "WXS", sample_id, ""),
+         sample_id_wgs = ifelse(experimental_strategy == "WGS", sample_id, ""),
+         aliquot_id_rna = ifelse(experimental_strategy == "RNA-Seq", aliquot_id, ""),
+         aliquot_id_wxs = ifelse(experimental_strategy == "WXS", aliquot_id, ""),
+         aliquot_id_wgs = ifelse(experimental_strategy == "WGS", aliquot_id, "")) %>%
+  distinct() %>%
+  select(-c(experimental_strategy, sample_id, aliquot_id)) %>%
+  group_by(parent_aliquot_id) %>%
+  # collapse
+  summarise_all(funs(trimws(paste(., collapse = '')))) %>%
+  # if there is an RNA sample and DNA sample which have the same parental aliquot id, deem them as from the same extraction
+  mutate(extraction_type = ifelse(aliquot_id_rna != "" & (aliquot_id_wxs != "" | aliquot_id_wgs != ""),
+                                    "Same extraction", NA_character_)) %>%
+  mutate_all(na_if,"") %>%
+  # rename to be compatible with CBTN data
+  dplyr::rename(parental_aliquot_id = parent_aliquot_id)
+```
+
+# Combine CBTN and PNOC RNA sample and aliquot ids with extraction status
+```{r}
+combined <- pnoc_aliquots_status %>%
+  # only keep those with RNA-Seq (had extraction annotated)
+  filter(!is.na(sample_id_rna)) %>%
+  dplyr::rename(sample_id = sample_id_rna,
+                aliquot_id = aliquot_id_rna) %>%
+  select(sample_id, aliquot_id, parental_aliquot_id, extraction_type) %>%
+  # combine with CBTN
+  bind_rows(cbtn_aliquots) %>%
+  # clean up parental_aliquot id
+  mutate(parental_aliquot_id = gsub("^.*\\[|\\]", "", parental_aliquot_id)) 
+
+# Add remaining rna aliquot ids not found 
+full_rna_data <- rna_aliquots %>%
+  filter(!aliquot_id %in% combined$aliquot_id) %>%
+  bind_rows(combined) %>%
+  write_tsv(file.path(results_dir, "pbta_extraction_status.tsv"))
+```
+
+# How many samples in each group
+```{r}
+combined %>%
+count(extraction_type) %>%
+  arrange(desc(n))
+```
+
+
+```{r}
+sessionInfo()
+```
+
