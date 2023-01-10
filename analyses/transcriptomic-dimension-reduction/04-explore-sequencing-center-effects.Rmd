@@ -480,7 +480,8 @@ cg_plot +
     color = "red", lwd=1.5,
     arrow = arrow(), 
     show.legend = FALSE) + 
-  geom_segment(
+  annotate(
+    "segment",
     x = -1.75, y = -8.5, xend = -2.6,  yend = -8.5,
     color = "red", lwd=1.5,
     arrow = arrow(), 
