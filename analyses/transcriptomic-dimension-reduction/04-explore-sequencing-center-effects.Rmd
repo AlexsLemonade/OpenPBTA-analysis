@@ -1,7 +1,7 @@
 ---
 title: "Explore potential sequencing center batch effects "
 author: "S. Spielman for CCDL"
-date: "2022"
+date: "2023"
 output: 
   html_notebook:
     toc: TRUE
@@ -444,7 +444,7 @@ stranded_df_subset <- stranded_df %>%
   dplyr::filter(cancer_group %in% shared_cg_full)
 
 # plot itself:
-ggplot(stranded_df_subset) + 
+cg_plot <- ggplot(stranded_df_subset) + 
   aes(x = UMAP1, y = UMAP2, 
       shape = seq_center, 
       fill = cancer_group, 
@@ -460,7 +460,30 @@ ggplot(stranded_df_subset) +
                      guide = guide_legend(override.aes = list(color = "black", alpha = 1, size = 2))) +
   scale_alpha_manual(values = c(0.4, 0.6, 0.6)) +
   scale_shape_manual(values = c(21, 22, 24))
+cg_plot
+```
 
+## Conclusions
+
+Overall, UMAP visualization shows that sequencing center is likely not a severe batch effect, and these visualizations emphasize that sequencing center is highly confounded with diagnosis making formal batch correction challenging.
+
+That said, there does appear to be a group of samples with differing from BGI@CHOP which cluster together, which may be a batch-induced effect.
+In addition, there are a couple DMGs that cluster with MBs, though there are multiple sequencing centers in this "cluster."
+Arrows are shown in the plot below pointing to these two caveated regions.
+
+
+```{r}
+cg_plot + 
+  geom_segment(
+    x = -2, y = 0.25, xend = -1, yend = 0.25,
+    color = "red", lwd=1.5,
+    arrow = arrow(), 
+    show.legend = FALSE) + 
+  geom_segment(
+    xend = -2.6, y = -8.5, x = -1.75, yend = -8.5,
+    color = "red", lwd=1.5,
+    arrow = arrow(), 
+    show.legend = FALSE)
 ```
 
 
