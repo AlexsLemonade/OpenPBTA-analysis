@@ -23,3 +23,6 @@ bash 01-dimension-reduction.sh
 COLOR=${COLORVAR} bash 02-get-dimension-reduction-plot-lists.sh
 # Make multipanel plots and save as PDFs
 bash 03-multipanel-plots.sh
+
+# Exploration of batch effects
+Rscript --vanilla -e 'rmarkdown::render("04-explore-sequencing-center-effects.Rmd")'
