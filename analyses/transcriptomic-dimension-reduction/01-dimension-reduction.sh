@@ -73,7 +73,22 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   --neighbors ${NEIGHBORS} \
   --low_count_threshold ${COUNT_THRESHOLD} \
   --log2_transform
+  
+  
 
+#### RSEM, excluding mitochondrial genes -------------------------------------
+Rscript --vanilla scripts/run-dimension-reduction.R \
+  --expression ../../data/pbta-gene-expression-rsem-fpkm.polya.rds \
+  --metadata ${METADATA} \
+  --filename_lead rsem_stranded_no-mito_log \
+  --output_directory ${OUTPUT} \
+  --seed ${SEED} \
+  --perplexity ${PERPLEXITY} \
+  --neighbors ${NEIGHBORS} \
+  --low_count_threshold ${COUNT_THRESHOLD} \
+  --log2_transform
+  
+  
 #### kallisto ------------------------------------------------------------------
 
 Rscript --vanilla scripts/run-dimension-reduction.R \
@@ -117,4 +132,6 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   --neighbors ${NEIGHBORS} \
   --low_count_threshold ${COUNT_THRESHOLD} \
   --log2_transform
+
+
 
