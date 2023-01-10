@@ -474,7 +474,8 @@ Arrows are shown in the plot below pointing to these two caveated regions.
 
 ```{r}
 cg_plot + 
-  geom_segment(
+  annotate(
+    "segment",
     x = -2, y = 0.25, xend = -1, yend = 0.25,
     color = "red", lwd=1.5,
     arrow = arrow(), 
