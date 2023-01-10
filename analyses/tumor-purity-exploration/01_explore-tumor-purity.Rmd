@@ -32,6 +32,7 @@ if (!(dir.exists(results_dir))) {
   dir.create(results_dir)
 }
 rna_tumor_df_file <- file.path(results_dir, "metadata_rna_stranded_same-extraction.tsv")
+rna_tumor_thresholded_df_file <- file.path(results_dir, "metadata_thresholded_rna_stranded_same-extraction.tsv")
 ```
 
 
@@ -324,6 +325,66 @@ plot_remaining_frac(rna_tumor_df,
   ggtitle("Cancer group display after filtering")
 ```
 
+
+### Thresholding within groups
+
+Rather than considering a single global threshold, how would this look if we did a _per group_ threshold?
+Specifically, let's see how this looks if we use the _per cancer-group median_ as the threshold and filter from there.
+
+
+
+```{r}
+cancer_group_thresholds_df <- rna_tumor_df %>%
+  group_by(cancer_group_display) %>%
+  summarize(cancer_group_tumor_threshold = median(tumor_fraction), 
+            n_tumors = n())
+
+rna_tumor_df_thresholded <- rna_tumor_df %>%
+  inner_join(cancer_group_thresholds_df) %>%
+  filter(tumor_fraction >= cancer_group_tumor_threshold) 
+
+
+# Plot how many are left, which should be >=50% all around
+rna_tumor_df_thresholded %>%
+  count(cancer_group_display) %>%
+  # join again to get n_tumors
+  inner_join(cancer_group_thresholds_df) %>%
+  mutate(percent_remaining = n/n_tumors) %>% 
+  ggplot(aes(x = cancer_group_display, y = percent_remaining)) + 
+  geom_col(fill = "cadetblue", color = "black" ) + 
+  # guide line at y=0.5
+  geom_hline(yintercept = 0.5) +
+  ggtitle("Remaining cancer groups") +
+  theme(axis.text.x = element_text(angle = 30, size = 8, hjust = 1))
+  
+# Same plot for broad histology:
+rna_tumor_df_thresholded %>%
+  count(broad_histology_display) %>%
+  # join again to get n_tumors, but for bh
+  inner_join(
+    select(rna_tumor_df, 
+           broad_histology_display) %>%
+      count(broad_histology_display, name = "n_tumors")
+  ) %>%
+  mutate(percent_remaining = n/n_tumors) %>% 
+  ggplot(aes(x = broad_histology_display, y = percent_remaining)) + 
+  geom_col(fill = "darkolivegreen3", color = "black" ) + 
+  # guide line at y=0.5
+  geom_hline(yintercept = 0.5) +
+  ggtitle("Remaining broad histology groups") +
+  theme(axis.text.x = element_text(angle = 30, size = 8, hjust = 1))
+
+```
+
+
+If we threshold by cancer group, some broad histology groupings lose >50% of their samples but most do not!
+
+Let's also export this thresholded version of the data frame.
+
+```{r}
+readr::write_tsv(rna_tumor_df_thresholded, 
+                 rna_tumor_thresholded_df_file)
+```
 
 ## Session info
 ```{r}
