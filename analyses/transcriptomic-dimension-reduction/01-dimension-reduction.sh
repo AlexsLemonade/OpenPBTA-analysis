@@ -76,9 +76,9 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   
   
 
-#### RSEM, excluding mitochondrial genes -------------------------------------
+#### RSEM log2 stranded, excluding mitochondrial genes -------------------------------------
 Rscript --vanilla scripts/run-dimension-reduction.R \
-  --expression ../../data/pbta-gene-expression-rsem-fpkm.polya.rds \
+  --expression ../../data/pbta-gene-expression-rsem-fpkm.stranded.rds \
   --metadata ${METADATA} \
   --filename_lead rsem_stranded_no-mito_log \
   --output_directory ${OUTPUT} \

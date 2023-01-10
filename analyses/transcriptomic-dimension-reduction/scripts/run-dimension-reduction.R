@@ -177,26 +177,27 @@ if (opt$log2_transform) {
 if (opt$remove_mito_genes) {
   
   expression_data_tibble <- expression_data %>%
-  # get gene_symbol information into its own column
-  tibble::as_tibble(rownames = "ensembl_gene") %>%
-  tidyr::separate(ensembl_gene, 
-                  into = c("ensembl_id", "gene_symbol"), 
-                  sep = "_", 
-                  # if multiple seps, keep them together (eg if `_` in gene)
-                  extra = "merge",
-                  # we will want to keep this column for row.names later
-                  remove = FALSE) %>% 
-  # remove MT gene - keep only genes that do NOT start with `MT-`
-  dplyr::filter(!(stringr::str_starts(gene_symbol, "MT-"))) %>%
-  # remove wrangle columns
-  dplyr::select(-ensembl_id, -gene_symbol)
+    # get gene_symbol information into its own column
+    tibble::as_tibble(rownames = "ensembl_gene") %>%
+    tidyr::separate(ensembl_gene, 
+                    into = c("ensembl_id", "gene_symbol"), 
+                    sep = "_", 
+                    # if multiple seps, keep them together (eg if `_` in gene)
+                    extra = "merge",
+                    # we will want to keep this column for row.names later
+                    remove = FALSE) %>% 
+    # remove MT gene - keep only genes that do NOT start with `MT-`
+    dplyr::filter(!(stringr::str_starts(gene_symbol, "MT-"))) %>%
+    # remove wrangle columns
+    dplyr::select(-ensembl_id, -gene_symbol)
   
- # Convert back to data frame
- expression_data <- as.data.frame(expression_data_tibble, 
-                                  row.names = expression_data_tibble$ensembl_gene)
+  # Convert back to data frame
+  expression_data <- as.data.frame(expression_data_tibble)
+ 
+  # Remove extra column and add row names back in
+  expression_data$ensembl_gene <- NULL
+  rownames(expression_data) <- expression_data_tibble$ensembl_gene
 }
-
-
 
 # Transpose the data
 transposed_exp_data <- t(expression_data)
