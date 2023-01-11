@@ -1,0 +1,496 @@
+---
+title: "Explore potential sequencing center batch effects "
+author: "S. Spielman for CCDL"
+date: "2023"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+params:
+  is_ci: 0
+---
+
+```{r setup, include=FALSE}
+library(magrittr)
+library(ggplot2)
+
+# set overall theme
+theme_set(ggpubr::theme_pubr() +
+ # Legend tweaks for legibility
+  theme(legend.position = "right", 
+        legend.direction = "vertical",
+        legend.text = element_text(size = rel(0.5)),
+        legend.title = element_text(size = rel(0.5)),
+        legend.key.size = unit(0.25, "cm")
+  )) 
+
+# figure settings
+knitr::opts_chunk$set(fig.width = 8)
+```
+This notebook explores transcriptomic data for potential for sequencing center batch effects.
+
+## Setup
+
+First, define directories and file names: 
+```{r}
+# Directories
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+palette_dir <- file.path(root_dir, "figures", "palettes")
+dim_red_dir <- file.path(
+  root_dir,
+  "analyses",
+  "transcriptomic-dimension-reduction"
+)
+
+# metadata file
+meta_file <- file.path(data_dir, "pbta-histologies.tsv")
+
+# palette mapping file
+pal_file <- file.path(palette_dir,  "broad_histology_cancer_group_palette.tsv")
+
+# UMAP embedding files
+umap_stranded_file <- file.path(
+  "results",
+  "rsem_stranded_log_umap_scores_aligned.tsv"
+)
+umap_polya_file <- file.path(
+  "results",
+  "rsem_polya_log_umap_scores_aligned.tsv"
+)
+```
+
+And read in and prepare the files:
+```{r}
+palette_mapping_df <- readr::read_tsv(pal_file) %>%
+  dplyr::select(broad_histology, broad_histology_display, broad_histology_hex, 
+                cancer_group, cancer_group_display, cancer_group_hex) 
+
+meta_df <- readr::read_tsv(meta_file, guess_max = 10000)
+
+# ensure compatible columns to read in UMAPs
+umap_columns <- c("X1", "X2", "Kids_First_Biospecimen_ID", "RNA_library", "broad_histology", "cancer_group", "seq_center")
+stranded_umaps <- readr::read_tsv(umap_stranded_file) %>% dplyr::select(umap_columns)
+
+# polya is only read if NOT CI
+if (params$is_ci == 0) {
+  polya_umaps <- readr::read_tsv(umap_polya_file) %>% dplyr::select(umap_columns)
+  # Combine palette info and umaps:
+  umap_df <- dplyr::bind_rows(stranded_umaps, polya_umaps)
+} else {
+  umap_df <- stranded_umaps
+}
+
+umap_df <- umap_df %>%
+ # rename umaps
+  dplyr::rename(UMAP1 = X1, UMAP2 = X2)
+```
+
+
+We'll explore two versions of this data, as defined in the chunk below:
+
+
+```{r}
+# First, broad histology and cancer groups DISPLAY groups based around the fixed palettes
+umap_df_palette <- umap_df %>%
+  dplyr::inner_join(palette_mapping_df) %>%
+  # select for ease of exploration
+  dplyr::select(UMAP1, UMAP2, Kids_First_Biospecimen_ID, seq_center, RNA_library,
+                cancer_group_display, cancer_group_hex,
+                broad_histology_display, broad_histology_hex) 
+umap_df_palette  
+
+# Second, cancer group WITHOUT collapsing into larger groups for their palettes,
+# This is a more fine-grained representation
+umap_df_full <- umap_df %>%
+  # select for ease of exploration
+  dplyr::select(UMAP1, UMAP2, Kids_First_Biospecimen_ID, seq_center, RNA_library, cancer_group)
+umap_df_full
+
+```
+
+
+## Sample distribution across centers
+
+First, let's explore the distributions of of samples, with and without their diagnoses (at both the broad histology and cancer group level) across sequencing centers. We also group on stranded vs. poly-A.
+
+The following tables show us that it's not _very_ common to see the same diagnoses at different centers.
+When multiple centers analyze the same diagnosis, one center generally has most of the samples.
+
+
+### All diagnoses
+
+```{r}
+# How many samples for each diagnosis/center?
+umap_df_palette %>%
+  dplyr::count(RNA_library, seq_center) %>%
+  tidyr::spread(seq_center, n)
+
+# Lets hone in on stranded BGI and BGI@CHOP - what are the diagnoses?
+# These have the fewest stranded samples, so may have more limited diagnoses
+umap_df_palette %>%
+  dplyr::filter(RNA_library == "stranded", stringr::str_detect(seq_center, "BGI")) %>%
+  dplyr::count(seq_center, broad_histology_display, cancer_group_display) %>%
+  dplyr::filter(n>1)
+```
+
+### Broad histology
+
+```{r}
+# How many sample for each diagnosis/center?
+diagnosis_center_summary_bh <- umap_df_palette %>%
+  dplyr::count(RNA_library, seq_center, broad_histology_display) %>%
+  tidyr::spread(seq_center, n)
+diagnosis_center_summary_bh
+
+# How many broad histologies have samples that were processed at >1 center?
+n_centers_bh <- umap_df_palette %>% 
+  dplyr::count(RNA_library, seq_center, broad_histology_display) %>%
+  dplyr::count(RNA_library, broad_histology_display)
+
+n_centers_bh %>%
+  dplyr::filter(n > 1) %>%
+  dplyr::select(-n) %>%
+  dplyr::inner_join(diagnosis_center_summary_bh)
+
+# At one center?
+n_centers_bh %>%
+  dplyr::filter(n == 1) %>%
+  dplyr::select(-n) %>%
+  dplyr::inner_join(diagnosis_center_summary_bh)
+```
+
+
+
+### Cancer group
+
+```{r}
+# How many sample for each diagnosis/center?
+diagnosis_center_summary_cg <- umap_df_palette %>%
+  dplyr::count(RNA_library, seq_center, cancer_group_display) %>%
+  tidyr::spread(seq_center, n)
+diagnosis_center_summary_cg
+
+# How many cancer groups have samples that were processed at >1 center?
+n_centers_cg <- umap_df_palette %>% 
+  dplyr::count(RNA_library, seq_center, cancer_group_display) %>%
+  dplyr::count(RNA_library, cancer_group_display) 
+
+n_centers_cg %>%
+  dplyr::filter(n > 1) %>%
+  dplyr::select(-n) %>%
+  dplyr::inner_join(diagnosis_center_summary_cg)
+
+# At one center?
+n_centers_cg %>%
+  dplyr::filter(n == 1) %>%
+  dplyr::select(-n) %>%
+  dplyr::inner_join(diagnosis_center_summary_cg)
+```
+
+
+
+### _Finer grained_ Cancer groups
+
+Cancer groups presented in this section are finer-grained groupings than what are directly reported in the manuscript.
+
+```{r}
+# How many sample for each diagnosis/center?
+diagnosis_center_summary_cg_full <- umap_df_full %>%
+  dplyr::count(RNA_library, seq_center, cancer_group) %>%
+  tidyr::spread(seq_center, n)
+diagnosis_center_summary_cg
+
+# How many cancer groups have samples that were processed at >1 center?
+n_centers_cg_full <- umap_df_full %>% 
+  dplyr::count(RNA_library, seq_center, cancer_group) %>%
+  dplyr::count(RNA_library, cancer_group) 
+
+n_centers_cg_full %>%
+  dplyr::filter(n > 1)
+
+# At one center?
+n_centers_cg_full %>%
+  dplyr::filter(n == 1)
+```
+
+
+## UMAPs
+
+Here, we'll make some UMAPs to explore potential batch effects specifically in the **stranded** data, which was processed separately from the polyA data and is primarily reported on in the manuscript due to QC issues with the polyA data.
+
+First, let's prepare the data a little further:
+```{r}
+# only keep stranded for the rest and set order for `seq_center` as group size
+stranded_df <- umap_df_palette %>%
+  dplyr::filter(RNA_library == "stranded") %>%
+  dplyr::select(-RNA_library) %>%
+  dplyr::mutate(seq_center = forcats::fct_infreq(seq_center)) %>%
+  # arranging will help see points:
+  dplyr::arrange(seq_center)
+
+# set up color palettes
+bh_df <- palette_mapping_df %>%
+  dplyr::select(broad_histology_display, broad_histology_hex) %>%
+  dplyr::distinct() 
+pal_bh<- bh_df$broad_histology_hex
+names(pal_bh) <- bh_df$broad_histology_display
+
+cg_df <- palette_mapping_df %>%
+  dplyr::select(cancer_group_display, cancer_group_hex) %>%
+  dplyr::distinct() %>%
+  tidyr::drop_na()
+pal_cg<- cg_df$cancer_group_hex
+names(pal_cg) <- cg_df$cancer_group_display
+```
+
+### Diagnosis-free UMAP
+
+Without specifically looking at diagnoses, we'll first check if the centers cluster together. 
+Below, we see that the _vast_ majority of samples came from `NantOmics`, which itself reduces a lot of batch concerns. 
+Red circle points (`BGI@CHOP Genome Center`) are broadly distributed, but blue triangle points (`BGI`) are mostly in one location; but, there are so few samples from this center that it is hard to draw robust conclusions from that clustering.
+Moreover, as the plots below show, these triangle points are clustering with `NantOmics` points of the same broad histology and/or cancer group.
+
+```{r}
+ggplot(stranded_df) + 
+  aes(x = UMAP1, y = UMAP2, 
+      shape = seq_center, 
+      fill = seq_center, 
+      color = seq_center, 
+      alpha = seq_center) + 
+  geom_point() + 
+  scale_shape_manual(values = c(19, 21, 24)) + 
+  # first fill is ignored 
+  scale_fill_manual(values  = c("black", "red", "blue")) +
+  scale_color_manual(values = c("grey70", "black", "black")) +
+  scale_alpha_manual(values = c(0.4, 0.8, 0.8)) 
+```
+
+
+### Broad histology UMAP
+
+We can make this finer-grained by exploring the distributions of broad histologies within this UMAP.
+Shapes denote the sequencing center, and colors denote the broad histology.
+
+```{r}
+ggplot(stranded_df) + 
+  aes(x = UMAP1, y = UMAP2, 
+      shape = seq_center, 
+      fill = broad_histology_display, 
+      color = seq_center, 
+      alpha = seq_center) + 
+  geom_point() + 
+  scale_shape_manual(values = c(21, 22, 24)) + 
+  scale_fill_manual(values  = pal_bh, 
+                    # This "shape" override is needed for legend fill colors to actually work
+                    guide = guide_legend(override.aes = list(shape = 21, size = 2))) +
+  scale_color_manual(values = c("grey70", "black", "black"), 
+                     # These overrides ensure shapes appear all in same alpha/color in legend
+                     guide = guide_legend(override.aes = list(color = "black", alpha = 1, size = 2))) +
+  scale_alpha_manual(values = c(0.4, 0.6, 0.6)) +
+  # Legend tweaks for legibility
+  theme(legend.position = "right", 
+        legend.direction = "vertical",
+        legend.text = element_text(size = rel(0.5)),
+        legend.title = element_text(size = rel(0.5)),
+        legend.key.size = unit(0.25, "cm")
+  )
+```
+
+
+We can also make this plot only for broad histologies which were processed at >1 center:
+
+```{r}
+# first, which histologies are shared, aka processed at >1 center?
+shared_bh <- n_centers_bh %>%
+  dplyr::filter(n > 1, 
+                RNA_library == "stranded") %>%
+  dplyr::distinct(broad_histology_display) %>%
+  dplyr::pull(broad_histology_display)
+
+
+stranded_df %>%
+  dplyr::filter(broad_histology_display %in% shared_bh) %>%
+  ggplot() + 
+  aes(x = UMAP1, y = UMAP2, 
+      shape = seq_center, 
+      fill = broad_histology_display, 
+      color = seq_center, 
+      alpha = seq_center) + 
+  geom_point() + 
+  scale_shape_manual(values = c(21, 22, 24)) + 
+  scale_fill_manual(values  = pal_bh, 
+                    # This "shape" override is needed for legend fill colors to actually work
+                    guide = guide_legend(override.aes = list(shape = 21, size = 2))) +
+  scale_color_manual(values = c("grey70", "black", "black"), 
+                     # These overrides ensure shapes appear all in same alpha/color in legend
+                     guide = guide_legend(override.aes = list(color = "black", alpha = 1, size = 2))) +
+  scale_alpha_manual(values = c(0.6, 0.8, 0.8)) +
+  # Legend tweaks for legibility
+  theme(legend.position = "right", 
+        legend.direction = "vertical",
+        legend.text = element_text(size = rel(0.5)),
+        legend.title = element_text(size = rel(0.5)),
+        legend.key.size = unit(0.25, "cm")
+  )
+```
+
+
+
+
+### Cancer group UMAP
+
+We can make this _even more_ finer-grained by exploring the distributions of cancer groups within this UMAP.
+Shapes denote the sequencing center, and colors denote the cancer group.
+
+```{r}
+ggplot(stranded_df) + 
+  aes(x = UMAP1, y = UMAP2, 
+      shape = seq_center, 
+      fill = cancer_group_display, 
+      color = seq_center, 
+      alpha = seq_center) + 
+  geom_point() + 
+  scale_shape_manual(values = c(21, 22, 24)) + 
+  scale_fill_manual(values  = pal_cg, 
+                    # This "shape" override is needed for legend fill colors to actually work
+                    guide = guide_legend(override.aes = list(shape = 21, size = 2))) +
+  scale_color_manual(values = c("grey70", "black", "black"), 
+                     # These overrides ensure shapes appear all in same alpha/color in legend
+                     guide = guide_legend(override.aes = list(color = "black", alpha = 1, size = 2))) +
+  scale_alpha_manual(values = c(0.4, 0.6, 0.6)) +
+  # Legend tweaks for legibility
+  theme(legend.position = "right", 
+        legend.direction = "vertical",
+        legend.text = element_text(size = rel(0.5)),
+        legend.title = element_text(size = rel(0.5)),
+        legend.key.size = unit(0.25, "cm")
+  )
+```
+
+
+
+We can also make this plot only for cancer groups which were processed at >1 center:
+
+```{r}
+# first, which histologies are shared, aka processed at >1 center?
+shared_cg <- n_centers_cg %>%
+  dplyr::filter(n > 1,
+                RNA_library == "stranded") %>%
+  dplyr::distinct(cancer_group_display) %>%
+  dplyr::pull(cancer_group_display)
+
+
+stranded_df %>%
+  dplyr::filter(cancer_group_display %in% shared_cg) %>%
+  ggplot() + 
+  aes(x = UMAP1, y = UMAP2, 
+      shape = seq_center, 
+      fill = cancer_group_display, 
+      color = seq_center, 
+      alpha = seq_center) + 
+  geom_point() + 
+  scale_shape_manual(values = c(21, 22, 24)) + 
+  scale_fill_manual(values  = pal_cg, 
+                    # This "shape" override is needed for legend fill colors to actually work
+                    guide = guide_legend(override.aes = list(shape = 21, size = 2))) +
+  scale_color_manual(values = c("grey70", "black", "black"), 
+                     # These overrides ensure shapes appear all in same alpha/color in legend
+                     guide = guide_legend(override.aes = list(color = "black", alpha = 1, size = 2))) +
+  scale_alpha_manual(values = c(0.4, 0.6, 0.6)) +
+  # Legend tweaks for legibility
+  theme(legend.position = "right", 
+        legend.direction = "vertical",
+        legend.text = element_text(size = rel(0.5)),
+        legend.title = element_text(size = rel(0.5)),
+        legend.key.size = unit(0.25, "cm")
+  )
+```
+
+
+## _Finer-grained_ cancer group UMAP
+
+We can also look at `cancer_group`, an _even finer_ `cancer_group_display`.
+First we'll set up with the other data frame, but we don't a pre-defikned palette since there isn't one for this grouping.
+
+```{r}
+# only keep stranded for the rest and set order for `seq_center` as group size
+stranded_df <- umap_df_full %>%
+  dplyr::filter(RNA_library == "stranded") %>%
+  dplyr::select(-RNA_library) %>%
+  dplyr::mutate(seq_center = forcats::fct_infreq(seq_center)) %>%
+  # arranging will help see points:
+  dplyr::arrange(seq_center)
+
+# How many cancer groups are there in total?
+total_cg <- unique(stranded_df$cancer_group)
+length(total_cg)
+
+# How many cancer groups _processed at >1 center_ are there?
+shared_cg_full <- n_centers_cg_full %>%
+  dplyr::filter(n > 1,
+                RNA_library == "stranded") %>%
+  dplyr::distinct(cancer_group) %>%
+  dplyr::pull(cancer_group)
+length(shared_cg_full)
+shared_cg_full
+```
+
+Since there are `r length(total_cg)` cancer groups, we'll focus on visualizing only the `r length(shared_cg_full)` cancer groups that are processed at >1 center.
+
+
+```{r}
+stranded_df_subset <- stranded_df %>%
+  dplyr::filter(cancer_group %in% shared_cg_full)
+
+# plot itself:
+cg_plot <- ggplot(stranded_df_subset) + 
+  aes(x = UMAP1, y = UMAP2, 
+      shape = seq_center, 
+      fill = cancer_group, 
+      color = seq_center, 
+      alpha = seq_center) + 
+  geom_point() + 
+  scale_fill_manual(values = c(colorblindr::palette_OkabeIto, "purple"), # needed a 9th color...........
+                    # This "shape" override is needed for legend fill colors to actually work
+                    guide = guide_legend(override.aes = list(shape = 21, size = 2))) +
+  # Use a palette with 9 CVD-friendly colors
+  scale_color_manual(values = c("grey70", "black", "black"), 
+                     # These overrides ensure shapes appear all in same alpha/color in legend
+                     guide = guide_legend(override.aes = list(color = "black", alpha = 1, size = 2))) +
+  scale_alpha_manual(values = c(0.4, 0.6, 0.6)) +
+  scale_shape_manual(values = c(21, 22, 24))
+cg_plot
+```
+
+## Conclusions
+
+Overall, UMAP visualization shows that sequencing center is likely not a severe batch effect, and these visualizations emphasize that sequencing center is highly confounded with diagnosis making formal batch correction challenging.
+
+That said, there does appear to be a group of samples with differing from BGI@CHOP which cluster together, which may be a batch-induced effect.
+In addition, there are a couple DMGs that cluster with MBs, though there are multiple sequencing centers in this "cluster."
+Arrows are shown in the plot below pointing to these two caveated regions.
+
+
+```{r}
+cg_plot + 
+  annotate(
+    "segment",
+    x = -2, y = 0.25, xend = -1, yend = 0.25,
+    color = "red", lwd=1.5,
+    arrow = arrow(), 
+    show.legend = FALSE) + 
+  annotate(
+    "segment",
+    x = -1.75, y = -8.5, xend = -2.6,  yend = -8.5,
+    color = "red", lwd=1.5,
+    arrow = arrow(), 
+    show.legend = FALSE)
+```
+
+
+## sessionInfo
+
+```{r print session info}
+sessionInfo()
+```
