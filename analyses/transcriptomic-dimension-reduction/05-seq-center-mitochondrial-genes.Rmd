@@ -1,0 +1,212 @@
+---
+title: "Explore mitochondrial gene effect on UMAP"
+author: "S. Spielman for CCDL"
+date: "2023"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+params:
+  is_ci: 0
+---
+
+This notebook aims to explore some potential sequencing center biases that were raised in this OpenPBTA issue: https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1601
+This issues notes that some of the samples sequenced at `BGI@CHOP` had higher-than-expected expression for certain mitochondrial genes, specifically RNR1 and RNR2, and somewhat lower-than-expected expression for other mitochondrial genes.
+
+## Setup
+
+```{r setup, include=FALSE}
+library(magrittr)
+library(ggplot2)
+
+# set overall theme
+theme_set(ggpubr::theme_pubr() +
+ # Legend tweaks for legibility
+  theme(legend.position = "right", 
+        legend.direction = "vertical",
+        legend.text = element_text(size = rel(0.5)),
+        legend.title = element_text(size = rel(0.5)),
+        legend.key.size = unit(0.25, "cm")
+  )) 
+
+# figure settings
+knitr::opts_chunk$set(fig.width = 8)
+```
+
+
+Define directories and file names: 
+```{r}
+# Directories
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+tumor_dir <- file.path(root_dir, "analyses", "tumor-purity-exploration")
+umap_dir <- file.path(
+  root_dir,
+  "analyses",
+  "transcriptomic-dimension-reduction", 
+  "results"
+)
+palette_dir <- file.path(root_dir, "figures", "palettes")
+
+# UMAP files with different samples:
+rsem_umap <- file.path(umap_dir, "rsem_stranded_log_umap_scores_aligned.tsv")
+rsem_no_mito_umap <- file.path(umap_dir, "rsem_stranded_no-mito_log_umap_scores_aligned.tsv")
+
+# palette mapping file
+pal_file <- file.path(palette_dir,  "broad_histology_cancer_group_palette.tsv")
+
+# FPKM
+expression_file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
+
+metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+```
+
+```{r}
+# Read in palette data
+palette_mapping_df <- readr::read_tsv(pal_file) %>%
+  dplyr::select(broad_histology, broad_histology_display, broad_histology_hex, 
+                cancer_group, cancer_group_display, cancer_group_hex) 
+
+# Read in and prep UMAP data
+# helper function
+readr_prep_umap <- function(filename, 
+                            pal_df = palette_mapping_df) {
+  readr::read_tsv(filename) %>% 
+    dplyr::rename(UMAP1 = X1, UMAP2 = X2) %>%
+    dplyr::inner_join(pal_df) %>%
+    dplyr::mutate(seq_center = forcats::fct_relevel(seq_center, 
+                                                    "BGI", "BGI@CHOP Genome Center", "NantOmics"))
+}
+
+umap_all <- readr_prep_umap(rsem_umap)
+umap_no_mito <- readr_prep_umap(rsem_no_mito_umap) 
+
+# Read in expression and convert to data frame
+expression_df <- readr::read_rds(expression_file) %>%
+  tibble::as_tibble(rownames = "gene_symbol")
+
+# Read in metadata
+metadata_df <- readr::read_tsv(metadata_file)
+```
+
+
+## Explore mitochondrial genes
+
+For mitochondrial genes, do we see expression patterns for BGI@CHOP samples consistent with those posted in the issue linked above?
+
+```{r}
+# First, which diagnoses are sequenced at BGI@CHOP?
+relevant_groups <- metadata_df %>%
+  dplyr::filter(RNA_library == "stranded", 
+                stringr::str_starts(seq_center, "BGI")) %>%
+  tidyr::drop_na(broad_histology) %>%
+  dplyr::pull(broad_histology) %>%
+  unique()
+
+# Data frame of log2(FPKM) of mitochondrial genes for relevant diagnoses
+mito_seq_center_df <- expression_df %>%
+  dplyr::filter(stringr::str_starts(gene_symbol, "MT-")) %>%
+  tidyr::gather("Kids_First_Biospecimen_ID", 
+                "fpkm", 
+                tidyselect::starts_with("BS_")) %>%
+  dplyr::mutate(log2_fpkm = log2(fpkm+1)) %>%
+  # get diagnoses across samples
+  dplyr::inner_join(
+    dplyr::select(metadata_df, 
+                  Kids_First_Biospecimen_ID, 
+                  broad_histology, 
+                  seq_center)
+  ) %>%
+  # filter to only relevant groups
+  dplyr::filter(broad_histology %in% relevant_groups) %>%
+  # get display version of diagnosis
+  dplyr::inner_join(
+    dplyr::select(palette_mapping_df, 
+                  broad_histology, 
+                  broad_histology_display)
+  )
+
+
+ggplot(mito_seq_center_df) + 
+  aes(x = gene_symbol, y = log2_fpkm, color = seq_center, size = seq_center) + 
+  geom_jitter(width = 0.15) + 
+  # emphasize the BGI points!
+  scale_size_manual(values = c(2, 2, 0.5)) +
+  facet_wrap(~broad_histology_display) + 
+  theme(axis.text.x = element_text(angle = 30, hjust = 1, size = 4))
+
+```
+
+We see a couple trends in the plot above that are consistent with the posted issue:
+
+- `BGI@CHOP Genome Center` samples have dramatically higher RNR1 and RNR2, but substantially lower expression for the other mitochondrial genes, across all diagnoses.
+- `BGI` samples tend to have lower RNR1 and RNR2 expression, and have lower expression for other genes specifically for embryonal tumors.
+
+Thus, `BIG@CHOP` (not `BGI`) samples are the main "concern" here.
+
+
+## UMAP
+
+How do UMAPs with and without mitochondrial genes compare? 
+We might expect particular changes in embryonal, ependymal, and HGG since BGI is mostly those dianogses.
+
+```{r}
+# Function to plot UMAP and set up color palettes.
+plot_umap <- function(df, color_group, color_palette, title) {
+  ggplot(df) + 
+    aes(x = UMAP1, y = UMAP2, 
+      shape = seq_center, 
+      fill = {{color_group}}, 
+      color = seq_center, 
+      alpha = seq_center) + 
+  geom_point() + 
+  scale_shape_manual(values = c(24, 22, 21)) + 
+  scale_fill_manual(values  = color_palette, 
+                    # This "shape" override is needed for legend fill colors to actually work
+                    guide = guide_legend(override.aes = list(shape = 21, size = 2))) +
+  scale_color_manual(values = c("grey70", "black", "black"), 
+                     # These overrides ensure shapes appear all in same alpha/color in legend
+                     guide = guide_legend(override.aes = list(color = "black", alpha = 1, size = 2))) +
+  scale_alpha_manual(values = c(0.4, 0.6, 0.6)) +
+  ggtitle(title) +
+  # Legend tweaks for legibility
+  theme(legend.position = "bottom", 
+        legend.text = element_text(size = rel(0.5)),
+        legend.title = element_text(size = rel(0.5)),
+        legend.key.size = unit(0.25, "cm")
+  )
+}
+
+# set up color palettes
+bh_df <- palette_mapping_df %>%
+  dplyr::select(broad_histology_display, broad_histology_hex) %>%
+  dplyr::distinct() 
+pal_bh<- bh_df$broad_histology_hex
+names(pal_bh) <- bh_df$broad_histology_display
+
+cg_df <- palette_mapping_df %>%
+  dplyr::select(cancer_group_display, cancer_group_hex) %>%
+  dplyr::distinct() %>%
+  tidyr::drop_na()
+pal_cg<- cg_df$cancer_group_hex
+names(pal_cg) <- cg_df$cancer_group_display
+```
+
+
+Let's plot some UMAPs!
+
+```{r, fig.width = 8}
+p1 <- plot_umap(umap_all, broad_histology_display, pal_bh, "Includes all genes. Colored by broad histology.") 
+p2 <- plot_umap(umap_no_mito, broad_histology_display, pal_bh, "Includes only non-mito genes. Colored by broad histology.")
+cowplot::plot_grid(p1, p2, nrow = 1)
+
+p1 <- plot_umap(umap_all, cancer_group_display, pal_cg, "Includes all genes. Colored by cancer group.")
+p2 <- plot_umap(umap_no_mito, cancer_group_display, pal_cg, "Includes only non-mito genes. Colored by cancer group.")
+cowplot::plot_grid(p1, p2, nrow = 1)
+```
+
+## sessionInfo
+
+```{r print session info}
+sessionInfo()
+```
