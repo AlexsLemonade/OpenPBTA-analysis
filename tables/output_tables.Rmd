@@ -115,7 +115,8 @@ tumor_level %>%
   select(-`OpenPBTA molecular subtype`) %>%
   mutate(broad_hist_sum = sum(Tumors)) %>%
   select(-Tumors) %>%
-  distinct()
+  distinct() %>%
+  arrange(desc(broad_hist_sum))
 
 # Patient level
 pt_level <- subtype_n %>%
