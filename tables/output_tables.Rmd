@@ -109,6 +109,14 @@ tumor_level <- subtype_n %>%
   count(`Broad histology group`, `OpenPBTA molecular subtype`) %>%
   dplyr::rename(Tumors = n)
 
+# print broad histology counts for easy check for manuscript
+tumor_level %>%
+  group_by(`Broad histology group`) %>%
+  select(-`OpenPBTA molecular subtype`) %>%
+  mutate(broad_hist_sum = sum(Tumors)) %>%
+  select(-Tumors) %>%
+  distinct()
+
 # Patient level
 pt_level <- subtype_n %>%
   select(-sample_id) %>%
