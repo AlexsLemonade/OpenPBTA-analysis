@@ -82,7 +82,7 @@ ggsave(roc_file, roc_plot, width = 3, height = 3)
 # Paths and data for this figure (and the next)
 telomerase_dir <- file.path(analyses_dir, "telomerase-activity-prediction")
 # stranded data specifically:
-extend_scores <- read_tsv(file.path(telomerase_dir, "results", "TelomeraseScores_PTBAStranded_FPKM.txt")) 
+extend_scores <- read_tsv(file.path(telomerase_dir, "results", "TelomeraseScores_PTBAStranded_FPKM_thresholded.txt")) #TOGGLING IN PURITY
 stranded_expression <- read_rds(file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
 
 # Combine extend scores with expression for genes of interest
@@ -91,7 +91,7 @@ extend_fpkm_df <- stranded_expression %>%
   # keep only genes we are visualizing
   filter(gene %in% c("TERC", "TERT")) %>%
   gather(contains("BS"), key = "SampleID", value = "FPKM") %>%
-  inner_join(
+  right_join(
     select(extend_scores, 
            SampleID,
            NormEXTENDScores), 

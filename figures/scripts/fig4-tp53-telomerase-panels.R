@@ -43,7 +43,8 @@ stranded_expression <- read_rds(file.path(data_dir,"pbta-gene-expression-rsem-fp
 
 
 # Read in EXTEND scores. We read Stranded FPKM here. 
-extend_scores <- read_tsv(file.path(telomerase_dir, "results", "TelomeraseScores_PTBAStranded_FPKM.txt"))
+# TOGGLING IN TUMOR PURITY HERE
+extend_scores <- read_tsv(file.path(telomerase_dir, "results", "TelomeraseScores_PTBAStranded_FPKM_thresholded.txt"))
 
 # Read in TMB for highlighting points in boxplots
 tmb_coding_df <- read_tsv(file.path(data_dir, "pbta-snv-consensus-mutation-tmb-coding.tsv"))
