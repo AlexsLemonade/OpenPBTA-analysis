@@ -159,23 +159,38 @@ plot_umap <- function(df, color_group, color_palette, title) {
       fill = {{color_group}}, 
       color = seq_center, 
       alpha = seq_center) + 
-  geom_point() + 
-  scale_shape_manual(values = c(24, 22, 21)) + 
+  geom_point(size = 2.5) + 
+  scale_shape_manual(values = c(22, 24, 21)) + 
   scale_fill_manual(values  = color_palette, 
                     # This "shape" override is needed for legend fill colors to actually work
                     guide = guide_legend(override.aes = list(shape = 21, size = 2))) +
   scale_color_manual(values = c("grey70", "black", "black"), 
                      # These overrides ensure shapes appear all in same alpha/color in legend
                      guide = guide_legend(override.aes = list(color = "black", alpha = 1, size = 2))) +
-  scale_alpha_manual(values = c(0.4, 0.6, 0.6)) +
+  scale_alpha_manual(values = c(0.3, 0.5, 0.5)) +
   ggtitle(title) +
-  # Legend tweaks for legibility
+  # tweaks for legibility
   theme(legend.position = "bottom", 
         legend.text = element_text(size = rel(0.5)),
         legend.title = element_text(size = rel(0.5)),
         legend.key.size = unit(0.25, "cm")
   )
 }
+
+# Another plotting helper function to cowplot some plots with a shared legend
+combine_plots <- function(p1, p2) {
+  p_legend <- cowplot::get_legend(p1)
+  
+  plot_row <- cowplot::plot_grid(p1 + theme(legend.position = "none"),
+                                 p2 + theme(legend.position = "none"),
+                                 nrow = 1, 
+                                 rel_widths = 0.95)
+  
+  full_grid <- cowplot::plot_grid(plot_row, p_legend, nrow = 2, rel_heights = c(1, 0.2))
+  
+  full_grid
+}
+
 
 # set up color palettes
 bh_df <- palette_mapping_df %>%
@@ -195,14 +210,14 @@ names(pal_cg) <- cg_df$cancer_group_display
 
 Let's plot some UMAPs!
 
-```{r, fig.width = 8}
+```{r, fig.width = 14, fig.height = 8}
 p1 <- plot_umap(umap_all, broad_histology_display, pal_bh, "Includes all genes. Colored by broad histology.") 
 p2 <- plot_umap(umap_no_mito, broad_histology_display, pal_bh, "Includes only non-mito genes. Colored by broad histology.")
-cowplot::plot_grid(p1, p2, nrow = 1)
+combine_plots(p1, p2)
 
 p1 <- plot_umap(umap_all, cancer_group_display, pal_cg, "Includes all genes. Colored by cancer group.")
 p2 <- plot_umap(umap_no_mito, cancer_group_display, pal_cg, "Includes only non-mito genes. Colored by cancer group.")
-cowplot::plot_grid(p1, p2, nrow = 1)
+combine_plots(p1, p2)
 ```
 
 ## sessionInfo
