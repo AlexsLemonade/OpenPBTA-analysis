@@ -20,6 +20,9 @@ if [ "${RUN_FOR_FIGURES}" == "1" ]; then
 
   #generate telomerase activities using gene expression data from collapse RNA seq data files
   Rscript --vanilla 01-run-EXTEND.R --input ../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds --output results/TelomeraseScores_PTBAStranded_FPKM.txt
+  
+  # Generate again, but this time with tumor purity thresholding
+  Rscript --vanilla 01-run-EXTEND.R --apply_tumor_purity_threshold --input ../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds --output results/TelomeraseScores_PTBAStranded_FPKM_thresholded.txt
 
 else 
 
@@ -32,7 +35,6 @@ else
   Rscript --vanilla 01-run-EXTEND.R --input ../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds --output results/TelomeraseScores_PTBAPolya_FPKM.txt
   Rscript --vanilla 01-run-EXTEND.R --input ../collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed.stranded.rds --output results/TelomeraseScores_PTBAStranded_counts.txt
   Rscript --vanilla 01-run-EXTEND.R --input ../collapse-rnaseq/pbta-gene-counts-rsem-expected_count-collapsed.polya.rds --output results/TelomeraseScores_PTBAPolya_counts.txt
-  
   
   #Compare Telomerase scores for PolyA and Stranded data
   echo "Comparing telomerase scores for polyA and stranded data..."
