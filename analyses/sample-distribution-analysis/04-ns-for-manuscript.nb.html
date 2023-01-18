@@ -2946,7 +2946,7 @@ div.tocify {
 <h2>Set directories</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm9vdF9kaXIgPC0gcnByb2pyb290OjpmaW5kX3Jvb3QocnByb2pyb290OjpoYXNfZGlyKFwiLmdpdFwiKSlcbmRhdGFfZGlyIDwtIGZpbGUucGF0aChyb290X2RpciwgXCJkYXRhXCIpXG5hbmFseXNpc19kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcImFuYWx5c2VzXCIsIFwic2FtcGxlLWRpc3RyaWJ1dGlvbi1hbmFseXNpc1wiKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbInJvb3RfZGlyIDwtIHJwcm9qcm9vdDo6ZmluZF9yb290KHJwcm9qcm9vdDo6aGFzX2RpcihcIi5naXRcIikpIiwiZGF0YV9kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcImRhdGFcIikiLCJhbmFseXNpc19kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcImFuYWx5c2VzXCIsIFwic2FtcGxlLWRpc3RyaWJ1dGlvbi1hbmFseXNpc1wiKSJdfQ== -->
 <pre class="r"><code>root_dir &lt;- rprojroot::find_root(rprojroot::has_dir(&quot;.git&quot;))
 data_dir &lt;- file.path(root_dir, &quot;data&quot;)
 analysis_dir &lt;- file.path(root_dir, &quot;analyses&quot;, &quot;sample-distribution-analysis&quot;)</code></pre>
@@ -2958,47 +2958,49 @@ analysis_dir &lt;- file.path(root_dir, &quot;analyses&quot;, &quot;sample-distri
 <h2>Read in Files</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGlzdF9maWxlIDwtIGZpbGUucGF0aChkYXRhX2RpciwgXCJwYnRhLWhpc3RvbG9naWVzLnRzdlwiKVxuY2VsbF9saW5lc19maWxlIDwtIGZpbGUucGF0aChyb290X2RpciwgXCJhbmFseXNlc1wiLCBcIm1vbGVjdWxhci1zdWJ0eXBpbmctSEdHXCIsIFwiaW5wdXRcIiwgXCJjZWxsLWxpbmUtY29tcG9zaXRpb24udHN2XCIpXG5cbiMgUmVhZCBpbiBoaXN0b2xvZ2llcyBmaWxlXG5oaXN0IDwtIHJlYWRfdHN2KGhpc3RfZmlsZSwgZ3Vlc3NfbWF4ID0gMTAwMDApXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbImhpc3RfZmlsZSA8LSBmaWxlLnBhdGgoZGF0YV9kaXIsIFwicGJ0YS1oaXN0b2xvZ2llcy50c3ZcIikiLCJjZWxsX2xpbmVzX2ZpbGUgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcImFuYWx5c2VzXCIsIFwibW9sZWN1bGFyLXN1YnR5cGluZy1IR0dcIiwgXCJpbnB1dFwiLCBcImNlbGwtbGluZS1jb21wb3NpdGlvbi50c3ZcIikiLCIiLCIjIFJlYWQgaW4gaGlzdG9sb2dpZXMgZmlsZSIsImhpc3QgPC0gcmVhZF90c3YoaGlzdF9maWxlLCBndWVzc19tYXggPSAxMDAwMCkiXX0= -->
 <pre class="r"><code>hist_file &lt;- file.path(data_dir, &quot;pbta-histologies.tsv&quot;)
 cell_lines_file &lt;- file.path(root_dir, &quot;analyses&quot;, &quot;molecular-subtyping-HGG&quot;, &quot;input&quot;, &quot;cell-line-composition.tsv&quot;)
 
 # Read in histologies file
 hist &lt;- read_tsv(hist_file, guess_max = 10000)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgT1NfZGF5cyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBhZ2VfbGFzdF91cGRhdGVfZGF5cyA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBub3JtYWxfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgdHVtb3JfcGxvaWR5ID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW1cbilcblNlZSBzcGVjKC4uLikgZm9yIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb25zLlxuIn0= -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgT1NfZGF5cyA9IGNvbF9kb3VibGUoKSxcbiAgYWdlX2xhc3RfdXBkYXRlX2RheXMgPSBjb2xfZG91YmxlKCksXG4gIG5vcm1hbF9mcmFjdGlvbiA9IGNvbF9kb3VibGUoKSxcbiAgdHVtb3JfZnJhY3Rpb24gPSBjb2xfZG91YmxlKCksXG4gIHR1bW9yX3Bsb2lkeSA9IGNvbF9kb3VibGUoKVxuKVxuIn0= -->
 <pre><code>Parsed with column specification:
 cols(
   .default = col_character(),
-  OS_days = [32mcol_double()[39m,
-  age_last_update_days = [32mcol_double()[39m,
-  normal_fraction = [32mcol_double()[39m,
-  tumor_fraction = [32mcol_double()[39m,
-  tumor_ploidy = [32mcol_double()[39m
-)
-See spec(...) for full column specifications.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBDZWxsIGxpbmVzIHdoaWNoIGhhdmUgYm90aCBzdXNwZW5zaW9uIChTLCBzZXJ1bS1mcmVlIG1lZGlhKSBvciBhZGhlcmVudCAoQSwgc2VydW0tY29udGFpbmluZyBtZWRpYSkgY29tcG9zaXRpb25zIGR1ZSB0byBiZWluZyBncm93biBpbiBkaWZmZXJlbnQgbWVkaWEuIFxuY2VsbF9saW5lcyA8LSByZWFkX3RzdihjZWxsX2xpbmVzX2ZpbGUpXG5gYGAifQ== -->
+  OS_days = col_double(),
+  age_last_update_days = col_double(),
+  normal_fraction = col_double(),
+  tumor_fraction = col_double(),
+  tumor_ploidy = col_double()
+)</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-message-begin eyJkYXRhIjoiU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
+<pre><code>See spec(...) for full column specifications.</code></pre>
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgQ2VsbCBsaW5lcyB3aGljaCBoYXZlIGJvdGggc3VzcGVuc2lvbiAoUywgc2VydW0tZnJlZSBtZWRpYSkgb3IgYWRoZXJlbnQgKEEsIHNlcnVtLWNvbnRhaW5pbmcgbWVkaWEpIGNvbXBvc2l0aW9ucyBkdWUgdG8gYmVpbmcgZ3Jvd24gaW4gZGlmZmVyZW50IG1lZGlhLiAiLCJjZWxsX2xpbmVzIDwtIHJlYWRfdHN2KGNlbGxfbGluZXNfZmlsZSkiXX0= -->
 <pre class="r"><code># Cell lines which have both suspension (S, serum-free media) or adherent (A, serum-containing media) compositions due to being grown in different media. 
 cell_lines &lt;- read_tsv(cell_lines_file)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQgPSBcdTAwMWJbMzFtY29sX2NoYXJhY3RlcigpXHUwMDFiWzM5bSxcbiAgY2VsbF9saW5lX2NvbXBvc2l0aW9uID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIHNhbXBsZV9pZCA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBhbGlxdW90X2lkID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW1cbilcbiJ9 -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lEID0gY29sX2NoYXJhY3RlcigpLFxuICBjZWxsX2xpbmVfY29tcG9zaXRpb24gPSBjb2xfY2hhcmFjdGVyKCksXG4gIHNhbXBsZV9pZCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgYWxpcXVvdF9pZCA9IGNvbF9kb3VibGUoKVxuKVxuIn0= -->
 <pre><code>Parsed with column specification:
 cols(
-  Kids_First_Participant_ID = [31mcol_character()[39m,
-  Kids_First_Biospecimen_ID = [31mcol_character()[39m,
-  cell_line_composition = [31mcol_character()[39m,
-  sample_id = [31mcol_character()[39m,
-  aliquot_id = [32mcol_double()[39m
+  Kids_First_Participant_ID = col_character(),
+  Kids_First_Biospecimen_ID = col_character(),
+  cell_line_composition = col_character(),
+  sample_id = col_character(),
+  aliquot_id = col_double()
 )</code></pre>
-<!-- rnb-output-end -->
+<!-- rnb-message-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="calculate-patient-level-ns-used-for-manuscript" class="section level2">
-<h2>Calculate patient level Ns used for manuscript</h2>
+<div id="calculate-patient-level-ns-used-for-manuscript-and-by-cohort" class="section level2">
+<h2>Calculate patient level Ns used for manuscript and by cohort</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBOIHBhdGllbnRzXG5oaXN0ICU+JVxuICBwdWxsKEtpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQpICU+JVxuICB1bmlxdWUoKSAlPiVcbiAgbGVuZ3RoKClcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgTiBwYXRpZW50cyIsImhpc3QgJT4lXG4gIHB1bGwoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCkgJT4lXG4gIHVuaXF1ZSgpICU+JVxuICBsZW5ndGgoKSJdfQ== -->
 <pre class="r"><code># Total N patients
 hist %&gt;%
   pull(Kids_First_Participant_ID) %&gt;%
@@ -3008,6 +3010,18 @@ hist %&gt;%
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIDk0M1xuIn0= -->
 <pre><code>[1] 943</code></pre>
 <!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgTiBwYXRpZW50cyBieSBjb2hvcnQiLCJoaXN0ICU+JVxuICBzZWxlY3QoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCwgY29ob3J0KSAlPiVcbiAgdW5pcXVlKCkgJT4lXG4gIGNvdW50KGNvaG9ydCkiXX0= -->
+<pre class="r"><code># Total N patients by cohort
+hist %&gt;%
+  select(Kids_First_Participant_ID, cohort) %&gt;%
+  unique() %&gt;%
+  count(cohort)</code></pre>
+<!-- rnb-source-end -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["cohort"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"CBTN","2":"911"},{"1":"PNOC","2":"32"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -3015,7 +3029,7 @@ hist %&gt;%
 <h2>Calculate sample (tumor/normal) level Ns used for manuscript</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBudW1iZXIgb2YgdHVtb3JzXG5uX3R1bW9ycyA8LSBoaXN0ICU+JVxuICBmaWx0ZXIoc2FtcGxlX3R5cGUgPT0gXCJUdW1vclwiICYgY29tcG9zaXRpb24gIT0gXCJEZXJpdmVkIENlbGwgTGluZVwiKSAlPiVcbiAgcHVsbChzYW1wbGVfaWQpICU+JVxuICB1bmlxdWUoKVxubGVuZ3RoKG5fdHVtb3JzKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgbnVtYmVyIG9mIHR1bW9ycyIsIm5fdHVtb3JzIDwtIGhpc3QgJT4lXG4gIGZpbHRlcihzYW1wbGVfdHlwZSA9PSBcIlR1bW9yXCIgJiBjb21wb3NpdGlvbiAhPSBcIkRlcml2ZWQgQ2VsbCBMaW5lXCIpICU+JVxuICBwdWxsKHNhbXBsZV9pZCkgJT4lXG4gIHVuaXF1ZSgpIiwibGVuZ3RoKG5fdHVtb3JzKSJdfQ== -->
 <pre class="r"><code># Total number of tumors
 n_tumors &lt;- hist %&gt;%
   filter(sample_type == &quot;Tumor&quot; &amp; composition != &quot;Derived Cell Line&quot;) %&gt;%
@@ -3026,7 +3040,7 @@ length(n_tumors)</code></pre>
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIDEwNzRcbiJ9 -->
 <pre><code>[1] 1074</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBOIGFzc2F5cyBieSBiYXNlZCBvbiB3aGV0aGVyIGl0IGlzIGEgY2VsbCBsaW5lIG9yIHR1bW9yL25vcm1hbCB0aXNzdWVcbmhpc3QgPC0gaGlzdCAlPiVcbiAgbXV0YXRlKHR5cGUgPSBjYXNlX3doZW4oY29tcG9zaXRpb24gPT0gXCJEZXJpdmVkIENlbGwgTGluZVwiIH4gXCJDZWxsIExpbmVcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNhbXBsZV90eXBlID09IFwiVHVtb3JcIiB+IFwiVHVtb3IgU2FtcGxlXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBUUlVFIH4gXCJOb3JtYWwgU2FtcGxlXCIpLFxuICAgICAgICAgZXhwZXJpbWVudGFsX3N0cmF0ZWd5ID0gaWZlbHNlKGV4cGVyaW1lbnRhbF9zdHJhdGVneSA9PSBcIldYU1wiIHwgZXhwZXJpbWVudGFsX3N0cmF0ZWd5ID09IFwiVGFyZ2V0ZWQgU2VxdWVuY2luZ1wiLCBcIldYUy9QYW5lbFwiLCBleHBlcmltZW50YWxfc3RyYXRlZ3kpKVxudGFibGUoaGlzdCR0eXBlLCBoaXN0JGV4cGVyaW1lbnRhbF9zdHJhdGVneSlcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgTiBhc3NheXMgYnkgYmFzZWQgb24gd2hldGhlciBpdCBpcyBhIGNlbGwgbGluZSBvciB0dW1vci9ub3JtYWwgdGlzc3VlIiwiaGlzdCA8LSBoaXN0ICU+JVxuICBtdXRhdGUodHlwZSA9IGNhc2Vfd2hlbihjb21wb3NpdGlvbiA9PSBcIkRlcml2ZWQgQ2VsbCBMaW5lXCIgfiBcIkNlbGwgTGluZVwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2FtcGxlX3R5cGUgPT0gXCJUdW1vclwiIH4gXCJUdW1vciBTYW1wbGVcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFRSVUUgfiBcIk5vcm1hbCBTYW1wbGVcIiksXG4gICAgICAgICBleHBlcmltZW50YWxfc3RyYXRlZ3kgPSBpZmVsc2UoZXhwZXJpbWVudGFsX3N0cmF0ZWd5ID09IFwiV1hTXCIgfCBleHBlcmltZW50YWxfc3RyYXRlZ3kgPT0gXCJUYXJnZXRlZCBTZXF1ZW5jaW5nXCIsIFwiV1hTL1BhbmVsXCIsIGV4cGVyaW1lbnRhbF9zdHJhdGVneSkpIiwidGFibGUoaGlzdCR0eXBlLCBoaXN0JGV4cGVyaW1lbnRhbF9zdHJhdGVneSkiXX0= -->
 <pre class="r"><code># Total N assays by based on whether it is a cell line or tumor/normal tissue
 hist &lt;- hist %&gt;%
   mutate(type = case_when(composition == &quot;Derived Cell Line&quot; ~ &quot;Cell Line&quot;,
@@ -3049,44 +3063,36 @@ table(hist$type, hist$experimental_strategy)</code></pre>
 <h2>Calculate biospecimen level Ns used for manuscript</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBCaW9zcGVjaW1lbiBjb3VudHMgYnkgc2FtcGxlIHR5cGVcbmhpc3QgJT4lXG4gIGNvdW50KHNhbXBsZV90eXBlKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgQmlvc3BlY2ltZW4gY291bnRzIGJ5IHNhbXBsZSB0eXBlIiwiaGlzdCAlPiVcbiAgY291bnQoc2FtcGxlX3R5cGUpIl19 -->
 <pre class="r"><code># Biospecimen counts by sample type
 hist %&gt;%
   count(sample_type)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MiwibnJvdyI6Mn0sInJkZiI6IlVrUllNd3BZQ2dBQUFBTUFBd1lBQUFNRkFBQUFBQVZWVkVZdE9BQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFJQUFBQVFBQUFBQWdBRUFBa0FBQUFHVG05eWJXRnNBQVFBQ1FBQUFBVlVkVzF2Y2dBQUFBMEFBQUFDQUFBRFFRQUFCOWNBQUFRQ0FBQUFBUUFFQUFrQUFBQUZibUZ0WlhNQUFBQVFBQUFBQWdBRUFBa0FBQUFMYzJGdGNHeGxYM1I1Y0dVQUJBQUpBQUFBQVc0QUFBUUNBQUFBQVFBRUFBa0FBQUFGWTJ4aGMzTUFBQUFRQUFBQUFRQUVBQWtBQUFBS1pHRjBZUzVtY21GdFpRQUFCQUlBQUFBQkFBUUFDUUFBQUFseWIzY3VibUZ0WlhNQUFBQU5BQUFBQW9BQUFBRC8vLy8rQUFBQS9nQUFCQUlBQUFBQkFBUUFDUUFBQUFkdmNIUnBiMjV6QUFBQ0V3QUFBQVVBQUFBUUFBQUFBUUFFQUFrQUFBQUJjZ0FBQUJBQUFBQUJBQVFBQ1FBQUFCOXpZVzF3YkdVZ2MybDZaU0F0SUdKcGIzTndaV05wYldWdUxXeGxkbVZzQUFBQUNnQUFBQUVBQUFBQUFBQUFEUUFBQUFFQUFBQUNBQUFBRFFBQUFBRUFBQUFDQUFBRUFnQUFBdjhBQUFBUUFBQUFCUUFFQUFrQUFBQUdaVzVuYVc1bEFBUUFDUUFBQUFWc1lXSmxiQUFFQUFrQUFBQU9jbTkzYm1GdFpYTXVjSEpwYm5RQUJBQUpBQUFBQ25KdmQzTXVkRzkwWVd3QUJBQUpBQUFBQ21OdmJITXVkRzkwWVd3QUFBRCtBQUFBL2c9PSJ9 -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["sample_type"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"Normal","2":"833"},{"1":"Tumor","2":"2007"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[2]},"pages":{}}}
+{"columns":[{"label":["sample_type"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"Normal","2":"833"},{"1":"Tumor","2":"2007"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<!-- rnb-frame-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jIEJpb3NwZWNpbWVuIGNvdW50cyBieSBzYW1wbGUgdHlwZSBhbmQgY29tcG9zaXRpb24gKGluY2x1ZGluZyBkdXBsaWNhdGUgY2VsbCBsaW5lcylcbmhpc3QgJT4lXG4gIGNvdW50KHNhbXBsZV90eXBlLCBjb21wb3NpdGlvbilcbmBgYCJ9 -->
-<pre class="r"><code>
-# Biospecimen counts by sample type and composition (including duplicate cell lines)
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgQmlvc3BlY2ltZW4gY291bnRzIGJ5IHNhbXBsZSB0eXBlIGFuZCBjb21wb3NpdGlvbiAoaW5jbHVkaW5nIGR1cGxpY2F0ZSBjZWxsIGxpbmVzKSIsImhpc3QgJT4lXG4gIGNvdW50KHNhbXBsZV90eXBlLCBjb21wb3NpdGlvbikiXX0= -->
+<pre class="r"><code># Biospecimen counts by sample type and composition (including duplicate cell lines)
 hist %&gt;%
   count(sample_type, composition)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MywibnJvdyI6Nn0sInJkZiI6IlVrUllNd3BZQ2dBQUFBTUFBd1lBQUFNRkFBQUFBQVZWVkVZdE9BQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFNQUFBQVFBQUFBQmdBRUFBa0FBQUFHVG05eWJXRnNBQVFBQ1FBQUFBWk9iM0p0WVd3QUJBQUpBQUFBQms1dmNtMWhiQUFFQUFrQUFBQUdUbTl5YldGc0FBUUFDUUFBQUFWVWRXMXZjZ0FFQUFrQUFBQUZWSFZ0YjNJQUFBQVFBQUFBQmdBRUFBa0FBQUFNVG05MElGSmxjRzl5ZEdWa0FBUUFDUUFBQUJaUVpYSnBjR2hsY21Gc0lGZG9iMnhsSUVKc2IyOWtBQVFBQ1FBQUFBWlRZV3hwZG1FQUJBQUpBQUFBREZOdmJHbGtJRlJwYzNOMVpRQUVBQWtBQUFBUlJHVnlhWFpsWkNCRFpXeHNJRXhwYm1VQUJBQUpBQUFBREZOdmJHbGtJRlJwYzNOMVpRQUFBQTBBQUFBR0FBQUFCd0FBQXlZQUFBQVNBQUFBQWdBQUFDWUFBQWV4QUFBRUFnQUFBQUVBQkFBSkFBQUFCVzVoYldWekFBQUFFQUFBQUFNQUJBQUpBQUFBQzNOaGJYQnNaVjkwZVhCbEFBUUFDUUFBQUF0amIyMXdiM05wZEdsdmJnQUVBQWtBQUFBQmJnQUFCQUlBQUFBQkFBUUFDUUFBQUFWamJHRnpjd0FBQUJBQUFBQUJBQVFBQ1FBQUFBcGtZWFJoTG1aeVlXMWxBQUFFQWdBQUFBRUFCQUFKQUFBQUNYSnZkeTV1WVcxbGN3QUFBQTBBQUFBQ2dBQUFBUC8vLy9vQUFBRCtBQUFFQWdBQUFBRUFCQUFKQUFBQUIyOXdkR2x2Ym5NQUFBSVRBQUFBQlFBQUFCQUFBQUFCQUFRQUNRQUFBQUZ5QUFBQUVBQUFBQUVBQkFBSkFBQUFIM05oYlhCc1pTQnphWHBsSUMwZ1ltbHZjM0JsWTJsdFpXNHRiR1YyWld3QUFBQUtBQUFBQVFBQUFBQUFBQUFOQUFBQUFRQUFBQVlBQUFBTkFBQUFBUUFBQUFNQUFBUUNBQUFDL3dBQUFCQUFBQUFGQUFRQUNRQUFBQVpsYm1kcGJtVUFCQUFKQUFBQUJXeGhZbVZzQUFRQUNRQUFBQTV5YjNkdVlXMWxjeTV3Y21sdWRBQUVBQWtBQUFBS2NtOTNjeTUwYjNSaGJBQUVBQWtBQUFBS1kyOXNjeTUwYjNSaGJBQUFBUDRBQUFEKyJ9 -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["sample_type"],"name":[1],"type":["chr"],"align":["left"]},{"label":["composition"],"name":[2],"type":["chr"],"align":["left"]},{"label":["n"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"Normal","2":"Not Reported","3":"7"},{"1":"Normal","2":"Peripheral Whole Blood","3":"806"},{"1":"Normal","2":"Saliva","3":"18"},{"1":"Normal","2":"Solid Tissue","3":"2"},{"1":"Tumor","2":"Derived Cell Line","3":"38"},{"1":"Tumor","2":"Solid Tissue","3":"1969"}],"options":{"columns":{"min":{},"max":[10],"total":[3]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+{"columns":[{"label":["sample_type"],"name":[1],"type":["chr"],"align":["left"]},{"label":["composition"],"name":[2],"type":["chr"],"align":["left"]},{"label":["n"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"Normal","2":"Not Reported","3":"7"},{"1":"Normal","2":"Peripheral Whole Blood","3":"806"},{"1":"Normal","2":"Saliva","3":"18"},{"1":"Normal","2":"Solid Tissue","3":"2"},{"1":"Tumor","2":"Derived Cell Line","3":"38"},{"1":"Tumor","2":"Solid Tissue","3":"1969"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<!-- rnb-frame-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jIEJpb3NwZWNpbWVuIGFzc2F5IGNvdW50cyBieSBzYW1wbGUgdHlwZSBhbmQgY29tcG9zaXRpb25cbmhpc3QgJT4lXG4gIGNvdW50KHNhbXBsZV90eXBlLCBjb21wb3NpdGlvbiwgZXhwZXJpbWVudGFsX3N0cmF0ZWd5KVxuYGBgIn0= -->
-<pre class="r"><code>
-# Biospecimen assay counts by sample type and composition
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgQmlvc3BlY2ltZW4gYXNzYXkgY291bnRzIGJ5IHNhbXBsZSB0eXBlIGFuZCBjb21wb3NpdGlvbiIsImhpc3QgJT4lXG4gIGNvdW50KHNhbXBsZV90eXBlLCBjb21wb3NpdGlvbiwgZXhwZXJpbWVudGFsX3N0cmF0ZWd5KSJdfQ== -->
+<pre class="r"><code># Biospecimen assay counts by sample type and composition
 hist %&gt;%
   count(sample_type, composition, experimental_strategy)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6NCwibnJvdyI6MTB9LCJyZGYiOiJVa1JZTXdwWUNnQUFBQU1BQXdZQUFBTUZBQUFBQUFWVlZFWXRPQUFBQkFJQUFBQUJBQVFBQ1FBQUFBRjRBQUFERXdBQUFBUUFBQUFRQUFBQUNnQUVBQWtBQUFBR1RtOXliV0ZzQUFRQUNRQUFBQVpPYjNKdFlXd0FCQUFKQUFBQUJrNXZjbTFoYkFBRUFBa0FBQUFHVG05eWJXRnNBQVFBQ1FBQUFBWk9iM0p0WVd3QUJBQUpBQUFBQlZSMWJXOXlBQVFBQ1FBQUFBVlVkVzF2Y2dBRUFBa0FBQUFGVkhWdGIzSUFCQUFKQUFBQUJWUjFiVzl5QUFRQUNRQUFBQVZVZFcxdmNnQUFBQkFBQUFBS0FBUUFDUUFBQUF4T2IzUWdVbVZ3YjNKMFpXUUFCQUFKQUFBQUZsQmxjbWx3YUdWeVlXd2dWMmh2YkdVZ1FteHZiMlFBQkFBSkFBQUFGbEJsY21sd2FHVnlZV3dnVjJodmJHVWdRbXh2YjJRQUJBQUpBQUFBQmxOaGJHbDJZUUFFQUFrQUFBQU1VMjlzYVdRZ1ZHbHpjM1ZsQUFRQUNRQUFBQkZFWlhKcGRtVmtJRU5sYkd3Z1RHbHVaUUFFQUFrQUFBQVJSR1Z5YVhabFpDQkRaV3hzSUV4cGJtVUFCQUFKQUFBQURGTnZiR2xrSUZScGMzTjFaUUFFQUFrQUFBQU1VMjlzYVdRZ1ZHbHpjM1ZsQUFRQUNRQUFBQXhUYjJ4cFpDQlVhWE56ZFdVQUFBQVFBQUFBQ2dBRUFBa0FBQUFEVjBkVEFBUUFDUUFBQUFOWFIxTUFCQUFKQUFBQUNWZFlVeTlRWVc1bGJBQUVBQWtBQUFBRFYwZFRBQVFBQ1FBQUFBTlhSMU1BQkFBSkFBQUFCMUpPUVMxVFpYRUFCQUFKQUFBQUExZEhVd0FFQUFrQUFBQUhVazVCTFZObGNRQUVBQWtBQUFBRFYwZFRBQVFBQ1FBQUFBbFhXRk12VUdGdVpXd0FBQUFOQUFBQUNnQUFBQWNBQUFNR0FBQUFJQUFBQUJJQUFBQUNBQUFBRUFBQUFCWUFBQVA3QUFBRGxnQUFBQ0FBQUFRQ0FBQUFBUUFFQUFrQUFBQUZibUZ0WlhNQUFBQVFBQUFBQkFBRUFBa0FBQUFMYzJGdGNHeGxYM1I1Y0dVQUJBQUpBQUFBQzJOdmJYQnZjMmwwYVc5dUFBUUFDUUFBQUJWbGVIQmxjbWx0Wlc1MFlXeGZjM1J5WVhSbFoza0FCQUFKQUFBQUFXNEFBQVFDQUFBQUFRQUVBQWtBQUFBRlkyeGhjM01BQUFBUUFBQUFBUUFFQUFrQUFBQUtaR0YwWVM1bWNtRnRaUUFBQkFJQUFBQUJBQVFBQ1FBQUFBbHliM2N1Ym1GdFpYTUFBQUFOQUFBQUFvQUFBQUQvLy8vMkFBQUEvZ0FBQkFJQUFBQUJBQVFBQ1FBQUFBZHZjSFJwYjI1ekFBQUNFd0FBQUFVQUFBQVFBQUFBQVFBRUFBa0FBQUFCY2dBQUFCQUFBQUFCQUFRQUNRQUFBQjl6WVcxd2JHVWdjMmw2WlNBdElHSnBiM053WldOcGJXVnVMV3hsZG1Wc0FBQUFDZ0FBQUFFQUFBQUFBQUFBRFFBQUFBRUFBQUFLQUFBQURRQUFBQUVBQUFBRUFBQUVBZ0FBQXY4QUFBQVFBQUFBQlFBRUFBa0FBQUFHWlc1bmFXNWxBQVFBQ1FBQUFBVnNZV0psYkFBRUFBa0FBQUFPY205M2JtRnRaWE11Y0hKcGJuUUFCQUFKQUFBQUNuSnZkM011ZEc5MFlXd0FCQUFKQUFBQUNtTnZiSE11ZEc5MFlXd0FBQUQrQUFBQS9nPT0ifQ== -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["sample_type"],"name":[1],"type":["chr"],"align":["left"]},{"label":["composition"],"name":[2],"type":["chr"],"align":["left"]},{"label":["experimental_strategy"],"name":[3],"type":["chr"],"align":["left"]},{"label":["n"],"name":[4],"type":["int"],"align":["right"]}],"data":[{"1":"Normal","2":"Not Reported","3":"WGS","4":"7"},{"1":"Normal","2":"Peripheral Whole Blood","3":"WGS","4":"774"},{"1":"Normal","2":"Peripheral Whole Blood","3":"WXS/Panel","4":"32"},{"1":"Normal","2":"Saliva","3":"WGS","4":"18"},{"1":"Normal","2":"Solid Tissue","3":"WGS","4":"2"},{"1":"Tumor","2":"Derived Cell Line","3":"RNA-Seq","4":"16"},{"1":"Tumor","2":"Derived Cell Line","3":"WGS","4":"22"},{"1":"Tumor","2":"Solid Tissue","3":"RNA-Seq","4":"1019"},{"1":"Tumor","2":"Solid Tissue","3":"WGS","4":"918"},{"1":"Tumor","2":"Solid Tissue","3":"WXS/Panel","4":"32"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[10]},"pages":{}}}
+{"columns":[{"label":["sample_type"],"name":[1],"type":["chr"],"align":["left"]},{"label":["composition"],"name":[2],"type":["chr"],"align":["left"]},{"label":["experimental_strategy"],"name":[3],"type":["chr"],"align":["left"]},{"label":["n"],"name":[4],"type":["int"],"align":["right"]}],"data":[{"1":"Normal","2":"Not Reported","3":"WGS","4":"7"},{"1":"Normal","2":"Peripheral Whole Blood","3":"WGS","4":"774"},{"1":"Normal","2":"Peripheral Whole Blood","3":"WXS/Panel","4":"32"},{"1":"Normal","2":"Saliva","3":"WGS","4":"18"},{"1":"Normal","2":"Solid Tissue","3":"WGS","4":"2"},{"1":"Tumor","2":"Derived Cell Line","3":"RNA-Seq","4":"16"},{"1":"Tumor","2":"Derived Cell Line","3":"WGS","4":"22"},{"1":"Tumor","2":"Solid Tissue","3":"RNA-Seq","4":"1019"},{"1":"Tumor","2":"Solid Tissue","3":"WGS","4":"918"},{"1":"Tumor","2":"Solid Tissue","3":"WXS/Panel","4":"32"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -3094,7 +3100,7 @@ hist %&gt;%
 <h2>Calculate cell line Ns used for manuscript</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBudW1iZXIgb2YgdW5pcXVlIGNlbGwgbGluZXNcbmNlbGxsaW5lX2JzIDwtIGhpc3QgJT4lXG4gIGZpbHRlcihzYW1wbGVfdHlwZSA9PSBcIlR1bW9yXCIgJiBjb21wb3NpdGlvbiA9PSBcIkRlcml2ZWQgQ2VsbCBMaW5lXCIpICU+JVxuICBsZWZ0X2pvaW4oY2VsbF9saW5lcywgYnkgPSBjKFwiS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRFwiLCBcIktpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSURcIiwgXCJzYW1wbGVfaWRcIikpICU+JVxuICBzZWxlY3QoS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCwgc2FtcGxlX2lkLCBjZWxsX2xpbmVfY29tcG9zaXRpb24sIG1vbGVjdWxhcl9zdWJ0eXBlKSAlPiVcbiAgYXJyYW5nZShzYW1wbGVfaWQpXG4gXG5jZWxsbGluZV9ic19jb3VudCA8LSBjZWxsbGluZV9icyAlPiVcbiAgICBjb3VudChzYW1wbGVfaWQsIGNlbGxfbGluZV9jb21wb3NpdGlvbilcbm5yb3coY2VsbGxpbmVfYnNfY291bnQpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgbnVtYmVyIG9mIHVuaXF1ZSBjZWxsIGxpbmVzIiwiY2VsbGxpbmVfYnMgPC0gaGlzdCAlPiVcbiAgZmlsdGVyKHNhbXBsZV90eXBlID09IFwiVHVtb3JcIiAmIGNvbXBvc2l0aW9uID09IFwiRGVyaXZlZCBDZWxsIExpbmVcIikgJT4lXG4gIGxlZnRfam9pbihjZWxsX2xpbmVzLCBieSA9IGMoXCJLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEXCIsIFwiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRFwiLCBcInNhbXBsZV9pZFwiKSkgJT4lXG4gIHNlbGVjdChLaWRzX0ZpcnN0X0Jpb3NwZWNpbWVuX0lELCBzYW1wbGVfaWQsIGNlbGxfbGluZV9jb21wb3NpdGlvbiwgbW9sZWN1bGFyX3N1YnR5cGUpICU+JVxuICBhcnJhbmdlKHNhbXBsZV9pZCkiLCIgIiwiY2VsbGxpbmVfYnNfY291bnQgPC0gY2VsbGxpbmVfYnMgJT4lXG4gICAgY291bnQoc2FtcGxlX2lkLCBjZWxsX2xpbmVfY29tcG9zaXRpb24pIiwibnJvdyhjZWxsbGluZV9ic19jb3VudCkiXX0= -->
 <pre class="r"><code># Total number of unique cell lines
 cellline_bs &lt;- hist %&gt;%
   filter(sample_type == &quot;Tumor&quot; &amp; composition == &quot;Derived Cell Line&quot;) %&gt;%
@@ -3109,7 +3115,7 @@ nrow(cellline_bs_count)</code></pre>
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIDIyXG4ifQ== -->
 <pre><code>[1] 22</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBudW1iZXIgb2YgY2VsbCBsaW5lcywgaW5jbHVkaW5nIGR1cGxpY2F0ZXNcbnN1bShjZWxsbGluZV9ic19jb3VudCRuKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgbnVtYmVyIG9mIGNlbGwgbGluZXMsIGluY2x1ZGluZyBkdXBsaWNhdGVzIiwic3VtKGNlbGxsaW5lX2JzX2NvdW50JG4pIl19 -->
 <pre class="r"><code># Total number of cell lines, including duplicates
 sum(cellline_bs_count$n)</code></pre>
 <!-- rnb-source-end -->
@@ -3123,7 +3129,7 @@ sum(cellline_bs_count$n)</code></pre>
 <h2>Calculate subtyped sample Ns used for manuscript</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBudW1iZXIgb2Ygc2FtcGxlcyBzdWJ0eXBlZFxuYWxsX3NhbXBsZXNfc3VidHlwZWQgPC0gaGlzdCAlPiVcbiAgZmlsdGVyKCFpcy5uYShwYXRob2xvZ3lfZGlhZ25vc2lzKSwgXG4gICAgICAgICAgIWlzLm5hKG1vbGVjdWxhcl9zdWJ0eXBlKSwgXG4gICAgICAgICAgIWdyZXBsKFwiVG8gYmUgY2xhc3NpZmllZFwiLCBtb2xlY3VsYXJfc3VidHlwZSkpICU+JSBcbiAgICMgQ291bnQgc2FtcGxlX2lkIGFuZCBzdWJ0eXBlIGNvbWJpbmF0aW9ucyBcbiAgY291bnQoc2FtcGxlX2lkLCBtb2xlY3VsYXJfc3VidHlwZSlcbm5yb3coYWxsX3NhbXBsZXNfc3VidHlwZWQpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgbnVtYmVyIG9mIHNhbXBsZXMgc3VidHlwZWQiLCJhbGxfc2FtcGxlc19zdWJ0eXBlZCA8LSBoaXN0ICU+JVxuICBmaWx0ZXIoIWlzLm5hKHBhdGhvbG9neV9kaWFnbm9zaXMpLCBcbiAgICAgICAgICAhaXMubmEobW9sZWN1bGFyX3N1YnR5cGUpLCBcbiAgICAgICAgICAhZ3JlcGwoXCJUbyBiZSBjbGFzc2lmaWVkXCIsIG1vbGVjdWxhcl9zdWJ0eXBlKSkgJT4lIFxuICAgIyBDb3VudCBzYW1wbGVfaWQgYW5kIHN1YnR5cGUgY29tYmluYXRpb25zIFxuICBjb3VudChzYW1wbGVfaWQsIG1vbGVjdWxhcl9zdWJ0eXBlKSIsIm5yb3coYWxsX3NhbXBsZXNfc3VidHlwZWQpIl19 -->
 <pre class="r"><code># Total number of samples subtyped
 all_samples_subtyped &lt;- hist %&gt;%
   filter(!is.na(pathology_diagnosis), 
@@ -3133,10 +3139,10 @@ all_samples_subtyped &lt;- hist %&gt;%
   count(sample_id, molecular_subtype)
 nrow(all_samples_subtyped)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDY1MFxuIn0= -->
-<pre><code>[1] 650</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDY1M1xuIn0= -->
+<pre><code>[1] 653</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBudW1iZXIgb2Ygc2FtcGxlcyBzdWJ0eXBlZCwgbm90IGluY2x1ZGluZyBjZWxsIGxpbmVzXG50dW1vcnNfbm90X2xpbmVzX3N1YnR5cGVkIDwtIGhpc3QgJT4lXG4gIGZpbHRlcihjb21wb3NpdGlvbiAhPSBcIkRlcml2ZWQgQ2VsbCBMaW5lXCIsXG4gICAgICAgICAhaXMubmEocGF0aG9sb2d5X2RpYWdub3NpcyksIFxuICAgICAgICAgIWlzLm5hKG1vbGVjdWxhcl9zdWJ0eXBlKSwgXG4gICAgICAgICAhZ3JlcGwoXCJUbyBiZSBjbGFzc2lmaWVkXCIsIG1vbGVjdWxhcl9zdWJ0eXBlKSkgJT4lIFxuICAgIyBDb3VudCBzYW1wbGVfaWQgYW5kIHN1YnR5cGUgY29tYmluYXRpb25zIFxuICBjb3VudChzYW1wbGVfaWQsIG1vbGVjdWxhcl9zdWJ0eXBlKVxubnJvdyh0dW1vcnNfbm90X2xpbmVzX3N1YnR5cGVkKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgbnVtYmVyIG9mIHNhbXBsZXMgc3VidHlwZWQsIG5vdCBpbmNsdWRpbmcgY2VsbCBsaW5lcyIsInR1bW9yc19ub3RfbGluZXNfc3VidHlwZWQgPC0gaGlzdCAlPiVcbiAgZmlsdGVyKGNvbXBvc2l0aW9uICE9IFwiRGVyaXZlZCBDZWxsIExpbmVcIixcbiAgICAgICAgICFpcy5uYShwYXRob2xvZ3lfZGlhZ25vc2lzKSwgXG4gICAgICAgICAhaXMubmEobW9sZWN1bGFyX3N1YnR5cGUpLCBcbiAgICAgICAgICFncmVwbChcIlRvIGJlIGNsYXNzaWZpZWRcIiwgbW9sZWN1bGFyX3N1YnR5cGUpKSAlPiUgXG4gICAjIENvdW50IHNhbXBsZV9pZCBhbmQgc3VidHlwZSBjb21iaW5hdGlvbnMgXG4gIGNvdW50KHNhbXBsZV9pZCwgbW9sZWN1bGFyX3N1YnR5cGUpIiwibnJvdyh0dW1vcnNfbm90X2xpbmVzX3N1YnR5cGVkKSJdfQ== -->
 <pre class="r"><code># Total number of samples subtyped, not including cell lines
 tumors_not_lines_subtyped &lt;- hist %&gt;%
   filter(composition != &quot;Derived Cell Line&quot;,
@@ -3147,17 +3153,17 @@ tumors_not_lines_subtyped &lt;- hist %&gt;%
   count(sample_id, molecular_subtype)
 nrow(tumors_not_lines_subtyped)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDY0MVxuIn0= -->
-<pre><code>[1] 641</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDY0NFxuIn0= -->
+<pre><code>[1] 644</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBwZXJjZW50IG9mIHR1bW9yIHNhbXBsZXMgc3VidHlwZWRcbihucm93KHR1bW9yc19ub3RfbGluZXNfc3VidHlwZWQpL2xlbmd0aChuX3R1bW9ycykpKjEwMFxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgcGVyY2VudCBvZiB0dW1vciBzYW1wbGVzIHN1YnR5cGVkIiwiKG5yb3codHVtb3JzX25vdF9saW5lc19zdWJ0eXBlZCkvbGVuZ3RoKG5fdHVtb3JzKSkqMTAwIl19 -->
 <pre class="r"><code># percent of tumor samples subtyped
 (nrow(tumors_not_lines_subtyped)/length(n_tumors))*100</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDU5LjY4MzQzXG4ifQ== -->
-<pre><code>[1] 59.68343</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDU5Ljk2Mjc2XG4ifQ== -->
+<pre><code>[1] 59.96276</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyB3aGljaCBoYXZlIG5vbi1pZGVudGljYWwgdHVtb3IvY2VsbCBsaW5lIHN1YnR5cGVzP1xuZHVwX3NhbXBsZXMgPC0gYWxsX3NhbXBsZXNfc3VidHlwZWQgJT4lXG4gIGZpbHRlcihkdXBsaWNhdGVkKC5bW1wic2FtcGxlX2lkXCJdXSkpICU+JVxuICBwdWxsKHNhbXBsZV9pZClcblxuaGlzdCAlPiVcbiAgZmlsdGVyKCFpcy5uYShtb2xlY3VsYXJfc3VidHlwZSksXG4gICAgICAgICBzYW1wbGVfaWQgJWluJSBkdXBfc2FtcGxlcykgJT4lXG4gIGNvdW50KHNhbXBsZV9pZCwgbW9sZWN1bGFyX3N1YnR5cGUsIGNvbXBvc2l0aW9uKSAlPiVcbiAgYXJyYW5nZShzYW1wbGVfaWQsIGNvbXBvc2l0aW9uKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgd2hpY2ggaGF2ZSBub24taWRlbnRpY2FsIHR1bW9yL2NlbGwgbGluZSBzdWJ0eXBlcz8iLCJkdXBfc2FtcGxlcyA8LSBhbGxfc2FtcGxlc19zdWJ0eXBlZCAlPiVcbiAgZmlsdGVyKGR1cGxpY2F0ZWQoLltbXCJzYW1wbGVfaWRcIl1dKSkgJT4lXG4gIHB1bGwoc2FtcGxlX2lkKSIsIiIsImhpc3QgJT4lXG4gIGZpbHRlcighaXMubmEobW9sZWN1bGFyX3N1YnR5cGUpLFxuICAgICAgICAgc2FtcGxlX2lkICVpbiUgZHVwX3NhbXBsZXMpICU+JVxuICBjb3VudChzYW1wbGVfaWQsIG1vbGVjdWxhcl9zdWJ0eXBlLCBjb21wb3NpdGlvbikgJT4lXG4gIGFycmFuZ2Uoc2FtcGxlX2lkLCBjb21wb3NpdGlvbikiXX0= -->
 <pre class="r"><code># which have non-identical tumor/cell line subtypes?
 dup_samples &lt;- all_samples_subtyped %&gt;%
   filter(duplicated(.[[&quot;sample_id&quot;]])) %&gt;%
@@ -3169,16 +3175,13 @@ hist %&gt;%
   count(sample_id, molecular_subtype, composition) %&gt;%
   arrange(sample_id, composition)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6NCwibnJvdyI6Nn0sInJkZiI6IlVrUllNd3BZQ2dBQUFBTUFBd1lBQUFNRkFBQUFBQVZWVkVZdE9BQUFCQUlBQUFBQkFBUUFDUUFBQUFGNEFBQURFd0FBQUFRQUFBQVFBQUFBQmdBRUFBa0FBQUFKTnpNeE5pMHlNVGc1QUFRQUNRQUFBQWszTXpFMkxUSXhPRGtBQkFBSkFBQUFDVGN6TVRZdE16QTFPQUFFQUFrQUFBQUpOek14Tmkwek1EVTRBQVFBQ1FBQUFBazNNekUyTFRNeU16QUFCQUFKQUFBQUNUY3pNVFl0TXpJek1BQUFBQkFBQUFBR0FBUUFDUUFBQUJ0SVIwY3NJRWd6SUhkcGJHUjBlWEJsTENCVVVEVXpJR3h2YzNNQUJBQUpBQUFBSUVoSFJ5d2dTRE1nZDJsc1pIUjVjR1VzSUZSUU5UTWdZV04wYVhaaGRHVmtBQVFBQ1FBQUFCWkVUVWNzSUVneklFc3lPQ3dnVkZBMU15QnNiM056QUFRQUNRQUFBQnRFVFVjc0lFZ3pJRXN5T0N3Z1ZGQTFNeUJoWTNScGRtRjBaV1FBQkFBSkFBQUFGa1JOUnl3Z1NETWdTekk0TENCVVVEVXpJR3h2YzNNQUJBQUpBQUFBRzBoSFJ5d2dTRE1nZDJsc1pIUjVjR1VzSUZSUU5UTWdiRzl6Y3dBQUFCQUFBQUFHQUFRQUNRQUFBQkZFWlhKcGRtVmtJRU5sYkd3Z1RHbHVaUUFFQUFrQUFBQU1VMjlzYVdRZ1ZHbHpjM1ZsQUFRQUNRQUFBQkZFWlhKcGRtVmtJRU5sYkd3Z1RHbHVaUUFFQUFrQUFBQU1VMjlzYVdRZ1ZHbHpjM1ZsQUFRQUNRQUFBQXhUYjJ4cFpDQlVhWE56ZFdVQUJBQUpBQUFBREZOdmJHbGtJRlJwYzNOMVpRQUFBQTBBQUFBR0FBQUFBZ0FBQUFJQUFBQUVBQUFBQWdBQUFBTUFBQUFCQUFBRUFnQUFBQUVBQkFBSkFBQUFCV05zWVhOekFBQUFFQUFBQUFFQUJBQUpBQUFBQ21SaGRHRXVabkpoYldVQUFBUUNBQUFBQVFBRUFBa0FBQUFKY205M0xtNWhiV1Z6QUFBQURRQUFBQUtBQUFBQS8vLy8rZ0FBQkFJQUFBQUJBQVFBQ1FBQUFBVnVZVzFsY3dBQUFCQUFBQUFFQUFRQUNRQUFBQWx6WVcxd2JHVmZhV1FBQkFBSkFBQUFFVzF2YkdWamRXeGhjbDl6ZFdKMGVYQmxBQVFBQ1FBQUFBdGpiMjF3YjNOcGRHbHZiZ0FFQUFrQUFBQUJiZ0FBQVA0QUFBUUNBQUFBQVFBRUFBa0FBQUFIYjNCMGFXOXVjd0FBQWhNQUFBQUZBQUFBRUFBQUFBRUFCQUFKQUFBQUFYSUFBQUFRQUFBQUFRQUVBQWtBQUFBUWMyRnRjR3hsY3lCemRXSjBlWEJsWkFBQUFBb0FBQUFCQUFBQUFBQUFBQTBBQUFBQkFBQUFCZ0FBQUEwQUFBQUJBQUFBQkFBQUJBSUFBQVQvQUFBQUVBQUFBQVVBQkFBSkFBQUFCbVZ1WjJsdVpRQUVBQWtBQUFBRmJHRmlaV3dBQkFBSkFBQUFEbkp2ZDI1aGJXVnpMbkJ5YVc1MEFBUUFDUUFBQUFweWIzZHpMblJ2ZEdGc0FBUUFDUUFBQUFwamIyeHpMblJ2ZEdGc0FBQUEvZ0FBQVA0PSJ9 -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["sample_id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[2],"type":["chr"],"align":["left"]},{"label":["composition"],"name":[3],"type":["chr"],"align":["left"]},{"label":["n"],"name":[4],"type":["int"],"align":["right"]}],"data":[{"1":"7316-2189","2":"HGG, H3 wildtype, TP53 loss","3":"Derived Cell Line","4":"2"},{"1":"7316-2189","2":"HGG, H3 wildtype, TP53 activated","3":"Solid Tissue","4":"2"},{"1":"7316-3058","2":"DMG, H3 K28, TP53 loss","3":"Derived Cell Line","4":"4"},{"1":"7316-3058","2":"DMG, H3 K28, TP53 activated","3":"Solid Tissue","4":"2"},{"1":"7316-3230","2":"DMG, H3 K28, TP53 loss","3":"Solid Tissue","4":"3"},{"1":"7316-3230","2":"HGG, H3 wildtype, TP53 loss","3":"Solid Tissue","4":"1"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+{"columns":[{"label":["sample_id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["molecular_subtype"],"name":[2],"type":["chr"],"align":["left"]},{"label":["composition"],"name":[3],"type":["chr"],"align":["left"]},{"label":["n"],"name":[4],"type":["int"],"align":["right"]}],"data":[{"1":"7316-2189","2":"HGG, H3 wildtype, TP53 loss","3":"Derived Cell Line","4":"2"},{"1":"7316-2189","2":"HGG, H3 wildtype, TP53 activated","3":"Solid Tissue","4":"2"},{"1":"7316-3058","2":"DMG, H3 K28, TP53 loss","3":"Derived Cell Line","4":"4"},{"1":"7316-3058","2":"DMG, H3 K28, TP53 activated","3":"Solid Tissue","4":"2"},{"1":"7316-3230","2":"DMG, H3 K28, TP53 loss","3":"Solid Tissue","4":"3"},{"1":"7316-3230","2":"HGG, H3 wildtype, TP53 loss","3":"Solid Tissue","4":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<!-- rnb-frame-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jIERvIGFueSBjZWxsIGxpbmUgZHVwbGljYXRlcyBoYXZlIGRpZmZlcmVudCBzdWJ0eXBlcz8gTm9cbmNlbGxsaW5lX2JzICU+JVxuICBzZWxlY3Qoc2FtcGxlX2lkLCBtb2xlY3VsYXJfc3VidHlwZSkgJT4lXG4gIHVuaXF1ZSgpICU+JVxuICBmaWx0ZXIoZHVwbGljYXRlZCguW1tcInNhbXBsZV9pZFwiXV0pKSAlPiVcbiAgcHVsbChzYW1wbGVfaWQpXG5gYGAifQ== -->
-<pre class="r"><code>
-# Do any cell line duplicates have different subtypes? No
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgRG8gYW55IGNlbGwgbGluZSBkdXBsaWNhdGVzIGhhdmUgZGlmZmVyZW50IHN1YnR5cGVzPyBObyIsImNlbGxsaW5lX2JzICU+JVxuICBzZWxlY3Qoc2FtcGxlX2lkLCBtb2xlY3VsYXJfc3VidHlwZSkgJT4lXG4gIHVuaXF1ZSgpICU+JVxuICBmaWx0ZXIoZHVwbGljYXRlZCguW1tcInNhbXBsZV9pZFwiXV0pKSAlPiVcbiAgcHVsbChzYW1wbGVfaWQpIl19 -->
+<pre class="r"><code># Do any cell line duplicates have different subtypes? No
 cellline_bs %&gt;%
   select(sample_id, molecular_subtype) %&gt;%
   unique() %&gt;%
@@ -3188,17 +3191,17 @@ cellline_bs %&gt;%
 <!-- rnb-output-begin eyJkYXRhIjoiY2hhcmFjdGVyKDApXG4ifQ== -->
 <pre><code>character(0)</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBudW1iZXIgb2Ygc2FtcGxlcyB3aXRoIFdITy1hbGlnbmVkIGludGVncmF0ZWQgZGlhZ25vc2lzXG53aG9fZHggPC0gaGlzdCAlPiVcbiAgZmlsdGVyKCFpcy5uYShpbnRlZ3JhdGVkX2RpYWdub3NpcykpICU+JVxuICBjb3VudChzYW1wbGVfaWQsIGNvbXBvc2l0aW9uLCBtb2xlY3VsYXJfc3VidHlwZSkgXG50YWJsZSh3aG9fZHgkY29tcG9zaXRpb24pXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgbnVtYmVyIG9mIHNhbXBsZXMgd2l0aCBXSE8tYWxpZ25lZCBpbnRlZ3JhdGVkIGRpYWdub3NpcyIsIndob19keCA8LSBoaXN0ICU+JVxuICBmaWx0ZXIoIWlzLm5hKGludGVncmF0ZWRfZGlhZ25vc2lzKSkgJT4lXG4gIGNvdW50KHNhbXBsZV9pZCwgY29tcG9zaXRpb24sIG1vbGVjdWxhcl9zdWJ0eXBlKSAiLCJ0YWJsZSh3aG9fZHgkY29tcG9zaXRpb24pIl19 -->
 <pre class="r"><code># Total number of samples with WHO-aligned integrated diagnosis
 who_dx &lt;- hist %&gt;%
   filter(!is.na(integrated_diagnosis)) %&gt;%
   count(sample_id, composition, molecular_subtype) 
 table(who_dx$composition)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG5EZXJpdmVkIENlbGwgTGluZSAgICAgIFNvbGlkIFRpc3N1ZSBcbiAgICAgICAgICAgICAgIDE2ICAgICAgICAgICAgICAgNjMwIFxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5EZXJpdmVkIENlbGwgTGluZSAgICAgIFNvbGlkIFRpc3N1ZSBcbiAgICAgICAgICAgICAgIDE2ICAgICAgICAgICAgICAgNjMzIFxuIn0= -->
 <pre><code>
 Derived Cell Line      Solid Tissue 
-               16               630 </code></pre>
+               16               633 </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3207,7 +3210,7 @@ Derived Cell Line      Solid Tissue
 <h2>Calculate histology and cancer group Ns used for manuscript</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBudW1iZXIgb2YgYW5ub3RhdGVkIGhpc3RvbG9naWVzXG5oaXN0ICU+JVxuICBmaWx0ZXIoIWlzLm5hKHBhdGhvbG9neV9kaWFnbm9zaXMpICYgIWlzLm5hKGNhbmNlcl9ncm91cCkpICU+JVxuICBwdWxsKGNhbmNlcl9ncm91cCkgJT4lXG4gIHVuaXF1ZSgpICU+JVxuICBsZW5ndGgoKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgbnVtYmVyIG9mIGFubm90YXRlZCBoaXN0b2xvZ2llcyIsImhpc3QgJT4lXG4gIGZpbHRlcighaXMubmEocGF0aG9sb2d5X2RpYWdub3NpcykgJiAhaXMubmEoY2FuY2VyX2dyb3VwKSkgJT4lXG4gIHB1bGwoY2FuY2VyX2dyb3VwKSAlPiVcbiAgdW5pcXVlKCkgJT4lXG4gIGxlbmd0aCgpIl19 -->
 <pre class="r"><code># Total number of annotated histologies
 hist %&gt;%
   filter(!is.na(pathology_diagnosis) &amp; !is.na(cancer_group)) %&gt;%
@@ -3218,7 +3221,7 @@ hist %&gt;%
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIDU4XG4ifQ== -->
 <pre><code>[1] 58</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBudW1iZXIgb2YgYnJvYWQgaGlzdG9sb2dpZXNcbmhpc3QgJT4lXG4gIGZpbHRlcighaXMubmEocGF0aG9sb2d5X2RpYWdub3NpcykgJiAhaXMubmEoYnJvYWRfaGlzdG9sb2d5KSAmIGJyb2FkX2hpc3RvbG9neSAhPSBcIk5vbi10dW1vclwiKSAlPiVcbiAgY291bnQoYnJvYWRfaGlzdG9sb2d5KSAlPiVcbiAgbnJvdygpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgbnVtYmVyIG9mIGJyb2FkIGhpc3RvbG9naWVzIiwiaGlzdCAlPiVcbiAgZmlsdGVyKCFpcy5uYShwYXRob2xvZ3lfZGlhZ25vc2lzKSAmICFpcy5uYShicm9hZF9oaXN0b2xvZ3kpICYgYnJvYWRfaGlzdG9sb2d5ICE9IFwiTm9uLXR1bW9yXCIpICU+JVxuICBjb3VudChicm9hZF9oaXN0b2xvZ3kpICU+JVxuICBucm93KCkiXX0= -->
 <pre class="r"><code># Total number of broad histologies
 hist %&gt;%
   filter(!is.na(pathology_diagnosis) &amp; !is.na(broad_histology) &amp; broad_histology != &quot;Non-tumor&quot;) %&gt;%
@@ -3235,10 +3238,10 @@ hist %&gt;%
 <h2>Print session info</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoic2Vzc2lvbkluZm8oKSJ9 -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgICBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgICBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgICBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcblsxXSBmb3JjYXRzXzAuNC4wICAgc3RyaW5ncl8xLjQuMCAgIGRwbHlyXzAuOC4zICAgICBwdXJycl8wLjMuMiAgICAgcmVhZHJfMS4zLjEgICAgIHRpZHlyXzAuOC4zICAgICB0aWJibGVfMi4xLjMgICAgZ2dwbG90Ml8zLjIuMCAgXG5bOV0gdGlkeXZlcnNlXzEuMi4xXG5cbmxvYWRlZCB2aWEgYSBuYW1lc3BhY2UgKGFuZCBub3QgYXR0YWNoZWQpOlxuIFsxXSBSY3BwXzEuMC4xICAgICAgIGNlbGxyYW5nZXJfMS4xLjAgcGlsbGFyXzEuNC4yICAgICBjb21waWxlcl8zLjYuMCAgIGJhc2U2NGVuY18wLjEtMyAgdG9vbHNfMy42LjAgICAgICBkaWdlc3RfMC42LjIwICAgXG4gWzhdIGx1YnJpZGF0ZV8xLjcuNCAganNvbmxpdGVfMS42ICAgICBldmFsdWF0ZV8wLjE0ICAgIG5sbWVfMy4xLTE0MCAgICAgZ3RhYmxlXzAuMy4wICAgICBsYXR0aWNlXzAuMjAtMzggIHBrZ2NvbmZpZ18yLjAuMiBcblsxNV0gcmxhbmdfMC40LjAgICAgICBjbGlfMS4xLjAgICAgICAgIHJzdHVkaW9hcGlfMC4xMCAgeWFtbF8yLjIuMCAgICAgICBoYXZlbl8yLjEuMSAgICAgIHhmdW5fMC44ICAgICAgICAgd2l0aHJfMi4xLjIgICAgIFxuWzIyXSB4bWwyXzEuMi4wICAgICAgIGh0dHJfMS40LjAgICAgICAga25pdHJfMS4yMyAgICAgICBobXNfMC40LjIgICAgICAgIGdlbmVyaWNzXzAuMC4yICAgcnByb2pyb290XzEuMy0yICBncmlkXzMuNi4wICAgICAgXG5bMjldIHRpZHlzZWxlY3RfMC4yLjUgZ2x1ZV8xLjMuMSAgICAgICBSNl8yLjQuMCAgICAgICAgIHJlYWR4bF8xLjMuMSAgICAgcm1hcmtkb3duXzEuMTMgICBtb2RlbHJfMC4xLjQgICAgIG1hZ3JpdHRyXzEuNSAgICBcblszNl0gYmFja3BvcnRzXzEuMS40ICBzY2FsZXNfMS4wLjAgICAgIGh0bWx0b29sc18wLjMuNiAgcnZlc3RfMC4zLjQgICAgICBhc3NlcnR0aGF0XzAuMi4xIGNvbG9yc3BhY2VfMS40LTEgc3RyaW5naV8xLjQuMyAgIFxuWzQzXSBsYXp5ZXZhbF8wLjIuMiAgIG11bnNlbGxfMC41LjAgICAgYnJvb21fMC41LjIgICAgICBjcmF5b25fMS4zLjQgICAgXG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgIFxuIFszXSBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgIFxuWzExXSBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcblsxXSBmb3JjYXRzXzAuNC4wICAgc3RyaW5ncl8xLjQuMCAgIGRwbHlyXzAuOC4zICAgICBwdXJycl8wLjMuMiAgICBcbls1XSByZWFkcl8xLjMuMSAgICAgdGlkeXJfMC44LjMgICAgIHRpYmJsZV8yLjEuMyAgICBnZ3Bsb3QyXzMuMi4wICBcbls5XSB0aWR5dmVyc2VfMS4yLjFcblxubG9hZGVkIHZpYSBhIG5hbWVzcGFjZSAoYW5kIG5vdCBhdHRhY2hlZCk6XG4gWzFdIFJjcHBfMS4wLjEgICAgICAgY2VsbHJhbmdlcl8xLjEuMCBwaWxsYXJfMS40LjIgICAgIGNvbXBpbGVyXzMuNi4wICBcbiBbNV0gYmFzZTY0ZW5jXzAuMS0zICB0b29sc18zLjYuMCAgICAgIGRpZ2VzdF8wLjYuMjAgICAgbHVicmlkYXRlXzEuNy40IFxuIFs5XSBqc29ubGl0ZV8xLjYgICAgIGV2YWx1YXRlXzAuMTQgICAgbmxtZV8zLjEtMTQwICAgICBndGFibGVfMC4zLjAgICAgXG5bMTNdIGxhdHRpY2VfMC4yMC0zOCAgcGtnY29uZmlnXzIuMC4yICBybGFuZ18wLjQuMCAgICAgIGNsaV8xLjEuMCAgICAgICBcblsxN10gcnN0dWRpb2FwaV8wLjEwICB5YW1sXzIuMi4wICAgICAgIGhhdmVuXzIuMS4xICAgICAgeGZ1bl8wLjggICAgICAgIFxuWzIxXSB3aXRocl8yLjEuMiAgICAgIHhtbDJfMS4yLjAgICAgICAgaHR0cl8xLjQuMCAgICAgICBrbml0cl8xLjIzICAgICAgXG5bMjVdIGdlbmVyaWNzXzAuMC4yICAgaG1zXzAuNC4yICAgICAgICBycHJvanJvb3RfMS4zLTIgIGdyaWRfMy42LjAgICAgICBcblsyOV0gdGlkeXNlbGVjdF8wLjIuNSBnbHVlXzEuMy4xICAgICAgIFI2XzIuNC4wICAgICAgICAgcmVhZHhsXzEuMy4xICAgIFxuWzMzXSBybWFya2Rvd25fMS4xMyAgIG1vZGVscl8wLjEuNCAgICAgbWFncml0dHJfMS41ICAgICBiYWNrcG9ydHNfMS4xLjQgXG5bMzddIHNjYWxlc18xLjAuMCAgICAgaHRtbHRvb2xzXzAuMy42ICBydmVzdF8wLjMuNCAgICAgIGFzc2VydHRoYXRfMC4yLjFcbls0MV0gY29sb3JzcGFjZV8xLjQtMSBzdHJpbmdpXzEuNC4zICAgIGxhenlldmFsXzAuMi4yICAgbXVuc2VsbF8wLjUuMCAgIFxuWzQ1XSBicm9vbV8wLjUuMiAgICAgIGNyYXlvbl8xLjMuNCAgICBcbiJ9 -->
 <pre><code>R version 3.6.0 (2019-04-26)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Debian GNU/Linux 9 (stretch)
@@ -3247,30 +3250,39 @@ Matrix products: default
 BLAS/LAPACK: /usr/lib/libopenblasp-r0.2.19.so
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C               LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C              LC_PAPER=en_US.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C             LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] forcats_0.4.0   stringr_1.4.0   dplyr_0.8.3     purrr_0.3.2     readr_1.3.1     tidyr_0.8.3     tibble_2.1.3    ggplot2_3.2.0  
+[1] forcats_0.4.0   stringr_1.4.0   dplyr_0.8.3     purrr_0.3.2    
+[5] readr_1.3.1     tidyr_0.8.3     tibble_2.1.3    ggplot2_3.2.0  
 [9] tidyverse_1.2.1
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.1       cellranger_1.1.0 pillar_1.4.2     compiler_3.6.0   base64enc_0.1-3  tools_3.6.0      digest_0.6.20   
- [8] lubridate_1.7.4  jsonlite_1.6     evaluate_0.14    nlme_3.1-140     gtable_0.3.0     lattice_0.20-38  pkgconfig_2.0.2 
-[15] rlang_0.4.0      cli_1.1.0        rstudioapi_0.10  yaml_2.2.0       haven_2.1.1      xfun_0.8         withr_2.1.2     
-[22] xml2_1.2.0       httr_1.4.0       knitr_1.23       hms_0.4.2        generics_0.0.2   rprojroot_1.3-2  grid_3.6.0      
-[29] tidyselect_0.2.5 glue_1.3.1       R6_2.4.0         readxl_1.3.1     rmarkdown_1.13   modelr_0.1.4     magrittr_1.5    
-[36] backports_1.1.4  scales_1.0.0     htmltools_0.3.6  rvest_0.3.4      assertthat_0.2.1 colorspace_1.4-1 stringi_1.4.3   
-[43] lazyeval_0.2.2   munsell_0.5.0    broom_0.5.2      crayon_1.3.4    </code></pre>
+ [1] Rcpp_1.0.1       cellranger_1.1.0 pillar_1.4.2     compiler_3.6.0  
+ [5] base64enc_0.1-3  tools_3.6.0      digest_0.6.20    lubridate_1.7.4 
+ [9] jsonlite_1.6     evaluate_0.14    nlme_3.1-140     gtable_0.3.0    
+[13] lattice_0.20-38  pkgconfig_2.0.2  rlang_0.4.0      cli_1.1.0       
+[17] rstudioapi_0.10  yaml_2.2.0       haven_2.1.1      xfun_0.8        
+[21] withr_2.1.2      xml2_1.2.0       httr_1.4.0       knitr_1.23      
+[25] generics_0.0.2   hms_0.4.2        rprojroot_1.3-2  grid_3.6.0      
+[29] tidyselect_0.2.5 glue_1.3.1       R6_2.4.0         readxl_1.3.1    
+[33] rmarkdown_1.13   modelr_0.1.4     magrittr_1.5     backports_1.1.4 
+[37] scales_1.0.0     htmltools_0.3.6  rvest_0.3.4      assertthat_0.2.1
+[41] colorspace_1.4-1 stringi_1.4.3    lazyeval_0.2.2   munsell_0.5.0   
+[45] broom_0.5.2      crayon_1.3.4    </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiU2FtcGxlIG51bWJlcnMgZm9yIG1hbnVzY3JpcHQiCmF1dGhvcjogIkpvIEx5bm5lIFJva2l0YSBmb3IgRDNiIgpkYXRlOiAiMjAyMiIKb3V0cHV0OiAKICBodG1sX25vdGVib29rOgogICAgdG9jOiBUUlVFCiAgICB0b2NfZmxvYXQ6IFRSVUUKcGFyYW1zOgogIHJlbGVhc2U6IHJlbGVhc2UtdjIyLTIwMjIwNTA1IAotLS0KCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQpsaWJyYXJ5KHRpZHl2ZXJzZSkKYGBgClRoaXMgbm90ZWJvb2sgdGFsbGllcyBwYXRpZW50LWxldmVsLCBzYW1wbGUtbGV2ZWwsIGFuZCBiaW9zcGVjaW1lbi1sZXZlbCBOcyB1c2VkIHRocm91Z2hvdXQgdGhlIG1hbnVzY3JpcHQuCgojIyBTZXQgZGlyZWN0b3JpZXMgCmBgYHtyIHNldCBkaXJlY3Rvcmllc30Kcm9vdF9kaXIgPC0gcnByb2pyb290OjpmaW5kX3Jvb3QocnByb2pyb290OjpoYXNfZGlyKCIuZ2l0IikpCmRhdGFfZGlyIDwtIGZpbGUucGF0aChyb290X2RpciwgImRhdGEiKQphbmFseXNpc19kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCAiYW5hbHlzZXMiLCAic2FtcGxlLWRpc3RyaWJ1dGlvbi1hbmFseXNpcyIpCmBgYAoKIyMgUmVhZCBpbiBGaWxlcwpgYGB7ciByZWFkIGluIGZpbGVzfQpoaXN0X2ZpbGUgPC0gZmlsZS5wYXRoKGRhdGFfZGlyLCAicGJ0YS1oaXN0b2xvZ2llcy50c3YiKQpjZWxsX2xpbmVzX2ZpbGUgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCAiYW5hbHlzZXMiLCAibW9sZWN1bGFyLXN1YnR5cGluZy1IR0ciLCAiaW5wdXQiLCAiY2VsbC1saW5lLWNvbXBvc2l0aW9uLnRzdiIpCgojIFJlYWQgaW4gaGlzdG9sb2dpZXMgZmlsZQpoaXN0IDwtIHJlYWRfdHN2KGhpc3RfZmlsZSwgZ3Vlc3NfbWF4ID0gMTAwMDApCgojIENlbGwgbGluZXMgd2hpY2ggaGF2ZSBib3RoIHN1c3BlbnNpb24gKFMsIHNlcnVtLWZyZWUgbWVkaWEpIG9yIGFkaGVyZW50IChBLCBzZXJ1bS1jb250YWluaW5nIG1lZGlhKSBjb21wb3NpdGlvbnMgZHVlIHRvIGJlaW5nIGdyb3duIGluIGRpZmZlcmVudCBtZWRpYS4gCmNlbGxfbGluZXMgPC0gcmVhZF90c3YoY2VsbF9saW5lc19maWxlKQpgYGAKCiMjIENhbGN1bGF0ZSBwYXRpZW50IGxldmVsIE5zIHVzZWQgZm9yIG1hbnVzY3JpcHQKCgpgYGB7ciBzYW1wbGUgc2l6ZSAtIHBhdGllbnQtbGV2ZWx9CiMgVG90YWwgTiBwYXRpZW50cwpoaXN0ICU+JQogIHB1bGwoS2lkc19GaXJzdF9QYXJ0aWNpcGFudF9JRCkgJT4lCiAgdW5pcXVlKCkgJT4lCiAgbGVuZ3RoKCkKYGBgCgojIyBDYWxjdWxhdGUgc2FtcGxlICh0dW1vci9ub3JtYWwpIGxldmVsIE5zIHVzZWQgZm9yIG1hbnVzY3JpcHQKCmBgYHtyIHNhbXBsZSBzaXplIC0gdHVtb3Ivbm9ybWFsLWxldmVsfQojIFRvdGFsIG51bWJlciBvZiB0dW1vcnMKbl90dW1vcnMgPC0gaGlzdCAlPiUKICBmaWx0ZXIoc2FtcGxlX3R5cGUgPT0gIlR1bW9yIiAmIGNvbXBvc2l0aW9uICE9ICJEZXJpdmVkIENlbGwgTGluZSIpICU+JQogIHB1bGwoc2FtcGxlX2lkKSAlPiUKICB1bmlxdWUoKQpsZW5ndGgobl90dW1vcnMpCgojIFRvdGFsIE4gYXNzYXlzIGJ5IGJhc2VkIG9uIHdoZXRoZXIgaXQgaXMgYSBjZWxsIGxpbmUgb3IgdHVtb3Ivbm9ybWFsIHRpc3N1ZQpoaXN0IDwtIGhpc3QgJT4lCiAgbXV0YXRlKHR5cGUgPSBjYXNlX3doZW4oY29tcG9zaXRpb24gPT0gIkRlcml2ZWQgQ2VsbCBMaW5lIiB+ICJDZWxsIExpbmUiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzYW1wbGVfdHlwZSA9PSAiVHVtb3IiIH4gIlR1bW9yIFNhbXBsZSIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFRSVUUgfiAiTm9ybWFsIFNhbXBsZSIpLAogICAgICAgICBleHBlcmltZW50YWxfc3RyYXRlZ3kgPSBpZmVsc2UoZXhwZXJpbWVudGFsX3N0cmF0ZWd5ID09ICJXWFMiIHwgZXhwZXJpbWVudGFsX3N0cmF0ZWd5ID09ICJUYXJnZXRlZCBTZXF1ZW5jaW5nIiwgIldYUy9QYW5lbCIsIGV4cGVyaW1lbnRhbF9zdHJhdGVneSkpCnRhYmxlKGhpc3QkdHlwZSwgaGlzdCRleHBlcmltZW50YWxfc3RyYXRlZ3kpCgpgYGAKCiMjIENhbGN1bGF0ZSBiaW9zcGVjaW1lbiBsZXZlbCBOcyB1c2VkIGZvciBtYW51c2NyaXB0CgpgYGB7ciBzYW1wbGUgc2l6ZSAtIGJpb3NwZWNpbWVuLWxldmVsfQojIEJpb3NwZWNpbWVuIGNvdW50cyBieSBzYW1wbGUgdHlwZQpoaXN0ICU+JQogIGNvdW50KHNhbXBsZV90eXBlKQoKIyBCaW9zcGVjaW1lbiBjb3VudHMgYnkgc2FtcGxlIHR5cGUgYW5kIGNvbXBvc2l0aW9uIChpbmNsdWRpbmcgZHVwbGljYXRlIGNlbGwgbGluZXMpCmhpc3QgJT4lCiAgY291bnQoc2FtcGxlX3R5cGUsIGNvbXBvc2l0aW9uKQoKIyBCaW9zcGVjaW1lbiBhc3NheSBjb3VudHMgYnkgc2FtcGxlIHR5cGUgYW5kIGNvbXBvc2l0aW9uCmhpc3QgJT4lCiAgY291bnQoc2FtcGxlX3R5cGUsIGNvbXBvc2l0aW9uLCBleHBlcmltZW50YWxfc3RyYXRlZ3kpCmBgYAojIyBDYWxjdWxhdGUgY2VsbCBsaW5lIE5zIHVzZWQgZm9yIG1hbnVzY3JpcHQKCmBgYHtyIHNhbXBsZSBzaXplIC0gY2VsbCBsaW5lc30KIyBUb3RhbCBudW1iZXIgb2YgdW5pcXVlIGNlbGwgbGluZXMKY2VsbGxpbmVfYnMgPC0gaGlzdCAlPiUKICBmaWx0ZXIoc2FtcGxlX3R5cGUgPT0gIlR1bW9yIiAmIGNvbXBvc2l0aW9uID09ICJEZXJpdmVkIENlbGwgTGluZSIpICU+JQogIGxlZnRfam9pbihjZWxsX2xpbmVzLCBieSA9IGMoIktpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQiLCAiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCIsICJzYW1wbGVfaWQiKSkgJT4lCiAgc2VsZWN0KEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQsIHNhbXBsZV9pZCwgY2VsbF9saW5lX2NvbXBvc2l0aW9uLCBtb2xlY3VsYXJfc3VidHlwZSkgJT4lCiAgYXJyYW5nZShzYW1wbGVfaWQpCiAKY2VsbGxpbmVfYnNfY291bnQgPC0gY2VsbGxpbmVfYnMgJT4lCiAgICBjb3VudChzYW1wbGVfaWQsIGNlbGxfbGluZV9jb21wb3NpdGlvbikKbnJvdyhjZWxsbGluZV9ic19jb3VudCkKCgojIFRvdGFsIG51bWJlciBvZiBjZWxsIGxpbmVzLCBpbmNsdWRpbmcgZHVwbGljYXRlcwpzdW0oY2VsbGxpbmVfYnNfY291bnQkbikKYGBgCiMjIENhbGN1bGF0ZSBzdWJ0eXBlZCBzYW1wbGUgTnMgdXNlZCBmb3IgbWFudXNjcmlwdAoKYGBge3Igc2FtcGxlcyBzdWJ0eXBlZH0KIyBUb3RhbCBudW1iZXIgb2Ygc2FtcGxlcyBzdWJ0eXBlZAphbGxfc2FtcGxlc19zdWJ0eXBlZCA8LSBoaXN0ICU+JQogIGZpbHRlcighaXMubmEocGF0aG9sb2d5X2RpYWdub3NpcyksIAogICAgICAgICAgIWlzLm5hKG1vbGVjdWxhcl9zdWJ0eXBlKSwgCiAgICAgICAgICAhZ3JlcGwoIlRvIGJlIGNsYXNzaWZpZWQiLCBtb2xlY3VsYXJfc3VidHlwZSkpICU+JSAKICAgIyBDb3VudCBzYW1wbGVfaWQgYW5kIHN1YnR5cGUgY29tYmluYXRpb25zIAogIGNvdW50KHNhbXBsZV9pZCwgbW9sZWN1bGFyX3N1YnR5cGUpCm5yb3coYWxsX3NhbXBsZXNfc3VidHlwZWQpCgojIFRvdGFsIG51bWJlciBvZiBzYW1wbGVzIHN1YnR5cGVkLCBub3QgaW5jbHVkaW5nIGNlbGwgbGluZXMKdHVtb3JzX25vdF9saW5lc19zdWJ0eXBlZCA8LSBoaXN0ICU+JQogIGZpbHRlcihjb21wb3NpdGlvbiAhPSAiRGVyaXZlZCBDZWxsIExpbmUiLAogICAgICAgICAhaXMubmEocGF0aG9sb2d5X2RpYWdub3NpcyksIAogICAgICAgICAhaXMubmEobW9sZWN1bGFyX3N1YnR5cGUpLCAKICAgICAgICAgIWdyZXBsKCJUbyBiZSBjbGFzc2lmaWVkIiwgbW9sZWN1bGFyX3N1YnR5cGUpKSAlPiUgCiAgICMgQ291bnQgc2FtcGxlX2lkIGFuZCBzdWJ0eXBlIGNvbWJpbmF0aW9ucyAKICBjb3VudChzYW1wbGVfaWQsIG1vbGVjdWxhcl9zdWJ0eXBlKQpucm93KHR1bW9yc19ub3RfbGluZXNfc3VidHlwZWQpCgojIHBlcmNlbnQgb2YgdHVtb3Igc2FtcGxlcyBzdWJ0eXBlZAoobnJvdyh0dW1vcnNfbm90X2xpbmVzX3N1YnR5cGVkKS9sZW5ndGgobl90dW1vcnMpKSoxMDAKCiMgd2hpY2ggaGF2ZSBub24taWRlbnRpY2FsIHR1bW9yL2NlbGwgbGluZSBzdWJ0eXBlcz8KZHVwX3NhbXBsZXMgPC0gYWxsX3NhbXBsZXNfc3VidHlwZWQgJT4lCiAgZmlsdGVyKGR1cGxpY2F0ZWQoLltbInNhbXBsZV9pZCJdXSkpICU+JQogIHB1bGwoc2FtcGxlX2lkKQoKaGlzdCAlPiUKICBmaWx0ZXIoIWlzLm5hKG1vbGVjdWxhcl9zdWJ0eXBlKSwKICAgICAgICAgc2FtcGxlX2lkICVpbiUgZHVwX3NhbXBsZXMpICU+JQogIGNvdW50KHNhbXBsZV9pZCwgbW9sZWN1bGFyX3N1YnR5cGUsIGNvbXBvc2l0aW9uKSAlPiUKICBhcnJhbmdlKHNhbXBsZV9pZCwgY29tcG9zaXRpb24pCgojIERvIGFueSBjZWxsIGxpbmUgZHVwbGljYXRlcyBoYXZlIGRpZmZlcmVudCBzdWJ0eXBlcz8gTm8KY2VsbGxpbmVfYnMgJT4lCiAgc2VsZWN0KHNhbXBsZV9pZCwgbW9sZWN1bGFyX3N1YnR5cGUpICU+JQogIHVuaXF1ZSgpICU+JQogIGZpbHRlcihkdXBsaWNhdGVkKC5bWyJzYW1wbGVfaWQiXV0pKSAlPiUKICBwdWxsKHNhbXBsZV9pZCkKCiMgVG90YWwgbnVtYmVyIG9mIHNhbXBsZXMgd2l0aCBXSE8tYWxpZ25lZCBpbnRlZ3JhdGVkIGRpYWdub3Npcwp3aG9fZHggPC0gaGlzdCAlPiUKICBmaWx0ZXIoIWlzLm5hKGludGVncmF0ZWRfZGlhZ25vc2lzKSkgJT4lCiAgY291bnQoc2FtcGxlX2lkLCBjb21wb3NpdGlvbiwgbW9sZWN1bGFyX3N1YnR5cGUpIAp0YWJsZSh3aG9fZHgkY29tcG9zaXRpb24pCgpgYGAKIyMgQ2FsY3VsYXRlIGhpc3RvbG9neSBhbmQgY2FuY2VyIGdyb3VwIE5zIHVzZWQgZm9yIG1hbnVzY3JpcHQKCmBgYHtyIGhpc3RvbG9neSBsZXZlbCBOc30KIyBUb3RhbCBudW1iZXIgb2YgYW5ub3RhdGVkIGhpc3RvbG9naWVzCmhpc3QgJT4lCiAgZmlsdGVyKCFpcy5uYShwYXRob2xvZ3lfZGlhZ25vc2lzKSAmICFpcy5uYShjYW5jZXJfZ3JvdXApKSAlPiUKICBwdWxsKGNhbmNlcl9ncm91cCkgJT4lCiAgdW5pcXVlKCkgJT4lCiAgbGVuZ3RoKCkKCiMgVG90YWwgbnVtYmVyIG9mIGJyb2FkIGhpc3RvbG9naWVzCmhpc3QgJT4lCiAgZmlsdGVyKCFpcy5uYShwYXRob2xvZ3lfZGlhZ25vc2lzKSAmICFpcy5uYShicm9hZF9oaXN0b2xvZ3kpICYgYnJvYWRfaGlzdG9sb2d5ICE9ICJOb24tdHVtb3IiKSAlPiUKICBjb3VudChicm9hZF9oaXN0b2xvZ3kpICU+JQogIG5yb3coKQpgYGAKCiMjIFByaW50IHNlc3Npb24gaW5mbwpgYGB7ciBwcmludCBzZXNzaW9uIGluZm99CnNlc3Npb25JbmZvKCkKYGBgCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiU2FtcGxlIG51bWJlcnMgZm9yIG1hbnVzY3JpcHQiCmF1dGhvcjogIkpvIEx5bm5lIFJva2l0YSBmb3IgRDNiIgpkYXRlOiAiMjAyMiIKb3V0cHV0OiAKICBodG1sX25vdGVib29rOgogICAgdG9jOiBUUlVFCiAgICB0b2NfZmxvYXQ6IFRSVUUKcGFyYW1zOgogIHJlbGVhc2U6IHJlbGVhc2UtdjIyLTIwMjIwNTA1IAotLS0KCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQpsaWJyYXJ5KHRpZHl2ZXJzZSkKYGBgClRoaXMgbm90ZWJvb2sgdGFsbGllcyBwYXRpZW50LWxldmVsLCBzYW1wbGUtbGV2ZWwsIGFuZCBiaW9zcGVjaW1lbi1sZXZlbCBOcyB1c2VkIHRocm91Z2hvdXQgdGhlIG1hbnVzY3JpcHQuCgojIyBTZXQgZGlyZWN0b3JpZXMgCmBgYHtyIHNldCBkaXJlY3Rvcmllc30Kcm9vdF9kaXIgPC0gcnByb2pyb290OjpmaW5kX3Jvb3QocnByb2pyb290OjpoYXNfZGlyKCIuZ2l0IikpCmRhdGFfZGlyIDwtIGZpbGUucGF0aChyb290X2RpciwgImRhdGEiKQphbmFseXNpc19kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCAiYW5hbHlzZXMiLCAic2FtcGxlLWRpc3RyaWJ1dGlvbi1hbmFseXNpcyIpCmBgYAoKIyMgUmVhZCBpbiBGaWxlcwpgYGB7ciByZWFkIGluIGZpbGVzfQpoaXN0X2ZpbGUgPC0gZmlsZS5wYXRoKGRhdGFfZGlyLCAicGJ0YS1oaXN0b2xvZ2llcy50c3YiKQpjZWxsX2xpbmVzX2ZpbGUgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCAiYW5hbHlzZXMiLCAibW9sZWN1bGFyLXN1YnR5cGluZy1IR0ciLCAiaW5wdXQiLCAiY2VsbC1saW5lLWNvbXBvc2l0aW9uLnRzdiIpCgojIFJlYWQgaW4gaGlzdG9sb2dpZXMgZmlsZQpoaXN0IDwtIHJlYWRfdHN2KGhpc3RfZmlsZSwgZ3Vlc3NfbWF4ID0gMTAwMDApCgojIENlbGwgbGluZXMgd2hpY2ggaGF2ZSBib3RoIHN1c3BlbnNpb24gKFMsIHNlcnVtLWZyZWUgbWVkaWEpIG9yIGFkaGVyZW50IChBLCBzZXJ1bS1jb250YWluaW5nIG1lZGlhKSBjb21wb3NpdGlvbnMgZHVlIHRvIGJlaW5nIGdyb3duIGluIGRpZmZlcmVudCBtZWRpYS4gCmNlbGxfbGluZXMgPC0gcmVhZF90c3YoY2VsbF9saW5lc19maWxlKQpgYGAKCiMjIENhbGN1bGF0ZSBwYXRpZW50IGxldmVsIE5zIHVzZWQgZm9yIG1hbnVzY3JpcHQgYW5kIGJ5IGNvaG9ydAoKCmBgYHtyIHNhbXBsZSBzaXplIC0gcGF0aWVudC1sZXZlbH0KIyBUb3RhbCBOIHBhdGllbnRzCmhpc3QgJT4lCiAgcHVsbChLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lEKSAlPiUKICB1bmlxdWUoKSAlPiUKICBsZW5ndGgoKQoKIyBUb3RhbCBOIHBhdGllbnRzIGJ5IGNvaG9ydApoaXN0ICU+JQogIHNlbGVjdChLaWRzX0ZpcnN0X1BhcnRpY2lwYW50X0lELCBjb2hvcnQpICU+JQogIHVuaXF1ZSgpICU+JQogIGNvdW50KGNvaG9ydCkKICAKYGBgCgojIyBDYWxjdWxhdGUgc2FtcGxlICh0dW1vci9ub3JtYWwpIGxldmVsIE5zIHVzZWQgZm9yIG1hbnVzY3JpcHQKCmBgYHtyIHNhbXBsZSBzaXplIC0gdHVtb3Ivbm9ybWFsLWxldmVsfQojIFRvdGFsIG51bWJlciBvZiB0dW1vcnMKbl90dW1vcnMgPC0gaGlzdCAlPiUKICBmaWx0ZXIoc2FtcGxlX3R5cGUgPT0gIlR1bW9yIiAmIGNvbXBvc2l0aW9uICE9ICJEZXJpdmVkIENlbGwgTGluZSIpICU+JQogIHB1bGwoc2FtcGxlX2lkKSAlPiUKICB1bmlxdWUoKQpsZW5ndGgobl90dW1vcnMpCgojIFRvdGFsIE4gYXNzYXlzIGJ5IGJhc2VkIG9uIHdoZXRoZXIgaXQgaXMgYSBjZWxsIGxpbmUgb3IgdHVtb3Ivbm9ybWFsIHRpc3N1ZQpoaXN0IDwtIGhpc3QgJT4lCiAgbXV0YXRlKHR5cGUgPSBjYXNlX3doZW4oY29tcG9zaXRpb24gPT0gIkRlcml2ZWQgQ2VsbCBMaW5lIiB+ICJDZWxsIExpbmUiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzYW1wbGVfdHlwZSA9PSAiVHVtb3IiIH4gIlR1bW9yIFNhbXBsZSIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFRSVUUgfiAiTm9ybWFsIFNhbXBsZSIpLAogICAgICAgICBleHBlcmltZW50YWxfc3RyYXRlZ3kgPSBpZmVsc2UoZXhwZXJpbWVudGFsX3N0cmF0ZWd5ID09ICJXWFMiIHwgZXhwZXJpbWVudGFsX3N0cmF0ZWd5ID09ICJUYXJnZXRlZCBTZXF1ZW5jaW5nIiwgIldYUy9QYW5lbCIsIGV4cGVyaW1lbnRhbF9zdHJhdGVneSkpCnRhYmxlKGhpc3QkdHlwZSwgaGlzdCRleHBlcmltZW50YWxfc3RyYXRlZ3kpCgpgYGAKCiMjIENhbGN1bGF0ZSBiaW9zcGVjaW1lbiBsZXZlbCBOcyB1c2VkIGZvciBtYW51c2NyaXB0CgpgYGB7ciBzYW1wbGUgc2l6ZSAtIGJpb3NwZWNpbWVuLWxldmVsfQojIEJpb3NwZWNpbWVuIGNvdW50cyBieSBzYW1wbGUgdHlwZQpoaXN0ICU+JQogIGNvdW50KHNhbXBsZV90eXBlKQoKIyBCaW9zcGVjaW1lbiBjb3VudHMgYnkgc2FtcGxlIHR5cGUgYW5kIGNvbXBvc2l0aW9uIChpbmNsdWRpbmcgZHVwbGljYXRlIGNlbGwgbGluZXMpCmhpc3QgJT4lCiAgY291bnQoc2FtcGxlX3R5cGUsIGNvbXBvc2l0aW9uKQoKIyBCaW9zcGVjaW1lbiBhc3NheSBjb3VudHMgYnkgc2FtcGxlIHR5cGUgYW5kIGNvbXBvc2l0aW9uCmhpc3QgJT4lCiAgY291bnQoc2FtcGxlX3R5cGUsIGNvbXBvc2l0aW9uLCBleHBlcmltZW50YWxfc3RyYXRlZ3kpCmBgYAojIyBDYWxjdWxhdGUgY2VsbCBsaW5lIE5zIHVzZWQgZm9yIG1hbnVzY3JpcHQKCmBgYHtyIHNhbXBsZSBzaXplIC0gY2VsbCBsaW5lc30KIyBUb3RhbCBudW1iZXIgb2YgdW5pcXVlIGNlbGwgbGluZXMKY2VsbGxpbmVfYnMgPC0gaGlzdCAlPiUKICBmaWx0ZXIoc2FtcGxlX3R5cGUgPT0gIlR1bW9yIiAmIGNvbXBvc2l0aW9uID09ICJEZXJpdmVkIENlbGwgTGluZSIpICU+JQogIGxlZnRfam9pbihjZWxsX2xpbmVzLCBieSA9IGMoIktpZHNfRmlyc3RfUGFydGljaXBhbnRfSUQiLCAiS2lkc19GaXJzdF9CaW9zcGVjaW1lbl9JRCIsICJzYW1wbGVfaWQiKSkgJT4lCiAgc2VsZWN0KEtpZHNfRmlyc3RfQmlvc3BlY2ltZW5fSUQsIHNhbXBsZV9pZCwgY2VsbF9saW5lX2NvbXBvc2l0aW9uLCBtb2xlY3VsYXJfc3VidHlwZSkgJT4lCiAgYXJyYW5nZShzYW1wbGVfaWQpCiAKY2VsbGxpbmVfYnNfY291bnQgPC0gY2VsbGxpbmVfYnMgJT4lCiAgICBjb3VudChzYW1wbGVfaWQsIGNlbGxfbGluZV9jb21wb3NpdGlvbikKbnJvdyhjZWxsbGluZV9ic19jb3VudCkKCgojIFRvdGFsIG51bWJlciBvZiBjZWxsIGxpbmVzLCBpbmNsdWRpbmcgZHVwbGljYXRlcwpzdW0oY2VsbGxpbmVfYnNfY291bnQkbikKYGBgCiMjIENhbGN1bGF0ZSBzdWJ0eXBlZCBzYW1wbGUgTnMgdXNlZCBmb3IgbWFudXNjcmlwdAoKYGBge3Igc2FtcGxlcyBzdWJ0eXBlZH0KIyBUb3RhbCBudW1iZXIgb2Ygc2FtcGxlcyBzdWJ0eXBlZAphbGxfc2FtcGxlc19zdWJ0eXBlZCA8LSBoaXN0ICU+JQogIGZpbHRlcighaXMubmEocGF0aG9sb2d5X2RpYWdub3NpcyksIAogICAgICAgICAgIWlzLm5hKG1vbGVjdWxhcl9zdWJ0eXBlKSwgCiAgICAgICAgICAhZ3JlcGwoIlRvIGJlIGNsYXNzaWZpZWQiLCBtb2xlY3VsYXJfc3VidHlwZSkpICU+JSAKICAgIyBDb3VudCBzYW1wbGVfaWQgYW5kIHN1YnR5cGUgY29tYmluYXRpb25zIAogIGNvdW50KHNhbXBsZV9pZCwgbW9sZWN1bGFyX3N1YnR5cGUpCm5yb3coYWxsX3NhbXBsZXNfc3VidHlwZWQpCgojIFRvdGFsIG51bWJlciBvZiBzYW1wbGVzIHN1YnR5cGVkLCBub3QgaW5jbHVkaW5nIGNlbGwgbGluZXMKdHVtb3JzX25vdF9saW5lc19zdWJ0eXBlZCA8LSBoaXN0ICU+JQogIGZpbHRlcihjb21wb3NpdGlvbiAhPSAiRGVyaXZlZCBDZWxsIExpbmUiLAogICAgICAgICAhaXMubmEocGF0aG9sb2d5X2RpYWdub3NpcyksIAogICAgICAgICAhaXMubmEobW9sZWN1bGFyX3N1YnR5cGUpLCAKICAgICAgICAgIWdyZXBsKCJUbyBiZSBjbGFzc2lmaWVkIiwgbW9sZWN1bGFyX3N1YnR5cGUpKSAlPiUgCiAgICMgQ291bnQgc2FtcGxlX2lkIGFuZCBzdWJ0eXBlIGNvbWJpbmF0aW9ucyAKICBjb3VudChzYW1wbGVfaWQsIG1vbGVjdWxhcl9zdWJ0eXBlKQpucm93KHR1bW9yc19ub3RfbGluZXNfc3VidHlwZWQpCgojIHBlcmNlbnQgb2YgdHVtb3Igc2FtcGxlcyBzdWJ0eXBlZAoobnJvdyh0dW1vcnNfbm90X2xpbmVzX3N1YnR5cGVkKS9sZW5ndGgobl90dW1vcnMpKSoxMDAKCiMgd2hpY2ggaGF2ZSBub24taWRlbnRpY2FsIHR1bW9yL2NlbGwgbGluZSBzdWJ0eXBlcz8KZHVwX3NhbXBsZXMgPC0gYWxsX3NhbXBsZXNfc3VidHlwZWQgJT4lCiAgZmlsdGVyKGR1cGxpY2F0ZWQoLltbInNhbXBsZV9pZCJdXSkpICU+JQogIHB1bGwoc2FtcGxlX2lkKQoKaGlzdCAlPiUKICBmaWx0ZXIoIWlzLm5hKG1vbGVjdWxhcl9zdWJ0eXBlKSwKICAgICAgICAgc2FtcGxlX2lkICVpbiUgZHVwX3NhbXBsZXMpICU+JQogIGNvdW50KHNhbXBsZV9pZCwgbW9sZWN1bGFyX3N1YnR5cGUsIGNvbXBvc2l0aW9uKSAlPiUKICBhcnJhbmdlKHNhbXBsZV9pZCwgY29tcG9zaXRpb24pCgojIERvIGFueSBjZWxsIGxpbmUgZHVwbGljYXRlcyBoYXZlIGRpZmZlcmVudCBzdWJ0eXBlcz8gTm8KY2VsbGxpbmVfYnMgJT4lCiAgc2VsZWN0KHNhbXBsZV9pZCwgbW9sZWN1bGFyX3N1YnR5cGUpICU+JQogIHVuaXF1ZSgpICU+JQogIGZpbHRlcihkdXBsaWNhdGVkKC5bWyJzYW1wbGVfaWQiXV0pKSAlPiUKICBwdWxsKHNhbXBsZV9pZCkKCiMgVG90YWwgbnVtYmVyIG9mIHNhbXBsZXMgd2l0aCBXSE8tYWxpZ25lZCBpbnRlZ3JhdGVkIGRpYWdub3Npcwp3aG9fZHggPC0gaGlzdCAlPiUKICBmaWx0ZXIoIWlzLm5hKGludGVncmF0ZWRfZGlhZ25vc2lzKSkgJT4lCiAgY291bnQoc2FtcGxlX2lkLCBjb21wb3NpdGlvbiwgbW9sZWN1bGFyX3N1YnR5cGUpIAp0YWJsZSh3aG9fZHgkY29tcG9zaXRpb24pCgpgYGAKIyMgQ2FsY3VsYXRlIGhpc3RvbG9neSBhbmQgY2FuY2VyIGdyb3VwIE5zIHVzZWQgZm9yIG1hbnVzY3JpcHQKCmBgYHtyIGhpc3RvbG9neSBsZXZlbCBOc30KIyBUb3RhbCBudW1iZXIgb2YgYW5ub3RhdGVkIGhpc3RvbG9naWVzCmhpc3QgJT4lCiAgZmlsdGVyKCFpcy5uYShwYXRob2xvZ3lfZGlhZ25vc2lzKSAmICFpcy5uYShjYW5jZXJfZ3JvdXApKSAlPiUKICBwdWxsKGNhbmNlcl9ncm91cCkgJT4lCiAgdW5pcXVlKCkgJT4lCiAgbGVuZ3RoKCkKCiMgVG90YWwgbnVtYmVyIG9mIGJyb2FkIGhpc3RvbG9naWVzCmhpc3QgJT4lCiAgZmlsdGVyKCFpcy5uYShwYXRob2xvZ3lfZGlhZ25vc2lzKSAmICFpcy5uYShicm9hZF9oaXN0b2xvZ3kpICYgYnJvYWRfaGlzdG9sb2d5ICE9ICJOb24tdHVtb3IiKSAlPiUKICBjb3VudChicm9hZF9oaXN0b2xvZ3kpICU+JQogIG5yb3coKQpgYGAKCiMjIFByaW50IHNlc3Npb24gaW5mbwpgYGB7ciBwcmludCBzZXNzaW9uIGluZm99CnNlc3Npb25JbmZvKCkKYGBgCg==</div>
 
 
 </div>
