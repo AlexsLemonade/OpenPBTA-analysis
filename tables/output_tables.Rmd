@@ -7,7 +7,7 @@ output:
     toc: TRUE
     toc_float: TRUE
 params:
-  release: release-v22-20220505
+  release: release-v23-20230115
 ---
 
 ```{r setup, include=FALSE}
@@ -80,7 +80,7 @@ table_s5_file <- file.path(results_dir, "TableS5-Key-Resources-table.xlsx")
 histology_df <- read_tsv(histology_file, guess_max =10000)
 palette_df <- read_tsv(palette_file)
 
-histology_df %>%
+subtype_n <- histology_df %>%
   # remove rows to not include
   filter(composition != "Derived Cell Line",
          !is.na(pathology_diagnosis),
@@ -99,16 +99,44 @@ histology_df %>%
     broad_histology_display
   )) %>%
   # remove doubled samples (WGS/RNA-seq etc.)
-  distinct(pbta_broad_histology, molecular_subtype, sample_id) %>%
-  # Count broad histology and subtype combinations
-  count(pbta_broad_histology, molecular_subtype) %>%
+  distinct(pbta_broad_histology, Kids_First_Participant_ID, molecular_subtype, sample_id) %>%
+  mutate(pbta_broad_histology = case_when(pbta_broad_histology == "Ependymal tumor" ~ "Ependymoma",
+         TRUE ~ pbta_broad_histology)) %>%
+  dplyr::rename(`Broad histology group` = pbta_broad_histology,
+         `OpenPBTA molecular subtype` = molecular_subtype)
+
+# Count broad histology and subtype combinations
+tumor_level <- subtype_n %>%
+  select(-Kids_First_Participant_ID) %>%
+  count(`Broad histology group`, `OpenPBTA molecular subtype`) %>%
+  dplyr::rename(Tumors = n)
+
+# print broad histology counts for easy check for manuscript
+tumor_level %>%
+  group_by(`Broad histology group`) %>%
+  select(-`OpenPBTA molecular subtype`) %>%
+  mutate(broad_hist_sum = sum(Tumors)) %>%
+  select(-Tumors) %>%
+  distinct() %>%
+  arrange(desc(broad_hist_sum))
+
+# Patient level
+pt_level <- subtype_n %>%
+  select(-sample_id) %>%
+  distinct() %>%
+  count(`Broad histology group`, `OpenPBTA molecular subtype`) %>%
+  dplyr::rename(Patients = n)
+
+# combine patient level and tumor level tables
+table1 <- pt_level %>%
+  full_join(tumor_level) %>%
   # export
   write_tsv(table_1_file)
-
 ```
 
 ## Table 2: Patients with hypermutant or ultra-hypermutant tumors
 ```{r table 2}
+
 # read in clinvar variant annotations / add P/LP annotation
 clinvar <- read_tsv(clinvar_file) %>%
   mutate(`Pathogenic germline variant` = case_when(ClinicalSignificance == "Pathogenic" ~ paste0(Name, " (P)"),
@@ -183,20 +211,23 @@ soi_df %>%
              `OpenPBTA molecular subtype` = molecular_subtype
              ) %>%
   write_tsv(table_2_file)
-
 ```
 
 ## Table S1: V22 histologies table
 
 ```{r v22 histology as excel}
 # Sheet 1: README tab
+histology_df_tumor <- histology_df %>%
+  filter(!is.na(pathology_diagnosis)) %>%
+  mutate(broad_histology = case_when(broad_histology == "Ependymal tumor" ~ "Ependymoma",
+                                     TRUE ~ broad_histology))
 
 readme <- tribble(
 ~`Histology column`,~Definition,~`Possible values`,
 "age_at_diagnosis_days","Patient age at diagnosis in days","numeric",
 "age_last_update_days","Patient age at the last clinical event/update in days","numeric",
 "aliquot_id","External aliquot identifier","alphanumeric",
-"broad_histology","Broad WHO 2016 classification of cancer type",paste(unique(histology_df$broad_histology), collapse = "; "),
+"broad_histology","Broad WHO 2016 classification of cancer type",paste(unique(histology_df_tumor$broad_histology), collapse = "; "),
 "cancer_group","Harmonized cancer groupings for plots",paste(unique(histology_df$cancer_group), collapse = "; "),
 "cancer_predispositions","Reported cancer predisposition syndromes",paste(unique(histology_df$cancer_predispositions), collapse = "; "),
 "CNS_region","Harmonized brain region based on `primary_site`",paste(unique(histology_df$CNS_region), collapse = "; "),
