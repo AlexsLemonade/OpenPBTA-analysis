@@ -36,3 +36,4 @@ Contents of directory:
 	+ [PBTA_StrandedHistology.pdf](./plots/PBTA_StrandedHistology.pdf): shows the distribution of telomerase activities across different brain tumor histologies
 	+ `EXTENDScores_{broad_histology}.png`: compares telomerase activities across different molecular subtypes of various PBTA short histologies.
 	+ `TERTp_mutations.pdf`: EXTEND score distribition is shown for samples with and without specific TERT promoter mutations
+	+ `TERTp_mutations_TERC_TERT_expression.pdf`: Relationship between TERT and TERC stranded expression and EXTEND scores, highlighting samples with TERTp mutations
