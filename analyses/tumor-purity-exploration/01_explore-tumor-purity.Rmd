@@ -14,7 +14,32 @@ params:
 library(tidyverse)
 theme_set(theme_bw())
 ```
-This notebook explores the distribution of tumor purity values as well as their relationship to other metadata values.
+This notebook performs the following:
+
+- Explores the distribution of tumor purity values as well as their relationship to other metadata values
+- Identifies RNA-level samples for which we reliably know their tumor purity based on associated WGS data
+- Explores potential tumor purity thresholds that could be applied in other contexts to assess the influence of tumor purity on certain RNA-level analyses
+
+## Functions
+
+This section defines a function which is needed in this (and only in this!) notebook.
+
+
+```{r}
+# Function to make violin plots of tumor_fraction for either 
+# broad_histology_display or cancer_group_display groups
+plot_tumor_violins <- function(df, display_name, display_hex) {
+  ggplot(df) + 
+    # order by ascending median
+    aes(x = forcats::fct_reorder({{display_name}}, tumor_fraction),
+        y = tumor_fraction, 
+        fill = {{display_hex}}) + 
+    geom_violin(alpha = 0.5) +
+    stat_summary(geom = "point", fun.y = "median") + 
+    scale_fill_identity() + 
+    theme(axis.text.x = element_text(angle = 30, hjust = 1)) 
+}
+```
 
 ## Set directories and files
 
@@ -31,8 +56,7 @@ results_dir <- file.path("results")
 if (!(dir.exists(results_dir))) {
   dir.create(results_dir)
 }
-rna_tumor_df_file <- file.path(results_dir, "metadata_rna_stranded_same-extraction.tsv")
-rna_tumor_thresholded_df_file <- file.path(results_dir, "metadata_thresholded_rna_stranded_same-extraction.tsv")
+rna_stranded_df_file <- file.path(results_dir, "rna_stranded_same-extraction.tsv")
 ```
 
 
@@ -42,6 +66,7 @@ Read in:
 metadata <- read_tsv(metadata_file) 
 palette_mapping_df <- read_tsv(pal_file)
 ```
+
 ## Exploration of `tumor_fraction`
 
 The quantity `tumor_fraction` provides information about what percent of the sample was likely tumor. 
@@ -77,7 +102,8 @@ ggplot(metadata_tumor_wgs) +
   geom_histogram(color = "black", fill = "skyblue")
 ```
 
-Distribution by cancer group and broad histology:
+Distribution by cancer group and broad histology, where the point in each plot is the median value (and groups are ordered by median).
+
 
 ```{r}
 # combine metadata with palette:
@@ -97,23 +123,11 @@ tumor_palette_df <- metadata_tumor_wgs %>%
          broad_histology_display = forcats::fct_reorder(broad_histology_display, tumor_fraction), 
          broad_histology_display = forcats::fct_relevel(broad_histology_display, "Other", after = Inf))
          
-# plotting function:
-tumor_violins <- function(df, display_name, display_hex) {
-  ggplot(df) + 
-    aes(x = {{display_name}},
-        y = tumor_fraction, 
-        fill = {{display_hex}}) + 
-    geom_violin(alpha = 0.5) +
-    stat_summary() + 
-    scale_fill_identity() + 
-    theme(axis.text.x = element_text(angle = 30, hjust = 1)) 
-}
-
 # Cancer group
-tumor_violins(tumor_palette_df, cancer_group_display, cancer_group_hex)
+plot_tumor_violins(tumor_palette_df, cancer_group_display, cancer_group_hex)
 
 # Broad histology
-tumor_violins(tumor_palette_df, broad_histology_display, broad_histology_hex)
+plot_tumor_violins(tumor_palette_df, broad_histology_display, broad_histology_hex)
 ```
 
 
@@ -153,43 +167,76 @@ Estimating tumor fraction from RNA directly is challenging since methods focus o
 Therefore, for RNA data tumor purity estimates, we should instead directly use tumor fraction values but _only for those samples where DNA and RNA sequencing were performed on the same extraction_.
 We cannot really know the RNA tumor purity for samples that have separate DNA/RNA extractions.
 
-This extraction information is present in data release `>=v23`.
-Only RNA are annotated in this column, hence the `NA`s below:
+This extraction information is present in data release `>=v23` - we're interested in "Same extraction" samples.
+First, how many such samples are there?
 
 ```{r}
-table(metadata$extraction_type, useNA = "ifany")
+table(metadata$extraction_type)
+```
+We'll need to get the RNA equivalents (since these are all WGS), and we'll map over this information using the `sample_id` information, as was done for the oncoprint module:
+https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/5fe10b88aaa5176fa6577ffd6c8388be05098e83/analyses/oncoprint-landscape/01-map-to-sample_id.R
+
+
+As part of this, we want to find the ambiguous `sample_id` samples so that we don't include them, as described:
+https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/5fe10b88aaa5176fa6577ffd6c8388be05098e83/analyses/oncoprint-landscape/01-map-to-sample_id.R#L153
+
+> An ambiguous sample_id will have more than 2 rows associated with it in the histologies file when looking at tumor samples -- that means we won't be able to determine when an WGS/WXS assay maps to an RNA-seq assay
+
+
+```{r}
+# find the ambiguous samples to flag for removal
+# here the composition does not matter, unlike in the linked oncoprint filtering
+ambiguous_sample_ids <- metadata %>%
+  filter(sample_type == "Tumor") %>%
+  count(sample_id) %>%
+  filter(n > 2) %>%
+  pull(sample_id)
 ```
 
-Let's now consider only "Same extraction" samples (which is happily the majority of samples) whose RNA library was stranded.
+
+Now we can map over the tumor fractions to RNA-Seq samples.
 
 ```{r}
-# metadata of interest
-same_extraction_stranded_df <- metadata %>%
+# Find the RNA samples of interest
+same_extraction_stranded_metadata <- metadata %>%
   filter(experimental_strategy == "RNA-Seq",
          RNA_library == "stranded",
          extraction_type == "Same extraction") %>%
-  # remove conflicting column - this now contains NAs but needs to be replaced with WGS values
-  select(-contains("fraction"))
+  # remove tumor_fraction since it will conflict after joining
+  select(-tumor_fraction)
 
-# Combine with associated tumor fractions from WGS
-rna_tumor_df <- metadata_tumor_wgs %>%
-  filter(Kids_First_Participant_ID %in% same_extraction_stranded_df$Kids_First_Participant_ID) %>%
-  select(Kids_First_Participant_ID, tumor_fraction) %>%
+# We can use these ids to map back to their associated tumor fractions
+rna_stranded_df <- metadata_tumor_wgs %>%
+  # keep only sample_id's of interest: same extraction with a stranded RNA pair, and NOT ambiguous
+  filter(sample_id %in% same_extraction_stranded_metadata$sample_id,
+         !(sample_id %in% ambiguous_sample_ids)) %>%
+  # find information to join in
+  select(sample_id, tumor_fraction) %>%
   distinct() %>%
   # Join tumor fractions with RNA metadata
-  inner_join(same_extraction_stranded_df, by = "Kids_First_Participant_ID") %>%
+  right_join(same_extraction_stranded_metadata, by = "sample_id") %>%
+  # Keep only columns of interest, to avoid conflicts with future joins
+  select(contains("Kids_First"), sample_id, tumor_fraction, 
+         cancer_group, broad_histology) %>%
   # remove any unknowns
   drop_na(tumor_fraction)
-
-# This data frame contains stranded RNA tumor purity for only "same extraction"
-rna_tumor_df
 ```
 
-Let's export this TSV for future use.
+The new `rna_stranded_df` contains information of interest for transcriptomic exploration: `tumor_fraction` values for stranded RNA-Seq samples that were from the same extraction as corresponding WGS for which the tumor purity was quantified.
 
 ```{r}
-write_tsv(rna_tumor_df, 
-          rna_tumor_df_file)
+rna_stranded_df
+```
+
+Let's export this TSV for future use
+
+```{r}
+# keep only IDs and tumor_fraction for export
+rna_stranded_df_export <- rna_stranded_df %>% 
+  select(Kids_First_Biospecimen_ID, sample_id, tumor_fraction)
+
+write_tsv(rna_stranded_df_export, 
+          rna_stranded_df_file)
 ```
 
 
@@ -197,196 +244,16 @@ write_tsv(rna_tumor_df,
 We might also like to see this distribution of values, since only these are relevant for RNA-level:
 
 ```{r}
-summary(rna_tumor_df$tumor_fraction)
+summary(rna_stranded_df$tumor_fraction)
 
-ggplot(rna_tumor_df) + 
+ggplot(rna_stranded_df) + 
   aes(x = tumor_fraction) + 
   geom_histogram(color = "black", fill = "darkorchid2")
 ```
 
 
-## Exploring thresholding
-
-
-If we were to potentially limit analyses to only tumors with a certain level of purity, how would that affect sample distributions? 
-In particular, how many samples would be left from each grouping if we removed at a certain threshold which might be, for example...
-
-- Overall unweighted median or mean tumor fraction
-- Weighted mean by group-size tumor fraction (but what is the grouping variable?)
-
-First let's join the new `rna_tumor_df` with the palette.
-
-```{r}
-rna_tumor_df <- rna_tumor_df %>%
-  inner_join(palette_mapping_df) %>%
-  select(Kids_First_Biospecimen_ID, 
-         tumor_fraction, 
-         cancer_group_display, 
-         cancer_group_hex, 
-         broad_histology_display,
-         broad_histology_order,
-         broad_histology_hex) %>%
-  drop_na() %>%
-  # reorder by median fraction and ensure "Other" is always last
-  mutate(cancer_group_display = forcats::fct_reorder(cancer_group_display, tumor_fraction), 
-         cancer_group_display = forcats::fct_relevel(cancer_group_display, "Other", after = Inf),
-         broad_histology_display = forcats::fct_reorder(broad_histology_display, tumor_fraction), 
-         broad_histology_display = forcats::fct_relevel(broad_histology_display, "Other", after = Inf))
-
-```
-
-Let's look at these threshold themselves:
-```{r}
-median_tumor <- median(rna_tumor_df$tumor_fraction, na.rm = TRUE)
-cat("median", median_tumor)
-
-unweighted_mean <- mean(rna_tumor_df$tumor_fraction, na.rm = TRUE)
-cat("\nunweighed mean", unweighted_mean)
-
-calc_weighted_mean <- function(df, group_var) {
-  df %>%
-    drop_na(tumor_fraction) %>%
-    add_count({{group_var}}) %>%
-    mutate(contribution = tumor_fraction * (n/sum(n))) %>%
-    summarize(weighted = sum(contribution)) %>% 
-    pull(weighted)
-}
-
-weighted_mean_bh <- calc_weighted_mean(rna_tumor_df, broad_histology_display)
-cat("\nweighted_mean_bh", weighted_mean_bh)
-weighted_mean_cg <- calc_weighted_mean(rna_tumor_df, cancer_group_display)
-cat("\nweighted_mean_cg", weighted_mean_cg)
-
-```
-
-The weighted means are about the same as the overall mean, which is somewhat lower than the overall median. 
-
-Let's explore what fraction of samples remain when filtering down based on the **median** and means at both broad histology and cancer group levels.
-The y-axes show how the fraction of samples which would remain after filtering, and horizontal lines are 50% guides.
-
-
-```{r}
-calc_frac <- function(df, 
-                      threshold, 
-                      group_var) {
-  # establish total counts
-  total_count <- df %>%
-    count({{group_var}}, name = "total") 
-  
-  df %>%
-    filter(tumor_fraction <= threshold) %>%
-    # count after filtering
-    count({{group_var}}) %>%
-    # divide after/before
-    inner_join(total_count) %>%
-    mutate(frac_remaining = n/total) %>%
-    distinct()
-}
-
-plot_remaining_frac <- function(df, 
-                                mean_threshold, 
-                                median_threshold, 
-                                group_var) {
-  
-  remaining_df <- bind_rows(
-    calc_frac(df, mean_threshold, {{group_var}}) %>%
-      mutate(threshold = "mean threshold"),
-    calc_frac(df, median_threshold, {{group_var}}) %>%
-      mutate(threshold = "median threshold")
-  )
-  
-  ggplot(remaining_df) + 
-    aes(x = {{group_var}}, 
-        y = frac_remaining, 
-        fill = threshold) + 
-    geom_col(color = "black", size = 0.5, 
-             position = position_dodge()) +
-    geom_hline(yintercept = 0.5) +
-    theme(axis.text.x = element_text(angle = 30, hjust = 1))
-}
-```
-
-
-```{r}
-plot_remaining_frac(rna_tumor_df,
-                    unweighted_mean, 
-                    median_tumor,
-                    broad_histology_display) + 
-  ggtitle("Broad histology display after filtering")
-```
-
-
-```{r, fig.width = 8}
-plot_remaining_frac(rna_tumor_df,
-                    unweighted_mean, 
-                    median_tumor,
-                    cancer_group_display) + 
-  theme(legend.position = "bottom") +
-  ggtitle("Cancer group display after filtering")
-```
-
-
-### Thresholding within groups
-
-Rather than considering a single global threshold, how would this look if we did a _per group_ threshold?
-Specifically, let's see how this looks if we use the _per cancer-group median_ as the threshold and filter from there.
-
-
-
-```{r}
-cancer_group_thresholds_df <- rna_tumor_df %>%
-  group_by(cancer_group_display) %>%
-  summarize(cancer_group_tumor_threshold = median(tumor_fraction), 
-            n_tumors = n())
-
-rna_tumor_df_thresholded <- rna_tumor_df %>%
-  inner_join(cancer_group_thresholds_df) %>%
-  filter(tumor_fraction >= cancer_group_tumor_threshold) 
-
-
-# Plot how many are left, which should be >=50% all around
-rna_tumor_df_thresholded %>%
-  count(cancer_group_display) %>%
-  # join again to get n_tumors
-  inner_join(cancer_group_thresholds_df) %>%
-  mutate(percent_remaining = n/n_tumors) %>% 
-  ggplot(aes(x = cancer_group_display, y = percent_remaining)) + 
-  geom_col(fill = "cadetblue", color = "black" ) + 
-  # guide line at y=0.5
-  geom_hline(yintercept = 0.5) +
-  ggtitle("Remaining cancer groups") +
-  theme(axis.text.x = element_text(angle = 30, size = 8, hjust = 1))
-  
-# Same plot for broad histology:
-rna_tumor_df_thresholded %>%
-  count(broad_histology_display) %>%
-  # join again to get n_tumors, but for bh
-  inner_join(
-    select(rna_tumor_df, 
-           broad_histology_display) %>%
-      count(broad_histology_display, name = "n_tumors")
-  ) %>%
-  mutate(percent_remaining = n/n_tumors) %>% 
-  ggplot(aes(x = broad_histology_display, y = percent_remaining)) + 
-  geom_col(fill = "darkolivegreen3", color = "black" ) + 
-  # guide line at y=0.5
-  geom_hline(yintercept = 0.5) +
-  ggtitle("Remaining broad histology groups") +
-  theme(axis.text.x = element_text(angle = 30, size = 8, hjust = 1))
-
-```
-
-
-If we threshold by cancer group, some broad histology groupings lose >50% of their samples but most do not!
-
-Let's also export this thresholded version of the data frame.
-
-```{r}
-readr::write_tsv(rna_tumor_df_thresholded, 
-                 rna_tumor_thresholded_df_file)
-```
-
 ## Session info
+
 ```{r}
 sessionInfo()
 ```
