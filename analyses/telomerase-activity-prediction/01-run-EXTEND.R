@@ -48,7 +48,7 @@ if (opt$apply_tumor_purity_threshold) {
     "analyses", 
     "tumor-purity-exploration",
     "results",
-    "metadata_thresholded_rna_stranded_same-extraction.tsv"
+    "thresholded_rna_stranded_same-extraction.tsv"
   )
   
   # Define vector of IDs to retain
