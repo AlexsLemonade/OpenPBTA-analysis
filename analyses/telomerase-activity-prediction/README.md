@@ -1,6 +1,6 @@
 Telomerase Activity Prediction
 
-Module Authors: Nighat Noureen and Siyuan Zheng. 
+Module Authors: Nighat Noureen and Siyuan Zheng.
 
 Goals include:
 
@@ -35,3 +35,5 @@ Contents of directory:
 	+ [PTBA_GE_TM_ScatterComp.pdf](./plots/PTBA_GE_TM_ScatterComp.pdf): correlates TERT and TERC gene expressions with telomerase activities for different data sets (i.e Stranded and PolyA)
 	+ [PBTA_StrandedHistology.pdf](./plots/PBTA_StrandedHistology.pdf): shows the distribution of telomerase activities across different brain tumor histologies
 	+ `EXTENDScores_{broad_histology}.png`: compares telomerase activities across different molecular subtypes of various PBTA short histologies.
+	+ `TERTp_mutations.pdf`: EXTEND score distribition is shown for samples with and without specific TERT promoter mutations
+	+ `TERTp_mutations_TERC_TERT_expression.pdf`: Relationship between TERT and TERC stranded expression and EXTEND scores, highlighting samples with TERTp mutations
