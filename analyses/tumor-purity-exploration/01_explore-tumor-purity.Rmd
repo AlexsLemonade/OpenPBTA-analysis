@@ -1,0 +1,261 @@
+---
+title: "Tumor purity exploration"
+author: "SJ Spielman for CCDL"
+date: "2023"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+params:
+  release: release-v23-20230115
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+theme_set(theme_bw())
+```
+This notebook performs the following:
+
+- Explores the distribution of tumor purity values as well as their relationship to other metadata values
+- Identifies RNA-level samples for which we reliably know their tumor purity based on associated WGS data
+- Explores potential tumor purity thresholds that could be applied in other contexts to assess the influence of tumor purity on certain RNA-level analyses
+
+## Functions
+
+This section defines a function which is needed in this (and only in this!) notebook.
+
+
+```{r}
+# Function to make violin plots of tumor_fraction for either 
+# broad_histology_display or cancer_group_display groups
+plot_tumor_violins <- function(df, display_name, display_hex, x_lab) {
+  # Filter to display_name group so that we can order by group-wise median, 
+  #  while ensuring that 'Other' is still last
+  df <- df %>%
+  mutate(display_var = forcats::fct_reorder({{display_name}}, tumor_fraction), 
+         display_var = forcats::fct_relevel(display_var, "Other", after = Inf))
+  
+  # Plot
+  ggplot(df) + 
+    aes(x = display_var,
+        y = tumor_fraction, 
+        fill = {{display_hex}}) + 
+    geom_violin(alpha = 0.5) +
+    stat_summary(geom = "point", fun.y = "median") + 
+    scale_fill_identity() + 
+    xlab(x_lab) + 
+    theme(axis.text.x = element_text(angle = 30, hjust = 1)) 
+}
+```
+
+## Set directories and files
+
+```{r}
+# Input
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+pal_dir <- file.path(root_dir, "figures", "palettes")
+metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+pal_file <- file.path(pal_dir, "broad_histology_cancer_group_palette.tsv")
+
+# Output
+results_dir <- file.path("results")
+if (!(dir.exists(results_dir))) {
+  dir.create(results_dir)
+}
+rna_stranded_df_file <- file.path(results_dir, "rna_stranded_same-extraction.tsv")
+```
+
+
+Read in:
+
+```{r}
+metadata <- read_tsv(metadata_file) 
+palette_mapping_df <- read_tsv(pal_file)
+```
+
+## Exploration of `tumor_fraction`
+
+The quantity `tumor_fraction` provides information about what percent of the sample was likely tumor. 
+We'll explore this variable:
+
+```{r}
+# Note that this quantity is only recorded, if ever, with WGS libraries: 
+presence_table <- table(metadata$experimental_strategy,
+                        is.na(metadata$tumor_fraction))
+colnames(presence_table) <- c("Tumor fraction known", "Tumor fraction unknown")
+presence_table
+```
+
+Tumor fraction was calculated for WGS samples:
+
+```{r}
+metadata_tumor_wgs <- metadata %>%
+  filter(experimental_strategy == "WGS", 
+         sample_type == "Tumor")
+
+# For what percentage of tumor samples is purity known? Nearly all of them!
+sum(!is.na(metadata_tumor_wgs$tumor_fraction)) / nrow(metadata_tumor_wgs)
+```
+
+
+Distribution of tumor purity:
+
+```{r}
+summary(metadata_tumor_wgs$tumor_fraction)
+
+ggplot(metadata_tumor_wgs) + 
+  aes(x = tumor_fraction) + 
+  geom_histogram(color = "black", fill = "skyblue")
+```
+
+Distribution by cancer group and broad histology, where the point in each plot is the median value (and groups are ordered by median).
+
+
+```{r}
+# combine metadata with palette:
+tumor_palette_df <- metadata_tumor_wgs %>%
+  inner_join(palette_mapping_df) %>%
+  select(Kids_First_Biospecimen_ID, 
+         tumor_fraction, 
+         cancer_group_display, 
+         cancer_group_hex, 
+         broad_histology_display,
+         broad_histology_order,
+         broad_histology_hex) %>%
+  drop_na()
+         
+# Cancer group
+plot_tumor_violins(tumor_palette_df, cancer_group_display, cancer_group_hex, "Cancer group")
+
+# Broad histology
+plot_tumor_violins(tumor_palette_df, broad_histology_display, broad_histology_hex, "Broad histology")
+```
+
+
+
+
+Distribution across sequencing centers, highlighting cancer groups:
+
+```{r}
+# use jitter to highlight diagnoses
+seq_center_df <- tumor_palette_df %>%
+  inner_join(
+    select(metadata, 
+           Kids_First_Biospecimen_ID, 
+           seq_center)
+  )
+
+ggplot(seq_center_df) +
+  aes(x = seq_center, 
+      y = tumor_fraction, 
+      color = cancer_group_hex) + 
+  geom_jitter() + 
+  scale_color_identity() +
+  theme(axis.text.x = element_text(angle = 30, hjust=1))
+
+# What are the cancer groups at the smaller centers?
+seq_center_df %>%
+  count(seq_center, cancer_group_display) %>%
+  arrange(seq_center)
+```
+
+
+## Tumor fraction at the RNA level
+
+Tumor fractions explored above were derived from WGS data.
+Estimating tumor fraction from RNA directly is challenging since methods focus on estimating proportion of immune cells and assuming the rest is tumor, which is not a fair assumption for many of these diagnoses.
+
+Therefore, for RNA data tumor purity estimates, we should instead directly use tumor fraction values but _only for those samples where DNA and RNA sequencing were performed on the same extraction_.
+We cannot really know the RNA tumor purity for samples that have separate DNA/RNA extractions.
+
+This extraction information is present in data release `>=v23` - we're interested in "Same extraction" samples.
+First, how many such samples are there?
+
+```{r}
+table(metadata$extraction_type)
+```
+We'll need to get the RNA equivalents (since these are all WGS), and we'll map over this information using the `sample_id` information, as was done for the oncoprint module:
+https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/5fe10b88aaa5176fa6577ffd6c8388be05098e83/analyses/oncoprint-landscape/01-map-to-sample_id.R
+
+
+As part of this, we want to find the ambiguous `sample_id` samples so that we don't include them, as described:
+https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/5fe10b88aaa5176fa6577ffd6c8388be05098e83/analyses/oncoprint-landscape/01-map-to-sample_id.R#L153
+
+> An ambiguous sample_id will have more than 2 rows associated with it in the histologies file when looking at tumor samples -- that means we won't be able to determine when an WGS/WXS assay maps to an RNA-seq assay
+
+
+```{r}
+# find the ambiguous samples to flag for removal
+# here the composition does not matter, unlike in the linked oncoprint filtering
+ambiguous_sample_ids <- metadata %>%
+  filter(sample_type == "Tumor") %>%
+  count(sample_id) %>%
+  filter(n > 2) %>%
+  pull(sample_id)
+```
+
+
+Now we can map over the tumor fractions to RNA-Seq samples.
+
+```{r}
+# Find the RNA samples of interest
+same_extraction_stranded_metadata <- metadata %>%
+  filter(experimental_strategy == "RNA-Seq",
+         RNA_library == "stranded",
+         extraction_type == "Same extraction") %>%
+  # remove tumor_fraction since it will conflict after joining
+  select(-tumor_fraction)
+
+# We can use these ids to map back to their associated tumor fractions
+rna_stranded_df <- metadata_tumor_wgs %>%
+  # keep only sample_id's of interest: same extraction with a stranded RNA pair, and NOT ambiguous
+  filter(sample_id %in% same_extraction_stranded_metadata$sample_id,
+         !(sample_id %in% ambiguous_sample_ids)) %>%
+  # find information to join in
+  select(sample_id, tumor_fraction) %>%
+  distinct() %>%
+  # Join tumor fractions with RNA metadata
+  right_join(same_extraction_stranded_metadata, by = "sample_id") %>%
+  # Keep only columns of interest, to avoid conflicts with future joins
+  select(contains("Kids_First"), sample_id, tumor_fraction, 
+         cancer_group, broad_histology) %>%
+  # remove any unknowns
+  drop_na(tumor_fraction)
+```
+
+The new `rna_stranded_df` contains information of interest for transcriptomic exploration: `tumor_fraction` values for stranded RNA-Seq samples that were from the same extraction as corresponding WGS for which the tumor purity was quantified.
+
+```{r}
+rna_stranded_df
+```
+
+Let's export this TSV for future use
+
+```{r}
+# keep only IDs and tumor_fraction for export
+rna_stranded_df_export <- rna_stranded_df %>% 
+  select(Kids_First_Biospecimen_ID, sample_id, tumor_fraction)
+
+write_tsv(rna_stranded_df_export, 
+          rna_stranded_df_file)
+```
+
+
+
+We might also like to see this distribution of values, since only these are relevant for RNA-level:
+
+```{r}
+summary(rna_stranded_df$tumor_fraction)
+
+ggplot(rna_stranded_df) + 
+  aes(x = tumor_fraction) + 
+  geom_histogram(color = "black", fill = "darkorchid2")
+```
+
+
+## Session info
+
+```{r}
+sessionInfo()
+```

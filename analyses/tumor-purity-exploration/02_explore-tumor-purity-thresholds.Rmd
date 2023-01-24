@@ -1,0 +1,350 @@
+---
+title: "Exploring thresholds for filtering based on tumor purity"
+author: "SJ Spielman for CCDL"
+date: "2023"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+params:
+  release: release-v23-20230115
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+theme_set(theme_bw())
+```
+This notebook explores potential tumor purity thresholds that could be applied in other contexts to assess the influence of tumor purity on certain RNA-level analyses.
+Note that RNA-level analyses this pertains to focus only on stranded samples, so any assessments and figures here will focus on stranded libraries only.
+
+## Functions
+
+This section defines some functions which are needed in this (and only for this!) notebook.
+
+```{r}
+# This is a helper function to calculated weighted means for tumor_fraction,
+# weighted across either broad_histology_display or cancer_group_display groups
+calc_weighted_mean <- function(df, group_var) {
+  df %>%
+    drop_na(tumor_fraction) %>%
+    add_count({{group_var}}) %>%
+    mutate(contribution = tumor_fraction * (n/sum(n))) %>%
+    summarize(weighted = sum(contribution)) %>% 
+    pull(weighted)
+}
+
+# This function calculates the fraction of counts in a given group that would 
+# remain after a given universal threshold is applied
+calc_frac <- function(df, 
+                      threshold, 
+                      group_var) {
+  # establish total counts
+  total_count <- df %>%
+    count({{group_var}}, name = "total") 
+  
+  df %>%
+    filter(tumor_fraction <= threshold) %>%
+    # count after filtering
+    count({{group_var}}) %>%
+    # divide after/before
+    inner_join(total_count) %>%
+    mutate(frac_remaining = n/total) %>%
+    distinct()
+}
+
+
+# This function makes a barplot showing the remaining fraction of samples after 
+#  thresholding `mean_threshold` or `median_threshold`
+plot_remaining_frac <- function(df, 
+                                mean_threshold, 
+                                median_threshold, 
+                                group_var) {
+  
+  remaining_df <- bind_rows(
+    calc_frac(df, mean_threshold, {{group_var}}) %>%
+      mutate(threshold = "mean threshold"),
+    calc_frac(df, median_threshold, {{group_var}}) %>%
+      mutate(threshold = "median threshold")
+  )
+  
+  ggplot(remaining_df) + 
+    aes(x = {{group_var}}, 
+        y = frac_remaining, 
+        fill = threshold) + 
+    geom_col(color = "black", size = 0.5, 
+             position = position_dodge()) +
+    geom_hline(yintercept = 0.5) +
+    theme(axis.text.x = element_text(angle = 30, hjust = 1))
+}
+
+# This function makes a barplot showing the remaining fraction of samples after 
+#   applying a per-group threshold. The inputted df is assumed to have been thresholded already
+plot_remaining_frac_group_threshold <- function(df, var, title, fill) {
+  ggplot(df, 
+         aes(x = {{var}}, y = percent_remaining)) + 
+    geom_col(fill = fill, color = "black" ) + 
+    geom_text(aes(y = percent_remaining+0.025, label = count_remaining), 
+              color = "red") +
+    labs(
+      y = "Percent of samples that remain after thresholding",
+      title = title, 
+      subtitle = "text labels are remaining counts"
+    ) +
+    theme(axis.text.x = element_text(angle = 30, size = 8, hjust = 1)) + 
+    ylim(c(0,1))
+}
+```
+
+
+## Set directories and files
+
+```{r}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+pal_dir <- file.path(root_dir, "figures", "palettes")
+
+results_dir <- file.path("results")
+if (!(dir.exists(results_dir))) {
+  dir.create(results_dir)
+}
+
+metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+pal_file <- file.path(pal_dir, "broad_histology_cancer_group_palette.tsv")
+rna_stranded_df_file <- file.path(results_dir, "rna_stranded_same-extraction.tsv")  # 01 notebook output
+
+
+rna_stranded_thresholded_df_file <- file.path(results_dir, "thresholded_rna_stranded_same-extraction.tsv")
+```
+
+
+Read in:
+
+```{r}
+palette_mapping_df <- read_tsv(pal_file)
+metadata <- read_tsv(metadata_file) 
+rna_stranded_df <- read_tsv(rna_stranded_df_file)
+```
+
+## Exploring thresholding
+
+
+If we were to potentially limit analyses to only tumors with a certain level of purity, how would that affect sample distributions? 
+In particular, how many samples would be left from each grouping if we removed at a certain threshold which might be, for example...
+
+- Overall unweighted median or mean tumor fraction
+- Weighted mean by group-size tumor fraction (but what is the grouping variable?)
+
+First let's join the new `rna_stranded_df` with the palette.
+
+```{r}
+rna_stranded_df <- rna_stranded_df %>%
+  inner_join(
+    select(metadata, 
+           Kids_First_Biospecimen_ID,
+           cancer_group,
+           broad_histology)
+  ) %>%
+  inner_join(palette_mapping_df) %>%
+  select(Kids_First_Biospecimen_ID, 
+         tumor_fraction, 
+         cancer_group_display, 
+         cancer_group_hex, 
+         broad_histology_display,
+         broad_histology_order,
+         broad_histology_hex) %>%
+  drop_na() %>%
+  # reorder by median fraction and ensure "Other" is always last
+  mutate(cancer_group_display = forcats::fct_reorder(cancer_group_display, tumor_fraction), 
+         cancer_group_display = forcats::fct_relevel(cancer_group_display, "Other", after = Inf),
+         broad_histology_display = forcats::fct_reorder(broad_histology_display, tumor_fraction), 
+         broad_histology_display = forcats::fct_relevel(broad_histology_display, "Other", after = Inf))
+
+```
+
+Let's look at these threshold themselves:
+```{r}
+median_tumor <- median(rna_stranded_df$tumor_fraction, na.rm = TRUE)
+cat("median", median_tumor)
+
+unweighted_mean <- mean(rna_stranded_df$tumor_fraction, na.rm = TRUE)
+cat("\nunweighed mean", unweighted_mean)
+
+weighted_mean_bh <- calc_weighted_mean(rna_stranded_df, broad_histology_display)
+cat("\nweighted_mean_bh", weighted_mean_bh)
+weighted_mean_cg <- calc_weighted_mean(rna_stranded_df, cancer_group_display)
+cat("\nweighted_mean_cg", weighted_mean_cg)
+
+```
+
+The weighted means are about the same as the overall mean, which is somewhat lower than the overall median. 
+
+Let's explore what fraction of samples remain when filtering down based on the **median** and means at both broad histology and cancer group levels.
+The y-axes show how the fraction of samples which would remain after filtering, and horizontal lines are 50% guides.
+
+
+
+```{r}
+plot_remaining_frac(rna_stranded_df,
+                    unweighted_mean, 
+                    median_tumor,
+                    broad_histology_display) + 
+  ggtitle("Broad histology display after filtering")
+```
+
+
+```{r, fig.width = 8}
+plot_remaining_frac(rna_stranded_df,
+                    unweighted_mean, 
+                    median_tumor,
+                    cancer_group_display) + 
+  theme(legend.position = "bottom") +
+  ggtitle("Cancer group display after filtering")
+```
+
+
+### Thresholding within groups
+
+Rather than considering a single global threshold, how would this look if we did a _per group_ threshold?
+Specifically, let's see how this looks if we use the _per cancer-group median_ as the threshold and filter from there.
+In addition, we may wish to impose a global minimum to ensure that all samples that at least some baseline tumor fraction level.
+
+```{r}
+# Ensure that all samples have at least 0.7 tumor purity
+global_minimum <- 0.7
+
+cancer_group_thresholds_df <- rna_stranded_df %>%
+  group_by(cancer_group_display) %>%
+  summarize(cancer_group_tumor_threshold = median(tumor_fraction), 
+            n_tumors = n()) 
+
+# Just something to count up the total bh for later division
+total_bh_df <- rna_stranded_df %>%
+  count(broad_histology_display, name = "n_tumors")
+```
+
+Now we can see how many samples would be retained:
+
+```{r}
+rna_stranded_df_thresholded <- rna_stranded_df %>%
+  inner_join(cancer_group_thresholds_df) %>%
+  # Pass both thresholds
+  filter(tumor_fraction >= global_minimum, 
+         tumor_fraction >= cancer_group_tumor_threshold) %>%
+  unique() %>%
+  # bring back the sample_id which may be needed in other contexts
+  inner_join(
+    select(metadata, 
+           Kids_First_Biospecimen_ID, 
+           sample_id)
+  )
+
+# How many cancer groups?
+remaining_cg <- rna_stranded_df_thresholded %>%
+  count(cancer_group_display, name = "count_remaining") %>%
+  # join again to get n_tumors
+  inner_join(cancer_group_thresholds_df) %>%
+  mutate(percent_remaining = count_remaining/n_tumors) 
+remaining_cg
+
+# How many broad histologies groups?
+remaining_bh <- rna_stranded_df_thresholded %>%
+  count(broad_histology_display, name = "count_remaining") %>%
+  # join again to get n_tumors
+  inner_join(total_bh_df) %>%
+  mutate(percent_remaining = count_remaining/n_tumors) 
+remaining_bh
+```
+
+```{r}
+plot_remaining_frac_group_threshold(remaining_cg, cancer_group_display, "Remaining cancer groups", "darkolivegreen1")
+plot_remaining_frac_group_threshold(remaining_bh, broad_histology_display, "Remaining broad histology groups", "darkolivegreen4")
+```
+
+
+Let's also export this thresholded version of the data frame.
+
+```{r}
+# keep only IDs, tumor_fraction, and the threshold applied for export
+rna_stranded_df_thresholded_export <- rna_stranded_df_thresholded %>% 
+  select(Kids_First_Biospecimen_ID, sample_id, tumor_fraction, cancer_group_tumor_threshold)
+
+
+write_tsv(rna_stranded_df_thresholded, 
+          rna_stranded_thresholded_df_file)
+```
+
+
+## Hypermutator status
+
+It's also worth checking where the hypermutator samples land in all of this.
+
+```{r}
+# These samples were identified as coming from hypermutators in the manuscript: 
+# https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/6500e23661d04ea772a9c3891c8b49497fdaf36b/figures/pdfs/fig4/panels/hypermutator_sigs_heatmap.pdf
+# These IDs are WGS
+hypermutator_bs_ids <- c("BS_85Q5P8GF", "BS_HM5GFJN8", "BS_P0QJ1QAH", "BS_QWM9BPDY", "BS_20TBZG09", "BS_8AY2GM4G", "BS_02YBZSBY", "BS_ERFMPQN3", "BS_VW4XN9Y7", "BS_F0GNWEJJ", "BS_P3PF53V8")
+```
+
+
+```{r}
+# Get the sample ids that correspond to hypermutator_bs_ids
+hypermutator_sample_ids <- metadata %>%
+  filter(Kids_First_Biospecimen_ID %in% hypermutator_bs_ids) %>%
+  select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, sample_id, tumor_fraction, 
+         cancer_group) %>%
+  distinct() %>%
+  # convert to cancer_group_display 
+  inner_join(
+    select(palette_mapping_df,
+           cancer_group, 
+           cancer_group_display)
+  ) %>%
+  select(-cancer_group) %>%
+  # also combine with the cancer group thresholds for easier comparison
+  inner_join(cancer_group_thresholds_df) %>%
+  # arrange on participant for easier viewing
+  arrange(Kids_First_Participant_ID)
+
+hypermutator_sample_ids
+```
+
+Which of these ids remain in our stranded RNA thresholded df?
+We'd also like to know if any of these were also part of the ambiguous ids (those `sample_id` values which cannot be uniquely mapped to an individual omic assay), just to see.
+
+Are any of those in the ambiguous set? 
+
+For this, we'll need to first define those ambiguous ids again as we did in `01_explore-tumor-purity.Rmd` notebook in this module:
+
+
+```{r}
+# find the ambiguous samples
+ambiguous_sample_ids <- metadata %>%
+  filter(sample_type == "Tumor") %>%
+  count(sample_id) %>%
+  filter(n > 2) %>%
+  pull(sample_id)
+```
+
+
+```{r}
+hypermutator_sample_ids %>%
+  mutate(is_ambiguous = sample_id %in% ambiguous_sample_ids, 
+         is_present = sample_id %in% rna_stranded_df_thresholded$sample_id, 
+         can_use = !(is_ambiguous) & is_present) %>%
+  arrange(Kids_First_Participant_ID) %>%
+  select(sample_id, Kids_First_Participant_ID, can_use, is_present, is_ambiguous, tumor_fraction, cancer_group_display, cancer_group_tumor_threshold)
+```
+
+What do we have?
+
+- Two (`PT_JNEV57VK` and `PT_VTM2STE3`) of the associated six patients have ambiguous mappings and cannot be included
+- In fact only two samples have both passed its threshold and do not have ambiguous mappings (`can_use` is `TRUE`):
+  - `7316-3311`
+  - `7316-2307`
+- The sample `7316-2594` is also right on the cusp - its fraction 0.7450511	is less than (but only just!) its cancer group's median value of 0.7543231, so that's why that sample was not included.
+
+## Session info
+
+```{r}
+sessionInfo()
+```
