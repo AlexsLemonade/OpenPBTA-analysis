@@ -4,9 +4,13 @@ Author: SJ Spielman `@sjspielman`
 
 This analysis modules explores the tumor purity values and potential correlates.
 
-The full module can be run with `bash run_tumor-purity`.
+The full module can be run with (assuming your current directory is the root of this module):
 
-Contents include the following:
+```
+bash run_tumor-purity.sh`
+```
+
+Contents of this module include the following:
 
 - `01_explore-tumor-purity.Rmd`: Notebook to explore the overall distribution of purity values and their relationship to other metadata information including diagnoses and extraction type.
 This notebook outputs the file `results/rna_stranded_same-extraction.tsv`, which contains the metadata (including mapped tumor fraction) for RNA stranded samples that are from the same extraction as their DNA counterparts from which tumor fraction was measured.
