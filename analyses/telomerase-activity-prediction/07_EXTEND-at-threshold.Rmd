@@ -1,0 +1,208 @@
+---
+title: "Assess EXTEND results calculated with tumor purity thresholded data"
+author: "SJ Spielman for CCDL"
+date: "2023"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+params:
+  release: release-v23-20230115
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+theme_set(theme_bw())
+set.seed(2023)
+```
+This notebook was written as part of manuscript revisions.
+Here, we explore how EXTEND-related results might change if only tumors at a certain level of known tumor purity (`tumor_fraction` metadata variable) are considered.
+Only stranded RNA data is considered here, as in the manuscript.
+This notebook consumes result file `TelomeraseScores_PTBAStranded_FPKM_thresholded.txt` produced by this module's script `01-run-EXTEND.R` run with the ` --apply_tumor_purity_threshold` flag.
+
+The associated issue for this exploration is here: https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1625
+
+
+
+## Set directories and files
+
+```{r}
+# directories
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+analyses_dir <- file.path(root_dir, "analyses")
+extend_dir <- file.path(analyses_dir, "telomerase-activity-prediction")
+
+# input files
+metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+palette_file <- file.path(root_dir, "figures", "palettes", "broad_histology_cancer_group_palette.tsv")
+extend_file_thresholded <- file.path(extend_dir, 
+                         "results",
+                         "TelomeraseScores_PTBAStranded_FPKM_thresholded.txt")
+extend_file_original <- file.path(extend_dir, 
+                         "results",
+                         "TelomeraseScores_PTBAStranded_FPKM.txt")
+fpkm_file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
+```
+
+
+Read in input files and prepare them forinner join so that we have `cancer_group_display` information for these samples:
+
+```{r}
+# First, read in and link extend scores to their cancer_group_display
+metadata_df <- read_tsv(metadata_file)
+palette_df <- read_tsv(palette_file)
+extend_threshold_df <- read_tsv(extend_file_thresholded) %>%
+  inner_join(
+    select(
+      metadata_df, 
+      cancer_group, 
+      SampleID = Kids_First_Biospecimen_ID
+    )
+  ) %>%
+  inner_join(
+    select(
+      palette_df, 
+      cancer_group,
+      cancer_group_display
+    )
+  ) %>% 
+  select(-RawEXTENDScores) %>%
+  rename(extend_threshold = NormEXTENDScores) 
+
+# Do the same for the original EXTEND scores
+extend_original_df <- read_tsv(extend_file_original) %>%
+  inner_join(
+    select(
+      metadata_df, 
+      cancer_group, 
+      SampleID = Kids_First_Biospecimen_ID
+    )
+  ) %>%
+  inner_join(
+    select(
+      palette_df, 
+      cancer_group,
+      cancer_group_display
+    )
+  ) %>% 
+  select(-RawEXTENDScores) %>%
+  rename(extend_original = NormEXTENDScores) 
+
+# Combine into a single EXTEND data frame for comparison
+extend_df <- full_join(extend_original_df, 
+                       extend_threshold_df) %>%
+  distinct() %>%
+  drop_na(cancer_group_display) %>%
+  # pivot into a long df
+  gather(contains("extend_"), 
+         key = "extend_type", 
+         value = "extend_score")
+
+# Get the EXTEND original score median ranks for plot ordering
+cancer_order_df <- extend_df %>%
+  filter(extend_type == "extend_original") %>%
+  select(cancer_group_display, 
+         extend_score) %>%
+  mutate(cancer_order = forcats::fct_reorder(cancer_group_display, extend_score),
+         cancer_order = forcats::fct_relevel(cancer_order, "Other", after = Inf))
+cancer_order <- levels(cancer_order_df$cancer_order)
+
+extend_df$cancer_group_display <- factor(extend_df$cancer_group_display, levels = cancer_order)
+
+# Wrangle FPKM into a data frame with only TERC and TERT expression
+fpkm_df <- read_rds(fpkm_file) %>%
+  rownames_to_column("gene") %>% 
+  # keep only genes we are visualizing
+  filter(gene %in% c("TERC", "TERT")) %>%
+  gather(contains("BS"), key = "SampleID", value = "fpkm") %>%
+  right_join(
+    select(extend_threshold_df, 
+           SampleID,
+           extend_score = extend_threshold), 
+    by = "SampleID"
+  ) %>%
+  mutate(log2_fpkm = log2(fpkm+1))
+```
+
+## Re-analysis 1: Distribution of EXTEND scores
+
+Do trends in the overall distributions of EXTEND scores remain the same if performed only on tumors with high `tumor_fraction` values?
+
+
+```{r}
+ggplot(extend_df) + 
+  aes(x = cancer_group_display, 
+      y = extend_score) + 
+  geom_boxplot(fill = "gray60", 
+               # hide the outliers
+               outlier.size = NULL) + 
+  geom_jitter(width = 0.2, size = 0.5) +
+  facet_wrap(~extend_type, nrow = 2) +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1, size = 6))
+
+```
+
+
+The plot above shows distributions before (top) and after (bottom) filtering, ordered by original EXTEND score median values.
+Previously, we observed from https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L209:
+
+> We found aggressive tumors such as HGGs (DMGs and other high-grade gliomas) and MB had high `EXTEND` scores (**Figure {@fig:Fig4}D**), while low-grade lesions such as schwannomas, GNGs, DNETs, and other low-grade gliomas had among the lowest scores (**Table S3**).
+
+We see the order is broadly the same, so this means overall EXTEND score trends are largely the same.
+There are some minor differences and items to note:
+
+- First, there are no longer DIPGs for this plot (but these were excluded from the main text figure anyways since it's such a small group)
+- It's notable that pediatric meningiomas are _not_ highly aggressive, but have high scores (both without and with thresholding), so we may wish to clarify this further in the manuscript. also had high scores when analyzed previously so this result is not necessarily different but we might clarify it further.
+- Similarly, schwannomas are not actually terribly low in either set of distributions, so we may want to rethink this emphasis in the manuscript as well.
+
+
+
+## Re-analysis 2: Relationship to TERT and TERC expression
+
+Do we still see positive relationships between EXTEND scores and each of TERT and TERC expression?
+
+
+```{r}
+ggplot(fpkm_df) + 
+  aes(x = extend_score,
+      y = log2_fpkm) + 
+  geom_point() + 
+  geom_smooth(method = "lm") + 
+  facet_wrap(~gene) 
+```
+
+
+Let's calculate the actual correlations - 
+```{r}
+# subset dfs
+terc_df <- fpkm_df %>% filter(gene == "TERC")
+tert_df <- fpkm_df %>% filter(gene == "TERT")
+```
+
+
+TERC correlation:
+```{r}
+cor.test(terc_df$extend_score, terc_df$log2_fpkm)
+```
+
+TERT correlation:
+```{r}
+cor.test(tert_df$extend_score, tert_df$log2_fpkm)
+
+```
+
+
+Previously, we observed from https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L208
+
+> As expected, `EXTEND` scores significantly correlated with _TERC_ (R = 0.619, p < 0.01) and _TERT_ (R = 0.491, p < 0.01) expression (**Figure {@fig:S5}B-C**).
+
+
+Correlations remain positive and highly significant. 
+The correlations coefficients themselves are somewhat higher, but this is not necessarily meaningful other than to say that the overall trend is consistent.
+
+## Session info
+
+```{r}
+sessionInfo()
+```
