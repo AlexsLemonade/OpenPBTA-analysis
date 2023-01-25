@@ -83,7 +83,7 @@ ggsave(roc_file, roc_plot, width = 3, height = 3)
 telomerase_dir <- file.path(analyses_dir, "telomerase-activity-prediction")
 
 # stranded data specifically:
-extend_scores <- read_tsv(file.path(telomerase_dir, "results", "TelomeraseScores_PTBAStranded_FPKM_thresholded.txt")) #TOGGLING IN PURITY
+extend_scores <- read_tsv(file.path(telomerase_dir, "results", "TelomeraseScores_PTBAStranded_FPKM.txt"))
 stranded_expression <- read_rds(file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
 
 # MAF files to find TERTp-positive samples
