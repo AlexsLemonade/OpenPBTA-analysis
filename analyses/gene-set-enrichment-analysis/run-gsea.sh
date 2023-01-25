@@ -41,8 +41,27 @@ INPUT_FILE="${DATA_DIR}/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
 OUTPUT_FILE="${RESULTS_DIR}/gsva_scores_stranded.tsv"
 Rscript --vanilla 01-conduct-gsea-analysis.R --input ${INPUT_FILE} --output ${OUTPUT_FILE}
 
+
 if [[ "$RUN_FOR_SUBTYPING" -lt "1" ]]; then
   ######## Model GSVA scores ############
   # Only run when pbta-histologies.tsv is generated which has harmonized_diagnosis
   Rscript -e "rmarkdown::render('02-model-gsea.Rmd', clean = TRUE, params=list(is_ci = ${IS_CI}))"
 fi
+
+
+######## Calculate scores from stranded expression data for threshold-passing tumors only #######
+INPUT_FILE="${DATA_DIR}/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+OUTPUT_FILE="${RESULTS_DIR}/gsva_scores_stranded_thresholded.tsv"
+Rscript --vanilla 01-conduct-gsea-analysis.R --input ${INPUT_FILE} --output ${OUTPUT_FILE} --apply_tumor_purity_threshold
+
+
+# Assess results:
+# render the notebook here.
+
+
+
+
+
+
+
+

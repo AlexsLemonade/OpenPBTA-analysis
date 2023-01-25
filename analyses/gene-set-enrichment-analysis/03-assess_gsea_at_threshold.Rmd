@@ -1,0 +1,585 @@
+---
+title: "GSEA scores for samples passing threshold"
+author: "SJ Spielman for CCDL"
+date: "2023"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+params:
+  release: release-v23-20230115
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+theme_set(theme_bw())
+
+# testing functions
+source(file.path("util", "hallmark_models.R"))
+```
+This notebook was written as part of manuscript revisions.
+Here, we explore how GSEA-related results might change if only tumors at a certain level of known tumor purity (`tumor_fraction` metadata variable) are considered.
+Only stranded RNA data is considered here, as in the manuscript.
+This notebook consumes result file `gsva_scores_stranded.tsv` produced by this module's script `01-conduct-gsea-analysis` run with the `--apply_tumor_purity_threshold` flag.
+
+The associated issue for this exploration is here: https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1626
+
+
+## Functions
+
+This section defines some helper functions used in _this_ notebook.
+
+
+```{r}
+# This function prepares a data frame of GSEA results for modeling
+prepare_gsea_for_model <- function(gsea_df, metadata_df, palette_df) {
+  gsea_df %>%
+    # join with cancer_group_display information
+    inner_join(
+      select(
+        metadata_df, 
+        Kids_First_Biospecimen_ID, 
+        cancer_group
+      )
+    ) %>%
+    inner_join(
+      select(
+        palette_df, 
+        cancer_group,
+        cancer_group_display
+      )
+    ) %>%
+    # add column for modeling function compatibility
+    mutate(data_type = "stranded") %>%
+    # remove plain cancer_group column
+    select(-cancer_group) %>%
+    # remove underscores from cancer group names to facilitate parsing
+    mutate(cancer_group_display_underscore = stringr::str_replace(cancer_group_display, "-", ""))
+}
+```
+
+
+
+```{r}
+# This function assesses certain pathways are significant for a given set of results
+# The function return a table with three sets of counts
+### Total number of significantly upregulated comparisons
+### Total number of significantly downregulated comparisons
+### Total number of non-significant comparisons
+# The total count in the result _IS_ the total number of comparisons
+# Note that if there is a 4th count called "error in logic," something went wrong!
+count_tukey_results <- function(df, term_vector, cancer_group) {
+  df %>%
+    filter(hallmark_name %in% term_vector, 
+           (cancer_group1 == cancer_group | cancer_group2 == cancer_group)) %>%
+    # Assign comparison as upregulated, downregulated, or not significant
+    mutate(comparison = case_when(
+      # significant upregulation where cancer_group is in group 1 variable
+      cancer_group1 == cancer_group & significant_tukey_bonf & pathway_score_difference > 0 ~ "upregulated",
+      # significant upregulation where cancer_group is in group 2 variable
+      cancer_group2 == cancer_group & significant_tukey_bonf & pathway_score_difference < 0 ~ "upregulated",
+      # significant downregulation where cancer_group is in group 1 variable
+      cancer_group1 == cancer_group & significant_tukey_bonf & pathway_score_difference < 0 ~ "downregulated",
+      # significant downregulation where cancer_group is in group 2 variable
+      cancer_group2 == cancer_group & significant_tukey_bonf & pathway_score_difference > 0 ~ "downregulated",
+      # Not significant
+      !(significant_tukey_bonf) ~ "not significant", 
+      # did anything go wrong?
+      TRUE ~ "error in logic"
+    )) %>%
+    count(comparison)
+}
+
+# This function combines counted original and thresholded results into a single data frame
+compare_original_threshold <- function(df_original, df_thresholded, term_vector, cancer_group) {
+  original <- count_tukey_results(df_original, term_vector, cancer_group) %>% mutate(type = "original")
+  count_tukey_results(df_thresholded, term_vector, cancer_group)  %>% mutate(type = "thresholded") %>%
+    bind_rows(original) %>%
+    arrange(type)
+}
+```
+
+## Set directories and files
+
+```{r}
+# Input
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+pal_dir <- file.path(root_dir, "figures", "palettes")
+metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+palette_file <- file.path(root_dir, 
+                          "figures", 
+                          "palettes", 
+                          "broad_histology_cancer_group_palette.tsv")
+
+
+gsea_results_original_file <- file.path(root_dir, 
+                          "analyses",
+                          "gene-set-enrichment-analysis",
+                          "results",
+                          "gsva_scores_stranded.tsv")
+
+gsea_results_thresholded_file <- file.path(root_dir, 
+                          "analyses",
+                          "gene-set-enrichment-analysis",
+                          "results",
+                          "gsva_scores_stranded_thresholded.tsv")
+```
+
+Read in and prepare data:
+
+```{r}
+gsea_df_thresholded <- read_tsv(gsea_results_thresholded_file)
+gsea_df_original <- read_tsv(gsea_results_original_file)
+metadata_df <- read_tsv(metadata_file, guess_max = 10000)
+palette_df <- read_tsv(palette_file)
+
+gsea_df_thresholded <- prepare_gsea_for_model(gsea_df_thresholded, metadata_df, palette_df)
+gsea_df_original <- prepare_gsea_for_model(gsea_df_original, metadata_df, palette_df)
+```
+
+## Re-analyze GSEA scores
+
+We'll model across cancer groups for each GSEA version of results.
+
+
+First, the original:
+```{r}
+# Perform anova and post-hoc tukey tests on original GSEA results
+modeled_original <- gsva_anova_tukey(gsea_df_original, 
+                                     cancer_group_display_underscore, 
+                                     "stranded", 
+                                     # p-value threshold used in manuscript
+                                     0.05) 
+
+# Obtain tukey results
+tukey_original <- modeled_original$tukey %>%
+  # separate the comparisons back out into two variables
+  separate(comparison, into = c("cancer_group1", "cancer_group2"), sep = "-") 
+```
+
+Next, the thresholded:
+```{r}
+# Perform anova and post-hoc tukey tests on thresholded GSEA results
+modeled_thresholded <- gsva_anova_tukey(gsea_df_thresholded, 
+                                        cancer_group_display_underscore, 
+                                        "stranded", 
+                                        # p-value threshold used in manuscript
+                                        0.05) 
+
+# Obtain tukey results
+tukey_thresholded <- modeled_thresholded$tukey %>%
+  # separate the comparisons back out into two variables
+  separate(comparison, into = c("cancer_group1", "cancer_group2"), sep = "-") 
+```
+
+  
+## Assessing specific comparisons: Part 1
+
+We'll now assess specific results from the Tukey tests. 
+In this section, we'll check individual trends as stated here in the manuscript:
+
+
+https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L275-L276
+
+> Indeed, we detected significant (Bonferroni-corrected p < 0.05) upregulation of _MYC_ and _E2F_ targets, as well as G2M (cell cycle phase following S phase) in MBs, ATRTs, and HGGs compared to several other cancer groups.
+> In contrast, LGGs showed significant downregulation (Bonferroni-corrected p < 0.05) of these pathways.
+
+
+
+### MYC target pathways
+
+#### MB
+
+> Originally, 20/40 pathways were upregulated. After thresholding, 17/38 are upregulated.
+> This is broadly consistent.
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, 
+                           c("HALLMARK_MYC_TARGETS_V1", "HALLMARK_MYC_TARGETS_V2"), "Medulloblastoma")
+```
+
+
+#### ATRT
+
+> Originally, 24/40 pathways were upregulated. After thresholding, 13/38 are upregulated.
+> Many comparisons are no longer significant.
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded,  c("HALLMARK_MYC_TARGETS_V1", "HALLMARK_MYC_TARGETS_V2"), "Atypical Teratoid Rhabdoid Tumor")
+```
+
+#### Other HGGs
+
+> Originally, 12/40 pathways were upregulated. After thresholding, 10/38 are upregulated.
+> This is broadly consistent.
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded,  c("HALLMARK_MYC_TARGETS_V1", "HALLMARK_MYC_TARGETS_V2"), "Other highgrade glioma")
+```
+
+
+#### DMGs
+
+> Originally, 12/40 pathways were upregulated. After thresholding, 3/38 are upregulated.
+> These results are substantially different.
+
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, c("HALLMARK_MYC_TARGETS_V1", "HALLMARK_MYC_TARGETS_V2"), "Diffuse midline glioma")
+```
+
+#### Other LGGs
+
+
+> Originally, 15/40 pathways were downregulated. After thresholding, 7/38 are downregulated.
+> This is broadly consistent though with some loss of power.
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, c("HALLMARK_MYC_TARGETS_V1", "HALLMARK_MYC_TARGETS_V2"), "Other lowgrade glioma")
+```
+
+
+#### Pilocytic astrocytoma
+
+> Originally, 18/40 pathways were downregulated. After thresholding, 11/38 are downregulated.
+> This is broadly consistent though with some loss of power.
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, c("HALLMARK_MYC_TARGETS_V1", "HALLMARK_MYC_TARGETS_V2"), "Pilocytic astrocytoma")
+```
+
+#### Subependymal Giant Cell Astrocytoma
+
+> Originally, 1/40 pathways was downregulated. After thresholding, none are downregulated
+> This is broadly consistent.
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, c("HALLMARK_MYC_TARGETS_V1", "HALLMARK_MYC_TARGETS_V2"), "Subependymal Giant Cell Astrocytoma")
+```
+
+
+
+#### Pleomorphic xanthoastrocytoma
+
+> Originally, 4/40 pathways were downregulated. After thresholding, none are downregulated.
+> This is broadly consistent.
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, c("HALLMARK_MYC_TARGETS_V1", "HALLMARK_MYC_TARGETS_V2"), "Pleomorphic xanthoastrocytoma")
+```
+
+### E2F target pathways
+
+
+#### MB
+
+> Originally, 15/20 pathways were upregulated. After thresholding, 13/19 are upregulated.
+> This is broadly consistent.
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARGETS", "Medulloblastoma")
+```
+
+#### ATRT
+
+> Originally, 13/20 pathways were upregulated. After thresholding, 11/19 are upregulated.
+> This is broadly consistent.
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARGETS", "Atypical Teratoid Rhabdoid Tumor")
+```
+
+#### Other HGGs
+
+
+> Originally, 13/20 pathways were upregulated and 1/20 was downregulated. After thresholding, 6/19 are upregulated.
+> These results have somewhat shifted
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARGETS", "Other highgrade glioma")
+```
+
+
+#### DMGs
+
+> Originally, 13/20 pathways were upregulated. After thresholding, 6/19 are upregulated.
+> These results are different.
+
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARGETS", "Diffuse midline glioma")
+```
+
+
+
+#### Other LGGs
+
+
+> Originally, 8/20 pathways were downregulated. After thresholding, 7/19 are downregulated.
+> This is broadly consistent
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARGETS", "Other lowgrade glioma")
+```
+
+
+#### Pilocytic astrocytoma
+
+> Originally, 8/20 pathways were downregulated. After thresholding, 9/19 are downregulated.
+> This is broadly consistent
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARGETS", "Pilocytic astrocytoma")
+```
+
+#### Subependymal Giant Cell Astrocytoma
+
+> Originally, 6/20 pathways were downregulated. After thresholding, 3/16 are downregulated.
+> This is broadly consistent though with some loss of power
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARGETS", "Subependymal Giant Cell Astrocytoma")
+```
+
+#### Pleomorphic xanthoastrocytoma
+
+> Originally, 6/20 pathways were downregulated. After thresholding, 3/19 are downregulated.
+> This is broadly consistent.
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARGETS", "Pleomorphic xanthoastrocytoma")
+```
+
+
+
+### G2M checkpoint 
+
+#### MB
+
+> Originally, 15/20 pathways were upregulated. After thresholding, 13/19 are upregulated.
+> This is broadly consistent.
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHECKPOINT", "Medulloblastoma")
+```
+
+
+#### ATRT
+
+> Originally, 13/20 pathways were upregulated. After thresholding, 9/19 are upregulated.
+> This is broadly consistent, although with some minor loss of power
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHECKPOINT", "Atypical Teratoid Rhabdoid Tumor")
+```
+
+
+#### Other HGGs
+
+> Originally, 13/20 pathways were upregulated and 1/20 was downregulated. After thresholding, 6/19 are upregulated.
+> These results have somewhat shifted
+
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHECKPOINT", "Other highgrade glioma")
+```
+
+#### DMGs
+
+> Originally, 13/20 pathways were upregulated. After thresholding, 5/19 are upregulated.
+> These results are different.
+
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHECKPOINT", "Diffuse midline glioma")
+```
+
+
+
+#### Other LGGs
+
+
+> Originally, 9/20 pathways were downregulated. After thresholding, 7/19 are downregulated.
+> This is broadly consistent
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHECKPOINT", "Other lowgrade glioma")
+```
+
+
+#### Pilocytic astrocytoma
+
+> Originally, 10/20 pathways were downregulated. After thresholding, 9/19 are downregulated.
+> This is broadly consistent
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHECKPOINT", "Pilocytic astrocytoma")
+```
+
+#### Subependymal Giant Cell Astrocytoma
+
+> Originally, 6/20 pathways were downregulated. After thresholding, 1/19 are downregulated.
+> This is broadly consistent though with some loss of power
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHECKPOINT", "Subependymal Giant Cell Astrocytoma")
+```
+
+#### Pleomorphic xanthoastrocytoma
+
+> Originally, 7/20 pathways were downregulated. After thresholding, 3/19 are downregulated.
+> This is broadly consistent.
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHECKPOINT", "Pleomorphic xanthoastrocytoma")
+```
+
+
+  
+## Assessing specific comparisons: Part 2
+
+In this section, we'll check individual trends as stated here in the manuscript:
+
+
+https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L277
+
+> Schwannomas and neurofibromas, which have a documented inflammatory immune microenvironment of T and B lymphocytes as well as tumor-associated macrophages (TAMs), are driven by upregulation of cytokines such as IFN$\gamma$, IL-1, and IL-6, and TNF$\alpha$ [@doi:10.1093/noajnl/vdaa023].
+> Indeed, we observed significant upregulation of these cytokines in GSVA hallmark pathways (Bonferroni-corrected p < 0.05) (**Figure {@fig:Fig5}B**)...
+
+
+### IFN-gamma 
+
+
+#### Schwannomas
+
+> Originally, 13/20 pathways were upregulated. After thresholding, 9/19 are upregulated.
+> Results are broadly consistent
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_INTERFERON_GAMMA_RESPONSE", "Schwannoma")
+```
+
+#### Neurofibromas
+
+> Originally, 9/20 pathways were upregulated. After thresholding, 6/19 are upregulated.
+> Results are broadly consistent
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_INTERFERON_GAMMA_RESPONSE", "Neurofibroma Plexiform")
+```
+
+### IL-6
+
+#### Schwannomas
+
+
+> Originally, 10/20 pathways were upregulated. After thresholding, 7/19 are upregulated.
+> Results are broadly consistent
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_IL6_JAK_STAT3_SIGNALING", "Schwannoma")
+```
+
+#### Neurofibromas
+
+> Originally, 8/20 pathways were upregulated. After thresholding, 7/19 are upregulated.
+> Results are broadly consistent
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_IL6_JAK_STAT3_SIGNALING", "Neurofibroma Plexiform")
+```
+
+
+### TNF-alpha
+ 
+#### Schwannomas
+
+> Originally, 9/20 pathways were upregulated. After thresholding, 4/19 are upregulated.
+> Results are broadly consistent but there is a bigger loss of power
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_TNFA_SIGNALING_VIA_NFKB", "Schwannoma")
+```
+
+#### Neurofibromas
+
+> Originally, 9/20 pathways were upregulated. After thresholding, 4/19 are upregulated.
+> Results are broadly consistent but there is a bigger loss of power
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_TNFA_SIGNALING_VIA_NFKB", "Neurofibroma Plexiform")
+```
+
+## Assessing specific comparisons: Part 3
+
+In this section, we'll check individual trends as stated here in the manuscript:
+
+https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L279
+
+> We also observed significant upregulation of pro-inflammatory cytokines IFN$\alpha$ and IFN$\gamma$ in LGGs and craniopharyngiomas compared to medulloblastoma and ependymoma tumors (Bonferroni-corrected p < 0.05), both of which showed significant down-regulation of these cytokines (**Figure {@fig:Fig5}B**).
+
+
+
+From JL for next steps:
+up in LGG compared to MB
+up in LGG compared to EPN
+up in Cranio compared to MB
+up in cranio cpmpared to EPN
+
+For this I need to write a function that compares individual cancer groups.
+
+
+### IFN-alpha
+
+
+#### Other LGGs
+
+
+> Originally, 4/20 pathways were upregulated and 1/20 downregulated. After thresholding, 2/19 are upregulated.
+> This is broadly consistent although both sets of comparisons are mostly NS.
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_INTERFERON_ALPHA_RESPONSE", "Other lowgrade glioma")
+```
+
+
+#### Pilocytic astrocytoma
+
+> Originally, 7/20 pathways were upregulated. After thresholding, 3/19 are upregulated.
+> This is broadly consistent, but again, we have more NS that one might prefer for making strong conclusions about LGGs here.
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_INTERFERON_ALPHA_RESPONSE", "Pilocytic astrocytoma")
+```
+
+#### Subependymal Giant Cell Astrocytoma
+
+> Originally, 10/20 pathways were upregulated. After thresholding, 3/19 are upregulated.
+> This is broadly consistent though with loss of power
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_INTERFERON_ALPHA_RESPONSE", "Subependymal Giant Cell Astrocytoma")
+```
+
+#### Pleomorphic xanthoastrocytoma
+
+> Originally, 7/20 pathways were downregulated. After thresholding, 3/19 are downregulated.
+> This is broadly consistent.
+
+```{r}
+compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_INTERFERON_ALPHA_RESPONSE", "Pleomorphic xanthoastrocytoma")
+```
+
+
+## Conclusions
+
+
+
+Previously-identified upregulated and downregulated pathways still generally follow the same trends for the relevant cancer groups, with some (not unexpected) power loss for some comparisons.
+
+## Session info
+
+```{r}
+sessionInfo()
+```

@@ -25,7 +25,7 @@
 
 #### Set Up Libraries --------------------------------------------------------------------
 
-## Load and/or install libraries ##
+## Load libraries ##
 library(tidyr)
 library(readr)
 library(tibble)
@@ -53,7 +53,12 @@ option_list <- list(
     type = "character",
     default = NA,
     help = "The output file for writing GSVA scores in TSV format."
-  )
+  ), 
+  make_option("--apply_tumor_purity_threshold",
+              action = "store_true",
+              default = FALSE,
+              help = "This flag turns on filtering by tumor purity.")
+  
 )
 
 ## Read in arguments
@@ -82,6 +87,35 @@ scores_output_file <- file.path(output_dir, basename(opt$output_file))
 expression_data <- as.data.frame( readr::read_rds(expression_data_file) )
 human_hallmark  <- msigdbr::msigdbr(species = "Homo sapiens", category = "H") ## human hallmark genes from `migsdbr` package. The loaded data is a tibble.
 
+
+#### Filter expression_datadata based on threshold if specified ------------------------
+
+# Filter data if tumor purity threshold is turned on
+if (opt$apply_tumor_purity_threshold) {
+  
+  # tumor purity metadata file which has been filtered to only biospecimens that
+  #  survive the cancer-group-level threshold
+  tumor_purity_file <- file.path(
+    rprojroot::find_root(rprojroot::has_dir(".git")),
+    "analyses",
+    "tumor-purity-exploration",
+    "results",
+    "thresholded_rna_stranded_same-extraction.tsv"
+  )
+  
+  # Define vector of IDs to retain
+  bs_ids <- readr::read_tsv(tumor_purity_file) %>%
+    dplyr::pull(Kids_First_Biospecimen_ID) %>%
+    unique()
+  
+  # Subset the `expression_data` variable to those IDs
+  expression_data <- expression_data[,bs_ids]
+  
+  # Quick check on filtering:
+  if (!length(bs_ids) == ncol(expression_data)) {
+    stop("Error filtering IDs to use in GSEA calculation with tumor purity thresholding on.")
+  }
+}
 
 
 #### Perform gene set enrichment analysis --------------------------------------------------------------------
