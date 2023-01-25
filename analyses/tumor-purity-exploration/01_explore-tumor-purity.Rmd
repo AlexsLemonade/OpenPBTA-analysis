@@ -28,15 +28,22 @@ This section defines a function which is needed in this (and only in this!) note
 ```{r}
 # Function to make violin plots of tumor_fraction for either 
 # broad_histology_display or cancer_group_display groups
-plot_tumor_violins <- function(df, display_name, display_hex) {
+plot_tumor_violins <- function(df, display_name, display_hex, x_lab) {
+  # Filter to display_name group so that we can order by group-wise median, 
+  #  while ensuring that 'Other' is still last
+  df <- df %>%
+  mutate(display_var = forcats::fct_reorder({{display_name}}, tumor_fraction), 
+         display_var = forcats::fct_relevel(display_var, "Other", after = Inf))
+  
+  # Plot
   ggplot(df) + 
-    # order by ascending median
-    aes(x = forcats::fct_reorder({{display_name}}, tumor_fraction),
+    aes(x = display_var,
         y = tumor_fraction, 
         fill = {{display_hex}}) + 
     geom_violin(alpha = 0.5) +
     stat_summary(geom = "point", fun.y = "median") + 
     scale_fill_identity() + 
+    xlab(x_lab) + 
     theme(axis.text.x = element_text(angle = 30, hjust = 1)) 
 }
 ```
@@ -116,18 +123,13 @@ tumor_palette_df <- metadata_tumor_wgs %>%
          broad_histology_display,
          broad_histology_order,
          broad_histology_hex) %>%
-  drop_na() %>%
-  # reorder by median fraction and ensure "Other" is always last
-  mutate(cancer_group_display = forcats::fct_reorder(cancer_group_display, tumor_fraction), 
-         cancer_group_display = forcats::fct_relevel(cancer_group_display, "Other", after = Inf),
-         broad_histology_display = forcats::fct_reorder(broad_histology_display, tumor_fraction), 
-         broad_histology_display = forcats::fct_relevel(broad_histology_display, "Other", after = Inf))
+  drop_na()
          
 # Cancer group
-plot_tumor_violins(tumor_palette_df, cancer_group_display, cancer_group_hex)
+plot_tumor_violins(tumor_palette_df, cancer_group_display, cancer_group_hex, "Cancer group")
 
 # Broad histology
-plot_tumor_violins(tumor_palette_df, broad_histology_display, broad_histology_hex)
+plot_tumor_violins(tumor_palette_df, broad_histology_display, broad_histology_hex, "Broad histology")
 ```
 
 

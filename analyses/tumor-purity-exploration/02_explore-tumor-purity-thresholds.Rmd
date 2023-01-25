@@ -1,5 +1,5 @@
 ---
-title: "Tumor purity exploration"
+title: "Exploring thresholds for filtering based on tumor purity"
 author: "SJ Spielman for CCDL"
 date: "2023"
 output: 
@@ -14,7 +14,8 @@ params:
 library(tidyverse)
 theme_set(theme_bw())
 ```
-This notebook performs the following explores potential tumor purity thresholds that could be applied in other contexts to assess the influence of tumor purity on certain RNA-level analyses.
+This notebook explores potential tumor purity thresholds that could be applied in other contexts to assess the influence of tumor purity on certain RNA-level analyses.
+Note that RNA-level analyses this pertains to focus only on stranded samples, so any assessments and figures here will focus on stranded libraries only.
 
 ## Functions
 
@@ -31,12 +32,7 @@ calc_weighted_mean <- function(df, group_var) {
     summarize(weighted = sum(contribution)) %>% 
     pull(weighted)
 }
-```
 
-
-
-
-```{r}
 # This function calculates the fraction of counts in a given group that would 
 # remain after a given universal threshold is applied
 calc_frac <- function(df, 
@@ -80,10 +76,7 @@ plot_remaining_frac <- function(df,
     geom_hline(yintercept = 0.5) +
     theme(axis.text.x = element_text(angle = 30, hjust = 1))
 }
-```
 
-
-```{r}
 # This function makes a barplot showing the remaining fraction of samples after 
 #   applying a per-group threshold. The inputted df is assumed to have been thresholded already
 plot_remaining_frac_group_threshold <- function(df, var, title, fill) {
