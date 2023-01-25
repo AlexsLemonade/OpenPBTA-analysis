@@ -45,17 +45,17 @@ binary_scale <- binary_palette_df$hex_codes[binary_palette_df$color_names != "na
 
 
 # Make the ROC curve
-roc_plot <- ggplot(roc_df) + 
+roc_plot <- ggplot(roc_df) +
   aes(
-    x = fpr,  
+    x = fpr,
     y = tpr
   ) +
   geom_step(
-    aes(color = Classifier), 
+    aes(color = Classifier),
     size = 0.6
-  ) + 
+  ) +
   geom_segment(
-    aes(x = 0, y = 0, xend = 1, yend = 1), 
+    aes(x = 0, y = 0, xend = 1, yend = 1),
     color = "black"
   ) +
   coord_fixed() +
@@ -64,7 +64,7 @@ roc_plot <- ggplot(roc_df) +
   scale_color_manual(values = binary_scale) +
   labs(
     x = "False Positive Rate",
-    y = "True Positive Rate") + 
+    y = "True Positive Rate") +
   ggpubr::theme_pubr() +
   theme(legend.text = element_text(size = rel(0.525)),
         legend.title = element_text(size = rel(0.525)),
@@ -73,7 +73,7 @@ roc_plot <- ggplot(roc_df) +
         axis.text = element_text(size = rel(0.7)),
         axis.title = element_text(size = rel(0.7))
   )
-ggsave(roc_file, roc_plot, width = 3, height = 3) 
+ggsave(roc_file, roc_plot, width = 3, height = 3)
 
 
 ## Figures S5B and S5C---------------------------------------------------
@@ -97,7 +97,7 @@ metadata_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
 snps <- c("rs1561215364", "rs1242535815")
 maf_snp_bio_ids <- maf_df %>%
   filter(dbSNP_RS %in% snps) %>%
-  pull(Tumor_Sample_Barcode) 
+  pull(Tumor_Sample_Barcode)
 
 hotspot_snp_bio_ids <- hotspot_df %>%
   filter(dbSNP_RS %in% snps) %>%
@@ -109,36 +109,36 @@ snp_biospecimen_ids <- unique(c(maf_snp_bio_ids, hotspot_snp_bio_ids))
 # Get the corresponding sample ids
 tertp_sample_ids <- metadata_df %>%
   filter(Kids_First_Biospecimen_ID %in% snp_biospecimen_ids) %>%
-  pull(sample_id) 
+  pull(sample_id)
 
-# Finally, get the corresponding biospecimen IDs for those sample ids 
+# Finally, get the corresponding biospecimen IDs for those sample ids
 #  which have stranded RNA libraries
 rna_tertp_biospecimen_ids <- metadata_df %>%
-  filter(sample_id %in% tertp_sample_ids, 
+  filter(sample_id %in% tertp_sample_ids,
          experimental_strategy == "RNA-Seq",
          RNA_library == "stranded") %>%
-  pull(Kids_First_Biospecimen_ID) 
+  pull(Kids_First_Biospecimen_ID)
 
 
 # Combine extend scores with expression for genes of interest
-extend_fpkm_df <- stranded_expression %>% 
-  rownames_to_column("gene") %>% 
+extend_fpkm_df <- stranded_expression %>%
+  rownames_to_column("gene") %>%
   # keep only genes we are visualizing
   filter(gene %in% c("TERC", "TERT")) %>%
   gather(contains("BS"), key = "SampleID", value = "FPKM") %>%
-  right_join(
-    select(extend_scores, 
+  inner_join(
+    select(extend_scores,
            SampleID,
-           NormEXTENDScores), 
+           NormEXTENDScores),
     by = "SampleID"
   ) %>%
   mutate(FPKM = log(FPKM + 1, 2),
          # Indicate TERTp samples
-         tertp = ifelse(SampleID %in% rna_tertp_biospecimen_ids, 
-                        "TERTp mutation present", 
+         tertp = ifelse(SampleID %in% rna_tertp_biospecimen_ids,
+                        "TERTp mutation present",
                         "TERTp mutation not observed")
   )
-         
+
 # Calculate stats
 extend_fpkm_lm <- function(df) {
   lm(FPKM ~ NormEXTENDScores, data = df)
@@ -160,43 +160,43 @@ stats_annotation_df <- extend_fpkm_df %>%
   select(gene, r.squared, p.value) %>%
   # Format a column to use for figure annotation
   mutate(r = sqrt(r.squared),
-         annotation = paste0("R = ", 
-                             round(r,3), 
-                             "; P-value = ", 
+         annotation = paste0("R = ",
+                             round(r,3),
+                             "; P-value = ",
                              format(p.value, digits=3)))
-         
+
 plot_extend_scatter <- function(plot_df, stats_df, gene_name, annotation_y) {
   plot_df %>%
     filter(gene == gene_name) %>%
-    ggplot() + 
-    geom_point(aes(color = tertp, 
-                   alpha = tertp, 
+    ggplot() +
+    geom_point(aes(color = tertp,
+                   alpha = tertp,
                    size = tertp)) +
-    aes(x = NormEXTENDScores, 
-        y = FPKM) + 
-    geom_smooth(method = "lm", 
-                color = "black") + 
+    aes(x = NormEXTENDScores,
+        y = FPKM) +
+    geom_smooth(method = "lm",
+                color = "black") +
     scale_color_manual(values = c("grey70", "red")) +
     scale_alpha_manual(values = c(0.5, 1), guide = FALSE) +
     scale_size_manual(values = c(rel(1), rel(1.3)), guide = FALSE) +
-    annotate("text", 
-             label = stats_df$annotation[stats_df$gene == gene_name], 
-             x = 0.28, 
+    annotate("text",
+             label = stats_df$annotation[stats_df$gene == gene_name],
+             x = 0.28,
              y = annotation_y,
-             size = 2.5) + 
+             size = 2.5) +
     labs(x = "Telomerase score",
          y = paste0(gene_name, " log2(FPKM+1)"),
          color = ""
     ) +
-    ggpubr::theme_pubr() + 
+    ggpubr::theme_pubr() +
     theme(axis.text = element_text(size = 8),
           axis.title = element_text(size = 9),
           legend.title = element_text(size = 7),
           legend.text = element_text(size = 6))
 }
 
-tert_plot <- plot_extend_scatter(extend_fpkm_df, stats_annotation_df, "TERT", 6.5) 
-terc_plot <- plot_extend_scatter(extend_fpkm_df, stats_annotation_df, "TERC", 8.5) 
+tert_plot <- plot_extend_scatter(extend_fpkm_df, stats_annotation_df, "TERT", 6.5)
+terc_plot <- plot_extend_scatter(extend_fpkm_df, stats_annotation_df, "TERC", 8.5)
 
 
 ggsave(tert_file, tert_plot, width = 4, height = 4, useDingbats = FALSE)
