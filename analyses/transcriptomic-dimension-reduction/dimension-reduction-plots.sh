@@ -26,3 +26,6 @@ bash 03-multipanel-plots.sh
 
 # Exploration of batch effects
 Rscript --vanilla -e 'rmarkdown::render("04-explore-sequencing-center-effects.Rmd")'
+
+# Exploration of UMAPs if mitochondrial genes are removed
+Rscript --vanilla -e 'rmarkdown::render("05-seq-center-mitochondrial-genes.Rmd")'
