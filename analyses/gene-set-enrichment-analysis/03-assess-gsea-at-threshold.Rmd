@@ -6,8 +6,6 @@ output:
   html_notebook:
     toc: TRUE
     toc_float: TRUE
-params:
-  release: release-v23-20230115
 ---
 
 ```{r setup, include=FALSE}
@@ -129,7 +127,7 @@ combine_tukey_comparisons <- function(df_original, df_thresholded, pathway_of_in
 ```{r}
 # Input
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-data_dir <- file.path(root_dir, "data", params$release)
+data_dir <- file.path(root_dir, "data")
 pal_dir <- file.path(root_dir, "figures", "palettes")
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
 palette_file <- file.path(root_dir, 
