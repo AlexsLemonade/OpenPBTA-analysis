@@ -65,7 +65,6 @@ option_list <- list(
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
 
-
 if (is.na(opt$input_file)) stop("\n\nERROR: You must provide an input file with expression data with the flag --input, assumed to be in the `data/` directory of the OpenPBTA repository..")
 if (is.na(opt$output_file)) stop("\n\nERROR: You must provide an output file for saving GSVA scores with the flag --output, assumed to be placed in the `results/` directory of this analysis.")
 
@@ -108,8 +107,11 @@ if (opt$apply_tumor_purity_threshold) {
     dplyr::pull(Kids_First_Biospecimen_ID) %>%
     unique()
   
+  # To avoid CI errors, first subset `bs_ids`` to the intersection with `expression_data` colnames
+  bs_ids <- intersect(bs_ids, colnames(expression_data))
+  
   # Subset the `expression_data` variable to those IDs
-  expression_data <- expression_data[,bs_ids]
+  expression_data <- expression_data[, bs_ids]
   
   # Quick check on filtering:
   if (!length(bs_ids) == ncol(expression_data)) {
