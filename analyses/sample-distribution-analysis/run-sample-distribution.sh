@@ -2,7 +2,7 @@
 
 # Chante Bethell for CCDL 2019
 #
-# Run `01-filter-across-types.R` and `02-multilayer-plots.R`
+# Run `01-filter-across-types.R`, `03-tumor-descriptor-and-assay-count.Rmd`, and '04-ns-for-manuscript.Rmd'
 # sequentially.
 
 set -e
@@ -16,6 +16,6 @@ script_directory="$(perl -e 'use File::Basename;
 cd "$script_directory" || exit
 
 Rscript --vanilla 01-filter-across-types.R
-Rscript --vanilla 02-multilayer-plots.R
+
 Rscript -e "rmarkdown::render('03-tumor-descriptor-and-assay-count.Rmd', clean = TRUE)"
 Rscript -e "rmarkdown::render('04-ns-for-manuscript.Rmd', clean = TRUE)"

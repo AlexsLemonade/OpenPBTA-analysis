@@ -77,13 +77,48 @@ ggsave(roc_file, roc_plot, width = 3, height = 3)
 
 
 ## Figures S5B and S5C---------------------------------------------------
-# TERT (S5B) and TERC (S5C) expression across normextend scores
+# TERT (S5B) and TERC (S5C) expression across normextend scores with TERTp-positive samples emphasized
 
 # Paths and data for this figure (and the next)
 telomerase_dir <- file.path(analyses_dir, "telomerase-activity-prediction")
+
 # stranded data specifically:
 extend_scores <- read_tsv(file.path(telomerase_dir, "results", "TelomeraseScores_PTBAStranded_FPKM.txt")) 
 stranded_expression <- read_rds(file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
+
+# MAF files to find TERTp-positive samples
+maf_df <- read_tsv(file.path(data_dir, "pbta-snv-consensus-mutation.maf.tsv.gz"))
+hotspot_df <- read_tsv(file.path(data_dir, "pbta-snv-scavenged-hotspots.maf.tsv.gz"))
+
+# Metadata
+metadata_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"))
+
+# Determine which samples have TERTp
+snps <- c("rs1561215364", "rs1242535815")
+maf_snp_bio_ids <- maf_df %>%
+  filter(dbSNP_RS %in% snps) %>%
+  pull(Tumor_Sample_Barcode) 
+
+hotspot_snp_bio_ids <- hotspot_df %>%
+  filter(dbSNP_RS %in% snps) %>%
+  pull(Tumor_Sample_Barcode)
+
+# There are 9 samples:
+snp_biospecimen_ids <- unique(c(maf_snp_bio_ids, hotspot_snp_bio_ids))
+
+# Get the corresponding sample ids
+tertp_sample_ids <- metadata_df %>%
+  filter(Kids_First_Biospecimen_ID %in% snp_biospecimen_ids) %>%
+  pull(sample_id) 
+
+# Finally, get the corresponding biospecimen IDs for those sample ids 
+#  which have stranded RNA libraries
+rna_tertp_biospecimen_ids <- metadata_df %>%
+  filter(sample_id %in% tertp_sample_ids, 
+         experimental_strategy == "RNA-Seq",
+         RNA_library == "stranded") %>%
+  pull(Kids_First_Biospecimen_ID) 
+
 
 # Combine extend scores with expression for genes of interest
 extend_fpkm_df <- stranded_expression %>% 
@@ -97,8 +132,13 @@ extend_fpkm_df <- stranded_expression %>%
            NormEXTENDScores), 
     by = "SampleID"
   ) %>%
-  mutate(FPKM = log(FPKM + 1, 2))
-
+  mutate(FPKM = log(FPKM + 1, 2),
+         # Indicate TERTp samples
+         tertp = ifelse(SampleID %in% rna_tertp_biospecimen_ids, 
+                        "TERTp mutation present", 
+                        "TERTp mutation not observed")
+  )
+         
 # Calculate stats
 extend_fpkm_lm <- function(df) {
   lm(FPKM ~ NormEXTENDScores, data = df)
@@ -129,29 +169,38 @@ plot_extend_scatter <- function(plot_df, stats_df, gene_name, annotation_y) {
   plot_df %>%
     filter(gene == gene_name) %>%
     ggplot() + 
-    geom_point(size = 1) +
+    geom_point(aes(color = tertp, 
+                   alpha = tertp, 
+                   size = tertp)) +
     aes(x = NormEXTENDScores, 
         y = FPKM) + 
-    geom_smooth(method = "lm") + 
+    geom_smooth(method = "lm", 
+                color = "black") + 
+    scale_color_manual(values = c("grey70", "red")) +
+    scale_alpha_manual(values = c(0.5, 1), guide = FALSE) +
+    scale_size_manual(values = c(rel(1), rel(1.3)), guide = FALSE) +
     annotate("text", 
              label = stats_df$annotation[stats_df$gene == gene_name], 
              x = 0.28, 
              y = annotation_y,
              size = 2.5) + 
     labs(x = "Telomerase score",
-         y = paste0(gene_name, " log2(FPKM+1)")
+         y = paste0(gene_name, " log2(FPKM+1)"),
+         color = ""
     ) +
     ggpubr::theme_pubr() + 
     theme(axis.text = element_text(size = 8),
-          axis.title = element_text(size = 9))
+          axis.title = element_text(size = 9),
+          legend.title = element_text(size = 7),
+          legend.text = element_text(size = 6))
 }
 
 tert_plot <- plot_extend_scatter(extend_fpkm_df, stats_annotation_df, "TERT", 6.5) 
 terc_plot <- plot_extend_scatter(extend_fpkm_df, stats_annotation_df, "TERC", 8.5) 
 
 
-ggsave(tert_file, tert_plot, width = 3, height = 3, useDingbats = FALSE)
-ggsave(terc_file, terc_plot, width = 3, height = 3, useDingbats = FALSE)
+ggsave(tert_file, tert_plot, width = 4, height = 4, useDingbats = FALSE)
+ggsave(terc_file, terc_plot, width = 4, height = 4, useDingbats = FALSE)
 
 
 
