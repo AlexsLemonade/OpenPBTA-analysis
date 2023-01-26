@@ -1,13 +1,11 @@
 ---
-title: "Explore mitochondrial gene effect on UMAP"
+title: "Explore mitochondrial gene effect on UMAP plots"
 author: "S. Spielman for CCDL"
 date: "2023"
 output: 
   html_notebook:
     toc: TRUE
     toc_float: TRUE
-params:
-  is_ci: 0
 ---
 
 This notebook aims to explore some potential sequencing center biases that were raised in this OpenPBTA issue: https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1601
