@@ -14,13 +14,13 @@ params:
 library(tidyverse)
 theme_set(theme_bw())
 
-# testing functions
+# anova/tukey test functions
 source(file.path("util", "hallmark_models.R"))
 ```
 This notebook was written as part of manuscript revisions.
 Here, we explore how GSEA-related results might change if only tumors at a certain level of known tumor purity (`tumor_fraction` metadata variable) are considered.
 Only stranded RNA data is considered here, as in the manuscript.
-This notebook consumes result file `gsva_scores_stranded.tsv` produced by this module's script `01-conduct-gsea-analysis` run with the `--apply_tumor_purity_threshold` flag.
+This notebook consumes result file `gsva_scores_stranded_thresholded.tsv` produced by this module's script `01-conduct-gsea-analysis` run with the `--apply_tumor_purity_threshold` flag, and compares back to results in `gsva_scores_stranded.tsv` where that flag was not used.
 
 The associated issue for this exploration is here: https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1626
 
@@ -93,8 +93,33 @@ count_tukey_results <- function(df, term_vector, cancer_group) {
 # This function combines counted original and thresholded results into a single data frame
 compare_original_threshold <- function(df_original, df_thresholded, term_vector, cancer_group) {
   original <- count_tukey_results(df_original, term_vector, cancer_group) %>% mutate(type = "original")
-  count_tukey_results(df_thresholded, term_vector, cancer_group)  %>% mutate(type = "thresholded") %>%
+  count_tukey_results(df_thresholded, term_vector, cancer_group) %>% mutate(type = "thresholded") %>%
     bind_rows(original) %>%
+    arrange(type)
+}
+
+
+
+# This function obtains results for a given SINGLE pathway comparison 
+#  among a given set of cancer groups of interest
+get_tukey_comparisons <- function(df, pathway_of_interest, groups_of_interest) {
+  df %>%
+    filter(hallmark_name == pathway_of_interest, 
+           cancer_group1 %in% groups_of_interest,
+           cancer_group2 %in% groups_of_interest)
+}
+
+# This function wraps the above function to return results for both original and thresholded
+combine_tukey_comparisons <- function(df_original, df_thresholded, pathway_of_interest, groups_of_interest) {
+  original <- get_tukey_comparisons(df_original, pathway_of_interest, groups_of_interest) %>% 
+    mutate(type = "original")
+  
+  get_tukey_comparisons(df_thresholded, pathway_of_interest, groups_of_interest) %>% 
+    mutate(type = "thresholded") %>%
+    bind_rows(original) %>%
+    # select only rows needed for interpretation
+    # since only 1 pathway, no need to keep hallmark name
+    select(type, cancer_group1, cancer_group2, pathway_score_difference, significant_tukey_bonf) %>%
     arrange(type)
 }
 ```
@@ -519,64 +544,147 @@ https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b
 
 > We also observed significant upregulation of pro-inflammatory cytokines IFN$\alpha$ and IFN$\gamma$ in LGGs and craniopharyngiomas compared to medulloblastoma and ependymoma tumors (Bonferroni-corrected p < 0.05), both of which showed significant down-regulation of these cytokines (**Figure {@fig:Fig5}B**).
 
-
-
-From JL for next steps:
-up in LGG compared to MB
-up in LGG compared to EPN
-up in Cranio compared to MB
-up in cranio cpmpared to EPN
-
-For this I need to write a function that compares individual cancer groups.
-
-
 ### IFN-alpha
 
+#### LGG compared to MB
 
-#### Other LGGs
-
-
-> Originally, 4/20 pathways were upregulated and 1/20 downregulated. After thresholding, 2/19 are upregulated.
-> This is broadly consistent although both sets of comparisons are mostly NS.
+> Both original and thresholded results show that LGGs are significantly upregulated compared to MB.
+> Results are consistent.
 
 ```{r}
-compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_INTERFERON_ALPHA_RESPONSE", "Other lowgrade glioma")
+# vector of all the LGG cancer groups
+lgg_groups <- c("Other lowgrade glioma", "Pilocytic astrocytoma", "Pleomorphic xanthoastrocytoma", "Subependymal Giant Cell Astrocytoma")
+
+
+combine_tukey_comparisons(tukey_original, tukey_thresholded, 
+                          "HALLMARK_INTERFERON_ALPHA_RESPONSE", 
+                          # Compare across the following groups:
+                          c(lgg_groups, "Medulloblastoma")) %>%
+  # filter to only rows where MB is a cancer_group (rather than an LGG compared to an LGG)
+  filter("Medulloblastoma" == cancer_group1 | "Medulloblastoma" == cancer_group2)
+                          
 ```
 
 
-#### Pilocytic astrocytoma
+#### LGG compared to EPN
 
-> Originally, 7/20 pathways were upregulated. After thresholding, 3/19 are upregulated.
-> This is broadly consistent, but again, we have more NS that one might prefer for making strong conclusions about LGGs here.
-
-```{r}
-compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_INTERFERON_ALPHA_RESPONSE", "Pilocytic astrocytoma")
-```
-
-#### Subependymal Giant Cell Astrocytoma
-
-> Originally, 10/20 pathways were upregulated. After thresholding, 3/19 are upregulated.
-> This is broadly consistent though with loss of power
+> Original results show that "Pilocytic astrocytoma" and "Subependymal Giant Cell Astrocytoma" are upregulated compared to EPN.
+> Thresholded results show that "Pilocytic astrocytoma" and "Other low-grade glioma" are upregulated compared to EPN.
+> Results are not identical but there is conceptual overlap.
 
 ```{r}
-compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_INTERFERON_ALPHA_RESPONSE", "Subependymal Giant Cell Astrocytoma")
+combine_tukey_comparisons(tukey_original, tukey_thresholded, 
+                          "HALLMARK_INTERFERON_ALPHA_RESPONSE", 
+                          # Compare across the following groups:
+                          c(lgg_groups, "Ependymoma")) %>%
+  # filter to only rows where EPN is a cancer_group (rather than an LGG compared to an LGG)
+  filter("Ependymoma" == cancer_group1 | "Ependymoma" == cancer_group2)
+                          
 ```
 
-#### Pleomorphic xanthoastrocytoma
 
-> Originally, 7/20 pathways were downregulated. After thresholding, 3/19 are downregulated.
-> This is broadly consistent.
+
+#### Craniopharyngioma compared to MB
+
+> Both original and thresholded results show that cranio is upregulated compared to MB.
+> Results are consistent.
 
 ```{r}
-compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_INTERFERON_ALPHA_RESPONSE", "Pleomorphic xanthoastrocytoma")
+combine_tukey_comparisons(tukey_original, tukey_thresholded, 
+                          "HALLMARK_INTERFERON_ALPHA_RESPONSE", 
+                          # Compare across the following groups:
+                          c("Medulloblastoma", "Craniopharyngioma")) 
+                          
 ```
 
+
+
+#### Craniopharyngioma compared to EPN
+
+> Both original and thresholded results show that cranio is upregulated compared to EPN.
+> Results are consistent.
+
+```{r}
+combine_tukey_comparisons(tukey_original, tukey_thresholded, 
+                          "HALLMARK_INTERFERON_ALPHA_RESPONSE", 
+                          # Compare across the following groups:
+                          c("Ependymoma", "Craniopharyngioma")) 
+                          
+```
+
+
+
+
+
+### IFN-gamma
+
+#### LGG compared to MB
+
+> Both original and thresholded results show that LGGs are significantly upregulated compared to MB.
+> Results are consistent.
+
+```{r}
+combine_tukey_comparisons(tukey_original, tukey_thresholded, 
+                          "HALLMARK_INTERFERON_GAMMA_RESPONSE", 
+                          # Compare across the following groups:
+                          c(lgg_groups, "Medulloblastoma")) %>%
+  # filter to only rows where MB is a cancer_group (rather than an LGG compared to an LGG)
+  filter("Medulloblastoma" == cancer_group1 | "Medulloblastoma" == cancer_group2)
+                          
+```
+
+
+#### LGG compared to EPN
+
+> Both original and thresholded results show that LGGs are significantly upregulated compared to EPN, _except_ for the thresholded "Pleomorphic xanthoastrocytoma" comparison which is not signficant.
+> Results are consistent, with some loss of power.
+
+
+```{r}
+combine_tukey_comparisons(tukey_original, tukey_thresholded, 
+                          "HALLMARK_INTERFERON_GAMMA_RESPONSE", 
+                          # Compare across the following groups:
+                          c(lgg_groups, "Ependymoma")) %>%
+  # filter to only rows where EPN is a cancer_group (rather than an LGG compared to an LGG)
+  filter("Ependymoma" == cancer_group1 | "Ependymoma" == cancer_group2)
+                          
+```
+
+
+
+#### Craniopharyngioma compared to MB
+
+> Both original and thresholded results show that cranio is upregulated compared to MB.
+> Results are consistent.
+
+```{r}
+combine_tukey_comparisons(tukey_original, tukey_thresholded, 
+                          "HALLMARK_INTERFERON_GAMMA_RESPONSE", 
+                          # Compare across the following groups:
+                          c("Medulloblastoma", "Craniopharyngioma")) 
+                          
+```
+
+
+
+#### Craniopharyngioma compared to EPN
+
+> Both original and thresholded results show that cranio is upregulated compared to EPN
+> Results are consistent.
+
+```{r}
+combine_tukey_comparisons(tukey_original, tukey_thresholded, 
+                          "HALLMARK_INTERFERON_GAMMA_RESPONSE", 
+                          # Compare across the following groups:
+                          c("Ependymoma", "Craniopharyngioma")) 
+                          
+```
 
 ## Conclusions
 
 
-
 Previously-identified upregulated and downregulated pathways still generally follow the same trends for the relevant cancer groups, with some (not unexpected) power loss for some comparisons.
+On the whole, results remain as we have reported them in the manuscript.
 
 ## Session info
 

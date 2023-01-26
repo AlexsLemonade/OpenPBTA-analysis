@@ -55,8 +55,8 @@ OUTPUT_FILE="${RESULTS_DIR}/gsva_scores_stranded_thresholded.tsv"
 Rscript --vanilla 01-conduct-gsea-analysis.R --input ${INPUT_FILE} --output ${OUTPUT_FILE} --apply_tumor_purity_threshold
 
 
-# Assess results:
-# render the notebook here.
+# Assess results generated for threshold-passing tumors
+Rscript -e "rmarkdown::render('03-assess-gsea-at-threshold.Rmd', clean = TRUE)"
 
 
 
