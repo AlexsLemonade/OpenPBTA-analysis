@@ -71,6 +71,9 @@ if (opt$apply_tumor_purity_threshold) {
     dplyr::pull(Kids_First_Biospecimen_ID) %>%
     unique()
   
+  # To avoid CI errors, first subset `bs_ids` to the intersection with `expression_data` colnames
+  bs_ids <- intersect(bs_ids, colnames(stranded))
+  
   # Filter the matrix
   stranded <- stranded[, bs_ids]
   
