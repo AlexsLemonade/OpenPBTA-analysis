@@ -39,6 +39,7 @@ library(broom)
 # This script contains functions used to modeling GSVA scores
 source(file.path("util", "hallmark_models.R"))
 
+SIGNIFICANCE_THRESHOLD <- 0.05
 
 # Assigning params$is_ci to running_in_ci avoids a locked binding error
 running_in_ci <- params$is_ci
