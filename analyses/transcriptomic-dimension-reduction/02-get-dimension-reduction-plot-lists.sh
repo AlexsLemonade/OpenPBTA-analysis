@@ -17,7 +17,7 @@ OUTPUT="plots/plot_data"
 
 #### Broad histology plots -----------------------------------------------------
 
-declare -a arr=("rsem_stranded_none" "rsem_stranded_log" "rsem_polyA_none" "rsem_polyA_log" "rsem_stranded_no-mito_log" "kallisto_stranded_none" "kallisto_stranded_log" "kallisto_polyA_none" "kallisto_polyA_log")
+declare -a arr=("rsem_stranded_none" "rsem_stranded_log" "rsem_polyA_none" "rsem_polyA_log" "kallisto_stranded_none" "kallisto_stranded_log" "kallisto_polyA_none" "kallisto_polyA_log")
 
 for filename_lead in "${arr[@]}"
 do

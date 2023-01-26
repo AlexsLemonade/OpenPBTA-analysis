@@ -76,7 +76,8 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   
   
 
-#### RSEM log2 stranded, excluding mitochondrial genes -------------------------------------
+#### RSEM log2 stranded, excluding mitochondrial genes and skipping t-sne ------------------------------------
+# Note that these results are only used for exploration in `05-seq_center-mitochondrial-genes.Rmd`
 Rscript --vanilla scripts/run-dimension-reduction.R \
   --expression ../../data/pbta-gene-expression-rsem-fpkm.stranded.rds \
   --metadata ${METADATA} \
@@ -86,7 +87,8 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   --perplexity ${PERPLEXITY} \
   --neighbors ${NEIGHBORS} \
   --low_count_threshold ${COUNT_THRESHOLD} \
-  --log2_transform
+  --log2_transform \
+  --skip_tsne
   
   
 #### kallisto ------------------------------------------------------------------
