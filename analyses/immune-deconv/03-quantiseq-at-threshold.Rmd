@@ -84,10 +84,15 @@ quantiseq_df <- quantiseq_raw_df %>%
   filter(cancer_group_display %in% cancer_groups_of_interest)
 ```
 
+## Re-generate plots
 
-Now we will re-plot the immune fractions across cancer groups for this filtered data.
+Here we will re-make the two `quanTIseq` plots:
 
+- First the immune fractions across cancer groups for each cell type
+- Second the CD8/CD4 ratio for molecular subtypes of interest.
+Note that there are _far fewer subtypes_ that get plotted here due to the threshold filtering!
 
+### Immune fractions across cancer groups
 
 
 ```{r, fig.width = 12, fig.height = 5}
@@ -116,59 +121,8 @@ ggplot(quantiseq_df) +
 ```
 
 
-Now, we will re-assess specific results we report in the manuscript. 
-Specifically, these are the parts of the manuscript sentences below that reference either Figure 5C or Figure S6F.
+### CD8/CD4 ratios
 
-### Result 1
-
-https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L277-L278
-
-
-> Schwannomas and neurofibromas, which have a documented inflammatory immune microenvironment of T and B lymphocytes as well as tumor-associated macrophages (TAMs), are driven by upregulation of cytokines such as IFN$\gamma$, IL-1, and IL-6, and TNF$\alpha$ [@doi:10.1093/noajnl/vdaa023].
-> Indeed, we observed significant upregulation of these cytokines in GSVA hallmark pathways (Bonferroni-corrected p < 0.05) (**Figure {@fig:Fig5}B**) and found immune cell types dominated by monocytes in these tumors (**Figure {@fig:Fig5}C**).
-
-
-The plot above recapitulates the result that monocytes are dominant in schwannomas and neurofibromas.
-The thresholded results are consistent.
-
-
-### Result 2
-
-https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L282
-
-> Although CD8+ T-cell infiltration across all cancer groups was quite low (**Figure {@fig:Fig5}C**), we observed some signal in specific cancer molecular subtypes (Groups 3 and 4 medulloblastoma) as well as outlier tumors (BRAF-driven LGG, BRAF-driven and wildtype ganglioglioma, and CNS embryonal NOS; **Figure {@fig:S6}E**)
-
-
-
-
-The plot shows that CD8+ T-cell infiltration across all cancer groups remains quite low.
-The thresholded results are consistent.
-
-
-### Result 3
-
-https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L283
-
-> Surprisingly, the classically immunologically-cold HGG and DMG tumors [@doi:10.1186/s40478-018-0553-x; @doi:10.1093/brain/awab155] contained higher overall fractions of immune cells, where monocytes, dendritic cells, and NK cells were the most prevalent (**Figure {@fig:Fig5}C**).
-
-
-The plot above shows that for DMG, overall fractions fall in ranges that are consistent with other cancer groups, so "higher overall fractions" are no longer the case. 
-This difference may be a consequence of reduced sample size overall for this re-analysis.
-DMGs are dominated by monocytes, dendritic cells, and NK cells, which is consistent with previous results.
-
-However, as we did not actually plot other HGG groups here, e may wish to revise this statement to focus more on the panels that are actually in the plot more generally.
-
-
-
-### Result 4
-
-
-https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L292
-
-> While adamantinomatous craniopharyngiomas and Group 3 and Group 4 medulloblastomas had the highest CD8+ to CD4+ T cell ratios (**Figure {@fig:S6}F**), very few tumors had ratios greater than 1, highlighting an urgent need to identify novel therapeutics for these immunologically-cold pediatric brain tumors with poor prognosis.
-
-
-To assess this result, we will re-make this supplementary figure - 
 
 ```{r}
 # Find molecular subtypes, and their order, to include in this panel
@@ -212,7 +166,9 @@ ratio_df <- quantiseq_df %>%
   ) %>%
   # Filter to subtype_order set up for Figure S6E
   filter(molecular_subtype %in% subtype_order)
+```
 
+```{r}
 # Plot
 ggplot(ratio_df) + 
   aes(x = molecular_subtype,
@@ -228,7 +184,60 @@ ggplot(ratio_df) +
 
 ```
 
-The plot itself has fewer subtypes, which is expected with a filtered dataset.
+Now, we will re-assess specific results we report in the manuscript. 
+Specifically, these are the parts of the manuscript sentences below that reference either Figure 5C or Figure S6F.
+
+### Result 1
+
+https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L277-L278
+
+
+> Schwannomas and neurofibromas, which have a documented inflammatory immune microenvironment of T and B lymphocytes as well as tumor-associated macrophages (TAMs), are driven by upregulation of cytokines such as IFN$\gamma$, IL-1, and IL-6, and TNF$\alpha$ [@doi:10.1093/noajnl/vdaa023].
+> Indeed, we observed significant upregulation of these cytokines in GSVA hallmark pathways (Bonferroni-corrected p < 0.05) (**Figure {@fig:Fig5}B**) and found immune cell types dominated by monocytes in these tumors (**Figure {@fig:Fig5}C**).
+
+
+The first plot above recapitulates the result that monocytes are dominant in schwannomas and neurofibromas.
+The thresholded results are consistent.
+
+
+### Result 2
+
+https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L282
+
+> Although CD8+ T-cell infiltration across all cancer groups was quite low (**Figure {@fig:Fig5}C**), we observed some signal in specific cancer molecular subtypes (Groups 3 and 4 medulloblastoma) as well as outlier tumors (BRAF-driven LGG, BRAF-driven and wildtype ganglioglioma, and CNS embryonal NOS; **Figure {@fig:S6}E**)
+
+
+
+
+The first plot shows that CD8+ T-cell infiltration across all cancer groups remains quite low.
+The second plot shows the MB 3/4 signal, but there are no longer any outliers.
+The thresholded results are consistent, and differences may be explained by sample size/power.
+
+
+### Result 3
+
+https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L283
+
+> Surprisingly, the classically immunologically-cold HGG and DMG tumors [@doi:10.1186/s40478-018-0553-x; @doi:10.1093/brain/awab155] contained higher overall fractions of immune cells, where monocytes, dendritic cells, and NK cells were the most prevalent (**Figure {@fig:Fig5}C**).
+
+
+The first plot shows that for DMG, overall fractions fall in ranges that are consistent with other cancer groups, so "higher overall fractions" are no longer the case. 
+This difference may be a consequence of reduced sample size overall for this re-analysis.
+DMGs are dominated by monocytes, dendritic cells, and NK cells, which is consistent with previous results.
+
+However, as we did not actually plot other HGG groups here, e may wish to revise this statement to focus more on the panels that are actually in the plot more generally.
+
+
+
+### Result 4
+
+
+https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L292
+
+> While adamantinomatous craniopharyngiomas and Group 3 and Group 4 medulloblastomas had the highest CD8+ to CD4+ T cell ratios (**Figure {@fig:S6}F**), very few tumors had ratios greater than 1, highlighting an urgent need to identify novel therapeutics for these immunologically-cold pediatric brain tumors with poor prognosis.
+
+
+As noted, the second plot itself has fewer subtypes, which is expected with a filtered dataset.
 Of note, the `CRANIO, ADAM` molecular subtype is no longer present.
 We again see that MB groups 3 and 4 have higher values with other molecular subtypes around 0, which is consistent with the original results.
 
@@ -236,7 +245,7 @@ We again see that MB groups 3 and 4 have higher values with other molecular subt
 
 ## Conclusions
 
-Overall, `quanTIseq` results are highly consistent after thresholding.
+Overall, `quanTIseq` results are broadly consistent after thresholding.
 
 
 ## Session Info
