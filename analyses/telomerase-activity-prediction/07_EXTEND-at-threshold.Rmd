@@ -29,7 +29,7 @@ The associated issue for this exploration is here: https://github.com/AlexsLemon
 ```{r}
 # directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-data_dir <- file.path(root_dir, "data")
+data_dir <- file.path(root_dir, "data", params$release)
 analyses_dir <- file.path(root_dir, "analyses")
 extend_dir <- file.path(analyses_dir, "telomerase-activity-prediction")
 
