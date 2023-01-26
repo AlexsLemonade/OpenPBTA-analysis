@@ -56,3 +56,5 @@ echo "Deconvolution finished."
 # Perform visualization
 Rscript -e "rmarkdown::render('02-visualize_quantiseq.Rmd', clean = TRUE, params = list(is_ci = ${ABBREVIATED_IMMUNE}))"
 
+# Assess at threshold
+Rscript -e "rmarkdown::render('03-quantiseq-at-threshold.Rmd', clean = TRUE)"
