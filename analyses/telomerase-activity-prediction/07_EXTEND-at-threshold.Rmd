@@ -50,7 +50,7 @@ Read in input files and prepare them forinner join so that we have `cancer_group
 
 ```{r}
 # First, read in and link extend scores to their cancer_group_display
-metadata_df <- read_tsv(metadata_file)
+metadata_df <- read_tsv(metadata_file, guess_max = 10000)
 palette_df <- read_tsv(palette_file)
 extend_threshold_df <- read_tsv(extend_file_thresholded) %>%
   inner_join(
