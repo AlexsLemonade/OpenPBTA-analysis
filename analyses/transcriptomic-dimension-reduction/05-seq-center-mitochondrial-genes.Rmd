@@ -225,7 +225,8 @@ combine_plots(p1, p2)
 Visually, it seems the "mixed histology" groupings identified in `04-explore-sequencing-center-effects.Rmd`
 notebook still are grouped together in these UMAPs.
 
-Overall, this suggests that mitochondrial genes likely do not have a strong influence on UMAP visualizations.
+Overall, this suggests that mitochondrial genes alone do not have a strong influence on UMAP visualizations.
+However, there may still be protocol differences associated with BIG@CHOP samples that influence expression values more generally, and can not be corrected by removing only mitochondrial genes.
 
 ## sessionInfo
 
