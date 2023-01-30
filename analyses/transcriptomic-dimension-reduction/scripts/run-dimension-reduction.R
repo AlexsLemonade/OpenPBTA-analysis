@@ -186,7 +186,7 @@ if (opt$remove_mito_genes) {
                     extra = "merge",
                     # we will want to keep this column for row.names later
                     remove = FALSE) %>% 
-    # remove MT gene - keep only genes that do NOT start with `MT-`
+    # remove MT genes by keeping only genes that do NOT start with `MT-`
     dplyr::filter(!(stringr::str_starts(gene_symbol, "MT-"))) %>%
     # remove wrangle columns
     dplyr::select(-ensembl_id, -gene_symbol)
