@@ -129,9 +129,19 @@ pt_level <- subtype_n %>%
 
 # combine patient level and tumor level tables
 table1 <- pt_level %>%
-  full_join(tumor_level) %>%
-  # export
-  write_tsv(table_1_file)
+  full_join(tumor_level)
+
+# Add final row to the bottom for the total
+table1 <- bind_rows(
+  table1, 
+  tribble(
+    ~`Broad histology group`, ~`OpenPBTA molecular subtype`, ~Patients, ~Tumors,
+    "",                      "Total",                       sum(table1$Patients), sum(table1$Tumors)
+  )
+)
+
+# export
+write_tsv(table1, table_1_file)
 ```
 
 ## Table 2: Patients with hypermutant or ultra-hypermutant tumors
