@@ -218,6 +218,15 @@ p2 <- plot_umap(umap_no_mito, cancer_group_display, pal_cg, "Includes only non-m
 combine_plots(p1, p2)
 ```
 
+## Conclusions
+
+- Samples from `BIG@CHOP` sequencing center have unique mitochondrial gene distributions.
+- Removing mitochondtial genes from the UMAP does not have a strong qualitiative effect on whether broad histologies or cancer groups tend to cluster together.
+Visually, it seems the "mixed histology" groupings identified in `04-explore-sequencing-center-effects.Rmd`
+notebook still are grouped together in these UMAPs.
+
+Overall, this suggests that mitochondrial genes likely do not have a strong influence on UMAP visualizations.
+
 ## sessionInfo
 
 ```{r print session info}
