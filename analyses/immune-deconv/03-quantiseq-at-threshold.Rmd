@@ -10,7 +10,7 @@ toc_float: TRUE
 
 ```{r setup, include = FALSE}
 library(tidyverse)
-theme_set(theme_bw())
+theme_set(ggpubr::theme_pubr()) 
 set.seed(2023)
 ```
 
@@ -31,8 +31,6 @@ data_dir <- file.path(root_dir, "data")
 palette_file <- file.path(root_dir, "figures", "palettes", "broad_histology_cancer_group_palette.tsv")
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
 quantiseq_file <- file.path("results", "quantiseq_deconv-output-thresholded.rds")
-
-
 ```
 
 
@@ -90,16 +88,38 @@ Here we will re-make the two `quanTIseq` plots:
 - Second the CD8/CD4 ratio for molecular subtypes of interest.
 Note that there are _far fewer subtypes_ that get plotted here due to the threshold filtering!
 
+For reference, we also include the _original_ (without thresholding) plots below each. 
+
 ### Immune fractions across cancer groups
 
 
-```{r, fig.width = 12, fig.height = 5}
-# plot by cancer group groups of interest
-ggplot(quantiseq_df) + 
+```{r, fig.width = 16, fig.height = 4}
+# plot by cancer group groups of interest, where cancer groups are ordered 
+#  in the same order as the original plot for ease of comparison
+
+cancer_group_order <- c("Pilocytic astrocytoma", 
+                        "Medulloblastoma",
+                        "Ependymoma",
+                        "Diffuse midline glioma",
+                        "Ganglioglioma",
+                        "Craniopharyngioma",
+                        "Other embryonal tumor",
+                        "Atypical Teratoid Rhabdoid Tumor",
+                        "Meningioma",
+                        "Dysembryoplastic neuroepithelial tumor",
+                        "Neurofibroma Plexiform",
+                        "Schwannoma"
+                        )
+
+quantiseq_df %>%
+  # order the `cancer_group_display` variable by the vector above
+  mutate(cancer_group_display = fct_relevel(cancer_group_display, cancer_group_order)) %>%
+  # and into the plot
+  ggplot() + 
   aes(x = cell_type, 
       y = score, 
       color = cancer_group_hex) + 
-  geom_jitter(width = 0.15, size = 0.6, alpha = 0.5) + 
+  geom_jitter(width = 0.15, size = 1, alpha = 0.7) + 
   geom_boxplot(outlier.size = 0, 
                size = 0.2,
                color = "black", 
@@ -113,10 +133,17 @@ ggplot(quantiseq_df) +
     y = "Estimated fraction in sample"
   ) +
   theme(
-    axis.text.x = element_text(angle = 30, hjust = 1, size = 6),
-    strip.text = element_text(size = 6)
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+    strip.text = element_text(size = 8)
   )
 ```
+
+#### Original plot (without thresholding)
+
+The relevant plot is **Panel C**.
+
+![](https://raw.githubusercontent.com/AlexsLemonade/OpenPBTA-analysis/586d878b25c80495a2541292c2d9b289167f6ec9/figures/pngs/figure5.png)
+
 
 
 ### CD8/CD4 ratios
@@ -181,6 +208,15 @@ ggplot(ratio_df) +
                                    size = 6))
 
 ```
+
+
+
+#### Original plot (without thresholding)
+The relevant plot is **Panel F**
+
+![](https://raw.githubusercontent.com/AlexsLemonade/OpenPBTA-analysis/586d878b25c80495a2541292c2d9b289167f6ec9/figures/pngs/figureS6.png)
+
+## Assess plots
 
 Now, we will re-assess specific results we report in the manuscript. 
 Specifically, these are the parts of the manuscript sentences below that reference either Figure 5C or Figure S6F.
