@@ -81,6 +81,7 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
 Rscript --vanilla scripts/run-dimension-reduction.R \
   --expression ../../data/pbta-gene-expression-rsem-fpkm.stranded.rds \
   --metadata ${METADATA} \
+  --remove_mito_genes \
   --filename_lead rsem_stranded_no-mito_log \
   --output_directory ${OUTPUT} \
   --seed ${SEED} \

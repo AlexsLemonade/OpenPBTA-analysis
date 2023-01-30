@@ -192,11 +192,8 @@ if (opt$remove_mito_genes) {
     dplyr::select(-ensembl_id, -gene_symbol)
   
   # Convert back to data frame
-  expression_data <- as.data.frame(expression_data_tibble)
- 
-  # Remove extra column and add row names back in
-  expression_data$ensembl_gene <- NULL
-  rownames(expression_data) <- expression_data_tibble$ensembl_gene
+  expression_data <- expression_data_tibble %>%
+    tibble::column_to_rownames("ensembl_gene")
 }
 
 # Transpose the data
