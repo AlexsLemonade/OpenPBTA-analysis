@@ -5,25 +5,16 @@
 #'
 #' @param expression_data A data frame or matrix containing expression data. Columns are expected to be genes, 
 #'   and rows are expected to be samples. 
-#' @param tumor_purity_file Path to tumor purity metadata file TSV which contains, at least, a `Kids_First_Biospecimen_ID`
-#'   column that has been filtered to IDs that pass a give threhsold. The default file contains biospecimens that pass 
-#'   the cancer-group-specific median threshold.
+#' @param bs_ids_file Path to TSV file which contains, at least, a `Kids_First_Biospecimen_ID`
+#'   column that contains only IDs that pass a given threshold. 
 #'
 #' @return An updated `expression_data` object that contains expression data only for
 #'  samples that pass the threshold
 filter_expression_by_tumor_purity <- function(expression_data, 
-                                              tumor_purity_file = 
-                                                file.path(
-                                                  rprojroot::find_root(rprojroot::has_dir(".git")),
-                                                  "analyses",
-                                                  "tumor-purity-exploration",
-                                                  "results",
-                                                  "thresholded_rna_stranded_same-extraction.tsv"
-                                                )
-                                               ){
+                                              bs_ids_file){
   
   # Define vector of IDs to retain
-  bs_ids <- readr::read_tsv(tumor_purity_file) %>%
+  bs_ids <- readr::read_tsv(bs_ids_file) %>%
     dplyr::pull(Kids_First_Biospecimen_ID) %>%
     unique()
   
