@@ -100,19 +100,19 @@ compare_original_threshold <- function(df_original, df_thresholded, term_vector,
 
 # This function obtains results for a given SINGLE pathway comparison 
 #  among a given set of cancer groups of interest
-get_tukey_comparisons <- function(df, pathway_of_interest, groups_of_interest) {
+get_tukey_comparisons <- function(df, pathway_of_interest, included_cancer_groups) {
   df %>%
     filter(hallmark_name == pathway_of_interest, 
-           cancer_group1 %in% groups_of_interest,
-           cancer_group2 %in% groups_of_interest)
+           cancer_group1 %in% included_cancer_groups,
+           cancer_group2 %in% included_cancer_groups)
 }
 
 # This function wraps the above function to return results for both original and thresholded
-combine_tukey_comparisons <- function(df_original, df_thresholded, pathway_of_interest, groups_of_interest) {
-  original <- get_tukey_comparisons(df_original, pathway_of_interest, groups_of_interest) %>% 
+combine_tukey_comparisons <- function(df_original, df_thresholded, pathway_of_interest, included_cancer_groups) {
+  original <- get_tukey_comparisons(df_original, pathway_of_interest, included_cancer_groups) %>% 
     mutate(type = "original")
   
-  get_tukey_comparisons(df_thresholded, pathway_of_interest, groups_of_interest) %>% 
+  get_tukey_comparisons(df_thresholded, pathway_of_interest, included_cancer_groups) %>% 
     mutate(type = "thresholded") %>%
     bind_rows(original) %>%
     # select only rows needed for interpretation
