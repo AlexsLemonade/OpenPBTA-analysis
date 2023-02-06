@@ -59,16 +59,16 @@ prepare_gsea_for_model <- function(gsea_df, metadata_df, palette_df) {
 
 
 ```{r}
-# This function assesses certain pathways are significant for a given set of results
+# This function assesses whether certain pathways of interest are significant for a given set of results
 # The function return a table with three sets of counts
 ### Total number of significantly upregulated comparisons
 ### Total number of significantly downregulated comparisons
 ### Total number of non-significant comparisons
 # The total count in the result _IS_ the total number of comparisons
 # Note that if there is a 4th count called "error in logic," something went wrong!
-count_tukey_results <- function(df, term_vector, cancer_group) {
+count_tukey_results <- function(df, pathways_of_interest, cancer_group) {
   df %>%
-    filter(hallmark_name %in% term_vector, 
+    filter(hallmark_name %in% pathways_of_interest, 
            (cancer_group1 == cancer_group | cancer_group2 == cancer_group)) %>%
     # Assign comparison as upregulated, downregulated, or not significant
     mutate(comparison = case_when(
@@ -88,10 +88,14 @@ count_tukey_results <- function(df, term_vector, cancer_group) {
     count(comparison)
 }
 
-# This function combines counted original and thresholded results into a single data frame
-compare_original_threshold <- function(df_original, df_thresholded, term_vector, cancer_group) {
-  original <- count_tukey_results(df_original, term_vector, cancer_group) %>% mutate(type = "original")
-  count_tukey_results(df_thresholded, term_vector, cancer_group) %>% mutate(type = "thresholded") %>%
+# This function wraps `count_tukey_results()` to return results for both original and thresholded
+compare_original_threshold <- function(df_original, df_thresholded, pathways_of_interest, cancer_group) {
+  
+  # Get results for original data (no threshold)
+  original <- count_tukey_results(df_original, pathways_of_interest, cancer_group) %>% mutate(type = "original")
+  
+  # Get results for thresholded data and combine with original data to return from function
+  count_tukey_results(df_thresholded, pathways_of_interest, cancer_group) %>% mutate(type = "thresholded") %>%
     bind_rows(original) %>%
     arrange(type)
 }
@@ -107,16 +111,20 @@ get_tukey_comparisons <- function(df, pathway_of_interest, included_cancer_group
            cancer_group2 %in% included_cancer_groups)
 }
 
-# This function wraps the above function to return results for both original and thresholded
+# This function wraps `get_tukey_comparisons()` to return results for both original and thresholded
 combine_tukey_comparisons <- function(df_original, df_thresholded, pathway_of_interest, included_cancer_groups) {
+  
+  # Get results for original data (no threshold)
   original <- get_tukey_comparisons(df_original, pathway_of_interest, included_cancer_groups) %>% 
     mutate(type = "original")
   
+  # Get results for thresholded
   get_tukey_comparisons(df_thresholded, pathway_of_interest, included_cancer_groups) %>% 
     mutate(type = "thresholded") %>%
+    # combine with original
     bind_rows(original) %>%
     # select only rows needed for interpretation
-    # since only 1 pathway, no need to keep hallmark name
+    # since there is only 1 pathway, we don't need to keep the hallmark name
     select(type, cancer_group1, cancer_group2, pathway_score_difference, significant_tukey_bonf) %>%
     arrange(type)
 }
@@ -214,8 +222,8 @@ https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b
 
 #### MB
 
-> Originally, 20/40 pathways were upregulated. After thresholding, 17/38 are upregulated.
-> This is broadly consistent.
+Originally, 20/40 pathways were upregulated. After thresholding, 17/38 are upregulated.
+This is broadly consistent.
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, 
@@ -225,8 +233,8 @@ compare_original_threshold(tukey_original, tukey_thresholded,
 
 #### ATRT
 
-> Originally, 24/40 pathways were upregulated. After thresholding, 13/38 are upregulated.
-> Many comparisons are no longer significant.
+Originally, 24/40 pathways were upregulated. After thresholding, 13/38 are upregulated.
+Many comparisons are no longer significant.
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded,  c("HALLMARK_MYC_TARGETS_V1", "HALLMARK_MYC_TARGETS_V2"), "Atypical Teratoid Rhabdoid Tumor")
@@ -234,8 +242,8 @@ compare_original_threshold(tukey_original, tukey_thresholded,  c("HALLMARK_MYC_T
 
 #### Other HGGs
 
-> Originally, 12/40 pathways were upregulated. After thresholding, 10/38 are upregulated.
-> This is broadly consistent.
+Originally, 12/40 pathways were upregulated. After thresholding, 10/38 are upregulated.
+This is broadly consistent.
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded,  c("HALLMARK_MYC_TARGETS_V1", "HALLMARK_MYC_TARGETS_V2"), "Other highgrade glioma")
@@ -244,8 +252,8 @@ compare_original_threshold(tukey_original, tukey_thresholded,  c("HALLMARK_MYC_T
 
 #### DMGs
 
-> Originally, 12/40 pathways were upregulated. After thresholding, 3/38 are upregulated.
-> These results are substantially different.
+Originally, 12/40 pathways were upregulated. After thresholding, 3/38 are upregulated.
+These results are substantially different.
 
 
 ```{r}
@@ -255,8 +263,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, c("HALLMARK_MYC_TA
 #### Other LGGs
 
 
-> Originally, 15/40 pathways were downregulated. After thresholding, 7/38 are downregulated.
-> This is broadly consistent though with some loss of power.
+Originally, 15/40 pathways were downregulated. After thresholding, 7/38 are downregulated.
+This is broadly consistent though with some loss of power.
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, c("HALLMARK_MYC_TARGETS_V1", "HALLMARK_MYC_TARGETS_V2"), "Other lowgrade glioma")
@@ -265,8 +273,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, c("HALLMARK_MYC_TA
 
 #### Pilocytic astrocytoma
 
-> Originally, 18/40 pathways were downregulated. After thresholding, 11/38 are downregulated.
-> This is broadly consistent though with some loss of power.
+Originally, 18/40 pathways were downregulated. After thresholding, 11/38 are downregulated.
+This is broadly consistent though with some loss of power.
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, c("HALLMARK_MYC_TARGETS_V1", "HALLMARK_MYC_TARGETS_V2"), "Pilocytic astrocytoma")
@@ -274,8 +282,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, c("HALLMARK_MYC_TA
 
 #### Subependymal Giant Cell Astrocytoma
 
-> Originally, 1/40 pathways was downregulated. After thresholding, none are downregulated
-> This is broadly consistent.
+Originally, 1/40 pathways was downregulated. After thresholding, none are downregulated
+This is broadly consistent.
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, c("HALLMARK_MYC_TARGETS_V1", "HALLMARK_MYC_TARGETS_V2"), "Subependymal Giant Cell Astrocytoma")
@@ -285,8 +293,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, c("HALLMARK_MYC_TA
 
 #### Pleomorphic xanthoastrocytoma
 
-> Originally, 4/40 pathways were downregulated. After thresholding, none are downregulated.
-> This is broadly consistent.
+Originally, 4/40 pathways were downregulated. After thresholding, none are downregulated.
+This is broadly consistent.
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, c("HALLMARK_MYC_TARGETS_V1", "HALLMARK_MYC_TARGETS_V2"), "Pleomorphic xanthoastrocytoma")
@@ -297,8 +305,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, c("HALLMARK_MYC_TA
 
 #### MB
 
-> Originally, 15/20 pathways were upregulated. After thresholding, 13/19 are upregulated.
-> This is broadly consistent.
+Originally, 15/20 pathways were upregulated. After thresholding, 13/19 are upregulated.
+This is broadly consistent.
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARGETS", "Medulloblastoma")
@@ -306,8 +314,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARG
 
 #### ATRT
 
-> Originally, 13/20 pathways were upregulated. After thresholding, 11/19 are upregulated.
-> This is broadly consistent.
+Originally, 13/20 pathways were upregulated. After thresholding, 11/19 are upregulated.
+This is broadly consistent.
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARGETS", "Atypical Teratoid Rhabdoid Tumor")
@@ -316,8 +324,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARG
 #### Other HGGs
 
 
-> Originally, 13/20 pathways were upregulated and 1/20 was downregulated. After thresholding, 6/19 are upregulated.
-> These results have somewhat shifted
+Originally, 13/20 pathways were upregulated and 1/20 was downregulated. After thresholding, 6/19 are upregulated.
+These results have somewhat shifted
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARGETS", "Other highgrade glioma")
@@ -326,8 +334,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARG
 
 #### DMGs
 
-> Originally, 13/20 pathways were upregulated. After thresholding, 6/19 are upregulated.
-> These results are different.
+Originally, 13/20 pathways were upregulated. After thresholding, 6/19 are upregulated.
+These results are different.
 
 
 ```{r}
@@ -339,8 +347,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARG
 #### Other LGGs
 
 
-> Originally, 8/20 pathways were downregulated. After thresholding, 7/19 are downregulated.
-> This is broadly consistent
+Originally, 8/20 pathways were downregulated. After thresholding, 7/19 are downregulated.
+This is broadly consistent.
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARGETS", "Other lowgrade glioma")
@@ -349,8 +357,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARG
 
 #### Pilocytic astrocytoma
 
-> Originally, 8/20 pathways were downregulated. After thresholding, 9/19 are downregulated.
-> This is broadly consistent
+Originally, 8/20 pathways were downregulated. After thresholding, 9/19 are downregulated.
+This is broadly consistent.
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARGETS", "Pilocytic astrocytoma")
@@ -358,8 +366,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARG
 
 #### Subependymal Giant Cell Astrocytoma
 
-> Originally, 6/20 pathways were downregulated. After thresholding, 3/16 are downregulated.
-> This is broadly consistent though with some loss of power
+Originally, 6/20 pathways were downregulated. After thresholding, 3/16 are downregulated.
+This is broadly consistent though with some loss of power.
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARGETS", "Subependymal Giant Cell Astrocytoma")
@@ -367,8 +375,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARG
 
 #### Pleomorphic xanthoastrocytoma
 
-> Originally, 6/20 pathways were downregulated. After thresholding, 3/19 are downregulated.
-> This is broadly consistent.
+Originally, 6/20 pathways were downregulated. After thresholding, 3/19 are downregulated.
+This is broadly consistent.
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARGETS", "Pleomorphic xanthoastrocytoma")
@@ -380,8 +388,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARG
 
 #### MB
 
-> Originally, 15/20 pathways were upregulated. After thresholding, 13/19 are upregulated.
-> This is broadly consistent.
+Originally, 15/20 pathways were upregulated. After thresholding, 13/19 are upregulated.
+This is broadly consistent.
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHECKPOINT", "Medulloblastoma")
@@ -390,8 +398,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHEC
 
 #### ATRT
 
-> Originally, 13/20 pathways were upregulated. After thresholding, 9/19 are upregulated.
-> This is broadly consistent, although with some minor loss of power
+Originally, 13/20 pathways were upregulated. After thresholding, 9/19 are upregulated.
+This is broadly consistent, although with some minor loss of power.
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHECKPOINT", "Atypical Teratoid Rhabdoid Tumor")
@@ -400,8 +408,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHEC
 
 #### Other HGGs
 
-> Originally, 13/20 pathways were upregulated and 1/20 was downregulated. After thresholding, 6/19 are upregulated.
-> These results have somewhat shifted
+Originally, 13/20 pathways were upregulated and 1/20 was downregulated. After thresholding, 6/19 are upregulated.
+This is broadly consistent, although with some minor loss of power.
 
 
 ```{r}
@@ -410,8 +418,9 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHEC
 
 #### DMGs
 
-> Originally, 13/20 pathways were upregulated. After thresholding, 5/19 are upregulated.
-> These results are different.
+Originally, 13/20 pathways were upregulated. After thresholding, 5/19 are upregulated.
+This is broadly consistent but the overall trend of upregulation appears to remain.
+
 
 
 ```{r}
@@ -423,8 +432,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHEC
 #### Other LGGs
 
 
-> Originally, 9/20 pathways were downregulated. After thresholding, 7/19 are downregulated.
-> This is broadly consistent
+Originally, 9/20 pathways were downregulated. After thresholding, 7/19 are downregulated.
+This is broadly consistent.
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHECKPOINT", "Other lowgrade glioma")
@@ -433,8 +442,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHEC
 
 #### Pilocytic astrocytoma
 
-> Originally, 10/20 pathways were downregulated. After thresholding, 9/19 are downregulated.
-> This is broadly consistent
+Originally, 10/20 pathways were downregulated. After thresholding, 9/19 are downregulated.
+This is broadly consistent.
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHECKPOINT", "Pilocytic astrocytoma")
@@ -442,8 +451,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHEC
 
 #### Subependymal Giant Cell Astrocytoma
 
-> Originally, 6/20 pathways were downregulated. After thresholding, 1/19 are downregulated.
-> This is broadly consistent though with some loss of power
+Originally, 6/20 pathways were downregulated. After thresholding, 1/19 are downregulated.
+This is broadly consistent though with some loss of power.
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHECKPOINT", "Subependymal Giant Cell Astrocytoma")
@@ -451,8 +460,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHEC
 
 #### Pleomorphic xanthoastrocytoma
 
-> Originally, 7/20 pathways were downregulated. After thresholding, 3/19 are downregulated.
-> This is broadly consistent.
+Originally, 7/20 pathways were downregulated. After thresholding, 3/19 are downregulated.
+This is broadly consistent.
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHECKPOINT", "Pleomorphic xanthoastrocytoma")
@@ -476,8 +485,8 @@ https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b
 
 #### Schwannomas
 
-> Originally, 13/20 pathways were upregulated. After thresholding, 9/19 are upregulated.
-> Results are broadly consistent
+Originally, 13/20 pathways were upregulated. After thresholding, 9/19 are upregulated.
+Results are broadly consistent.
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_INTERFERON_GAMMA_RESPONSE", "Schwannoma")
@@ -485,8 +494,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_INTERFER
 
 #### Neurofibromas
 
-> Originally, 9/20 pathways were upregulated. After thresholding, 6/19 are upregulated.
-> Results are broadly consistent
+Originally, 9/20 pathways were upregulated. After thresholding, 6/19 are upregulated.
+Results are broadly consistent.
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_INTERFERON_GAMMA_RESPONSE", "Neurofibroma Plexiform")
@@ -497,8 +506,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_INTERFER
 #### Schwannomas
 
 
-> Originally, 10/20 pathways were upregulated. After thresholding, 7/19 are upregulated.
-> Results are broadly consistent
+Originally, 10/20 pathways were upregulated. After thresholding, 7/19 are upregulated.
+Results are broadly consistent
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_IL6_JAK_STAT3_SIGNALING", "Schwannoma")
@@ -506,8 +515,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_IL6_JAK_
 
 #### Neurofibromas
 
-> Originally, 8/20 pathways were upregulated. After thresholding, 7/19 are upregulated.
-> Results are broadly consistent
+Originally, 8/20 pathways were upregulated. After thresholding, 7/19 are upregulated.
+Results are broadly consistent
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_IL6_JAK_STAT3_SIGNALING", "Neurofibroma Plexiform")
@@ -518,8 +527,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_IL6_JAK_
  
 #### Schwannomas
 
-> Originally, 9/20 pathways were upregulated. After thresholding, 4/19 are upregulated.
-> Results are broadly consistent but there is a bigger loss of power
+Originally, 9/20 pathways were upregulated. After thresholding, 4/19 are upregulated.
+Results are broadly consistent but there is a bigger loss of power
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_TNFA_SIGNALING_VIA_NFKB", "Schwannoma")
@@ -527,8 +536,8 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_TNFA_SIG
 
 #### Neurofibromas
 
-> Originally, 9/20 pathways were upregulated. After thresholding, 4/19 are upregulated.
-> Results are broadly consistent but there is a bigger loss of power
+Originally, 9/20 pathways were upregulated. After thresholding, 4/19 are upregulated.
+Results are broadly consistent but there is a bigger loss of power
 
 ```{r}
 compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_TNFA_SIGNALING_VIA_NFKB", "Neurofibroma Plexiform")
@@ -546,8 +555,8 @@ https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b
 
 #### LGG compared to MB
 
-> Both original and thresholded results show that LGGs are significantly upregulated compared to MB.
-> Results are consistent.
+Both original and thresholded results show that LGGs are significantly upregulated compared to MB.
+Results are consistent.
 
 ```{r}
 # vector of all the LGG cancer groups
@@ -566,9 +575,9 @@ combine_tukey_comparisons(tukey_original, tukey_thresholded,
 
 #### LGG compared to EPN
 
-> Original results show that "Pilocytic astrocytoma" and "Subependymal Giant Cell Astrocytoma" are upregulated compared to EPN.
-> Thresholded results show that "Pilocytic astrocytoma" and "Other low-grade glioma" are upregulated compared to EPN.
-> Results are not identical but there is conceptual overlap.
+Original results show that "Pilocytic astrocytoma" and "Subependymal Giant Cell Astrocytoma" are upregulated compared to EPN.
+Thresholded results show that "Pilocytic astrocytoma" and "Other low-grade glioma" are upregulated compared to EPN.
+Results are not identical but there is conceptual overlap.
 
 ```{r}
 combine_tukey_comparisons(tukey_original, tukey_thresholded, 
@@ -584,8 +593,8 @@ combine_tukey_comparisons(tukey_original, tukey_thresholded,
 
 #### Craniopharyngioma compared to MB
 
-> Both original and thresholded results show that cranio is upregulated compared to MB.
-> Results are consistent.
+Both original and thresholded results show that cranio is upregulated compared to MB.
+Results are consistent.
 
 ```{r}
 combine_tukey_comparisons(tukey_original, tukey_thresholded, 
@@ -599,8 +608,8 @@ combine_tukey_comparisons(tukey_original, tukey_thresholded,
 
 #### Craniopharyngioma compared to EPN
 
-> Both original and thresholded results show that cranio is upregulated compared to EPN.
-> Results are consistent.
+Both original and thresholded results show that cranio is upregulated compared to EPN.
+Results are consistent.
 
 ```{r}
 combine_tukey_comparisons(tukey_original, tukey_thresholded, 
@@ -618,8 +627,8 @@ combine_tukey_comparisons(tukey_original, tukey_thresholded,
 
 #### LGG compared to MB
 
-> Both original and thresholded results show that LGGs are significantly upregulated compared to MB.
-> Results are consistent.
+Both original and thresholded results show that LGGs are significantly upregulated compared to MB.
+Results are consistent.
 
 ```{r}
 combine_tukey_comparisons(tukey_original, tukey_thresholded, 
@@ -634,8 +643,8 @@ combine_tukey_comparisons(tukey_original, tukey_thresholded,
 
 #### LGG compared to EPN
 
-> Both original and thresholded results show that LGGs are significantly upregulated compared to EPN, _except_ for the thresholded "Pleomorphic xanthoastrocytoma" comparison which is not signficant.
-> Results are consistent, with some loss of power.
+Both original and thresholded results show that LGGs are significantly upregulated compared to EPN, _except_ for the thresholded "Pleomorphic xanthoastrocytoma" comparison which is not signficant.
+Results are consistent, with some loss of power.
 
 
 ```{r}
@@ -652,8 +661,8 @@ combine_tukey_comparisons(tukey_original, tukey_thresholded,
 
 #### Craniopharyngioma compared to MB
 
-> Both original and thresholded results show that cranio is upregulated compared to MB.
-> Results are consistent.
+Both original and thresholded results show that cranio is upregulated compared to MB.
+Results are consistent.
 
 ```{r}
 combine_tukey_comparisons(tukey_original, tukey_thresholded, 
@@ -667,8 +676,8 @@ combine_tukey_comparisons(tukey_original, tukey_thresholded,
 
 #### Craniopharyngioma compared to EPN
 
-> Both original and thresholded results show that cranio is upregulated compared to EPN
-> Results are consistent.
+Both original and thresholded results show that cranio is upregulated compared to EPN
+Results are consistent.
 
 ```{r}
 combine_tukey_comparisons(tukey_original, tukey_thresholded, 
