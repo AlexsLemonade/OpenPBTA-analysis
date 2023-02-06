@@ -31,6 +31,11 @@ filter_expression_by_tumor_purity <- function(expression_data) {
   #  This allows us to use the same code to filter on either input object structure.
   bs_ids <- intersect(bs_ids, colnames(expression_data))
   
+  missing_bs_ids <- setdiff(bs_ids, colnames(expression_data)
+  if ( length(missing_bs_ids) > 0 ) {
+     warn(glue::glue("{missing_bs_ids} is missing from expression data"))
+  } 
+  
   # Subset the `expression_data` variable to those IDs
   expression_data <- expression_data[, bs_ids]
   
