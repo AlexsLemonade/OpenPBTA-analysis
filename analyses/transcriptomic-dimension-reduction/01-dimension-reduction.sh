@@ -73,23 +73,46 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   --neighbors ${NEIGHBORS} \
   --low_count_threshold ${COUNT_THRESHOLD} \
   --log2_transform
-  
-  
 
-#### RSEM log2 stranded, excluding mitochondrial genes and skipping t-sne ------------------------------------
+
+
+#### TPM stranded, with and without mitochondrial genes and skipping t-sne ------------------------------------
 # Note that these results are only used for exploration in `05-seq_center-mitochondrial-genes.Rmd`
+# TODO: We might need a different COUNT_THRESHOLD here given the data type
+
+# First, we'll need to create this input file, which contains filtered and re-normalied TPM, if it is missing:
+NOMITO_TPM_FILE=../../scratch/transcriptomic-dimension-reduction/tpm-nomito-stranded.rds
+if [ ! -f ${NOMITO_TPM_FILE} ]; then
+  Rscript --vanilla scripts/prepare-tpm-for-umap.R
+fi
+
+# Perform dimension reduction on all TPM
 Rscript --vanilla scripts/run-dimension-reduction.R \
-  --expression ../../data/pbta-gene-expression-rsem-fpkm.stranded.rds \
+  --expression ../../data/pbta-gene-expression-rsem-tpm.stranded.rds \
   --metadata ${METADATA} \
   --remove_mito_genes \
-  --filename_lead rsem_stranded_no-mito_log \
+  --filename_lead tpm_stranded_all_log \
   --output_directory ${OUTPUT} \
   --seed ${SEED} \
   --perplexity ${PERPLEXITY} \
   --neighbors ${NEIGHBORS} \
   --low_count_threshold ${COUNT_THRESHOLD} \
-  --log2_transform \
-  --skip_tsne
+  --skip_tsne \
+  --log2_transform
+  
+# Perform dimension reduction on nomito TPM
+Rscript --vanilla scripts/run-dimension-reduction.R \
+  --expression ${NOMITO_TPM_FILE} \
+  --metadata ${METADATA} \
+  --remove_mito_genes \
+  --filename_lead tpm_stranded_nomito_log \
+  --output_directory ${OUTPUT} \
+  --seed ${SEED} \
+  --perplexity ${PERPLEXITY} \
+  --neighbors ${NEIGHBORS} \
+  --low_count_threshold ${COUNT_THRESHOLD} \
+  --skip_tsne \
+  --log2_transform
   
   
 #### kallisto ------------------------------------------------------------------

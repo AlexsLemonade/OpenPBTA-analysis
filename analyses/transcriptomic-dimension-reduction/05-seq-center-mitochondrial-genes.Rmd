@@ -11,11 +11,15 @@ output:
 This notebook aims to explore some potential sequencing center biases that were raised in this OpenPBTA issue: https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1601
 This issues notes that some of the samples sequenced at `BGI@CHOP` had higher-than-expected expression for certain mitochondrial genes, specifically RNR1 and RNR2, and somewhat lower-than-expected expression for other mitochondrial genes.
 
+To ensure appropriate normalization, the UMAPs here were created from TPM data rather than FPKM, such that mitochondrial genes were removed from the TPM results themselves. 
+
 ## Setup
 
 ```{r setup, include=FALSE}
 library(magrittr)
 library(ggplot2)
+
+set.seed(2023)
 
 # set overall theme
 theme_set(ggpubr::theme_pubr() +
@@ -47,8 +51,8 @@ umap_dir <- file.path(
 palette_dir <- file.path(root_dir, "figures", "palettes")
 
 # UMAP files with different samples:
-rsem_umap <- file.path(umap_dir, "rsem_stranded_log_umap_scores_aligned.tsv")
-rsem_no_mito_umap <- file.path(umap_dir, "rsem_stranded_no-mito_log_umap_scores_aligned.tsv")
+tpm_umap <- file.path(umap_dir, "tpm_stranded_all_log_umap_scores_aligned.tsv")
+tpm_no_mito_umap <- file.path(umap_dir, "tpm_stranded_nomito_log_umap_scores_aligned.tsv")
 
 # palette mapping file
 pal_file <- file.path(palette_dir,  "broad_histology_cancer_group_palette.tsv")
@@ -76,8 +80,8 @@ readr_prep_umap <- function(filename,
                                                     "BGI", "BGI@CHOP Genome Center", "NantOmics"))
 }
 
-umap_all <- readr_prep_umap(rsem_umap)
-umap_no_mito <- readr_prep_umap(rsem_no_mito_umap) 
+umap_all <- readr_prep_umap(tpm_umap)
+umap_no_mito <- readr_prep_umap(tpm_no_mito_umap) 
 
 # Read in expression and convert to data frame
 expression_df <- readr::read_rds(expression_file) %>%
@@ -221,11 +225,12 @@ combine_plots(p1, p2)
 ## Conclusions
 
 - Samples from `BIG@CHOP` sequencing center have unique mitochondrial gene distributions.
-- Removing mitochondtial genes from the UMAP does not have a strong qualitiative effect on whether broad histologies or cancer groups tend to cluster together.
+- Removing mitochondrial genes from the UMAP does not have a strong qualitiative effect on whether broad histologies or cancer groups tend to cluster together.
+The UMAPs created here also look broadly similar to those made with FPKM. 
 Visually, it seems the "mixed histology" groupings identified in `04-explore-sequencing-center-effects.Rmd`
 notebook still are grouped together in these UMAPs.
 
-Overall, this suggests that mitochondrial genes alone do not have a strong influence on UMAP visualizations.
+Overall, this suggests that mitochondrial genes alone will not have a strong influence on UMAP visualizations.
 However, there may still be protocol differences associated with BIG@CHOP samples that influence expression values more generally, and can not be corrected by removing only mitochondrial genes.
 
 ## sessionInfo
