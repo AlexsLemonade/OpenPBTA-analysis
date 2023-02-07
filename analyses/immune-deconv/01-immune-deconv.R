@@ -52,35 +52,34 @@ if (!is.null(deconv_method)){
 stranded <- readRDS(stranded)
 
 
-# Filter data if tumor purity threshold is turned on and 
-#  only process the relevant stranded libraries (skip polyA)
+# Filter data if tumor purity threshold is turned on, but only need 
+#  to do this for the `stranded` data 
 if (opt$apply_tumor_purity_threshold) {
   
-  # tumor purity metadata file which has been filtered to only biospecimens that
-  #  survive the cancer-group-level threshold
-  tumor_purity_file <- file.path(
+  # Define path to tumor purity module
+  tumor_purity_dir <- file.path(
     rprojroot::find_root(rprojroot::has_dir(".git")),
     "analyses",
-    "tumor-purity-exploration",
+    "tumor-purity-exploration"
+  )
+  
+  # Define path to metadata file which has been filtered to only biospecimens that
+  #  survive the cancer-group-level threshold
+  tumor_purity_file <- file.path(
+    tumor_purity_dir,
     "results",
     "thresholded_rna_stranded_same-extraction.tsv"
   )
   
-  # Define vector of IDs to retain
-  bs_ids <- readr::read_tsv(tumor_purity_file) %>%
-    dplyr::pull(Kids_First_Biospecimen_ID) %>%
-    unique()
+  # Load the function to filter IDs
+  source(
+    file.path(tumor_purity_dir, "util", "function_filter-by-threshold.R")
+  )
   
-  # To avoid CI errors, first subset `bs_ids` to the intersection with `expression_data` colnames
-  bs_ids <- intersect(bs_ids, colnames(stranded))
   
-  # Filter the matrix
-  stranded <- stranded[, bs_ids]
-  
-  # Quick check on filtering:
-  if (!length(bs_ids) == ncol(stranded)) {
-    stop("Error filtering IDs to use in immune deconvolution with tumor purity thresholding on.")
-  }
+  # Filter the expression data
+  stranded <- filter_expression_by_tumor_purity(stranded, 
+                                                tumor_purity_file)
 } else {
   
   # If we are not filtering by tumor purity, also read and run polyA
