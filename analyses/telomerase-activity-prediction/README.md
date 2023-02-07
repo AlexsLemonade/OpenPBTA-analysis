@@ -17,8 +17,19 @@ Goals include:
 6. Generate plots for the analysis modules.
 
 7. Explore how results for stranded libraries may be influenced if only tumors passing a given tumor purity threshold are considered.
-This exploration is performed in `07_EXTEND-at-threshold.Rmd`.
 
+
+To run the complete module run as follows (assuming you are in this directory):
+```sh
+bash RUN-telomerase-activity-prediction.sh
+```
+
+
+To re-run generate analysis results that are presented in the manuscript, run as follows (again, assuming you are in this directory):
+
+```sh
+ OPENPBTA_FOR_FIGURES=1 bash RUN-telomerase-activity-prediction.sh
+```
 
 
 
@@ -26,11 +37,13 @@ Contents of directory:
 
 1. [`RUN-telomerase-activity-prediction.sh`](./RUN-telomerase-activity-prediction.sh) is used to generate the telomerase activities from gene expression data sets from different platforms, and calls all R scripts in order.
 
+
 2. The directory `results/` contains:
 	+ Telomerase Scores for PolyA counts data in [TelomeraseScores_PTBAPolya_counts.txt](./results/TelomeraseScores_PTBAPolya_counts.txt)
 	+ Telomerase Scores for PolyA FPKM data in [TelomeraseScores_PTBAPolya_FPKM.txt](./results/TelomeraseScores_PTBAPolya_FPKM.txt)
 	+ Telomerase Scores for Stranded Counts data in [TelomeraseScores_PTBAStranded_counts.txt](./results/TelomeraseScores_PTBAStranded_counts.txt)
 	+ Telomerase Scores for Stranded FPKM data in [TelomeraseScores_PTBAStranded_FPKM.txt](./results/TelomeraseScores_PTBAStranded_FPKM.txt)
+	+ Telomerase Scores for Stranded FPKM data filtered to a cancer-group-specific tumor purity threshold in in [TelomeraseScores_PTBAStranded_FPKM_thresholded.txt](./results/TelomeraseScores_PTBAStranded_FPKM_thresholded.txt)
 	+ `EXTENDScores_{broad_histology}.txt`: compares telomerase activities across different molecular subtypes of various PBTA short histologies and contains p-values as well as adjusted p-values.
 
 3. The directory `plots/` contains:
@@ -38,5 +51,5 @@ Contents of directory:
 	+ [PTBA_GE_TM_ScatterComp.pdf](./plots/PTBA_GE_TM_ScatterComp.pdf): correlates TERT and TERC gene expressions with telomerase activities for different data sets (i.e Stranded and PolyA)
 	+ [PBTA_StrandedHistology.pdf](./plots/PBTA_StrandedHistology.pdf): shows the distribution of telomerase activities across different brain tumor histologies
 	+ `EXTENDScores_{broad_histology}.png`: compares telomerase activities across different molecular subtypes of various PBTA short histologies.
-	+ `TERTp_mutations.pdf`: EXTEND score distribition is shown for samples with and without specific TERT promoter mutations.
-	+ `TERTp_mutations_TERC_TERT_expression.pdf`: Relationship between TERT and TERC stranded expression and EXTEND scores, highlighting samples with TERTp mutations
+	+ [`TERTp_mutations.pdf`](./plots/TERTp_mutations.pdf): EXTEND score distribition is shown for samples with and without specific TERT promoter mutations.
+	+ [`TERTp_mutations_TERC_TERT_expression.pdf`](./plots/TERTp_mutations_TERC_TERT_expression.pdf): Relationship between TERT and TERC stranded expression and EXTEND scores, highlighting samples with TERTp mutations

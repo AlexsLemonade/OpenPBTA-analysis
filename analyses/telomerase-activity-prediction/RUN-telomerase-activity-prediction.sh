@@ -9,7 +9,7 @@ script_directory="$(perl -e 'use File::Basename;
   print dirname(abs_path(@ARGV[0]));' -- "$0")"
 cd "$script_directory" || exit
 
-# If this is set to 1, only run code necessary for generating manuscript figures: 01-run-EXTEND.R on stranded.
+# If this is set to 1, only run code necessary for generating manuscript figures: 01-run-EXTEND.R on stranded, as well as the thresholded analysis.
 RUN_FOR_FIGURES=${OPENPBTA_FOR_FIGURES:-0}
 
 
@@ -20,12 +20,6 @@ if [ "${RUN_FOR_FIGURES}" == "1" ]; then
 
   #generate telomerase activities using gene expression data from collapse RNA seq data files
   Rscript --vanilla 01-run-EXTEND.R --input ../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds --output results/TelomeraseScores_PTBAStranded_FPKM.txt
-
-  # Generate again, but this time with tumor purity thresholding
-  Rscript --vanilla 01-run-EXTEND.R --apply_tumor_purity_threshold --input ../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds --output results/TelomeraseScores_PTBAStranded_FPKM_thresholded.txt
-
-  # Explore thresholded results
-  Rscript --vanilla -e "rmarkdown::render('07_EXTEND-at-threshold.Rmd')"
 
 else
 
@@ -55,4 +49,15 @@ else
   echo "Plotting distribution of EXTEND scores in MB subtypes..."
   Rscript --vanilla 05-Comparing-MolecularSubtypes-EXTENDScores.R
 
+  # Distribution of telomerase scores in TERTp-positive vs. TERTp-negative samples
+  echo "Plotting distribution of EXTEND scores in samples with or without TERTp..."
 fi
+
+# Regardless of which run option, we would like to analyze results at a tumor purity threshold:
+echo "Exploring results at a tumor purity threshold..."
+
+# Generate EXTEND scores
+Rscript --vanilla 01-run-EXTEND.R --apply_tumor_purity_threshold --input ../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds --output results/TelomeraseScores_PTBAStranded_FPKM_thresholded.txt
+
+# Explore thresholded results
+Rscript --vanilla -e "rmarkdown::render('07_EXTEND-at-threshold.Rmd')"
