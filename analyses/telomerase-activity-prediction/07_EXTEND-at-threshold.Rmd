@@ -35,11 +35,11 @@ extend_dir <- file.path(analyses_dir, "telomerase-activity-prediction")
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
 palette_file <- file.path(root_dir, "figures", "palettes", "broad_histology_cancer_group_palette.tsv")
 extend_file_thresholded <- file.path(extend_dir, 
-                         "results",
-                         "TelomeraseScores_PTBAStranded_FPKM_thresholded.txt")
+                                     "results",
+                                     "TelomeraseScores_PTBAStranded_FPKM_thresholded.txt")
 extend_file_original <- file.path(extend_dir, 
-                         "results",
-                         "TelomeraseScores_PTBAStranded_FPKM.txt")
+                                  "results",
+                                  "TelomeraseScores_PTBAStranded_FPKM.txt")
 fpkm_file <- file.path(data_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
 ```
 
