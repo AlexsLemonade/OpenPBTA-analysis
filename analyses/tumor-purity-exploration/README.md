@@ -17,3 +17,5 @@ This notebook outputs the file `results/rna_stranded_same-extraction.tsv`, which
 
 - `02_explore-tumor-purity-threshold.Rmd`: Notebook to explore resulting sample sizes after filtering samples based on different thresholds for tumor purity values.
 This notebook outputs the file `results/thresholded_rna_stranded_same-extraction.tsv`, which is a subsetted version of `results/rna_stranded_same-extraction.tsv` that contains only those tumors whose purity is >= the respective cancer group's median tumor purity value.
+
+- The `util/function_filter-by-threshold.R` script define a functions `filter_expression_by_tumor_purity()` that can be used by _other modules_ to perform filtering on expression data based on the median per-cancer-group tumor purity threshold.
