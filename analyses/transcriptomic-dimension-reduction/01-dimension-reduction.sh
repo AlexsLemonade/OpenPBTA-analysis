@@ -78,7 +78,6 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
 
 #### TPM stranded, with and without mitochondrial genes and skipping t-sne ------------------------------------
 # Note that these results are only used for exploration in `05-seq_center-mitochondrial-genes.Rmd`
-# TODO: We might need a different COUNT_THRESHOLD here given the data type
 
 # First, we'll need to create this input file, which contains filtered and re-normalied TPM, if it is missing:
 NOMITO_TPM_FILE=../../scratch/transcriptomic-dimension-reduction/tpm-nomito-stranded.rds
@@ -90,7 +89,6 @@ fi
 Rscript --vanilla scripts/run-dimension-reduction.R \
   --expression ../../data/pbta-gene-expression-rsem-tpm.stranded.rds \
   --metadata ${METADATA} \
-  --remove_mito_genes \
   --filename_lead tpm_stranded_all_log \
   --output_directory ${OUTPUT} \
   --seed ${SEED} \
