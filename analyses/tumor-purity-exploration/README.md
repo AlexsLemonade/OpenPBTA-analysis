@@ -7,7 +7,7 @@ This analysis modules explores the tumor purity values and potential correlates.
 The full module can be run with (assuming your current directory is the root of this module):
 
 ```
-bash run_tumor-purity.sh`
+bash run_tumor-purity.sh
 ```
 
 Contents of this module include the following:
