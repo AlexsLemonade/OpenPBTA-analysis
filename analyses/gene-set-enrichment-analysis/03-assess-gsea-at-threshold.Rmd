@@ -222,7 +222,7 @@ https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b
 
 #### MB
 
-Originally, 20/40 pathways were upregulated. After thresholding, 17/38 are upregulated.
+Originally, 20/40 comparisons for the given pathway were upregulated. After thresholding, 17/38 are upregulated.
 This is broadly consistent.
 
 ```{r}
@@ -233,7 +233,7 @@ compare_original_threshold(tukey_original, tukey_thresholded,
 
 #### ATRT
 
-Originally, 24/40 pathways were upregulated. After thresholding, 13/38 are upregulated.
+Originally, 24/40 comparisons for the given pathway were upregulated. After thresholding, 13/38 are upregulated.
 Many comparisons are no longer significant.
 
 ```{r}
@@ -242,7 +242,7 @@ compare_original_threshold(tukey_original, tukey_thresholded,  c("HALLMARK_MYC_T
 
 #### Other HGGs
 
-Originally, 12/40 pathways were upregulated. After thresholding, 10/38 are upregulated.
+Originally, 12/40 comparisons for the given pathway were upregulated. After thresholding, 10/38 are upregulated.
 This is broadly consistent.
 
 ```{r}
@@ -252,7 +252,7 @@ compare_original_threshold(tukey_original, tukey_thresholded,  c("HALLMARK_MYC_T
 
 #### DMGs
 
-Originally, 12/40 pathways were upregulated. After thresholding, 3/38 are upregulated.
+Originally, 12/40 comparisons for the given pathway were upregulated. After thresholding, 3/38 are upregulated.
 These results are substantially different.
 
 
@@ -263,7 +263,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, c("HALLMARK_MYC_TA
 #### Other LGGs
 
 
-Originally, 15/40 pathways were downregulated. After thresholding, 7/38 are downregulated.
+Originally, 15/40 comparisons for the given pathway were downregulated. After thresholding, 7/38 are downregulated.
 This is broadly consistent though with some loss of power.
 
 ```{r}
@@ -273,7 +273,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, c("HALLMARK_MYC_TA
 
 #### Pilocytic astrocytoma
 
-Originally, 18/40 pathways were downregulated. After thresholding, 11/38 are downregulated.
+Originally, 18/40 comparisons for the given pathway were downregulated. After thresholding, 11/38 are downregulated.
 This is broadly consistent though with some loss of power.
 
 ```{r}
@@ -282,7 +282,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, c("HALLMARK_MYC_TA
 
 #### Subependymal Giant Cell Astrocytoma
 
-Originally, 1/40 pathways was downregulated. After thresholding, none are downregulated
+Originally, 1/40 comparisons for the given pathway were downregulated. After thresholding, none are downregulated
 This is broadly consistent.
 
 ```{r}
@@ -293,7 +293,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, c("HALLMARK_MYC_TA
 
 #### Pleomorphic xanthoastrocytoma
 
-Originally, 4/40 pathways were downregulated. After thresholding, none are downregulated.
+Originally, 4/40 comparisons for the given pathway were downregulated. After thresholding, none are downregulated.
 This is broadly consistent.
 
 ```{r}
@@ -305,7 +305,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, c("HALLMARK_MYC_TA
 
 #### MB
 
-Originally, 15/20 pathways were upregulated. After thresholding, 13/19 are upregulated.
+Originally, 15/20 comparisons for the given pathway were upregulated. After thresholding, 13/19 are upregulated.
 This is broadly consistent.
 
 ```{r}
@@ -314,7 +314,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARG
 
 #### ATRT
 
-Originally, 13/20 pathways were upregulated. After thresholding, 11/19 are upregulated.
+Originally, 13/20 comparisons for the given pathway were upregulated. After thresholding, 11/19 are upregulated.
 This is broadly consistent.
 
 ```{r}
@@ -324,7 +324,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARG
 #### Other HGGs
 
 
-Originally, 13/20 pathways were upregulated and 1/20 was downregulated. After thresholding, 6/19 are upregulated.
+Originally, 13/20 comparisons for the given pathway were upregulated and 1/20 was downregulated. After thresholding, 6/19 are upregulated.
 These results have somewhat shifted
 
 ```{r}
@@ -334,7 +334,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARG
 
 #### DMGs
 
-Originally, 13/20 pathways were upregulated. After thresholding, 6/19 are upregulated.
+Originally, 13/20 comparisons for the given pathway were upregulated. After thresholding, 6/19 are upregulated.
 These results are different.
 
 
@@ -347,7 +347,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARG
 #### Other LGGs
 
 
-Originally, 8/20 pathways were downregulated. After thresholding, 7/19 are downregulated.
+Originally, 8/20 comparisons for the given pathway were downregulated. After thresholding, 7/19 are downregulated.
 This is broadly consistent.
 
 ```{r}
@@ -357,7 +357,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARG
 
 #### Pilocytic astrocytoma
 
-Originally, 8/20 pathways were downregulated. After thresholding, 9/19 are downregulated.
+Originally, 8/20 comparisons for the given pathway were downregulated. After thresholding, 9/19 are downregulated.
 This is broadly consistent.
 
 ```{r}
@@ -366,7 +366,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARG
 
 #### Subependymal Giant Cell Astrocytoma
 
-Originally, 6/20 pathways were downregulated. After thresholding, 3/16 are downregulated.
+Originally, 6/20 comparisons for the given pathway were downregulated. After thresholding, 3/16 are downregulated.
 This is broadly consistent though with some loss of power.
 
 ```{r}
@@ -375,7 +375,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARG
 
 #### Pleomorphic xanthoastrocytoma
 
-Originally, 6/20 pathways were downregulated. After thresholding, 3/19 are downregulated.
+Originally, 6/20 comparisons for the given pathway were downregulated. After thresholding, 3/19 are downregulated.
 This is broadly consistent.
 
 ```{r}
@@ -388,7 +388,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_E2F_TARG
 
 #### MB
 
-Originally, 15/20 pathways were upregulated. After thresholding, 13/19 are upregulated.
+Originally, 15/20 comparisons for the given pathway were upregulated. After thresholding, 13/19 are upregulated.
 This is broadly consistent.
 
 ```{r}
@@ -398,7 +398,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHEC
 
 #### ATRT
 
-Originally, 13/20 pathways were upregulated. After thresholding, 9/19 are upregulated.
+Originally, 13/20 comparisons for the given pathway were upregulated. After thresholding, 9/19 are upregulated.
 This is broadly consistent, although with some minor loss of power.
 
 ```{r}
@@ -408,7 +408,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHEC
 
 #### Other HGGs
 
-Originally, 13/20 pathways were upregulated and 1/20 was downregulated. After thresholding, 6/19 are upregulated.
+Originally, 13/20 comparisons for the given pathway were upregulated and 1/20 was downregulated. After thresholding, 6/19 are upregulated.
 This is broadly consistent, although with some minor loss of power.
 
 
@@ -418,7 +418,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHEC
 
 #### DMGs
 
-Originally, 13/20 pathways were upregulated. After thresholding, 5/19 are upregulated.
+Originally, 13/20 comparisons for the given pathway were upregulated. After thresholding, 5/19 are upregulated.
 This is broadly consistent but the overall trend of upregulation appears to remain.
 
 
@@ -432,7 +432,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHEC
 #### Other LGGs
 
 
-Originally, 9/20 pathways were downregulated. After thresholding, 7/19 are downregulated.
+Originally, 9/20 comparisons for the given pathway were downregulated. After thresholding, 7/19 are downregulated.
 This is broadly consistent.
 
 ```{r}
@@ -442,7 +442,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHEC
 
 #### Pilocytic astrocytoma
 
-Originally, 10/20 pathways were downregulated. After thresholding, 9/19 are downregulated.
+Originally, 10/20 comparisons for the given pathway were downregulated. After thresholding, 9/19 are downregulated.
 This is broadly consistent.
 
 ```{r}
@@ -451,7 +451,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHEC
 
 #### Subependymal Giant Cell Astrocytoma
 
-Originally, 6/20 pathways were downregulated. After thresholding, 1/19 are downregulated.
+Originally, 6/20 comparisons for the given pathway were downregulated. After thresholding, 1/19 are downregulated.
 This is broadly consistent though with some loss of power.
 
 ```{r}
@@ -460,7 +460,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_G2M_CHEC
 
 #### Pleomorphic xanthoastrocytoma
 
-Originally, 7/20 pathways were downregulated. After thresholding, 3/19 are downregulated.
+Originally, 7/20 comparisons for the given pathway were downregulated. After thresholding, 3/19 are downregulated.
 This is broadly consistent.
 
 ```{r}
@@ -485,7 +485,7 @@ https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b
 
 #### Schwannomas
 
-Originally, 13/20 pathways were upregulated. After thresholding, 9/19 are upregulated.
+Originally, 13/20 comparisons for the given pathway were upregulated. After thresholding, 9/19 are upregulated.
 Results are broadly consistent.
 
 ```{r}
@@ -494,7 +494,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_INTERFER
 
 #### Neurofibromas
 
-Originally, 9/20 pathways were upregulated. After thresholding, 6/19 are upregulated.
+Originally, 9/20 comparisons for the given pathway were upregulated. After thresholding, 6/19 are upregulated.
 Results are broadly consistent.
 
 ```{r}
@@ -506,7 +506,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_INTERFER
 #### Schwannomas
 
 
-Originally, 10/20 pathways were upregulated. After thresholding, 7/19 are upregulated.
+Originally, 10/20 comparisons for the given pathway were upregulated. After thresholding, 7/19 are upregulated.
 Results are broadly consistent
 
 ```{r}
@@ -515,7 +515,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_IL6_JAK_
 
 #### Neurofibromas
 
-Originally, 8/20 pathways were upregulated. After thresholding, 7/19 are upregulated.
+Originally, 8/20 comparisons for the given pathway were upregulated. After thresholding, 7/19 are upregulated.
 Results are broadly consistent
 
 ```{r}
@@ -527,7 +527,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_IL6_JAK_
  
 #### Schwannomas
 
-Originally, 9/20 pathways were upregulated. After thresholding, 4/19 are upregulated.
+Originally, 9/20 comparisons for the given pathway were upregulated. After thresholding, 4/19 are upregulated.
 Results are broadly consistent but there is a bigger loss of power
 
 ```{r}
@@ -536,7 +536,7 @@ compare_original_threshold(tukey_original, tukey_thresholded, "HALLMARK_TNFA_SIG
 
 #### Neurofibromas
 
-Originally, 9/20 pathways were upregulated. After thresholding, 4/19 are upregulated.
+Originally, 9/20 comparisons for the given pathway were upregulated. After thresholding, 4/19 are upregulated.
 Results are broadly consistent but there is a bigger loss of power
 
 ```{r}
@@ -690,7 +690,7 @@ combine_tukey_comparisons(tukey_original, tukey_thresholded,
 ## Conclusions
 
 
-Previously-identified upregulated and downregulated pathways still generally follow the same trends for the relevant cancer groups, with some (not unexpected) power loss for some comparisons.
+Previously-identified comparisons showing upregulated vs downregulated pathways across cancer groups still generally follow the same trends for the relevant cancer groups, with some (not unexpected) power loss for some comparisons.
 On the whole, results remain as we have reported them in the manuscript.
 
 ## Session info
