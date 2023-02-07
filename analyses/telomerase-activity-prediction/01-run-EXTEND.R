@@ -8,7 +8,6 @@ suppressPackageStartupMessages({
   library(optparse)
 })
 stringsAsFactors=FALSE
-`%>%` <- dplyr::`%>%`
 
 
 ###################################################   Running Analysis on RSEM-FPKM data formats  #####################################################################
