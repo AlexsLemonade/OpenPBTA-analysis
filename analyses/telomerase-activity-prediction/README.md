@@ -16,6 +16,8 @@ Goals include:
 
 6. Generate plots for the analysis modules.
 
+7. Explore how certain results may be influenced if only tumors passing a given tumor purity threshold are considered.
+
 
 
 
