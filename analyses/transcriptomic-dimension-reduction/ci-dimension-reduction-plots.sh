@@ -29,8 +29,20 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   --output_directory results \
   --skip_tsne \
   --neighbors 2
+  
+# Run no mito
+NOMITO_TPM_FILE=../../scratch/transcriptomic-dimension-reduction/tpm-nomito-stranded.rds
+Rscript --vanilla scripts/prepare-tpm-for-umap.R
+Rscript --vanilla scripts/run-dimension-reduction.R \
+  --expression ${NOMITO_TPM_FILE} \
+  --metadata ../../data/pbta-histologies.tsv \
+  --remove_mito_genes \
+  --filename_lead tpm_stranded_nomito_log \
+  --output_directory results \
+  --neighbors 2 \
+  --skip_tsne
 
-# generate plot lists for both cases above
+# generate plot lists for both stranded RSEM and poly-A kallisto
 Rscript --vanilla scripts/get-plot-list.R  \
   --input_directory results \
   --filename_lead rsem_stranded \
