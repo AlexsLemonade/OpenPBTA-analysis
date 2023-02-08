@@ -1,4 +1,4 @@
-
+`%>%` <- dplyr::`%>%`
 
 
 #' Filter an expression data frame or matrix by median cancer group tumor purity

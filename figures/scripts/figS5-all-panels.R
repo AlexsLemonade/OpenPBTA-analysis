@@ -138,7 +138,7 @@ extend_fpkm_df <- stranded_expression %>%
                         "TERTp mutation present", 
                         "TERTp mutation not observed")
   )
-         
+
 # Calculate stats
 extend_fpkm_lm <- function(df) {
   lm(FPKM ~ NormEXTENDScores, data = df)
@@ -164,7 +164,7 @@ stats_annotation_df <- extend_fpkm_df %>%
                              round(r,3), 
                              "; P-value = ", 
                              format(p.value, digits=3)))
-         
+
 plot_extend_scatter <- function(plot_df, stats_df, gene_name, annotation_y) {
   plot_df %>%
     filter(gene == gene_name) %>%
