@@ -80,3 +80,5 @@ python3 ${analysis_dir}/06-evaluate-classifier.py \
   -c ${histology_file} \
   -o stranded_tumor-purity-threshold
 
+# Perform final assessment of results obtained from tumor purity thresholded tumor samples
+# Rscript -e "rmarkdown::render('${analysis_dir}/10-tp53-tumor-purity-threshold.Rmd')"
