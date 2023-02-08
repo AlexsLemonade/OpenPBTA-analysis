@@ -56,12 +56,24 @@ parser.add_option(
     dest="outputfile",
     help="output plots basename for TP53 and NF1 ROC curves",
 )
+parser.add_option(
+    "-t", "--apply_threshold",
+    dest = "apply_threshold",
+    action = "store_true",
+    help = "Flag indicating only to consider samples that pass a tumor purity threshold."
+)
 
 (options, args) = parser.parse_args()
 status_file = options.status_file
 scores_file = options.filename
 clinical = options.clinical
 outputfilename = options.outputfile
+
+# Set filename suffix for specifying output TSV filenames
+if options.apply_threshold is True:
+    filename_suffix = "_tumor-purity-threshold"
+else:
+    filename_suffix = ""
 
 
 np.random.seed(123)
@@ -130,8 +142,8 @@ def get_roc_plot(scores_df, gene, outputfilename, color):
     Arguments:
     df - the dataframe of scores
     gene - the name of the gene to input
-    outputfilename - the name of <filename>_ROC_plot.pdf 
-    
+    outputfilename - the name of <filename>_ROC_plot.pdf
+
     """
     lower_gene = gene.lower()
     scores_df = scores_df.rename(str.lower, axis="columns")
@@ -164,16 +176,16 @@ def get_roc_plot(scores_df, gene, outputfilename, color):
         .assign(gene=gene, shuffled=False, auroc=auroc_pbta)
     )
     # save the dataframe for plotting in R
-    roc_df.to_csv(os.path.join("results", outputfilename + "_" + gene + "_roc_threshold_results.tsv"), sep="\t", index=False)
-    
+    roc_df.to_csv(os.path.join("results", outputfilename + "_" + gene + "_roc_threshold_results" + filename_suffix + ".tsv"), sep="\t", index=False)
+
     # save shuffled data
     roc_shuff_df = (
         pd.DataFrame([fpr_shuff, tpr_shuff, thresh_shuff], index=["fpr", "tpr", "threshold"])
         .transpose()
         .assign(gene=gene, shuffled=True, auroc=auroc_shuff)
     )
-    
-    roc_shuff_df.to_csv(os.path.join("results", outputfilename + "_" + gene + "_roc_threshold_results_shuffled.tsv"), sep="\t", index=False)
+
+    roc_shuff_df.to_csv(os.path.join("results", outputfilename + "_" + gene + "_roc_threshold_results_shuffled" + filename_suffix + ".tsv"), sep="\t", index=False)
 
     plt.subplots(figsize=(5, 5))
     plt.axis("equal")

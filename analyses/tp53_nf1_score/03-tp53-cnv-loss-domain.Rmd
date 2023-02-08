@@ -7,6 +7,10 @@ params:
     label: "1/0 to run with base histology"
     value: 0
     input: integer
+  tumor_purity_threshold:
+    label: Indicates whether this notebook should consume/output tumor purity thresholded or non-thresholded results for stranded data specifically. 1 indicates thresholded, and 0 indicates regular.
+    value: 0
+    input: integer
 ---
 
 In this script we will find CNV losses that overlap with TP53 domains:
@@ -66,7 +70,16 @@ histologies_df <- clinical %>%
 # Classifier score 
 # 1) Read in scores from tp53-nf1-classifier for stranded
 
-score_stranded_df <- read_tsv(file.path(results_dir, "pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv")) %>%
+# Define a filename "suffix" that indicates tumor purity thresholded vs. regular files
+# specifically relevant for **stranded** data
+if (params$tumor_purity_threshold == 1) {
+  tumor_purity_suffix <- "_tumor-purity-threshold"
+} else {
+  tumor_purity_suffix <- ""
+}
+
+score_stranded_df <- read_tsv(file.path(results_dir, 
+                                        glue::glue("pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores{tumor_purity_suffix}.tsv"))) %>%
   dplyr::select(
     "tp53_score",
     "sample_id"
@@ -165,7 +178,8 @@ annotated_cn %>%
   # remove columns not required in output  
   dplyr::select(-tp53_score,-Kids_First_Biospecimen_ID) %>%
   unique() %>%
-  write_tsv( file.path(results_dir,"loss_overlap_domains_tp53.tsv"))
+  write_tsv( file.path(results_dir,
+                       glue::glue("loss_overlap_domains_tp53{tumor_purity_suffix}.tsv")))
 ```
 
 
