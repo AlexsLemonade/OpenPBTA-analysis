@@ -59,6 +59,10 @@ This notebook visualizes results from `quanTIseq` deconvolution and exports two 
 + `plots/PDL1_expressions_distributions.pdf` visualizes FPKM expression for the gene PDL1 across molecular subtypes of interest
 
 
+#### 03-quantiseq-at-threshold.Rmd
+
+This notebook performs exploratory analysis on `quanTIseq` results generated from stranded RNA libraries filtered to those that pass a tumor purity threshold.
+
 ### Running the analysis
 
 ```sh

@@ -1,0 +1,289 @@
+---
+title: "Assess quanTIseq results calculated with tumor purity thresholded data"
+author: "SJ Spielman for CCDL"
+date: "2023"
+output: 
+  html_notebook:
+  toc: TRUE
+toc_float: TRUE
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+theme_set(ggpubr::theme_pubr()) 
+set.seed(2023)
+```
+
+
+This notebook was written as part of manuscript revisions.
+Here, we explore how `quanTIseq`-related results might change if only tumors at a certain level of known tumor purity (`tumor_fraction` metadata variable) are considered.
+Only stranded RNA data is considered here, as in the manuscript.
+
+The associated issue for this exploration is here: https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1628
+
+
+
+## Set directories and files
+
+```{r}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+palette_file <- file.path(root_dir, "figures", "palettes", "broad_histology_cancer_group_palette.tsv")
+metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+quantiseq_file <- file.path("results", "quantiseq_deconv-output-thresholded.rds")
+```
+
+
+Read in and prep data:
+
+```{r}
+quantiseq_raw_df <- read_rds(quantiseq_file)
+metadata_df <- read_tsv(metadata_file, guess_max = 10000)
+palette_df <- read_tsv(palette_file)
+
+# These are the groups we highlight in the manuscript
+cancer_groups_of_interest <- c("Pilocytic astrocytoma", 
+                               "Diffuse midline glioma",
+                               "Craniopharyngioma", 
+                               "Ganglioglioma",
+                               "Ependymoma", 
+                               "Medulloblastoma",
+                               "Schwannoma",
+                               "Neurofibroma Plexiform",
+                               "Other embryonal tumor",
+                               "Atypical Teratoid Rhabdoid Tumor",
+                               "Meningioma",
+                               "Dysembryoplastic neuroepithelial tumor")
+
+# Combine with cancer group and palette info
+quantiseq_df <- quantiseq_raw_df %>%
+  select(-library, -method) %>%
+  rename(Kids_First_Biospecimen_ID = sample) %>%
+  inner_join(
+    select(
+      metadata_df, 
+      cancer_group, 
+      Kids_First_Biospecimen_ID
+    )
+  ) %>%
+  inner_join(
+    select(
+      palette_df, 
+      cancer_group,
+      cancer_group_display, 
+      cancer_group_hex
+    )
+  ) %>%
+  select(-cancer_group) %>%
+  # Filter to relevant rows as in MS figure
+  filter(cell_type != "uncharacterized cell") %>%
+  filter(cancer_group_display %in% cancer_groups_of_interest)
+```
+
+## Re-generate plots
+
+Here we will re-make the two `quanTIseq` plots:
+
+- First the immune fractions across cancer groups for each cell type
+- Second the CD8/CD4 ratio for molecular subtypes of interest.
+Note that there are _far fewer subtypes_ that get plotted here due to the threshold filtering!
+
+For reference, we also include the _original_ (without thresholding) plots below each. 
+
+### Immune fractions across cancer groups
+
+
+```{r, fig.width = 16, fig.height = 4}
+# plot by cancer group groups of interest, where cancer groups are ordered 
+#  in the same order as the original plot for ease of comparison
+
+cancer_group_order <- c("Pilocytic astrocytoma", 
+                        "Medulloblastoma",
+                        "Ependymoma",
+                        "Diffuse midline glioma",
+                        "Ganglioglioma",
+                        "Craniopharyngioma",
+                        "Other embryonal tumor",
+                        "Atypical Teratoid Rhabdoid Tumor",
+                        "Meningioma",
+                        "Dysembryoplastic neuroepithelial tumor",
+                        "Neurofibroma Plexiform",
+                        "Schwannoma"
+                        )
+
+quantiseq_df %>%
+  # order the `cancer_group_display` variable by the vector above
+  mutate(cancer_group_display = fct_relevel(cancer_group_display, cancer_group_order)) %>%
+  # and into the plot
+  ggplot() + 
+  aes(x = cell_type, 
+      y = score, 
+      color = cancer_group_hex) + 
+  geom_jitter(width = 0.15, size = 1, alpha = 0.7) + 
+  geom_boxplot(outlier.size = 0, 
+               size = 0.2,
+               color = "black", 
+               alpha = 0,
+               # remove whiskers
+               coef = 0) +
+  facet_wrap(~cancer_group_display, nrow = 2, scales = "free_y") +
+  scale_color_identity() + 
+  labs(
+    x = "Immune cell", 
+    y = "Estimated fraction in sample"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+    strip.text = element_text(size = 8)
+  )
+```
+
+#### Original plot (without thresholding)
+
+The relevant plot is **Panel C**.
+
+![](https://raw.githubusercontent.com/AlexsLemonade/OpenPBTA-analysis/586d878b25c80495a2541292c2d9b289167f6ec9/figures/pngs/figure5.png)
+
+
+
+### CD8/CD4 ratios
+
+
+```{r}
+# Find molecular subtypes, and their order, to include in this panel
+broad_histology_order <- c("Tumor of sellar region", "Ependymal tumor", "Embryonal tumor", "High-grade glioma")
+
+subtype_order <- palette_df %>%
+  inner_join(
+    select(metadata_df, 
+           broad_histology, 
+           molecular_subtype)
+  ) %>%
+  select(broad_histology_display, molecular_subtype) %>%
+  # keep only relevant histologies
+  filter(broad_histology_display %in% broad_histology_order) %>%
+  # remove NA and unclassified subtypes
+  filter(!is.na(molecular_subtype),
+         !str_detect(molecular_subtype, "To be classified")) %>%
+  # Keep only combinations with N>=3
+  count(broad_histology_display, molecular_subtype) %>% 
+  filter(n >= 3) %>%
+  # Factor/arrange broad_histology_display to obtain the final molecular_subtype order
+  mutate(broad_histology_display = fct_relevel(broad_histology_display, broad_histology_order)) %>%
+  arrange(broad_histology_display) %>%
+  pull(molecular_subtype)
+
+
+# Calculate cd8+/cd4+ ratio for all subtypes, join with subtype/histology, and set up factors
+ratio_df <- quantiseq_df %>%
+  spread(cell_type, score) %>% 
+  mutate(cd8_cd4_ratio = `T cell CD8+` / `T cell CD4+ (non-regulatory)`)  %>%
+  select(Kids_First_Biospecimen_ID, cd8_cd4_ratio) %>%
+  # Keep only the known ratios
+  filter(!(is.infinite(cd8_cd4_ratio)), 
+         !(is.nan(cd8_cd4_ratio))) %>%
+  # Join with subtypes
+   inner_join(
+    select(metadata_df, 
+           Kids_First_Biospecimen_ID, 
+           broad_histology, 
+           molecular_subtype)
+  ) %>%
+  # Filter to subtype_order set up for Figure S6E
+  filter(molecular_subtype %in% subtype_order)
+```
+
+```{r}
+# Plot
+ggplot(ratio_df) + 
+  aes(x = molecular_subtype,
+      y = cd8_cd4_ratio) +
+  # remove outliers
+  geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.5) + 
+  geom_jitter(width = 0.1, size = 2, alpha = 0.6) +
+  labs(x = "Molecular subtype of tumor sample",
+       y = "Ratio of CD8+/CD4+ T cell fractions") +
+  theme(axis.text.x = element_text(hjust = 1, 
+                                   angle = 30,
+                                   size = 6))
+
+```
+
+
+
+#### Original plot (without thresholding)
+The relevant plot is **Panel F**
+
+![](https://raw.githubusercontent.com/AlexsLemonade/OpenPBTA-analysis/586d878b25c80495a2541292c2d9b289167f6ec9/figures/pngs/figureS6.png)
+
+## Assess plots
+
+Now, we will re-assess specific results we report in the manuscript. 
+Specifically, these are the parts of the manuscript sentences below that reference either Figure 5C or Figure S6F.
+
+### Result 1
+
+https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L277-L278
+
+
+> Schwannomas and neurofibromas, which have a documented inflammatory immune microenvironment of T and B lymphocytes as well as tumor-associated macrophages (TAMs), are driven by upregulation of cytokines such as IFN$\gamma$, IL-1, and IL-6, and TNF$\alpha$ [@doi:10.1093/noajnl/vdaa023].
+> Indeed, we observed significant upregulation of these cytokines in GSVA hallmark pathways (Bonferroni-corrected p < 0.05) (**Figure {@fig:Fig5}B**) and found immune cell types dominated by monocytes in these tumors (**Figure {@fig:Fig5}C**).
+
+
+The first plot above recapitulates the result that monocytes are dominant in schwannomas and neurofibromas.
+The thresholded results are consistent.
+
+
+### Result 2
+
+https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L282
+
+> Although CD8+ T-cell infiltration across all cancer groups was quite low (**Figure {@fig:Fig5}C**), we observed some signal in specific cancer molecular subtypes (Groups 3 and 4 medulloblastoma) as well as outlier tumors (BRAF-driven LGG, BRAF-driven and wildtype ganglioglioma, and CNS embryonal NOS; **Figure {@fig:S6}E**)
+
+
+
+
+The first plot shows that CD8+ T-cell infiltration across all cancer groups remains quite low.
+The second plot shows the MB 3/4 signal, but there are no longer any outliers.
+The thresholded results are consistent, and differences may be explained by sample size/power.
+
+
+### Result 3
+
+https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L283
+
+> Surprisingly, the classically immunologically-cold HGG and DMG tumors [@doi:10.1186/s40478-018-0553-x; @doi:10.1093/brain/awab155] contained higher overall fractions of immune cells, where monocytes, dendritic cells, and NK cells were the most prevalent (**Figure {@fig:Fig5}C**).
+
+
+The first plot shows that for DMG, overall fractions fall in ranges that are consistent with other cancer groups, so "higher overall fractions" are no longer the case. 
+This difference may be a consequence of reduced sample size overall for this re-analysis.
+DMGs are dominated by monocytes, dendritic cells, and NK cells, which is consistent with previous results.
+
+However, as we did not actually plot other HGG groups here, we may wish to revise this statement to focus more on the panels that are actually in the plot more generally.
+
+
+
+### Result 4
+
+
+https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L292
+
+> While adamantinomatous craniopharyngiomas and Group 3 and Group 4 medulloblastomas had the highest CD8+ to CD4+ T cell ratios (**Figure {@fig:S6}F**), very few tumors had ratios greater than 1, highlighting an urgent need to identify novel therapeutics for these immunologically-cold pediatric brain tumors with poor prognosis.
+
+
+As noted, the second plot itself has fewer subtypes, which is expected with a filtered dataset.
+Of note, the `CRANIO, ADAM` molecular subtype is no longer present.
+We again see that MB groups 3 and 4 have higher values with other molecular subtypes around 0, which is consistent with the original results.
+
+
+
+## Conclusions
+
+Overall, `quanTIseq` results are broadly consistent after thresholding.
+
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
