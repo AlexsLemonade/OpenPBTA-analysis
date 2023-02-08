@@ -9,11 +9,15 @@
 #
 # Usage: bash run-gsea.sh
 #
-# Takes one environment variable, `OPENPBTA_TESTING`, which is 1 for running
-# samples in CI for testing, 0 for running the full dataset (Default)
+# Takes two environment variables, `OPENPBTA_TESTING` and `OPENPBTA_BASE_SUBTYPING`.
 #
-# Takes one environment variable, `BASE_SUBTYPING`, if value is 1 then
-# only runs modules required for subtyping if value is 0 runs all modules (Default)
+# For `OPENPBTA_TESTING`:
+#  If value is 1, the module is run with CI data
+#  If value is 0, the module is run with the full OpenPBTA cohort (Default)
+#
+# For `OPENPBTA_BASE_SUBTYPING`:
+#  If value is 1, only scripts required for subtyping are run
+#  If value is 0, the full module is run (Default)
 #########################################################################
 
 
