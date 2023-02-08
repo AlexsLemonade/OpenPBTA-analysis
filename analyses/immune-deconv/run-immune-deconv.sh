@@ -23,7 +23,6 @@ mkdir -p plots
 # Shared input files
 POLYA='../../data/pbta-gene-expression-rsem-fpkm-collapsed.polya.rds'
 STRANDED='../../data/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds'
-CLIN='../../data/pbta-histologies.tsv'
 
 # In CI we'll run an abbreviated version of the figures script due to insufficient testing data
 # needed for making some of the plots
@@ -43,6 +42,13 @@ Rscript --vanilla 01-immune-deconv.R \
 --method 'quantiseq' \
 --outputfile 'results/quantiseq_deconv-output.rds' 
 
+# generate deconvolution output for stranded datasets with a tumor purity filter using quanTIseq
+Rscript --vanilla 01-immune-deconv.R \
+--strandedexprs $STRANDED \
+--method 'quantiseq' \
+--outputfile 'results/quantiseq_deconv-output-thresholded.rds' \
+--apply_tumor_purity_threshold
+
 
 echo "Deconvolution finished."
 
@@ -50,3 +56,5 @@ echo "Deconvolution finished."
 # Perform visualization
 Rscript -e "rmarkdown::render('02-visualize_quantiseq.Rmd', clean = TRUE, params = list(is_ci = ${ABBREVIATED_IMMUNE}))"
 
+# Assess at threshold
+Rscript -e "rmarkdown::render('03-quantiseq-at-threshold.Rmd', clean = TRUE)"
