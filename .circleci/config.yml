@@ -129,7 +129,7 @@ jobs:
 
       - run:
           name: TP53 NF1 classifier run, with tumor purity thresholding
-          command: ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier-tumor-purity-threshold.sh"
+          command: ./scripts/run_in_ci.sh bash "analyses/tp53_nf1_score/run_classifier-tumor_purity_threshold.sh"
 
 # This is deprecated
 #      - run:
