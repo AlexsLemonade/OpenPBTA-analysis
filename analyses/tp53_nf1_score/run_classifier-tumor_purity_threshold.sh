@@ -4,11 +4,11 @@
 
 # This script runs the relevant aspects of the classifier pipeline (see [`run_classifier.sh`](./run_classifier.sh)) on tumors which have passed the tumor purity threshold
 # Note that certain notebooks/scripts from the module are not run here since they are not strictly for this re-analysis:
-# - 02-qc-rna_expression_score.Rmd 
+# - 02-qc-rna_expression_score.Rmd
 # - 07-plot-roc.R
 # - 08-compare-molecularsubtypes-tp53scores.R
 # - 09-compare-histologies.R
-# The scripts/notebooks we do run here all are needed as they produce outputs to be consumed by the additional notebook, `10-tp53-tumor-purity-threshold.Rmd`, 
+# The scripts/notebooks we do run here all are needed as they produce outputs to be consumed by the additional notebook, `10-tp53-tumor-purity-threshold.Rmd`,
 #  which performs certain manuscript-level assessments on the thresholded analysis (including ROC).
 # Note further that this script should be run _after_ subtyping, not during. PolyA-specific scripts do not need to be run here.
 
@@ -48,7 +48,7 @@ if [ ! -f  ${analysis_dir}/results/TP53_NF1_snv_alteration.tsv ]; then
     | awk '$3 ~ /CDS/' \
     | convert2bed --do-not-sort --input=gtf - \
     > $cds_file
-  
+
   # Prep the SNV consensus data for evaluation downstream
   Rscript --vanilla ${analysis_dir}/00-tp53-nf1-alterations.R \
     --snvConsensus ${snvconsensus_file} \
