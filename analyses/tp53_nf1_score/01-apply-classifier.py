@@ -77,6 +77,7 @@ name = re.sub("\.rds$", "", name)
 
 exprs_rds = readRDS(inputfile)
 exprs_df = pandas2ri.ri2py(exprs_rds)
+exprs_df.index = rownamesRDS(exprs_rds)
 
 # If tumor purity thresholding is turned on, we will need:
 #  - A filename indicator to differentiate result files
@@ -91,15 +92,17 @@ if options.apply_threshold is True:
 
     # Extract the ids to keep
     keep_ids = list(id_df["Kids_First_Biospecimen_ID"])
-    
+
+    # For CI, we'll need to subset this to intersection
+    colnames = list(exprs_df.columns)
+    keep_ids = list(set(colnames).intersection(keep_ids))
+
     # Filter the `exprs_df` to those ids
     exprs_df = exprs_df[keep_ids]
 
 else:
     filename_suffix = ""
 
-# Define this after any potential filtering above to ensure correct indices
-exprs_df.index = rownamesRDS(exprs_rds)
 
 # transpose
 exprs_df = exprs_df.transpose()
