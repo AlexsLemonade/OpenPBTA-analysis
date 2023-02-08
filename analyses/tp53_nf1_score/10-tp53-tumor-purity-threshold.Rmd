@@ -1,0 +1,181 @@
+---
+title: "Assessing TP53 results at tumor purity threshold"
+author: "SJ Spielman for CCDL"
+date: 2023
+output: html_notebook
+---
+
+This notebook was written as part of manuscript revisions.
+Here, we explore how TP53-related results might change if only tumors at a certain level of known tumor purity (`tumor_fraction` metadata variable) are considered.
+Only stranded RNA data is considered here, as in the manuscript.
+
+The associated issue for this exploration is here: https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1624
+
+## Files and directories
+
+```{r}
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git")) 
+analysis_dir <- file.path(root_dir, "analyses", "tp53_nf1_score")
+
+# source function to plot ROC curve
+source(file.path(analysis_dir, "util", "plot_roc.R"))
+
+# output directories
+plots_dir <- file.path(analysis_dir, "plots")
+results_dir <- file.path(analysis_dir, "results")
+
+# metadata file
+metadata <- readr::read_tsv(file.path(root_dir, 
+                                      "data", 
+                                      "pbta-histologies.tsv"), 
+                            guess_max = 10000)
+
+# ROC score files -----
+# original files:
+roc_file_stranded_original <- readr::read_tsv(file.path(results_dir, "stranded_TP53_roc_threshold_results.tsv"))
+roc_file_stranded_shuff_original <- readr::read_tsv(file.path(results_dir, "stranded_TP53_roc_threshold_results_shuffled.tsv"))
+
+# tumor purity thresholded files:
+roc_file_stranded_thresholded <- readr::read_tsv(file.path(results_dir, "stranded_tumor-purity-threshold_TP53_roc_threshold_results.tsv"))
+roc_file_stranded_shuff_thresholded <- readr::read_tsv(file.path(results_dir, "stranded_tumor-purity-threshold_TP53_roc_threshold_results_shuffled.tsv"))
+
+## Status files -----
+
+status_original <- readr::read_tsv(file.path(results_dir, "tp53_altered_status.tsv")) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA) %>%
+  # Filter down to stranded only
+  dplyr::inner_join(
+    dplyr::select(metadata, 
+                  Kids_First_Biospecimen_ID, 
+                  RNA_library)
+  ) %>%
+  dplyr::filter(RNA_library=="stranded") %>%
+  # remove "other" grouping
+  dplyr::filter(tp53_altered != "other")
+
+# this is already only stranded
+status_thresholded <- readr::read_tsv(file.path(results_dir, "tp53_altered_status_tumor-purity-threshold.tsv")) %>%
+  # remove "other" grouping
+  dplyr::filter(tp53_altered != "other")
+
+## Expression data ------
+stranded_expression <- read_rds(file.path(data_dir,"pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
+
+# Filter to TP53 expression only
+stranded_expression <- t(stranded_expression)[,"TP53"]
+
+# Create a second version of this with only tumor-purity passing samples
+# Define path to tumor purity module
+tumor_purity_dir <- file.path(
+  analysis_dir,
+  "tumor-purity-exploration"
+)
+
+# Define path to metadata file which has been filtered to only biospecimens that
+#  survive the cancer-group-level threshold
+tumor_purity_file <- file.path(
+  tumor_purity_dir,
+  "results",
+  "thresholded_rna_stranded_same-extraction.tsv"
+)
+
+# Load the function to filter IDs
+source(
+  file.path(tumor_purity_dir, "util", "function_filter-by-threshold.R")
+)
+
+# Filter the expression data
+stranded_expression_thresholded <- filter_expression_by_tumor_purity(stranded_expression,
+                                                                     tumor_purity_file)
+```
+
+
+## Re-analysis: ROC curves
+
+In the manuscript, we found:
+https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L194
+> The classifier achieved a high accuracy (AUROC = 0.85) for rRNA-depleted, stranded samples compared to randomly shuffled _TP53_ scores (**Figure {@fig:Fig4}A**).
+
+First, here's the original ROC presented in the manuscript
+```{r}
+plot_roc(roc_df = dplyr::bind_rows(roc_file_stranded_original, roc_file_stranded_shuff_original), 
+         # the next 2 path args don't matter since export is FALSE
+         plots_dir, 
+         fname = "", 
+         export = FALSE)
+```
+
+
+Now, here is the new ROC generated from thresholded data:
+```{r}
+plot_roc(roc_df = dplyr::bind_rows(roc_file_stranded_thresholded, roc_file_stranded_shuff_thresholded), 
+         # the next 2 path args don't matter since export is FALSE
+         plots_dir, 
+         fname = "", 
+         export = FALSE)
+```
+
+The classifier performance follows a similar trend to previous results. 
+Shuffled (randomized) data for both versions of the data produced an AUC around 0.5 (0.57 and 0.52), indicating performance is no different from a random classifier as expected.
+Thresholded data produced an AUC=0.94 which is very high, as is the original analysis which produced AUC=0.86.
+
+
+## Re-analysis: TP53 scores between "activated" and "lost" tumors.
+
+https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L197
+
+> While we expected that samples annotated as "lost" would have higher _TP53_ scores than would samples annotated as "other," we observed that samples annotated as "activated" had similar _TP53_ scores to those annotated as "lost" (**Figure {@fig:Fig4}B**, Wilcoxon p = 0.23).
+
+
+Previously, we observed the following:
+```{r}
+# Wilcoxon:
+wilcox.test(
+ status_original$tp53_score[status_original$tp53_altered == "loss"], 
+ status_original$tp53_score[status_original$tp53_altered == "activated"] 
+)
+
+# boxplot:
+ggplot2::ggplot(status_original) + 
+  ggplot2::aes(x = tp53_altered, 
+      y = tp53_score) + 
+  ggplot2::geom_boxplot() +
+  ggplot2::geom_jitter()
+
+```
+Notably, something is up with this P-value - we reported 0.23 in the text, but it seems that was based on an outdated figure
+- Here is the figure we submitted https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/33c98980d39dfc8b6c63691c819f8140f349c149/content/images/main/Figure4.png (April 2022)
+- Here is the figure panel PDF and compiled PNG versions in the analysis repo:
+  - Panel: https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/e4244a104183e5223bc5297df938f8b5e6c7ef22/figures/pdfs/fig4/panels/tp53_scores_by_altered_panel.pdf (July 2022)
+  - PNG: https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/e4244a104183e5223bc5297df938f8b5e6c7ef22/figures/pngs/figure4.png (July 2022)
+Therefore, the result shown above is _correctly what we observed_, and we'll need to update the corresponding MS text.
+
+
+Now, we observe:
+
+```{r}
+# Wilcoxon:
+wilcox.test(
+ status_thresholded$tp53_score[status_thresholded$tp53_altered == "loss"], 
+ status_thresholded$tp53_score[status_thresholded$tp53_altered == "activated"] 
+)
+
+# boxplot:
+ggplot2::ggplot(status_thresholded) + 
+  ggplot2::aes(x = tp53_altered, 
+      y = tp53_score) + 
+  ggplot2::geom_boxplot() +
+  ggplot2::geom_jitter()
+
+```
+
+Here, the P-value is 0.39 which is still not significant. 
+
+
+## Re-analysis: TP53 expression between "activated" and "lost" tumors.
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
