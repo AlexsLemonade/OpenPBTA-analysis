@@ -3,15 +3,21 @@
 #
 # Run the GSEA pipeline:
 ## 1. `01-conduct-gsea-analysis.R` to calculate scores
-## 2. `02-exploratory-gsea.Rmd` to explore the scores, lightly for now
+## 2. `02-model-gsea.Rmd` to model the scores
+## 3. `03-assess-gsea-at-threshold.Rmd` to explore how results might be
+#      affected by a tumor purity threshold on samples
 #
 # Usage: bash run-gsea.sh
 #
-# Takes one environment variable, `OPENPBTA_TESTING`, which is 1 for running
-# samples in CI for testing, 0 for running the full dataset (Default)
+# Takes two environment variables, `OPENPBTA_TESTING` and `OPENPBTA_BASE_SUBTYPING`.
 #
-# Takes one environment variable, `BASE_SUBTYPING`, if value is 1 then
-# only runs modules required for subtyping if value is 0 runs all modules (Default)
+# For `OPENPBTA_TESTING`:
+#  If value is 1, the module is run with CI data
+#  If value is 0, the module is run with the full OpenPBTA cohort (Default)
+#
+# For `OPENPBTA_BASE_SUBTYPING`:
+#  If value is 1, only scripts required for subtyping are run
+#  If value is 0, the full module is run (Default)
 #########################################################################
 
 
@@ -41,8 +47,28 @@ INPUT_FILE="${DATA_DIR}/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
 OUTPUT_FILE="${RESULTS_DIR}/gsva_scores_stranded.tsv"
 Rscript --vanilla 01-conduct-gsea-analysis.R --input ${INPUT_FILE} --output ${OUTPUT_FILE}
 
+
+# Only run the following if we are _not_ subtyping:
 if [[ "$RUN_FOR_SUBTYPING" -lt "1" ]]; then
   ######## Model GSVA scores ############
   # Only run when pbta-histologies.tsv is generated which has harmonized_diagnosis
   Rscript -e "rmarkdown::render('02-model-gsea.Rmd', clean = TRUE, params=list(is_ci = ${IS_CI}))"
+
+  ######## Calculate scores from stranded expression data for threshold-passing tumors only #######
+  INPUT_FILE="${DATA_DIR}/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
+  OUTPUT_FILE="${RESULTS_DIR}/gsva_scores_stranded_thresholded.tsv"
+  Rscript --vanilla 01-conduct-gsea-analysis.R --input ${INPUT_FILE} --output ${OUTPUT_FILE} --apply_tumor_purity_threshold
+
+  # Assess results generated for threshold-passing tumors
+  Rscript -e "rmarkdown::render('03-assess-gsea-at-threshold.Rmd', clean = TRUE)"
 fi
+
+
+
+
+
+
+
+
+
+
