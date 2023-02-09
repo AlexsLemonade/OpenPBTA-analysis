@@ -102,7 +102,6 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
 Rscript --vanilla scripts/run-dimension-reduction.R \
   --expression ${NOMITO_TPM_FILE} \
   --metadata ${METADATA} \
-  --remove_mito_genes \
   --filename_lead tpm_stranded_nomito_log \
   --output_directory ${OUTPUT} \
   --seed ${SEED} \

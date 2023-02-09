@@ -106,12 +106,6 @@ option_list <- list(
     action = "store_true",
     default = FALSE,
     help = "If used, log2(x + 1) transformation will be performed prior to dimension reduction"
-  ),
-  optparse::make_option(
-    "--remove_mito_genes",
-    action = "store_true",
-    default = FALSE,
-    help = "If used, mitochondrial genes will not be included in the dimension reduction."
   )
 )
 
@@ -171,29 +165,6 @@ expression_data <- expression_data[genes_to_keep, ]
 
 if (opt$log2_transform) {
   expression_data <- log2(expression_data + 1)
-}
-
-# Filter out mitochondrial genes, if specified
-if (opt$remove_mito_genes) {
-  
-  expression_data_tibble <- expression_data %>%
-    # get gene_symbol information into its own column
-    tibble::as_tibble(rownames = "ensembl_gene") %>%
-    tidyr::separate(ensembl_gene, 
-                    into = c("ensembl_id", "gene_symbol"), 
-                    sep = "_", 
-                    # if multiple seps, keep them together (eg if `_` in gene)
-                    extra = "merge",
-                    # we will want to keep this column for row.names later
-                    remove = FALSE) %>% 
-    # remove MT genes by keeping only genes that do NOT start with `MT-`
-    dplyr::filter(!(stringr::str_starts(gene_symbol, "MT-"))) %>%
-    # remove wrangle columns
-    dplyr::select(-ensembl_id, -gene_symbol)
-  
-  # Convert back to data frame
-  expression_data <- expression_data_tibble %>%
-    tibble::column_to_rownames("ensembl_gene")
 }
 
 # Transpose the data
