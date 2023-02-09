@@ -55,11 +55,8 @@ tpm_df <- readr::read_rds(tpm_file) %>%
 tpm_df <- tpm_df %>%
   # calculate sample-level sum
   dplyr::group_by(bs_ids) %>%
-  dplyr::mutate(total_tpm = (sum(tpm))/1e6) %>%
-  # divde back out for new tpm
-  dplyr::mutate(tpm = tpm/(total_tpm)) %>%
-  # remove total
-  dplyr::select(-total_tpm) %>%
+  # renormalize tpm
+  dplyr::mutate(tpm = 1e6 * tpm/sum(tpm)) %>%
   # back to wide, as expected by the `transcriptomic-dimension-reduction` module
   tidyr::spread(
     "bs_ids", "tpm"
