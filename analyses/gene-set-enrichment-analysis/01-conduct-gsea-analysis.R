@@ -25,7 +25,7 @@
 
 #### Set Up Libraries --------------------------------------------------------------------
 
-## Load and/or install libraries ##
+## Load libraries ##
 library(tidyr)
 library(readr)
 library(tibble)
@@ -53,13 +53,17 @@ option_list <- list(
     type = "character",
     default = NA,
     help = "The output file for writing GSVA scores in TSV format."
-  )
+  ), 
+  make_option("--apply_tumor_purity_threshold",
+              action = "store_true",
+              default = FALSE,
+              help = "This flag turns on filtering by tumor purity.")
+  
 )
 
 ## Read in arguments
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
-
 
 if (is.na(opt$input_file)) stop("\n\nERROR: You must provide an input file with expression data with the flag --input, assumed to be in the `data/` directory of the OpenPBTA repository..")
 if (is.na(opt$output_file)) stop("\n\nERROR: You must provide an output file for saving GSVA scores with the flag --output, assumed to be placed in the `results/` directory of this analysis.")
@@ -82,6 +86,36 @@ scores_output_file <- file.path(output_dir, basename(opt$output_file))
 expression_data <- as.data.frame( readr::read_rds(expression_data_file) )
 human_hallmark  <- msigdbr::msigdbr(species = "Homo sapiens", category = "H") ## human hallmark genes from `migsdbr` package. The loaded data is a tibble.
 
+
+#### Filter expression_data based on threshold if specified ------------------------
+
+# Filter data if tumor purity threshold is turned on
+if (opt$apply_tumor_purity_threshold) {
+  
+  # Define path to tumor purity module
+  tumor_purity_dir <- file.path(
+    rprojroot::find_root(rprojroot::has_dir(".git")),
+    "analyses",
+    "tumor-purity-exploration"
+  )
+  
+  # Define path to metadata file which has been filtered to only biospecimens that
+  #  survive the cancer-group-level threshold
+  tumor_purity_file <- file.path(
+    tumor_purity_dir,
+    "results",
+    "thresholded_rna_stranded_same-extraction.tsv"
+  )
+  
+  # Load the function to filter IDs
+  source(
+    file.path(tumor_purity_dir, "util", "function_filter-by-threshold.R")
+  )
+  
+  # Filter the expression data
+  expression_data <- filter_expression_by_tumor_purity(expression_data,
+                                                       tumor_purity_file)
+}
 
 
 #### Perform gene set enrichment analysis --------------------------------------------------------------------

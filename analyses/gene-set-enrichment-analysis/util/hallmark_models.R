@@ -56,7 +56,6 @@ gsva_anova_tukey <- function(df, predictor_variable, library_type, significance_
     filter(data_type == library_type) %>%
     pull(n) -> number_of_tests
 
-  print(number_of_tests)
   ############### Perform modeling, including ANOVAs and Tukey across hallmarks
   df %>%
     filter(data_type == library_type) %>%
