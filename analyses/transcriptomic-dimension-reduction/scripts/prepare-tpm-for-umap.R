@@ -3,10 +3,8 @@
 #
 # This script collapses and prepares TPM data for UMAPs, where we run UMAP on two versions of the data:
 # - One with all genes 
-# - One without any of the mitochondrial genes. We do a quick re-scaling of TPM values after filtering out mito genes (`TPM = TPM/(upated TPM sum/1e6)`).
-# To collapse genes, we read in the table exported by the `collapse-rnaseq` module (script linked below):
-#    https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/059047a19025f4afd9143fceff174e6da3392747/analyses/collapse-rnaseq/01-summarize_matrices.R
-# This table indicates which ensembl IDs were kept, so we'll filter to those. 
+# - One without any of the mitochondrial genes. We do a quick re-scaling of TPM values after filtering out 
+#     mito genes (`TPM = TPM/(upated TPM sum/1e6)`).
 ###############################################################################################################
 
 
