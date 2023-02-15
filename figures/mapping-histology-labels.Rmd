@@ -6,7 +6,7 @@ output:
     toc_float: true
 author: Candace Savonen, Krutika Gaonkar, Jaclyn Taroni, and Stephanie Spielman
 params:
-  release: "release-v22-20220505"
+  release: "release-v23-20230115"
 date: 2022
 ---
 
@@ -30,8 +30,6 @@ The purpose of this notebook is to create color palettes for the following:
 * `broad_histology` values, where a `broad_histology` contains at least one `cancer_group` with n >= 10
 * `cancer_group` values with n >= 10
 
-**Note: This notebook was originally written with `release-v21-20210820`. Future releases may necessitate revisiting some of this code.**
-
 ### Background
 
 You may find [#1174](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1174) to be helpful context.
@@ -53,12 +51,12 @@ library(RColorBrewer)
 ```
 
 
-We should perform some minimal checking to make sure the provided release is _at least_ at version 22.
+We should perform some minimal checking to make sure the provided release is _at least_ at version 23.
 ```{r}
-minimum_allowed_release <- 22
+minimum_allowed_release <- 23
 release_version <- as.numeric(stringr::str_match(params$release, "-v(\\d+)-")[[2]])
 if (release_version < minimum_allowed_release) {
-  stop("This notebook should only be used with data release version 22 or above.")
+  stop("This notebook should only be used with data release version 23 or above.")
 }
 ```
 
@@ -178,7 +176,9 @@ broad_histology_df <- data.frame(
   broad_histology_display = c("Benign tumor",
                               "High-grade glioma",
                               "Embryonal tumor",
-                              "Ependymal tumor",
+                              # Replace instances of "Ependymal tumor" per reviewer comment
+                              # See: https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1652
+                              "Ependymoma",  
                               "Germ cell tumor",
                               "Low-grade glioma",
                               "Meningioma",
@@ -328,11 +328,12 @@ palette_df <- histologies_df %>%
   select(broad_histology, 
          cancer_group) %>% 
   distinct() %>%
-  # For display specifically, recode broad histology label for LGG and HGG
+  # For display specifically, recode broad histology label for LGG, HGG, and EPN
   mutate(broad_histology_display = case_when(
       broad_histology == "Low-grade astrocytic tumor" ~ "Low-grade glioma",
       broad_histology == "Diffuse astrocytic and oligodendroglial tumor" ~ "High-grade glioma", 
       broad_histology == "Tumors of sellar region" ~ "Tumor of sellar region",
+      broad_histology == "Ependymal tumor" ~ "Ependymoma",  # https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1652
       TRUE ~ broad_histology
     ),
   # For display, group some cancer groups together into a specific "Other"
