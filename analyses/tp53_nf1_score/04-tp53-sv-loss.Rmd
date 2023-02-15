@@ -8,7 +8,7 @@ params:
     value: 0
     input: integer
   tumor_purity_threshold:
-    label: Indicates whether this notebook should consume/output tumor purity thresholded or non-thresholded results for stranded data specifically. 1 indicates thresholded, and 0 indicates regular.
+    label: Indicates whether this notebook should consume/output tumor purity thresholded or full (non-thresholded) results for stranded data specifically. 1 indicates thresholded, and 0 indicates full results.
     value: 0
     input: integer
 ---
@@ -91,7 +91,7 @@ if (params$tumor_purity_threshold == 1) {
   # Filter the expression data
   stranded_expr <- filter_expression_by_tumor_purity(stranded_expr,
                                                      tumor_purity_file)
-}else {
+} else {
   tumor_purity_suffix <- ""
 }
 
