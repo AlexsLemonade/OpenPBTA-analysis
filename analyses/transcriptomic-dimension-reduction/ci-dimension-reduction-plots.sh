@@ -30,7 +30,18 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   --skip_tsne \
   --neighbors 2
 
-# generate plot lists for both cases above
+# Run no mito
+NOMITO_TPM_FILE=../../scratch/transcriptomic-dimension-reduction/tpm-nomito-stranded.rds
+Rscript --vanilla scripts/prepare-tpm-for-umap.R
+Rscript --vanilla scripts/run-dimension-reduction.R \
+  --expression ${NOMITO_TPM_FILE} \
+  --metadata ../../data/pbta-histologies.tsv \
+  --filename_lead tpm_stranded_nomito_log \
+  --output_directory results \
+  --neighbors 2 \
+  --skip_tsne
+
+# generate plot lists for both stranded RSEM and poly-A kallisto
 Rscript --vanilla scripts/get-plot-list.R  \
   --input_directory results \
   --filename_lead rsem_stranded \
@@ -48,3 +59,6 @@ bash 03-multipanel-plots.sh
 
 # Exploration of batch effects
 Rscript --vanilla -e 'rmarkdown::render("04-explore-sequencing-center-effects.Rmd", params = list(is_ci = 1))'
+
+# Exploration of UMAPs if mitochondrial genes are removed
+Rscript --vanilla -e 'rmarkdown::render("05-seq-center-mitochondrial-genes.Rmd")'
