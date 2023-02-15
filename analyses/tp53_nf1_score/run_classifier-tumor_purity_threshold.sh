@@ -31,8 +31,8 @@ scratch_dir="../../scratch/tp53-classifier"
 # Make sure scratch directory exists
 mkdir -p $scratch_dir
 
-# Output directory for tumor purity threshold HTML notebooks
-output_dir="${analysis_dir}/results/tumor-purity-threshold_notebooks"
+# Output directory for tumor purity threshold results and HTML notebooks
+output_dir="${analysis_dir}/results/tumor-purity-threshold"
 mkdir -p $output_dir
 
 # cds gencode bed file
@@ -86,4 +86,6 @@ python3 ${analysis_dir}/06-evaluate-classifier.py \
   -s ${analysis_dir}/results/tp53_altered_status_tumor-purity-threshold.tsv \
   -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores_tumor-purity-threshold.tsv \
   -c ${histology_file} \
-  -o stranded_tumor-purity-threshold
+  -o stranded_tumor-purity-threshold \
+  -r ${output_dir} \
+  -p ${output_dir}
