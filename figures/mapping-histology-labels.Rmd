@@ -30,8 +30,6 @@ The purpose of this notebook is to create color palettes for the following:
 * `broad_histology` values, where a `broad_histology` contains at least one `cancer_group` with n >= 10
 * `cancer_group` values with n >= 10
 
-**Note: This notebook was originally written with `release-v21-20210820`. Future releases may necessitate revisiting some of this code.**
-
 ### Background
 
 You may find [#1174](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1174) to be helpful context.
@@ -53,7 +51,7 @@ library(RColorBrewer)
 ```
 
 
-We should perform some minimal checking to make sure the provided release is _at least_ at version 22.
+We should perform some minimal checking to make sure the provided release is _at least_ at version 23.
 ```{r}
 minimum_allowed_release <- 23
 release_version <- as.numeric(stringr::str_match(params$release, "-v(\\d+)-")[[2]])
