@@ -70,16 +70,16 @@ IDS_FILE="${analysis_dir}/../tumor-purity-exploration/results/thresholded_rna_st
 python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_stranded} -t --ids_file ${IDS_FILE}
 
 # Run notebook to produce the `loss_overlap_domains_tp53` file consumed by 05-tp53-altered-annotation.Rmd
-OUTPUT_HTML="${output_dir}/03-tp53-cnv-loss-domain_tumor-purity-threshold.html" # output HTML file name
-Rscript -e "rmarkdown::render('${analysis_dir}/03-tp53-cnv-loss-domain.Rmd', params=list(tumor_purity_threshold = 1, output_file = ${OUTPUT_HTML}))"
+OUTPUT_HTML_03=${output_dir}/03-tp53-cnv-loss-domain_tumor-purity-threshold.nb.html # output HTML file name
+Rscript -e "rmarkdown::render('${analysis_dir}/03-tp53-cnv-loss-domain.Rmd', output_file = '${OUTPUT_HTML_03}', params=list(tumor_purity_threshold = 1))"
 
 # Run notebook to produce the `fusion_bk_tp53_loss` and `sv_overlap_tp53` files consumed by 05-tp53-altered-annotation.Rmd
-OUTPUT_HTML="${output_dir}/04-tp53-sv-loss_tumor-purity-threshold.html" # output HTML file name
-Rscript -e "rmarkdown::render('${analysis_dir}/04-tp53-sv-loss.Rmd',params=list(tumor_purity_threshold = 1, output_file = ${OUTPUT_HTML}))"
+OUTPUT_HTML_04=${output_dir}/04-tp53-sv-loss_tumor-purity-threshold.nb.html # output HTML file name
+Rscript -e "rmarkdown::render('${analysis_dir}/04-tp53-sv-loss.Rmd', output_file = '${OUTPUT_HTML_04}', params=list(tumor_purity_threshold = 1))"
 
 # Run notebook to produce `tp53_altered_status` file consumed by 06-evaluate-classifier.py
-OUTPUT_HTML="${output_dir}/05-tp53-altered-annotation_tumor-purity-threshold.html" # output HTML file name
-Rscript -e "rmarkdown::render('${analysis_dir}/05-tp53-altered-annotation.Rmd',params=list(tumor_purity_threshold = 1, output_file = ${OUTPUT_HTML}))"
+OUTPUT_HTML_05=${output_dir}/05-tp53-altered-annotation_tumor-purity-threshold.nb.html # output HTML file name
+Rscript -e "rmarkdown::render('${analysis_dir}/05-tp53-altered-annotation.Rmd', output_file = '${OUTPUT_HTML_05}', params=list(tumor_purity_threshold = 1))"
 
 # Produce files needed for ROC
 python3 ${analysis_dir}/06-evaluate-classifier.py \

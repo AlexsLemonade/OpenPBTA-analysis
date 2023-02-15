@@ -573,11 +573,14 @@ tp53_alterations_score_wide %>% filter(!is.na(cancer_predispositions)) %>%
 # Plot of scores across tp53 altered status by cancer predisposition
 
 ```{r, warning=FALSE, message=FALSE}
-# plot of scores across tp53 altered status by cancer predisposition
-d_ply(tp53_alterations_score_wide %>%
-        filter(!is.na(cancer_predispositions),
-               !is.na(tp53_score)), .variables = "cancer_predispositions", 
-      .fun = function(x) plot_by_cancer_predisposition(lfs = x, plot_dir))
+# This chunk does not need to be run if tumor purity threshold is on
+if (params$tumor_purity_threshold == 0){
+  # plot of scores across tp53 altered status by cancer predisposition
+  d_ply(tp53_alterations_score_wide %>%
+          filter(!is.na(cancer_predispositions),
+                 !is.na(tp53_score)), .variables = "cancer_predispositions", 
+        .fun = function(x) plot_by_cancer_predisposition(lfs = x, plot_dir))
+}
 ```
 
 Some NF-1 and/or Other inherited conditions NOS have high scoring TP53 mutants as well. 
