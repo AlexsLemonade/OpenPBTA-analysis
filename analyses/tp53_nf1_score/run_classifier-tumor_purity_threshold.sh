@@ -83,8 +83,8 @@ Rscript -e "rmarkdown::render('${analysis_dir}/05-tp53-altered-annotation.Rmd', 
 
 # Produce files needed for ROC
 python3 ${analysis_dir}/06-evaluate-classifier.py \
-  -s ${analysis_dir}/results/tp53_altered_status_tumor-purity-threshold.tsv \
-  -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores_tumor-purity-threshold.tsv \
+  -s ${output_dir}/tp53_altered_status_tumor-purity-threshold.tsv \
+  -f ${output_dir}/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores_tumor-purity-threshold.tsv \
   -c ${histology_file} \
   -o stranded_tumor-purity-threshold \
   -r ${output_dir} \
