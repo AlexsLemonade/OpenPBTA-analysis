@@ -41,6 +41,16 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   --neighbors 2 \
   --skip_tsne
 
+# Run at tumor purity threshold
+Rscript --vanilla scripts/run-dimension-reduction.R \
+  --expression ../../data/pbta-gene-expression-rsem-fpkm.stranded.rds \
+  --metadata ../../data/pbta-histologies.tsv \
+  --filename_lead rsem_stranded_log_tumor-purity-threshold \
+  --output_directory results \
+  --neighbors 2 \
+  --skip_tsne \
+  --apply_tumor_purity_threshold
+
 # generate plot lists for both stranded RSEM and poly-A kallisto
 Rscript --vanilla scripts/get-plot-list.R  \
   --input_directory results \
