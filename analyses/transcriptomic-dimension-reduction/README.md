@@ -55,7 +55,7 @@ done
 
 ```
 
-Unfortunately, this approach will also run PCA 5 times. 
+Unfortunately, this approach will also run PCA 5 times.
 
 ##### R
 
@@ -138,6 +138,11 @@ plot_dimension_reduction(aligned_scores_df = pca_df,
 
 The `point_color` argument of `plot_dimension_reduction` can be changed to any variable that is a column in the original TSV file.
 
-### Explore potential batch effects from the sequencing center 
+### Explore potential batch effects from the sequencing center
 
 The notebook `04-explore-sequencing-center-effects.Rmd` performs exploratory analyses and visualization to roughly assess the extent to which sequencing center is expected to induce batch effects.
+
+The notebook `05-seq-center-mitochondrial-genes.Rmd` performs exploratory analyses to assess whether artifacts present in mitochondrial gene RNA-Seq data influence UMAP visualization.
+To enable this analysis, this pipeline will also perform transcriptomic dimension reduction on TPM data for both all genes and all non-mitochondrial genes.
+The TPM-derived UMAPs are assessed in this notebook.
+TPM was used rather than FPKM to enable more accurate re-normalization after filtering out mitochondrial genes from the full TPM data.
