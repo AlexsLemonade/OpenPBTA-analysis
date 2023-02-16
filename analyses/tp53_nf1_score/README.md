@@ -185,4 +185,9 @@ All exported files generated from the tumor purity thresholded data are named th
   - Note that this file is created by `06-evaluate-classifier.py` and not by `07-plot-roc.R` as it is in the primary pipeline.
   This is because in the primary pipeline, `07-plot-roc.R` will overwrite the `matplotlib` plots produced by `06-evaluate-classifier.py`, but as `07-plot-roc.R` is not run from `run_classifer-tumor-purity-threshold.sh`, this PNG file is not overwritten.
 
+There are several figures in `results/tumor-purity-threshold/` that are exported by `10-tp53-tumor-purity-threshold.Rmd`, all generated on the thresholded data:
 
+- `tp53-cancer-groups_tumor-purity-threshold.pdf`: Distribution of TP53 scores across cancer groups with medians shown
+- `tp53-fpkm-status_tumor-purity-threshold.pdf`: Distribution of TP53 FPKM across TP53 altered status groups
+- `tp53-roc_tumor-purity-threshold.pdf`: ROC curve of classifier
+- `tp53-score-status_tumor-purity-threshold.pdf`: Distribution of TP53 scores across TP53 altered status groups
