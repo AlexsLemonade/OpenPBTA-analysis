@@ -27,10 +27,14 @@ The associated issue for this exploration is here: https://github.com/AlexsLemon
 
 ```{r}
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+quantiseq_dir <- file.path(root_dir, "analyses", "immune-deconv")
 data_dir <- file.path(root_dir, "data")
 palette_file <- file.path(root_dir, "figures", "palettes", "broad_histology_cancer_group_palette.tsv")
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
-quantiseq_file <- file.path("results", "quantiseq_deconv-output-thresholded.rds")
+quantiseq_file <- file.path(quantiseq_dir, "results", "quantiseq_deconv-output-thresholded.rds")
+
+# output plot file:
+quantiseq_plot_pdf <- file.path(quantiseq_dir, "plots", "tumor-purity-threshold_quantiseq-cancer-groups.pdf")
 ```
 
 
@@ -111,9 +115,12 @@ cancer_group_order <- c("Pilocytic astrocytoma",
                         "Schwannoma"
                         )
 
-quantiseq_df %>%
+quantiseq_plot <- quantiseq_df %>%
   # order the `cancer_group_display` variable by the vector above
-  mutate(cancer_group_display = fct_relevel(cancer_group_display, cancer_group_order)) %>%
+  mutate(cancer_group_display = fct_relevel(cancer_group_display, cancer_group_order),
+         # wrap labels so they fit in strips 
+         cancer_group_display = fct_relabel(cancer_group_display, stringr::str_wrap, 30)
+         ) %>%
   # and into the plot
   ggplot() + 
   aes(x = cell_type, 
@@ -133,10 +140,25 @@ quantiseq_df %>%
     y = "Estimated fraction in sample"
   ) +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 7),
+    axis.text.y = element_text(size = 9),
     strip.text = element_text(size = 8)
   )
+
+quantiseq_plot
 ```
+
+We'll export this figure:
+
+```{r}
+ggsave(
+  quantiseq_plot_pdf,
+  quantiseq_plot,
+  width = 12,
+  height = 4.5
+)
+```
+
 
 #### Original plot (without thresholding)
 
