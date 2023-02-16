@@ -18,6 +18,9 @@ The chunk below defines a helper function used to convert an expression matrix i
 ```{r function}
 # Convert a FPKM matrix to log2-transformed-FPKM data frame for TP53
 expression_matrix_to_df <- function(mat, status_df, metadata_df = metadata, palette_df = pal_df) { 
+  # mat is matrix of expression
+  # status_df contains information about tp53 status and scores
+  # metadata_df and palette_df are the metadata and histology palette data frames, respectively
   
   # Filter to TP53 expression only 
   mat <- t(mat)[,"TP53"] 
@@ -52,10 +55,52 @@ expression_matrix_to_df <- function(mat, status_df, metadata_df = metadata, pale
 }
 ```
 
+The chunk below defines a helper function to plot TP53 score or expression across status.
+
+
+```{r}
+plot_tp53_status <- function(df, var, y_lab) {
+  # df is a data frame with all relevant information
+  # var is the numeric variable of interest to plot across tp53 status
+  # y_lab is y-axis label
+  
+  # Prepare stats df for median +/ IQR of the given `var`
+  stats_df <- df %>%
+    dplyr::group_by(tp53_altered) %>%
+    dplyr::summarize(
+      y = median({{var}}, na.rm=TRUE),
+      ymin = quantile({{var}}, 0.25, na.rm=TRUE),
+      ymax = quantile({{var}}, 0.75, na.rm=TRUE)
+    )
+    
+  # Make/return plot
+  ggplot(df) +
+    aes(x = tp53_altered,
+        y = {{var}}) + 
+    geom_violin() +
+    geom_jitter(
+      aes(alpha = tp53_altered),
+          width = 0.1, size = 1
+    ) +
+    # Add median +/- IQR pointrange
+    geom_pointrange(data = stats_df, 
+                    aes(x = tp53_altered, y = y, ymin = ymin, ymax = ymax),
+                    color = "firebrick") + 
+    # Alpha scale
+    scale_alpha_manual(values = c(0.75, 0.75, 0.25), guide = FALSE) +
+    labs(
+      x = "TP53 altered status",
+      y = y_lab
+    )
+}
+```
 ## Files and directories
 
 ```{r}
+# pipe and plot theme
 `%>%` <- dplyr::`%>%`
+library(ggplot2)
+theme_set(ggpubr::theme_pubr())
 
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git")) 
 analysis_dir <- file.path(root_dir, "analyses")
@@ -66,9 +111,15 @@ tp53_dir <- file.path(analysis_dir, "tp53_nf1_score")
 # source function to plot ROC curve
 source(file.path(tp53_dir, "util", "plot_roc.R"))
 
-# output directories
+# result directories
 results_dir_full <- file.path(tp53_dir, "results")
 results_dir_threshold <- file.path(results_dir_full, "tumor-purity-threshold")
+
+# output plots
+tp53_roc_pdf <- file.path(results_dir_threshold, "tp53-roc_tumor-purity-threshold.pdf") 
+tp53_score_status_pdf <- file.path(results_dir_threshold, "tp53-score-status_tumor-purity-threshold.pdf") 
+tp53_fpkm_status_pdf <- file.path(results_dir_threshold, "tp53-fpkm-status_tumor-purity-threshold.pdf") 
+tp53_cancer_groups_pdf <- file.path(results_dir_threshold, "tp53-cancer-groups_tumor-purity-threshold.pdf")
 ```
 
 Read and prepare input files:
@@ -81,14 +132,24 @@ metadata <- readr::read_tsv(file.path(root_dir,
                             guess_max = 10000)
 
 # palette file
+pal_dir <- file.path(
+  root_dir,
+  "figures",
+  "palettes"
+)
+
 pal_df <- readr::read_tsv(
-  file.path(
-    root_dir, 
-    "figures", 
-    "palettes", 
-    "broad_histology_cancer_group_palette.tsv")
+ file.path(
+   pal_dir,
+   "broad_histology_cancer_group_palette.tsv")
 ) %>%
   dplyr::select(cancer_group, cancer_group_display, cancer_group_hex)
+
+# binary palette file
+binary_pal <- readr::read_tsv(
+  file.path(pal_dir, "binary_color_palette.tsv")) %>%
+  # remove `na_color`
+  dplyr::filter(color_names != "na_color")
 
 
 # ROC score files -----
@@ -167,8 +228,8 @@ stranded_expression_thresholded <- filter_expression_by_tumor_purity(stranded_ex
 
 
 # Convert both to dfs, and join with tp53 status
-fpkm_df <- expression_matrix_to_df(stranded_expression, status_original)
-fpkm_thresholded_df <- expression_matrix_to_df(stranded_expression_thresholded, status_thresholded)
+tp53_df <- expression_matrix_to_df(stranded_expression, status_original)
+tp53_thresholded_df <- expression_matrix_to_df(stranded_expression_thresholded, status_thresholded)
 ```
 
 ## Re-analysis 1: ROC curves
@@ -192,18 +253,33 @@ plot_roc(roc_df = dplyr::bind_rows(roc_file_stranded_original,
 
 Now, here is the new ROC generated from thresholded data:
 ```{r}
-plot_roc(roc_df = dplyr::bind_rows(roc_file_stranded_thresholded,
+new_roc <- plot_roc(roc_df = dplyr::bind_rows(roc_file_stranded_thresholded,
                                    roc_file_stranded_shuff_thresholded), 
          # the next 2 path args don't matter since export is FALSE
          plots_dir, 
          fname = "", 
          export = FALSE)
+new_roc
 ```
 
 The classifier performance follows a similar trend to previous results. 
 Shuffled (randomized) data for both versions of the data produced an AUC around 0.5 (0.57 and 0.52), indicating performance is no different from a random classifier as expected.
 Thresholded data produced an AUC=0.94 which is very high, as is the original analysis which produced AUC=0.86.
 
+Here we'll export this new ROC curve:
+```{r}
+# Update colors and line style to match manuscript before export
+new_roc <- new_roc + 
+  scale_color_manual(name = "", values = binary_pal$hex_codes) + 
+  scale_linetype_manual(name = "", values = c("solid", "solid"))
+
+ggsave(tp53_roc_pdf, 
+       new_roc, 
+       width = 4.5, 
+       height = 4, 
+       # needed for compilation
+       useDingbats = FALSE)
+```
 
 ## Re-analysis 2: TP53 scores between "activated" and "lost" tumors.
 
@@ -218,17 +294,16 @@ Previously, we observed the following:
 ```{r}
 # Wilcoxon:
 wilcox.test(
- status_original$tp53_score[status_original$tp53_altered == "loss"], 
- status_original$tp53_score[status_original$tp53_altered == "activated"] 
+ tp53_df$tp53_score[tp53_df$tp53_altered == "loss"], 
+ tp53_df$tp53_score[tp53_df$tp53_altered == "activated"] 
 )
 
 # violin/jitter plot:
-ggplot2::ggplot(status_original) + 
-  ggplot2::aes(x = tp53_altered, 
+ggplot(tp53_df) + 
+  aes(x = tp53_altered, 
       y = tp53_score) + 
-  ggplot2::geom_violin() +
-  ggplot2::geom_jitter(width = 0.2)
-
+  geom_violin() +
+  geom_jitter(width = 0.2)
 ```
 Notably, something is up with this P-value - we reported 0.23 in the text, but it seems that was based on an outdated figure.
 
@@ -245,21 +320,34 @@ Now, we observe:
 ```{r}
 # Wilcoxon:
 wilcox.test(
- status_thresholded$tp53_score[status_thresholded$tp53_altered == "loss"], 
- status_thresholded$tp53_score[status_thresholded$tp53_altered == "activated"] 
+ tp53_thresholded_df$tp53_score[tp53_thresholded_df$tp53_altered == "loss"], 
+ tp53_thresholded_df$tp53_score[tp53_thresholded_df$tp53_altered == "activated"] 
 )
+```
 
+```{r}
 # violin/jitter plot:
-ggplot2::ggplot(status_thresholded) + 
-  ggplot2::aes(x = tp53_altered, 
-      y = tp53_score) + 
-  ggplot2::geom_violin() +
-  ggplot2::geom_jitter(width = 0.2)
+# save to variable and style in preparation for export
+score_plot <- plot_tp53_status(tp53_thresholded_df, tp53_score, "TP53 Score")
 
+score_plot
 ```
 
 Here, the P-value is 0.39 which is still not significant. 
 Results are therefore consistent.
+
+We'll export the thresholded version of this plot, `score_plot`:
+
+```{r}
+ggsave(
+  tp53_score_status_pdf, 
+  score_plot, 
+  width = 4,
+  height = 4
+)
+```
+
+
 
 
 ## Re-analysis 3: TP53 expression between "activated" and "lost" tumors.
@@ -275,23 +363,23 @@ Previously, we observed the following:
 ```{r}
 # Wilcoxon:
 wilcox.test(
- fpkm_df$tp53_fpkm[fpkm_df$tp53_altered == "loss"], 
- fpkm_df$tp53_fpkm[fpkm_df$tp53_altered == "activated"] 
+ tp53_df$tp53_fpkm[tp53_df$tp53_altered == "loss"], 
+ tp53_df$tp53_fpkm[tp53_df$tp53_altered == "activated"] 
 )
 
 # Medians:
-fpkm_df %>%
+tp53_df %>%
   dplyr::group_by(tp53_altered) %>%
   dplyr::summarize(median_tp53 = median(tp53_fpkm)) %>%
   dplyr::arrange(-median_tp53)
 
 
 # violin/jitter plot:
-ggplot2::ggplot(fpkm_df) + 
-  ggplot2::aes(x = tp53_altered, 
-      y = tp53_fpkm) + 
-  ggplot2::geom_violin() +
-  ggplot2::geom_jitter(width = 0.2)
+ggplot(tp53_df) + 
+  aes(x = tp53_altered,
+               y = tp53_fpkm) + 
+  geom_violin() +
+  geom_jitter(width = 0.2)
 ```
 The above P-value (0.006) has the same issue as in re-analysis 2 - it needs to be updated in the text, but it is correct in the most up-to-date figure (Panel C: https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/e4244a104183e5223bc5297df938f8b5e6c7ef22/figures/pngs/figure4.png).
 
@@ -302,26 +390,39 @@ After thresholding, we now observe:
 ```{r}
 # Wilcoxon:
 wilcox.test(
- fpkm_thresholded_df$tp53_fpkm[fpkm_thresholded_df$tp53_altered == "loss"], 
- fpkm_thresholded_df$tp53_fpkm[fpkm_thresholded_df$tp53_altered == "activated"] 
+ tp53_thresholded_df$tp53_fpkm[tp53_thresholded_df$tp53_altered == "loss"], 
+ tp53_thresholded_df$tp53_fpkm[tp53_thresholded_df$tp53_altered == "activated"] 
 )
 
 # Medians:
-fpkm_thresholded_df %>%
+tp53_thresholded_df %>%
   dplyr::group_by(tp53_altered) %>%
   dplyr::summarize(median_tp53 = median(tp53_fpkm)) %>%
   dplyr::arrange(-median_tp53)
+```
 
 
+```{r}
 # violin/jitter plot:
-ggplot2::ggplot(status_original) + 
-  ggplot2::aes(x = tp53_altered, 
-      y = tp53_score) + 
-  ggplot2::geom_violin() +
-  ggplot2::geom_jitter(width = 0.2)
+# save to variable and style in preparation for export
+fpkm_plot <- plot_tp53_status(tp53_thresholded_df, tp53_fpkm, "TP53 expression [log(FPKM)]")
+
+fpkm_plot
 ```
 
 These results are consistent - TP53 "activated" samples have signficantly higher expression than do "lost" samples.
+
+We'll export the thresholded version of this plot, `fpkm_plot`:
+
+```{r}
+ggsave(
+  tp53_fpkm_status_pdf, 
+  fpkm_plot, 
+  width = 4,
+  height = 4
+)
+```
+
 
 
 ## Re-analysis 4: Distribution of TP53 scores among cancer groups
@@ -335,31 +436,46 @@ https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b
 
 Previously we observed:
 ```{r}
-ggplot2::ggplot(fpkm_df) + 
-  ggplot2::aes(x = forcats::fct_reorder(cancer_group_display, tp53_score),
+ggplot(tp53_df) + 
+  aes(x = forcats::fct_reorder(cancer_group_display, tp53_score),
                y = tp53_score, 
                fill = cancer_group_hex) +
-  ggplot2::geom_violin() + 
-  ggplot2::stat_summary(fun.y = "median") + 
-  ggplot2::scale_fill_identity() + 
-  ggplot2::theme(
-    axis.text.x = ggplot2::element_text(hjust = 1, angle = 30, size = 7)
+  geom_violin(alpha = 0.5) + 
+  stat_summary(fun.y = "median") + 
+  scale_fill_identity() + 
+  theme(
+    axis.text.x = element_text(hjust = 1, angle = 45, size = 7)
   )
 ```
 
 
 Now we observe:
 ```{r}
-ggplot2::ggplot(fpkm_thresholded_df) + 
-  ggplot2::aes(x = forcats::fct_reorder(cancer_group_display, tp53_score),
-               y = tp53_score, 
-               fill = cancer_group_hex) +
-  ggplot2::geom_violin() + 
-  ggplot2::stat_summary(fun.y = "median") + 
-  ggplot2::scale_fill_identity() + 
-  ggplot2::theme(
-    axis.text.x = ggplot2::element_text(hjust = 1, angle = 30, size = 7)
+# Format this plot for export:
+tp53_violins <- tp53_thresholded_df %>%
+  dplyr::mutate(
+    cancer_group_display = stringr::str_wrap(cancer_group_display, 25),
+    cancer_group_display = forcats::fct_reorder(cancer_group_display, tp53_score), 
+    cancer_group_display = forcats::fct_relevel(cancer_group_display, "Other", after = Inf)
+  ) %>%
+  # plot
+  ggplot() + 
+    aes(x = cancer_group_display,
+        y = tp53_score, 
+        fill = cancer_group_hex) +
+  geom_violin(alpha = 0.6) + 
+  stat_summary(geom = "point", 
+               fun.y = "median") + 
+  scale_fill_identity() + 
+  labs(
+    x = "Cancer group", 
+    y = "TP53 score"
+  ) +
+  theme(
+    axis.text.x = element_text(hjust = 1, angle = 30, size = 7)
   )
+
+tp53_violins
 ```
 
 - Previously highest median groups are all still high (DMGs, medulloblastomas, HGGs, DNETs, ependymomas, and craniopharyngiomas).
@@ -368,6 +484,18 @@ These scores also have a very broad spread, and their overall distribution appea
 
 As such, these results are broadly consistent.
 
+
+Now we'll export `tp53_violins`:
+
+```{r}
+ggsave(
+  tp53_cancer_groups_pdf,
+  tp53_violins,
+  width = 8, 
+  height = 3.75
+)
+
+```
 
 ## Re-analysis 5: LFS patients
 
