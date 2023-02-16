@@ -57,6 +57,9 @@ umap_threshold_file <- file.path(
   "results",
   "rsem_stranded_log_tumor-purity-threshold_umap_scores_aligned.tsv"
 )
+
+# UMAP export file
+umap_pdf <- file.path("plots", "umap_tumor-purity-threshold.pdf")
 ```
 
 And read in and prepare the files:
@@ -152,6 +155,36 @@ ggplot(umap_df) +
   # tweak legend so it fit in rendered HTML
   guides(color = guide_legend(title.position = "top", ncol=4))
 ```
+
+Finally, we'll make a version of the `broad_histology_display` thresholded UMAP for export:
+
+```{r}
+# Filter to thresholded data
+umap_thresholded <- umap_df %>%
+  dplyr::filter(dataset == "filtered to tumor purity threshold")
+
+# Plot with styling that matches main text figure:
+#  https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/dd675dd681a5a69b94ec753d1009ef259f2405a6/figures/scripts/fig5-panels-gsva-umap.R#L131-L145
+
+umap_panel <- ggplot(umap_thresholded) + 
+  aes(x = UMAP1, y = UMAP2, 
+      color = broad_histology_display) + 
+  geom_point(alpha = 0.5) + 
+  scale_color_manual(values = pal_bh) +
+  ggpubr::theme_pubr() +
+  theme(text = element_text(size = 10),
+        legend.position = "none")
+
+umap_panel
+
+# Export
+ggsave(umap_pdf, 
+       umap_panel, 
+       width = 4, 
+       height = 4)
+```
+
+
 
 ## Conclusions
 
