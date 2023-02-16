@@ -101,7 +101,7 @@ score_stranded_df <- read_tsv(file.path(results_dir,
   as.data.frame()
 
 # 2) Read in scores from tp53-nf1-classifier for polya
-# Note that this path must "results" even if the `results_dir` was updated, so we use `polya_results_dir`
+# Note that this path must be "results" even if the `results_dir` was updated, so we use `polya_results_dir`
 score_polya_df <- read_tsv(file.path(polya_results_dir, "pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv")) %>%
   dplyr::select(
     "tp53_score",
