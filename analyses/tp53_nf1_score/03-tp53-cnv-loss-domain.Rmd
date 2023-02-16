@@ -8,7 +8,7 @@ params:
     value: 0
     input: integer
   tumor_purity_threshold:
-    label: Indicates whether this notebook should consume/output tumor purity thresholded or non-thresholded results for stranded data specifically. 1 indicates thresholded, and 0 indicates regular.
+    label: Indicates whether this notebook should consume/output tumor purity thresholded or full (non-thresholded) results for stranded data specifically. 1 indicates thresholded, and 0 indicates full results.
     value: 0
     input: integer
 ---
@@ -42,6 +42,9 @@ results_dir <- file.path(root_dir,
 if (!dir.exists(results_dir)) {
   dir.create(results_dir)
 }
+
+# Save also as `polya_results_dir` to always read in polyA results properly
+polya_results_dir <- results_dir
 ```
 
 ### Input files
@@ -72,8 +75,17 @@ histologies_df <- clinical %>%
 
 # Define a filename "suffix" that indicates tumor purity thresholded vs. regular files
 # specifically relevant for **stranded** data
+# We'll also want to update the output directory name for results
 if (params$tumor_purity_threshold == 1) {
+  
   tumor_purity_suffix <- "_tumor-purity-threshold"
+  
+  # Update results_dir name
+  results_dir <- file.path(results_dir, "tumor-purity-threshold")
+  if (!dir.exists(results_dir)) {
+    dir.create(results_dir)
+  }
+  
 } else {
   tumor_purity_suffix <- ""
 }
@@ -89,7 +101,8 @@ score_stranded_df <- read_tsv(file.path(results_dir,
   as.data.frame()
 
 # 2) Read in scores from tp53-nf1-classifier for polya
-score_polya_df <- read_tsv(file.path(results_dir, "pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv")) %>%
+# Note that this path must "results" even if the `results_dir` was updated, so we use `polya_results_dir`
+score_polya_df <- read_tsv(file.path(polya_results_dir, "pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv")) %>%
   dplyr::select(
     "tp53_score",
     "sample_id"

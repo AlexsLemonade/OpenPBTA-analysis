@@ -8,7 +8,7 @@ params:
     value: 0
     input: integer
   tumor_purity_threshold:
-    label: Indicates whether this notebook should consume/output tumor purity thresholded or non-thresholded results for stranded data specifically. 1 indicates thresholded, and 0 indicates regular.
+    label: Indicates whether this notebook should consume/output tumor purity thresholded or full (non-thresholded) results for stranded data specifically. 1 indicates thresholded, and 0 indicates full results.
     value: 0
     input: integer
 ---
@@ -58,6 +58,19 @@ if (!dir.exists(plot_dir)) {
   dir.create(plot_dir)
 }
 
+# results directory
+results_dir <- file.path(root_dir,
+                         "analyses",
+                         "tp53_nf1_score",
+                         "results")
+
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+# Save also as `polya_results_dir` to always read in polyA results properly
+polya_results_dir <- results_dir
+
+
 # cell composition
 cell_line_composition <- read_tsv(file.path("..",
                                             "molecular-subtyping-HGG",
@@ -86,11 +99,20 @@ histology <- clinical %>%
 
 # Define a filename "suffix" that indicates tumor purity thresholded vs. regular files
 # specifically relevant for **stranded** data
+# We'll also want to update the output directory name for results
 if (params$tumor_purity_threshold == 1) {
   tumor_purity_suffix <- "_tumor-purity-threshold"
+  
+  # Update results_dir name
+  results_dir <- file.path(results_dir, "tumor-purity-threshold")
+  if (!dir.exists(results_dir)) {
+    dir.create(results_dir)
+  }
+  
 } else {
   tumor_purity_suffix <- ""
 }
+
 
 # Cancer database
 hotspot_database_2017_tp53_snv <- readxl::read_xls(file.path(input_dir,"hotspots_v2.xls"),sheet = 1) %>%
@@ -101,14 +123,6 @@ hotspot_database_2017_tp53_indel <- readxl::read_xls(file.path(input_dir,"hotspo
 # p53, p63 and p73 functional sites
 functional_sites_tp53 <- read_tsv(file.path(input_dir,"hotspot_Chen_2006.tsv")) 
 
-results_dir <- file.path(root_dir,
-                         "analyses",
-                         "tp53_nf1_score",
-                         "results")
-
-if (!dir.exists(results_dir)) {
-  dir.create(results_dir)
-}
 
 # classifier scores
 classifier_score_stranded <- read_tsv(
@@ -120,7 +134,7 @@ classifier_score_stranded <- read_tsv(
 
 classifier_score_polya <-read_tsv(
   file.path(
-    results_dir,
+    polya_results_dir,
     "pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv")) %>%
   dplyr::select(sample_id,tp53_score)
 
@@ -573,11 +587,14 @@ tp53_alterations_score_wide %>% filter(!is.na(cancer_predispositions)) %>%
 # Plot of scores across tp53 altered status by cancer predisposition
 
 ```{r, warning=FALSE, message=FALSE}
-# plot of scores across tp53 altered status by cancer predisposition
-d_ply(tp53_alterations_score_wide %>%
-        filter(!is.na(cancer_predispositions),
-               !is.na(tp53_score)), .variables = "cancer_predispositions", 
-      .fun = function(x) plot_by_cancer_predisposition(lfs = x, plot_dir))
+# This chunk does not need to be run if tumor purity threshold is on
+if (params$tumor_purity_threshold == 0){
+  # plot of scores across tp53 altered status by cancer predisposition
+  d_ply(tp53_alterations_score_wide %>%
+          filter(!is.na(cancer_predispositions),
+                 !is.na(tp53_score)), .variables = "cancer_predispositions", 
+        .fun = function(x) plot_by_cancer_predisposition(lfs = x, plot_dir))
+}
 ```
 
 Some NF-1 and/or Other inherited conditions NOS have high scoring TP53 mutants as well. 

@@ -31,6 +31,10 @@ scratch_dir="../../scratch/tp53-classifier"
 # Make sure scratch directory exists
 mkdir -p $scratch_dir
 
+# Output directory for tumor purity threshold results and HTML notebooks
+output_dir="${analysis_dir}/results/tumor-purity-threshold"
+mkdir -p $output_dir
+
 # cds gencode bed file
 cds_file="${scratch_dir}/gencode.v27.primary_assembly.annotation.bed"
 snvconsensus_file="${data_dir}/pbta-snv-consensus-mutation.maf.tsv.gz"
@@ -62,23 +66,26 @@ fi
 collapsed_stranded="${data_dir}/pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"
 
 # Run classifier and ROC plotting for stranded data, with tumor purity threshold turned on (`-t` flag)
-python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_stranded} -t
+IDS_FILE="${analysis_dir}/../tumor-purity-exploration/results/thresholded_rna_stranded_same-extraction.tsv"  # file for filtering IDs
+python3 ${analysis_dir}/01-apply-classifier.py -f ${collapsed_stranded} -t --ids_file ${IDS_FILE}
 
 # Run notebook to produce the `loss_overlap_domains_tp53` file consumed by 05-tp53-altered-annotation.Rmd
-Rscript -e "rmarkdown::render('${analysis_dir}/03-tp53-cnv-loss-domain.Rmd',params=list(tumor_purity_threshold = 1))"
+OUTPUT_HTML_03=${output_dir}/03-tp53-cnv-loss-domain_tumor-purity-threshold.nb.html # output HTML file name
+Rscript -e "rmarkdown::render('${analysis_dir}/03-tp53-cnv-loss-domain.Rmd', output_file = '${OUTPUT_HTML_03}', params=list(tumor_purity_threshold = 1))"
 
 # Run notebook to produce the `fusion_bk_tp53_loss` and `sv_overlap_tp53` files consumed by 05-tp53-altered-annotation.Rmd
-Rscript -e "rmarkdown::render('${analysis_dir}/04-tp53-sv-loss.Rmd',params=list(tumor_purity_threshold = 1))"
+OUTPUT_HTML_04=${output_dir}/04-tp53-sv-loss_tumor-purity-threshold.nb.html # output HTML file name
+Rscript -e "rmarkdown::render('${analysis_dir}/04-tp53-sv-loss.Rmd', output_file = '${OUTPUT_HTML_04}', params=list(tumor_purity_threshold = 1))"
 
 # Run notebook to produce `tp53_altered_status` file consumed by 06-evaluate-classifier.py
-Rscript -e "rmarkdown::render('${analysis_dir}/05-tp53-altered-annotation.Rmd',params=list(tumor_purity_threshold = 1))"
+OUTPUT_HTML_05=${output_dir}/05-tp53-altered-annotation_tumor-purity-threshold.nb.html # output HTML file name
+Rscript -e "rmarkdown::render('${analysis_dir}/05-tp53-altered-annotation.Rmd', output_file = '${OUTPUT_HTML_05}', params=list(tumor_purity_threshold = 1))"
 
 # Produce files needed for ROC
 python3 ${analysis_dir}/06-evaluate-classifier.py \
-  -s ${analysis_dir}/results/tp53_altered_status_tumor-purity-threshold.tsv \
-  -f ${analysis_dir}/results/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores_tumor-purity-threshold.tsv \
+  -s ${output_dir}/tp53_altered_status_tumor-purity-threshold.tsv \
+  -f ${output_dir}/pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores_tumor-purity-threshold.tsv \
   -c ${histology_file} \
-  -o stranded_tumor-purity-threshold
-
-# Perform final assessment of results obtained from tumor purity thresholded tumor samples
-# Rscript -e "rmarkdown::render('${analysis_dir}/10-tp53-tumor-purity-threshold.Rmd')"
+  -o stranded_tumor-purity-threshold \
+  -r ${output_dir} \
+  -p ${output_dir}

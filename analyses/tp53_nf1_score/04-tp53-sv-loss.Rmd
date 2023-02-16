@@ -8,7 +8,7 @@ params:
     value: 0
     input: integer
   tumor_purity_threshold:
-    label: Indicates whether this notebook should consume/output tumor purity thresholded or non-thresholded results for stranded data specifically. 1 indicates thresholded, and 0 indicates regular.
+    label: Indicates whether this notebook should consume/output tumor purity thresholded or full (non-thresholded) results for stranded data specifically. 1 indicates thresholded, and 0 indicates full results.
     value: 0
     input: integer
 ---
@@ -64,8 +64,15 @@ histology <- dplyr::select(clinical,c("Kids_First_Biospecimen_ID", "sample_id"))
 
 # Define a filename "suffix" that indicates tumor purity thresholded vs. regular files
 # specifically relevant for **stranded** data
-# In addition, we'll want to filter down `stranded_expr` if this is on
+# In addition, we'll want to filter down `stranded_expr` if this is on, and update the `results_dir`
 if (params$tumor_purity_threshold == 1) {
+  
+  # Update results_dir
+  results_dir <- file.path(results_dir, "tumor-purity-threshold")
+  if (!dir.exists(results_dir)) {
+    dir.create(results_dir)
+  }
+  
   tumor_purity_suffix <- "_tumor-purity-threshold"
 
   # Define path to tumor purity module
@@ -91,7 +98,7 @@ if (params$tumor_purity_threshold == 1) {
   # Filter the expression data
   stranded_expr <- filter_expression_by_tumor_purity(stranded_expr,
                                                      tumor_purity_file)
-}else {
+} else {
   tumor_purity_suffix <- ""
 }
 

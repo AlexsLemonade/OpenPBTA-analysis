@@ -1,7 +1,7 @@
 ---
 title: "GSVA Score Modeling"
 author: "Stephanie J. Spielman for ALSF CCDL"
-date: "2020, 2022"
+date: "2020, 2022, 2023"
 output: 
   html_notebook:
     toc: true
@@ -39,8 +39,7 @@ library(broom)
 # This script contains functions used to modeling GSVA scores
 source(file.path("util", "hallmark_models.R"))
 
-# Significance testing universal threshold
-SIGNIFICANCE_THRESHOLD <- 0.01
+SIGNIFICANCE_THRESHOLD <- 0.05
 
 # Assigning params$is_ci to running_in_ci avoids a locked binding error
 running_in_ci <- params$is_ci

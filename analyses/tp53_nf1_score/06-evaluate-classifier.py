@@ -57,10 +57,18 @@ parser.add_option(
     help="output plots basename for TP53 and NF1 ROC curves",
 )
 parser.add_option(
-    "-t", "--apply_threshold",
-    dest = "apply_threshold",
-    action = "store_true",
-    help = "Flag indicating only to consider samples that pass a tumor purity threshold."
+  "-r",
+  "--result_dir",
+  dest = "result_dir",
+  default = "results",
+  help = "Directory for output TSV files."
+)
+parser.add_option(
+  "-p",
+  "--plot_dir",
+  dest = "plot_dir",
+  default = "plots",
+  help = "Directory for output plots."
 )
 
 (options, args) = parser.parse_args()
@@ -68,12 +76,9 @@ status_file = options.status_file
 scores_file = options.filename
 clinical = options.clinical
 outputfilename = options.outputfile
+result_dir=options.result_dir
+plot_dir=options.plot_dir
 
-# Set filename suffix for specifying output TSV filenames
-if options.apply_threshold is True:
-    filename_suffix = "_tumor-purity-threshold"
-else:
-    filename_suffix = ""
 
 
 np.random.seed(123)
@@ -135,14 +140,17 @@ print(scores_df.tp53_status.value_counts())
 
 print(scores_df.head())
 
-def get_roc_plot(scores_df, gene, outputfilename, color):
+def get_roc_plot(scores_df, gene, result_dir, plot_dir, outputfilename, color):
     """
     Show roc plot of classifier scores per gene
 
     Arguments:
     df - the dataframe of scores
     gene - the name of the gene to input
-    outputfilename - the name of <filename>_ROC_plot.pdf
+    result_dir - the directory for exporting result TSV files
+    plot_dir - the directory for exporting plots
+    outputfilename - the name of <filename>_ROC_plot.pdf and `<filename>_TP53_roc_threshold_results<_shuffled>.tsv`
+    color - ROC plot line color
 
     """
     lower_gene = gene.lower()
@@ -176,7 +184,7 @@ def get_roc_plot(scores_df, gene, outputfilename, color):
         .assign(gene=gene, shuffled=False, auroc=auroc_pbta)
     )
     # save the dataframe for plotting in R
-    roc_df.to_csv(os.path.join("results", outputfilename + "_" + gene + "_roc_threshold_results" + filename_suffix + ".tsv"), sep="\t", index=False)
+    roc_df.to_csv(os.path.join(result_dir, outputfilename + "_" + gene + "_roc_threshold_results" + ".tsv"), sep="\t", index=False)
 
     # save shuffled data
     roc_shuff_df = (
@@ -185,7 +193,7 @@ def get_roc_plot(scores_df, gene, outputfilename, color):
         .assign(gene=gene, shuffled=True, auroc=auroc_shuff)
     )
 
-    roc_shuff_df.to_csv(os.path.join("results", outputfilename + "_" + gene + "_roc_threshold_results_shuffled" + filename_suffix + ".tsv"), sep="\t", index=False)
+    roc_shuff_df.to_csv(os.path.join(result_dir, outputfilename + "_" + gene + "_roc_threshold_results_shuffled" + ".tsv"), sep="\t", index=False)
 
     plt.subplots(figsize=(5, 5))
     plt.axis("equal")
@@ -214,6 +222,6 @@ def get_roc_plot(scores_df, gene, outputfilename, color):
     plt.tick_params(labelsize=10)
 
     lgd = plt.legend(bbox_to_anchor=(0.3, 0.15), loc=2, borderaxespad=0.0, fontsize=10)
-    plt.savefig(os.path.join("plots", outputfilename + "_" + gene + "_roc.png"))
+    plt.savefig(os.path.join(plot_dir, outputfilename + "_" + gene + "_roc.png"))
 
-get_roc_plot(scores_df, gene="TP53", outputfilename=outputfilename, color="#7570b3")
+get_roc_plot(scores_df, gene="TP53", result_dir = result_dir, plot_dir = plot_dir, outputfilename=outputfilename, color="#7570b3")

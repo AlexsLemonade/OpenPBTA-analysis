@@ -7,15 +7,15 @@ suppressPackageStartupMessages({
   library(ggsci)
 })
 
-plot_roc <- function(roc_df, plots_dir, fname, export = TRUE){
+plot_roc <- function(roc_df, plots_dir, fname){
 
-  # add legend 
+  # add legend
   roc_df <- roc_df %>%
     mutate(auroc = round(auroc, 2),
            shuffled = ifelse(shuffled, 'TP53 Shuffle', 'TP53'),
            Classifier = paste0(shuffled, ' (AUROC = ', auroc,')'))
 
-  # plot 
+  # plot
   p <- ggplot(roc_df, aes(x = fpr,  y = tpr)) +
     coord_fixed() +
     geom_step(aes(linetype = Classifier, color = Classifier), size = 0.7) +
@@ -24,11 +24,5 @@ plot_roc <- function(roc_df, plots_dir, fname, export = TRUE){
     scale_x_continuous(labels = scales::percent) +
     xlab("False Positive Rate") +
     ylab("True Positive Rate") + theme_pubr() + scale_color_simpsons()
-  
-  # If not exporting, return the plot directly.
-  if (export) {
-    ggsave(p, filename = file.path(plots_dir, fname), width = 8, height = 8)
-  } else {
-    return(p)
-  }
+  ggsave(p, filename = file.path(plots_dir, fname), width = 8, height = 8)
 }

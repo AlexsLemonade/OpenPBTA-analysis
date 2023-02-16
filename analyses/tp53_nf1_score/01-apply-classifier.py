@@ -77,13 +77,17 @@ name = re.sub("\.rds$", "", name)
 
 exprs_rds = readRDS(inputfile)
 exprs_df = pandas2ri.ri2py(exprs_rds)
+exprs_df.index = rownamesRDS(exprs_rds)
 
 # If tumor purity thresholding is turned on, we will need:
 #  - A filename indicator to differentiate result files
 #  - To read in the TSV file with ids
 #  - Filter data before applying classifier
 #  from tumor purity thresholded data
+# In addition, set the output directory here
 if options.apply_threshold is True:
+  
+    output_dir = os.path.join("results", "tumor-purity-threshold")
     filename_suffix = "_tumor-purity-threshold"
 
     # Read TSV file of ids to keep
@@ -91,15 +95,21 @@ if options.apply_threshold is True:
 
     # Extract the ids to keep
     keep_ids = list(id_df["Kids_First_Biospecimen_ID"])
-    
+
+    # For CI, we'll need to subset this to intersection
+    colnames = list(exprs_df.columns)
+    keep_ids = list(set(colnames).intersection(keep_ids))
+
     # Filter the `exprs_df` to those ids
     exprs_df = exprs_df[keep_ids]
 
 else:
+    output_dir = "results"
     filename_suffix = ""
 
-# Define this after any potential filtering above to ensure correct indices
-exprs_df.index = rownamesRDS(exprs_rds)
+# create `output_dir` if not present
+if not os.path.isdir(output_dir):
+    os.makedirs(output_dir)
 
 # transpose
 exprs_df = exprs_df.transpose()
@@ -243,5 +253,5 @@ all_results.columns = [
 # The `filename_suffix` will indicate if thresholded
 filename = pd.Series([name, "classifier_scores" + filename_suffix + ".tsv"])
 filename = filename.str.cat(sep="_")
-file = os.path.join("results", filename)
+file = os.path.join(output_dir, filename) # use `output_dir` variable here
 all_results.to_csv(file, sep="\t", index=False)
