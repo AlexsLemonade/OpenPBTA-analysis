@@ -174,7 +174,9 @@ fpkm_thresholded_df <- expression_matrix_to_df(stranded_expression_thresholded, 
 ## Re-analysis 1: ROC curves
 
 In the manuscript, we found:
+
 https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L194
+
 > The classifier achieved a high accuracy (AUROC = 0.85) for rRNA-depleted, stranded samples compared to randomly shuffled _TP53_ scores (**Figure {@fig:Fig4}A**).
 
 First, here's the original ROC presented in the manuscript
@@ -263,6 +265,7 @@ Results are therefore consistent.
 ## Re-analysis 3: TP53 expression between "activated" and "lost" tumors.
 
 In the manuscript, we found:
+
 https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L199
 
 > Moreover, tumors with "activating" _TP53_ mutations showed higher _TP53_ expression compared to those with _TP53_ "loss" mutations (Wilcoxon p = 3.5e-3, **Figure {@fig:Fig4}C**).
@@ -323,6 +326,8 @@ These results are consistent - TP53 "activated" samples have signficantly higher
 
 ## Re-analysis 4: Distribution of TP53 scores among cancer groups
 
+In the manuscript, we found: 
+
 https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L200
 
 > Tumor types with the highest median _TP53_ scores were those known to harbor somatic _TP53_ alterations and included DMGs, medulloblastomas, HGGs, DNETs, ependymomas, and craniopharyngiomas (**Figure {@fig:Fig4}D**), while gangliogliomas, LGGs, meningiomas, and schwannomas had the lowest median scores.
@@ -368,6 +373,7 @@ As such, these results are broadly consistent.
 
 
 In the manuscript, we found:
+
 https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L203
 
 > Indeed, we observed higher scores in LFS tumors (N = 8) for which we detected high-confidence _TP53_ somatic alterations (**Tables S1 and S3**).
@@ -399,6 +405,8 @@ Results are consistent - after thresholding, LFS samples still have higher score
 
 
 ## Re-analysis 6: Hypermutators 
+
+In the manuscript, we found: 
 
 https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L227
 

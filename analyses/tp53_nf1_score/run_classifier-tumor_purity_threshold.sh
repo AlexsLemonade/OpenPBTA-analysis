@@ -89,3 +89,7 @@ python3 ${analysis_dir}/06-evaluate-classifier.py \
   -o stranded_tumor-purity-threshold \
   -r ${output_dir} \
   -p ${output_dir}
+  
+# Run final notebook comparing results
+OUTPUT_HTML_10=${output_dir}/10-tp53-tumor-purity-threshold.nb.html # output HTML file name
+Rscript -e "rmarkdown::render('${analysis_dir}/10-tp53-tumor-purity-threshold.Rmd', output_file = '${OUTPUT_HTML_10}')"
