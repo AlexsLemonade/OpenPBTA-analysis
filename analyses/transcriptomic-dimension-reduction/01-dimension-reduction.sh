@@ -25,7 +25,7 @@ COUNT_THRESHOLD=100
 if [ "$RUN_FOR_SUBTYPING" == 0 ]; then
 METADATA="../../data/pbta-histologies.tsv"
 else
-METADATA="../../data/pbta-histologies-base.tsv" 
+METADATA="../../data/pbta-histologies-base.tsv"
 fi
 
 OUTPUT="results"
@@ -97,7 +97,7 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   --low_count_threshold ${COUNT_THRESHOLD} \
   --skip_tsne \
   --log2_transform
-  
+
 # Perform dimension reduction on nomito TPM
 Rscript --vanilla scripts/run-dimension-reduction.R \
   --expression ${NOMITO_TPM_FILE} \
@@ -110,8 +110,24 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   --low_count_threshold ${COUNT_THRESHOLD} \
   --skip_tsne \
   --log2_transform
-  
-  
+
+
+#### RSEM stranded with log2 transform, considering only high tumor-purity samples and skipping t-sne -------------------
+
+Rscript --vanilla scripts/run-dimension-reduction.R \
+  --expression ../../data/pbta-gene-expression-rsem-fpkm.stranded.rds \
+  --metadata ${METADATA} \
+  --filename_lead rsem_stranded_log_tumor-purity-threshold \
+  --output_directory ${OUTPUT} \
+  --seed ${SEED} \
+  --perplexity ${PERPLEXITY} \
+  --neighbors ${NEIGHBORS} \
+  --low_count_threshold ${COUNT_THRESHOLD} \
+  --log2_transform \
+  --skip_tsne \
+  --apply_tumor_purity_threshold
+
+
 #### kallisto ------------------------------------------------------------------
 
 Rscript --vanilla scripts/run-dimension-reduction.R \
