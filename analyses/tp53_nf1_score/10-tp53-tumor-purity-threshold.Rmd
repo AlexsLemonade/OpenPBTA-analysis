@@ -67,8 +67,8 @@ tp53_dir <- file.path(analysis_dir, "tp53_nf1_score")
 source(file.path(tp53_dir, "util", "plot_roc.R"))
 
 # output directories
-plots_dir <- file.path(tp53_dir, "plots")
-results_dir <- file.path(tp53_dir, "results")
+results_dir_full <- file.path(tp53_dir, "results")
+results_dir_threshold <- file.path(results_dir_full, "tumor-purity-threshold")
 ```
 
 Read and prepare input files:
@@ -93,16 +93,28 @@ pal_df <- readr::read_tsv(
 
 # ROC score files -----
 # original files:
-roc_file_stranded_original <- readr::read_tsv(file.path(results_dir, "stranded_TP53_roc_threshold_results.tsv"))
-roc_file_stranded_shuff_original <- readr::read_tsv(file.path(results_dir, "stranded_TP53_roc_threshold_results_shuffled.tsv"))
+roc_file_stranded_original <- readr::read_tsv(
+  file.path(results_dir_full, "stranded_TP53_roc_threshold_results.tsv")
+)
+roc_file_stranded_shuff_original <- readr::read_tsv(
+  file.path(results_dir_full, "stranded_TP53_roc_threshold_results_shuffled.tsv")
+)
 
 # tumor purity thresholded files:
-roc_file_stranded_thresholded <- readr::read_tsv(file.path(results_dir, "stranded_tumor-purity-threshold_TP53_roc_threshold_results.tsv"))
-roc_file_stranded_shuff_thresholded <- readr::read_tsv(file.path(results_dir, "stranded_tumor-purity-threshold_TP53_roc_threshold_results_shuffled.tsv"))
+roc_file_stranded_thresholded <- readr::read_tsv(
+  file.path(results_dir_threshold,
+            "stranded_tumor-purity-threshold_TP53_roc_threshold_results.tsv")
+)
+roc_file_stranded_shuff_thresholded <- readr::read_tsv(
+  file.path(results_dir_threshold,
+            "stranded_tumor-purity-threshold_TP53_roc_threshold_results_shuffled.tsv")
+)
 
 ## Status files -----
 
-status_original <- readr::read_tsv(file.path(results_dir, "tp53_altered_status.tsv")) %>%
+status_original <- readr::read_tsv(
+    file.path(results_dir_full, "tp53_altered_status.tsv")
+  ) %>%
   dplyr::rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA) %>%
   # Filter down to stranded only
   dplyr::inner_join(
@@ -113,17 +125,22 @@ status_original <- readr::read_tsv(file.path(results_dir, "tp53_altered_status.t
   dplyr::filter(RNA_library=="stranded") 
 
 # this is already only stranded
-status_thresholded <- readr::read_tsv(file.path(results_dir, "tp53_altered_status_tumor-purity-threshold.tsv")) %>%
+status_thresholded <- readr::read_tsv(
+  file.path(results_dir_threshold, 
+            "tp53_altered_status_tumor-purity-threshold.tsv")
+  ) %>%
   dplyr::rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA)
 
 ## Expression data ------
-stranded_expression <- readr::read_rds(file.path(data_dir,"pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
+stranded_expression <- readr::read_rds(
+  file.path(data_dir,
+            "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
+)
 ```
 
 
 The expression data needs a second version filtered to the thresholded set:
 ```{r}
-
 # Create a second version of this with only tumor-purity passing samples
 # Define path to tumor purity module
 tumor_purity_dir <- file.path(
@@ -162,7 +179,8 @@ https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b
 
 First, here's the original ROC presented in the manuscript
 ```{r}
-plot_roc(roc_df = dplyr::bind_rows(roc_file_stranded_original, roc_file_stranded_shuff_original), 
+plot_roc(roc_df = dplyr::bind_rows(roc_file_stranded_original,
+                                   roc_file_stranded_shuff_original), 
          # the next 2 path args don't matter since export is FALSE
          plots_dir, 
          fname = "", 
@@ -172,7 +190,8 @@ plot_roc(roc_df = dplyr::bind_rows(roc_file_stranded_original, roc_file_stranded
 
 Now, here is the new ROC generated from thresholded data:
 ```{r}
-plot_roc(roc_df = dplyr::bind_rows(roc_file_stranded_thresholded, roc_file_stranded_shuff_thresholded), 
+plot_roc(roc_df = dplyr::bind_rows(roc_file_stranded_thresholded,
+                                   roc_file_stranded_shuff_thresholded), 
          # the next 2 path args don't matter since export is FALSE
          plots_dir, 
          fname = "", 
@@ -423,6 +442,10 @@ status_thresholded %>%
 These samples still are higher than 0.5, so that aspect remains consistent.
 
 
+
+## Conclusions
+
+All results obtained from high tumor purity samples are broadly consistent with results obtained from the full stranded cohort. 
 
 ## Session Info
 
