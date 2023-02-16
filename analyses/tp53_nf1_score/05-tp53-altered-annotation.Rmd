@@ -7,6 +7,10 @@ params:
     label: 1/0 to run with base histology
     value: 0
     input: integer
+  tumor_purity_threshold:
+    label: Indicates whether this notebook should consume/output tumor purity thresholded or full (non-thresholded) results for stranded data specifically. 1 indicates thresholded, and 0 indicates full results.
+    value: 0
+    input: integer
 ---
 
 In this notebook we will add TP53 alteration status as discussed in [#837](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/837):
@@ -54,6 +58,19 @@ if (!dir.exists(plot_dir)) {
   dir.create(plot_dir)
 }
 
+# results directory
+results_dir <- file.path(root_dir,
+                         "analyses",
+                         "tp53_nf1_score",
+                         "results")
+
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir)
+}
+# Save also as `polya_results_dir` to always read in polyA results properly
+polya_results_dir <- results_dir
+
+
 # cell composition
 cell_line_composition <- read_tsv(file.path("..",
                                             "molecular-subtyping-HGG",
@@ -80,6 +97,23 @@ histology <- clinical %>%
   left_join(cell_line_composition)
 
 
+# Define a filename "suffix" that indicates tumor purity thresholded vs. regular files
+# specifically relevant for **stranded** data
+# We'll also want to update the output directory name for results
+if (params$tumor_purity_threshold == 1) {
+  tumor_purity_suffix <- "_tumor-purity-threshold"
+  
+  # Update results_dir name
+  results_dir <- file.path(results_dir, "tumor-purity-threshold")
+  if (!dir.exists(results_dir)) {
+    dir.create(results_dir)
+  }
+  
+} else {
+  tumor_purity_suffix <- ""
+}
+
+
 # Cancer database
 hotspot_database_2017_tp53_snv <- readxl::read_xls(file.path(input_dir,"hotspots_v2.xls"),sheet = 1) %>%
   filter(Hugo_Symbol == "TP53")
@@ -89,25 +123,18 @@ hotspot_database_2017_tp53_indel <- readxl::read_xls(file.path(input_dir,"hotspo
 # p53, p63 and p73 functional sites
 functional_sites_tp53 <- read_tsv(file.path(input_dir,"hotspot_Chen_2006.tsv")) 
 
-results_dir <- file.path(root_dir,
-                         "analyses",
-                         "tp53_nf1_score",
-                         "results")
-
-if (!dir.exists(results_dir)) {
-  dir.create(results_dir)
-}
 
 # classifier scores
 classifier_score_stranded <- read_tsv(
   file.path(
     results_dir,
-    "pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores.tsv"))%>%
+    glue::glue("pbta-gene-expression-rsem-fpkm-collapsed.stranded_classifier_scores{tumor_purity_suffix}.tsv")
+  )) %>%
   dplyr::select(sample_id,tp53_score)
 
 classifier_score_polya <-read_tsv(
   file.path(
-    results_dir,
+    polya_results_dir,
     "pbta-gene-expression-rsem-fpkm-collapsed.polya_classifier_scores.tsv")) %>%
   dplyr::select(sample_id,tp53_score)
 
@@ -120,20 +147,20 @@ classifier_score <- rbind(classifier_score_polya,classifier_score_stranded) %>%
 cnv_domain_overlap <- read_tsv(
   file.path(
     results_dir,
-    "loss_overlap_domains_tp53.tsv"))
+    glue::glue("loss_overlap_domains_tp53{tumor_purity_suffix}.tsv")))
 
 # Structural variant overlapping 
 # or within gene locus of TP53
 sv_overlap <- read_tsv(
   file.path(
     results_dir,
-    "sv_overlap_tp53.tsv"))
+    glue::glue("sv_overlap_tp53{tumor_purity_suffix}.tsv")))
 
 # Structural variant as a fusion in exon1/intron1
 fusion_overlap <- read_tsv(
   file.path(
     results_dir,
-    "fusion_bk_tp53_loss.tsv"))
+    glue::glue("fusion_bk_tp53_loss{tumor_purity_suffix}.tsv")))
 
 ```
 
@@ -385,7 +412,11 @@ ggviolin(tp53_alterations_score_wide, x = "tp53_altered", y = "tp53_score",
   xlab("TP53 altered status") +
   ylab("TP53 score") +
   rremove("legend")
-ggsave(file.path(plot_dir, "tp53_scores_by_altered_status.png"))
+
+# This plot does not need to be saved if tumor purity threshold is on
+if (params$tumor_purity_threshold == 0){
+  ggsave(file.path(plot_dir, "tp53_scores_by_altered_status.png"))
+}
 ```
 TP53 mutants with gain-of-function (activating) mutants promote tumorigenesis according to literature. [Reference](https://pubmed.ncbi.nlm.nih.gov/17417627/) and [reference](https://pubmed.ncbi.nlm.nih.gov/24677579/) have similar distribution of classifier scores to that of potential loss-of-function (multi-allelic) Tp53 mutations. 
 
@@ -395,6 +426,35 @@ TP53 mutants with gain-of-function (activating) mutants promote tumorigenesis ac
 
 ```{r}
 stranded <- readRDS(file.path(data_dir,"pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds"))
+
+# This needs to be filtered down if tumor purity is on
+if (params$tumor_purity_threshold == 1) {
+  
+  # Define path to tumor purity module
+  tumor_purity_dir <- file.path(
+    rprojroot::find_root(rprojroot::has_dir(".git")),
+    "analyses",
+    "tumor-purity-exploration"
+  )
+
+  # Define path to metadata file which has been filtered to only biospecimens that
+  #  survive the cancer-group-level threshold
+  tumor_purity_file <- file.path(
+    tumor_purity_dir,
+    "results",
+    "thresholded_rna_stranded_same-extraction.tsv"
+  )
+
+  # Load the function to filter IDs
+  source(
+    file.path(tumor_purity_dir, "util", "function_filter-by-threshold.R")
+  )
+
+  # Filter the expression data
+  stranded <- filter_expression_by_tumor_purity(stranded,
+                                                tumor_purity_file)
+}
+  
 
 # subset to TP53
 subset_stranded <- t(stranded)[,"TP53"]
@@ -427,7 +487,11 @@ ggviolin(stranded_tp53, x = "tp53_altered", y = "TP53",
   xlab("TP53 altered status") +
   ylab("TP53 RNA expression") +
   rremove("legend")
-ggsave(file.path(plot_dir, "tp53_expression_by_altered_status_stranded.png"))
+
+# This plot does not need to be saved if tumor purity threshold is on
+if (params$tumor_purity_threshold == 0){
+  ggsave(file.path(plot_dir, "tp53_expression_by_altered_status_stranded.png"))
+}
 ```
 
 ### (poly-a) Expression profile for activating vs loss TP53 status
@@ -523,11 +587,14 @@ tp53_alterations_score_wide %>% filter(!is.na(cancer_predispositions)) %>%
 # Plot of scores across tp53 altered status by cancer predisposition
 
 ```{r, warning=FALSE, message=FALSE}
-# plot of scores across tp53 altered status by cancer predisposition
-d_ply(tp53_alterations_score_wide %>%
-        filter(!is.na(cancer_predispositions),
-               !is.na(tp53_score)), .variables = "cancer_predispositions", 
-      .fun = function(x) plot_by_cancer_predisposition(lfs = x, plot_dir))
+# This chunk does not need to be run if tumor purity threshold is on
+if (params$tumor_purity_threshold == 0){
+  # plot of scores across tp53 altered status by cancer predisposition
+  d_ply(tp53_alterations_score_wide %>%
+          filter(!is.na(cancer_predispositions),
+                 !is.na(tp53_score)), .variables = "cancer_predispositions", 
+        .fun = function(x) plot_by_cancer_predisposition(lfs = x, plot_dir))
+}
 ```
 
 Some NF-1 and/or Other inherited conditions NOS have high scoring TP53 mutants as well. 
@@ -550,7 +617,8 @@ Adding DNA and RNA biospecimen ids to `tp53_alterations_score_wide` and saving
 ```{r}
 
 tp53_alterations_score_wide %>% 
-  write_tsv(file.path(results_dir,"tp53_altered_status.tsv"))
+  write_tsv(file.path(results_dir,
+                      glue::glue("tp53_altered_status{tumor_purity_suffix}.tsv")))
 
 ```
 

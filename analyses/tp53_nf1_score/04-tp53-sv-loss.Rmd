@@ -7,6 +7,10 @@ params:
     label: "1/0 to run with base histology"
     value: 0
     input: integer
+  tumor_purity_threshold:
+    label: Indicates whether this notebook should consume/output tumor purity thresholded or full (non-thresholded) results for stranded data specifically. 1 indicates thresholded, and 0 indicates full results.
+    value: 0
+    input: integer
 ---
     
 In this script we will find if there are a Structural Variant breakpoints 
@@ -57,8 +61,51 @@ if ( params$base_run ==0 ){
 
 histology <- dplyr::select(clinical,c("Kids_First_Biospecimen_ID", "sample_id"))
 
+
+# Define a filename "suffix" that indicates tumor purity thresholded vs. regular files
+# specifically relevant for **stranded** data
+# In addition, we'll want to filter down `stranded_expr` if this is on, and update the `results_dir`
+if (params$tumor_purity_threshold == 1) {
+  
+  # Update results_dir
+  results_dir <- file.path(results_dir, "tumor-purity-threshold")
+  if (!dir.exists(results_dir)) {
+    dir.create(results_dir)
+  }
+  
+  tumor_purity_suffix <- "_tumor-purity-threshold"
+
+  # Define path to tumor purity module
+  tumor_purity_dir <- file.path(
+    rprojroot::find_root(rprojroot::has_dir(".git")),
+    "analyses",
+    "tumor-purity-exploration"
+  )
+
+  # Define path to metadata file which has been filtered to only biospecimens that
+  #  survive the cancer-group-level threshold
+  tumor_purity_file <- file.path(
+    tumor_purity_dir,
+    "results",
+    "thresholded_rna_stranded_same-extraction.tsv"
+  )
+
+  # Load the function to filter IDs
+  source(
+    file.path(tumor_purity_dir, "util", "function_filter-by-threshold.R")
+  )
+
+  # Filter the expression data
+  stranded_expr <- filter_expression_by_tumor_purity(stranded_expr,
+                                                     tumor_purity_file)
+} else {
+  tumor_purity_suffix <- ""
+}
+
+
 # high confidence cnv losses from `03-tp53-cnv-loss-domain.Rmd`
-cnv_tp53_loss <- read_tsv(file.path(results_dir, "loss_overlap_domains_tp53.tsv"))
+cnv_tp53_loss <- read_tsv(file.path(results_dir, 
+                                    glue::glue("loss_overlap_domains_tp53{tumor_purity_suffix}.tsv")))
 
 # generate txdb oblect from gtf file to gather exon and intron locations
 annotation_directory <- file.path(root_dir,
@@ -164,16 +211,21 @@ if(nrow(putative_onco_tp53_fusion) > 0) {
   if (nrow(bk_overlaps_intron) == 0) {
     # only saving fusion calls overlapping exon 1
     bk_overlaps_exon %>% 
-      write_tsv(file.path(results_dir, "fusion_bk_tp53_loss.tsv"))
+      write_tsv(file.path(results_dir, 
+                          glue::glue("fusion_bk_tp53_loss{tumor_purity_suffix}.tsv")))
   }else if (nrow(bk_overlaps_exon) == 0) {
     # only saving fusion calls overlapping intron 1
     bk_overlaps_intron %>% 
-      write_tsv(file.path(results_dir, "fusion_bk_tp53_loss.tsv"))
+      write_tsv(file.path(results_dir,
+                          glue::glue("fusion_bk_tp53_loss{tumor_purity_suffix}.tsv")))
+
   } else {
     # bind calls overlapping exon1 or intron1
     bind_rows(bk_overlaps_exon,
               bk_overlaps_intron) %>%
-      write_tsv(file.path(results_dir, "fusion_bk_tp53_loss.tsv"))
+      write_tsv(file.path(results_dir,
+                          glue::glue("fusion_bk_tp53_loss{tumor_purity_suffix}.tsv")))
+
   }
   
 }
@@ -233,12 +285,16 @@ if (nrow(sv_with_lowexpr) == 0) {
   # only saving sv_with_loss_cnv here
   # because sv_with_lowexpr is empty
   sv_with_loss_cnv %>% 
-    write_tsv(file.path(results_dir, "sv_overlap_tp53.tsv"))
+    write_tsv(file.path(results_dir,
+                        glue::glue("sv_overlap_tp53{tumor_purity_suffix}.tsv")))
+
 } else if (nrow(sv_with_loss_cnv) == 0) {
   # only saving sv_with_lowexpr here
   # because sv_with_loss_cnv is empty
   sv_with_lowexpr %>% 
-    write_tsv(file.path(results_dir, "sv_overlap_tp53.tsv"))
+    write_tsv(file.path(results_dir,
+                        glue::glue("sv_overlap_tp53{tumor_purity_suffix}.tsv")))
+
 } else {
   # bind rows of both sv_with_lowexpr
   # and sv_with_loss_cnv and save
@@ -246,7 +302,8 @@ if (nrow(sv_with_lowexpr) == 0) {
     sv_with_loss_cnv,
     sv_with_lowexpr
   ) %>%
-    write_tsv(file.path(results_dir, "sv_overlap_tp53.tsv"))
+    write_tsv(file.path(results_dir,
+                        glue::glue("sv_overlap_tp53{tumor_purity_suffix}.tsv")))
 }
 ```
 

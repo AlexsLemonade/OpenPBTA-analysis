@@ -146,3 +146,9 @@ The notebook `05-seq-center-mitochondrial-genes.Rmd` performs exploratory analys
 To enable this analysis, this pipeline will also perform transcriptomic dimension reduction on TPM data for both all genes and all non-mitochondrial genes.
 The TPM-derived UMAPs are assessed in this notebook.
 TPM was used rather than FPKM to enable more accurate re-normalization after filtering out mitochondrial genes from the full TPM data.
+
+
+### Explore potential effects of low-tumor purity samples
+
+The notebook `06-umap-tumor-purity-threshold.Rmd` visualizes UMAPs, colored by either cancer group or broad histology, for the full stranded data and for only samples that pass a tumor purity threshold.
+To enable this analysis, the pipeline will also perform transcriptomic dimension reduction on a filtered subset of the stranded RNASeq cohort consisting of samples that pass the tumor purity threshold.
