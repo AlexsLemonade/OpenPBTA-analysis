@@ -49,6 +49,7 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   --output_directory results \
   --neighbors 2 \
   --skip_tsne \
+  --log2_transform \
   --apply_tumor_purity_threshold
 
 # generate plot lists for both stranded RSEM and poly-A kallisto
