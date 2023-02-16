@@ -66,6 +66,9 @@ _NF1_ positive examples are additionally filtered to remove missense mutations, 
 * `05-tp53-altered-annotation.Rmd` here we take a deeper look into tp53 altered status with respect to number of SNVs/CNVs suggesting bi-allelic mutations or with respect to cancer_predisposition, molecular subtypes and tp53 classifier scores.
 
 
+* `10-tp53-tumor-purity-threshold.Rmd` specifically reassesses results generated from the filtered tumor purity stranded data and compares them to original results with the full stranded data.
+ This notebook is only run by the alternative pipeline in [`run_classifer-tumor-purity-threshold.sh`](./run_classifer-tumor-purity-threshold.sh).
+
 Columns | Description
 -- | --
 sample_id	| 7316-XXXX id used to match DNA and RNA Kids_First_Biospecimen_IDs
