@@ -41,6 +41,17 @@ Rscript --vanilla scripts/run-dimension-reduction.R \
   --neighbors 2 \
   --skip_tsne
 
+# Run at tumor purity threshold
+Rscript --vanilla scripts/run-dimension-reduction.R \
+  --expression ../../data/pbta-gene-expression-rsem-fpkm.stranded.rds \
+  --metadata ../../data/pbta-histologies.tsv \
+  --filename_lead rsem_stranded_log_tumor-purity-threshold \
+  --output_directory results \
+  --neighbors 2 \
+  --skip_tsne \
+  --log2_transform \
+  --apply_tumor_purity_threshold
+
 # generate plot lists for both stranded RSEM and poly-A kallisto
 Rscript --vanilla scripts/get-plot-list.R  \
   --input_directory results \
@@ -62,3 +73,6 @@ Rscript --vanilla -e 'rmarkdown::render("04-explore-sequencing-center-effects.Rm
 
 # Exploration of UMAPs if mitochondrial genes are removed
 Rscript --vanilla -e 'rmarkdown::render("05-seq-center-mitochondrial-genes.Rmd")'
+
+# Exploration of UMAPs if only high tumor purity samples are considered
+Rscript --vanilla -e 'rmarkdown::render("06-umap-tumor-purity-threshold.Rmd")'

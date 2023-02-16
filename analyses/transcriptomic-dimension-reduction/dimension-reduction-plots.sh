@@ -29,3 +29,7 @@ Rscript --vanilla -e 'rmarkdown::render("04-explore-sequencing-center-effects.Rm
 
 # Exploration of UMAPs if mitochondrial genes are removed
 Rscript --vanilla -e 'rmarkdown::render("05-seq-center-mitochondrial-genes.Rmd")'
+
+# UMAP visualization with the tumor purity filtered dataset
+Rscript --vanilla -e 'rmarkdown::render("06-umap-tumor-purity-threshold.Rmd")'
+
