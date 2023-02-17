@@ -1,0 +1,166 @@
+---
+title: "UMAP at tumor purity threshold"
+author: "S. Spielman for CCDL"
+date: "2023"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+---
+
+```{r setup, include=FALSE}
+library(magrittr)
+library(ggplot2)
+
+# set overall theme
+theme_set(
+  theme_bw() + 
+    theme(
+      legend.position = "bottom", 
+      legend.text = element_text(size = rel(0.6)),
+      legend.title = element_text(size = rel(0.75)),
+      legend.key.size = unit(0.35, "cm")
+    )
+)
+
+# seed
+set.seed(2023)
+```
+This notebook explores how the UMAP made from stranded RNA-Seq data might change if only samples that pass a tumor purity threshold are considered.
+
+## Setup
+
+First, define directories and file names: 
+```{r}
+# Directories
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+data_dir <- file.path(root_dir, "data")
+palette_dir <- file.path(root_dir, "figures", "palettes")
+dim_red_dir <- file.path(
+  root_dir,
+  "analyses",
+  "transcriptomic-dimension-reduction"
+)
+
+# metadata file
+meta_file <- file.path(data_dir, "pbta-histologies.tsv")
+
+# palette mapping file
+pal_file <- file.path(palette_dir,  "broad_histology_cancer_group_palette.tsv")
+
+# UMAP embedding files
+umap_all_file <- file.path(
+  "results",
+  "rsem_stranded_log_umap_scores_aligned.tsv"
+)
+umap_threshold_file <- file.path(
+  "results",
+  "rsem_stranded_log_tumor-purity-threshold_umap_scores_aligned.tsv"
+)
+```
+
+And read in and prepare the files:
+```{r}
+metadata_df <- readr::read_tsv(meta_file, guess_max = 10000)
+
+palette_mapping_df <- readr::read_tsv(pal_file)
+
+# Names to retain from UMAP files
+retain_cols <- c("X1", "X2", "Kids_First_Biospecimen_ID", "dataset")
+
+# Read in and combine UMAP and palette files into a single df
+all_umaps <- readr::read_tsv(umap_all_file) %>% 
+  dplyr::mutate(dataset = "full data") %>%
+  dplyr::select(retain_cols)
+
+umap_df <- readr::read_tsv(umap_threshold_file) %>% 
+  dplyr::mutate(dataset = "filtered to tumor purity threshold") %>%
+  dplyr::select(retain_cols) %>%
+  # bind rows with full results
+  dplyr::bind_rows(all_umaps) %>%
+  # rename umaps
+  dplyr::rename(UMAP1 = X1, UMAP2 = X2) %>%
+  # combine with metadata
+  dplyr::inner_join(
+    dplyr::select(metadata_df, 
+                  Kids_First_Biospecimen_ID, 
+                  cancer_group, 
+                  broad_histology), 
+    by = "Kids_First_Biospecimen_ID"
+  ) %>%
+  # combine with display names
+  dplyr::inner_join(
+    dplyr::select(palette_mapping_df,
+                  broad_histology, broad_histology_display, 
+                  cancer_group, cancer_group_display),
+    by = c("cancer_group", "broad_histology")
+)
+
+
+# Data frame with all UMAP results
+umap_df
+```
+
+
+Now we will prepare palettes:
+
+```{r}
+# set up broad histology display palette
+bh_df <- palette_mapping_df %>%
+  dplyr::select(broad_histology_display, broad_histology_hex) %>%
+  dplyr::distinct() 
+pal_bh <- bh_df$broad_histology_hex
+names(pal_bh) <- bh_df$broad_histology_display
+
+# set up cancer group display palette
+cg_df <- palette_mapping_df %>%
+  dplyr::select(cancer_group_display, cancer_group_hex) %>%
+  dplyr::distinct() %>%
+  tidyr::drop_na()
+pal_cg <- cg_df$cancer_group_hex
+names(pal_cg) <- cg_df$cancer_group_display
+```
+
+
+## UMAPs
+
+First, we'll display UMAPs colored by `broad_histology_display`. 
+The panel labeled "full data" represents the UMAP presented in the manuscript.
+
+
+```{r}
+ggplot(umap_df) + 
+  aes(x = UMAP1, y = UMAP2, 
+      color = broad_histology_display) + 
+  geom_point(size = 1, alpha = 0.7) + 
+  # facet by full data vs. tumor purity threshold data
+  facet_grid(~dataset) +
+  scale_color_manual(values = pal_bh)
+```
+
+
+And now by cancer group display:
+
+```{r}
+ggplot(umap_df) + 
+  aes(x = UMAP1, y = UMAP2, 
+      color = cancer_group_display) + 
+  geom_point(size = 1, alpha = 0.7) + 
+  # facet by full data vs. tumor purity threshold data
+  facet_grid(~dataset) +
+  scale_color_manual(values = pal_cg) + 
+  # tweak legend so it fit in rendered HTML
+  guides(color = guide_legend(title.position = "top", ncol=4))
+```
+
+## Conclusions
+
+UMAPs are broadly consistent before and after filtering samples on tumor purity.
+It is worth noting that the filtered data may have fewer histology groups compared to the full data set because of how filtering was applied. 
+
+
+## sessionInfo
+
+```{r print session info}
+sessionInfo()
+```

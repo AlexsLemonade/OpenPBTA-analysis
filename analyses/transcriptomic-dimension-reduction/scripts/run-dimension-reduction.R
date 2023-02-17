@@ -106,7 +106,12 @@ option_list <- list(
     action = "store_true",
     default = FALSE,
     help = "If used, log2(x + 1) transformation will be performed prior to dimension reduction"
-  )
+  ),
+  optparse::make_option(
+    "--apply_tumor_purity_threshold",
+    action = "store_true",
+    default = FALSE,
+    help = "This flag turns on filtering by tumor purity.")
 )
 
 # Read the arguments passed
@@ -158,6 +163,36 @@ expression_data <- expression_data %>%
   dplyr::select(!!rlang::sym(feature_identifier), dplyr::starts_with("BS_")) %>%
   dplyr::filter(complete.cases(.)) %>%
   tibble::column_to_rownames(var = feature_identifier)
+
+# Filter data if tumor purity threshold is turned on
+# we want to do this before we drop low-count genes since it will remove samples
+if (opt$apply_tumor_purity_threshold) {
+
+  # Define path to tumor purity module
+  tumor_purity_dir <- file.path(
+    rprojroot::find_root(rprojroot::has_dir(".git")),
+    "analyses",
+    "tumor-purity-exploration"
+  )
+
+  # Define path to metadata file which has been filtered to only biospecimens that
+  #  survive the cancer-group-level threshold
+  tumor_purity_file <- file.path(
+    tumor_purity_dir,
+    "results",
+    "thresholded_rna_stranded_same-extraction.tsv"
+  )
+
+  # Load the function to filter IDs
+  source(
+    file.path(tumor_purity_dir, "util", "function_filter-by-threshold.R")
+  )
+
+  # Filter the expression data
+  expression_data <- filter_expression_by_tumor_purity(expression_data,
+                                                       tumor_purity_file)
+}
+
 
 # Filter out low count genes
 genes_to_keep <- rowSums(expression_data) >= gene_count_threshold
