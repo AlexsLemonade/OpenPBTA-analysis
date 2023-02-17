@@ -67,7 +67,7 @@ _NF1_ positive examples are additionally filtered to remove missense mutations, 
 
 
 * `10-tp53-tumor-purity-threshold.Rmd` specifically reassesses results generated from the filtered tumor purity stranded data and compares them to original results with the full stranded data.
- This notebook is only run by the alternative pipeline in [`run_classifer-tumor-purity-threshold.sh`](./run_classifer-tumor-purity-threshold.sh).
+ This notebook is only run by the alternative pipeline in [`run_classifier-tumor_purity_threshold.sh`](./run_classifier-tumor_purity_threshold.sh).
 
 Columns | Description
 -- | --
