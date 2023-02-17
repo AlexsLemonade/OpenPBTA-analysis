@@ -191,3 +191,6 @@ There are several figures in `results/tumor-purity-threshold/` that are exported
 - `tp53-fpkm-status_tumor-purity-threshold.pdf`: Distribution of TP53 FPKM across TP53 altered status groups
 - `tp53-roc_tumor-purity-threshold.pdf`: ROC curve of classifier
 - `tp53-score-status_tumor-purity-threshold.pdf`: Distribution of TP53 scores across TP53 altered status groups
+
+It is additionally worth noting that the "shuffled" data version classified in `01-apply-classifier.py` and visualized in the ROC curve exported by `06-evaluate-classifier.py` is not currently reproducible, as discussed: https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1670#issuecomment-1435064597
+AUC values for this control classifier have been observed across the range 0.34-0.65, which means that results are qualitatively not influenced by this known problem.
