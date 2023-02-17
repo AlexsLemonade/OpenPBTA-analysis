@@ -263,7 +263,7 @@ new_roc
 ```
 
 The classifier performance follows a similar trend to previous results. 
-Shuffled (randomized) data for both versions of the data produced an AUC around 0.5 (0.57 and 0.52), indicating performance is no different from a random classifier as expected.
+Shuffled (randomized) data for both versions of the data produced an AUC around 0.5, indicating performance is no different from a random classifier as expected.
 Thresholded data produced an AUC=0.94 which is very high, as is the original analysis which produced AUC=0.86.
 
 Here we'll export this new ROC curve:
@@ -494,7 +494,6 @@ ggsave(
   width = 8, 
   height = 3.75
 )
-
 ```
 
 ## Re-analysis 5: LFS patients
@@ -558,10 +557,13 @@ original_sample_ids <- metadata %>%
 
 status_original %>%
   dplyr::filter(sample_id %in% original_sample_ids) %>%
-  dplyr::pull(tp53_score)
+  dplyr::select(sample_id, Kids_First_Biospecimen_ID, tp53_score)
 ```
 
-Here, it appears that all but **2** tumors have scores >0.5, so we may want to check this aspect as well.
+Here, it appears that all but 2 tumors have scores >0.5 (`sample_id`s `7316-2189` and `7316-2640`).
+But, a different sample associated with `7316-2189` has a score >0.5, so this means indeed only 1 tumor has that lower score.
+
+
 
 For thresholded comparison, as we found in this [tumor purity exploration notebook](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/78e4969b99b4ebbc22915b9d8b58b5b3f6a9cad5/analyses/tumor-purity-exploration/02_explore-tumor-purity-thresholds.Rmd), only two hypermutator samples are present in the thresholded set:
 
