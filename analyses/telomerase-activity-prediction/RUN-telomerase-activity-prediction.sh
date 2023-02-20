@@ -51,6 +51,7 @@ else
 
   # Distribution of telomerase scores in TERTp-positive vs. TERTp-negative samples
   echo "Plotting distribution of EXTEND scores in samples with or without TERTp..."
+  Rscript --vanilla 06-TERTp-EXTENDScores.R
 fi
 
 # Regardless of which run option, we would like to analyze results at a tumor purity threshold:
