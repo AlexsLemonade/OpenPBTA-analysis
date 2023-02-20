@@ -18,6 +18,8 @@ data_dir <- file.path(root_dir, "data")
 analysis_dir <- file.path(root_dir, 
                           "analyses", 
                           "telomerase-activity-prediction")
+input_dir <- file.path(analysis_dir, "input")
+results_dir <- file.path(analysis_dir, "results")
 
 extend_file <- file.path(analysis_dir, 
                          "results", 
@@ -34,6 +36,12 @@ maf_file <- file.path(data_dir,
 
 hotspot_file <- file.path(data_dir, 
                           "pbta-snv-scavenged-hotspots.maf.tsv.gz")
+
+sv_file <- file.path(data_dir, 
+                  "pbta-sv-manta.tsv.gz")
+
+sv_annot_file <- file.path(input_dir, 
+                     "AnnotSV_VJFSh10MHo.tsv")
 
 
 # Output:
@@ -59,6 +67,40 @@ metadata_df <- read_tsv(metadata_file, guess_max = 10000)
 maf_df <- read_tsv(maf_file)
 hotspot_df <- read_tsv(hotspot_file)
 
+# Read in and export TERT SV data in BED format for knotAnnotSV to assess pathogenicity of the SV call
+# This BED file was put into https://lbgi.fr/AnnotSV/ and the TSV downloaded for ACMG assessment below
+sv_df <- read_tsv(sv_file) %>%
+  # only keep PASS variants
+  filter(FILTER == "PASS",
+         # let's check all 
+         grepl("TERT", Gene.name)) %>%
+  select(chrom = SV.chrom, chromStart = SV.start, chromEnd = SV.end, name = AnnotSV.ID, 
+                  SVtype = SV.type, Sample = Kids.First.Biospecimen.ID.Tumor) %>%
+  write_tsv(file.path(results_dir, "mantaSV_tert.bed"))
+
+# Read in knotAnnotSV results
+# knotAnnotSV will create one line for the "full" SV and one line for the SV "split" into each gene if the SV covers multiple genes.
+# There were cases of SVs overlapping TERT (above in `sv_df`), but when split, none of these had an ACMG LP/P call.
+tert_sv_bs_ids <- read_tsv(sv_annot_file) %>%
+  # filter for ACMG class 4 or 5 (LP or P)
+  filter((ACMG_class == 4 | ACMG_class == 5),
+         Gene_name == "TERT") %>%
+  pull(Samples_ID) %>%
+  unique()
+
+# Get sample ids for TERT SV bs ids
+tertsv_sample_ids <- metadata_df %>%
+  filter(Kids_First_Biospecimen_ID %in% tert_sv_bs_ids) %>%
+  select(sample_id)
+  
+# Now get the RNASeq stranded IDs for those sample ids
+# note that not all of these may be stranded!
+rna_tertsv_bs_ids <- metadata_df %>%
+  filter(sample_id %in% tertsv_sample_ids, 
+         experimental_strategy == "RNA-Seq",
+         RNA_library == "stranded") %>%
+  pull(Kids_First_Biospecimen_ID) 
+# These are both polyA(!), so we won't add to this plot
 
 # TERTp-positive samples and relationship to EXTEND scores ----------------------
 snps <- c("rs1561215364", "rs1242535815")
@@ -93,6 +135,7 @@ extend_df <- extend_df %>%
                         "TERTp mutation present", 
                         "TERTp mutation not observed")) %>%
   arrange(tertp)
+
 
 
 # Test is not significant:
@@ -148,6 +191,3 @@ tert_terc_plot <- ggplot(fpkm_subset_df) +
 ggsave(tert_terc_plot_file, 
        tert_terc_plot,
        width = 8, height = 5)
-
-         
-  
