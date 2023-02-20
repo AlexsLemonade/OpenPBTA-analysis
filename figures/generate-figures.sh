@@ -41,7 +41,7 @@ mkdir -p pdfs/supp/figs6/panels
 
 #### Make sure color palettes are up-to-date ------------------------
 Rscript --vanilla scripts/color_palettes.R
-Rscript -e "rmarkdown::render('mapping-histology-labels.Rmd', clean = TRUE, params = list(release = 'release-v22-20220505'))"
+Rscript -e "rmarkdown::render('mapping-histology-labels.Rmd', clean = TRUE, params = list(release = 'release-v23-20230115'))"
 
 ### Make sure relevant scratch/ files are up to date ------------------------------
 
