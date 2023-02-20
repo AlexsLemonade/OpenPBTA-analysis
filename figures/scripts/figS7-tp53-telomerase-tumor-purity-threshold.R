@@ -9,7 +9,7 @@ library(tidyverse)
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
 # Declare output directory
-output_dir <- file.path(root_dir, "figures", "pdfs", "figS7", "panels")
+output_dir <- file.path(root_dir, "figures", "pdfs", "supp", "figS7", "panels")
 if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
 }
@@ -190,7 +190,7 @@ tp53_telo_tmb_boxplot <- ggplot(plot_df) +
   facet_wrap(~score_type, nrow = 2) +
   ggpubr::theme_pubr() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust=1, size = rel(0.5)),
+    axis.text.x = element_text(angle = 45, hjust = 1, size = rel(0.5)),
     # Sizing for compilation - small figure export
     axis.text.y = element_text(size = rel(0.5)),
     axis.title = element_text(size = rel(0.5)),
@@ -233,10 +233,10 @@ tp53_plot_legend_df <- plot_df %>%
 legend_name <- "Mutation status"
 tp53_plot_for_legend <- ggplot(tp53_plot_legend_df) +
   aes(x = cancer_group, y = tmb, shape = mutator_factor, fill = mutator_factor, color = mutator_factor, size = mutator_factor, alpha = mutator_factor) +
-  geom_point(size =3) +
-  scale_size_manual(name = legend_name, values = c(normal_size, mutator_size))+
+  geom_point(size = 3) +
+  scale_size_manual(name = legend_name, values = c(normal_size, mutator_size)) +
   scale_shape_manual(name = legend_name, values = c(normal_pch, mutator_pch)) +
-  scale_alpha_manual(name = legend_name, values = c(normal_alpha, 1))+
+  scale_alpha_manual(name = legend_name, values = c(normal_alpha, 1)) +
   scale_color_manual(name = legend_name,values = c(unname(legend_colors["Normal"]), "black")) +
   scale_fill_manual(name = legend_name, values = c("black", unname(legend_colors["Hypermutant"]))) +
   # theme to remove gray background. this strategy works
