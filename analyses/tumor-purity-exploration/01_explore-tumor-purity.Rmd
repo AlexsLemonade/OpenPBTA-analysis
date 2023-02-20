@@ -142,14 +142,14 @@ tumor_palette_df <- metadata_tumor_wgs %>%
 cancer_group_violins <- plot_tumor_violins(tumor_palette_df, cancer_group_display, cancer_group_hex, "Cancer group")
 
 # Broad histology
-broad_histology_violions <- plot_tumor_violins(tumor_palette_df, broad_histology_display, broad_histology_hex, "Broad histology")
+broad_histology_violins <- plot_tumor_violins(tumor_palette_df, broad_histology_display, broad_histology_hex, "Broad histology")
 ```
 
 
 ```{r, fig.width = 10, fig.height = 4}
 # Print plots
 cancer_group_violins
-broad_histology_violions
+broad_histology_violins
 ```
 
 
