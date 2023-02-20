@@ -152,3 +152,4 @@ TPM was used rather than FPKM to enable more accurate re-normalization after fil
 
 The notebook `06-umap-tumor-purity-threshold.Rmd` visualizes UMAPs, colored by either cancer group or broad histology, for the full stranded data and for only samples that pass a tumor purity threshold.
 To enable this analysis, the pipeline will also perform transcriptomic dimension reduction on a filtered subset of the stranded RNASeq cohort consisting of samples that pass the tumor purity threshold.
+The notebook will also export an additional figure, `plots/umap_tumor-purity-threshold.pdf`, which shows this UMAP colored by broad histology.

@@ -12,7 +12,7 @@ params:
 
 ```{r setup, include=FALSE}
 library(tidyverse)
-theme_set(theme_bw())
+theme_set(ggpubr::theme_pubr())
 ```
 This notebook performs the following:
 
@@ -29,10 +29,12 @@ This section defines a function which is needed in this (and only in this!) note
 # Function to make violin plots of tumor_fraction for either
 # broad_histology_display or cancer_group_display groups
 plot_tumor_violins <- function(df, display_name, display_hex, x_lab) {
-  # Filter to display_name group so that we can order by group-wise median,
+  # Wrap group names to fit in the plot.
+  # Then, filter to display_name group so that we can order by group-wise median,
   #  while ensuring that 'Other' is still last
   df <- df %>%
-  mutate(display_var = forcats::fct_reorder({{display_name}}, tumor_fraction),
+  mutate(display_var = stringr::str_wrap({{display_name}}, 25),
+         display_var = forcats::fct_reorder(display_var, tumor_fraction),
          display_var = forcats::fct_relevel(display_var, "Other", after = Inf))
 
   # Plot
@@ -43,8 +45,15 @@ plot_tumor_violins <- function(df, display_name, display_hex, x_lab) {
     geom_violin(alpha = 0.5) +
     stat_summary(geom = "point", fun.y = "median") +
     scale_fill_identity() +
-    xlab(x_lab) +
-    theme(axis.text.x = element_text(angle = 30, hjust = 1))
+    labs(
+      x = x_lab,
+      y = "Tumor purity from WGS"
+    ) +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+      axis.text.y = element_text(size = 10),
+      axis.title = element_text(size = 12)
+    )
 }
 ```
 
@@ -58,12 +67,17 @@ pal_dir <- file.path(root_dir, "figures", "palettes")
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
 pal_file <- file.path(pal_dir, "broad_histology_cancer_group_palette.tsv")
 
-# Output
+# Output directories
 results_dir <- file.path("results")
 if (!(dir.exists(results_dir))) {
   dir.create(results_dir)
 }
+plots_dir <- file.path("plots")
+if (!(dir.exists(plots_dir))) {
+  dir.create(plots_dir)
+}
 rna_stranded_df_file <- file.path(results_dir, "rna_stranded_same-extraction.tsv")
+cancer_group_violin_file <- file.path(plots_dir, "cancer_group_tumor_fraction.pdf")
 ```
 
 
@@ -125,16 +139,33 @@ tumor_palette_df <- metadata_tumor_wgs %>%
   drop_na()
 
 # Cancer group
-plot_tumor_violins(tumor_palette_df, cancer_group_display, cancer_group_hex, "Cancer group")
+cancer_group_violins <- plot_tumor_violins(tumor_palette_df, cancer_group_display, cancer_group_hex, "Cancer group")
 
 # Broad histology
-plot_tumor_violins(tumor_palette_df, broad_histology_display, broad_histology_hex, "Broad histology")
+broad_histology_violins <- plot_tumor_violins(tumor_palette_df, broad_histology_display, broad_histology_hex, "Broad histology")
+```
+
+
+```{r, fig.width = 10, fig.height = 4}
+# Print plots
+cancer_group_violins
+broad_histology_violins
+```
+
+
+We'll export the cancer group plot:
+
+```{r}
+ggsave(cancer_group_violin_file,
+       cancer_group_violins, 
+       width = 11, 
+       height = 4)
 ```
 
 
 
 
-Distribution across sequencing centers, highlighting cancer groups:
+The following plot shows the distribution across sequencing centers, highlighting cancer groups:
 
 ```{r}
 # use jitter to highlight diagnoses
@@ -229,7 +260,7 @@ The new `rna_stranded_df` contains information of interest for transcriptomic ex
 rna_stranded_df
 ```
 
-Let's export this TSV for future use
+Let's export this TSV for future use:
 
 ```{r}
 # keep only IDs and tumor_fraction for export

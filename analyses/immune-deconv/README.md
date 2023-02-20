@@ -62,6 +62,7 @@ This notebook visualizes results from `quanTIseq` deconvolution and exports two 
 #### 03-quantiseq-at-threshold.Rmd
 
 This notebook performs exploratory analysis on `quanTIseq` results generated from stranded RNA libraries filtered to those that pass a tumor purity threshold.
+It additionally exports the file `plots/tumor-purity-threshold_quantiseq-cancer-groups.pdf` which shows the distribution of fractions across cancer groups for this subsetted data.
 
 ### Running the analysis
 
