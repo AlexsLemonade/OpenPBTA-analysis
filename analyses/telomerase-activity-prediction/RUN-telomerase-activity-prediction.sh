@@ -49,13 +49,14 @@ else
   echo "Plotting distribution of EXTEND scores in MB subtypes..."
   Rscript --vanilla 05-Comparing-MolecularSubtypes-EXTENDScores.R
 
-  # Distribution of telomerase scores in TERTp-positive vs. TERTp-negative samples
-  echo "Plotting distribution of EXTEND scores in samples with or without TERTp..."
-  Rscript --vanilla 06-TERTp-EXTENDScores.R
-
 fi
 
-# Regardless of which run option, we would like to analyze results at a tumor purity threshold:
+# Regardless of which run option, we would like to assess TERT alterations for review and analyze results at a tumor purity threshold.
+
+# Distribution of telomerase scores in TERTp-positive vs. TERTp-negative samples
+echo "Plotting distribution of EXTEND scores in samples with or without TERTp..."
+Rscript --vanilla 06-TERTp-EXTENDScores.R
+  
 echo "Exploring results at a tumor purity threshold..."
 
 # Generate EXTEND scores
