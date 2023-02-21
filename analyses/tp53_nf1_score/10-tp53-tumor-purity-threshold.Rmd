@@ -271,7 +271,10 @@ Here we'll export this new ROC curve:
 # Update colors and line style to match manuscript before export
 new_roc <- new_roc + 
   scale_color_manual(name = "", values = binary_pal$hex_codes) + 
-  scale_linetype_manual(name = "", values = c("solid", "solid"))
+  scale_linetype_manual(name = "", values = c("solid", "solid")) + 
+  theme(
+    legend.text = element_text(size = 9)
+  )
 
 ggsave(tp53_roc_pdf, 
        new_roc, 
