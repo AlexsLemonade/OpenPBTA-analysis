@@ -79,32 +79,32 @@ get_histology_goi <- function(filename) {
 # Also not to be used outside of this context!
 # Given a vector of cancer groups, prep a MAF object to be used with
 # oncoplot() -- filters & combines the SNV, CNV, and fusion data
-prep_histology_maf <- function(included_cancer_groups, 
+prep_histology_maf <- function(included_cancer_groups,
                                main = TRUE) {
-  # The `main` argument indicates whether this is main text figure (TRUE), 
+  # The `main` argument indicates whether this is main text figure (TRUE),
   #  or a supplemental figure (FALSE). Main and supp use different cancer group
   #  columns.
-  
+
   # Get the sample ids to be included
   if (main) {
     included_sample_ids <- histologies_df %>%
       dplyr::filter(cancer_group_display %in% included_cancer_groups) %>%
-      dplyr::pull(Tumor_Sample_Barcode) 
-    
+      dplyr::pull(Tumor_Sample_Barcode)
+
     # Update histologies_df for palette compatibility
     histologies_df_temp <- histologies_df %>%
       dplyr::select(-cancer_group) %>%
       dplyr::rename(cancer_group = cancer_group_display)
-    
+
   } else {
     included_sample_ids <- histologies_df %>%
       dplyr::filter(cancer_group %in% included_cancer_groups) %>%
-      dplyr::pull(Tumor_Sample_Barcode)    
-    
+      dplyr::pull(Tumor_Sample_Barcode)
+
     # Create the temp variable as is
     histologies_df_temp <- histologies_df
   }
-  
+
   # MAF
   histology_maf_df <- maf_df %>%
     dplyr::filter(Tumor_Sample_Barcode %in% included_sample_ids)
@@ -118,7 +118,7 @@ prep_histology_maf <- function(included_cancer_groups,
     dplyr::filter(Tumor_Sample_Barcode %in% included_sample_ids)
 
 
-  
+
   # MAF object
   histology_maf_object <- prepare_maf_object(
     maf_df = histology_maf_df,
@@ -202,7 +202,7 @@ group_palette_df <-  readr::read_tsv(
 
 # Add cancer_group_display into histologies_df
 histologies_df <- dplyr::inner_join(
-  histologies_df, 
+  histologies_df,
   dplyr::select(group_palette_df, broad_histology, cancer_group, cancer_group_display)
 )
 
@@ -243,8 +243,8 @@ legend_ordering <- list(
   ),
   embryonal = c(
     "Medulloblastoma",
-    "Atypical Teratoid Rhabdoid Tumor",
-    "Other embryonal tumor"
+    "Other embryonal tumor",
+    "Atypical Teratoid Rhabdoid Tumor"
   ),
   other = c(
     "Ependymoma",
@@ -299,7 +299,7 @@ for (type_iter in seq_along(data_input_list)) {
 
     # For convenience, save the shorthand (e.g., "lgat") for filenames, etc.
     histology_shorthand <- goi_files_list[[histology]]$shorthand
-    
+
     # Get vector of cancer groups to include from hard-coded legend order
     included_cancer_groups <- legend_ordering[[histology_shorthand]]
 
@@ -378,7 +378,7 @@ for (type_iter in seq_along(data_input_list)) {
       # Get vector of cancer groups to include
       # These will be Other CNS oncoprint groups with a FALSE oncoprint_main
       included_cancer_groups <- group_palette_df %>%
-        dplyr::filter(oncoprint_group == histology, 
+        dplyr::filter(oncoprint_group == histology,
                       oncoprint_main == FALSE) %>%
         dplyr::pull(cancer_group)
 
@@ -402,7 +402,7 @@ for (type_iter in seq_along(data_input_list)) {
 
       # Use the paired color brewer palette for the cancer groups that will
       # be included
-      supp_colors <- RColorBrewer::brewer.pal(length(mutated_cancer_groups), 
+      supp_colors <- RColorBrewer::brewer.pal(length(mutated_cancer_groups),
                                               "Paired")
       names(supp_colors) <- sort(mutated_cancer_groups) # oncoprint will only do alphabetical
 
@@ -412,7 +412,7 @@ for (type_iter in seq_along(data_input_list)) {
         dplyr::distinct() %>%
         dplyr::arrange(cancer_group) %>%
         dplyr::pull(Tumor_Sample_Barcode)
-      
+
       # Construct the output PDF name
       output_pdf <- paste(specimen_type,
                           goi_files_list[[histology]]$shorthand,
@@ -422,7 +422,7 @@ for (type_iter in seq_along(data_input_list)) {
 
       pdf(
         file.path(supp_output_dir, output_pdf),
-        width = 18, # wider to fit the full legend 
+        width = 18, # wider to fit the full legend
         height = 10.35 # height to match increased width so this has the same aspect ratio as other oncoplots
       )
 
@@ -444,7 +444,7 @@ for (type_iter in seq_along(data_input_list)) {
         drawRowBar = FALSE,
         titleText = histology,
         titleFontSize = 1.3,
-        gene_mar = 10, 
+        gene_mar = 10,
         sampleOrder = sample_order
       )
 
