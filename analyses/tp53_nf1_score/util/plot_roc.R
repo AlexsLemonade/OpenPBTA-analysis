@@ -7,7 +7,7 @@ suppressPackageStartupMessages({
   library(ggsci)
 })
 
-plot_roc <- function(roc_df, plots_dir, fname){
+plot_roc <- function(roc_df, plots_dir, fname, export = TRUE){
 
   # add legend
   roc_df <- roc_df %>%
@@ -24,5 +24,12 @@ plot_roc <- function(roc_df, plots_dir, fname){
     scale_x_continuous(labels = scales::percent) +
     xlab("False Positive Rate") +
     ylab("True Positive Rate") + theme_pubr() + scale_color_simpsons()
-  ggsave(p, filename = file.path(plots_dir, fname), width = 8, height = 8)
+  
+  # Only save if export is TRUE
+  # If export is FALSE, return the plot directly
+  if (export) {
+    ggsave(p, filename = file.path(plots_dir, fname), width = 8, height = 8)
+  } else {
+    return(p)
+  }
 }

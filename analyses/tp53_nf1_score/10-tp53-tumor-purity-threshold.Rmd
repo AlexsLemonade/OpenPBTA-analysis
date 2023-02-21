@@ -1,0 +1,595 @@
+---
+title: "Assessing TP53 results at tumor purity threshold"
+author: "SJ Spielman for CCDL"
+date: 2023
+output: html_notebook
+---
+
+This notebook was written as part of manuscript revisions.
+Here, we explore how TP53-related results might change if only tumors at a certain level of known tumor purity (`tumor_fraction` metadata variable) are considered.
+Only stranded RNA data is considered here, as in the manuscript.
+
+The associated issue for this exploration is here: https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1624
+
+## Functions
+
+
+The chunk below defines a helper function used to convert an expression matrix into a data frame with relevant information, including TP53 status and cancer group.
+```{r function}
+# Convert a FPKM matrix to log2-transformed-FPKM data frame for TP53
+expression_matrix_to_df <- function(mat, status_df, metadata_df = metadata, palette_df = pal_df) { 
+  # mat is matrix of expression
+  # status_df contains information about tp53 status and scores
+  # metadata_df and palette_df are the metadata and histology palette data frames, respectively
+  
+  # Filter to TP53 expression only 
+  mat <- t(mat)[,"TP53"] 
+  
+  # log2
+  mat_log2 <- log2(mat + 1)
+  
+  # df
+  mat_log2 %>%
+    tibble::as_tibble(rownames = "Kids_First_Biospecimen_ID") %>%
+    dplyr::rename(tp53_fpkm = value) %>%
+    # join in tp53 status and scores
+    dplyr::inner_join(
+      dplyr::select(
+        status_df,
+        Kids_First_Biospecimen_ID,
+        tp53_score,
+        tp53_altered), 
+        by = "Kids_First_Biospecimen_ID"
+    ) %>%
+    
+    # join in cancer group
+    dplyr::inner_join(
+      dplyr::select(
+        metadata,
+        Kids_First_Biospecimen_ID,
+        cancer_group), 
+        by = "Kids_First_Biospecimen_ID"
+    ) %>%
+    # join in palette
+    dplyr::left_join(palette_df, by = "cancer_group")
+}
+```
+
+The chunk below defines a helper function to plot TP53 score or expression across status.
+
+
+```{r}
+plot_tp53_status <- function(df, var, y_lab) {
+  # df is a data frame with all relevant information
+  # var is the numeric variable of interest to plot across tp53 status
+  # y_lab is y-axis label
+  
+  # Prepare stats df for median +/ IQR of the given `var`
+  stats_df <- df %>%
+    dplyr::group_by(tp53_altered) %>%
+    dplyr::summarize(
+      y = median({{var}}, na.rm=TRUE),
+      ymin = quantile({{var}}, 0.25, na.rm=TRUE),
+      ymax = quantile({{var}}, 0.75, na.rm=TRUE)
+    )
+    
+  # Make/return plot
+  ggplot(df) +
+    aes(x = tp53_altered,
+        y = {{var}}) + 
+    geom_violin() +
+    geom_jitter(
+      aes(alpha = tp53_altered),
+          width = 0.1, size = 1
+    ) +
+    # Add median +/- IQR pointrange
+    geom_pointrange(data = stats_df, 
+                    aes(x = tp53_altered, y = y, ymin = ymin, ymax = ymax),
+                    color = "firebrick") + 
+    # Alpha scale
+    scale_alpha_manual(values = c(0.75, 0.75, 0.25), guide = FALSE) +
+    labs(
+      x = "TP53 altered status",
+      y = y_lab
+    )
+}
+```
+## Files and directories
+
+```{r}
+# pipe and plot theme
+`%>%` <- dplyr::`%>%`
+library(ggplot2)
+theme_set(ggpubr::theme_pubr())
+
+root_dir <- rprojroot::find_root(rprojroot::has_dir(".git")) 
+analysis_dir <- file.path(root_dir, "analyses")
+data_dir <- file.path(root_dir, "data")
+
+tp53_dir <- file.path(analysis_dir, "tp53_nf1_score")
+
+# source function to plot ROC curve
+source(file.path(tp53_dir, "util", "plot_roc.R"))
+
+# result directories
+results_dir_full <- file.path(tp53_dir, "results")
+results_dir_threshold <- file.path(results_dir_full, "tumor-purity-threshold")
+
+# output plots
+tp53_roc_pdf <- file.path(results_dir_threshold, "tp53-roc_tumor-purity-threshold.pdf") 
+tp53_score_status_pdf <- file.path(results_dir_threshold, "tp53-score-status_tumor-purity-threshold.pdf") 
+tp53_fpkm_status_pdf <- file.path(results_dir_threshold, "tp53-fpkm-status_tumor-purity-threshold.pdf") 
+tp53_cancer_groups_pdf <- file.path(results_dir_threshold, "tp53-cancer-groups_tumor-purity-threshold.pdf")
+```
+
+Read and prepare input files:
+
+```{r}
+# metadata file
+metadata <- readr::read_tsv(file.path(root_dir, 
+                                      "data", 
+                                      "pbta-histologies.tsv"), 
+                            guess_max = 10000)
+
+# palette file
+pal_dir <- file.path(
+  root_dir,
+  "figures",
+  "palettes"
+)
+
+pal_df <- readr::read_tsv(
+ file.path(
+   pal_dir,
+   "broad_histology_cancer_group_palette.tsv")
+) %>%
+  dplyr::select(cancer_group, cancer_group_display, cancer_group_hex)
+
+# binary palette file
+binary_pal <- readr::read_tsv(
+  file.path(pal_dir, "binary_color_palette.tsv")) %>%
+  # remove `na_color`
+  dplyr::filter(color_names != "na_color")
+
+
+# ROC score files -----
+# original files:
+roc_file_stranded_original <- readr::read_tsv(
+  file.path(results_dir_full, "stranded_TP53_roc_threshold_results.tsv")
+)
+roc_file_stranded_shuff_original <- readr::read_tsv(
+  file.path(results_dir_full, "stranded_TP53_roc_threshold_results_shuffled.tsv")
+)
+
+# tumor purity thresholded files:
+roc_file_stranded_thresholded <- readr::read_tsv(
+  file.path(results_dir_threshold,
+            "stranded_tumor-purity-threshold_TP53_roc_threshold_results.tsv")
+)
+roc_file_stranded_shuff_thresholded <- readr::read_tsv(
+  file.path(results_dir_threshold,
+            "stranded_tumor-purity-threshold_TP53_roc_threshold_results_shuffled.tsv")
+)
+
+## Status files -----
+
+status_original <- readr::read_tsv(
+    file.path(results_dir_full, "tp53_altered_status.tsv")
+  ) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA) %>%
+  # Filter down to stranded only
+  dplyr::inner_join(
+    dplyr::select(metadata, 
+                  Kids_First_Biospecimen_ID, 
+                  RNA_library)
+  ) %>%
+  dplyr::filter(RNA_library=="stranded") 
+
+# this is already only stranded
+status_thresholded <- readr::read_tsv(
+  file.path(results_dir_threshold, 
+            "tp53_altered_status_tumor-purity-threshold.tsv")
+  ) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA)
+
+## Expression data ------
+stranded_expression <- readr::read_rds(
+  file.path(data_dir,
+            "pbta-gene-expression-rsem-fpkm-collapsed.stranded.rds")
+)
+```
+
+
+The expression data needs a second version filtered to the thresholded set:
+```{r}
+# Create a second version of this with only tumor-purity passing samples
+# Define path to tumor purity module
+tumor_purity_dir <- file.path(
+  analysis_dir,
+  "tumor-purity-exploration"
+)
+
+# Define path to metadata file which has been filtered to only biospecimens that
+#  survive the cancer-group-level threshold
+tumor_purity_file <- file.path(
+  tumor_purity_dir,
+  "results",
+  "thresholded_rna_stranded_same-extraction.tsv"
+)
+
+# Load the function to filter IDs
+source(
+  file.path(tumor_purity_dir, "util", "function_filter-by-threshold.R")
+)
+
+# Filter the expression data
+stranded_expression_thresholded <- filter_expression_by_tumor_purity(stranded_expression,
+                                                                     tumor_purity_file)
+
+
+# Convert both to dfs, and join with tp53 status
+tp53_df <- expression_matrix_to_df(stranded_expression, status_original)
+tp53_thresholded_df <- expression_matrix_to_df(stranded_expression_thresholded, status_thresholded)
+```
+
+## Re-analysis 1: ROC curves
+
+In the manuscript, we found:
+
+https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L194
+
+> The classifier achieved a high accuracy (AUROC = 0.85) for rRNA-depleted, stranded samples compared to randomly shuffled _TP53_ scores (**Figure {@fig:Fig4}A**).
+
+First, here's the original ROC presented in the manuscript
+```{r}
+plot_roc(roc_df = dplyr::bind_rows(roc_file_stranded_original,
+                                   roc_file_stranded_shuff_original), 
+         # the next 2 path args don't matter since export is FALSE
+         plots_dir, 
+         fname = "", 
+         export = FALSE)
+```
+
+
+Now, here is the new ROC generated from thresholded data:
+```{r}
+new_roc <- plot_roc(roc_df = dplyr::bind_rows(roc_file_stranded_thresholded,
+                                   roc_file_stranded_shuff_thresholded), 
+         # the next 2 path args don't matter since export is FALSE
+         plots_dir, 
+         fname = "", 
+         export = FALSE)
+new_roc
+```
+
+The classifier performance follows a similar trend to previous results. 
+Shuffled (randomized) data for both versions of the data produced an AUC around 0.5, indicating performance is no different from a random classifier as expected.
+Thresholded data produced an AUC=0.94 which is very high, as is the original analysis which produced AUC=0.86.
+
+Here we'll export this new ROC curve:
+```{r}
+# Update colors and line style to match manuscript before export
+new_roc <- new_roc + 
+  scale_color_manual(name = "", values = binary_pal$hex_codes) + 
+  scale_linetype_manual(name = "", values = c("solid", "solid")) + 
+  theme(
+    legend.text = element_text(size = 9)
+  )
+
+ggsave(tp53_roc_pdf, 
+       new_roc, 
+       width = 4.5, 
+       height = 4, 
+       # needed for compilation
+       useDingbats = FALSE)
+```
+
+## Re-analysis 2: TP53 scores between "activated" and "lost" tumors.
+
+In the manuscript, we found: 
+
+https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L197
+
+> While we expected that samples annotated as "lost" would have higher _TP53_ scores than would samples annotated as "other," we observed that samples annotated as "activated" had similar _TP53_ scores to those annotated as "lost" (**Figure {@fig:Fig4}B**, Wilcoxon p = 0.23).
+
+
+Previously, we observed the following:
+```{r}
+# Wilcoxon:
+wilcox.test(
+ tp53_df$tp53_score[tp53_df$tp53_altered == "loss"], 
+ tp53_df$tp53_score[tp53_df$tp53_altered == "activated"] 
+)
+
+# violin/jitter plot:
+ggplot(tp53_df) + 
+  aes(x = tp53_altered, 
+      y = tp53_score) + 
+  geom_violin() +
+  geom_jitter(width = 0.2)
+```
+Notably, something is up with this P-value - we reported 0.23 in the text, but it seems that was based on an outdated figure.
+
+- Here is the figure we submitted https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/33c98980d39dfc8b6c63691c819f8140f349c149/content/images/main/Figure4.png (April 2022)
+- Here is the figure panel PDF and compiled PNG versions in the analysis repo:
+  - Panel: https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/e4244a104183e5223bc5297df938f8b5e6c7ef22/figures/pdfs/fig4/panels/tp53_scores_by_altered_panel.pdf (July 2022)
+  - PNG: https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/e4244a104183e5223bc5297df938f8b5e6c7ef22/figures/pngs/figure4.png (July 2022)
+  
+Therefore, the result shown above (P=0.92) is _correctly what we observed_, but we'll need to update the corresponding MS text and ensure the correct figure version is re-submitted.
+
+
+Now, we observe:
+
+```{r}
+# Wilcoxon:
+wilcox.test(
+ tp53_thresholded_df$tp53_score[tp53_thresholded_df$tp53_altered == "loss"], 
+ tp53_thresholded_df$tp53_score[tp53_thresholded_df$tp53_altered == "activated"] 
+)
+```
+
+```{r}
+# violin/jitter plot:
+# save to variable and style in preparation for export
+score_plot <- plot_tp53_status(tp53_thresholded_df, tp53_score, "TP53 Score")
+
+score_plot
+```
+
+Here, the P-value is 0.39 which is still not significant. 
+Results are therefore consistent.
+
+We'll export the thresholded version of this plot, `score_plot`:
+
+```{r}
+ggsave(
+  tp53_score_status_pdf, 
+  score_plot, 
+  width = 4,
+  height = 4
+)
+```
+
+
+
+
+## Re-analysis 3: TP53 expression between "activated" and "lost" tumors.
+
+In the manuscript, we found:
+
+https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L199
+
+> Moreover, tumors with "activating" _TP53_ mutations showed higher _TP53_ expression compared to those with _TP53_ "loss" mutations (Wilcoxon p = 3.5e-3, **Figure {@fig:Fig4}C**).
+
+
+Previously, we observed the following:
+```{r}
+# Wilcoxon:
+wilcox.test(
+ tp53_df$tp53_fpkm[tp53_df$tp53_altered == "loss"], 
+ tp53_df$tp53_fpkm[tp53_df$tp53_altered == "activated"] 
+)
+
+# Medians:
+tp53_df %>%
+  dplyr::group_by(tp53_altered) %>%
+  dplyr::summarize(median_tp53 = median(tp53_fpkm)) %>%
+  dplyr::arrange(-median_tp53)
+
+
+# violin/jitter plot:
+ggplot(tp53_df) + 
+  aes(x = tp53_altered,
+               y = tp53_fpkm) + 
+  geom_violin() +
+  geom_jitter(width = 0.2)
+```
+The above P-value (0.006) has the same issue as in re-analysis 2 - it needs to be updated in the text, but it is correct in the most up-to-date figure (Panel C: https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/e4244a104183e5223bc5297df938f8b5e6c7ef22/figures/pngs/figure4.png).
+
+
+
+
+After thresholding, we now observe:
+```{r}
+# Wilcoxon:
+wilcox.test(
+ tp53_thresholded_df$tp53_fpkm[tp53_thresholded_df$tp53_altered == "loss"], 
+ tp53_thresholded_df$tp53_fpkm[tp53_thresholded_df$tp53_altered == "activated"] 
+)
+
+# Medians:
+tp53_thresholded_df %>%
+  dplyr::group_by(tp53_altered) %>%
+  dplyr::summarize(median_tp53 = median(tp53_fpkm)) %>%
+  dplyr::arrange(-median_tp53)
+```
+
+
+```{r}
+# violin/jitter plot:
+# save to variable and style in preparation for export
+fpkm_plot <- plot_tp53_status(tp53_thresholded_df, tp53_fpkm, "TP53 expression [log(FPKM)]")
+
+fpkm_plot
+```
+
+These results are consistent - TP53 "activated" samples have signficantly higher expression than do "lost" samples.
+
+We'll export the thresholded version of this plot, `fpkm_plot`:
+
+```{r}
+ggsave(
+  tp53_fpkm_status_pdf, 
+  fpkm_plot, 
+  width = 4,
+  height = 4
+)
+```
+
+
+
+## Re-analysis 4: Distribution of TP53 scores among cancer groups
+
+In the manuscript, we found: 
+
+https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L200
+
+> Tumor types with the highest median _TP53_ scores were those known to harbor somatic _TP53_ alterations and included DMGs, medulloblastomas, HGGs, DNETs, ependymomas, and craniopharyngiomas (**Figure {@fig:Fig4}D**), while gangliogliomas, LGGs, meningiomas, and schwannomas had the lowest median scores.
+
+
+Previously we observed:
+```{r}
+ggplot(tp53_df) + 
+  aes(x = forcats::fct_reorder(cancer_group_display, tp53_score),
+               y = tp53_score, 
+               fill = cancer_group_hex) +
+  geom_violin(alpha = 0.5) + 
+  stat_summary(fun.y = "median") + 
+  scale_fill_identity() + 
+  theme(
+    axis.text.x = element_text(hjust = 1, angle = 45, size = 7)
+  )
+```
+
+
+Now we observe:
+```{r}
+# Format this plot for export:
+tp53_violins <- tp53_thresholded_df %>%
+  dplyr::mutate(
+    cancer_group_display = stringr::str_wrap(cancer_group_display, 25),
+    cancer_group_display = forcats::fct_reorder(cancer_group_display, tp53_score), 
+    cancer_group_display = forcats::fct_relevel(cancer_group_display, "Other", after = Inf)
+  ) %>%
+  # plot
+  ggplot() + 
+    aes(x = cancer_group_display,
+        y = tp53_score, 
+        fill = cancer_group_hex) +
+  geom_violin(alpha = 0.6) + 
+  stat_summary(geom = "point", 
+               fun.y = "median") + 
+  scale_fill_identity() + 
+  labs(
+    x = "Cancer group", 
+    y = "TP53 score"
+  ) +
+  theme(
+    axis.text.x = element_text(hjust = 1, angle = 30, size = 7)
+  )
+
+tp53_violins
+```
+
+- Previously highest median groups are all still high (DMGs, medulloblastomas, HGGs, DNETs, ependymomas, and craniopharyngiomas).
+- Previously lowest median groups are _mostly_ still low (LGGs, meningiomas, and schwannomas) but Gangliomas now show a higher median value. 
+These scores also have a very broad spread, and their overall distribution appears very similar to that previously observed.
+
+As such, these results are broadly consistent.
+
+
+Now we'll export `tp53_violins`:
+
+```{r}
+ggsave(
+  tp53_cancer_groups_pdf,
+  tp53_violins,
+  width = 8, 
+  height = 3.75
+)
+```
+
+## Re-analysis 5: LFS patients
+
+
+In the manuscript, we found:
+
+https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L203
+
+> Indeed, we observed higher scores in LFS tumors (N = 8) for which we detected high-confidence _TP53_ somatic alterations (**Tables S1 and S3**).
+
+```{r}
+status_original %>%
+  tidyr::drop_na(tp53_score) %>%
+  dplyr::mutate(lfs = cancer_predispositions == "Li-Fraumeni syndrome") %>%
+  dplyr::group_by(lfs) %>%
+  dplyr::summarize(n(), 
+                   median(tp53_score))
+```
+
+Here we see there are 9 LFS samples, so it's unclear where N=8 is from.
+This should be revisited.
+
+Now, we observe:
+
+```{r}
+status_thresholded %>%
+  tidyr::drop_na(tp53_score) %>%
+  dplyr::mutate(lfs = cancer_predispositions == "Li-Fraumeni syndrome") %>%
+  dplyr::group_by(lfs) %>%
+  dplyr::summarize(n(),
+                   median(tp53_score))
+```
+
+Results are consistent - after thresholding, LFS samples still have higher scores compared to non-LFS samples.
+
+
+## Re-analysis 6: Hypermutators 
+
+In the manuscript, we found: 
+
+https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L227
+
+> With one exception, hypermutant and ultra-hypermutant tumors had high _TP53_ scores (> 0.5) and telomerase activity.
+
+To confirm the above, we'll first check the original TP53 scores of these samples.
+
+First, figure out which samples these are:
+
+```{r}
+# These samples were identified as coming from hypermutators in the manuscript: 
+# https://github.com/AlexsLemonade/OpenPBTA-manuscript/blob/b0fdf6f24fe9c021f22e8b7da348708f68877ee5/content/03.results.md?plain=1#L232-L247
+# These IDs are WGS, but do not include cell lines.
+hypermutator_bs_ids <- c("BS_85Q5P8GF", "BS_P0QJ1QAH", "BS_20TBZG09", "BS_8AY2GM4G", "BS_02YBZSBY", "BS_VW4XN9Y7", "BS_F0GNWEJJ", "BS_P3PF53V8")
+
+# Get the sample ids
+original_sample_ids <- metadata %>%
+  dplyr::filter(Kids_First_Biospecimen_ID %in% hypermutator_bs_ids) %>%
+  dplyr::pull(sample_id) %>%
+  unique() 
+
+status_original %>%
+  dplyr::filter(sample_id %in% original_sample_ids) %>%
+  dplyr::select(sample_id, Kids_First_Biospecimen_ID, tp53_score)
+```
+
+Here, it appears that all but 2 tumors have scores >0.5 (`sample_id`s `7316-2189` and `7316-2640`).
+But, a different sample associated with `7316-2189` has a score >0.5, so this means indeed only 1 tumor has that lower score.
+
+
+
+For thresholded comparison, as we found in this [tumor purity exploration notebook](https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/78e4969b99b4ebbc22915b9d8b58b5b3f6a9cad5/analyses/tumor-purity-exploration/02_explore-tumor-purity-thresholds.Rmd), only two hypermutator samples are present in the thresholded set:
+
+- `7316-3311` (`PT_EB0D3BXG`)
+- `7316-2307` (`PT_S0Q27J13`)
+
+```{r}
+remaining_sample_ids <- c("7316-3311", "7316-2307")
+status_thresholded %>%
+  dplyr::filter(sample_id %in% remaining_sample_ids) %>%
+  dplyr::pull(tp53_score)
+```
+
+These samples still are higher than 0.5, so that aspect remains consistent.
+
+
+
+## Conclusions
+
+All results obtained from high tumor purity samples are broadly consistent with results obtained from the full stranded cohort. 
+
+## Session Info
+
+```{r}
+sessionInfo()
+```

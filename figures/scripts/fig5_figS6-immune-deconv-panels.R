@@ -5,7 +5,7 @@
 ## Panel 5E, CD274 expression across molecular subtypes
 ## Panel S6E, immune cell fractions across molecular subtypes, faceted by immune cells
 ## Panel S6F, CD8/CD4 ratio across a subset of molecular subtypes
-# 
+#
 # All code is adapted from `analyses/immune-deconv/02-visualize_quantiseq.Rmd`
 
 
@@ -63,7 +63,7 @@ quantiseq <- read_rds(quantiseq_file) %>%
 polya <- read_rds(polya_file)
 stranded <- read_rds(stranded_file)
 
-# Prepare palette/histology data 
+# Prepare palette/histology data
 palette_mapping_df <- histologies_df %>%
   # RNA-Seq samples only, *****BOTH****** polya and stranded
   filter(experimental_strategy == "RNA-Seq") %>%
@@ -72,13 +72,13 @@ palette_mapping_df <- histologies_df %>%
          Kids_First_Participant_ID,
          sample_id,
          broad_histology,
-         cancer_group, 
+         cancer_group,
          molecular_subtype) %>%
   # Add in hex codes & display grouping
   left_join(palette_df,
             by = c("broad_histology", "cancer_group")) %>%
   select(Kids_First_Biospecimen_ID,
-         contains("broad_histology"), 
+         contains("broad_histology"),
          contains("cancer_group"),
          molecular_subtype) %>%
   # Change subtype loss -> lost
@@ -92,11 +92,11 @@ palette_mapping_df <- histologies_df %>%
 
 
 # Cancer groups we want to visualize in 5C
-cancer_groups_of_interest_5c <- c("Pilocytic astrocytoma", 
+cancer_groups_of_interest_5c <- c("Pilocytic astrocytoma",
                                   "Diffuse midline glioma",
-                                  "Craniopharyngioma", 
+                                  "Craniopharyngioma",
                                   "Ganglioglioma",
-                                  "Ependymoma", 
+                                  "Ependymoma",
                                   "Medulloblastoma",
                                   "Schwannoma",
                                   "Neurofibroma Plexiform",
@@ -126,24 +126,24 @@ quantiseq_cg <- quantiseq_cg %>%
   inner_join(quantiseq_cg)
 
 # plot by cancer group
-cancer_group_plot <- ggplot(quantiseq_cg) + 
-  aes(x = cell_type, y = score, color = cancer_group_hex) + 
-  geom_jitter(width = 0.15, size = 0.6, alpha = 0.5, 
+cancer_group_plot <- ggplot(quantiseq_cg) +
+  aes(x = cell_type, y = score, color = cancer_group_hex) +
+  geom_jitter(width = 0.15, size = 0.6, alpha = 0.5,
               # This shape is helpful when compiling
-              shape = 16) + 
-  geom_boxplot(outlier.size = 0, 
+              shape = 16) +
+  geom_boxplot(outlier.size = 0,
                size = 0.2,
-               color = "black", 
+               color = "black",
                alpha = 0,
                # remove whiskers
                coef = 0) +
   facet_wrap(~cancer_group_display_n, nrow = 2, scales = "free_y") +
-  scale_color_identity() + 
+  scale_color_identity() +
   labs(
-    x = "Immune cell", 
+    x = "Immune cell",
     y = "Estimated fraction in sample"
   ) +
-  ggpubr::theme_pubr() + 
+  ggpubr::theme_pubr() +
   cowplot::panel_border() +
   theme(
     # Sizing for compilation
@@ -158,8 +158,8 @@ cancer_group_plot <- ggplot(quantiseq_cg) +
   )
 
 # Sized for compilation
-ggsave(quantiseq_cancer_group_pdf, 
-       cancer_group_plot, 
+ggsave(quantiseq_cancer_group_pdf,
+       cancer_group_plot,
        width = 8, height = 2.65, useDingbats=FALSE)
 
 
@@ -191,7 +191,7 @@ CD274_cd8_mb <- expression_CD274 %>%
   # Join in classified MB subtypes
   inner_join(
     palette_mapping_df %>%
-      filter(cancer_group_display == "Medulloblastoma", 
+      filter(cancer_group_display == "Medulloblastoma",
              !(str_detect(molecular_subtype, "To be classified"))
              ) %>%
       select(sample = Kids_First_Biospecimen_ID, molecular_subtype)
@@ -203,7 +203,7 @@ CD274_cd8_mb <- expression_CD274 %>%
   mutate(molecular_subtype = glue::glue("{molecular_subtype}\n(N = {subtype_count})"))
 
 # Prepare data for labeling P-values
-wilcox_df <- ggpubr::compare_means(expression ~ molecular_subtype, 
+wilcox_df <- ggpubr::compare_means(expression ~ molecular_subtype,
                                    data = CD274_cd8_mb,
                                    method = "wilcox.test") %>%
   # Add y-axis positions for P-values
@@ -215,27 +215,27 @@ wilcox_df <- ggpubr::compare_means(expression ~ molecular_subtype,
                         2.2))
 
 # Plot 5E
-cd274_expression_mb_plot <- ggplot(CD274_cd8_mb) + 
+cd274_expression_mb_plot <- ggplot(CD274_cd8_mb) +
   aes(x = molecular_subtype,
       # Note this is log2(fpkm+1)!
       y = expression) +
   # remove outliers
-  geom_boxplot(outlier.shape = NA, 
-               color = "grey20", 
-               size = 0.2) + 
-  geom_jitter(width = 0.15, 
-              size = 0.55, 
+  geom_boxplot(outlier.shape = NA,
+               color = "grey20",
+               size = 0.2) +
+  geom_jitter(width = 0.15,
+              size = 0.55,
               alpha = 0.5,
               # Helpful shape for compiling
-              shape = 16) + 
-  ggpubr::stat_pvalue_manual(wilcox_df, 
+              shape = 16) +
+  ggpubr::stat_pvalue_manual(wilcox_df,
                              label = "p = {p.adj}",
                              label.size = 1.5,
                              bracket.size = 0.125) +
   scale_color_identity() +
   labs(x = "Molecular subtype of sample",
        y = "CD274 log2(FPKM+1)") +
-  ggpubr::theme_pubr() + 
+  ggpubr::theme_pubr() +
   # Set sizing for compilation
   theme(
     axis.text.x = element_text(hjust = 0.55,
@@ -244,11 +244,11 @@ cd274_expression_mb_plot <- ggplot(CD274_cd8_mb) +
     axis.title = element_text(size = 5.5),
     axis.line  = element_line(size = 0.2),
     axis.ticks = element_line(size = 0.2)
-    ) 
+    )
 
 # Panel sized for compilation
-ggsave(cd274_expression_mb_pdf, 
-       cd274_expression_mb_plot, width = 2, height = 2, 
+ggsave(cd274_expression_mb_pdf,
+       cd274_expression_mb_plot, width = 2, height = 2,
        useDingbats=FALSE)
 
 
@@ -257,7 +257,8 @@ ggsave(cd274_expression_mb_pdf,
 
 
 # Histologies to include in this panel and in the next panel S6F - https://github.com/AlexsLemonade/OpenPBTA-analysis/pull/1575#discussion_r930516213
-broad_histology_order <- c("Tumor of sellar region", "Ependymal tumor", "Embryonal tumor", "High-grade glioma")
+#  But ensure "Ependymoma" terminology is used: https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1652
+broad_histology_order <- c("Tumor of sellar region", "Ependymoma", "Embryonal tumor", "High-grade glioma")
 
 
 # Find molecular subtypes, and their order, to include in this panel
@@ -269,14 +270,14 @@ subtype_order <- palette_mapping_df %>%
   filter(!is.na(molecular_subtype),
          !str_detect(molecular_subtype, "To be classified")) %>%
   # Keep only combinations with N>=3
-  count(broad_histology_display, molecular_subtype) %>% 
+  count(broad_histology_display, molecular_subtype) %>%
   filter(n >= 3) %>%
   # Factor/arrange broad_histology_display to obtain the final molecular_subtype order
   mutate(broad_histology_display = fct_relevel(broad_histology_display, broad_histology_order)) %>%
   arrange(broad_histology_display) %>%
   pull(molecular_subtype)
 
-  
+
 
 # Establish data for this plot
 data_for_s6e <- quantiseq %>%
@@ -284,14 +285,14 @@ data_for_s6e <- quantiseq %>%
   filter(cell_type != "uncharacterized cell") %>%
   # Join in palette/subtype information
   inner_join(
-    select(palette_mapping_df, 
-           sample = Kids_First_Biospecimen_ID, 
+    select(palette_mapping_df,
+           sample = Kids_First_Biospecimen_ID,
            broad_histology_display, broad_histology_hex, molecular_subtype)
   ) %>%
   # Filter and order subtypes, broad histology
   filter(molecular_subtype %in% subtype_order) %>%
-  mutate(molecular_subtype = fct_relevel(molecular_subtype, subtype_order), 
-         broad_histology_display = fct_relevel(broad_histology_display, broad_histology_order)) 
+  mutate(molecular_subtype = fct_relevel(molecular_subtype, subtype_order),
+         broad_histology_display = fct_relevel(broad_histology_display, broad_histology_order))
 
 # Set up palette for this plot
 pal_df <- data_for_s6e %>%
@@ -300,20 +301,20 @@ pal_df <- data_for_s6e %>%
   arrange(broad_histology_display)
 bh_hex <- pal_df$broad_histology_hex
 names(bh_hex) <- pal_df$broad_histology_display
-  
-  
+
+
 # Create the plot
 quantiseq_subtypes_plot <- ggplot(data_for_s6e) +
-  aes(x = molecular_subtype, y = score) + 
-  geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) + 
-  geom_jitter(width = 0.15, size = 0.66, alpha = 0.6, 
+  aes(x = molecular_subtype, y = score) +
+  geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.2) +
+  geom_jitter(width = 0.15, size = 0.66, alpha = 0.6,
               aes(color = broad_histology_display),
               # Helpful shape for compiling
-              shape = 16) + 
+              shape = 16) +
   facet_wrap(~cell_type, ncol = 5, scales = "free_y") +
   scale_color_manual(values = bh_hex, name = "Broad histology") +
   labs(
-    x = "Molecular subtype of tumor sample", 
+    x = "Molecular subtype of tumor sample",
     y = "Estimated fraction in sample"
   ) +
   ggpubr::theme_pubr() +
@@ -324,13 +325,13 @@ quantiseq_subtypes_plot <- ggplot(data_for_s6e) +
         axis.line = element_line(size = rel(0.7)),
         axis.ticks = element_line(size = rel(0.7)),
         legend.title = element_text(size = rel(0.8)),
-        legend.text = element_text(size = rel(0.7))) + 
+        legend.text = element_text(size = rel(0.7))) +
   # set a larger, visible legend point size without alpha
   guides(color = guide_legend(override.aes = list(size=2, alpha = 1)))
 
 
-ggsave(quantiseq_subtypes_pdf, 
-       quantiseq_subtypes_plot, 
+ggsave(quantiseq_subtypes_pdf,
+       quantiseq_subtypes_plot,
        width = 11, height = 4, useDingbats=FALSE)
 
 
@@ -340,18 +341,18 @@ ggsave(quantiseq_subtypes_pdf,
 
 # Calculate cd8+/cd4+ ratio for all subtypes, join with subtype/histology, and set up factors
 ratio_df <- quantiseq %>%
-  spread(cell_type, score) %>% 
+  spread(cell_type, score) %>%
   mutate(cd8_cd4_ratio = `T cell CD8+` / `T cell CD4+ (non-regulatory)`)  %>%
   gather(cell_type, score, -sample) %>%
   # Keep only the known ratios
-  filter(cell_type == "cd8_cd4_ratio", 
-         !(is.infinite(score)), 
+  filter(cell_type == "cd8_cd4_ratio",
+         !(is.infinite(score)),
          !(is.nan(score))) %>%
   rename(cd8_cd4_ratio = cell_type) %>%
   # Join in palette/subtype information
   inner_join(
-    select(palette_mapping_df, 
-           sample = Kids_First_Biospecimen_ID, 
+    select(palette_mapping_df,
+           sample = Kids_First_Biospecimen_ID,
            broad_histology_display, broad_histology_hex, molecular_subtype)
   ) %>%
   # Filter to subtype_order set up for Figure S6E
@@ -367,23 +368,23 @@ broad_histology_order <- broad_histology_order[broad_histology_order %in% unique
 
 # Update factor order for subtypes and histology and plot
 cd8_cd4_ratio_plot <- ratio_df %>%
-  mutate(molecular_subtype = fct_relevel(molecular_subtype, subtype_order), 
+  mutate(molecular_subtype = fct_relevel(molecular_subtype, subtype_order),
          broad_histology_display = fct_relevel(broad_histology_display, broad_histology_order)) %>%
-  ggplot() + 
+  ggplot() +
   aes(x = molecular_subtype,
       y = score) +
   # remove outliers
-  geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.5) + 
-  geom_jitter(width = 0.1, size = 2, alpha = 0.6,  
+  geom_boxplot(outlier.shape = NA, color = "grey40", size = 0.5) +
+  geom_jitter(width = 0.1, size = 2, alpha = 0.6,
               aes(color = broad_histology_hex),
               # Helpful shape for compiling
-              shape = 16) + 
+              shape = 16) +
   scale_color_identity() +
   labs(x = "Molecular subtype of tumor sample",
        y = "Ratio of CD8+/CD4+ T cell fractions") +
-  ggpubr::theme_pubr() + 
-  theme(axis.text.x = element_text(hjust = 1, 
-                                   size = rel(0.6), 
+  ggpubr::theme_pubr() +
+  theme(axis.text.x = element_text(hjust = 1,
+                                   size = rel(0.6),
                                    angle = 45),
         axis.text.y = element_text(size = rel(0.7)),
         axis.title = element_text(size = rel(0.7)),
@@ -391,7 +392,7 @@ cd8_cd4_ratio_plot <- ratio_df %>%
         axis.ticks = element_line(size = rel(0.7)))
 
 
-ggsave(cd8_cd4_ratio_pdf, 
-       cd8_cd4_ratio_plot, 
+ggsave(cd8_cd4_ratio_pdf,
+       cd8_cd4_ratio_plot,
        width = 3.5, height = 4, useDingbats = FALSE)
 
