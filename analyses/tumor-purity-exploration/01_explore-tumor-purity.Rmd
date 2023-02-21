@@ -43,16 +43,19 @@ plot_tumor_violins <- function(df, display_name, display_hex, x_lab) {
         y = tumor_fraction,
         fill = {{display_hex}}) +
     geom_violin(alpha = 0.5) +
-    stat_summary(geom = "point", fun.y = "median") +
+    stat_summary(geom = "point", fun.y = "median", 
+                 size = 0.75) +
     scale_fill_identity() +
     labs(
       x = x_lab,
       y = "Tumor purity from WGS"
     ) +
     theme(
-      axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
-      axis.text.y = element_text(size = 10),
-      axis.title = element_text(size = 12)
+      axis.text.x = element_text(angle = 45, hjust = 1, size = 6),
+      axis.text.y = element_text(size = 6),
+      axis.title = element_text(size = 7), 
+      axis.line = element_line(size = 0.25), 
+      axis.ticks = element_line(size = 0.25)
     )
 }
 ```
@@ -158,8 +161,9 @@ We'll export the cancer group plot:
 ```{r}
 ggsave(cancer_group_violin_file,
        cancer_group_violins, 
-       width = 11, 
-       height = 4)
+       width = 6.75, 
+       height = 2.3, 
+       useDingbats = FALSE)
 ```
 
 
