@@ -21,15 +21,6 @@ data_dir <- file.path(root_dir, "data")
 analyses_dir <- file.path(root_dir, "analyses")
 tp53_dir <- file.path(analyses_dir, "tp53_nf1_score")
 telomerase_dir <- file.path(analyses_dir, "telomerase-activity-prediction")
-tumor_purity_dir <- file.path(analyses_dir, "tumor-purity-exploration")
-
-# Define path to metadata file which has been filtered to only biospecimens that
-#  survive the cancer-group-level threshold
-tumor_purity_file <- file.path(
-  tumor_purity_dir,
-  "results",
-  "thresholded_rna_stranded_same-extraction.tsv"
-)
 
 # Palette directory
 palette_dir <- file.path(root_dir, "figures", "palettes")
@@ -47,17 +38,18 @@ histologies_palette_df <- read_tsv(file.path(palette_dir, "broad_histology_cance
 
 
 # Read in tp53 data file
-tp53_df <- read_tsv(file.path(tp53_dir, "results", "tp53_altered_status.tsv"))
+tp53_df <- read_tsv(file.path(tp53_dir,
+                              "results",
+                              "tumor-purity-threshold",
+                              "tp53_altered_status_tumor-purity-threshold.tsv"))
 
 # Read in EXTEND scores
-extend_df <- read_tsv(file.path(telomerase_dir, "results", "TelomeraseScores_PTBAStranded_FPKM.txt"))
+extend_df <- read_tsv(file.path(telomerase_dir,
+                                "results",
+                                "TelomeraseScores_PTBAStranded_FPKM_thresholded.txt"))
 
 # Read in TMB for highlighting points in boxplots
 tmb_coding_df <- read_tsv(file.path(data_dir, "pbta-snv-consensus-mutation-tmb-coding.tsv"))
-
-# Read in tumor purity file
-tumor_purity_df <- read_tsv(tumor_purity_file)
-
 
 # Define cancer groups to show in boxplots
 cancer_groups_to_plot <- c("Diffuse midline glioma",
@@ -107,9 +99,7 @@ tp53_telo_mutator_df <- tmb_coding_df %>%
            Kids_First_Biospecimen_ID = SampleID, # rename for joining
            telo_score = NormEXTENDScores
     )
-  ) %>%
-  # filter to high tumor purity samples based on cancer-group threshold
-  filter(Kids_First_Biospecimen_ID %in% tumor_purity_df$Kids_First_Biospecimen_ID)
+  )
 
 
 
