@@ -1,6 +1,9 @@
 # Stephanie J. Spielman for CCDL, 2022
 
-# This script creates three S3 panels (B, C, D)
+# This script creates three S3 panels:
+#  CN status heatmap
+#  CNV breaks across chromothripsis regions box/jitter plot
+#  SV breaks across chromothripsis regions box/jitter plot
 
 
 ## Load libraries ------------------------
@@ -23,9 +26,9 @@ if(!dir.exists(supp_figures_dir)){
 }
 
 ## Define output files
-figure_s3b_file <- file.path(supp_figures_dir, "supp_figS3-B.pdf")
-figure_s3c_file <- file.path(supp_figures_dir, "supp_figS3-C.pdf")
-figure_s3d_file <- file.path(supp_figures_dir, "supp_figS3-D.pdf")
+cn_heatmap_file <- file.path(supp_figures_dir, "cn_status_heatmap.pdf")
+chromo_cnv_file <- file.path(supp_figures_dir, "chromothripsis_cnv.pdf")
+chromo_sv_file <- file.path(supp_figures_dir, "chromothripsis_sv.pdf")
 
 ## Figure S3B ----------------------------
 # Adapted from https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/cnv-chrom-plot/cn_status_heatmap.Rmd
@@ -256,7 +259,7 @@ heatmap <- ComplexHeatmap::Heatmap(
 )
 
 # Save heatmap.
-pdf(figure_s3b_file, width = 8, height = 7)
+pdf(cn_heatmap_file, width = 8, height = 7)
 ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom")
 dev.off()
 
@@ -317,7 +320,7 @@ fig_s3c <- merged_data %>%
     axis.ticks = element_line(size = 0.25)
   )
 
-ggsave(figure_s3c_file, fig_s3c, width = 2.65, height = 1.65,
+ggsave(chromo_cnv_file, fig_s3c, width = 2.65, height = 1.65,
        useDingbats=FALSE)
 
 #### Figure S3D
@@ -337,7 +340,7 @@ fig_s3d <- merged_data %>%
     axis.line = element_line(size = 0.25),
     axis.ticks = element_line(size = 0.25)
   )
-ggsave(figure_s3d_file, fig_s3d, width = 2.65, height = 1.65,
+ggsave(chromo_sv_file, fig_s3d, width = 2.65, height = 1.65,
        useDingbats=FALSE)
 
 

@@ -70,6 +70,10 @@ bash ${analyses_dir}/interaction-plots/01-create-interaction-plots.sh
 #  Generates input required for `mutational-signatures` and `survival-analysis` modules
 bash ${analyses_dir}/tp53_nf1_score/run_classifier.sh
 
+# Run the `tp53_nf1_score` module at tumor purity threshold
+#  Generates panels and results used to make additional panels for Figure S7
+bash ${analyses_dir}/tp53_nf1_score/run_classifier-tumor_purity_threshold.sh
+
 # Run the `mutational-signatures` module
 #  This only runs the part of the module used in the manuscript (i.e., not de novo)
 OPENPBTA_CNS_FIT_ONLY=1 bash ${analyses_dir}/mutational-signatures/run_mutational_signatures.sh
@@ -89,3 +93,5 @@ OPENPBTA_FOR_FIGURES=1 bash ${analyses_dir}/telomerase-activity-prediction/RUN-t
 # Run the `transcriptomic-dimension-reduction` module
 bash ${analyses_dir}/transcriptomic-dimension-reduction/dimension-reduction-plots.sh
 
+# Run the `tumor-purity-exploration` module
+bash ${analyses_dir}/tumor-purity-exploration/run_tumor-purity.sh
