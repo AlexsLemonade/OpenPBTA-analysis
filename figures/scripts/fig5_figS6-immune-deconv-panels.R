@@ -141,7 +141,7 @@ cancer_group_plot <- ggplot(quantiseq_cg) +
   scale_color_identity() +
   labs(
     x = "Immune cell",
-    y = "Estimated fraction in sample"
+    y = "Estimated fraction in tumor"
   ) +
   ggpubr::theme_pubr() +
   cowplot::panel_border() +
@@ -233,7 +233,7 @@ cd274_expression_mb_plot <- ggplot(CD274_cd8_mb) +
                              label.size = 1.5,
                              bracket.size = 0.125) +
   scale_color_identity() +
-  labs(x = "Molecular subtype of sample",
+  labs(x = "Molecular subtype of tumor",
        y = "CD274 log2(FPKM+1)") +
   ggpubr::theme_pubr() +
   # Set sizing for compilation
@@ -314,8 +314,8 @@ quantiseq_subtypes_plot <- ggplot(data_for_s6e) +
   facet_wrap(~cell_type, ncol = 5, scales = "free_y") +
   scale_color_manual(values = bh_hex, name = "Broad histology") +
   labs(
-    x = "Molecular subtype of tumor sample",
-    y = "Estimated fraction in sample"
+    x = "Molecular subtype of tumor",
+    y = "Estimated fraction in tumor"
   ) +
   ggpubr::theme_pubr() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 5),
@@ -380,7 +380,7 @@ cd8_cd4_ratio_plot <- ratio_df %>%
               # Helpful shape for compiling
               shape = 16) +
   scale_color_identity() +
-  labs(x = "Molecular subtype of tumor sample",
+  labs(x = "Molecular subtype of tumor",
        y = "Ratio of CD8+/CD4+ T cell fractions") +
   ggpubr::theme_pubr() +
   theme(axis.text.x = element_text(hjust = 1,

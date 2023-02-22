@@ -25,13 +25,13 @@ if (!dir.exists(output_dir_figS4)) {
 }
 
 # Directory with result data to input for plot
-input_dir <- file.path(root_dir, 
-                       "analyses", 
-                       "mutational-signatures", 
+input_dir <- file.path(root_dir,
+                       "analyses",
+                       "mutational-signatures",
                        "results")
 
 
-# Cancer groups we are showing in panel 3E, 
+# Cancer groups we are showing in panel 3E,
 #  in same order as 3A but _without_ "Other"
 cancer_group_display_order <- c(
   "Diffuse midline glioma",
@@ -63,17 +63,17 @@ sig1_descriptor_pdf <- file.path(output_dir_figS4, "signature1_tumor-descriptor_
 
 ## Prepare data for plots -----------------------
 meta       <- read_tsv(meta_file, guess_max = 10000)
-palette_df <- read_tsv(palette_file) 
+palette_df <- read_tsv(palette_file)
 tumor_palette_df   <- read_tsv(tumor_palette_file)
 signatures_results <- read_tsv(signatures_file) %>%
   # Keep only the groups of interest
-  filter(cancer_group_display %in% cancer_group_display_order) 
+  filter(cancer_group_display %in% cancer_group_display_order)
 
 
 # Arrange cancer_group_display_n in the `cancer_group_display_order` order
 # First, find the right order
 cancer_group_display_n_order <- signatures_results %>%
-  mutate(cancer_group_display = fct_relevel(cancer_group_display, 
+  mutate(cancer_group_display = fct_relevel(cancer_group_display,
                                             cancer_group_display_order)) %>%
   arrange(cancer_group_display) %>%
   distinct(cancer_group_display_n) %>%
@@ -81,18 +81,18 @@ cancer_group_display_n_order <- signatures_results %>%
 
 # Apply the right order
 signatures_results <- signatures_results %>%
-  mutate(cancer_group_display_n = fct_relevel(cancer_group_display_n, 
+  mutate(cancer_group_display_n = fct_relevel(cancer_group_display_n,
                                               cancer_group_display_n_order)
   )
 
 
 # Make panel 3E --------------------------------
 
-exposures_sina_IQR <- ggplot(signatures_results) + 
-  aes(x = signature, 
+exposures_sina_IQR <- ggplot(signatures_results) +
+  aes(x = signature,
       y = exposure,
-      color = cancer_group_hex) + 
-  ggforce::geom_sina(size = 0.35) + 
+      color = cancer_group_hex) +
+  ggforce::geom_sina(size = 0.35) +
   geom_boxplot(outlier.size = 0,
                size = 0.2,
                color = "black",
@@ -100,12 +100,12 @@ exposures_sina_IQR <- ggplot(signatures_results) +
                # remove whiskers
                coef = 0) +
   facet_wrap(~cancer_group_display_n, nrow = 2) +
-  scale_color_identity() + 
+  scale_color_identity() +
   labs(
     x = "RefSig signature",
-    y = "Signature weights across samples"
+    y = "Signature weights across tumors"
   ) +
-  ggpubr::theme_pubr() + 
+  ggpubr::theme_pubr() +
   cowplot::panel_border() +
   theme(
     # angle needed to fit "Other" category
@@ -119,8 +119,8 @@ exposures_sina_IQR <- ggplot(signatures_results) +
   )
 
 # Sizing is based on full figure compilation:
-ggsave(sina_iqr_pdf, 
-       exposures_sina_IQR, width = 7.2, height = 3, 
+ggsave(sina_iqr_pdf,
+       exposures_sina_IQR, width = 7.2, height = 3,
        useDingbats = FALSE)
 
 
@@ -133,24 +133,24 @@ samples_in_order <- signatures_results %>%
   filter(signature == 1) %>%
   select(exposure, Kids_First_Biospecimen_ID) %>%
   arrange(-exposure) %>%
-  pull(Kids_First_Biospecimen_ID) 
+  pull(Kids_First_Biospecimen_ID)
 
 sample_exposures_barplot <- signatures_results %>%
-  mutate(Kids_First_Biospecimen_ID = factor(Kids_First_Biospecimen_ID, 
+  mutate(Kids_First_Biospecimen_ID = factor(Kids_First_Biospecimen_ID,
                                             levels = samples_in_order)) %>%
   ggplot() +
   aes(x = Kids_First_Biospecimen_ID,
       y = exposure,
-      fill = signature) + 
-  geom_col(color = "black", size = 0.05) + 
-  labs(x = "Sample", 
-       y = "Signature weight", 
-       fill = "RefSig Signature") + 
+      fill = signature) +
+  geom_col(color = "black", size = 0.05) +
+  labs(x = "Tumor",
+       y = "Signature weight",
+       fill = "RefSig Signature") +
   # Only 1:8 palette. The "Other" gets filled as white by including `color="black"` in the geom
   # There will be a warning about palette size and the warning is OK because ^^
-  colorblindr::scale_fill_OkabeIto() + 
-  facet_wrap(~cancer_group_display_n, scales = "free_x", nrow = 3) + 
-  ggpubr::theme_pubr() + 
+  colorblindr::scale_fill_OkabeIto() +
+  facet_wrap(~cancer_group_display_n, scales = "free_x", nrow = 3) +
+  ggpubr::theme_pubr() +
   theme(
     axis.text.x  = element_blank(),
     axis.ticks.x = element_blank(),
@@ -163,8 +163,8 @@ sample_exposures_barplot <- signatures_results %>%
     legend.title = element_text(size = 8)
   )
 
-ggsave(barplot_pdf, 
-       sample_exposures_barplot, 
+ggsave(barplot_pdf,
+       sample_exposures_barplot,
        width = 8, height = 6.5)
 
 
@@ -181,23 +181,23 @@ names(tumor_colors) <- tumor_palette_df$color_names
 sig1_descriptor_plot <- signatures_results %>%
   filter(signature == 1) %>%
   rename(sig1_proportion = exposure) %>%
-  ggplot() + 
-  aes(x = tumor_descriptor, 
-      y = sig1_proportion, 
-      color = tumor_descriptor) + 
-  geom_jitter(width = 0.2, alpha = 0.5, size = 1.5) + 
+  ggplot() +
+  aes(x = tumor_descriptor,
+      y = sig1_proportion,
+      color = tumor_descriptor) +
+  geom_jitter(width = 0.2, alpha = 0.5, size = 1.5) +
   # light guiding line representing 0 exposure
-  geom_hline(yintercept = 0, size = 0.15) + 
+  geom_hline(yintercept = 0, size = 0.15) +
   scale_color_manual(values = tumor_colors) +
   # add in mean +/- SE pointrange
-  stat_summary(color = "black", size = 0.3) + 
+  stat_summary(color = "black", size = 0.3) +
   facet_wrap(~cancer_group_display_n,
              nrow = 2) +
   labs(
     x = "Tumor descriptor",
     y = "Signature 1 Weight"
   ) +
-  ggpubr::theme_pubr() + 
+  ggpubr::theme_pubr() +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1, size = 6.25),
     axis.text.y = element_text(size = 7.5),
@@ -209,8 +209,8 @@ sig1_descriptor_plot <- signatures_results %>%
   )
 
 
-ggsave(sig1_descriptor_pdf, 
-       sig1_descriptor_plot, 
-       width = 8, height = 4, 
+ggsave(sig1_descriptor_pdf,
+       sig1_descriptor_plot,
+       width = 8, height = 4,
        useDingbats = FALSE)
 
