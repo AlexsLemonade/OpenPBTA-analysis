@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# S. Spielman for CCDL ALSF, 2022
+# S. Spielman for CCDL ALSF, 2022-2023
 # Run all analysis modules that are used in the manuscript
 
 #enviroment settings
@@ -36,8 +36,9 @@ if [ "$RUN_LOCAL" -lt "1" ]; then
   bash ${analyses_dir}/focal-cn-file-preparation/run-prepare-cn.sh
 
   # Run the `snv-callers` module
-  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh
-  bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh
+  #  Set OPENPBTA_MANUSCRIPT=1 to overwrite any existing tables, databases
+  OPENPBTA_MANUSCRIPT=1 bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-pbta.sh
+  OPENPBTA_MANUSCRIPT=1 bash ${analyses_dir}/snv-callers/run_caller_consensus_analysis-tcga.sh
 fi
 
 # Next, run modules that can be run locally
