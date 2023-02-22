@@ -138,20 +138,20 @@ broad_histologies <- palette_df %>%
 
 #### Tumor descriptor stacked bar plots ----------------------------------------
 
-# a little more data prep - 
-data_descriptor_plot <- histologies_df %>% 
-  select(sample_id, 
+# a little more data prep -
+data_descriptor_plot <- histologies_df %>%
+  select(sample_id,
          broad_histology,
-         cancer_group, 
+         cancer_group,
          tumor_descriptor) %>%
   # Drop benign tumors and pre-cancerous lesions (i.e., NA in cancer_group)
-  drop_na(cancer_group) %>% 
+  drop_na(cancer_group) %>%
   # Join in display names and hex!
   inner_join(
     select(palette_df,
            broad_histology,
            broad_histology_hex,
-           broad_histology_display, 
+           broad_histology_display,
            broad_histology_order),
     by = c("broad_histology")) %>%
   inner_join(
@@ -161,9 +161,9 @@ data_descriptor_plot <- histologies_df %>%
            cancer_group_display,
            cancer_group_abbreviation),
     by = c("broad_histology", "cancer_group")) %>%
-  distinct() 
+  distinct()
 
-# The NAs in `cancer_group_abbreviation` should _all_ be associated with a cancer_display_group "Other" if we've joined up correctly - 
+# The NAs in `cancer_group_abbreviation` should _all_ be associated with a cancer_display_group "Other" if we've joined up correctly -
 abbr_check <- data_descriptor_plot %>%
   filter(is.na(cancer_group_abbreviation)) %>%
   pull(cancer_group_display)
@@ -177,23 +177,23 @@ descriptor_plot <- data_descriptor_plot %>%
     bh_strip = forcats::fct_reorder(bh_strip, broad_histology_order),
     abbr = forcats::fct_relevel(cancer_group_abbreviation, "Other", after=Inf)
   ) %>%
-  ggplot() + 
+  ggplot() +
   aes(x = abbr,
-      fill = tumor_descriptor) + 
-  geom_bar(color = "black", size = 0.25) + 
-  scale_fill_manual(values = tumor_descriptor_palette) + 
-  facet_wrap(~bh_strip, 
-             scales = "free", 
+      fill = tumor_descriptor) +
+  geom_bar(color = "black", size = 0.25) +
+  scale_fill_manual(values = tumor_descriptor_palette) +
+  facet_wrap(~bh_strip,
+             scales = "free",
              nrow = 3) +
   labs(
     x = "Cancer group",
-    y = "Number of samples", 
+    y = "Number of tumors",
     fill = "Tumor descriptor"
   ) +
   ggpubr::theme_pubr() +
-  theme(axis.text.x = element_text(size = 6, 
-                                   angle = 45, 
-                                   hjust = 0.8, 
+  theme(axis.text.x = element_text(size = 6,
+                                   angle = 45,
+                                   hjust = 0.8,
                                    vjust = 0.9),
         axis.text.y = element_text(size = 6),
         axis.title = element_text(size = 7),
