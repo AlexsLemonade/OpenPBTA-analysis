@@ -1,6 +1,6 @@
 # S Spielman for CCDL, 2023
 # See https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1651
-# This script assesses whether there is a relationship between EXTEND scores and the presence of TERT promoter (TERTp) mutations
+# This script assesses whether there is a relationship between EXTEND scores and the presence of TERT SVs and/or TERT promoter (TERTp) mutations
 # It additionally explores where samples with TERTp mutations lie in the TERC and TERT expression relationships with EXTEND scores
 # From CIVIC we can get SNP ids of TERTp variants of interest:
 # C228T: https://civicdb.org/variants/248/summary
@@ -43,11 +43,11 @@ hotspot_file <- file.path(data_dir,
 sv_file <- file.path(data_dir, 
                   "pbta-sv-manta.tsv.gz")
 
-sv_annot_file <- file.path(input_dir, 
-                     "AnnotSV_VJFSh10MHo.tsv")
-
 
 # Output:
+tert_alteration_file <- file.path(analysis_dir, 
+                                  "results", 
+                                  "extend_scores_tert_alterations.tsv")
 tertp_plot_file <- file.path(analysis_dir, 
                              "plots", 
                              "TERTp_mutations.pdf")
@@ -77,31 +77,25 @@ metadata_df <- read_tsv(metadata_file, guess_max = 10000)
 maf_df <- read_tsv(maf_file)
 hotspot_df <- read_tsv(hotspot_file)
 
-# Read in and export TERT SV data in BED format for knotAnnotSV to assess pathogenicity of the SV call
-# This BED file was put into https://lbgi.fr/AnnotSV/ and the TSV downloaded for ACMG assessment below
-sv_df <- read_tsv(sv_file) %>%
-  # only keep PASS variants
+# How many samples have TERT SVs and how many are pathogenic/likely pathogenic?
+sv_df_tert <- read_tsv(sv_file) %>%
+  # only keep PASS variants which are P/LP in dbVar
   filter(FILTER == "PASS",
-         # let's check all 
-         grepl("TERT", Gene.name)) %>%
-  select(chrom = SV.chrom, chromStart = SV.start, chromEnd = SV.end, name = AnnotSV.ID, 
-                  SVtype = SV.type, Sample = Kids.First.Biospecimen.ID.Tumor) %>%
-  write_tsv(file.path(results_dir, "mantaSV_tert.bed"))
+         Gene.name == "TERT")
 
-# Read in knotAnnotSV results
-# knotAnnotSV will create one line for the "full" SV and one line for the SV "split" into each gene if the SV covers multiple genes.
-# There were cases of SVs overlapping TERT (above in `sv_df`), but when split, none of these had an ACMG LP/P call.
-tert_sv_bs_ids <- read_tsv(sv_annot_file) %>%
-  # filter for ACMG class 4 or 5 (LP or P)
-  filter((ACMG_class == 4 | ACMG_class == 5),
-         Gene_name == "TERT") %>%
-  pull(Samples_ID) %>%
+# samples but none are P/LP
+sv_df_tert %>%
+  count(Kids.First.Biospecimen.ID.Tumor, dbVar_status)
+
+tert_sv_bs_ids <- sv_df_tert %>%
+  pull(Kids.First.Biospecimen.ID.Tumor) %>%
   unique()
 
 # Get sample ids for TERT SV bs ids
 tertsv_sample_ids <- metadata_df %>%
   filter(Kids_First_Biospecimen_ID %in% tert_sv_bs_ids) %>%
-  pull(sample_id)
+  pull(sample_id) %>%
+  unique()
   
 # Now get the RNASeq stranded IDs for those sample ids
 # note that not all of these may be stranded!
@@ -151,7 +145,7 @@ extend_df <- extend_df %>%
 extend_df %>%
   filter(tertp == "TERTp mutation present" | tertSV == "TERT SV present") %>%
   select(SampleID, tertp, tertSV, NormEXTENDScores, RNA_library) %>%
-  write_tsv(file.path(results_dir, "extend_scores_tert_alterations.tsv"))
+  write_tsv(tert_alteration_file)
 
 # Subset to stranded only for plot
 extend_df_stranded <- extend_df %>%
