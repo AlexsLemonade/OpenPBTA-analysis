@@ -34,13 +34,24 @@ vaf_cutoff=${OPENPBTA_VAF_CUTOFF:-0}
 # To run plots, set OPENPBTA_PLOTS to 1 or more
 run_plots_nb=${OPENPBTA_PLOTS:-0}
 
+# If running for manuscript, overwrite any existing tables
+run_for_manuscript=${OPENPBTA_MANUSCRIPT:-0}
+if [[ "$run_for_manuscript" -eq "0" ]]
+then
+   overwrite_flag=""
+   force_flag=""
+else
+   overwrite_flag="--overwrite"
+   force_flag="-f"
+fi
+
 ################################ Set Up Database ################################
 python3 scripts/01-setup_db.py \
   --db-file $dbfile \
   --strelka-file ${data_dir}/pbta-tcga-snv-strelka2.vep.maf.gz \
   --mutect-file ${data_dir}/pbta-tcga-snv-mutect2.vep.maf.gz \
   --lancet-file ${data_dir}/pbta-tcga-snv-lancet.vep.maf.gz \
-  --meta-file ${data_dir}/pbta-tcga-manifest.tsv
+  --meta-file ${data_dir}/pbta-tcga-manifest.tsv ${overwrite_flag}
 
 ##################### Merge callers' files into total files ####################
 Rscript scripts/02-merge_callers.R \
@@ -52,7 +63,7 @@ Rscript scripts/02-merge_callers.R \
 ########################## Add consensus to db ################################
 python3 scripts/01-setup_db.py \
   --db-file $dbfile \
-  --consensus-file $consensus_file
+  --consensus-file $consensus_file ${overwrite_flag}
 
 ###################### Create intersection BED files ###########################
 # Convert GTF to BED file for use in bedtools
@@ -75,7 +86,7 @@ Rscript scripts/03-calculate_tmb.R \
   --nonsynfilter_maf
 
 ########################## Compress consensus file #############################
-gzip $consensus_file
+gzip ${force_flag} $consensus_file
 
 ############################# Comparison Plots #################################
 if [ "$run_plots_nb" -gt "0" ]

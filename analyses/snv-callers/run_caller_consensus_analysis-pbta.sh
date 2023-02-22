@@ -40,6 +40,18 @@ else
    histologies_file=${data_dir}/pbta-histologies-base.tsv
 fi
 
+# If running for manuscript, overwrite any existing tables
+run_for_manuscript=${OPENPBTA_MANUSCRIPT:-0}
+if [[ "$run_for_manuscript" -eq "0" ]]
+then
+   overwrite_flag=""
+   force_flag=""
+else
+   overwrite_flag="--overwrite"
+   force_flag="-f"
+fi
+
+
 # Unless told to run the plots, the default is to skip them
 # To run plots, set OPENPBTA_PLOTS to 1 or more
 run_plots_nb=${OPENPBTA_PLOTS:-0}
@@ -52,7 +64,7 @@ python3 scripts/01-setup_db.py \
   --mutect-file ${data_dir}/pbta-snv-mutect2.vep.maf.gz \
   --lancet-file ${data_dir}/pbta-snv-lancet.vep.maf.gz \
   --vardict-file ${data_dir}/pbta-snv-vardict.vep.maf.gz \
-  --meta-file $histologies_file
+  --meta-file $histologies_file ${overwrite_flag}
 
 ##################### Merge callers' files into total files ####################
 echo "Merging callers"
@@ -66,7 +78,7 @@ Rscript scripts/02-merge_callers.R \
 echo "Adding consensus to database"
 python3 scripts/01-setup_db.py \
   --db-file $dbfile \
-  --consensus-file $consensus_file
+  --consensus-file $consensus_file ${overwrite_flag}
 
 ############# Create intersection BED files for TMB calculations ###############
 # Make All mutations BED files
@@ -99,7 +111,7 @@ Rscript scripts/03-calculate_tmb.R \
 
 ########################## Compress consensus file #############################
 
-gzip $consensus_file
+gzip ${force_flag} $consensus_file
 
 ############################# Comparison Plots #################################
 if [ "$run_plots_nb" -gt "0" ]
