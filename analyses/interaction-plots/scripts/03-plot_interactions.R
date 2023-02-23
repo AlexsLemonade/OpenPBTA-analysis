@@ -133,21 +133,21 @@ na_color <- divergent_palette %>%
 histologies_color_key_df <- readr::read_tsv(file.path(palette_dir,
                                                       "broad_histology_cancer_group_palette.tsv"),
                                             col_types = readr::cols()) %>%
-  # add a border column 
+  # add a border column
   dplyr::mutate(border = "#666666") %>%
   # colors for headings (NA because these will be blank)
-  tibble::add_row(cancer_group_display = "High-grade gliomas", 
-                  cancer_group_hex = NA, 
+  tibble::add_row(cancer_group_display = "High-grade gliomas",
+                  cancer_group_hex = NA,
                   border = NA ) %>%
-  tibble::add_row(cancer_group_display = "Low-grade gliomas", 
+  tibble::add_row(cancer_group_display = "Low-grade gliomas",
                   cancer_group_hex = NA,
                   border = NA) %>%
-  tibble::add_row(cancer_group_display = "Embryonal tumors", 
+  tibble::add_row(cancer_group_display = "Embryonal tumors",
                   cancer_group_hex = NA,
                   border = NA) %>%
-  tibble::add_row(cancer_group_display = "blank", 
+  tibble::add_row(cancer_group_display = "blank",
                   cancer_group_hex = NA,
-                  border = NA) 
+                  border = NA)
 
 # create scales for consistent sizing
 # The scales will need to have opts$plotsize elements,
@@ -237,12 +237,12 @@ disease_df <- readr::read_tsv(disease_file, col_types = readr::cols()) %>%
 #   unique() %>%
 #   head(10) %>% # top 10 diseases with highest mutated samples
 #   dplyr::pull(disease)
- 
+
 # Print
 # print(display_diseases)
- 
+
  # We want to set the order to have "other" HGG or LGG come last within the groups
- 
+
  display_diseases <- c("High-grade gliomas",
                        "Diffuse midline glioma",
                        "Other high-grade glioma",
@@ -260,7 +260,7 @@ disease_df <- readr::read_tsv(disease_file, col_types = readr::cols()) %>%
                        "Craniopharyngioma",
                        "Meningioma",
                        "Other")
- 
+
 # Add display values with bold for headers and `atop` to add spacing
  display_disease_lab <- c(expression(bold("High-grade gliomas")),
                        "Diffuse midline glioma",
@@ -277,9 +277,9 @@ disease_df <- readr::read_tsv(disease_file, col_types = readr::cols()) %>%
                        " ",
                        "Ependymoma",
                        "Craniopharyngioma",
-                       "Meningioma", 
+                       "Meningioma",
                        "Other")
- 
+
 
 disease_df_fct <- disease_df %>%
   dplyr::filter(!is.na(disease)) %>%
@@ -315,7 +315,7 @@ disease_plot <- ggplot(
            size = 0.15) +
   labs(
     x = "",
-    y = "Samples with mutations",
+    y = "Tumors with mutations",
     fill = "Cancer Group",
     color = "Cancer Group"
   ) +
