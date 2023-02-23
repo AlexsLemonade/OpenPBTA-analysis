@@ -77,7 +77,7 @@ metadata_df <- read_tsv(metadata_file, guess_max = 10000)
 maf_df <- read_tsv(maf_file)
 hotspot_df <- read_tsv(hotspot_file)
 
-## TERT SV investigation -------------
+# TERT SV investigation -------------
 
 
 # How many samples have TERT SVs and how many are pathogenic/likely pathogenic?
@@ -99,14 +99,15 @@ tertsv_sample_ids <- metadata_df %>%
   filter(Kids_First_Biospecimen_ID %in% tert_sv_bs_ids) %>%
   pull(sample_id) %>%
   unique()
+
   
 # Now get the RNASeq stranded IDs for those sample ids
 # note that not all of these may be stranded!
 rna_tertsv_bs_ids <- metadata_df %>%
   filter(sample_id %in% tertsv_sample_ids, 
          experimental_strategy == "RNA-Seq") %>%
-  select(Kids_First_Biospecimen_ID, RNA_library) 
-# One polyA, other WGS only. We we won't add polyA to stranded plot.
+  select(sample_id, Kids_First_Biospecimen_ID, RNA_library) 
+# 2/3 sample ids have RNA-Seq. 1 polyA, 1 stranded.
 
 # TERTp-positive samples and relationship to EXTEND scores ----------------------
 snps <- c("rs1561215364", "rs1242535815")
