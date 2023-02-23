@@ -86,7 +86,7 @@ sv_df_tert <- read_tsv(sv_file) %>%
   filter(FILTER == "PASS",
          Gene.name == "TERT")
 
-# samples but none are P/LP
+# three samples but none are P/LP
 sv_df_tert %>%
   count(Kids.First.Biospecimen.ID.Tumor, dbVar_status)
 
