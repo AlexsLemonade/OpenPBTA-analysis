@@ -77,6 +77,9 @@ metadata_df <- read_tsv(metadata_file, guess_max = 10000)
 maf_df <- read_tsv(maf_file)
 hotspot_df <- read_tsv(hotspot_file)
 
+## TERT SV investigation -------------
+
+
 # How many samples have TERT SVs and how many are pathogenic/likely pathogenic?
 sv_df_tert <- read_tsv(sv_file) %>%
   # only keep PASS variants which are P/LP in dbVar
