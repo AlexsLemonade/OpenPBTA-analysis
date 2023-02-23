@@ -56,7 +56,7 @@ umap_stranded_file <- file.path(
 )
 umap_polya_file <- file.path(
   "results",
-  "rsem_polya_log_umap_scores_aligned.tsv"
+  "rsem_polyA_log_umap_scores_aligned.tsv"
 )
 ```
 
