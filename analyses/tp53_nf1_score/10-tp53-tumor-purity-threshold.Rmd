@@ -79,15 +79,14 @@ plot_tp53_status <- function(df, var, y_lab) {
         y = {{var}}) +
     geom_violin() +
     geom_jitter(
-      aes(alpha = tp53_altered),
-          width = 0.1, size = 1
+      alpha = 0.25,
+      width = 0.1, 
+      size = 1
     ) +
     # Add median +/- IQR pointrange
     geom_pointrange(data = stats_df,
                     aes(x = tp53_altered, y = y, ymin = ymin, ymax = ymax),
                     color = "firebrick") +
-    # Alpha scale
-    scale_alpha_manual(values = c(0.75, 0.75, 0.25), guide = FALSE) +
     labs(
       x = "TP53 altered status",
       y = y_lab
