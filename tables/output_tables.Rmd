@@ -223,9 +223,9 @@ soi_df %>%
   write_tsv(table_2_file)
 ```
 
-## Table S1: V22 histologies table
+## Table S1: Histologies table
 
-```{r v22 histology as excel}
+```{r histology as excel}
 # Sheet 1: README tab
 histology_df_tumor <- histology_df %>%
   filter(!is.na(pathology_diagnosis)) %>%
@@ -296,6 +296,7 @@ write.xlsx(list_s1_table,
 ```
 
 ## Table S2: DNA results table
+
 ### TMB
 ```{r s2 DNA results part 1}
 
@@ -341,11 +342,98 @@ chromothripsis_region_df <- readr::read_tsv(chromo_file)
 
 ```
 
+
+### Oncoprint mutations for primary-only tumors
+
+```{r s2 DNA results part 4}
+onco_dir <- file.path(analyses_dir, 
+                      "oncoprint-landscape", 
+                      "tables",
+                      "cancer_group_counts",
+                      "primary_only")
+# Column name/order for the final combined data, loosely based on the Figure 2 legend ordering
+col_order <- c("Cancer group", 
+               "Hugo_Symbol", 
+               "Missense_Mutation", 
+               "Nonsense_Mutation", 
+               "Silent",
+               "Frame_Shift_Del", 
+               "Frame_Shift_Ins",
+               "Splice_Site", 
+               "Splice_Region",
+               "Translation_Start_Site", 
+               "Nonstop_Mutation", 
+               "In_Frame_Del", 
+               "In_Frame_Ins", 
+               "Fusion", 
+               "Del", 
+               "Amp",
+               "Multi_Hit_Fusion",
+               "3'Flank",
+               "5'Flank",
+               "3'UTR",
+               "5'UTR",
+               "RNA",
+               "CNV_total",
+               "total",
+               "MutatedSamples",
+               "AlteredSamples")
+
+all_files <- dir(onco_dir)
+
+# Add names of title case cancer groups
+names(all_files) <- all_files %>%
+  stringr::str_replace_all("_oncoprint_alteration_counts.tsv",
+                           "") %>%
+  stringr::str_replace_all("-", " ") %>%
+  stringr::str_to_title()
+
+
+# Read in all TSV files
+all_onco_df <- purrr::map(
+  file.path(onco_dir, all_files),
+  readr::read_tsv
+)
+
+# Add new column `Cancer group` with the name, using a helper function:
+add_cancer_group_col <- function(df, cancer_group) {
+  df$`Cancer group` <- cancer_group
+  df
+}
+all_onco_df <- purrr::map2(
+  all_onco_df, 
+  names(all_files),
+  add_cancer_group_col
+)
+
+# Ensure each df has the same columns and in the right order, using a helper function:
+add_df_column <- function(df, col_order) {
+  for (col_name in col_order) {
+    if (!(col_name %in% names(df))) {
+      df[[col_name]] <- NA
+    }
+  }
+  # Return with updated order:
+  dplyr::select(df, col_order)
+}
+all_onco_df <- purrr::map(
+  all_onco_df, 
+  add_df_column, 
+  col_order
+)
+
+# Bind rows into single df:
+onco_df <- dplyr::bind_rows(all_onco_df)
+```
+
+
+
 ### combine S2 table
 ```{r s2 DNA results combined}
 list_s2_table <- list(tumor_mutation_burden = tmb_combined,
                       cns_mutational_signatures = cns_signatures,
-                      chromothripsis_events = chromothripsis_region_df
+                      chromothripsis_events = chromothripsis_region_df, 
+                      cancer_group_alterations = onco_df
                      )
 write.xlsx(list_s2_table, 
            table_s2_file,
