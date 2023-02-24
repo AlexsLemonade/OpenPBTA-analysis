@@ -1,13 +1,13 @@
 ---
 title: "Sample numbers for manuscript"
 author: "Jo Lynne Rokita for D3b"
-date: "2022"
-output: 
+date: "2022-2023"
+output:
   html_notebook:
     toc: TRUE
     toc_float: TRUE
 params:
-  release: release-v22-20220505 
+  release: release-v23-20230115
 ---
 
 ```{r setup, include=FALSE}
@@ -15,7 +15,7 @@ library(tidyverse)
 ```
 This notebook tallies patient-level, sample-level, and biospecimen-level Ns used throughout the manuscript.
 
-## Set directories 
+## Set directories
 ```{r set directories}
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
@@ -30,7 +30,7 @@ cell_lines_file <- file.path(root_dir, "analyses", "molecular-subtyping-HGG", "i
 # Read in histologies file
 hist <- read_tsv(hist_file, guess_max = 10000)
 
-# Cell lines which have both suspension (S, serum-free media) or adherent (A, serum-containing media) compositions due to being grown in different media. 
+# Cell lines which have both suspension (S, serum-free media) or adherent (A, serum-containing media) compositions due to being grown in different media.
 cell_lines <- read_tsv(cell_lines_file)
 ```
 
@@ -49,7 +49,7 @@ hist %>%
   select(Kids_First_Participant_ID, cohort) %>%
   unique() %>%
   count(cohort)
-  
+
 ```
 
 ## Calculate sample (tumor/normal) level Ns used for manuscript
@@ -96,7 +96,7 @@ cellline_bs <- hist %>%
   left_join(cell_lines, by = c("Kids_First_Participant_ID", "Kids_First_Biospecimen_ID", "sample_id")) %>%
   select(Kids_First_Biospecimen_ID, sample_id, cell_line_composition, molecular_subtype) %>%
   arrange(sample_id)
- 
+
 cellline_bs_count <- cellline_bs %>%
     count(sample_id, cell_line_composition)
 nrow(cellline_bs_count)
@@ -110,20 +110,20 @@ sum(cellline_bs_count$n)
 ```{r samples subtyped}
 # Total number of samples subtyped
 all_samples_subtyped <- hist %>%
-  filter(!is.na(pathology_diagnosis), 
-          !is.na(molecular_subtype), 
-          !grepl("To be classified", molecular_subtype)) %>% 
-   # Count sample_id and subtype combinations 
+  filter(!is.na(pathology_diagnosis),
+          !is.na(molecular_subtype),
+          !grepl("To be classified", molecular_subtype)) %>%
+   # Count sample_id and subtype combinations
   count(sample_id, molecular_subtype)
 nrow(all_samples_subtyped)
 
 # Total number of samples subtyped, not including cell lines
 tumors_not_lines_subtyped <- hist %>%
   filter(composition != "Derived Cell Line",
-         !is.na(pathology_diagnosis), 
-         !is.na(molecular_subtype), 
-         !grepl("To be classified", molecular_subtype)) %>% 
-   # Count sample_id and subtype combinations 
+         !is.na(pathology_diagnosis),
+         !is.na(molecular_subtype),
+         !grepl("To be classified", molecular_subtype)) %>%
+   # Count sample_id and subtype combinations
   count(sample_id, molecular_subtype)
 nrow(tumors_not_lines_subtyped)
 
@@ -151,7 +151,7 @@ cellline_bs %>%
 # Total number of samples with WHO-aligned integrated diagnosis
 who_dx <- hist %>%
   filter(!is.na(integrated_diagnosis)) %>%
-  count(sample_id, composition, molecular_subtype) 
+  count(sample_id, composition, molecular_subtype)
 table(who_dx$composition)
 
 ```
