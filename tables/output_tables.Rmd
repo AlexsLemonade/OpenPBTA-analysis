@@ -1,7 +1,7 @@
 ---
 title: "Tables output for manuscript"
 author: "Run Jin (D3b), Stephanie J. Spielman (ALSF CCDL), and Jo Lynne Rokita (D3b)"
-date: "2021-2022"
+date: "2021-2023"
 output: 
   html_notebook:
     toc: TRUE
@@ -422,8 +422,9 @@ all_onco_df <- purrr::map(
   col_order
 )
 
-# Bind rows into single df:
+# Bind rows into single df, and remove any columns that are ONLY `NA`
 onco_df <- dplyr::bind_rows(all_onco_df)
+onco_df <- onco_df[ , colSums(is.na(onco_df)) < nrow(onco_df)]
 ```
 
 
