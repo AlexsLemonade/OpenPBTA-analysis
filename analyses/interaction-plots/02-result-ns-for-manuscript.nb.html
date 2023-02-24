@@ -2945,7 +2945,7 @@ div.tocify {
 <h2>Set directories</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm9vdF9kaXIgPC0gcnByb2pyb290OjpmaW5kX3Jvb3QocnByb2pyb290OjpoYXNfZGlyKFwiLmdpdFwiKSlcbmRhdGFfZGlyIDwtIGZpbGUucGF0aChyb290X2RpciwgXCJkYXRhXCIpXG5hbmFseXNpc19kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcImFuYWx5c2VzXCIsIFwiaW50ZXJhY3Rpb24tcGxvdHNcIilcbnJlc3VsdHNfZGlyIDwtIGZpbGUucGF0aChhbmFseXNpc19kaXIsIFwicmVzdWx0c1wiKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjpbInJvb3RfZGlyIDwtIHJwcm9qcm9vdDo6ZmluZF9yb290KHJwcm9qcm9vdDo6aGFzX2RpcihcIi5naXRcIikpIiwiZGF0YV9kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcImRhdGFcIikiLCJhbmFseXNpc19kaXIgPC0gZmlsZS5wYXRoKHJvb3RfZGlyLCBcImFuYWx5c2VzXCIsIFwiaW50ZXJhY3Rpb24tcGxvdHNcIikiLCJyZXN1bHRzX2RpciA8LSBmaWxlLnBhdGgoYW5hbHlzaXNfZGlyLCBcInJlc3VsdHNcIikiXX0= -->
 <pre class="r"><code>root_dir &lt;- rprojroot::find_root(rprojroot::has_dir(&quot;.git&quot;))
 data_dir &lt;- file.path(root_dir, &quot;data&quot;)
 analysis_dir &lt;- file.path(root_dir, &quot;analyses&quot;, &quot;interaction-plots&quot;)
@@ -2958,7 +2958,7 @@ results_dir &lt;- file.path(analysis_dir, &quot;results&quot;)</code></pre>
 <h2>Read in Files</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWxsX3Jlc3VsdHNfZmlsZSA8LSBmaWxlLnBhdGgocmVzdWx0c19kaXIsIFwiY29vY2N1cl90b3A1MC5BTEwudHN2XCIpXG5oZ2dfcmVzdWx0c19maWxlIDwtIGZpbGUucGF0aChyZXN1bHRzX2RpciwgXCJjb29jY3VyX3RvcDUwLkRpZmZ1c2UtYXN0cm9jeXRpYy1hbmQtb2xpZ29kZW5kcm9nbGlhbC10dW1vci50c3ZcIilcblxuIyBSZWFkIGluIHJlc3VsdHMgKG9ubHkgbmVlZCBzaWduaWZpY2FudCByZXN1bHRzIGZvciBhbGwsIGJ1dCBhbGwgZGF0YSBmb3IgaGdnKVxuYWxsX3Jlc3VsdHNfc2lnIDwtIHJlYWRfdHN2KGFsbF9yZXN1bHRzX2ZpbGUpICU+JVxuICBmaWx0ZXIocSA8IDAuMDUpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbImFsbF9yZXN1bHRzX2ZpbGUgPC0gZmlsZS5wYXRoKHJlc3VsdHNfZGlyLCBcImNvb2NjdXJfdG9wNTAuQUxMLnRzdlwiKSIsImhnZ19yZXN1bHRzX2ZpbGUgPC0gZmlsZS5wYXRoKHJlc3VsdHNfZGlyLCBcImNvb2NjdXJfdG9wNTAuRGlmZnVzZS1hc3Ryb2N5dGljLWFuZC1vbGlnb2RlbmRyb2dsaWFsLXR1bW9yLnRzdlwiKSIsIiIsIiMgUmVhZCBpbiByZXN1bHRzIChvbmx5IG5lZWQgc2lnbmlmaWNhbnQgcmVzdWx0cyBmb3IgYWxsLCBidXQgYWxsIGRhdGEgZm9yIGhnZykiLCJhbGxfcmVzdWx0c19zaWcgPC0gcmVhZF90c3YoYWxsX3Jlc3VsdHNfZmlsZSkgJT4lXG4gIGZpbHRlcihxIDwgMC4wNSkiXX0= -->
 <pre class="r"><code>all_results_file &lt;- file.path(results_dir, &quot;cooccur_top50.ALL.tsv&quot;)
 hgg_results_file &lt;- file.path(results_dir, &quot;cooccur_top50.Diffuse-astrocytic-and-oligodendroglial-tumor.tsv&quot;)
 
@@ -2966,56 +2966,56 @@ hgg_results_file &lt;- file.path(results_dir, &quot;cooccur_top50.Diffuse-astroc
 all_results_sig &lt;- read_tsv(all_results_file) %&gt;%
   filter(q &lt; 0.05)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBnZW5lMSA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBnZW5lMiA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBtdXQxMSA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBtdXQxMCA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBtdXQwMSA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBtdXQwMCA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBvZGRzX3JhdGlvID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIGNvb2NjdXJfc2lnbiA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBvZGRzX3JhdGlvX2NpID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIHAgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgcSA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBjb29jY3VyX3Njb3JlID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIG5fbXV0YXRlZF9nZW5lMSA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBuX211dGF0ZWRfZ2VuZTIgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgcGVyY19tdXRhdGVkX2dlbmUxID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIHBlcmNfbXV0YXRlZF9nZW5lMiA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBwZXJjX2Nvb2NjdXIgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgcGVyY19tdXRleGNsID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW1cbilcbiJ9 -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBnZW5lMSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgZ2VuZTIgPSBjb2xfY2hhcmFjdGVyKCksXG4gIG11dDExID0gY29sX2RvdWJsZSgpLFxuICBtdXQxMCA9IGNvbF9kb3VibGUoKSxcbiAgbXV0MDEgPSBjb2xfZG91YmxlKCksXG4gIG11dDAwID0gY29sX2RvdWJsZSgpLFxuICBvZGRzX3JhdGlvID0gY29sX2RvdWJsZSgpLFxuICBjb29jY3VyX3NpZ24gPSBjb2xfZG91YmxlKCksXG4gIG9kZHNfcmF0aW9fY2kgPSBjb2xfY2hhcmFjdGVyKCksXG4gIHAgPSBjb2xfZG91YmxlKCksXG4gIHEgPSBjb2xfZG91YmxlKCksXG4gIGNvb2NjdXJfc2NvcmUgPSBjb2xfZG91YmxlKCksXG4gIG5fbXV0YXRlZF9nZW5lMSA9IGNvbF9kb3VibGUoKSxcbiAgbl9tdXRhdGVkX2dlbmUyID0gY29sX2RvdWJsZSgpLFxuICBwZXJjX211dGF0ZWRfZ2VuZTEgPSBjb2xfZG91YmxlKCksXG4gIHBlcmNfbXV0YXRlZF9nZW5lMiA9IGNvbF9kb3VibGUoKSxcbiAgcGVyY19jb29jY3VyID0gY29sX2RvdWJsZSgpLFxuICBwZXJjX211dGV4Y2wgPSBjb2xfZG91YmxlKClcbilcbiJ9 -->
 <pre><code>Parsed with column specification:
 cols(
-  gene1 = [31mcol_character()[39m,
-  gene2 = [31mcol_character()[39m,
-  mut11 = [32mcol_double()[39m,
-  mut10 = [32mcol_double()[39m,
-  mut01 = [32mcol_double()[39m,
-  mut00 = [32mcol_double()[39m,
-  odds_ratio = [32mcol_double()[39m,
-  cooccur_sign = [32mcol_double()[39m,
-  odds_ratio_ci = [31mcol_character()[39m,
-  p = [32mcol_double()[39m,
-  q = [32mcol_double()[39m,
-  cooccur_score = [32mcol_double()[39m,
-  n_mutated_gene1 = [32mcol_double()[39m,
-  n_mutated_gene2 = [32mcol_double()[39m,
-  perc_mutated_gene1 = [32mcol_double()[39m,
-  perc_mutated_gene2 = [32mcol_double()[39m,
-  perc_cooccur = [32mcol_double()[39m,
-  perc_mutexcl = [32mcol_double()[39m
+  gene1 = col_character(),
+  gene2 = col_character(),
+  mut11 = col_double(),
+  mut10 = col_double(),
+  mut01 = col_double(),
+  mut00 = col_double(),
+  odds_ratio = col_double(),
+  cooccur_sign = col_double(),
+  odds_ratio_ci = col_character(),
+  p = col_double(),
+  q = col_double(),
+  cooccur_score = col_double(),
+  n_mutated_gene1 = col_double(),
+  n_mutated_gene2 = col_double(),
+  perc_mutated_gene1 = col_double(),
+  perc_mutated_gene2 = col_double(),
+  perc_cooccur = col_double(),
+  perc_mutexcl = col_double()
 )</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGdnX3Jlc3VsdHMgPC0gcmVhZF90c3YoaGdnX3Jlc3VsdHNfZmlsZSkgXG5gYGAifQ== -->
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiaGdnX3Jlc3VsdHMgPC0gcmVhZF90c3YoaGdnX3Jlc3VsdHNfZmlsZSkgIn0= -->
 <pre class="r"><code>hgg_results &lt;- read_tsv(hgg_results_file) </code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBnZW5lMSA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBnZW5lMiA9IFx1MDAxYlszMW1jb2xfY2hhcmFjdGVyKClcdTAwMWJbMzltLFxuICBtdXQxMSA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBtdXQxMCA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBtdXQwMSA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBtdXQwMCA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBvZGRzX3JhdGlvID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIGNvb2NjdXJfc2lnbiA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBvZGRzX3JhdGlvX2NpID0gXHUwMDFiWzMxbWNvbF9jaGFyYWN0ZXIoKVx1MDAxYlszOW0sXG4gIHAgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgcSA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBjb29jY3VyX3Njb3JlID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIG5fbXV0YXRlZF9nZW5lMSA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBuX211dGF0ZWRfZ2VuZTIgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgcGVyY19tdXRhdGVkX2dlbmUxID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW0sXG4gIHBlcmNfbXV0YXRlZF9nZW5lMiA9IFx1MDAxYlszMm1jb2xfZG91YmxlKClcdTAwMWJbMzltLFxuICBwZXJjX2Nvb2NjdXIgPSBcdTAwMWJbMzJtY29sX2RvdWJsZSgpXHUwMDFiWzM5bSxcbiAgcGVyY19tdXRleGNsID0gXHUwMDFiWzMybWNvbF9kb3VibGUoKVx1MDAxYlszOW1cbilcbiJ9 -->
+<!-- rnb-message-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICBnZW5lMSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgZ2VuZTIgPSBjb2xfY2hhcmFjdGVyKCksXG4gIG11dDExID0gY29sX2RvdWJsZSgpLFxuICBtdXQxMCA9IGNvbF9kb3VibGUoKSxcbiAgbXV0MDEgPSBjb2xfZG91YmxlKCksXG4gIG11dDAwID0gY29sX2RvdWJsZSgpLFxuICBvZGRzX3JhdGlvID0gY29sX2RvdWJsZSgpLFxuICBjb29jY3VyX3NpZ24gPSBjb2xfZG91YmxlKCksXG4gIG9kZHNfcmF0aW9fY2kgPSBjb2xfY2hhcmFjdGVyKCksXG4gIHAgPSBjb2xfZG91YmxlKCksXG4gIHEgPSBjb2xfZG91YmxlKCksXG4gIGNvb2NjdXJfc2NvcmUgPSBjb2xfZG91YmxlKCksXG4gIG5fbXV0YXRlZF9nZW5lMSA9IGNvbF9kb3VibGUoKSxcbiAgbl9tdXRhdGVkX2dlbmUyID0gY29sX2RvdWJsZSgpLFxuICBwZXJjX211dGF0ZWRfZ2VuZTEgPSBjb2xfZG91YmxlKCksXG4gIHBlcmNfbXV0YXRlZF9nZW5lMiA9IGNvbF9kb3VibGUoKSxcbiAgcGVyY19jb29jY3VyID0gY29sX2RvdWJsZSgpLFxuICBwZXJjX211dGV4Y2wgPSBjb2xfZG91YmxlKClcbilcbiJ9 -->
 <pre><code>Parsed with column specification:
 cols(
-  gene1 = [31mcol_character()[39m,
-  gene2 = [31mcol_character()[39m,
-  mut11 = [32mcol_double()[39m,
-  mut10 = [32mcol_double()[39m,
-  mut01 = [32mcol_double()[39m,
-  mut00 = [32mcol_double()[39m,
-  odds_ratio = [32mcol_double()[39m,
-  cooccur_sign = [32mcol_double()[39m,
-  odds_ratio_ci = [31mcol_character()[39m,
-  p = [32mcol_double()[39m,
-  q = [32mcol_double()[39m,
-  cooccur_score = [32mcol_double()[39m,
-  n_mutated_gene1 = [32mcol_double()[39m,
-  n_mutated_gene2 = [32mcol_double()[39m,
-  perc_mutated_gene1 = [32mcol_double()[39m,
-  perc_mutated_gene2 = [32mcol_double()[39m,
-  perc_cooccur = [32mcol_double()[39m,
-  perc_mutexcl = [32mcol_double()[39m
+  gene1 = col_character(),
+  gene2 = col_character(),
+  mut11 = col_double(),
+  mut10 = col_double(),
+  mut01 = col_double(),
+  mut00 = col_double(),
+  odds_ratio = col_double(),
+  cooccur_sign = col_double(),
+  odds_ratio_ci = col_character(),
+  p = col_double(),
+  q = col_double(),
+  cooccur_score = col_double(),
+  n_mutated_gene1 = col_double(),
+  n_mutated_gene2 = col_double(),
+  perc_mutated_gene1 = col_double(),
+  perc_mutated_gene2 = col_double(),
+  perc_cooccur = col_double(),
+  perc_mutexcl = col_double()
 )</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGdnX3Jlc3VsdHNfc2lnIDwtIGhnZ19yZXN1bHRzICU+JVxuICBmaWx0ZXIocSA8IDAuMDUpXG5gYGAifQ== -->
+<!-- rnb-message-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiaGdnX3Jlc3VsdHNfc2lnIDwtIGhnZ19yZXN1bHRzICU+JVxuICBmaWx0ZXIocSA8IDAuMDUpIn0= -->
 <pre class="r"><code>hgg_results_sig &lt;- hgg_results %&gt;%
   filter(q &lt; 0.05)</code></pre>
 <!-- rnb-source-end -->
@@ -3026,7 +3026,7 @@ cols(
 <h2>Calculate sample sizes/ratios used for manuscript</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBOIHNhbXBsZXMgaW4gY28tb2NjdXJyZW5jZSBhbmFseXNpc1xuYWxsX3Jlc3VsdHNfbiA8LSBhbGxfcmVzdWx0c19zaWcgJT4lXG4gIGRwbHlyOjpyb3d3aXNlKCkgJT4lXG4gIGRwbHlyOjptdXRhdGUoc2FtcGxlX24gPSBzdW0obXV0MTEsbXV0MTAsbXV0MDEsbXV0MDApKSAlPiVcbiAgcHVsbChzYW1wbGVfbikgJT4lXG4gIHVuaXF1ZSgpXG5cbmFsbF9yZXN1bHRzX25cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgTiBzYW1wbGVzIGluIGNvLW9jY3VycmVuY2UgYW5hbHlzaXMiLCJhbGxfcmVzdWx0c19uIDwtIGFsbF9yZXN1bHRzX3NpZyAlPiVcbiAgZHBseXI6OnJvd3dpc2UoKSAlPiVcbiAgZHBseXI6Om11dGF0ZShzYW1wbGVfbiA9IHN1bShtdXQxMSxtdXQxMCxtdXQwMSxtdXQwMCkpICU+JVxuICBwdWxsKHNhbXBsZV9uKSAlPiVcbiAgdW5pcXVlKCkiLCIiLCJhbGxfcmVzdWx0c19uIl19 -->
 <pre class="r"><code># Total N samples in co-occurrence analysis
 all_results_n &lt;- all_results_sig %&gt;%
   dplyr::rowwise() %&gt;%
@@ -3036,32 +3036,32 @@ all_results_n &lt;- all_results_sig %&gt;%
 
 all_results_n</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDY2NlxuIn0= -->
-<pre><code>[1] 666</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDY2OFxuIn0= -->
+<pre><code>[1] 668</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBOdW1iZXIgb2Ygc2lnbmlmaWNhbnQgZXZlbnRzXG5uX3NpZyA8LSBhbGxfcmVzdWx0c19zaWcgJT4lXG4gIG5yb3coKVxubl9zaWdcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgTnVtYmVyIG9mIHNpZ25pZmljYW50IGV2ZW50cyIsIm5fc2lnIDwtIGFsbF9yZXN1bHRzX3NpZyAlPiVcbiAgbnJvdygpIiwibl9zaWciXX0= -->
 <pre class="r"><code># Number of significant events
 n_sig &lt;- all_results_sig %&gt;%
   nrow()
 n_sig</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDg3MlxuIn0= -->
-<pre><code>[1] 872</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDg3MFxuIn0= -->
+<pre><code>[1] 870</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBOdW1iZXIgb2YgaGdnIHNpZ25pZmljYW50IGV2ZW50c1xubl9oZ2dfc2lnIDwtIGhnZ19yZXN1bHRzX3NpZyAlPiVcbiAgbnJvdygpXG5uX2hnZ19zaWdcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgTnVtYmVyIG9mIGhnZyBzaWduaWZpY2FudCBldmVudHMiLCJuX2hnZ19zaWcgPC0gaGdnX3Jlc3VsdHNfc2lnICU+JVxuICBucm93KCkiLCJuX2hnZ19zaWciXX0= -->
 <pre class="r"><code># Number of hgg significant events
 n_hgg_sig &lt;- hgg_results_sig %&gt;%
   nrow()
 n_hgg_sig</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDg0N1xuIn0= -->
-<pre><code>[1] 847</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDg0OFxuIn0= -->
+<pre><code>[1] 848</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBGaW5kIEhHRyBnZW5lIHBhaXJzIHdpdGhpbiBBbGwgc2V0XG4jIE5vdGUgdGhhdCB0aGlzIGNvbXBhcmlzb24gaXMgbm90IHN0YXRpc3RpY2FsbHkgdmFsaWQsIFxuIyBhcyBzaWduaWZpY2FuY2UgY3V0b2ZmcyBhcmUgZGlmZmVyZW50LCBhbmQgY29tcGFyaW5nIHNpZ25pZmljYW50IHNldHMgXG4jIGlzIHByb2JsZW1hdGljIGFueXdheVxuXG4jIGdldCBwYWlycywgYWxwaGFiZXRpY2FsbHlcbmFsbF9zaWdfZ2VuZXBhaXJzIDwtIGFsbF9yZXN1bHRzX3NpZyAlPiVcbiAgbXV0YXRlKHBhaXJzID0gY2FzZV93aGVuKGdlbmUxIDwgZ2VuZTIgfiBwYXN0ZShnZW5lMSwgZ2VuZTIsIHNlcCA9IFwiLVwiKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgIGdlbmUxID4gZ2VuZTIgfiBwYXN0ZShnZW5lMiwgZ2VuZTEsIHNlcCA9IFwiLVwiKSkpICU+JVxuICBwdWxsKHBhaXJzKVxuXG5oZ2dfc2lnX2dlbmVwYWlycyA8LSBoZ2dfcmVzdWx0c19zaWcgJT4lXG4gIG11dGF0ZShwYWlycyA9IGNhc2Vfd2hlbihnZW5lMSA8IGdlbmUyIH4gcGFzdGUoZ2VuZTEsIGdlbmUyLCBzZXAgPSBcIi1cIiksXG4gICAgICAgICAgICAgICAgICAgICAgICAgICBnZW5lMSA+IGdlbmUyIH4gcGFzdGUoZ2VuZTIsIGdlbmUxLCBzZXAgPSBcIi1cIikpKSAlPiVcbiAgcHVsbChwYWlycylcblxuc3VtKGhnZ19zaWdfZ2VuZXBhaXJzICVpbiUgYWxsX3NpZ19nZW5lcGFpcnMpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgRmluZCBIR0cgZ2VuZSBwYWlycyB3aXRoaW4gQWxsIHNldCIsIiMgTm90ZSB0aGF0IHRoaXMgY29tcGFyaXNvbiBpcyBub3Qgc3RhdGlzdGljYWxseSB2YWxpZCwgIiwiIyBhcyBzaWduaWZpY2FuY2UgY3V0b2ZmcyBhcmUgZGlmZmVyZW50LCBhbmQgY29tcGFyaW5nIHNpZ25pZmljYW50IHNldHMgIiwiIyBpcyBwcm9ibGVtYXRpYyBhbnl3YXkiLCIiLCIjIGdldCBwYWlycywgYWxwaGFiZXRpY2FsbHkiLCJhbGxfc2lnX2dlbmVwYWlycyA8LSBhbGxfcmVzdWx0c19zaWcgJT4lXG4gIG11dGF0ZShwYWlycyA9IGNhc2Vfd2hlbihnZW5lMSA8IGdlbmUyIH4gcGFzdGUoZ2VuZTEsIGdlbmUyLCBzZXAgPSBcIi1cIiksXG4gICAgICAgICAgICAgICAgICAgICAgICAgICBnZW5lMSA+IGdlbmUyIH4gcGFzdGUoZ2VuZTIsIGdlbmUxLCBzZXAgPSBcIi1cIikpKSAlPiVcbiAgcHVsbChwYWlycykiLCIiLCJoZ2dfc2lnX2dlbmVwYWlycyA8LSBoZ2dfcmVzdWx0c19zaWcgJT4lXG4gIG11dGF0ZShwYWlycyA9IGNhc2Vfd2hlbihnZW5lMSA8IGdlbmUyIH4gcGFzdGUoZ2VuZTEsIGdlbmUyLCBzZXAgPSBcIi1cIiksXG4gICAgICAgICAgICAgICAgICAgICAgICAgICBnZW5lMSA+IGdlbmUyIH4gcGFzdGUoZ2VuZTIsIGdlbmUxLCBzZXAgPSBcIi1cIikpKSAlPiVcbiAgcHVsbChwYWlycykiLCIiLCJzdW0oaGdnX3NpZ19nZW5lcGFpcnMgJWluJSBhbGxfc2lnX2dlbmVwYWlycykiXX0= -->
 <pre class="r"><code># Find HGG gene pairs within All set
 # Note that this comparison is not statistically valid, 
 # as significance cutoffs are different, and comparing significant sets 
@@ -3080,8 +3080,8 @@ hgg_sig_genepairs &lt;- hgg_results_sig %&gt;%
 
 sum(hgg_sig_genepairs %in% all_sig_genepairs)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDk2XG4ifQ== -->
-<pre><code>[1] 96</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDEyNVxuIn0= -->
+<pre><code>[1] 125</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3089,7 +3089,7 @@ sum(hgg_sig_genepairs %in% all_sig_genepairs)</code></pre>
 <h3>HGG mutual exclusivity counts</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBOdW1iZXIgb2YgaGdncyB3aXRoIG11dHVhbGx5IGV4Y2x1c2l2ZSBUUDUzIGFuZCBQUE0xRCBtdXRhdGlvbnMgKDUyLzU0KVxuaGdnX3Jlc3VsdHMgJT4lXG4gIGZpbHRlcigoZ2VuZTEgPT0gXCJUUDUzXCIgJiBnZW5lMiA9PSBcIlBQTTFEXCIpIHwgKGdlbmUyID09IFwiVFA1M1wiICYgZ2VuZTEgPT0gXCJQUE0xRFwiKSklPiVcbiAgIyBzdW0gbXV0dWFsbHkgZXhjbHVzaXZlXG4gIGRwbHlyOjpyb3d3aXNlKCkgJT4lXG4gIGRwbHlyOjptdXRhdGUobl9tdXRfZXhjbCA9IHN1bShtdXQxMCxtdXQwMSkpICU+JVxuICBwdWxsKG5fbXV0X2V4Y2wpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgTnVtYmVyIG9mIGhnZ3Mgd2l0aCBtdXR1YWxseSBleGNsdXNpdmUgVFA1MyBhbmQgUFBNMUQgbXV0YXRpb25zICg1Mi81NCkiLCJoZ2dfcmVzdWx0cyAlPiVcbiAgZmlsdGVyKChnZW5lMSA9PSBcIlRQNTNcIiAmIGdlbmUyID09IFwiUFBNMURcIikgfCAoZ2VuZTIgPT0gXCJUUDUzXCIgJiBnZW5lMSA9PSBcIlBQTTFEXCIpKSU+JVxuICAjIHN1bSBtdXR1YWxseSBleGNsdXNpdmVcbiAgZHBseXI6OnJvd3dpc2UoKSAlPiVcbiAgZHBseXI6Om11dGF0ZShuX211dF9leGNsID0gc3VtKG11dDEwLG11dDAxKSkgJT4lXG4gIHB1bGwobl9tdXRfZXhjbCkiXX0= -->
 <pre class="r"><code># Number of hggs with mutually exclusive TP53 and PPM1D mutations (52/54)
 hgg_results %&gt;%
   filter((gene1 == &quot;TP53&quot; &amp; gene2 == &quot;PPM1D&quot;) | (gene2 == &quot;TP53&quot; &amp; gene1 == &quot;PPM1D&quot;))%&gt;%
@@ -3098,10 +3098,10 @@ hgg_results %&gt;%
   dplyr::mutate(n_mut_excl = sum(mut10,mut01)) %&gt;%
   pull(n_mut_excl)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDUyXG4ifQ== -->
-<pre><code>[1] 52</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDUzXG4ifQ== -->
+<pre><code>[1] 53</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUb3RhbCBudW1iZXIgb2YgaGdncyB3aXRoIGEgbXV0YXRpb24gaW4gX2VpdGhlcl8gZ2VuZSAodGhpcyBoYXMgYWxyZWFkeSBnb25lIGludG8gdGhlIGBwZXJjX211dGV4Y2xgIGNhbGN1bGF0aW9uKVxuaGdnX3Jlc3VsdHMgJT4lXG4gIGZpbHRlcigoZ2VuZTEgPT0gXCJUUDUzXCIgJiBnZW5lMiA9PSBcIlBQTTFEXCIpIHwgKGdlbmUyID09IFwiVFA1M1wiICYgZ2VuZTEgPT0gXCJQUE0xRFwiKSkgJT4lXG4gICMgc3VtIG11dHVhbGx5IGV4Y2x1c2l2ZVxuICBkcGx5cjo6cm93d2lzZSgpICU+JVxuICBkcGx5cjo6bXV0YXRlKG5fbXV0ID0gc3VtKG11dDEwLG11dDAxLG11dDExKSkgJT4lXG4gIHB1bGwobl9tdXQpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgVG90YWwgbnVtYmVyIG9mIGhnZ3Mgd2l0aCBhIG11dGF0aW9uIGluIF9laXRoZXJfIGdlbmUgKHRoaXMgaGFzIGFscmVhZHkgZ29uZSBpbnRvIHRoZSBgcGVyY19tdXRleGNsYCBjYWxjdWxhdGlvbikiLCJoZ2dfcmVzdWx0cyAlPiVcbiAgZmlsdGVyKChnZW5lMSA9PSBcIlRQNTNcIiAmIGdlbmUyID09IFwiUFBNMURcIikgfCAoZ2VuZTIgPT0gXCJUUDUzXCIgJiBnZW5lMSA9PSBcIlBQTTFEXCIpKSAlPiVcbiAgIyBzdW0gbXV0dWFsbHkgZXhjbHVzaXZlXG4gIGRwbHlyOjpyb3d3aXNlKCkgJT4lXG4gIGRwbHlyOjptdXRhdGUobl9tdXQgPSBzdW0obXV0MTAsbXV0MDEsbXV0MTEpKSAlPiVcbiAgcHVsbChuX211dCkiXX0= -->
 <pre class="r"><code># Total number of hggs with a mutation in _either_ gene (this has already gone into the `perc_mutexcl` calculation)
 hgg_results %&gt;%
   filter((gene1 == &quot;TP53&quot; &amp; gene2 == &quot;PPM1D&quot;) | (gene2 == &quot;TP53&quot; &amp; gene1 == &quot;PPM1D&quot;)) %&gt;%
@@ -3110,17 +3110,17 @@ hgg_results %&gt;%
   dplyr::mutate(n_mut = sum(mut10,mut01,mut11)) %&gt;%
   pull(n_mut)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDU0XG4ifQ== -->
-<pre><code>[1] 54</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDU1XG4ifQ== -->
+<pre><code>[1] 55</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBQZXJjZW50IG9mIGhnZ3Mgd2l0aCB3aXRoIG11dHVhbGx5IGV4Y2x1c2l2ZSBUUDUzIGFuZCBQUE0xRCBtdXRhdGlvbnNcbmhnZ19yZXN1bHRzICU+JVxuICBmaWx0ZXIoKGdlbmUxID09IFwiVFA1M1wiICYgZ2VuZTIgPT0gXCJQUE0xRFwiKSB8IChnZW5lMiA9PSBcIlRQNTNcIiAmIGdlbmUxID09IFwiUFBNMURcIikpICU+JVxuICBwdWxsKHBlcmNfbXV0ZXhjbClcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMgUGVyY2VudCBvZiBoZ2dzIHdpdGggd2l0aCBtdXR1YWxseSBleGNsdXNpdmUgVFA1MyBhbmQgUFBNMUQgbXV0YXRpb25zIiwiaGdnX3Jlc3VsdHMgJT4lXG4gIGZpbHRlcigoZ2VuZTEgPT0gXCJUUDUzXCIgJiBnZW5lMiA9PSBcIlBQTTFEXCIpIHwgKGdlbmUyID09IFwiVFA1M1wiICYgZ2VuZTEgPT0gXCJQUE0xRFwiKSkgJT4lXG4gIHB1bGwocGVyY19tdXRleGNsKSJdfQ== -->
 <pre class="r"><code># Percent of hggs with with mutually exclusive TP53 and PPM1D mutations
 hgg_results %&gt;%
   filter((gene1 == &quot;TP53&quot; &amp; gene2 == &quot;PPM1D&quot;) | (gene2 == &quot;TP53&quot; &amp; gene1 == &quot;PPM1D&quot;)) %&gt;%
   pull(perc_mutexcl)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDk2LjI5NjNcbiJ9 -->
-<pre><code>[1] 96.2963</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDk2LjM2MzY0XG4ifQ== -->
+<pre><code>[1] 96.36364</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -3130,10 +3130,10 @@ hgg_results %&gt;%
 <h2>Print session info</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2Vzc2lvbkluZm8oKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoic2Vzc2lvbkluZm8oKSJ9 -->
 <pre class="r"><code>sessionInfo()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgICBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgIFxuIFs0XSBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgICBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgICBMQ19BRERSRVNTPUMgICAgICAgICAgICAgIFxuWzEwXSBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgICBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcblsxXSBmb3JjYXRzXzAuNC4wICAgc3RyaW5ncl8xLjQuMCAgIGRwbHlyXzAuOC4zICAgICBwdXJycl8wLjMuMiAgICAgcmVhZHJfMS4zLjEgICAgXG5bNl0gdGlkeXJfMC44LjMgICAgIHRpYmJsZV8yLjEuMyAgICBnZ3Bsb3QyXzMuMi4wICAgdGlkeXZlcnNlXzEuMi4xXG5cbmxvYWRlZCB2aWEgYSBuYW1lc3BhY2UgKGFuZCBub3QgYXR0YWNoZWQpOlxuIFsxXSBSY3BwXzEuMC4xICAgICAgIGNlbGxyYW5nZXJfMS4xLjAgcGlsbGFyXzEuNC4yICAgICBjb21waWxlcl8zLjYuMCAgXG4gWzVdIHRvb2xzXzMuNi4wICAgICAganNvbmxpdGVfMS42ICAgICBsdWJyaWRhdGVfMS43LjQgIG5sbWVfMy4xLTE0MCAgICBcbiBbOV0gZ3RhYmxlXzAuMy4wICAgICBsYXR0aWNlXzAuMjAtMzggIHBrZ2NvbmZpZ18yLjAuMiAgcmxhbmdfMC40LjAgICAgIFxuWzEzXSBjbGlfMS4xLjAgICAgICAgIHJzdHVkaW9hcGlfMC4xMCAgaGF2ZW5fMi4xLjEgICAgICB4ZnVuXzAuOCAgICAgICAgXG5bMTddIHdpdGhyXzIuMS4yICAgICAgeG1sMl8xLjIuMCAgICAgICBodHRyXzEuNC4wICAgICAgIGtuaXRyXzEuMjMgICAgICBcblsyMV0gZ2VuZXJpY3NfMC4wLjIgICBobXNfMC40LjIgICAgICAgIHJwcm9qcm9vdF8xLjMtMiAgZ3JpZF8zLjYuMCAgICAgIFxuWzI1XSB0aWR5c2VsZWN0XzAuMi41IGdsdWVfMS4zLjEgICAgICAgUjZfMi40LjAgICAgICAgICByZWFkeGxfMS4zLjEgICAgXG5bMjldIG1vZGVscl8wLjEuNCAgICAgbWFncml0dHJfMS41ICAgICBiYWNrcG9ydHNfMS4xLjQgIHNjYWxlc18xLjAuMCAgICBcblszM10gcnZlc3RfMC4zLjQgICAgICBhc3NlcnR0aGF0XzAuMi4xIGNvbG9yc3BhY2VfMS40LTEgc3RyaW5naV8xLjQuMyAgIFxuWzM3XSBsYXp5ZXZhbF8wLjIuMiAgIG11bnNlbGxfMC41LjAgICAgYnJvb21fMC41LjIgICAgICBjcmF5b25fMS4zLjQgICAgXG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiUiB2ZXJzaW9uIDMuNi4wICgyMDE5LTA0LTI2KVxuUGxhdGZvcm06IHg4Nl82NC1wYy1saW51eC1nbnUgKDY0LWJpdClcblJ1bm5pbmcgdW5kZXI6IERlYmlhbiBHTlUvTGludXggOSAoc3RyZXRjaClcblxuTWF0cml4IHByb2R1Y3RzOiBkZWZhdWx0XG5CTEFTL0xBUEFDSzogL3Vzci9saWIvbGlib3BlbmJsYXNwLXIwLjIuMTkuc29cblxubG9jYWxlOlxuIFsxXSBMQ19DVFlQRT1lbl9VUy5VVEYtOCAgICAgICBMQ19OVU1FUklDPUMgICAgICAgICAgICAgIFxuIFszXSBMQ19USU1FPWVuX1VTLlVURi04ICAgICAgICBMQ19DT0xMQVRFPWVuX1VTLlVURi04ICAgIFxuIFs1XSBMQ19NT05FVEFSWT1lbl9VUy5VVEYtOCAgICBMQ19NRVNTQUdFUz1DICAgICAgICAgICAgIFxuIFs3XSBMQ19QQVBFUj1lbl9VUy5VVEYtOCAgICAgICBMQ19OQU1FPUMgICAgICAgICAgICAgICAgIFxuIFs5XSBMQ19BRERSRVNTPUMgICAgICAgICAgICAgICBMQ19URUxFUEhPTkU9QyAgICAgICAgICAgIFxuWzExXSBMQ19NRUFTVVJFTUVOVD1lbl9VUy5VVEYtOCBMQ19JREVOVElGSUNBVElPTj1DICAgICAgIFxuXG5hdHRhY2hlZCBiYXNlIHBhY2thZ2VzOlxuWzFdIHN0YXRzICAgICBncmFwaGljcyAgZ3JEZXZpY2VzIHV0aWxzICAgICBkYXRhc2V0cyAgbWV0aG9kcyAgIGJhc2UgICAgIFxuXG5vdGhlciBhdHRhY2hlZCBwYWNrYWdlczpcblsxXSBmb3JjYXRzXzAuNC4wICAgc3RyaW5ncl8xLjQuMCAgIGRwbHlyXzAuOC4zICAgICBwdXJycl8wLjMuMiAgICBcbls1XSByZWFkcl8xLjMuMSAgICAgdGlkeXJfMC44LjMgICAgIHRpYmJsZV8yLjEuMyAgICBnZ3Bsb3QyXzMuMi4wICBcbls5XSB0aWR5dmVyc2VfMS4yLjFcblxubG9hZGVkIHZpYSBhIG5hbWVzcGFjZSAoYW5kIG5vdCBhdHRhY2hlZCk6XG4gWzFdIFJjcHBfMS4wLjEgICAgICAgY2VsbHJhbmdlcl8xLjEuMCBwaWxsYXJfMS40LjIgICAgIGNvbXBpbGVyXzMuNi4wICBcbiBbNV0gYmFzZTY0ZW5jXzAuMS0zICB0b29sc18zLjYuMCAgICAgIGRpZ2VzdF8wLjYuMjAgICAgbHVicmlkYXRlXzEuNy40IFxuIFs5XSBqc29ubGl0ZV8xLjYgICAgIGV2YWx1YXRlXzAuMTQgICAgbmxtZV8zLjEtMTQwICAgICBndGFibGVfMC4zLjAgICAgXG5bMTNdIGxhdHRpY2VfMC4yMC0zOCAgcGtnY29uZmlnXzIuMC4yICBybGFuZ18wLjQuMCAgICAgIGNsaV8xLjEuMCAgICAgICBcblsxN10gcnN0dWRpb2FwaV8wLjEwICB5YW1sXzIuMi4wICAgICAgIGhhdmVuXzIuMS4xICAgICAgeGZ1bl8wLjggICAgICAgIFxuWzIxXSB3aXRocl8yLjEuMiAgICAgIHhtbDJfMS4yLjAgICAgICAgaHR0cl8xLjQuMCAgICAgICBrbml0cl8xLjIzICAgICAgXG5bMjVdIGdlbmVyaWNzXzAuMC4yICAgaG1zXzAuNC4yICAgICAgICBycHJvanJvb3RfMS4zLTIgIGdyaWRfMy42LjAgICAgICBcblsyOV0gdGlkeXNlbGVjdF8wLjIuNSBnbHVlXzEuMy4xICAgICAgIFI2XzIuNC4wICAgICAgICAgcmVhZHhsXzEuMy4xICAgIFxuWzMzXSBybWFya2Rvd25fMS4xMyAgIG1vZGVscl8wLjEuNCAgICAgbWFncml0dHJfMS41ICAgICBiYWNrcG9ydHNfMS4xLjQgXG5bMzddIHNjYWxlc18xLjAuMCAgICAgaHRtbHRvb2xzXzAuMy42ICBydmVzdF8wLjMuNCAgICAgIGFzc2VydHRoYXRfMC4yLjFcbls0MV0gY29sb3JzcGFjZV8xLjQtMSBzdHJpbmdpXzEuNC4zICAgIGxhenlldmFsXzAuMi4yICAgbXVuc2VsbF8wLjUuMCAgIFxuWzQ1XSBicm9vbV8wLjUuMiAgICAgIGNyYXlvbl8xLjMuNCAgICBcbiJ9 -->
 <pre><code>R version 3.6.0 (2019-04-26)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Debian GNU/Linux 9 (stretch)
@@ -3142,29 +3142,34 @@ Matrix products: default
 BLAS/LAPACK: /usr/lib/libopenblasp-r0.2.19.so
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C               LC_TIME=en_US.UTF-8       
- [4] LC_COLLATE=en_US.UTF-8     LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                  LC_ADDRESS=C              
-[10] LC_TELEPHONE=C             LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] forcats_0.4.0   stringr_1.4.0   dplyr_0.8.3     purrr_0.3.2     readr_1.3.1    
-[6] tidyr_0.8.3     tibble_2.1.3    ggplot2_3.2.0   tidyverse_1.2.1
+[1] forcats_0.4.0   stringr_1.4.0   dplyr_0.8.3     purrr_0.3.2    
+[5] readr_1.3.1     tidyr_0.8.3     tibble_2.1.3    ggplot2_3.2.0  
+[9] tidyverse_1.2.1
 
 loaded via a namespace (and not attached):
  [1] Rcpp_1.0.1       cellranger_1.1.0 pillar_1.4.2     compiler_3.6.0  
- [5] tools_3.6.0      jsonlite_1.6     lubridate_1.7.4  nlme_3.1-140    
- [9] gtable_0.3.0     lattice_0.20-38  pkgconfig_2.0.2  rlang_0.4.0     
-[13] cli_1.1.0        rstudioapi_0.10  haven_2.1.1      xfun_0.8        
-[17] withr_2.1.2      xml2_1.2.0       httr_1.4.0       knitr_1.23      
-[21] generics_0.0.2   hms_0.4.2        rprojroot_1.3-2  grid_3.6.0      
-[25] tidyselect_0.2.5 glue_1.3.1       R6_2.4.0         readxl_1.3.1    
-[29] modelr_0.1.4     magrittr_1.5     backports_1.1.4  scales_1.0.0    
-[33] rvest_0.3.4      assertthat_0.2.1 colorspace_1.4-1 stringi_1.4.3   
-[37] lazyeval_0.2.2   munsell_0.5.0    broom_0.5.2      crayon_1.3.4    </code></pre>
+ [5] base64enc_0.1-3  tools_3.6.0      digest_0.6.20    lubridate_1.7.4 
+ [9] jsonlite_1.6     evaluate_0.14    nlme_3.1-140     gtable_0.3.0    
+[13] lattice_0.20-38  pkgconfig_2.0.2  rlang_0.4.0      cli_1.1.0       
+[17] rstudioapi_0.10  yaml_2.2.0       haven_2.1.1      xfun_0.8        
+[21] withr_2.1.2      xml2_1.2.0       httr_1.4.0       knitr_1.23      
+[25] generics_0.0.2   hms_0.4.2        rprojroot_1.3-2  grid_3.6.0      
+[29] tidyselect_0.2.5 glue_1.3.1       R6_2.4.0         readxl_1.3.1    
+[33] rmarkdown_1.13   modelr_0.1.4     magrittr_1.5     backports_1.1.4 
+[37] scales_1.0.0     htmltools_0.3.6  rvest_0.3.4      assertthat_0.2.1
+[41] colorspace_1.4-1 stringi_1.4.3    lazyeval_0.2.2   munsell_0.5.0   
+[45] broom_0.5.2      crayon_1.3.4    </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 </div>
