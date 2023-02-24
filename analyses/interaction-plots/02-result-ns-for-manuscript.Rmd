@@ -2,7 +2,7 @@
 title: "Interaction plot numbers for manuscript"
 author: "Jo Lynne Rokita, D3b & Joshua Shapiro, ALSF"
 date: "2022"
-output: 
+output:
   html_notebook:
     toc: TRUE
     toc_float: TRUE
@@ -12,7 +12,7 @@ output:
 library(tidyverse)
 ```
 
-## Set directories 
+## Set directories
 ```{r set directories}
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
@@ -24,14 +24,18 @@ results_dir <- file.path(analysis_dir, "results")
 ```{r read in files}
 all_results_file <- file.path(results_dir, "cooccur_top50.ALL.tsv")
 hgg_results_file <- file.path(results_dir, "cooccur_top50.Diffuse-astrocytic-and-oligodendroglial-tumor.tsv")
+gene_results_file <- file.path(results_dir, "gene_disease_top50.tsv")
 
 # Read in results (only need significant results for all, but all data for hgg)
 all_results_sig <- read_tsv(all_results_file) %>%
   filter(q < 0.05)
 
-hgg_results <- read_tsv(hgg_results_file) 
+hgg_results <- read_tsv(hgg_results_file)
 hgg_results_sig <- hgg_results %>%
   filter(q < 0.05)
+
+
+gene_results <- read_tsv(gene_results_file) # need all rows
 ```
 
 ## Calculate sample sizes/ratios used for manuscript
@@ -48,20 +52,42 @@ all_results_n
 ```
 
 
+
 ```{r}
 # Number of significant events
 n_sig <- all_results_sig %>%
   nrow()
 n_sig
+```
 
+
+```{r}
+# Number of samples with TP53 mutations
+total_tp53 <- gene_results %>%
+  filter(gene == "TP53") %>%
+  summarize(total = sum(mutant_samples)) %>%
+  pull(total)
+
+total_tp53
+
+# Fraction of all samples:
+total_tp53/all_results_n
+```
+
+
+
+## HGG
+
+
+```{r}
 # Number of hgg significant events
 n_hgg_sig <- hgg_results_sig %>%
   nrow()
 n_hgg_sig
 
 # Find HGG gene pairs within All set
-# Note that this comparison is not statistically valid, 
-# as significance cutoffs are different, and comparing significant sets 
+# Note that this comparison is not statistically valid,
+# as significance cutoffs are different, and comparing significant sets
 # is problematic anyway
 
 # get pairs, alphabetically
@@ -81,7 +107,7 @@ sum(hgg_sig_genepairs %in% all_sig_genepairs)
 ### HGG mutual exclusivity counts
 
 ```{r}
-# Number of hggs with mutually exclusive TP53 and PPM1D mutations (52/54)
+# Number of hggs with mutually exclusive TP53 and PPM1D mutations
 hgg_results %>%
   filter((gene1 == "TP53" & gene2 == "PPM1D") | (gene2 == "TP53" & gene1 == "PPM1D"))%>%
   # sum mutually exclusive
