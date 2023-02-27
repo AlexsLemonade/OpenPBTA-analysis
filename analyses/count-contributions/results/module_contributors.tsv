@@ -16,14 +16,16 @@ cnv-chrom-plot	Jaclyn N. Taroni
 cnv-chrom-plot	Joshua A. Shapiro
 cnv-chrom-plot	Jo Lynne Rokita
 cnv-chrom-plot	Stephanie J. Spielman
-collapse-rnaseq	Bailey Farrow
+collapse-rnaseq	Bailey K. Farrow
 collapse-rnaseq	Candace L. Savonen
 collapse-rnaseq	Jaclyn N. Taroni
 collapse-rnaseq	Joshua A. Shapiro
+collapse-rnaseq	Jo Lynne Rokita
 collapse-rnaseq	Komal S. Rathi
 collapse-rnaseq	Krutika S. Gaonkar
 collapse-rnaseq	Run Jin
 copy_number_consensus_call	Joshua A. Shapiro
+copy_number_consensus_call	Jo Lynne Rokita
 copy_number_consensus_call	Krutika S. Gaonkar
 copy_number_consensus_call	Nhat Duong
 focal-cn-file-preparation	Candace L. Savonen
@@ -63,9 +65,10 @@ immune-deconv	Komal S. Rathi
 immune-deconv	Stephanie J. Spielman
 independent-samples	Jaclyn N. Taroni
 independent-samples	Joshua A. Shapiro
+independent-samples	Jo Lynne Rokita
 independent-samples	Krutika S. Gaonkar
 independent-samples	Run Jin
-interaction-plots	Bailey Farrow
+interaction-plots	Bailey K. Farrow
 interaction-plots	Chante J. Bethell
 interaction-plots	Jaclyn N. Taroni
 interaction-plots	Joshua A. Shapiro
@@ -140,8 +143,10 @@ oncoprint-landscape	Run Jin
 oncoprint-landscape	Stephanie J. Spielman
 oncoprint-landscape	Yuankun Zhu
 run-gistic	Jaclyn N. Taroni
+run-gistic	Jo Lynne Rokita
 run-gistic	Krutika S. Gaonkar
 run-gistic	Run Jin
+run-gistic	Stephanie J. Spielman
 snv-callers	Candace L. Savonen
 snv-callers	Jaclyn N. Taroni
 snv-callers	Joshua A. Shapiro
@@ -155,9 +160,10 @@ survival-analysis	Jo Lynne Rokita
 survival-analysis	Krutika S. Gaonkar
 survival-analysis	Run Jin
 survival-analysis	Stephanie J. Spielman
-telomerase-activity-prediction	Bailey Farrow
+telomerase-activity-prediction	Bailey K. Farrow
 telomerase-activity-prediction	Candace L. Savonen
 telomerase-activity-prediction	Joshua A. Shapiro
+telomerase-activity-prediction	Jo Lynne Rokita
 telomerase-activity-prediction	Komal S. Rathi
 telomerase-activity-prediction	Nighat Noureen
 telomerase-activity-prediction	Stephanie J. Spielman
@@ -174,4 +180,6 @@ transcriptomic-dimension-reduction	Candace L. Savonen
 transcriptomic-dimension-reduction	Chante J. Bethell
 transcriptomic-dimension-reduction	Jaclyn N. Taroni
 transcriptomic-dimension-reduction	Krutika S. Gaonkar
+transcriptomic-dimension-reduction	Stephanie J. Spielman
 transcriptomic-dimension-reduction	Yuankun Zhu
+tumor-purity-exploration	Stephanie J. Spielman
