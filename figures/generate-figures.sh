@@ -198,8 +198,8 @@ Rscript --vanilla scripts/figS7-tp53-telomerase-tumor-purity-threshold.R
 
 # Copy panels for this plot:
 
-# Panel B: UMAP highlight sequencing centers
-cp ${analyses_dir}/tp53_nf1_score/results/tumor-purity-threshold/tp53-roc_tumor-purity-threshold.pdf pdfs/supp/figs7/panels/
+# Panel C: UMAP highlight sequencing centers
+cp ${analyses_dir}/transcriptomic-dimension-reduction/plots/umap_cancer-group_sequencing-center.pdf pdfs/supp/figs7/panels/
 
 
 # Panel D: TP53 classifier ROC curve
