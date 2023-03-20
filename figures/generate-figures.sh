@@ -194,11 +194,11 @@ Rscript --vanilla scripts/figS6-subtype-umap-panels.R
 # Run script to generate Panel A: Barplot of cancer groups by RNA library preparation
 Rscript --vanilla scripts/figS7-seqcenter-barplot.R
 
-
+# Run script to generate Panel B: UMAP showing both polyA and stranded RNA library preparations
+Rscript --vanilla scripts/figS7-UMAP-libraries.R
 
 # Run script to generate Panel G: TP53 and EXTEND score boxplots and associated legend
 Rscript --vanilla scripts/figS7-tp53-telomerase-tumor-purity-threshold.R
-
 
 # Copy panels for this plot:
 
