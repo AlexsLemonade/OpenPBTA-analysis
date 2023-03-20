@@ -8,17 +8,6 @@
 library(tidyverse)
 set.seed(2023) # umap seed
 
-# Helper functions ----------------------
-
-read_fpkm <- function(filepath, strategy) {
-  # Function to read and tidy an FPKM data frame and
-  # and a `strategy` column for "polyA" vs "stranded"
-  read_rds(filepath) %>%
-    gather("Kids_First_Biospecimen_ID",
-           "fpkm",
-           starts_with("BS_")) %>%
-    mutate(strategy = strategy)
-}
 
 # Directories and files ---------------------------
 
