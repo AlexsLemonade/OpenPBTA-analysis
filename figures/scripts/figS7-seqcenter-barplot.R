@@ -77,8 +77,8 @@ rna_library_barplot <- ggplot(library_cancer_group_df) +
 ggsave(
   output_pdf,
   rna_library_barplot,
-  width = 6.5,
-  height = 5
+  width = 8.5,
+  height = 6
 )
 
 
