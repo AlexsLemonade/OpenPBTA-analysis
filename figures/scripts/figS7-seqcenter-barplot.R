@@ -60,9 +60,7 @@ pal_colors <- rev(binary_pal_df$hex_codes[binary_pal_df$color_names != "na_color
 rna_library_barplot <- ggplot(library_cancer_group_df) +
   aes(x = cancer_group_display,
       fill = RNA_library) +
-  geom_bar(color = "black",
-           size = 0.25,
-           alpha = 0.8) +
+  geom_bar(color = "black", size = 0.25) +
   scale_fill_manual(name = "RNA library preparation",
                     values = pal_colors) +
   labs(
