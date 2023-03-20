@@ -30,8 +30,8 @@ binary_pal_df <- read_tsv(binary_pal_file)
 # Get the RNA samples and combine with `cancer_group_display` information
 library_cancer_group_df <- metadata_df %>%
   filter(experimental_strategy == "RNA-Seq") %>%
-  # We want one row per patient here
-  mutate(dup_participant = duplicated(Kids_First_Participant_ID)) %>%
+  # We want one row per patient here, using `sample_id`
+  mutate(dup_participant = duplicated(sample_id)) %>%
   filter(!dup_participant) %>%
   # Keep RNA_library and cancer group for each
   select(RNA_library, cancer_group) %>%
