@@ -141,6 +141,7 @@ The `point_color` argument of `plot_dimension_reduction` can be changed to any v
 ### Explore potential batch effects from the sequencing center
 
 The notebook `04-explore-sequencing-center-effects.Rmd` performs exploratory analyses and visualization to roughly assess the extent to which sequencing center is expected to induce batch effects.
+This notebook exports the plot `plots/umap_cancer-group_sequencing-center.pdf`.
 
 The notebook `05-seq-center-mitochondrial-genes.Rmd` performs exploratory analyses to assess whether artifacts present in mitochondrial gene RNA-Seq data influence UMAP visualization.
 To enable this analysis, this pipeline will also perform transcriptomic dimension reduction on TPM data for both all genes and all non-mitochondrial genes.

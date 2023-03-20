@@ -76,7 +76,11 @@ if [ $snv_pbta_scratch_days -gt ${MAX_DAYS} ] || [ $snv_tcga_scratch_days -gt ${
 fi
 
 
+############################# Figure panels ##########################################
 
+# Below, we establish figure panels in `figures/pdf/` for all manuscript figures.
+# For each, we first run any `figures/scripts/` scripts that generate figure panels,
+#  and then we copy any additional panels that were generated in `analyses/` modules.
 
 ##### Figure 1: Workflow and sample distribution ------------------------------------
 
@@ -187,26 +191,34 @@ Rscript --vanilla scripts/figS6-subtype-umap-panels.R
 
 ##### Figure S7: Transcriptomics results for only high tumor-purity samples -------------
 
+# Run script to generate Panel A: Barplot of cancer groups by RNA library preparation
+Rscript --vanilla scripts/figS7-seqcenter-barplot.R
 
-# Run script to generate Panel D: TP53 and EXTEND score boxplots and associated legend
+
+
+# Run script to generate Panel G: TP53 and EXTEND score boxplots and associated legend
 Rscript --vanilla scripts/figS7-tp53-telomerase-tumor-purity-threshold.R
 
 
 # Copy panels for this plot:
 
-# Panel A: TP53 classifier ROC curve
+# Panel C: UMAP highlight sequencing centers
+cp ${analyses_dir}/transcriptomic-dimension-reduction/plots/umap_cancer-group_sequencing-center.pdf pdfs/supp/figs7/panels/
+
+
+# Panel D: TP53 classifier ROC curve
 cp ${analyses_dir}/tp53_nf1_score/results/tumor-purity-threshold/tp53-roc_tumor-purity-threshold.pdf pdfs/supp/figs7/panels/
 
-# Panel B: TP53 scores across TP53 status
+# Panel E: TP53 scores across TP53 status
 cp ${analyses_dir}/tp53_nf1_score/results/tumor-purity-threshold/tp53-score-status_tumor-purity-threshold.pdf pdfs/supp/figs7/panels/
 
-# Panel C: TP53 expression across TP53 status
+# Panel F: TP53 expression across TP53 status
 cp ${analyses_dir}/tp53_nf1_score/results/tumor-purity-threshold/tp53-fpkm-status_tumor-purity-threshold.pdf pdfs/supp/figs7/panels/
 
-# Panel E: UMAP highlighting broad histologies
+# Panel H: UMAP highlighting broad histologies
 cp ${analyses_dir}/transcriptomic-dimension-reduction/plots/umap_tumor-purity-threshold.pdf pdfs/supp/figs7/panels/
 
-# Panel F: quanTIseq fractions across cancer groups
+# Panel I: quanTIseq fractions across cancer groups
 cp ${analyses_dir}/immune-deconv/plots/tumor-purity-threshold_quantiseq-cancer-groups.pdf pdfs/supp/figs7/panels/
 
 

@@ -58,6 +58,9 @@ umap_polya_file <- file.path(
   "results",
   "rsem_polyA_log_umap_scores_aligned.tsv"
 )
+
+# Define output PDF file for cancer group UMAP
+cancer_group_umap_pdf <- file.path("plots", "umap_cancer-group_sequencing-center.pdf")
 ```
 
 And read in and prepare the files:
@@ -342,32 +345,56 @@ stranded_df %>%
 
 We can make this _even more_ finer-grained by exploring the distributions of cancer groups within this UMAP.
 Shapes denote the sequencing center, and colors denote the cancer group.
+This plot will be exported, so we'll save it to a variable as well.
 
 ```{r}
-ggplot(stranded_df) + 
-  aes(x = UMAP1, y = UMAP2, 
-      shape = seq_center, 
-      fill = cancer_group_display, 
-      color = seq_center, 
-      alpha = seq_center) + 
-  geom_point() + 
-  scale_shape_manual(values = c(21, 22, 24)) + 
-  scale_fill_manual(values  = pal_cg, 
-                    # This "shape" override is needed for legend fill colors to actually work
-                    guide = guide_legend(override.aes = list(shape = 21, size = 2))) +
-  scale_color_manual(values = c("grey70", "black", "black"), 
-                     # These overrides ensure shapes appear all in same alpha/color in legend
-                     guide = guide_legend(override.aes = list(color = "black", alpha = 1, size = 2))) +
-  scale_alpha_manual(values = c(0.4, 0.6, 0.6)) +
-  # Legend tweaks for legibility
-  theme(legend.position = "right", 
-        legend.direction = "vertical",
-        legend.text = element_text(size = rel(0.5)),
-        legend.title = element_text(size = rel(0.5)),
-        legend.key.size = unit(0.25, "cm")
-  )
+# Wrap `cancer_group_display` for legend visibility as part of this plot:
+# first, wrap palette labels so they apply!
+#names(pal_cg) <- stringr::str_wrap(names(pal_cg), 20)
+
+cancer_group_umap <- stranded_df %>%
+  # wrap plot df labels
+#  dplyr::mutate(cancer_group_display = stringr::str_wrap(cancer_group_display, 20)) %>%
+  # remove NAs so theyre not in legend
+  tidyr::drop_na(cancer_group_display) %>%
+  ggplot() + 
+    aes(x = UMAP1, y = UMAP2, 
+        shape = seq_center, 
+        fill = cancer_group_display, 
+        color = seq_center, 
+        alpha = seq_center) + 
+    geom_point(size = 2) + 
+    scale_shape_manual(name = "Sequencing center", 
+                       values = c(21, 22, 24)) + 
+    scale_fill_manual(name = "Cancer group", 
+                      values  = pal_cg, 
+                      # This "shape" override is needed for legend fill colors to actually work
+                      guide = guide_legend(override.aes = list(shape = 21), 
+                                           ncol = 4)) +
+    # turn off color and alpha guides to avoid duplicate guides:
+    scale_color_manual(values = c("grey70", "black", "black"), guide = "none") +
+    scale_alpha_manual(values = c(0.4, 0.6, 0.6), guide = "none") +
+    # Legend tweaks for legibility
+    theme(legend.position = "bottom", 
+          legend.title = element_text(size = rel(0.55)),
+          legend.text = element_text(size = rel(0.45)),
+          legend.key.size = unit(0.25, "cm")
+    )
+
+# Print plot
+cancer_group_umap
 ```
 
+
+Now, we'll export it:
+```{r}
+ggsave(
+  cancer_group_umap_pdf,
+  cancer_group_umap,
+  width = 6.75, 
+  height = 5
+)
+```
 
 
 We can also make this plot only for cancer groups which were processed at >1 center:
