@@ -76,7 +76,11 @@ if [ $snv_pbta_scratch_days -gt ${MAX_DAYS} ] || [ $snv_tcga_scratch_days -gt ${
 fi
 
 
+############################# Figure panels ##########################################
 
+# Below, we establish figure panels in `figures/pdf/` for all manuscript figures.
+# For each, we first run any `figures/scripts/` scripts that generate figure panels,
+#  and then we copy any additional panels that were generated in `analyses/` modules.
 
 ##### Figure 1: Workflow and sample distribution ------------------------------------
 
