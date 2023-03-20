@@ -51,8 +51,7 @@ polya <- read_rds(polya_file)
 stranded <- read_rds(stranded_file)
 
 # join polyA and stranded data together
-exp_rsem <- bind_cols(polya,
-                             stranded[,-1]) %>%
+exp_rsem <- bind_cols(polya, stranded[,-1]) %>%
   filter(complete.cases(.))
 
 # transpose the expression values to a matrix
