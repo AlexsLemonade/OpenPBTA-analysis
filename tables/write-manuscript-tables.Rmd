@@ -2,7 +2,7 @@
 title: "Tables output for manuscript"
 author: "Run Jin (D3b), Stephanie J. Spielman (ALSF CCDL), and Jo Lynne Rokita (D3b)"
 date: "2021-2023"
-output: 
+output:
   html_notebook:
     toc: TRUE
     toc_float: TRUE
@@ -18,7 +18,7 @@ library(survival)
 
 ## Output Tables for OpenPBTA Manuscript
 
-This Rmarkdown generates tables used in the manuscript, including both main text and supplementary material. 
+This Rmarkdown generates tables used in the manuscript, including both main text and supplementary material.
 
 ```{r define directories and result files}
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
@@ -34,9 +34,16 @@ if (params$release == "testing") {
   data_dir <- file.path(root_dir, "data", params$release)
 }
 
-results_dir <- file.path(working_dir, "results")
-if(!dir.exists(results_dir)){
-  dir.create(results_dir, recursive=TRUE)
+# Output directory for main text tables
+main_tables_dir <- file.path(working_dir, "manuscript-tables")
+if(!dir.exists(main_tables_dir)){
+  dir.create(main_tables_dir, recursive=TRUE)
+}
+
+# Output directory for supplementary tables
+supp_tables_dir <- file.path(main_tables_dir, "supp")
+if(!dir.exists(supp_tables_dir)){
+  dir.create(supp_tables_dir, recursive=TRUE)
 }
 
 
@@ -66,13 +73,13 @@ cox_mb_quantiseq_file <- file.path(analyses_dir, "survival-analysis", "results",
 
 
 # define output files and sheet names, when appropriate
-table_1_file <- file.path(results_dir, "Table1-molecular-subtypes.tsv")
-table_2_file <- file.path(results_dir, "Table2-hypermutators.tsv")
-table_s1_file <- file.path(results_dir, "TableS1-histologies.xlsx")
-table_s2_file <- file.path(results_dir, "TableS2-DNA-results-table.xlsx")
-table_s3_file <- file.path(results_dir, "TableS3-RNA-results-table.xlsx")
-table_s4_file <- file.path(results_dir, "TableS4-survival-results-table.xlsx")
-table_s5_file <- file.path(results_dir, "TableS5-Key-Resources-table.xlsx")
+table_1_file <- file.path(main_tables_dir, "Table1-molecular-subtypes.tsv")
+table_2_file <- file.path(main_tables_dir, "Table2-hypermutators.tsv")
+table_s1_file <- file.path(supp_tables_dir, "TableS1-histologies.xlsx")
+table_s2_file <- file.path(supp_tables_dir, "TableS2-DNA-results-table.xlsx")
+table_s3_file <- file.path(supp_tables_dir, "TableS3-RNA-results-table.xlsx")
+table_s4_file <- file.path(supp_tables_dir, "TableS4-survival-results-table.xlsx")
+table_s5_file <- file.path(supp_tables_dir, "TableS5-Key-Resources-table.xlsx")
 ```
 
 ## Table 1: Molecular subtypes determined for this project
@@ -88,14 +95,14 @@ subtype_n <- histology_df %>%
          !grepl("To be classified", molecular_subtype)) %>%
   # Join with palette to get broad_histology_display column
   inner_join(
-    select(palette_df, 
+    select(palette_df,
            broad_histology,
            broad_histology_display)
   ) %>%
   # Set column name
   mutate(pbta_broad_histology = ifelse(
-    broad_histology_display == "Other", 
-    broad_histology, 
+    broad_histology_display == "Other",
+    broad_histology,
     broad_histology_display
   )) %>%
   # remove doubled samples (WGS/RNA-seq etc.)
@@ -133,7 +140,7 @@ table1 <- pt_level %>%
 
 # Add final row to the bottom for the total
 table1 <- bind_rows(
-  table1, 
+  table1,
   tribble(
     ~`Broad histology group`, ~`OpenPBTA molecular subtype`, ~Patients, ~Tumors,
     "",                      "Total",                       sum(table1$Patients), sum(table1$Tumors)
@@ -161,7 +168,7 @@ tmb_hist <- read_tsv(file.path(data_dir, "pbta-snv-consensus-mutation-tmb-coding
   select(Kids_First_Biospecimen_ID, tmb) %>%
   left_join(histology_df) %>%
   # add germline variants
-  left_join(clinvar) %>%     
+  left_join(clinvar) %>%
   # add "None detected" to pathogenic germline variant column
   mutate(`Pathogenic germline variant` = case_when(is.na(`Pathogenic germline variant`) ~ "None detected",
                                                    TRUE ~ `Pathogenic germline variant`))
@@ -176,11 +183,11 @@ poi <- tmb_hist %>%
 histology_df %>%
   filter(Kids_First_Biospecimen_ID %in% poi$Kids_First_Biospecimen_ID) %>%
   select(Kids_First_Biospecimen_ID, cancer_group, short_histology)
-  
+
 # Gather all BS_IDs (soi = "samples of interest"), whether hypermutant or not, for pts with hypermutant samples
 soi_df <- tmb_hist %>%
   filter(Kids_First_Participant_ID %in% poi$Kids_First_Participant_ID) %>%
-  # keep only WGS samples 
+  # keep only WGS samples
   filter(experimental_strategy == "WGS") %>%
   # manually add therapy field and update cancer predispositions not included in histologies file per [ticket](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1318)
   mutate(`Therapy post-biopsy` = case_when(
@@ -207,7 +214,7 @@ soi_df <- tmb_hist %>%
       select(Kids_First_Participant_ID, Kids_First_Biospecimen_ID, sample_id, tumor_descriptor, composition, `Therapy post-biopsy`, cancer_predispositions, `Pathogenic germline variant`, tmb, molecular_subtype) %>%
     arrange(Kids_First_Participant_ID, tumor_descriptor, composition)
 
-soi_df    
+soi_df
 
 soi_df %>%
   # rename columns and write table
@@ -276,11 +283,11 @@ readme <- tribble(
 
 # Sheet 2: Histologies file (histology_df)
 
-# Sheet 3: CNS region definition based on definitions from [Cassie Kline](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/tables/input/CNS_primary_site_match.json) with additional manual review of [HGG primary_site](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1025). 
+# Sheet 3: CNS region definition based on definitions from [Cassie Kline](https://github.com/AlexsLemonade/OpenPBTA-analysis/tree/master/tables/input/CNS_primary_site_match.json) with additional manual review of [HGG primary_site](https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1025).
 # This is integrated upstream of molecular subtyping
 
 # CNS_region ~ primary_site matches
-cns_regions_df <- purrr::imap_dfr(jsonlite::fromJSON(CNS_match_json), 
+cns_regions_df <- purrr::imap_dfr(jsonlite::fromJSON(CNS_match_json),
                                      function(x, name) { tibble::tibble(CNS_region = name, primary_site = paste0(x, collapse = ';')) })
 
 
@@ -289,9 +296,9 @@ list_s1_table <- list(README = readme,
                       histologies_file = histology_df,
                       CNS_region_definitions = cns_regions_df
                       )
-write.xlsx(list_s1_table, 
-           table_s1_file, 
-           overwrite=TRUE, 
+write.xlsx(list_s1_table,
+           table_s1_file,
+           overwrite=TRUE,
            keepNA=TRUE)
 ```
 
@@ -303,17 +310,17 @@ write.xlsx(list_s1_table,
 # read in tmb all file, select and rename columns
 tmb_all <- read_tsv(tmb_all_file) %>%
   select(Tumor_Sample_Barcode, tmb) %>%
-  rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>% 
-  rename(Tmb_all = tmb) 
+  rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>%
+  rename(Tmb_all = tmb)
 
 # read in tmb coding file, select and rename columns
 tmb_coding <- read_tsv(tmb_coding_file) %>%
   select(Tumor_Sample_Barcode, tmb) %>%
-  rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>% 
+  rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode) %>%
   rename(Tmb_coding = tmb)
 
 # combine files
-tmb_combined <- full_join(tmb_all, tmb_coding) 
+tmb_combined <- full_join(tmb_all, tmb_coding)
 ```
 
 ### CNS mutational signatures with `deconstructSigs`
@@ -326,7 +333,7 @@ cns_signatures <- cns_mut_list %>%
   select(Kids_First_Biospecimen_ID, exposure, signature) %>%
   # label signatures more clearly as RefSig or other
   mutate(signature = ifelse(
-    signature == "Other", 
+    signature == "Other",
     "Other signatures",
     glue::glue("RefSig_{signature}")
   )) %>%
@@ -338,7 +345,7 @@ cns_signatures <- cns_mut_list %>%
 
 ### Chromothripsis regions per sample
 ```{r s2 DNA results part 3}
-chromothripsis_region_df <- readr::read_tsv(chromo_file)  
+chromothripsis_region_df <- readr::read_tsv(chromo_file)
 
 ```
 
@@ -346,27 +353,27 @@ chromothripsis_region_df <- readr::read_tsv(chromo_file)
 ### Oncoprint mutations for primary-only tumors
 
 ```{r s2 DNA results part 4}
-onco_dir <- file.path(analyses_dir, 
-                      "oncoprint-landscape", 
+onco_dir <- file.path(analyses_dir,
+                      "oncoprint-landscape",
                       "tables",
                       "cancer_group_counts",
                       "primary_only")
 # Column name/order for the final combined data, loosely based on the Figure 2 legend ordering
-col_order <- c("Cancer group", 
-               "Hugo_Symbol", 
-               "Missense_Mutation", 
-               "Nonsense_Mutation", 
+col_order <- c("Cancer group",
+               "Hugo_Symbol",
+               "Missense_Mutation",
+               "Nonsense_Mutation",
                "Silent",
-               "Frame_Shift_Del", 
+               "Frame_Shift_Del",
                "Frame_Shift_Ins",
-               "Splice_Site", 
+               "Splice_Site",
                "Splice_Region",
-               "Translation_Start_Site", 
-               "Nonstop_Mutation", 
-               "In_Frame_Del", 
-               "In_Frame_Ins", 
-               "Fusion", 
-               "Del", 
+               "Translation_Start_Site",
+               "Nonstop_Mutation",
+               "In_Frame_Del",
+               "In_Frame_Ins",
+               "Fusion",
+               "Del",
                "Amp",
                "Multi_Hit_Fusion",
                "3'Flank",
@@ -401,7 +408,7 @@ add_cancer_group_col <- function(df, cancer_group) {
   df
 }
 all_onco_df <- purrr::map2(
-  all_onco_df, 
+  all_onco_df,
   names(all_files),
   add_cancer_group_col
 )
@@ -417,8 +424,8 @@ add_df_column <- function(df, col_order) {
   dplyr::select(df, col_order)
 }
 all_onco_df <- purrr::map(
-  all_onco_df, 
-  add_df_column, 
+  all_onco_df,
+  add_df_column,
   col_order
 )
 
@@ -433,12 +440,12 @@ onco_df <- onco_df[ , colSums(is.na(onco_df)) < nrow(onco_df)]
 ```{r s2 DNA results combined}
 list_s2_table <- list(tumor_mutation_burden = tmb_combined,
                       cns_mutational_signatures = cns_signatures,
-                      chromothripsis_events = chromothripsis_region_df, 
+                      chromothripsis_events = chromothripsis_region_df,
                       cancer_group_alterations = onco_df
                      )
-write.xlsx(list_s2_table, 
+write.xlsx(list_s2_table,
            table_s2_file,
-           overwrite=TRUE, 
+           overwrite=TRUE,
            # NA as NA and not as blank cells
            keepNA=TRUE)
 ```
@@ -448,8 +455,8 @@ write.xlsx(list_s2_table,
 
 ### TP553 scores
 ```{r s3 RNA results table p1}
-# get tp53 scores 
-tp53_scores <- read_tsv(tp53_file) 
+# get tp53 scores
+tp53_scores <- read_tsv(tp53_file)
 ```
 
 ### Telomerase scores
@@ -461,9 +468,9 @@ read_process_telomerase_file <- function(file, new_column_name, library_type) {
     rename(Kids_First_Biospecimen_ID_RNA = SampleID,
            !!new_column_name := NormEXTENDScores) %>%
     mutate(library = library_type)
-  
+
 }
-  
+
 # Read in and process all telomerase scores
 telomerase_scores_polya_count    <- read_process_telomerase_file(telomerase_counts_polya_file, "NormEXTENDScores_counts", "polyA")
 telomerase_scores_stranded_count <- read_process_telomerase_file(telomerase_counts_stranded_file, "NormEXTENDScores_counts", "stranded")
@@ -471,7 +478,7 @@ telomerase_scores_polya_fpkm     <- read_process_telomerase_file(telomerase_fpkm
 telomerase_scores_stranded_fpkm  <- read_process_telomerase_file(telomerase_fpkm_stranded_file, "NormEXTENDScores_fpkm", "stranded")
 
 # Combine all scores
-telomerase_scores_combined <- 
+telomerase_scores_combined <-
   full_join(telomerase_scores_stranded_count,
           telomerase_scores_stranded_fpkm) %>%
   bind_rows(
@@ -480,7 +487,7 @@ telomerase_scores_combined <-
   ) %>%
   # order columns
   select(Kids_First_Biospecimen_ID_RNA,
-         contains("Norm"), 
+         contains("Norm"),
          library)
 
 
@@ -490,7 +497,7 @@ telomerase_scores_combined <-
 ```{r s3 RNA results table p3}
 # get quantiseq immune scores file
 quantiseq_immune <- read_rds(quantiseq_file) %>%
-  select(sample, score, cell_type) %>% 
+  select(sample, score, cell_type) %>%
   rename(Kids_First_Biospecimen_ID_RNA = sample) %>%
   spread(cell_type, score)
 ```
@@ -502,9 +509,9 @@ list_s3_table <- list(tp53_scores = tp53_scores,
                       telomerase_scores = telomerase_scores_combined,
                       quantiseq_fractions = quantiseq_immune
                       )
-write.xlsx(list_s3_table, 
-           table_s3_file, 
-           overwrite=TRUE, 
+write.xlsx(list_s3_table,
+           table_s3_file,
+           overwrite=TRUE,
            keepNA=TRUE)
 
 ```
@@ -538,8 +545,8 @@ cox_epn_df <- process_survival(cox_epn)
 cox_dmg_tp53_df <- process_survival(cox_dmg_tp53)
 cox_mb_quantiseq_df <- process_survival(cox_mb_quantiseq)
 
-lr_subtypes_df <- summary(lr_subtypes$model)$table %>% 
-     as.data.frame() %>% 
+lr_subtypes_df <- summary(lr_subtypes$model)$table %>%
+     as.data.frame() %>%
      rownames_to_column("strata")
 
 
@@ -551,9 +558,9 @@ list_s4_table <- list(cox_reg_hgg_subtypes = cox_subtypes_df,
                       cox_reg_tp53_telomerase_dmg = cox_dmg_tp53_df,
                       cox_reg_quantiseq_mb = cox_mb_quantiseq_df
                       )
-write.xlsx(list_s4_table, 
-           table_s4_file, 
-           overwrite=TRUE, 
+write.xlsx(list_s4_table,
+           table_s4_file,
+           overwrite=TRUE,
            keepNA=TRUE)
 
 
@@ -579,7 +586,7 @@ python_libraries <- tribble(
 
 # parse `requirements.txt`
 python_requirements <- read_tsv(
-  file.path(root_dir, "requirements.txt"), 
+  file.path(root_dir, "requirements.txt"),
   col_names = FALSE) %>%
   separate(X1, into = c("Software", "Version"), sep = "==")
 
@@ -640,9 +647,9 @@ list_s5_table <- list(r_packages = r_packages,
                       other_command_line_tools = cli_tools,
                       workflow_repository_tools = workflow_tools
                       )
-write.xlsx(list_s5_table, 
-           table_s5_file, 
-           overwrite=TRUE, 
+write.xlsx(list_s5_table,
+           table_s5_file,
+           overwrite=TRUE,
            keepNA=TRUE)
 
 ```
