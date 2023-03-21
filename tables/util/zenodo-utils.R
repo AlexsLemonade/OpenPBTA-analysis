@@ -14,7 +14,7 @@ write_zenodo_table <- function(df,
                                output_filepath) {
 
   # Ensure directory exists
-  if (!(dir.exists(dirname(output_dir)))) {
+  if (!(dir.exists(dirname(output_filepath)))) {
     stop("Error: Output directory provided to `write_zenodo_table()` does not exist.")
   }
 
