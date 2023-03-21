@@ -288,7 +288,7 @@ jobs:
 
       - run:
          name: Compile manuscript tables
-         command: ./scripts/run_in_ci.sh Rscript -e "rmarkdown::render('tables/output_tables.Rmd', params = list(release = 'testing'), clean = TRUE)"
+         command: OPENPBTA_TESTING=1 ./scripts/run_in_ci.sh bash tables/run-tables.sh
 
 
   deploy:
