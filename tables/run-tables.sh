@@ -9,7 +9,7 @@ set -e
 set -o pipefail
 
 # testing parameter
-OPENPBTA_TESTING=1 #${OPENPBTA_TESTING:-0}
+OPENPBTA_TESTING=${OPENPBTA_TESTING:-0}
 
 # run the notebook to investigate hypermutator BS_F0GNWEJJ
 Rscript -e "rmarkdown::render(file.path('util', 'BS_F0GNWEJJ_genomic_investigation.Rmd'))"
@@ -19,6 +19,7 @@ if [ ${OPENPBTA_TESTING} -eq 1 ]; then
     Rscript -e "rmarkdown::render('write-manuscript-tables.Rmd', params = list(release = 'testing'), clean = TRUE)"
 else
     Rscript -e "rmarkdown::render('write-manuscript-tables.Rmd', clean = TRUE)"
+    # Forthcoming: Copy zenodo tables if NOT in CI
 fi
 
-# Forthcoming: Copy zenodo tables
+
