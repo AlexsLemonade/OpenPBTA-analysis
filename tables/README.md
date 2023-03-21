@@ -8,11 +8,10 @@ bash run-tables.sh
 ```
 
 This will execute, in order,
-- `write-manuscript-tables.Rmd`, which will export tables to one of `manuscript-tables/` or `supp-manuscript-tables/`, for main text and supplementary tables respectively.
+- `write-manuscript-tables.Rmd`, which will export tables to one of `manuscript-tables/` or `manuscript-tables/supp/`, for main text and supplementary tables respectively.
 Note that this consumes `input/` files to create certain tables.
 - `util/BS_F0GNWEJJ_genomic_investigation.Rmd` which performs an investigation into a particular hypermutator sample of interest present in Table 2.
-- `copy-zenodo-tables.sh`, which will export tables with all figure data and molecular alterations to `zenodo-upload/`.
-
+- `copy-zenodo-tables.sh`, which will copy any figure data tables exported within `analysis/` modules into `zenodo-upload/`.
 
 ## Manuscript tables
 
