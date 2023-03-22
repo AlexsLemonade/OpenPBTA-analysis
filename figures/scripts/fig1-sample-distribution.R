@@ -24,7 +24,7 @@ main_output_dir <- file.path(figures_dir, "pdfs", "fig1", "panels")
 dir.create(main_output_dir, recursive = TRUE, showWarnings = FALSE)
 
 # Define zenodo CSV output file
-fig1b_csv <- file.path(zenodo_tables_dir, "data-figure-1b.csv")
+fig1b_csv <- file.path(zenodo_tables_dir, "figure-1b-data.csv")
 
 
 #### Read in histologies -------------------------------------------------------
