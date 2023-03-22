@@ -155,5 +155,3 @@ ggsave(file.path(output_dir, "chromothripsis_prop_cancer_group.pdf"),
 # Write CSV file for Zenodo upload
 # Note that this plot is summarized without sample information to arrange on
 readr::write_csv(chromoth_cancer_group_df, fig3d_csv)
-
-chromoth_cancer_group_df
