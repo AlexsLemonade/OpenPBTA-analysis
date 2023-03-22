@@ -18,8 +18,8 @@
 # Command line example:
 #
 # Rscript analyses/interaction-plots/03-plot_interactions.R \
-#   --infile analysis/interaction-plots/results/cooccur.tsv \
-#   --outfile analysis/interaction-plots/results/cooccur.png
+#   --infile analyses/interaction-plots/results/cooccur.tsv \
+#   --outfile analyses/interaction-plots/results/cooccur.png
 
 #### Initial Set Up
 
@@ -89,6 +89,15 @@ plot_file <- opts$outfile
 
 # get root directory
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+
+# Define output paths for figure data CSV files
+# See: https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1692
+result_dir <- file.path(root_dir,
+                        "analyses",
+                        "interaction-plots",
+                        "results")
+fig3a_csv <- file.path(result_dir, "figure-3a-data.csv")
+fig3b_csv <- file.path(result_dir, "figure-3b-data.csv")
 
 
 cooccur_df <-
@@ -396,8 +405,18 @@ combined_plot <- disease_plot2 + cooccur_plot2 +
     axis.text.y = element_text(size = 9)
   )
 
-
 ggsave(combined_plot,
        filename = opts$combined_plot,
        width = 8,
        height = 14)
+
+## Export figure data CSV files --------
+
+# First the `cooccur_df` for 3A.
+cooccur_df %>%
+  readr::write_csv(fig3a_csv)
+
+# Second, the `disease_df_fct` for 3B.
+disease_df_fct %>%
+  dplyr::filter(mutant_samples >= 1) %>%
+  readr::write_csv(fig3b_csv)

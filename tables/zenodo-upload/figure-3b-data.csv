@@ -1,0 +1,206 @@
+gene,disease_factor,mutant_samples
+TP53,Diffuse midline glioma,25
+TP53,Other high-grade glioma,22
+TP53,Other low-grade glioma,2
+TP53,Medulloblastoma,7
+TP53,Other,2
+BRAF,Diffuse midline glioma,2
+BRAF,Other high-grade glioma,4
+BRAF,Pilocytic astrocytoma,6
+BRAF,Ganglioglioma,13
+BRAF,Pleomorphic xanthoastrocytoma,6
+BRAF,Other low-grade glioma,17
+BRAF,Other,2
+H3F3A,Diffuse midline glioma,36
+H3F3A,Other high-grade glioma,4
+CTNNB1,Other high-grade glioma,1
+CTNNB1,Medulloblastoma,12
+CTNNB1,Craniopharyngioma,22
+CTNNB1,Other,1
+NF1,Diffuse midline glioma,7
+NF1,Other high-grade glioma,9
+NF1,Pilocytic astrocytoma,2
+NF1,Ganglioglioma,1
+NF1,Other low-grade glioma,2
+NF1,Other embryonal tumor,1
+NF1,Other,2
+ATRX,Diffuse midline glioma,11
+ATRX,Other high-grade glioma,10
+ATRX,Ganglioglioma,1
+ATRX,Other low-grade glioma,1
+ATRX,Other,1
+FGFR1,Other high-grade glioma,4
+FGFR1,Pilocytic astrocytoma,3
+FGFR1,Other low-grade glioma,4
+FGFR1,Other,4
+NF2,Other high-grade glioma,1
+NF2,Medulloblastoma,1
+NF2,Ependymoma,3
+NF2,Meningioma,7
+NF2,Other,4
+PIK3CA,Diffuse midline glioma,5
+PIK3CA,Other high-grade glioma,4
+PIK3CA,Other low-grade glioma,5
+PIK3CA,Medulloblastoma,1
+PIK3CA,Craniopharyngioma,1
+KMT2D,Other high-grade glioma,4
+KMT2D,Medulloblastoma,8
+KMT2D,Craniopharyngioma,1
+KMT2D,Other,1
+BCOR,Diffuse midline glioma,1
+BCOR,Other high-grade glioma,5
+BCOR,Pilocytic astrocytoma,3
+BCOR,Ganglioglioma,1
+BCOR,Other low-grade glioma,1
+BCOR,Other embryonal tumor,1
+BCOR,Ependymoma,1
+BCOR,Other,1
+SMARCA4,Other high-grade glioma,5
+SMARCA4,Other low-grade glioma,1
+SMARCA4,Medulloblastoma,5
+SMARCA4,Craniopharyngioma,1
+KMT2C,Other high-grade glioma,4
+KMT2C,Medulloblastoma,6
+KMT2C,Atypical Teratoid Rhabdoid Tumor,1
+KMT2C,Other embryonal tumor,1
+SETD2,Other high-grade glioma,6
+SETD2,Pilocytic astrocytoma,1
+SETD2,Medulloblastoma,2
+SETD2,Atypical Teratoid Rhabdoid Tumor,1
+SETD2,Ependymoma,1
+SETD2,Other,1
+PDGFRA,Diffuse midline glioma,2
+PDGFRA,Other high-grade glioma,5
+PDGFRA,Other low-grade glioma,2
+PDGFRA,Other,2
+PTPN11,Diffuse midline glioma,4
+PTPN11,Other high-grade glioma,4
+PTPN11,Other low-grade glioma,1
+PTPN11,Other,2
+DDX3X,Other high-grade glioma,2
+DDX3X,Medulloblastoma,9
+RYR2,Diffuse midline glioma,1
+RYR2,Other high-grade glioma,5
+RYR2,Pilocytic astrocytoma,1
+RYR2,Medulloblastoma,2
+RYR2,Ependymoma,1
+ATM,Diffuse midline glioma,1
+ATM,Other high-grade glioma,5
+ATM,Other low-grade glioma,2
+ATM,Medulloblastoma,1
+ATM,Other embryonal tumor,1
+DNAH14,Diffuse midline glioma,2
+DNAH14,Other high-grade glioma,4
+DNAH14,Pilocytic astrocytoma,1
+DNAH14,Medulloblastoma,2
+DNAH14,Other embryonal tumor,1
+EGFR,Diffuse midline glioma,1
+EGFR,Other high-grade glioma,9
+LRP1B,Other high-grade glioma,4
+LRP1B,Ganglioglioma,2
+LRP1B,Atypical Teratoid Rhabdoid Tumor,1
+LRP1B,Other embryonal tumor,1
+LRP1B,Other,2
+PTEN,Diffuse midline glioma,2
+PTEN,Other high-grade glioma,6
+PTEN,Ganglioglioma,1
+PTEN,Medulloblastoma,1
+PPM1D,Diffuse midline glioma,7
+PPM1D,Other high-grade glioma,3
+FSIP2,Other high-grade glioma,5
+FSIP2,Other embryonal tumor,3
+FSIP2,Other,1
+FBN2,Other high-grade glioma,5
+FBN2,Pilocytic astrocytoma,1
+FBN2,Medulloblastoma,2
+FBN2,Other embryonal tumor,1
+PHLPP1,Other high-grade glioma,3
+PHLPP1,Other low-grade glioma,1
+PHLPP1,Other embryonal tumor,1
+PHLPP1,Craniopharyngioma,2
+PHLPP1,Other,1
+STAG2,Other high-grade glioma,2
+STAG2,Pilocytic astrocytoma,1
+STAG2,Medulloblastoma,3
+STAG2,Ependymoma,1
+STAG2,Other,2
+IDH1,Other high-grade glioma,4
+IDH1,Ganglioglioma,2
+IDH1,Other low-grade glioma,3
+KDM6A,Other high-grade glioma,2
+KDM6A,Other low-grade glioma,1
+KDM6A,Medulloblastoma,6
+KRAS,Pilocytic astrocytoma,2
+KRAS,Ganglioglioma,2
+KRAS,Other,5
+KIAA1549,Other high-grade glioma,5
+KIAA1549,Medulloblastoma,1
+KIAA1549,Other embryonal tumor,1
+KIAA1549,Ependymoma,1
+PCLO,Other high-grade glioma,5
+PCLO,Medulloblastoma,1
+PCLO,Other embryonal tumor,1
+PCLO,Craniopharyngioma,1
+CCDC168,Diffuse midline glioma,1
+CCDC168,Other high-grade glioma,4
+CCDC168,Atypical Teratoid Rhabdoid Tumor,1
+CCDC168,Craniopharyngioma,1
+CCDC168,Other,1
+DNHD1,Diffuse midline glioma,1
+DNHD1,Other high-grade glioma,5
+DNHD1,Medulloblastoma,1
+DNHD1,Other embryonal tumor,1
+MAGEL2,Other high-grade glioma,6
+MAGEL2,Medulloblastoma,1
+MAGEL2,Other,1
+COL4A3,Diffuse midline glioma,1
+COL4A3,Other high-grade glioma,4
+COL4A3,Atypical Teratoid Rhabdoid Tumor,1
+COL4A3,Other embryonal tumor,1
+COL4A3,Other,1
+IGSF10,Diffuse midline glioma,1
+IGSF10,Other high-grade glioma,4
+IGSF10,Medulloblastoma,2
+IGSF10,Other,1
+PIK3R1,Diffuse midline glioma,1
+PIK3R1,Other high-grade glioma,5
+PIK3R1,Pilocytic astrocytoma,2
+PRKDC,Other high-grade glioma,4
+PRKDC,Medulloblastoma,1
+PRKDC,Other embryonal tumor,1
+PRKDC,Ependymoma,1
+ADGRV1,Other high-grade glioma,4
+ADGRV1,Other low-grade glioma,1
+ADGRV1,Medulloblastoma,1
+ADGRV1,Other embryonal tumor,1
+KIAA1109,Other high-grade glioma,6
+KIAA1109,Other embryonal tumor,1
+LRP1,Diffuse midline glioma,1
+LRP1,Other high-grade glioma,5
+LRP1,Craniopharyngioma,1
+MUC5AC,Diffuse midline glioma,1
+MUC5AC,Other high-grade glioma,3
+MUC5AC,Other embryonal tumor,1
+MUC5AC,Ependymoma,1
+MUC5AC,Other,1
+MYH14,Other high-grade glioma,4
+MYH14,Medulloblastoma,1
+MYH14,Other embryonal tumor,2
+RP1L1,Diffuse midline glioma,1
+RP1L1,Other high-grade glioma,3
+RP1L1,Medulloblastoma,1
+RP1L1,Other embryonal tumor,2
+CELSR1,Diffuse midline glioma,1
+CELSR1,Other high-grade glioma,3
+CELSR1,Medulloblastoma,1
+CELSR1,Other embryonal tumor,1
+CELSR1,Other,1
+CENPF,Other high-grade glioma,4
+CENPF,Pilocytic astrocytoma,1
+CENPF,Other embryonal tumor,2
+IGFN1,Other high-grade glioma,3
+IGFN1,Pilocytic astrocytoma,1
+IGFN1,Atypical Teratoid Rhabdoid Tumor,1
+IGFN1,Other,2
+TNC,Diffuse midline glioma,3
+TNC,Other high-grade glioma,4

@@ -22,7 +22,7 @@ if [ ${OPENPBTA_TESTING} -eq 1 ]; then
     Rscript -e "rmarkdown::render('write-manuscript-tables.Rmd', params = list(release = 'testing'), clean = TRUE)"
 else
     Rscript -e "rmarkdown::render('write-manuscript-tables.Rmd', clean = TRUE)"
-    # Forthcoming: Copy zenodo tables if NOT in CI
+    bash copy-zenodo-tables.sh
 fi
 
 

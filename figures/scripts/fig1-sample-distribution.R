@@ -17,10 +17,14 @@ library(ggpubr)
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 figures_dir <- file.path(root_dir, "figures")
+zenodo_tables_dir <- file.path(root_dir, "tables", "zenodo-upload")
 
 # Tumor descriptor plots
 main_output_dir <- file.path(figures_dir, "pdfs", "fig1", "panels")
 dir.create(main_output_dir, recursive = TRUE, showWarnings = FALSE)
+
+# Define zenodo CSV output file
+fig1b_csv <- file.path(zenodo_tables_dir, "figure-1b-data.csv")
 
 
 #### Read in histologies -------------------------------------------------------
@@ -169,15 +173,16 @@ abbr_check <- data_descriptor_plot %>%
   pull(cancer_group_display)
 if (!(all(abbr_check == "Other"))) stop("Wrangling bug setting cancer group abbreviations.")
 
-#make the plot
-descriptor_plot <- data_descriptor_plot %>%
+# make the plot
+data_descriptor_plot <- data_descriptor_plot %>%
   mutate(
     cancer_group_abbreviation = if_else(is.na(cancer_group_abbreviation), "Other", cancer_group_abbreviation),
     bh_strip = stringr::str_wrap(broad_histology_display, 25),
     bh_strip = forcats::fct_reorder(bh_strip, broad_histology_order),
     abbr = forcats::fct_relevel(cancer_group_abbreviation, "Other", after=Inf)
-  ) %>%
-  ggplot() +
+  )
+
+descriptor_plot <- ggplot(data_descriptor_plot) +
   aes(x = abbr,
       fill = tumor_descriptor) +
   geom_bar(color = "black", size = 0.25) +
@@ -211,3 +216,9 @@ ggsave(filename = file.path(main_output_dir,
        plot = descriptor_plot,
        width = 4.6,
        height = 5.5)
+
+# Export figure data for zenodo upload
+data_descriptor_plot %>%
+  dplyr::arrange(sample_id) %>%
+  readr::write_csv(fig1b_csv)
+
