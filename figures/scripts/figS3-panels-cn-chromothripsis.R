@@ -33,7 +33,8 @@ chromo_sv_file <- file.path(supp_figures_dir, "chromothripsis_sv.pdf")
 # Zenodo CSV output directory and file paths
 zenodo_tables_dir <- file.path(root_dir, "tables", "zenodo-upload")
 figS3c_csv <- file.path(zenodo_tables_dir, "figure-S3c-data.csv.gz") # 15 MB without gz, 152 KB with gz
-figS3de_csv <- file.path(zenodo_tables_dir, "figure-S3d-S3e-data.csv") # figures are from same df, so do 1 export
+figS3d_csv <- file.path(zenodo_tables_dir, "figure-S3d-data.csv") 
+figS3e_csv <- file.path(zenodo_tables_dir, "figure-S3e-data.csv") 
 
 
 ## Figure S3C ----------------------------
@@ -364,11 +365,26 @@ bin_calls_df %>%
   # export
   readr::write_csv(figS3c_csv)
 
-# Panel S3D and S3E are made from the same data, so we're exporting 1 file
-merged_data %>%
-  # arrange on sample; note this column is already first
-  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
-  # export
-  readr::write_csv(figS3de_csv)
+# Panel S3D and S3E are made from the same data, 
+#  so prep first and then subset to relevant variables
+merged_data_export <- merged_data %>%
+  # select just the columns in the plots
+  dplyr::select(Kids_First_Biospecimen_ID, 
+                count_regions_any_conf_truncated, 
+                cnv_breaks_count, 
+                sv_breaks_count) %>%
+  # arrange on sample
+  dplyr::arrange(Kids_First_Biospecimen_ID) 
 
+# S3D
+merged_data_export %>%
+  # remove column that is in S3E
+  select(-sv_breaks_count) %>%
+  readr::write_csv(figS3d_csv)
+
+# S3E
+merged_data_export %>%
+  # remove column that is in S3D
+  select(-cnv_breaks_count) %>%
+  readr::write_csv(figS3e_csv)
 
