@@ -1,7 +1,7 @@
 This directory contains CSV files that represent data inputted to plots shown in the manuscript.
-Data for the following figures is included:
+Data for the following figures is included.
 
-| Figure | Description |
+| Figure | Brief Description of Figure |
 |--------|-------------|
 |   1B     |    Barplot showing the number of biospecimens per phase of therapy       |
 |   2A     |    Onocoprint summarizing low-grade glioma alterations across samples for top 20 mutated genes          |
