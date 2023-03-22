@@ -30,6 +30,9 @@ analyses_dir <- file.path(root_dir, "analyses")
 # Chromothripsis results directory
 chromothripsis_dir <- file.path(analyses_dir, "chromothripsis", "results")
 
+# Zenodo table directory
+zenodo_tables_dir <- file.path(root_dir, "tables", "zenodo-upload")
+
 #### Files ---------------------------------------------------------------------
 
 # Histologies file
@@ -43,6 +46,10 @@ chromo_file <- file.path(chromothripsis_dir,
 palette_file <- file.path(figures_dir,
                           "palettes",
                           "broad_histology_cancer_group_palette.tsv")
+
+# Zenodo data CSV
+fig3d_csv <- file.path(zenodo_tables_dir, "figure-3d-data.csv")
+
 
 #### Read in data --------------------------------------------------------------
 
@@ -144,3 +151,7 @@ ggsave(file.path(output_dir, "chromothripsis_prop_cancer_group.pdf"),
        plot = bar_plot,
        height = 7,
        width = 9)
+
+# Write CSV file for Zenodo upload
+# Note that this plot is summarized without sample information to arrange on
+readr::write_csv(chromoth_cancer_group_df, fig3d_csv)

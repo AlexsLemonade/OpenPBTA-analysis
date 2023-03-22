@@ -25,6 +25,9 @@ if (!dir.exists(plots_dir)) {
   dir.create(plots_dir, recursive = TRUE)
 }
 
+# Zenodo CSV file name
+fig3c_csv <- file.path(analysis_dir, "results", "figure-3c-data.csv")
+
 # Load packages
 library(ggplot2)
 library(RColorBrewer)
@@ -114,6 +117,13 @@ ggsave(file.path(plots_dir, "count_chromothripsis_cnv_and_sv_breaks_scatterplot.
 # Also save a PDF version, to be used as a single panel in a multipanel figure
 ggsave(file.path(plots_dir, "count_chromothripsis_cnv_and_sv_breaks_scatterplot.pdf"), p, 
        useDingbats=FALSE, height = 5.25, width = 7.75)
+```
+
+```{r}
+# Export figure data for Zenodo
+merge %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_csv(fig3c_csv)
 ```
 
 #### Stripchart: Chromothripsis regions vs. CNV breaks
