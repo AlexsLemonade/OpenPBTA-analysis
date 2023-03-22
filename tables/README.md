@@ -72,5 +72,5 @@ Table S5: Key Resources
 
 ## Zenodo Upload
 
-Files in this directory are named as: `data-figure-<figure number><figure panel>.csv` (or `.csv.gz` if compressed.)
-For example, `data-figure-3a.csv` contains data for Figure 3A.
+Files in this directory are named as: `figure-<figure number><figure panel>-data.csv` (or `.csv.gz` if compressed.)
+For example, `figure-3a-data.csv` contains data for Figure 3A.

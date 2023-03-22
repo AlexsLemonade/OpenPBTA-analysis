@@ -96,8 +96,8 @@ result_dir <- file.path(root_dir,
                         "analyses",
                         "interaction-plots",
                         "results")
-fig3a_csv <- file.path(result_dir, "data-figure-3a.csv")
-fig3b_csv <- file.path(result_dir, "data-figure-3b.csv")
+fig3a_csv <- file.path(result_dir, "figure-3a-data.csv")
+fig3b_csv <- file.path(result_dir, "figure-3b-data.csv")
 
 
 cooccur_df <-
