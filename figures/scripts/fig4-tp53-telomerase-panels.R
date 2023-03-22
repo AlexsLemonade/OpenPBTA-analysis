@@ -33,7 +33,7 @@ fig4a_csv <- file.path(zenodo_tables_dir, "figure-4a-data.csv")
 fig4b_csv <- file.path(zenodo_tables_dir, "figure-4b-data.csv")
 fig4c_csv <- file.path(zenodo_tables_dir, "figure-4c-data.csv")
 fig4d_csv <- file.path(zenodo_tables_dir, "figure-4d-data.csv")
-fig4e_csv <- file.path(zenodo_tables_dir, "figure-4e-data.csv")
+fig4f_csv <- file.path(zenodo_tables_dir, "figure-4f-data.csv")
 
 
 
@@ -676,3 +676,8 @@ plot_df %>%
   dplyr::mutate(cancer_group_display = stringr::str_replace(cancer_group_display, "\n", " ")) %>%
   # export
   readr::write_csv(fig4d_csv)
+
+
+# Panel 4F: HGG forest plot
+# no sample information so no arranging is needed
+readr::write_csv(survival_df_spread, fig4f_csv)

@@ -1,0 +1,19 @@
+term,name,value
+TP53 score,hr_ci,1.3 (0.59 - 3)
+Telomerase score,hr_ci,20 (6.4 - 62)
+Tumor resection: Total,hr_ci,0.35 (0.2 - 0.62)
+Tumor resection: Partial,hr_ci,0.7 (0.4 - 1.2)
+LGG group: LGG,hr_ci,0.046 (0.0062 - 0.34)
+HGG group: HGG,hr_ci,6.2 (4 - 9.5)
+Tumor resection: Biopsy (ref),hr_ci,NA
+LGG group: non-LGG (ref),hr_ci,NA
+HGG group: non-HGG (ref),hr_ci,NA
+TP53 score,p_string,P = 0.485
+Telomerase score,p_string,P < 0.001
+Tumor resection: Total,p_string,P < 0.001
+Tumor resection: Partial,p_string,P = 0.215
+LGG group: LGG,p_string,P = 0.003
+HGG group: HGG,p_string,P < 0.001
+Tumor resection: Biopsy (ref),p_string,NA
+LGG group: non-LGG (ref),p_string,NA
+HGG group: non-HGG (ref),p_string,NA
