@@ -5,25 +5,17 @@
 #  within individual modules into the `zenodo-upload/` directory here.
 #  Context: https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1692
 
+
+# This script must be called from `run-tables.sh`, or it must be run from this directory.
+
 # enviroment settings
 set -eo pipefail
 
-# Find current directory based on this script
-WORKDIR=$(dirname "${BASH_SOURCE[0]}")
-cd "$WORKDIR"
-
-# Get base directory of project
-cd ..
-BASEDIR="$pwd"
-cd -
-
 # Define input, output directories
-ANALYSIS_DIR="${BASEDIR}/analyses"
+ANALYSIS_DIR="../analyses"
 
-OUTDIR="${BASEDIR}/tables/zenodo-upload"
+OUTDIR="zenodo-upload"
 mkdir -p "${OUTDIR}" # make directory in case
-
-
 
 ######################### Copy CSV files #########################
 
