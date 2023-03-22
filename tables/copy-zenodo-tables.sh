@@ -8,14 +8,11 @@
 # enviroment settings
 set -eo pipefail
 
-# Find current directory based on this script
-WORKDIR=$(dirname "${BASH_SOURCE[0]}")
-cd "$WORKDIR"
+# Find directory of this script
+WORKDIR="$(dirname "${BASH_SOURCE[0]}")"
 
 # Get base directory of project
-cd ..
-BASEDIR="$pwd"
-cd -
+BASEDIR="$(dirname "$WORKDIR")"
 
 # Define input, output directories
 ANALYSIS_DIR="${BASEDIR}/analyses"
