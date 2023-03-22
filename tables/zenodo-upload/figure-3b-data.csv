@@ -1,12 +1,8 @@
 gene,disease_factor,mutant_samples
-TP53,High-grade gliomas,1e-5
 TP53,Diffuse midline glioma,25
 TP53,Other high-grade glioma,22
-TP53,Low-grade gliomas,1e-5
 TP53,Other low-grade glioma,2
-TP53,Embryonal tumors,1e-5
 TP53,Medulloblastoma,7
-TP53,blank,1e-5
 TP53,Other,2
 BRAF,Diffuse midline glioma,2
 BRAF,Other high-grade glioma,4

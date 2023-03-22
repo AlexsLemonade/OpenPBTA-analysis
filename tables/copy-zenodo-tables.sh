@@ -14,22 +14,22 @@ cd "$WORKDIR"
 
 # Get base directory of project
 cd ..
-BASEDIR="$(pwd)"
+BASEDIR="$pwd"
 cd -
 
-
 # Define input, output directories
-ANALYSIS_DIR=${BASEDIR}/analyses
+ANALYSIS_DIR="${BASEDIR}/analyses"
 
-OUTDIR=${BASEDIR}/tables/zenodo-upload
-mkdir -p $OUTDIR # make directory in case
+OUTDIR="${BASEDIR}/tables/zenodo-upload"
+mkdir -p "${OUTDIR}" # make directory in case
+
 
 
 ######################### Copy CSV files #########################
 
 # Figure 3A and 3B: interaction plot
 
-cp ${ANALYSIS_DIR}/interaction-plots/results/figure-3a-data.csv $OUTDIR/figure-3a-data.csv
-cp ${ANALYSIS_DIR}/interaction-plots/results/figure-3b-data.csv $OUTDIR/figure-3b-data.csv
+cp "${ANALYSIS_DIR}/interaction-plots/results/figure-3a-data.csv" "${OUTDIR}/figure-3a-data.csv"
+cp "${ANALYSIS_DIR}/interaction-plots/results/figure-3b-data.csv" "${OUTDIR}/figure-3b-data.csv"
 
 

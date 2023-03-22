@@ -411,16 +411,12 @@ ggsave(combined_plot,
        height = 14)
 
 ## Export figure data CSV files --------
-# Note that these plots are summarized across disease groups,
-#  so there is no sample variable to arrange the data by.
-# Instead, we'll arrange by `gene`
 
 # First the `cooccur_df` for 3A.
 cooccur_df %>%
-  dplyr::arrange(gene1) %>%
   readr::write_csv(fig3a_csv)
 
 # Second, the `disease_df_fct` for 3B.
 disease_df_fct %>%
-  dplyr::arrange(gene) %>%
+  dplyr::filter(mutant_samples >= 1) %>%
   readr::write_csv(fig3b_csv)
