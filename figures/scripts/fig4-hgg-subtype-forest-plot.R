@@ -1,4 +1,4 @@
-# S. Spielman for ALSF CCDL & Jo Lynne Rokita for D3b, 2022
+# S. Spielman for ALSF CCDL & Jo Lynne Rokita for D3b, 2022-3
 #
 # Makes a pdf panel of forest plot of survival analysis on HGG samples 
 #  with molecular subtype as predictors
@@ -15,6 +15,11 @@ output_dir <- file.path(root_dir, "figures", "pdfs", "fig4", "panels")
 if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
 }
+
+# Zenodo CSV output directory and file path
+zenodo_tables_dir <- file.path(root_dir, "tables", "zenodo-upload")
+fig4g_csv <- file.path(zenodo_tables_dir, "figure-4g-data.csv")
+
 
 # Directory with result data to input for plot
 input_dir <- file.path(root_dir, "analyses", "survival-analysis", "results", "subtypes")
@@ -176,5 +181,9 @@ forest_panels <- cowplot::plot_grid(forest_plot, labels_panel, nrow = 1, rel_wid
 # Export plot
 ggsave(forest_pdf, forest_panels, width = 10, height = 3)
 
+
+# Export CSV for Zenodo upload
+# no samples so nothing to arrange
+readr::write_csv(survival_df_spread, fig4g_csv)
 
 
