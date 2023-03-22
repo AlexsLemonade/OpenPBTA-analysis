@@ -1,4 +1,4 @@
-# Stephanie J. Spielman for CCDL, 2022
+# Stephanie J. Spielman for CCDL, 2022-3
 
 # This script creates panels for Figure S5
 
@@ -23,6 +23,13 @@ binary_palette_df <- read_tsv(file.path(root_dir, "figures", "palettes", "binary
 roc_file <- file.path(output_dir, "supp_roc_tp53_polya.pdf") ## ROC curve
 terc_file <- file.path(output_dir, "supp_terc_normextend.pdf") ## TERC vs normextend
 tert_file <- file.path(output_dir, "supp_tert_normextend.pdf") ## TERT vs normextend
+
+# Zenodo CSV output directory and file paths
+zenodo_tables_dir <- file.path(root_dir, "tables", "zenodo-upload")
+figS5a_csv <- file.path(zenodo_tables_dir, "figure-S5a-data.csv")
+figS5b_csv <- file.path(zenodo_tables_dir, "figure-S5b-data.csv")
+figS5c_csv <- file.path(zenodo_tables_dir, "figure-S5c-data.csv")
+
 
 
 
@@ -202,6 +209,32 @@ terc_plot <- plot_extend_scatter(extend_fpkm_df, stats_annotation_df, "TERC", 8.
 ggsave(tert_file, tert_plot, width = 4, height = 4, useDingbats = FALSE)
 ggsave(terc_file, terc_plot, width = 4, height = 4, useDingbats = FALSE)
 
+
+
+## Export CSVs for Zenodo upload ------------------------------
+
+# Panel S5A: ROC curve
+# no sample information so no arranging is needed
+readr::write_csv(roc_df, figS5a_csv)
+
+
+# Panel S5B and S5C are made from the same data, 
+#  so prep first and then filter for each gene
+extend_fpkm_df_export <- extend_fpkm_df %>%
+  dplyr::select(Kids_First_Biospecimen_ID = SampleID, everything()) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID)
+
+
+# S5B
+extend_fpkm_df_export %>%
+  dplyr::filter(gene == "TERT") %>%
+  readr::write_csv(figS5b_csv)
+
+
+# S5C
+extend_fpkm_df_export %>%
+  dplyr::filter(gene == "TERC") %>%
+  readr::write_csv(figS5c_csv)
 
 
 
