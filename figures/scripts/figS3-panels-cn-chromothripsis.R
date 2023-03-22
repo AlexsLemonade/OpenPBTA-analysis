@@ -30,7 +30,13 @@ cn_heatmap_file <- file.path(supp_figures_dir, "cn_status_heatmap.pdf")
 chromo_cnv_file <- file.path(supp_figures_dir, "chromothripsis_cnv.pdf")
 chromo_sv_file <- file.path(supp_figures_dir, "chromothripsis_sv.pdf")
 
-## Figure S3B ----------------------------
+# Zenodo CSV output directory and file paths
+zenodo_tables_dir <- file.path(root_dir, "tables", "zenodo-upload")
+figS3c_csv <- file.path(zenodo_tables_dir, "figure-S3c-data.csv.gz") # 15 MB without gz, 152 KB with gz
+figS3de_csv <- file.path(zenodo_tables_dir, "figure-S3d-S3e-data.csv") # figures are from same df, so do 1 export
+
+
+## Figure S3C ----------------------------
 # Adapted from https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/cnv-chrom-plot/cn_status_heatmap.Rmd
 
 # Define paths for this figure
@@ -235,7 +241,7 @@ bin_calls_mat <- bin_calls_df %>%
 # Ensure that this matrix is in the same order as the annotation and double check order
 bin_calls_mat <- bin_calls_mat[rownames(samples_for_heatmap), ]
 if (all.equal(rownames(bin_calls_mat), rownames(samples_for_heatmap)) != TRUE) {
-  stop("Bad data processing for Figure S2 Panel B")
+  stop("Bad data processing for CN status heatmap")
 }
 
 ## Assemble CN status heatmap
@@ -263,7 +269,7 @@ pdf(cn_heatmap_file, width = 8, height = 7)
 ComplexHeatmap::draw(heatmap, heatmap_legend_side = "bottom")
 dev.off()
 
-## Figure S3C-D ---------------------------
+## Figure S3D-E ---------------------------
 # originally from https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/master/analyses/chromothripsis/04-plot-chromothripsis-and-breakpoint-data.Rmd
 
 # Set theme
@@ -302,10 +308,10 @@ merged_data <- chromoth_per_sample %>%
          count_regions_any_conf_truncated = forcats::fct_relevel(count_regions_any_conf_truncated, ">=5", after = Inf))
 
 
-##### Figure S3C
-fig_s3c <- merged_data %>%
-  ggplot(aes(x = count_regions_any_conf_truncated,
-             y = cnv_breaks_count)) +
+##### Figure S3D
+fig_s3d <- ggplot(merged_data) + 
+  aes(x = count_regions_any_conf_truncated,
+      y = cnv_breaks_count) +
   geom_jitter(width = 0.3, alpha = 0.5, size = 0.4) +
   geom_boxplot(color = "black", alpha = 0, outlier.shape=NA,
                # fatten controls *median line* width
@@ -320,13 +326,13 @@ fig_s3c <- merged_data %>%
     axis.ticks = element_line(size = 0.25)
   )
 
-ggsave(chromo_cnv_file, fig_s3c, width = 2.65, height = 1.65,
+ggsave(chromo_cnv_file, fig_s3d, width = 2.65, height = 1.65,
        useDingbats=FALSE)
 
-#### Figure S3D
-fig_s3d <- merged_data %>%
-  ggplot(aes(x = count_regions_any_conf_truncated,
-             y = sv_breaks_count)) +
+#### Figure S3E
+fig_s3e <- ggplot(merged_data) + 
+  aes(x = count_regions_any_conf_truncated,
+      y = sv_breaks_count) +
   geom_jitter(width = 0.3, alpha = 0.5, size = 0.4) +
   geom_boxplot(color = "black", alpha = 0, outlier.shape=NA,
                # fatten controls *median line* width
@@ -340,8 +346,29 @@ fig_s3d <- merged_data %>%
     axis.line = element_line(size = 0.25),
     axis.ticks = element_line(size = 0.25)
   )
-ggsave(chromo_sv_file, fig_s3d, width = 2.65, height = 1.65,
+ggsave(chromo_sv_file, fig_s3e, width = 2.65, height = 1.65,
        useDingbats=FALSE)
 
+
+# Export CSVs for Zenodo upload ----------------
+
+# Panel S3C
+
+bin_calls_df %>%
+  # rename to standardized name
+  dplyr::rename(Kids_First_Biospecimen_ID = biospecimen_id) %>%
+  # filter to samples that are actually in the plot
+  dplyr::filter(Kids_First_Biospecimen_ID %in% rownames(samples_for_heatmap)) %>%
+  # arrange on sample; note this column is already first
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  # export
+  readr::write_csv(figS3c_csv)
+
+# Panel S3D and S3E are made from the same data, so we're exporting 1 file
+merged_data %>%
+  # arrange on sample; note this column is already first
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  # export
+  readr::write_csv(figS3de_csv)
 
 
