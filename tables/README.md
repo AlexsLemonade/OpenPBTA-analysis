@@ -1,6 +1,10 @@
 This module creates tables and supplementary tables for the manuscript, as well as for upload to Zenodo.
 All tables represent results from the most current OpenPBTA release.
 
+Before creating tables, you must ensure that all manuscript analysis and figure generation scripts have been run.
+For documentation on this, please see [the `scripts/` directory `README`](../scripts/README.md) and the [`figures/` directory `README`](../figures/README.md).
+
+
 To run this module, run:
 
 ```
