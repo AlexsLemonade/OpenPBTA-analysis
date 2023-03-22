@@ -26,6 +26,17 @@ survival_dir <- file.path(analyses_dir, "survival-analysis", "results", "tp53_te
 # Palette directory
 palette_dir <- file.path(root_dir, "figures", "palettes")
 
+
+# Zenodo CSV output directory and file paths
+zenodo_tables_dir <- file.path(root_dir, "tables", "zenodo-upload")
+fig4a_csv <- file.path(zenodo_tables_dir, "figure-4a-data.csv")
+fig4b_csv <- file.path(zenodo_tables_dir, "figure-4b-data.csv")
+fig4c_csv <- file.path(zenodo_tables_dir, "figure-4c-data.csv")
+fig4d_csv <- file.path(zenodo_tables_dir, "figure-4d-data.csv")
+fig4e_csv <- file.path(zenodo_tables_dir, "figure-4e-data.csv")
+
+
+
 # Read in clinical data and associated palette
 histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"),
                            guess_max = 10000)
@@ -112,7 +123,6 @@ ggsave(tp53_roc_pdf, roc_plot, width = 2.5, height = 2.5,
 
 
 
-
 ### TP53 scores and expression violin plots -----------------------------------------------------------
 # We do not use color palettes since the color mappings will necessarily change across figures.
 # We use ggplot instead of ggpubr because of jitter styling (ggpubr jitter point placement is deterministic)
@@ -122,6 +132,7 @@ ggsave(tp53_roc_pdf, roc_plot, width = 2.5, height = 2.5,
 plot_tp53 <- function(df, pvalue_y) {
   # df: Assumes two columns: the variable of interest (either tp53_score, tp53_expression) is named tp53, and column tp53_altered with three values
   # pvalue_y: y-axis coordinate of p-value annotation. Note that the x-axis coordinate is always the same
+  # Return both the plot as well as data frame used to make the plot to save for Zenodo CSVs
   
   # seed for jitter
   set.seed(4)
@@ -155,7 +166,7 @@ plot_tp53 <- function(df, pvalue_y) {
       ymax = quantile(tp53, 0.75, na.rm=TRUE)
     )
   
-  ggplot(df_counts) +
+  df_counts_plot <- ggplot(df_counts) +
     aes(x = tp53_altered, 
         y = tp53) +
     geom_violin(size = 0.35) + 
@@ -187,6 +198,13 @@ plot_tp53 <- function(df, pvalue_y) {
       axis.ticks = element_line(size = rel(0.5))
     )
   
+  return(
+    list(
+      "plot" = df_counts_plot,
+      "df" = df_counts
+    )
+  )
+  
 }
 
 # change `loss` --> `lost` for grammatical consistency
@@ -213,24 +231,28 @@ stranded_tp53 <- as.data.frame(subset_stranded) %>%
   distinct()
 
 
-# Make the figures
-tp53_scores_plot <- stranded_tp53 %>%
-  rename(tp53 = tp53_score) %>%
-  ### ggplot
-  plot_tp53(pvalue_y = 1.05) +
+# Make the figures and obtain the tables for Zenodo CSVs
+tp53_scores_plot_data <- plot_tp53(
+  rename(stranded_tp53, tp53 = tp53_score), 
+  pvalue_y = 1.05
+)
+tp53_scores_data <- tp53_scores_plot_data$df
+tp53_scores_plot <- tp53_scores_plot_data$plot + 
   # add labels for this plot
   labs(
     x = "TP53 altered status",
     y = "TP53 score"
   )
 
+tp53_expression_plot_data <- plot_tp53(
+  stranded_tp53 %>%
+    rename(tp53 = tp53_expression) %>%
+    mutate(tp53 = log(tp53 + 1)), 
+  pvalue_y = 4.5
+)
+tp53_expression_data <- tp53_expression_plot_data$df
 
-tp53_expression_plot <- stranded_tp53 %>%
-  rename(tp53 = tp53_expression) %>%
-  # log transform
-  mutate(tp53 = log(tp53 + 1)) %>%
-  ### ggplot
-  plot_tp53(pvalue_y = 4.5) +
+tp53_expression_plot <- tp53_expression_plot_data$plot + 
   # add labels for this plot
   labs(
     x = "TP53 altered status",
@@ -613,3 +635,44 @@ forest_panels <- cowplot::plot_grid(forest_plot, labels_panel, nrow = 1, rel_wid
 # Export plot
 ggsave(survival_plot_pdf, forest_panels, width = 11, height = 3.5)
 
+
+## Export CSVs for Zenodo upload ------------------------------
+
+# Panel 4A: ROC curve
+# no sample information so no arranging is needed
+readr::write_csv(roc_df, fig4a_csv)
+
+# Panel 4B: TP53 scores violin plots
+tp53_scores_data %>%
+  # reorder columns so sample id first, and rename it to match what the metadata will have
+  dplyr::select(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA, everything()) %>%
+  # arrange on sample
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  # remove \n from tp53_altered so that CSV is properly formatted
+  dplyr::mutate(tp53_altered = stringr::str_replace(tp53_altered, "\n", " ")) %>%
+  # export
+  readr::write_csv(fig4b_csv)
+
+
+# Panel 4C: TP53 expression plots
+tp53_expression_data %>%
+  # reorder columns so sample id first, and rename it to match what the metadata will have
+  dplyr::select(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA, everything()) %>%
+  # arrange on sample
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  # remove \n from tp53_altered so that CSV is properly formatted
+  dplyr::mutate(tp53_altered = stringr::str_replace(tp53_altered, "\n", " ")) %>%
+  # export
+  readr::write_csv(fig4c_csv)
+
+
+# Panel 4D: Box/jitter plots of TP53 and EXTEND scores across cancer groups
+plot_df %>%
+  # reorder columns so the RNA ID (this df also has `_DNA`) is first
+  dplyr::select(Kids_First_Biospecimen_ID, everything()) %>%
+  # arrange on RNA sample
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  # remove \n from cancer_group_display so that CSV is properly formatted
+  dplyr::mutate(cancer_group_display = stringr::str_replace(cancer_group_display, "\n", " ")) %>%
+  # export
+  readr::write_csv(fig4d_csv)
