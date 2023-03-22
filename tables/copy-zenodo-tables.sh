@@ -13,14 +13,16 @@ WORKDIR=$(dirname "${BASH_SOURCE[0]}")
 cd "$WORKDIR"
 
 # Get base directory of project
-BASEDIR="$(dirname $WORKDIR)"
-
+cd ..
+BASEDIR="$pwd"
+cd -
 
 # Define input, output directories
 ANALYSIS_DIR="${BASEDIR}/analyses"
 
 OUTDIR="${BASEDIR}/tables/zenodo-upload"
 mkdir -p "${OUTDIR}" # make directory in case
+
 
 
 ######################### Copy CSV files #########################
