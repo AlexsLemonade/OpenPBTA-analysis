@@ -680,4 +680,4 @@ plot_df %>%
 
 # Panel 4F: HGG forest plot
 # no sample information so no arranging is needed
-readr::write_csv(survival_df_spread, fig4f_csv)
+readr::write_csv(survival_df, fig4f_csv)

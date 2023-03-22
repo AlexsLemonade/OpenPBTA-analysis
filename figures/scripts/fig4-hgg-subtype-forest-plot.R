@@ -184,6 +184,6 @@ ggsave(forest_pdf, forest_panels, width = 10, height = 3)
 
 # Export CSV for Zenodo upload
 # no samples so nothing to arrange
-readr::write_csv(survival_df_spread, fig4g_csv)
+readr::write_csv(survival_df, fig4g_csv)
 
 

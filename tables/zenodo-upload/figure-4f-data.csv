@@ -1,19 +1,10 @@
-term,name,value
-TP53 score,hr_ci,1.3 (0.59 - 3)
-Telomerase score,hr_ci,20 (6.4 - 62)
-Tumor resection: Total,hr_ci,0.35 (0.2 - 0.62)
-Tumor resection: Partial,hr_ci,0.7 (0.4 - 1.2)
-LGG group: LGG,hr_ci,0.046 (0.0062 - 0.34)
-HGG group: HGG,hr_ci,6.2 (4 - 9.5)
-Tumor resection: Biopsy (ref),hr_ci,NA
-LGG group: non-LGG (ref),hr_ci,NA
-HGG group: non-HGG (ref),hr_ci,NA
-TP53 score,p_string,P = 0.485
-Telomerase score,p_string,P < 0.001
-Tumor resection: Total,p_string,P < 0.001
-Tumor resection: Partial,p_string,P = 0.215
-LGG group: LGG,p_string,P = 0.003
-HGG group: HGG,p_string,P < 0.001
-Tumor resection: Biopsy (ref),p_string,NA
-LGG group: non-LGG (ref),p_string,NA
-HGG group: non-HGG (ref),p_string,NA
+term,estimate,std.error,statistic,p.value,conf.low,conf.high,significant
+TP53 score,1.3361993401252772,0.415323156973027,0.6978403823595704,0.48527702155141716,0.5920352162564274,3.015747420974204,FALSE
+Telomerase score,20.02500982499696,0.5799180806229653,5.1679402379925925,2.366879611946562e-7,6.426071784556673,62.40220027652392,TRUE
+Tumor resection: Total,0.34905129293961773,0.29469109349894457,-3.5716600183201486,3.547257080535177e-4,0.19590600007864076,0.6219146174895663,TRUE
+Tumor resection: Partial,0.6986765377754219,0.2894894346672608,-1.2386199663068944,0.21548627033643392,0.39615241331529066,1.2322249922767516,FALSE
+LGG group: LGG,0.04601369779909908,1.0201935450427901,-3.0178745626642476,0.002545542466908932,0.006230125797802403,0.33984231681062554,TRUE
+HGG group: HGG,6.153289219562739,0.22050713531354024,8.240036172580856,1.7215859872010774e-16,3.9940299261695555,9.479890967141355,TRUE
+Tumor resection: Biopsy (ref),1,NA,NA,NA,NA,NA,REF
+LGG group: non-LGG (ref),1,NA,NA,NA,NA,NA,REF
+HGG group: non-HGG (ref),1,NA,NA,NA,NA,NA,REF
