@@ -20,7 +20,7 @@ BASEDIR="$(dirname $WORKDIR)"
 ANALYSIS_DIR="${BASEDIR}/analyses"
 
 OUTDIR="${BASEDIR}/tables/zenodo-upload"
-mkdir -p "$OUTDIR" # make directory in case
+mkdir -p "${OUTDIR}" # make directory in case
 
 
 ######################### Copy CSV files #########################
