@@ -49,6 +49,12 @@ cd274_expression_mb_pdf <- file.path(output_dir_fig5, "cd274_expression_mb_subty
 quantiseq_subtypes_pdf <- file.path(output_dir_figS6, "quantiseq-cell_types-molecular_subtypes.pdf")
 cd8_cd4_ratio_pdf <- file.path(output_dir_figS6, "cd8_cd4_ratio.pdf")
 
+# Zenodo CSV output directory and file paths
+zenodo_tables_dir <- file.path(root_dir, "tables", "zenodo-upload")
+fig5c_csv <- file.path(zenodo_tables_dir, "figure-5c-data.csv")
+fig5e_csv <- file.path(zenodo_tables_dir, "figure-5e-data.csv")
+
+
 
 # Prepare data for plots --------------
 
@@ -395,4 +401,29 @@ cd8_cd4_ratio_plot <- ratio_df %>%
 ggsave(cd8_cd4_ratio_pdf,
        cd8_cd4_ratio_plot,
        width = 3.5, height = 4, useDingbats = FALSE)
+
+
+
+# Export CSVs for Zenodo upload
+
+
+# Panel 5C
+quantiseq_cg %>%
+  # reorder columns so the ID is first
+  dplyr::select(Kids_First_Biospecimen_ID = sample, everything()) %>%
+  # arrange on sample
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
+  # export
+  readr::write_csv(fig5c_csv)
+
+
+# Panel 5E
+ratio_df %>%
+  # reorder columns so the ID is first
+  dplyr::select(Kids_First_Biospecimen_ID = sample, everything()) %>%
+  # arrange on sample
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
+  # export
+  readr::write_csv(fig5e_csv)
+
 
