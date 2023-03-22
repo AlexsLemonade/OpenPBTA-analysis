@@ -53,6 +53,8 @@ cd8_cd4_ratio_pdf <- file.path(output_dir_figS6, "cd8_cd4_ratio.pdf")
 zenodo_tables_dir <- file.path(root_dir, "tables", "zenodo-upload")
 fig5c_csv <- file.path(zenodo_tables_dir, "figure-5c-data.csv")
 fig5e_csv <- file.path(zenodo_tables_dir, "figure-5e-data.csv")
+figS6e_csv <- file.path(zenodo_tables_dir, "figure-S6e-data.csv")
+figS6f_csv <- file.path(zenodo_tables_dir, "figure-S6f-data.csv")
 
 
 
@@ -406,7 +408,6 @@ ggsave(cd8_cd4_ratio_pdf,
 
 # Export CSVs for Zenodo upload
 
-
 # Panel 5C
 quantiseq_cg %>%
   # reorder columns so the ID is first
@@ -418,12 +419,39 @@ quantiseq_cg %>%
 
 
 # Panel 5E
+CD274_cd8_mb %>%
+  # reorder columns so the ID is first
+  dplyr::select(Kids_First_Biospecimen_ID = sample, everything()) %>%
+  # arrange on sample
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
+  # remove \n from molecular_subtype so that CSV is properly formatted
+  dplyr::mutate(molecular_subtype = stringr::str_replace(molecular_subtype, "\n", " ")) %>%
+  # export
+  readr::write_csv(fig5e_csv)
+
+
+
+
+
+# Panel S6E
+data_for_s6e %>%
+  # reorder columns so the ID is first
+  dplyr::select(Kids_First_Biospecimen_ID = sample, everything()) %>%
+  # arrange on sample
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
+  # export
+  readr::write_csv(figS6e_csv)
+
+
+
+
+# Panel S6F
 ratio_df %>%
   # reorder columns so the ID is first
   dplyr::select(Kids_First_Biospecimen_ID = sample, everything()) %>%
   # arrange on sample
   dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
   # export
-  readr::write_csv(fig5e_csv)
+  readr::write_csv(figS6f_csv)
 
 
