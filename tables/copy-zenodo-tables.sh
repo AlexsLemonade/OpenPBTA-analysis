@@ -21,7 +21,7 @@ cd -
 # Define input, output directories
 ANALYSIS_DIR=${BASEDIR}/analyses
 
-OUTDIR=${BASEDIR}/tables/zenodo-upload/
+OUTDIR=${BASEDIR}/tables/zenodo-upload
 mkdir -p $OUTDIR # make directory in case
 
 
@@ -29,7 +29,7 @@ mkdir -p $OUTDIR # make directory in case
 
 # Figure 3A and 3B: interaction plot
 
-cp ${ANALYSIS_DIR}/interaction-plots/results/data-figure-3a.csv $OUTDIR
-cp ${ANALYSIS_DIR}/interaction-plots/results/data-figure-3b.csv $OUTDIR
+cp ${ANALYSIS_DIR}/interaction-plots/results/data-figure-3a.csv $OUTDIR/data-figure-3a.csv
+cp ${ANALYSIS_DIR}/interaction-plots/results/data-figure-3b.csv $OUTDIR/data-figure-3b.csv
 
 
