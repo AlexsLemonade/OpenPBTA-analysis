@@ -396,9 +396,8 @@ if (!dir.exists(plots_dir)) {
   dir.create(plots_dir, recursive = TRUE)
 }
 
-# Zenodo table directory and file name
-zenodo_tables_dir &lt;- file.path(root_dir, &quot;tables&quot;, &quot;zenodo-upload&quot;)
-fig3c_csv &lt;- file.path(zenodo_tables_dir, &quot;figure-3c-data.csv&quot;)
+# Zenodo CSV file name
+fig3c_csv &lt;- file.path(analysis_dir, &quot;results&quot;, &quot;figure-3c-data.csv&quot;)
 
 # Load packages
 library(ggplot2)
