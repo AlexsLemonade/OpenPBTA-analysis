@@ -1,4 +1,4 @@
-# S. Spielman for ALSF CCDL 2022
+# S. Spielman for ALSF CCDL 2022-3
 #
 # Makes a pdf panel for the HGG Kaplan-Meier survival analysis for Figure 4
 
@@ -14,6 +14,12 @@ output_dir <- file.path(root_dir, "figures", "pdfs", "fig4", "panels")
 if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
 }
+
+
+
+# Zenodo CSV output directory and file path
+zenodo_tables_dir <- file.path(root_dir, "tables", "zenodo-upload")
+fig4h_csv <- file.path(zenodo_tables_dir, "figure-4h-data.csv")
 
 # Input directory
 input_dir <- file.path(root_dir, "analyses", "survival-analysis", "results", "subtypes")
@@ -73,4 +79,10 @@ km_final <- km_plot_graph/km_plot_table +
 
 # Save
 ggsave(km_output_pdf, km_final, width = 12, height = 6)
+
+# Export CSV for Zenodo upload
+# no samples so nothing to arrange
+readr::write_csv(km_result$table, fig4h_csv)
+
+
 

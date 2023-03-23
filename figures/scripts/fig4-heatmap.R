@@ -17,6 +17,10 @@ if (!dir.exists(output_dir)) {
 }
 
 
+# Zenodo CSV output directory and file path
+zenodo_tables_dir <- file.path(root_dir, "tables", "zenodo-upload")
+fig4e_csv <- file.path(zenodo_tables_dir, "figure-4e-data.csv")
+
 # Directory with result data to input for plot
 input_dir <- file.path(root_dir, 
                        "analyses", 
@@ -222,4 +226,13 @@ dev.off()
 pdf(heatmap_legends_pdf, width = 8, height = 2)
 draw(heat_legends)
 dev.off()  
+
+
+# Export Figure 4E data in CSV format for Zenodo upload
+soi_df %>%
+  # arrange on partipant, which is shown in the MS figure
+  dplyr::arrange(Kids_First_Participant_ID) %>%
+  # export
+  readr::write_csv(fig4e_csv)
+
 
