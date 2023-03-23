@@ -312,6 +312,8 @@ umap_plot_df %>%
   dplyr::rename(UMAP1 = X1, UMAP2 = X2) %>%
   # arrange on sample
   dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  # remove cancer group columns since this plot is of broad histology
+  dplyr::select(-contains("cancer_group")) %>%
   # export
   readr::write_csv(fig5a_csv)
 
