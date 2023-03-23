@@ -649,7 +649,7 @@ tp53_scores_data %>%
   # arrange on sample
   dplyr::arrange(Kids_First_Biospecimen_ID) %>%
   # remove \n from tp53_altered so that CSV is properly formatted
-  dplyr::mutate(tp53_altered = stringr::str_replace(tp53_altered, "\n", " ")) %>%
+  dplyr::mutate(tp53_altered = stringr::str_replace(tp53_altered, "\n.+", "")) %>%
   # export
   readr::write_csv(fig4b_csv)
 
@@ -661,7 +661,7 @@ tp53_expression_data %>%
   # arrange on sample
   dplyr::arrange(Kids_First_Biospecimen_ID) %>%
   # remove \n from tp53_altered so that CSV is properly formatted
-  dplyr::mutate(tp53_altered = stringr::str_replace(tp53_altered, "\n", " ")) %>%
+  dplyr::mutate(tp53_altered = stringr::str_replace(tp53_altered, "\n.+", "")) %>%
   # export
   readr::write_csv(fig4c_csv)
 
@@ -673,7 +673,7 @@ plot_df %>%
   # arrange on RNA sample
   dplyr::arrange(Kids_First_Biospecimen_ID) %>%
   # remove \n from cancer_group_display so that CSV is properly formatted
-  dplyr::mutate(cancer_group_display = stringr::str_replace(cancer_group_display, "\n", " ")) %>%
+  dplyr::mutate(cancer_group_display = stringr::str_replace(cancer_group_display, "\n.+", "")) %>%
   # export
   readr::write_csv(fig4d_csv)
 
