@@ -425,7 +425,7 @@ CD274_cd8_mb %>%
   # arrange on sample
   dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
   # remove \n from molecular_subtype so that CSV is properly formatted
-  dplyr::mutate(molecular_subtype = stringr::str_replace(molecular_subtype, "\n", " ")) %>%
+  dplyr::mutate(molecular_subtype = stringr::str_replace(molecular_subtype, "\n.+", "")) %>%
   # export
   readr::write_csv(fig5e_csv)
 
