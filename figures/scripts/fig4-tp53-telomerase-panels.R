@@ -648,7 +648,7 @@ tp53_scores_data %>%
   dplyr::select(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA, everything()) %>%
   # arrange on sample
   dplyr::arrange(Kids_First_Biospecimen_ID) %>%
-  # remove \n from tp53_altered so that CSV is properly formatted
+  # remove \n and N=## from tp53_altered so that CSV is properly formatted
   dplyr::mutate(tp53_altered = stringr::str_replace(tp53_altered, "\n.+", "")) %>%
   # export
   readr::write_csv(fig4b_csv)
@@ -660,7 +660,7 @@ tp53_expression_data %>%
   dplyr::select(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA, everything()) %>%
   # arrange on sample
   dplyr::arrange(Kids_First_Biospecimen_ID) %>%
-  # remove \n from tp53_altered so that CSV is properly formatted
+  # remove \n and N=## from tp53_altered so that CSV is properly formatted
   dplyr::mutate(tp53_altered = stringr::str_replace(tp53_altered, "\n.+", "")) %>%
   # export
   readr::write_csv(fig4c_csv)
@@ -673,7 +673,8 @@ plot_df %>%
   # arrange on RNA sample
   dplyr::arrange(Kids_First_Biospecimen_ID) %>%
   # remove \n from cancer_group_display so that CSV is properly formatted
-  dplyr::mutate(cancer_group_display = stringr::str_replace(cancer_group_display, "\n.+", "")) %>%
+  # Note this this is only wrapping of the cancer group name; there is no `(N=##) tacked on`
+  dplyr::mutate(cancer_group_display = stringr::str_replace(cancer_group_display, "\n", " ")) %>%
   # export
   readr::write_csv(fig4d_csv)
 
