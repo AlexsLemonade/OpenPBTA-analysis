@@ -259,7 +259,10 @@ prepare_write_csv <- function(df, filename) {
 # list of UMAP data frames in order a, b, c, d:
 # https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/63bddce2dba6bd73182f02c84ffab105bd1c4a09/figures/pngs/figureS6.png
 umap_dfs <- list(
-  umap_df_mb, umap_df_epn, umap_df_lgg, umap_df_hgg
+  a = umap_df_mb,
+  b = umap_df_epn,
+  c = umap_df_lgg,
+  d = umap_df_hgg
 )
 
 # Export:
