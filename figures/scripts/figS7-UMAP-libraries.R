@@ -35,6 +35,11 @@ palette_file <- file.path(root_dir,
 # Output PDF filename
 output_pdf <- file.path(output_dir, "umap_polya_stranded.pdf")
 
+
+# Zenodo CSV output directory and file path
+zenodo_tables_dir <- file.path(root_dir, "tables", "zenodo-upload")
+figS7b_csv <- file.path(zenodo_tables_dir, "figure-S7b-data.csv")
+
 # Read and pre-process data -------------------------
 
 # Read in metadata associated palette
@@ -119,6 +124,11 @@ ggsave(
   height = 6
 )
 
+# Export CSV for Zenodo upload
+umap_df %>%
+  dplyr::select(Kids_First_Biospecimen_ID, everything()) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_csv(figS7b_csv)
 
 
 
