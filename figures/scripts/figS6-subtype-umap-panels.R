@@ -23,6 +23,14 @@ if(!dir.exists(plots_dir)){
   dir.create(plots_dir, recursive = TRUE)
 }
 
+# Zenodo CSV output directory and file paths
+zenodo_tables_dir <- file.path(root_dir, "tables", "zenodo-upload")
+# For file names, we'll define a vector of paths that can be used during export
+csv_paths <- file.path(
+  zenodo_tables_dir, 
+  glue::glue("figure-S6{letters[1:4]}-data.csv")
+)
+
 # source the function for generating plots
 source(file.path(dim_red_dir, "util", "dimension-reduction-functions.R"))
 
@@ -232,3 +240,35 @@ ggsave(file.path(plots_dir, "supp_umap_epn.pdf"),
        p, width = 5, height = 4, 
        useDingbats = FALSE)
 
+
+# Export CSV files for Zenodo upload
+
+# All four data frames require the same processing, so we'll use a helper function:
+prepare_write_csv <- function(df, filename) {
+  df %>%
+    # rename UMAP columns
+    dplyr::rename(UMAP1 = X1, 
+                  UMAP2 = X2) %>%
+    # order, arrange on biospecimen
+    dplyr::select(Kids_First_Biospecimen_ID, everything()) %>%
+    dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+    # write
+    readr::write_csv(filename)
+}
+
+# list of UMAP data frames in order a, b, c, d:
+# https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/63bddce2dba6bd73182f02c84ffab105bd1c4a09/figures/pngs/figureS6.png
+umap_dfs <- list(
+  a = umap_df_mb,
+  b = umap_df_epn,
+  c = umap_df_lgg,
+  d = umap_df_hgg
+)
+
+# Export:
+purrr::walk2(
+  umap_dfs,
+  # this is in order a,b,c,d
+  csv_paths, 
+  prepare_write_csv
+)
