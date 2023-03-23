@@ -436,7 +436,9 @@ CD274_cd8_mb %>%
 # Panel S6E
 data_for_s6e %>%
   # reorder columns so the ID is first
-  dplyr::select(Kids_First_Biospecimen_ID = sample, everything()) %>%
+  dplyr::select(Kids_First_Biospecimen_ID = sample, everything(),
+                # but remove the hex column
+                -broad_histology_hex) %>%
   # arrange on sample
   dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
   # export
