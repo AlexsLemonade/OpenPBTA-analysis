@@ -15,6 +15,11 @@ if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
 }
 
+# Zenodo CSV output directory and file path
+zenodo_tables_dir <- file.path(root_dir, "tables", "zenodo-upload")
+fig2h_csv <- file.path(zenodo_tables_dir, "figure-S2h-data.csv") # PBTA
+fig2i_csv <- file.path(zenodo_tables_dir, "figure-S2i-data.csv") # TCGA
+
 # Data directory
 data_dir <- file.path(root_dir, "data")
 
@@ -178,7 +183,32 @@ ggsave(tcga_tmb_cdf_pdf, tmb_tcga_plot, width = 5, height = 6.15, # because labe
 useDingbats = FALSE)  
 
 
+# Export Zenodo CSV files --------------------
 
+# S2H
+tmb_pbta_plot_df %>%
+  # reorder columns and remove unnecessary columns, but keep hex since identity was plotted
+  dplyr::select(Kids_First_Biospecimen_ID, everything(),
+                -cancer_group, -cancer_group_abbreviation) %>%
+  # remove \n from wrapped display column
+  dplyr::mutate(cancer_group_display = stringr::str_replace(cancer_group_display, "\n", " ")) %>%
+  # arrange
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  # export
+  readr::write_csv(fig2h_csv)
+
+
+# S2H
+tmb_tcga_plot_df %>%
+  # reorder columns
+  dplyr::select(Tumor_Sample_Barcode, Primary_diagnosis, everything()) %>%
+  # remove \n from wrapped display column
+  dplyr::mutate(Primary_diagnosis = stringr::str_replace(Primary_diagnosis, "\n", " ")) %>%
+  # arrange on Primary_diagnosis in this case since it is not PBTA data
+  dplyr::arrange(Primary_diagnosis) %>%
+  # export
+  readr::write_csv(fig2i_csv)
+    
 
 
 
