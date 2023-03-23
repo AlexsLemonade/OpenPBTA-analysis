@@ -32,7 +32,7 @@ chromo_sv_file <- file.path(supp_figures_dir, "chromothripsis_sv.pdf")
 
 # Zenodo CSV output directory and file paths
 zenodo_tables_dir <- file.path(root_dir, "tables", "zenodo-upload")
-figS3c_csv <- file.path(zenodo_tables_dir, "figure-S3c-data.csv.gz") # 15 MB without gz, 152 KB with gz
+figS3c_csv <- file.path(zenodo_tables_dir, "figure-S3c-data.csv.gz") # 15 MB without gz
 figS3d_csv <- file.path(zenodo_tables_dir, "figure-S3d-data.csv") 
 figS3e_csv <- file.path(zenodo_tables_dir, "figure-S3e-data.csv") 
 
