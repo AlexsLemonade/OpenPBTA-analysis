@@ -191,7 +191,7 @@ tmb_pbta_plot_df %>%
   dplyr::select(Kids_First_Biospecimen_ID, everything(),
                 -cancer_group, -cancer_group_abbreviation) %>%
   # remove \n from wrapped display column
-  dplyr::mutate(Primary_diagnosis = stringr::str_replace(Primary_diagnosis, "\n", " ")) %>%
+  dplyr::mutate(cancer_group_display = stringr::str_replace(cancer_group_display, "\n", " ")) %>%
   # remove "n = " from sample size column
   dplyr::mutate(sample_size = stringr::str_replace(sample_size, "n = ", "")) %>%
   # arrange
