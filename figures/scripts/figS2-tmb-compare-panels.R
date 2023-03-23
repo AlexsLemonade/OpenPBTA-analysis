@@ -200,12 +200,14 @@ tmb_pbta_plot_df %>%
   readr::write_csv(fig2h_csv)
 
 
-# S2H
+# S2I
 tmb_tcga_plot_df %>%
   # reorder columns
   dplyr::select(Tumor_Sample_Barcode, Primary_diagnosis, everything()) %>%
   # remove \n from wrapped display column
   dplyr::mutate(Primary_diagnosis = stringr::str_replace(Primary_diagnosis, "\n", " ")) %>%
+  # remove "n = " from sample size column
+  dplyr::mutate(sample_size = stringr::str_replace(sample_size, "n = ", "")) %>%
   # arrange on Primary_diagnosis in this case since it is not PBTA data
   dplyr::arrange(Primary_diagnosis) %>%
   # export
