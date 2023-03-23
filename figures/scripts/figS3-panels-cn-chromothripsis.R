@@ -359,31 +359,8 @@ ggsave(chromo_sv_file, fig_s3e, width = 2.65, height = 1.65,
 #  `chrZ_binX`, where Z is the chromosome number and X is the bin number (the current column name)
 bin_nums <- as.numeric(colnames(bin_calls_df)[-1])
 
-# Create df of chromosome bin starts
-chrs_df <- chrs %>%
-  table() %>%
-  tibble::as_tibble() %>%
-  set_names(c("chr", "n")) %>%
-  # Update n to be the index where that chr's bins _end_
-  dplyr::mutate(n = cumsum(n))
-
-# Define a helper function for getting the new bin column names:
-get_new_bin_colnames <- function(bin_num, chrs_df) {
-  
-  # The index of the first TRUE is the bin we're in
-  chr_index <- which(bin_num <= chrs_df$n)[1] 
-  chr_name <- chrs_df$chr[chr_index]
-  
-  # Create and return new colum name
-  glue::glue("{chr_name}_bin{bin_num}")
-}
-
-# Get new column names
-new_bin_colnames <- purrr::map_chr(
-  bin_nums, 
-  get_new_bin_colnames, 
-  chrs_df
-)
+# Create bin position names
+new_bin_colnames <- glue::glue("{chrs}:{bins@ranges@start}-{bins@ranges@start + bins@ranges@width - 1}")
   
 # Re-assign the bin column names, but don't change the sample column
 colnames(bin_calls_df)[-1] <- new_bin_colnames
