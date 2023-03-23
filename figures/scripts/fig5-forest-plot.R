@@ -16,6 +16,11 @@ if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
 }
 
+# Zenodo CSV output directory and file path
+zenodo_tables_dir <- file.path(root_dir, "tables", "zenodo-upload")
+fig5d_csv <- file.path(zenodo_tables_dir, "figure-5d-data.csv")
+
+
 # Directory with result data to input for plot
 input_dir <- file.path(root_dir, "analyses", "survival-analysis", "results", "immune")
 
@@ -193,6 +198,11 @@ forest_panels <- cowplot::plot_grid(forest_plot, labels_panel, nrow = 1, rel_wid
 
 # Export plot
 ggsave(forest_pdf, forest_panels, width = 15, height = 4.5)
+
+
+# Export CSV for Zenodo upload
+# no samples so nothing to arrange
+readr::write_csv(survival_df, fig5d_csv)
 
 
 

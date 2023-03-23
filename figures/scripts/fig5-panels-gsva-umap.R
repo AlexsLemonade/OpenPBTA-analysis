@@ -20,6 +20,12 @@ data_dir <- file.path(root_dir, "data")
 # Analysis directory
 analyses_dir <- file.path(root_dir, "analyses")
 
+# Zenodo CSV output directory and file paths
+zenodo_tables_dir <- file.path(root_dir, "tables", "zenodo-upload")
+fig5a_csv <- file.path(zenodo_tables_dir, "figure-5a-data.csv")
+fig5b_csv <- file.path(zenodo_tables_dir, "figure-5b-data.csv")
+
+
 # Read in clinical data
 histologies_df <- read_tsv(file.path(data_dir, "pbta-histologies.tsv"),
                            guess_max = 10000)
@@ -129,17 +135,18 @@ rsem_umap_file <- file.path(
 )
 
 # Get the umap data set up with display_groups
-umap_plot <- read_tsv(rsem_umap_file) %>%
+umap_plot_df <- read_tsv(rsem_umap_file) %>%
   select(Kids_First_Biospecimen_ID, X1, X2) %>%
   # Join on color palette info
   dplyr::inner_join(palette_mapping_df,
-                    by = "Kids_First_Biospecimen_ID") %>%
-  select(X1, X2, broad_histology_display) %>%
-  plot_dimension_reduction(point_color = "broad_histology_display",
-                           x_label = "UMAP1",
-                           y_label = "UMAP2",
-                           alpha_value = 0.5,
-                           color_palette = annotation_colors_bh) +
+                    by = "Kids_First_Biospecimen_ID") 
+
+umap_plot <- plot_dimension_reduction(umap_plot_df,
+                         point_color = "broad_histology_display",
+                         x_label = "UMAP1",
+                         y_label = "UMAP2",
+                         alpha_value = 0.5,
+                         color_palette = annotation_colors_bh) +
   ggpubr::theme_pubr() +
   theme(text = element_text(size = 10),
         legend.position = "none")
@@ -293,4 +300,33 @@ display_group_legend <- Legend(
 pdf(gsva_legend_pdf, width = 3, height = 6)
 draw(display_group_legend)
 dev.off()
+
+
+
+## Export CSV files for Zenodo
+
+
+# 5A: UMAP
+umap_plot_df %>%
+  # rename UMAP columns
+  dplyr::rename(UMAP1 = X1, UMAP2 = X2) %>%
+  # arrange on sample
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  # remove cancer group columns since this plot is of broad histology
+  dplyr::select(-contains("cancer_group")) %>%
+  # export
+  readr::write_csv(fig5a_csv)
+
+
+# 5B: GSVA plot
+
+# We'll transpose the gsva matrix first, because specimens are column names in the matrix
+# We want them _in a column_ to arrange on
+gsva_scores_mat %>%
+  t() %>%
+  tibble::as_tibble(rownames = "Kids_First_Biospecimen_ID") %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_csv(fig5b_csv)
+
+
 
