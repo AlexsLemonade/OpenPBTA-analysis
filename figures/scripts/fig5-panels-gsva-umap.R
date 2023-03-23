@@ -141,7 +141,7 @@ umap_plot_df <- read_tsv(rsem_umap_file) %>%
   dplyr::inner_join(palette_mapping_df,
                     by = "Kids_First_Biospecimen_ID") 
 
-plot_dimension_reduction(umap_plot_df,
+umap_plot <- plot_dimension_reduction(umap_plot_df,
                          point_color = "broad_histology_display",
                          x_label = "UMAP1",
                          y_label = "UMAP2",
