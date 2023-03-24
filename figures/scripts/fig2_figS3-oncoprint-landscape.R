@@ -31,7 +31,11 @@ data_input_dir <- file.path(root_dir, "scratch", "oncoprint_files")
 palette_dir <- file.path(root_dir, "figures", "palettes")
 
 # Directory where CSV files for Zenodo upload will be saved
+# Note that only the S3b filename is defined here, as fig2 file names
+#  are defined making use of code later in this script
 zenodo_upload_dir <- file.path(root_dir, "tables", "zenodo-upload")
+figS3b_csv <- file.path(zenodo_upload_dir, "figure-S3b-data.csv")
+
 
 #### Libraries & custom functions ----------------------------------------------
 
@@ -328,9 +332,6 @@ zenodo_csv_filenames <- file.path(
   # Specify order of manuscript figure 2:
   # https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/ae3eb012df4a5df26ee81fbd9dcc0a9ffbe12446/figures/pngs/figure2.png
   set_names( names(goi_files_list)[c(1, 3, 2, 4)] )
-
-# Additionally define the supplementary figure panel filename:
-figS3b_csv <- file.path(zenodo_upload_dir, "figure-S3b-data.csv")
 
 
 #### OncoPrints and cancer group legends ---------------------------------------
