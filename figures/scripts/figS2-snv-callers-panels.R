@@ -111,7 +111,7 @@ for (dataset in c("tcga", "pbta")) {
 
     # Export
     all_caller_df %>%
-      dplyr::select(Kids_First_Biospecimen_ID, everything()) %>%
+      dplyr::select(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode, everything()) %>%
       dplyr::arrange(Kids_First_Biospecimen_ID) %>%
       readr::write_csv(figSabc_csv)
 
