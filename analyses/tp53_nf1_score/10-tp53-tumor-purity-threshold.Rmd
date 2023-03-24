@@ -117,9 +117,9 @@ results_dir_full <- file.path(tp53_dir, "results")
 results_dir_threshold <- file.path(results_dir_full, "tumor-purity-threshold")
 
 # output plot data CSV files for Zenodo upload
-figS7d <- file.path(results_dir_threshold, "figure-S7d-data.csv")
-figS7e <- file.path(results_dir_threshold, "figure-S7e-data.csv")
-figS7f <- file.path(results_dir_threshold, "figure-S7f-data.csv")
+figS7d_csv <- file.path(results_dir_threshold, "figure-S7d-data.csv")
+figS7e_csv <- file.path(results_dir_threshold, "figure-S7e-data.csv")
+figS7f_csv <- file.path(results_dir_threshold, "figure-S7f-data.csv")
 
 
 # output plots
@@ -299,7 +299,7 @@ We'll also export this plot's data:
 roc_df %>%
   # this column is just tp53
   dplyr::select(-gene) %>%
-  readr::write_csv(figS7d)
+  readr::write_csv(figS7d_csv)
 ```
 
 ## Re-analysis 2: TP53 scores between "activated" and "lost" tumors.
@@ -378,7 +378,7 @@ tp53_thresholded_df %>%
                 -cancer_group_hex, -tp53_fpkm) %>%
   # arrange on biospecimen
   dplyr::arrange(Kids_First_Biospecimen_ID) %>%
-  readr::write_csv(figS7e)
+  readr::write_csv(figS7e_csv)
 ```
 
 
@@ -467,7 +467,7 @@ tp53_thresholded_df %>%
                 -cancer_group_hex, -tp53_score) %>%
   # arrange on biospecimen
   dplyr::arrange(Kids_First_Biospecimen_ID) %>%
-  readr::write_csv(figS7f)
+  readr::write_csv(figS7f_csv)
 ```
 
 
