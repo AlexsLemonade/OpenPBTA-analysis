@@ -39,6 +39,14 @@ tcga_vaf_distribution_plot_pdf <- file.path(output_dir, "tcga_vaf_distribution_p
 lancet_wxs_wgs_plot_pdf <- file.path(output_dir, "lancet_wxs_wgs_plot.pdf")
 
 
+# Output files for Zenodo upload
+# Input data _at a level where it is fully informative_ is the same for correlation, VAF, and upsetR plots.
+# We'll therefore export a single PBTA and TCGA file for these plots, with compression
+zenodo_upload_dir <- file.path(root_dir, "tables", "zenodo-upload")
+figS2abc_csv <- file.path(zenodo_upload_dir, "figure-S2a-S2b-S2c-data.csv.gz") # PBTA data
+figS2def_csv <- file.path(zenodo_upload_dir, "figure-S2d-S2e-S2f-data.csv.gz") # TCGA data
+figS2g_csv <- file.path(zenodo_upload_dir, "figure-S2g-data.csv") # lancet violin plot
+
 ## Read in data and load items --------------------------------------------------------------
 
 # Read in clinical data
@@ -62,7 +70,7 @@ join_cols <- c("Chromosome",
 # Loop over the two datasets
 for (dataset in c("tcga", "pbta")) {
   print(paste0("===================",dataset,"===================="))
-  # Set up DB connection ------------------------------------------------
+  # Set up DB connection  -----------------------------------
   db_file <- "snv_db.sqlite"
   if (dataset == "tcga") {
     db_file <- paste0("tcga_", db_file)
@@ -111,6 +119,18 @@ for (dataset in c("tcga", "pbta")) {
 
   }
 
+  # This data frame `all_caller_df` contains all input for correlation, VAF, and upset plots, so export here:
+  if (dataset == "tcga") {
+    all_caller_df %>%
+      dplyr::select(Tumor_Sample_Barcode, everything()) %>%
+      dplyr::arrange(Tumor_Sample_Barcode) %>%
+      readr::write_csv(figS2def_csv)
+  } else  {
+    all_caller_df %>%
+      dplyr::select(Kids_First_Biospecimen_ID, everything()) %>%
+      dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+      readr::write_csv(figSabc_csv)
+  }
 
   ## Upset plots -------------------------------------------------------
   print("Preparing data for upset plot")
@@ -123,22 +143,21 @@ for (dataset in c("tcga", "pbta")) {
   dimnames(detect_mat)[[1]] <- all_caller_df$index
 
   # Turn into detected or not
-  detect_mat <- !is.na(detect_mat)
-
+  detect_mat_logical <- !is.na(detect_mat)
 
   # Plot from `detect_mat`
   print("Making upset plot")
   # Set up a list how UpSetR wants it
   detect_list <- list(
-    lancet = which(detect_mat[, "VAF_lancet"]),
-    mutect = which(detect_mat[, "VAF_mutect"]),
-    strelka = which(detect_mat[, "VAF_strelka"])
+    lancet = which(detect_mat_logical[, "VAF_lancet"]),
+    mutect = which(detect_mat_logical[, "VAF_mutect"]),
+    strelka = which(detect_mat_logical[, "VAF_strelka"])
   )
 
   # add vardict if pbta, and define a shared plot_file
   if (dataset == "pbta") {
     # include vardict
-    detect_list[["vardict"]] <- which(detect_mat[, "VAF_vardict"])
+    detect_list[["vardict"]] <- which(detect_mat_logical[, "VAF_vardict"])
     plot_file <- pbta_upset_pdf
   } else if (dataset == "tcga") {
     plot_file <- tcga_upset_pdf
@@ -155,8 +174,6 @@ for (dataset in c("tcga", "pbta")) {
     mainbar.y.label = ""
   )
   dev.off()
-
-
 
   ## VAF distribution plots ------------------------------------------
   print("Making VAF distribution plot")
@@ -185,17 +202,15 @@ for (dataset in c("tcga", "pbta")) {
 
   ## VAF correlation plots --------------------------------------------
   print("Making VAF correlation plot")
-  # Correlate VAFs across callers pbta
-  cor_vaf <- all_caller_df %>%
-    select(starts_with("VAF_")) %>%
-    # 1:n() column for spread/gather bookkeeping which we do to remove `VAF_` from strips in this plot
-    mutate(n = 1:n()) %>%
-    # we want to remove
-    gather(caller, vaf, -n) %>%
-    mutate(caller = str_replace_all(caller, "VAF_", "")) %>%
-    spread(caller, vaf) %>%
-    select(-n) %>%
-    GGally::ggpairs(aes(alpha = 0.05)) +
+  # Correlate VAFs across callers
+  detect_mat_df <- as.data.frame(detect_mat)
+  names(detect_mat_df) <- stringr::str_replace_all(
+    names(detect_mat_df),
+    "VAF_",
+    ""
+  )
+
+  cor_vaf <- GGally::ggpairs(detect_mat_df, aes(alpha = 0.05)) +
     ggpubr::theme_pubr() +
     cowplot::panel_border() +
     # slightly smaller text to avoid label overlap
@@ -275,6 +290,9 @@ for (dataset in c("tcga", "pbta")) {
     ggsave(lancet_wxs_wgs_plot_pdf,
            vaf_plot,
            width = 5, height = 6)
+
+    # Export data csv
+    readr::write_csv(lancet, figS2g_csv)
   }
 
 
