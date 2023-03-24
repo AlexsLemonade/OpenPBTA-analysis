@@ -26,11 +26,13 @@ cp "${ANALYSIS_DIR}/interaction-plots/results/figure-3b-data.csv" "${OUTDIR}/fig
 # Figure 3C: Chromothripsis scatterplot
 cp "${ANALYSIS_DIR}/chromothripsis/results/figure-3c-data.csv" "${OUTDIR}/figure-3c-data.csv"
 
-
 # Figure S7C: Sequencing center UMAP
 cp "${ANALYSIS_DIR}/transcriptomic-dimension-reduction/results/figure-S7c-data.csv" "${OUTDIR}/figure-S7c-data.csv"
 
-# Figures S7D, S7E, S7F: TP53 tumor purity thresholded re-analyses
+# Figures S7D, S7E, S7F: TP53 tumor purity thresholded re-analyses for TP53 results
 cp "${ANALYSIS_DIR}/tp53_nf1_score/results/tumor-purity-threshold/figure-S7d-data.csv" "${OUTDIR}/figure-S7d-data.csv"
 cp "${ANALYSIS_DIR}/tp53_nf1_score/results/tumor-purity-threshold/figure-S7e-data.csv" "${OUTDIR}/figure-S7e-data.csv"
 cp "${ANALYSIS_DIR}/tp53_nf1_score/results/tumor-purity-threshold/figure-S7f-data.csv" "${OUTDIR}/figure-S7f-data.csv"
+
+# Figure S7H: Tumor purity thresholded UMAP
+cp "${ANALYSIS_DIR}/transcriptomic-dimension-reduction/results/figure-S7h-data.csv" "${OUTDIR}/figure-S7h-data.csv"
