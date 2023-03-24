@@ -12,7 +12,7 @@ params:
 
 ```{r setup, include=FALSE}
 library(magrittr)
-library(ggplot2)
+library(tidyverse) # need for using everything() and contains()
 
 # set overall theme
 theme_set(ggpubr::theme_pubr() +
@@ -61,6 +61,9 @@ umap_polya_file <- file.path(
 
 # Define output PDF file for cancer group UMAP
 cancer_group_umap_pdf <- file.path("plots", "umap_cancer-group_sequencing-center.pdf")
+
+# Output file file for CSV of plot data slated for Zenodo upload
+figS7c_csv <- file.path(dim_red_dir, "results", "figure-S7c-data.csv")
 ```
 
 And read in and prepare the files:
@@ -348,16 +351,10 @@ Shapes denote the sequencing center, and colors denote the cancer group.
 This plot will be exported, so we'll save it to a variable as well.
 
 ```{r}
-# Wrap `cancer_group_display` for legend visibility as part of this plot:
-# first, wrap palette labels so they apply!
-#names(pal_cg) <- stringr::str_wrap(names(pal_cg), 20)
+cancer_group_umap_df <- stranded_df %>%
+  tidyr::drop_na(cancer_group_display)
 
-cancer_group_umap <- stranded_df %>%
-  # wrap plot df labels
-#  dplyr::mutate(cancer_group_display = stringr::str_wrap(cancer_group_display, 20)) %>%
-  # remove NAs so theyre not in legend
-  tidyr::drop_na(cancer_group_display) %>%
-  ggplot() + 
+cancer_group_umap <- ggplot(cancer_group_umap_df) + 
     aes(x = UMAP1, y = UMAP2, 
         shape = seq_center, 
         fill = cancer_group_display, 
@@ -394,6 +391,16 @@ ggsave(
   width = 6.75, 
   height = 5
 )
+```
+
+We will also export the underlying data for upload to Zenodo:
+```{r}
+cancer_group_umap_df %>%
+  # reorder and subset columns and arrange
+  dplyr::select(Kids_First_Biospecimen_ID, everything(), 
+                -contains("hex"), -contains("broad_histology")) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_csv(figS7c_csv)
 ```
 
 
@@ -505,14 +512,12 @@ cg_plot +
     "segment",
     x = -2, y = 0.25, xend = -1, yend = 0.25,
     color = "red", lwd=1.5,
-    arrow = arrow(), 
-    show.legend = FALSE) + 
+    arrow = arrow()) + 
   annotate(
     "segment",
     x = -1.75, y = -8.5, xend = -2.6,  yend = -8.5,
     color = "red", lwd=1.5,
-    arrow = arrow(), 
-    show.legend = FALSE)
+    arrow = arrow())
 ```
 
 

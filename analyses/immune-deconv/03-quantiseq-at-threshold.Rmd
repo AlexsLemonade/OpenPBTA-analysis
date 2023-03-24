@@ -35,6 +35,9 @@ quantiseq_file <- file.path(quantiseq_dir, "results", "quantiseq_deconv-output-t
 
 # output plot file:
 quantiseq_plot_pdf <- file.path(quantiseq_dir, "plots", "tumor-purity-threshold_quantiseq-cancer-groups.pdf")
+
+# output plot data CSV file for Zenodo upload
+figS7i_csv <- file.path("results", "figure-S7i-data.csv")
 ```
 
 
@@ -157,6 +160,17 @@ ggsave(
   width = 12,
   height = 4.5
 )
+```
+
+
+We'll also export this plot's data:
+```{r}
+quantiseq_df %>%
+  # clean up columns
+  dplyr::select(Kids_First_Biospecimen_ID, dplyr::everything()) %>%
+  # arrange on biospecimen
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_csv(figS7i_csv)
 ```
 
 

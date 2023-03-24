@@ -25,6 +25,9 @@ telomerase_dir <- file.path(analyses_dir, "telomerase-activity-prediction")
 # Palette directory
 palette_dir <- file.path(root_dir, "figures", "palettes")
 
+# Zenodo CSV output directory and file path
+zenodo_tables_dir <- file.path(root_dir, "tables", "zenodo-upload")
+figS7g_csv <- file.path(zenodo_tables_dir, "figure-S7g-data.csv")
 
 # Output PDF filenames
 output_pdf <- file.path(output_dir, "tp53_telomerase_boxplots_tumor-purity-threshold.pdf")
@@ -245,4 +248,15 @@ legend <- cowplot::get_legend(tp53_plot_for_legend)
 pdf(output_legend_pdf, width = 1.3, height = 0.8, useDingbats = FALSE)
 cowplot::ggdraw(legend)
 dev.off()
+
+# Export CSV for Zenodo upload
+# no samples so nothing to arrange
+plot_df %>%
+  # remove \n
+  dplyr::mutate(cancer_group_display = stringr::str_replace(cancer_group_display, "\n", " ")) %>%
+  # arrange on RNA ID column, but bring both to front
+  dplyr::select(Kids_First_Biospecimen_ID, Kids_First_Biospecimen_ID_DNA, everything()) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_csv(figS7g_csv)
+
 

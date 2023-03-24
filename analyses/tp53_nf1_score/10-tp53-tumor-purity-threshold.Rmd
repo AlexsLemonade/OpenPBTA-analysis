@@ -116,12 +116,20 @@ source(file.path(tp53_dir, "util", "plot_roc.R"))
 results_dir_full <- file.path(tp53_dir, "results")
 results_dir_threshold <- file.path(results_dir_full, "tumor-purity-threshold")
 
+# output plot data CSV files for Zenodo upload
+figS7d_csv <- file.path(results_dir_threshold, "figure-S7d-data.csv")
+figS7e_csv <- file.path(results_dir_threshold, "figure-S7e-data.csv")
+figS7f_csv <- file.path(results_dir_threshold, "figure-S7f-data.csv")
+
+
 # output plots
 tp53_roc_pdf <- file.path(results_dir_threshold, "tp53-roc_tumor-purity-threshold.pdf")
 tp53_score_status_pdf <- file.path(results_dir_threshold, "tp53-score-status_tumor-purity-threshold.pdf")
 tp53_fpkm_status_pdf <- file.path(results_dir_threshold, "tp53-fpkm-status_tumor-purity-threshold.pdf")
 tp53_cancer_groups_pdf <- file.path(results_dir_threshold, "tp53-cancer-groups_tumor-purity-threshold.pdf")
 ```
+
+
 
 Read and prepare input files:
 
@@ -254,12 +262,13 @@ plot_roc(roc_df = dplyr::bind_rows(roc_file_stranded_original,
 
 Now, here is the new ROC generated from thresholded data:
 ```{r}
-new_roc <- plot_roc(roc_df = dplyr::bind_rows(roc_file_stranded_thresholded,
-                                   roc_file_stranded_shuff_thresholded),
-         # the next 2 path args don't matter since export is FALSE
-         plots_dir,
-         fname = "",
-         export = FALSE)
+roc_df <- dplyr::bind_rows(roc_file_stranded_thresholded,
+                           roc_file_stranded_shuff_thresholded)
+new_roc <- plot_roc(roc_df,
+                    # the next 2 path args don't matter since export is FALSE
+                    plots_dir,
+                    fname = "",
+                    export = FALSE)
 new_roc
 ```
 
@@ -283,6 +292,14 @@ ggsave(tp53_roc_pdf,
        height = 4,
        # needed for compilation
        useDingbats = FALSE)
+```
+
+We'll also export this plot's data:
+```{r}
+roc_df %>%
+  # this column is just tp53
+  dplyr::select(-gene) %>%
+  readr::write_csv(figS7d_csv)
 ```
 
 ## Re-analysis 2: TP53 scores between "activated" and "lost" tumors.
@@ -353,6 +370,16 @@ ggsave(
 )
 ```
 
+We'll also export this plot's data:
+```{r}
+tp53_thresholded_df %>%
+  # clean up columns
+  dplyr::select(Kids_First_Biospecimen_ID, dplyr::everything(),
+                -cancer_group_hex, -tp53_fpkm) %>%
+  # arrange on biospecimen
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_csv(figS7e_csv)
+```
 
 
 
@@ -429,6 +456,18 @@ ggsave(
   # needed for compilation
   useDingbats = FALSE
 )
+```
+
+
+We'll also export this plot's data:
+```{r}
+tp53_thresholded_df %>%
+  # clean up columns
+  dplyr::select(Kids_First_Biospecimen_ID, dplyr::everything(),
+                -cancer_group_hex, -tp53_score) %>%
+  # arrange on biospecimen
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_csv(figS7f_csv)
 ```
 
 

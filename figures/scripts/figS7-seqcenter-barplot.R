@@ -17,6 +17,11 @@ output_dir <- file.path(figures_dir, "pdfs", "supp", "figS7", "panels")
 
 output_pdf <- file.path(output_dir, "RNA_library_barplot.pdf")
 
+# Zenodo CSV output directory and file path
+zenodo_tables_dir <- file.path(root_dir, "tables", "zenodo-upload")
+figS7a_csv <- file.path(zenodo_tables_dir, "figure-S7a-data.csv")
+
+
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
 palette_file <- file.path(figures_dir, "palettes", "broad_histology_cancer_group_palette.tsv")
 binary_pal_file <- file.path(figures_dir, "palettes", "binary_color_palette.tsv")
@@ -82,5 +87,14 @@ ggsave(
 )
 
 
+# Export CSV for Zenodo upload
+# no samples so nothing to arrange
+library_cancer_group_df %>%
+  # remove \n
+  dplyr::mutate(cancer_group_display = stringr::str_replace(cancer_group_display, "\n", " ")) %>%
+  # Might as well count for them and arrange on the cancer group
+  dplyr::count(cancer_group_display, RNA_library) %>%
+  dplyr::arrange(cancer_group_display) %>% 
+  readr::write_csv(figS7a_csv)
 
 
