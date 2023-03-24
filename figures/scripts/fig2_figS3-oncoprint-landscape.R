@@ -30,6 +30,9 @@ data_input_dir <- file.path(root_dir, "scratch", "oncoprint_files")
 # We need two of our standardized palettes
 palette_dir <- file.path(root_dir, "figures", "palettes")
 
+# Directory where CSV files for Zenodo upload will be saved
+zenodo_upload_dir <- file.path(root_dir, "tables", "zenodo-upload")
+
 #### Libraries & custom functions ----------------------------------------------
 
 library(maftools)
@@ -78,7 +81,9 @@ get_histology_goi <- function(filename) {
 
 # Also not to be used outside of this context!
 # Given a vector of cancer groups, prep a MAF object to be used with
-# oncoplot() -- filters & combines the SNV, CNV, and fusion data
+# oncoplot() -- filters & combines the SNV, CNV, and fusion data.
+# This function also prepares and returns a data frame that can be exported containing
+# all oncoplot data.
 prep_histology_maf <- function(included_cancer_groups,
                                main = TRUE) {
   # The `main` argument indicates whether this is main text figure (TRUE),
@@ -116,15 +121,48 @@ prep_histology_maf <- function(included_cancer_groups,
   # Fusions
   histology_fusion_df <- fusion_df %>%
     dplyr::filter(Tumor_Sample_Barcode %in% included_sample_ids)
-
-
-
+  
   # MAF object
   histology_maf_object <- prepare_maf_object(
     maf_df = histology_maf_df,
     cnv_df = histology_cnv_df,
     metadata = histologies_df_temp,
     fusion_df = histology_fusion_df
+  )
+  
+  # Create a data frame that can be used to export this information
+  join_cols <- c("Hugo_Symbol", "Tumor_Sample_Barcode", "Variant_Classification")
+  
+  maf_export_df <- histology_maf_df %>%
+    dplyr::left_join(
+      histology_fusion_df, 
+      by = c(join_cols, "Variant_Type")) %>%
+    dplyr::left_join(histology_cnv_df,
+                     by = join_cols) %>%
+    # Select columns of interest for export and rename to be compatib
+    dplyr::select(Hugo_Symbol, Variant_Classification, Tumor_Sample_Barcode) %>% 
+    # Join with metadata information that is shown in the plot
+    dplyr::inner_join(
+      dplyr::select(histologies_df, 
+                    Tumor_Sample_Barcode, 
+                    cancer_group_display,
+                    broad_histology_display, 
+                    germline_sex_estimate)
+    ) %>%
+    # reorder columns and rename for consistency with plot and data release histologies file
+    dplyr::select(sample_id = Tumor_Sample_Barcode, 
+                  Hugo_Symbol,
+                  alteration = Variant_Classification,
+                  dplyr::everything()) %>%
+    # arrange on sample_id
+    dplyr::arrange(sample_id) 
+  
+  # Return the maf object and the df for export
+  return(
+    list(
+      maf_object = histology_maf_object,
+      maf_df  = maf_export_df
+    )
   )
 }
 
@@ -203,7 +241,7 @@ group_palette_df <-  readr::read_tsv(
 # Add cancer_group_display into histologies_df
 histologies_df <- dplyr::inner_join(
   histologies_df,
-  dplyr::select(group_palette_df, broad_histology, cancer_group, cancer_group_display)
+  dplyr::select(group_palette_df, broad_histology, broad_histology_display, cancer_group, cancer_group_display)
 )
 
 # Get palette for cancer group that is *specifically* for the oncoprint
@@ -280,6 +318,21 @@ goi_files_list <- list(
   )
 )
 
+#### Define file names for Zenodo CSV export. 
+# These files are being defined here so code can make use of `goi_files_list` names, 
+#  which is looped over to create the oncoplots
+zenodo_csv_filenames <- file.path(
+  zenodo_upload_dir, 
+  glue::glue("figure-2{letters[1:4]}-data.csv.gz")
+) %>%
+  # Specify order of manuscript figure 2:
+  # https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/ae3eb012df4a5df26ee81fbd9dcc0a9ffbe12446/figures/pngs/figure2.png
+  set_names( names(goi_files_list)[c(1, 3, 2, 4)] )
+
+# Additionally define the supplementary figure panel filename:
+figS3b_csv <- file.path(zenodo_upload_dir, "figure-S3b-data.csv")
+
+
 #### OncoPrints and cancer group legends ---------------------------------------
 
 for (type_iter in seq_along(data_input_list)) {
@@ -303,9 +356,10 @@ for (type_iter in seq_along(data_input_list)) {
     # Get vector of cancer groups to include from hard-coded legend order
     included_cancer_groups <- legend_ordering[[histology_shorthand]]
 
-    # Prep MAF object for plot
-    histology_maf_object <- prep_histology_maf(included_cancer_groups)
-
+    # Prep MAF object for plot and data create CSV for export
+    histology_maf_object_df <- prep_histology_maf(included_cancer_groups)
+    histology_maf_object <- histology_maf_object_df$maf_object # MUST define since used by `get_histology_goi()`
+    
     # Prepare the genes of interest list for this histology
     histology_goi <- get_histology_goi(goi_files_list[[histology]]$file)
 
@@ -369,6 +423,12 @@ for (type_iter in seq_along(data_input_list)) {
     create_legend(legend_df$cancer_group_display,
                   legend_df$cancer_group_hex,
                   legend_output_pdf)
+    
+    # Export CSV for Zenodo upload
+    readr::write_csv(
+      histology_maf_object_df$maf_df,
+      zenodo_csv_filenames[[histology]]
+    )
 
     #### Supplemental display item ####
     #### Other CNS only ###############
@@ -383,9 +443,10 @@ for (type_iter in seq_along(data_input_list)) {
         dplyr::pull(cancer_group)
 
       # Prep MAF object for plot
-      histology_maf_object <- prep_histology_maf(included_cancer_groups,
+      histology_maf_object_df <- prep_histology_maf(included_cancer_groups,
                                                  main = FALSE)
-
+      histology_maf_object <- histology_maf_object_df$maf_object 
+      
       # We need a new palette for the cancer groups but we only show samples
       # with alterations in our genes of interest list
       mutated_samples <- histology_maf_object@data %>%
@@ -450,6 +511,12 @@ for (type_iter in seq_along(data_input_list)) {
 
       dev.off()
 
+      # Export CSV for Zenodo upload
+      readr::write_csv(
+        histology_maf_object_df$maf_df,
+        figS3b_csv
+      )
+    
     }
 
   }
