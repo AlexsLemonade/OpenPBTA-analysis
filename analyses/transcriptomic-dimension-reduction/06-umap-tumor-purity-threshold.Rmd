@@ -60,6 +60,9 @@ umap_threshold_file <- file.path(
 
 # UMAP export file
 umap_pdf <- file.path("plots", "umap_tumor-purity-threshold.pdf")
+
+# output plot data CSV file for Zenodo upload
+figS7h_csv <- file.path(dim_red_dir, "results", "figure-S7h-data.csv")
 ```
 
 And read in and prepare the files:
@@ -184,6 +187,20 @@ ggsave(umap_pdf,
        height = 4)
 ```
 
+
+We will also export the underlying data for upload to Zenodo:
+```{r}
+umap_thresholded %>%
+  # reorder and subset columns
+  dplyr::select(Kids_First_Biospecimen_ID, 
+                UMAP1, 
+                UMAP2, 
+                broad_histology_display) %>%
+  # arrange
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  # export
+  readr::write_csv(figS7h_csv)
+```
 
 
 ## Conclusions
