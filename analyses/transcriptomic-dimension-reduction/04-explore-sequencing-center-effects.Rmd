@@ -63,7 +63,7 @@ umap_polya_file <- file.path(
 cancer_group_umap_pdf <- file.path("plots", "umap_cancer-group_sequencing-center.pdf")
 
 # Output file file for CSV of plot data slated for Zenodo upload
-figS7c_csv <- file.path("results", "figure-S7c-data.csv")
+figS7c_csv <- file.path(dim_red_dir, "results", "figure-S7c-data.csv")
 ```
 
 And read in and prepare the files:
