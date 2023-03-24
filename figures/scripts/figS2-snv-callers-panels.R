@@ -91,6 +91,9 @@ for (dataset in c("tcga", "pbta")) {
   mutect <- tbl(con, "mutect") %>%
     select(join_cols, "VAF")
 
+  # The `if` block below will ultimately create `all_caller_df` for either tcga/pbta.
+  # This data frame `all_caller_df` contains all input for correlation, VAF, and upset plots
+  # So in this `if` block, we'll also export this data frame for Zenodo upload
   if (dataset == "pbta") {
 
     # only PBTA has vardict
@@ -106,6 +109,12 @@ for (dataset in c("tcga", "pbta")) {
       as.data.frame() %>%
       rowid_to_column("index")
 
+    # Export
+    all_caller_df %>%
+      dplyr::select(Kids_First_Biospecimen_ID, everything()) %>%
+      dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+      readr::write_csv(figSabc_csv)
+
   } else if (dataset == "tcga") {
     # Need to `as.data.frame()` the TCGA ones since they are small enough to work with directly
     all_caller_df <- as.data.frame(strelka) %>%
@@ -117,19 +126,11 @@ for (dataset in c("tcga", "pbta")) {
       # We'll use this to keep track of the original rows/mutations
       tibble::rowid_to_column("index")
 
-  }
-
-  # This data frame `all_caller_df` contains all input for correlation, VAF, and upset plots, so export here:
-  if (dataset == "tcga") {
+    # Export
     all_caller_df %>%
       dplyr::select(Tumor_Sample_Barcode, everything()) %>%
       dplyr::arrange(Tumor_Sample_Barcode) %>%
       readr::write_csv(figS2def_csv)
-  } else  {
-    all_caller_df %>%
-      dplyr::select(Kids_First_Biospecimen_ID, everything()) %>%
-      dplyr::arrange(Kids_First_Biospecimen_ID) %>%
-      readr::write_csv(figSabc_csv)
   }
 
   ## Upset plots -------------------------------------------------------
