@@ -19,7 +19,7 @@ mkdir -p "${OUTDIR}" # make directory in case
 
 ######################### Copy CSV files #########################
 
-# Figure 3A and 3B: interaction plot
+# Figure 3A and 3B: interaction and cooccurrence plots
 cp "${ANALYSIS_DIR}/interaction-plots/results/figure-3a-data.csv" "${OUTDIR}/figure-3a-data.csv"
 cp "${ANALYSIS_DIR}/interaction-plots/results/figure-3b-data.csv" "${OUTDIR}/figure-3b-data.csv"
 
@@ -36,3 +36,6 @@ cp "${ANALYSIS_DIR}/tp53_nf1_score/results/tumor-purity-threshold/figure-S7f-dat
 
 # Figure S7H: Tumor purity thresholded UMAP
 cp "${ANALYSIS_DIR}/transcriptomic-dimension-reduction/results/figure-S7h-data.csv" "${OUTDIR}/figure-S7h-data.csv"
+
+# Figure S7I: Tumor purity thresholded quanTIseq results
+cp "${ANALYSIS_DIR}/immune-deconv/results/figure-S7i-data.csv" "${OUTDIR}/figure-S7i-data.csv"
