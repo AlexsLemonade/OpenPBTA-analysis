@@ -113,7 +113,7 @@ for (dataset in c("tcga", "pbta")) {
     all_caller_df %>%
       dplyr::select(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode, everything()) %>%
       dplyr::arrange(Kids_First_Biospecimen_ID) %>%
-      readr::write_csv(figSabc_csv)
+      readr::write_csv(figS2abc_csv)
 
   } else if (dataset == "tcga") {
     # Need to `as.data.frame()` the TCGA ones since they are small enough to work with directly
@@ -204,7 +204,11 @@ for (dataset in c("tcga", "pbta")) {
   ## VAF correlation plots --------------------------------------------
   print("Making VAF correlation plot")
   # Correlate VAFs across callers
-  detect_mat_df <- as.data.frame(detect_mat)
+  detect_mat_df <- as.data.frame(detect_mat) %>%
+    # reorder columns; everything() will cover vardict which is only in PBTA
+    select(VAF_lancet, VAF_mutect, VAF_strelka, everything())
+
+  # rename to remove VAF
   names(detect_mat_df) <- stringr::str_replace_all(
     names(detect_mat_df),
     "VAF_",
