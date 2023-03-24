@@ -26,6 +26,9 @@ cp "${ANALYSIS_DIR}/interaction-plots/results/figure-3b-data.csv" "${OUTDIR}/fig
 # Figure 3C: Chromothripsis scatterplot
 cp "${ANALYSIS_DIR}/chromothripsis/results/figure-3c-data.csv" "${OUTDIR}/figure-3c-data.csv"
 
+# Figure S3A: Violin plot of tumor purity across cancer groups
+cp "${ANALYSIS_DIR}/tumor-purity-exploration/results/figure-S3a-data.csv" "${OUTDIR}/figure-S3a-data.csv"
+
 # Figure S7C: Sequencing center UMAP
 cp "${ANALYSIS_DIR}/transcriptomic-dimension-reduction/results/figure-S7c-data.csv" "${OUTDIR}/figure-S7c-data.csv"
 
