@@ -135,16 +135,16 @@ prep_histology_maf <- function(included_cancer_groups,
   )
   
   # Create a data frame that can be used to export this information
-  join_cols <- c("Hugo_Symbol", "Tumor_Sample_Barcode", "Variant_Classification")
+  select_cols <- c("Hugo_Symbol", "Tumor_Sample_Barcode", "Variant_Type")
   
   maf_export_df <- histology_maf_df %>%
-    dplyr::left_join(
-      histology_fusion_df, 
-      by = c(join_cols, "Variant_Type")) %>%
-    dplyr::left_join(histology_cnv_df,
-                     by = join_cols) %>%
-    # Select columns of interest for export and rename to be compatib
-    dplyr::select(Hugo_Symbol, Variant_Classification, Tumor_Sample_Barcode) %>% 
+    dplyr::select(select_cols) %>%
+    dplyr::bind_rows(
+      dplyr::select(histology_fusion_df, select_cols)
+    ) %>%
+    dplyr::bind_rows(
+      dplyr::mutate(histology_cnv_df, Variant_Type = NA_character_) 
+    )  %>% 
     # Join with metadata information that is shown in the plot
     dplyr::inner_join(
       dplyr::select(histologies_df, 
@@ -158,8 +158,9 @@ prep_histology_maf <- function(included_cancer_groups,
                   Hugo_Symbol,
                   alteration = Variant_Classification,
                   dplyr::everything()) %>%
-    # arrange on sample_id
-    dplyr::arrange(sample_id) 
+    # arrange on sample_id, within groups of diagnoses
+    dplyr::group_by(cancer_group_display) %>%
+    dplyr::arrange(sample_id, .by_group = TRUE) 
   
   # Return the maf object and the df for export
   return(
@@ -327,7 +328,7 @@ goi_files_list <- list(
 #  which is looped over to create the oncoplots
 zenodo_csv_filenames <- file.path(
   zenodo_upload_dir, 
-  glue::glue("figure-2{letters[1:4]}-data.csv.gz")
+  glue::glue("figure-2{letters[1:4]}-data.csv")
 ) %>%
   # Specify order of manuscript figure 2:
   # https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/ae3eb012df4a5df26ee81fbd9dcc0a9ffbe12446/figures/pngs/figure2.png
@@ -363,6 +364,7 @@ for (type_iter in seq_along(data_input_list)) {
     
     # Prepare the genes of interest list for this histology
     histology_goi <- get_histology_goi(goi_files_list[[histology]]$file)
+    print(histology_goi)
 
     # Construct the output PDF name
     output_pdf <- paste(specimen_type,
@@ -425,9 +427,11 @@ for (type_iter in seq_along(data_input_list)) {
                   legend_df$cancer_group_hex,
                   legend_output_pdf)
     
-    # Export CSV for Zenodo upload
+    # Export CSV for Zenodo upload, after filtering to histology_goi genes
+    maf_export <- histology_maf_object_df$maf_df %>%
+      dplyr::filter(Hugo_Symbol %in% histology_goi)
     readr::write_csv(
-      histology_maf_object_df$maf_df,
+      maf_export,
       zenodo_csv_filenames[[histology]]
     )
 
@@ -513,8 +517,12 @@ for (type_iter in seq_along(data_input_list)) {
       dev.off()
 
       # Export CSV for Zenodo upload
+      # First, filter to GOI:
+      maf_export <- histology_maf_object_df$maf_df %>%
+        dplyr::filter(Hugo_Symbol %in% histology_goi)
+      
       readr::write_csv(
-        histology_maf_object_df$maf_df,
+        maf_export,
         figS3b_csv
       )
     
