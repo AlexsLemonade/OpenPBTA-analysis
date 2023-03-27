@@ -35,8 +35,8 @@
 #### Initial Set Up
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-script_root <-
-  file.path(root_dir, "analyses", "interaction-plots", "scripts")
+analysis_dir <- file.path(root_dir, "analyses", "interaction-plots")
+script_root <- file.path(analysis_dir, "scripts")
 
 # Load libraries:
 library(optparse)
@@ -196,6 +196,9 @@ if (exists("exclude_file")) {
   exclude_df <- data.table::fread(exclude_file, data.table = FALSE)
 }
 
+### Define output path for figure data CSV file
+# See: https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1692
+fig3b_csv <- file.path(analysis_dir, "results", "figure-3b-data.csv")
 
 
 
@@ -303,6 +306,7 @@ maf_filtered <- maf_df %>%
   )
 
 # count mutations by gene/sample pair
+# this df has columns: gene, sample, and mutations
 gene_sample_counts <- maf_filtered %>%
   dplyr::filter(Entrez_Gene_Id > 0, # remove unknowns
                 Hugo_Symbol %in% genes) %>% # include only desired genes
@@ -355,3 +359,9 @@ gene_disease_counts <- gene_sample_counts %>%
 
 readr::write_tsv(gene_disease_counts, disease_file)
 
+
+# Export CSV for Zenodo upload
+gene_sample_counts %>%
+  dplyr::select(Kids_First_Biospecimen_ID = sample, gene, mutations) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_csv(fig3b_csv)
