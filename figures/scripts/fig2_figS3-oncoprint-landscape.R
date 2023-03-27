@@ -125,7 +125,7 @@ prep_histology_maf <- function(included_cancer_groups,
   # Fusions
   histology_fusion_df <- fusion_df %>%
     dplyr::filter(Tumor_Sample_Barcode %in% included_sample_ids)
-  
+
   # MAF object
   histology_maf_object <- prepare_maf_object(
     maf_df = histology_maf_df,
@@ -133,35 +133,35 @@ prep_histology_maf <- function(included_cancer_groups,
     metadata = histologies_df_temp,
     fusion_df = histology_fusion_df
   )
-  
+
   # Create a data frame that can be used to export this information
   select_cols <- c("Hugo_Symbol", "Tumor_Sample_Barcode", "Variant_Type")
-  
+
   maf_export_df <- histology_maf_df %>%
     dplyr::select(select_cols) %>%
     dplyr::bind_rows(
       dplyr::select(histology_fusion_df, select_cols)
     ) %>%
     dplyr::bind_rows(
-      dplyr::mutate(histology_cnv_df, Variant_Type = NA_character_) 
-    )  %>% 
+      dplyr::mutate(histology_cnv_df, Variant_Type = NA_character_)
+    )  %>%
     # Join with metadata information that is shown in the plot
     dplyr::inner_join(
-      dplyr::select(histologies_df, 
-                    Tumor_Sample_Barcode, 
+      dplyr::select(histologies_df,
+                    Tumor_Sample_Barcode,
                     cancer_group_display,
-                    broad_histology_display, 
+                    broad_histology_display,
                     germline_sex_estimate)
     ) %>%
     # reorder columns and rename for consistency with plot and data release histologies file
-    dplyr::select(sample_id = Tumor_Sample_Barcode, 
+    dplyr::select(sample_id = Tumor_Sample_Barcode,
                   Hugo_Symbol,
                   alteration = Variant_Classification,
                   dplyr::everything()) %>%
     # arrange on sample_id, within groups of diagnoses
     dplyr::group_by(cancer_group_display) %>%
-    dplyr::arrange(sample_id, .by_group = TRUE) 
-  
+    dplyr::arrange(sample_id, .by_group = TRUE)
+
   # Return the maf object and the df for export
   return(
     list(
@@ -323,11 +323,11 @@ goi_files_list <- list(
   )
 )
 
-#### Define file names for Zenodo CSV export. 
-# These files are being defined here so code can make use of `goi_files_list` names, 
+#### Define file names for Zenodo CSV export.
+# These files are being defined here so code can make use of `goi_files_list` names,
 #  which is looped over to create the oncoplots
 zenodo_csv_filenames <- file.path(
-  zenodo_upload_dir, 
+  zenodo_upload_dir,
   glue::glue("figure-2{letters[1:4]}-data.csv")
 ) %>%
   # Specify order of manuscript figure 2:
@@ -361,10 +361,9 @@ for (type_iter in seq_along(data_input_list)) {
     # Prep MAF object for plot and data create CSV for export
     histology_maf_pair <- prep_histology_maf(included_cancer_groups)
     histology_maf_object <- histology_maf_pair$maf_object # MUST define since used by `get_histology_goi()`
-    
+
     # Prepare the genes of interest list for this histology
     histology_goi <- get_histology_goi(goi_files_list[[histology]]$file)
-    print(histology_goi)
 
     # Construct the output PDF name
     output_pdf <- paste(specimen_type,
@@ -426,7 +425,7 @@ for (type_iter in seq_along(data_input_list)) {
     create_legend(legend_df$cancer_group_display,
                   legend_df$cancer_group_hex,
                   legend_output_pdf)
-    
+
     # Export CSV for Zenodo upload, after filtering to histology_goi genes
     maf_export <- histology_maf_pair$maf_df %>%
       dplyr::filter(Hugo_Symbol %in% histology_goi)
@@ -450,8 +449,8 @@ for (type_iter in seq_along(data_input_list)) {
       # Prep MAF object for plot
       histology_maf_pair <- prep_histology_maf(included_cancer_groups,
                                                  main = FALSE)
-      histology_maf_object <- histology_maf_pair$maf_object 
-      
+      histology_maf_object <- histology_maf_pair$maf_object
+
       # We need a new palette for the cancer groups but we only show samples
       # with alterations in our genes of interest list
       mutated_samples <- histology_maf_object@data %>%
@@ -520,12 +519,12 @@ for (type_iter in seq_along(data_input_list)) {
       # First, filter to GOI:
       maf_export <- histology_maf_pair$maf_df %>%
         dplyr::filter(Hugo_Symbol %in% histology_goi)
-      
+
       readr::write_csv(
         maf_export,
         figS3b_csv
       )
-    
+
     }
 
   }
