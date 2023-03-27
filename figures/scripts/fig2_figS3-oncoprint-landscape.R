@@ -359,8 +359,8 @@ for (type_iter in seq_along(data_input_list)) {
     included_cancer_groups <- legend_ordering[[histology_shorthand]]
 
     # Prep MAF object for plot and data create CSV for export
-    histology_maf_object_df <- prep_histology_maf(included_cancer_groups)
-    histology_maf_object <- histology_maf_object_df$maf_object # MUST define since used by `get_histology_goi()`
+    histology_maf_pair <- prep_histology_maf(included_cancer_groups)
+    histology_maf_object <- histology_maf_pair$maf_object # MUST define since used by `get_histology_goi()`
     
     # Prepare the genes of interest list for this histology
     histology_goi <- get_histology_goi(goi_files_list[[histology]]$file)
@@ -428,7 +428,7 @@ for (type_iter in seq_along(data_input_list)) {
                   legend_output_pdf)
     
     # Export CSV for Zenodo upload, after filtering to histology_goi genes
-    maf_export <- histology_maf_object_df$maf_df %>%
+    maf_export <- histology_maf_pair$maf_df %>%
       dplyr::filter(Hugo_Symbol %in% histology_goi)
     readr::write_csv(
       maf_export,
@@ -448,9 +448,9 @@ for (type_iter in seq_along(data_input_list)) {
         dplyr::pull(cancer_group)
 
       # Prep MAF object for plot
-      histology_maf_object_df <- prep_histology_maf(included_cancer_groups,
+      histology_maf_pair <- prep_histology_maf(included_cancer_groups,
                                                  main = FALSE)
-      histology_maf_object <- histology_maf_object_df$maf_object 
+      histology_maf_object <- histology_maf_pair$maf_object 
       
       # We need a new palette for the cancer groups but we only show samples
       # with alterations in our genes of interest list
@@ -518,7 +518,7 @@ for (type_iter in seq_along(data_input_list)) {
 
       # Export CSV for Zenodo upload
       # First, filter to GOI:
-      maf_export <- histology_maf_object_df$maf_df %>%
+      maf_export <- histology_maf_pair$maf_df %>%
         dplyr::filter(Hugo_Symbol %in% histology_goi)
       
       readr::write_csv(
