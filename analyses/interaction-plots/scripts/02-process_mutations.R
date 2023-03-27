@@ -22,6 +22,8 @@
 #       (uses the most mutated n genes)
 # --out: Output file location
 # --disease_table: Location for disease table output
+# --write_zenodo_csv: Whether to write out figure data used in the manuscript 
+#        targeted for Zenodo upload 
 #
 #
 # Command line example:
@@ -158,6 +160,12 @@ option_list <- list(
     default = 0,
     help = "Minimum sequencing depth for called mutations",
     metavar = "numeric"
+  ),
+  make_option(
+    opt_str = "--write_zenodo_csv",
+    action = "store_true",
+    default = FALSE,
+    help = "When this flag is used, output tabular data associated with manuscript figures targeted for Zenodo upload to file."
   )
 )
 
@@ -195,12 +203,6 @@ if (exists("specimen_file")) {
 if (exists("exclude_file")) {
   exclude_df <- data.table::fread(exclude_file, data.table = FALSE)
 }
-
-### Define output path for figure data CSV file
-# See: https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1692
-fig3b_csv <- file.path(analysis_dir, "results", "figure-3b-data.csv")
-
-
 
 ### Reduce MAF to a smaller set of relevant columns
 
@@ -360,8 +362,14 @@ gene_disease_counts <- gene_sample_counts %>%
 readr::write_tsv(gene_disease_counts, disease_file)
 
 
-# Export CSV for Zenodo upload
-gene_sample_counts %>%
-  dplyr::select(Kids_First_Biospecimen_ID = sample, gene, mutations) %>%
-  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
-  readr::write_csv(fig3b_csv)
+# Prepare and export CSV for Zenodo upload, if specified
+if (opts$write_zenodo_csv) {
+  # define filename
+  fig3b_csv <- file.path(analysis_dir, "results", "figure-3b-data.csv")
+  
+  # process and write data
+  gene_sample_counts %>%
+    dplyr::select(Kids_First_Biospecimen_ID = sample, gene, mutations) %>%
+    dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+    readr::write_csv(fig3b_csv)
+}
