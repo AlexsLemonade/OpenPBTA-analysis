@@ -81,6 +81,9 @@ if (!(dir.exists(plots_dir))) {
 }
 rna_stranded_df_file <- file.path(results_dir, "rna_stranded_same-extraction.tsv")
 cancer_group_violin_file <- file.path(plots_dir, "cancer_group_tumor_fraction.pdf")
+
+# CSV file for Zenodo upload
+figS3a_csv <- file.path(results_dir, "figure-S3a-data.csv")
 ```
 
 
@@ -166,7 +169,14 @@ ggsave(cancer_group_violin_file,
        useDingbats = FALSE)
 ```
 
-
+We'll also export the data underlying this plot:
+```{r}
+tumor_palette_df %>%
+  # clean up columns for export
+  dplyr::select(Kids_First_Biospecimen_ID, tumor_fraction, cancer_group_display, cancer_group_hex) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_csv(figS3a_csv)
+```
 
 
 The following plot shows the distribution across sequencing centers, highlighting cancer groups:
