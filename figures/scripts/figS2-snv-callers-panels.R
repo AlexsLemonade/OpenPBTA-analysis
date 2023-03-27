@@ -104,10 +104,8 @@ for (dataset in c("tcga", "pbta")) {
     print("Joining database tables")
     source(file.path(snv_callers_dir, "util", "full_join_callers.R"))
 
-    # data frame and add column to keep track of the original rows/mutations
-    all_caller_df <- all_caller %>%
-      as.data.frame() %>%
-      rowid_to_column("index")
+    # data frame
+    all_caller_df <- as.data.frame(all_caller)
 
     # Export
     all_caller_df %>%
@@ -116,15 +114,13 @@ for (dataset in c("tcga", "pbta")) {
       readr::write_csv(figS2abc_csv)
 
   } else if (dataset == "tcga") {
-    # Need to `as.data.frame()` the TCGA ones since they are small enough to work with directly
+    # Can `as.data.frame()` the TCGA ones since they are small enough to work with directly
     all_caller_df <- as.data.frame(strelka) %>%
       dplyr::full_join(as.data.frame(mutect), by = join_cols,
                        suffix = c("_strelka", "_mutect")) %>%
       dplyr::full_join(as.data.frame(lancet),
                        by = join_cols) %>%
-      dplyr::rename(VAF_lancet = VAF) %>%
-      # We'll use this to keep track of the original rows/mutations
-      tibble::rowid_to_column("index")
+      dplyr::rename(VAF_lancet = VAF)
 
     # Export
     all_caller_df %>%
@@ -135,30 +131,27 @@ for (dataset in c("tcga", "pbta")) {
 
   ## Upset plots -------------------------------------------------------
   print("Preparing data for upset plot")
-  detect_mat <- all_caller_df %>%
-    # Bring over VAF columns and the index
+  vaf_mat <- all_caller_df %>%
+    # Bring over VAF columns
     select(starts_with("VAF_")) %>%
     as.matrix()
 
-  # Store the indices as dimnames
-  dimnames(detect_mat)[[1]] <- all_caller_df$index
+  # Turn into logical matrix
+  vaf_mat_logical <- !is.na(vaf_mat)
 
-  # Turn into detected or not
-  detect_mat_logical <- !is.na(vaf_mat)
-
-  # Plot from `detect_mat`
+  # Plot from `vaf_mat_logical`
   print("Making upset plot")
   # Set up a list how UpSetR wants it
-  detect_list <- list(
-    lancet = which(detect_mat_logical[, "VAF_lancet"]),
-    mutect = which(detect_mat_logical[, "VAF_mutect"]),
-    strelka = which(detect_mat_logical[, "VAF_strelka"])
+  upsetr_list <- list(
+    lancet = which(vaf_mat_logical[, "VAF_lancet"]),
+    mutect = which(vaf_mat_logical[, "VAF_mutect"]),
+    strelka = which(vaf_mat_logical[, "VAF_strelka"])
   )
 
   # add vardict if pbta, and define a shared plot_file
   if (dataset == "pbta") {
     # include vardict
-    detect_list[["vardict"]] <- which(detect_mat_logical[, "VAF_vardict"])
+    upsetr_list[["vardict"]] <- which(vaf_mat_logical[, "VAF_vardict"])
     plot_file <- pbta_upset_pdf
   } else if (dataset == "tcga") {
     plot_file <- tcga_upset_pdf
@@ -168,7 +161,7 @@ for (dataset in c("tcga", "pbta")) {
   # don't use the print() statement from original notebook - this adds a blank page in the DPF
   pdf(plot_file, width = 10, height = 5)
   UpSetR::upset(
-    UpSetR::fromList(detect_list),
+    UpSetR::fromList(upsetr_list),
     order.by = "freq",
     text.scale = 1.2,
     point.size = 4,
@@ -179,9 +172,9 @@ for (dataset in c("tcga", "pbta")) {
   ## VAF distribution plots ------------------------------------------
   print("Making VAF distribution plot")
   vaf_df <- all_caller_df %>%
-    select(index, starts_with("VAF_"), Variant_Classification) %>%
+    select(starts_with("VAF_"), Variant_Classification) %>%
     # Make long format
-    gather(key = "caller", value = "vaf", -index, -Variant_Classification) %>%
+    gather(key = "caller", value = "vaf", -Variant_Classification) %>%
     # Drop the `VAF_`
     mutate(caller = gsub("VAF_", "", caller)) %>%
     drop_na(vaf)
@@ -209,13 +202,13 @@ for (dataset in c("tcga", "pbta")) {
     select(VAF_lancet, VAF_mutect, VAF_strelka, everything())
 
   # rename to remove VAF
-  names(detect_mat_df) <- stringr::str_replace_all(
-    names(detect_mat_df),
+  names(vaf_mat_df) <- stringr::str_replace_all(
+    names(vaf_mat_df),
     "VAF_",
     ""
   )
 
-  cor_vaf <- GGally::ggpairs(detect_mat_df, aes(alpha = 0.05)) +
+  cor_vaf <- GGally::ggpairs(vaf_mat_df, aes(alpha = 0.05)) +
     ggpubr::theme_pubr() +
     cowplot::panel_border() +
     # slightly smaller text to avoid label overlap
