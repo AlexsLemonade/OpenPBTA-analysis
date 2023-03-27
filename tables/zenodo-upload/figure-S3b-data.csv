@@ -1,31 +1,31 @@
-sample_id,Hugo_Symbol,alteration,Variant_Type,cancer_group_display,broad_histology_display,germline_sex_estimate
-7316-1637,BRAF,NA,OTHER,Other,Neuronal and mixed neuronal-glial tumor,Female
-7316-1637,BRAF,NA,OTHER,Other,Neuronal and mixed neuronal-glial tumor,Female
-7316-1649,BRAF,NA,OTHER,Other,Other,Male
-7316-1649,BRAF,NA,OTHER,Other,Other,Male
-7316-1782,FGFR1,NA,OTHER,Other,Neuronal and mixed neuronal-glial tumor,Male
-7316-1782,FGFR1,NA,OTHER,Other,Neuronal and mixed neuronal-glial tumor,Male
-7316-1782,TACC1,NA,OTHER,Other,Neuronal and mixed neuronal-glial tumor,Male
-7316-1782,TACC1,NA,OTHER,Other,Neuronal and mixed neuronal-glial tumor,Male
-7316-2149,SETD2,NA,DEL,Other,Germ cell tumor,Male
-7316-2149,SETD2,NA,DEL,Other,Germ cell tumor,Male
-7316-2153,NF2,NA,SNP,Other,Mesenchymal non-meningothelial tumor,Male
-7316-2153,NF2,NA,SNP,Other,Mesenchymal non-meningothelial tumor,Male
-7316-2204,BRAF,NA,OTHER,Other,Neuronal and mixed neuronal-glial tumor,Male
-7316-2204,BRAF,NA,OTHER,Other,Neuronal and mixed neuronal-glial tumor,Male
-7316-2707,ERBB4,NA,OTHER,Other,Other,Male
-7316-2707,ERBB4,NA,OTHER,Other,Other,Male
-7316-3064,BRAF,NA,OTHER,Other,Neuronal and mixed neuronal-glial tumor,Male
-7316-3064,BRAF,NA,OTHER,Other,Neuronal and mixed neuronal-glial tumor,Male
-7316-3072,CTNNB1,NA,SNP,Other,Other,Male
-7316-3072,CTNNB1,NA,SNP,Other,Other,Male
-7316-349,CTNNB1,NA,SNP,Other,Other,Male
-7316-349,CTNNB1,NA,SNP,Other,Other,Male
-7316-3630,FGFR1,NA,SNP,Other,Neuronal and mixed neuronal-glial tumor,Male
-7316-3630,FGFR1,NA,SNP,Other,Neuronal and mixed neuronal-glial tumor,Male
-7316-3630,FGFR1,NA,SNP,Other,Neuronal and mixed neuronal-glial tumor,Male
-7316-3630,FGFR1,NA,SNP,Other,Neuronal and mixed neuronal-glial tumor,Male
-7316-681,BRAF,NA,SNP,Other,Neuronal and mixed neuronal-glial tumor,Male
-7316-681,BRAF,NA,SNP,Other,Neuronal and mixed neuronal-glial tumor,Male
-7316-76,TACC1,NA,SNP,Other,Other,Male
-7316-76,TACC1,NA,SNP,Other,Other,Male
+sample_id,Hugo_Symbol,alteration,cancer_group_display,broad_histology_display,germline_sex_estimate
+7316-1637,BRAF,Fusion,Other,Neuronal and mixed neuronal-glial tumor,Female
+7316-1637,BRAF,Fusion,Other,Neuronal and mixed neuronal-glial tumor,Female
+7316-1649,BRAF,Multi_Hit_Fusion,Other,Other,Male
+7316-1649,BRAF,Multi_Hit_Fusion,Other,Other,Male
+7316-1782,FGFR1,Fusion,Other,Neuronal and mixed neuronal-glial tumor,Male
+7316-1782,FGFR1,Fusion,Other,Neuronal and mixed neuronal-glial tumor,Male
+7316-1782,TACC1,Fusion,Other,Neuronal and mixed neuronal-glial tumor,Male
+7316-1782,TACC1,Fusion,Other,Neuronal and mixed neuronal-glial tumor,Male
+7316-2149,SETD2,3'UTR,Other,Germ cell tumor,Male
+7316-2149,SETD2,3'UTR,Other,Germ cell tumor,Male
+7316-2153,NF2,Nonsense_Mutation,Other,Mesenchymal non-meningothelial tumor,Male
+7316-2153,NF2,Nonsense_Mutation,Other,Mesenchymal non-meningothelial tumor,Male
+7316-2204,BRAF,Fusion,Other,Neuronal and mixed neuronal-glial tumor,Male
+7316-2204,BRAF,Fusion,Other,Neuronal and mixed neuronal-glial tumor,Male
+7316-2707,ERBB4,Fusion,Other,Other,Male
+7316-2707,ERBB4,Fusion,Other,Other,Male
+7316-3064,BRAF,Fusion,Other,Neuronal and mixed neuronal-glial tumor,Male
+7316-3064,BRAF,Fusion,Other,Neuronal and mixed neuronal-glial tumor,Male
+7316-3072,CTNNB1,Missense_Mutation,Other,Other,Male
+7316-3072,CTNNB1,Missense_Mutation,Other,Other,Male
+7316-349,CTNNB1,5'Flank,Other,Other,Male
+7316-349,CTNNB1,5'Flank,Other,Other,Male
+7316-3630,FGFR1,Missense_Mutation,Other,Neuronal and mixed neuronal-glial tumor,Male
+7316-3630,FGFR1,Missense_Mutation,Other,Neuronal and mixed neuronal-glial tumor,Male
+7316-3630,FGFR1,Missense_Mutation,Other,Neuronal and mixed neuronal-glial tumor,Male
+7316-3630,FGFR1,Missense_Mutation,Other,Neuronal and mixed neuronal-glial tumor,Male
+7316-681,BRAF,Missense_Mutation,Other,Neuronal and mixed neuronal-glial tumor,Male
+7316-681,BRAF,Missense_Mutation,Other,Neuronal and mixed neuronal-glial tumor,Male
+7316-76,TACC1,3'UTR,Other,Other,Male
+7316-76,TACC1,3'UTR,Other,Other,Male

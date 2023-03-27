@@ -135,7 +135,7 @@ prep_histology_maf <- function(included_cancer_groups,
   )
 
   # Create a data frame that can be used to export this information
-  select_cols <- c("Hugo_Symbol", "Tumor_Sample_Barcode", "Variant_Type")
+  select_cols <- c("Hugo_Symbol", "Tumor_Sample_Barcode", "Variant_Classification")
 
   maf_export_df <- histology_maf_df %>%
     dplyr::select(select_cols) %>%
@@ -143,7 +143,7 @@ prep_histology_maf <- function(included_cancer_groups,
       dplyr::select(histology_fusion_df, select_cols)
     ) %>%
     dplyr::bind_rows(
-      dplyr::mutate(histology_cnv_df, Variant_Type = NA_character_)
+      dplyr::mutate(histology_cnv_df, Variant_Classification = NA_character_)
     )  %>%
     # Join with metadata information that is shown in the plot
     dplyr::inner_join(
@@ -364,7 +364,7 @@ for (type_iter in seq_along(data_input_list)) {
 
     # Prepare the genes of interest list for this histology
     histology_goi <- get_histology_goi(goi_files_list[[histology]]$file)
-
+    
     # Construct the output PDF name
     output_pdf <- paste(specimen_type,
                         histology_shorthand,
