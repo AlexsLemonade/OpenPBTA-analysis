@@ -297,7 +297,12 @@ for (dataset in c("tcga", "pbta")) {
            width = 5, height = 6)
 
     # Export data csv
-    readr::write_csv(lancet, figS2g_csv)
+    lancet %>%
+      dplyr::select(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode,
+                    Kids_First_Participant_ID,
+                    experimental_strategy,
+                    VAF) %>%
+      readr::write_csv(figS2g_csv)
   }
 
 
