@@ -180,9 +180,9 @@ for (dataset in c("tcga", "pbta")) {
   ## VAF distribution plots ------------------------------------------
   print("Making VAF distribution plot")
   vaf_df <- all_caller_df %>%
-    select(starts_with("VAF_"), Variant_Classification) %>%
+    select(index, starts_with("VAF_"), Variant_Classification) %>%
     # Make long format
-    gather(key = "caller", value = "vaf", -Variant_Classification) %>%
+    gather(key = "caller", value = "vaf", -index, -Variant_Classification) %>%
     # Drop the `VAF_`
     mutate(caller = gsub("VAF_", "", caller)) %>%
     drop_na(vaf)
