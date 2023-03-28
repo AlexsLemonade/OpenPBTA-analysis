@@ -136,16 +136,16 @@ for (dataset in c("tcga", "pbta")) {
 
   ## Upset plots -------------------------------------------------------
   print("Preparing data for upset plot")
-  detect_mat <- all_caller_df %>%
+  vaf_mat <- all_caller_df %>%
     # Bring over VAF columns
     select(starts_with("VAF_")) %>%
     as.matrix()
 
   # Store the indices as dimnames
-  dimnames(detect_mat)[[1]] <- all_caller_df$index
+  dimnames(vaf_mat)[[1]] <- all_caller_df$index
 
   # Turn into logical matrix
-  detect_mat_logical <- !is.na(detect_mat)
+  detect_mat_logical <- !is.na(vaf_mat)
 
   # Plot from `vaf_mat_logical`
   print("Making upset plot")
@@ -205,7 +205,7 @@ for (dataset in c("tcga", "pbta")) {
   ## VAF correlation plots --------------------------------------------
   print("Making VAF correlation plot")
   # Correlate VAFs across callers
-  vaf_mat_df <- as.data.frame(detect_mat) %>%
+  vaf_mat_df <- as.data.frame(vaf_mat) %>%
     # reorder columns; everything() will cover vardict which is only in PBTA
     select(VAF_lancet, VAF_mutect, VAF_strelka, everything())
 
