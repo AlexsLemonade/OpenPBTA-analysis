@@ -144,7 +144,7 @@ for (dataset in c("tcga", "pbta")) {
   # Store the indices as dimnames
   dimnames(vaf_mat)[[1]] <- all_caller_df$index
 
-  # Turn into logical matrix
+  # Turn into logical matrix of detected or not (NA means the mutation was not detected)
   detect_mat_logical <- !is.na(vaf_mat)
 
   # Plot from `vaf_mat_logical`
