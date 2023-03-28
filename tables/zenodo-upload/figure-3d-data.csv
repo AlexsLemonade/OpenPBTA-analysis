@@ -1,30 +1,778 @@
-cancer_group_display,FALSE,TRUE,cancer_group_size,prop,labels
-Adenoma,3,0,3,0,0 / 3
-Atypical Teratoid Rhabdoid Tumor,22,4,26,0.15384615384615385,4 / 26
-Chordoma,2,1,3,0.3333333333333333,1 / 3
-Choroid plexus carcinoma,3,0,3,0,0 / 3
-Choroid plexus papilloma,12,0,12,0,0 / 12
-Craniopharyngioma,35,0,35,0,0 / 35
-Diffuse midline glioma,27,12,39,0.3076923076923077,12 / 39
-Dysembryoplastic neuroepithelial tumor,23,0,23,0,0 / 23
-Ependymoma,57,14,71,0.19718309859154928,14 / 71
-Ewing sarcoma,8,0,8,0,0 / 8
-Ganglioglioma,43,1,44,0.022727272727272728,1 / 44
-Germinoma,3,1,4,0.25,1 / 4
-Glial-neuronal tumor NOS,5,2,7,0.2857142857142857,2 / 7
-Langerhans Cell histiocytosis,4,0,4,0,0 / 4
-Medulloblastoma,78,16,94,0.1702127659574468,16 / 94
-Meningioma,17,5,22,0.22727272727272727,5 / 22
-Metastatic secondary tumors,2,1,3,0.3333333333333333,1 / 3
-Neurocytoma,3,0,3,0,0 / 3
-Neurofibroma Plexiform,12,0,12,0,0 / 12
-Other embryonal tumor,11,5,16,0.3125,5 / 16
-Other high-grade glioma,27,21,48,0.4375,21 / 48
-Other low-grade glioma,76,0,76,0,0 / 76
-Pilocytic astrocytoma,118,1,119,0.008403361344537815,1 / 119
-Pineoblastoma,4,0,4,0,0 / 4
-Pleomorphic xanthoastrocytoma,6,3,9,0.3333333333333333,3 / 9
-Sarcoma,1,3,4,0.75,3 / 4
-Schwannoma,14,0,14,0,0 / 14
-Subependymal Giant Cell Astrocytoma,11,0,11,0,0 / 11
-Teratoma,8,0,8,0,0 / 8
+Kids_First_Biospecimen_ID,chromothripsis_event_detected,cancer_group_display
+BS_007JTNB8,FALSE,Ependymoma
+BS_00TRPEQX,TRUE,Other high-grade glioma
+BS_01DQH017,FALSE,Ependymoma
+BS_01Y5F4PN,FALSE,Subependymal Giant Cell Astrocytoma
+BS_02W5H7K5,FALSE,Rosai-Dorfman disease
+BS_02YBZSBY,FALSE,Other high-grade glioma
+BS_03SSN1N2,FALSE,Other low-grade glioma
+BS_04B8X54S,FALSE,Pilocytic astrocytoma
+BS_05S9WJW6,FALSE,Medulloblastoma
+BS_06GEF6DB,FALSE,Medulloblastoma
+BS_06GPPDHZ,FALSE,Pilocytic astrocytoma
+BS_090GV72Q,FALSE,Schwannoma
+BS_0DKPGQWD,FALSE,Other low-grade glioma
+BS_0EN5R1AP,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_0FQKT8EY,TRUE,Atypical Teratoid Rhabdoid Tumor
+BS_0J5GC803,FALSE,Medulloblastoma
+BS_0J5MCBZV,TRUE,Medulloblastoma
+BS_0Q8G4N8H,FALSE,Choroid plexus papilloma
+BS_0QEBZX3M,FALSE,Other low-grade glioma
+BS_0RF0G9SQ,FALSE,Medulloblastoma
+BS_0S617SMM,FALSE,Pilocytic astrocytoma
+BS_0SFXXBQ5,FALSE,Craniopharyngioma
+BS_0W8AWY10,FALSE,Ependymoma
+BS_0XD58YD9,FALSE,Other low-grade glioma
+BS_0XR7GYAV,FALSE,Ependymoma
+BS_0YVR8Q4E,FALSE,Ganglioglioma
+BS_0ZR4XA69,FALSE,CNS Burkitt's lymphoma
+BS_10AD3EFX,FALSE,Other low-grade glioma
+BS_10HD18B8,FALSE,Teratoma
+BS_11322HD1,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_12ZB7R6A,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_154FP4ZQ,FALSE,Hemangioblastoma
+BS_164KRQJ0,FALSE,Medulloblastoma
+BS_16TBX6G5,FALSE,Pilocytic astrocytoma
+BS_17AXPP1Y,FALSE,Other low-grade glioma
+BS_17FVWMNV,FALSE,Atypical choroid plexus papilloma
+BS_185Q218S,FALSE,Medulloblastoma
+BS_18NCV5QZ,FALSE,Meningioma
+BS_19EJ85F8,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_1AZ8YJSH,TRUE,Ependymoma
+BS_1B4Q7CNG,FALSE,Pilocytic astrocytoma
+BS_1C4WCNQF,TRUE,Atypical Teratoid Rhabdoid Tumor
+BS_1EQGGHHQ,FALSE,Adenoma
+BS_1EYKDS0Z,FALSE,Choroid plexus papilloma
+BS_1GK2EMFY,FALSE,Pilocytic astrocytoma
+BS_1JMTTKMK,TRUE,Medulloblastoma
+BS_1MME7FBS,FALSE,Diffuse midline glioma
+BS_1RF75MK2,FALSE,Ganglioglioma
+BS_1S2BHJ8K,FALSE,Medulloblastoma
+BS_1S5V7WWC,FALSE,Diffuse midline glioma
+BS_1VMBA3BN,FALSE,Pilocytic astrocytoma
+BS_1YTHM07J,FALSE,Other high-grade glioma
+BS_20TBZG09,FALSE,Other high-grade glioma
+BS_20X874J5,TRUE,Medulloblastoma
+BS_230S192D,FALSE,Diffuse midline glioma
+BS_235QEYMQ,FALSE,Other low-grade glioma
+BS_23ZE42Q3,FALSE,Diffuse midline glioma
+BS_245CTSH9,FALSE,Pilocytic astrocytoma
+BS_25VZM81R,FALSE,Metastatic secondary tumors
+BS_2AWCKNB3,FALSE,Meningioma
+BS_2CD1XWVP,FALSE,NA
+BS_2CQ6K2JW,FALSE,Pilocytic astrocytoma
+BS_2E81A3FT,FALSE,Ependymoma
+BS_2F70R10Z,FALSE,Other low-grade glioma
+BS_2HNHCSNB,FALSE,Pilocytic astrocytoma
+BS_2J4FG4HV,TRUE,Medulloblastoma
+BS_2JDVY4F7,FALSE,Subependymal Giant Cell Astrocytoma
+BS_2NN6ME5A,FALSE,Other low-grade glioma
+BS_2P7MJGM7,TRUE,Ependymoma
+BS_2RJN5Z4W,FALSE,Pilocytic astrocytoma
+BS_2SG8JNMB,FALSE,Rosette-forming glioneuronal tumor
+BS_2VB8649B,FALSE,Other low-grade glioma
+BS_2VHFP7M8,FALSE,Craniopharyngioma
+BS_2VSN5YC5,FALSE,Craniopharyngioma
+BS_2W200YK5,FALSE,Meningioma
+BS_2Z9JQDPV,FALSE,Juvenile xanthogranuloma
+BS_30W38X77,FALSE,Other low-grade glioma
+BS_3108RS7G,FALSE,Other low-grade glioma
+BS_32HAVF6S,FALSE,Other low-grade glioma
+BS_32VQRFDS,FALSE,NA
+BS_354DTKHE,FALSE,Meningioma
+BS_36HCZ3KW,FALSE,Other low-grade glioma
+BS_376Q9QKG,FALSE,Ependymoma
+BS_39Q80NT3,FALSE,Medulloblastoma
+BS_3A0CJMRH,FALSE,Subependymal Giant Cell Astrocytoma
+BS_3AERRZQT,FALSE,Pilocytic astrocytoma
+BS_3BMGF6GN,TRUE,Other high-grade glioma
+BS_3C4YAMKJ,FALSE,Glial-neuronal tumor NOS
+BS_3DYRAZE7,FALSE,Other low-grade glioma
+BS_3J4T2YYW,FALSE,Medulloblastoma
+BS_3JE2T7AR,FALSE,Medulloblastoma
+BS_3NX3RBCX,TRUE,Other high-grade glioma
+BS_3P96RT4E,FALSE,Subependymal Giant Cell Astrocytoma
+BS_3QDRWJCF,FALSE,Pilocytic astrocytoma
+BS_3R0KN6Z4,FALSE,Other low-grade glioma
+BS_3VKW5988,TRUE,Diffuse midline glioma
+BS_3ZASRA3A,FALSE,NA
+BS_3ZMH8578,FALSE,Other low-grade glioma
+BS_40FX713C,FALSE,Medulloblastoma
+BS_40SJZGT2,FALSE,Other low-grade glioma
+BS_41SWNWAG,FALSE,Other low-grade glioma
+BS_41TD9XET,FALSE,Pilocytic astrocytoma
+BS_42A66SH4,FALSE,Langerhans Cell histiocytosis
+BS_45913DTA,FALSE,Other low-grade glioma
+BS_47454JJ6,FALSE,Other low-grade glioma
+BS_47X3VAM0,FALSE,Medulloblastoma
+BS_49JD1V3S,FALSE,Pilocytic astrocytoma
+BS_4DTX295Z,TRUE,Ganglioglioma
+BS_4DY83R02,TRUE,Other embryonal tumor
+BS_4G9Y2VC6,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_4GKH983E,TRUE,Glial-neuronal tumor NOS
+BS_4M0ZMCDC,FALSE,Pilocytic astrocytoma
+BS_4NPEMNAD,FALSE,Other embryonal tumor
+BS_4P25NNZD,FALSE,Pilocytic astrocytoma
+BS_4PAE19ZC,FALSE,Ependymoma
+BS_4QFSH7C4,FALSE,Other low-grade glioma
+BS_4RS1SC48,FALSE,Ganglioglioma
+BS_4T8J7JEP,FALSE,Meningioma
+BS_4XPPZTGG,FALSE,Craniopharyngioma
+BS_4Z6F1HJZ,FALSE,Myxoid spindle cell tumor
+BS_4ZKN0WGS,FALSE,Pilocytic astrocytoma
+BS_50XV7CTQ,FALSE,Pilocytic astrocytoma
+BS_53TV75NN,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_55N7KFHW,FALSE,Ependymoma
+BS_58X7SKJS,FALSE,Other high-grade glioma
+BS_59FR1NC2,FALSE,Choroid plexus carcinoma
+BS_5BMNK8SY,TRUE,Medulloblastoma
+BS_5BNV7MCF,FALSE,Pilocytic astrocytoma
+BS_5D24XV4T,FALSE,Ependymoma
+BS_5KFAEMQJ,TRUE,Medulloblastoma
+BS_5KK9P7XD,FALSE,NA
+BS_5NAKYS1S,FALSE,Pilocytic astrocytoma
+BS_5R0HHQ1Y,FALSE,Other low-grade glioma
+BS_5RD8KEED,FALSE,Teratoma
+BS_5V2FBYQG,FALSE,Ganglioglioma
+BS_5V2XCW17,FALSE,Ependymoma
+BS_5WK2KXYW,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_5Y2Q63Y4,FALSE,Subependymal Giant Cell Astrocytoma
+BS_5Z4XQC9X,FALSE,Other low-grade glioma
+BS_5ZRZC3ZM,FALSE,Ependymoma
+BS_62XRDTM6,FALSE,Ependymoma
+BS_69VS8PS1,TRUE,Other embryonal tumor
+BS_6FV7BDE3,FALSE,Pilocytic astrocytoma
+BS_6FYTRKJJ,FALSE,Ependymoma
+BS_6GN1FGTB,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_6GTKRGNK,FALSE,Ganglioglioma
+BS_6GV08HTE,FALSE,Pilocytic astrocytoma
+BS_6HE8H9HY,FALSE,Meningioma
+BS_6KEYD1S4,FALSE,NA
+BS_6NPSZJ4C,FALSE,Ependymoma
+BS_6Q9PMNWY,FALSE,Pilocytic astrocytoma
+BS_6SA5B35V,FALSE,Neurocytoma
+BS_6T87HSPX,TRUE,Ependymoma
+BS_6TMPZKSZ,FALSE,Other embryonal tumor
+BS_6X3Z0AVR,FALSE,Pilocytic astrocytoma
+BS_6XHDR1WS,TRUE,Pilocytic astrocytoma
+BS_6XP91JM2,FALSE,Pilocytic astrocytoma
+BS_6Y7FX7QJ,FALSE,Ganglioglioma
+BS_6Z4WHYDG,FALSE,Ependymoma
+BS_6ZP2KRPW,TRUE,Ependymoma
+BS_70FKSKM9,FALSE,Medulloblastoma
+BS_71HPXFE7,FALSE,Teratoma
+BS_742CDKAS,FALSE,Other high-grade glioma
+BS_74A1TB03,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_75VHXMZN,FALSE,Ependymoma
+BS_78TQS4Y3,FALSE,Other low-grade glioma
+BS_797V83YM,FALSE,Ganglioglioma
+BS_79NQJZ09,FALSE,Other high-grade glioma
+BS_7BNQBB26,FALSE,NA
+BS_7F07M7JG,FALSE,Medulloblastoma
+BS_7GKF6M85,FALSE,Diffuse midline glioma
+BS_7HC4W4SA,FALSE,Other low-grade glioma
+BS_7M5272WN,FALSE,Pilocytic astrocytoma
+BS_7M6F9GQD,FALSE,Medulloblastoma
+BS_7PF3C1P7,FALSE,Diffuse midline glioma
+BS_7PKPNFFK,FALSE,Medulloblastoma
+BS_7RQCH5Y7,FALSE,Ependymoma
+BS_7Y5E5KQW,FALSE,Langerhans Cell histiocytosis
+BS_80078QDG,TRUE,Other high-grade glioma
+BS_80X7AVCP,FALSE,Other embryonal tumor
+BS_8226HD4X,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_823V5X6Z,TRUE,Diffuse midline glioma
+BS_83MSWR59,FALSE,Ependymoma
+BS_84AQCZE4,FALSE,Meningioma
+BS_859AV1DB,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_85Q5P8GF,FALSE,Diffuse midline glioma
+BS_85Y70BHE,FALSE,Adenoma
+BS_872Q3FK2,FALSE,Diffuse midline glioma
+BS_886M7JMG,FALSE,Arteriovenous malformation
+BS_89RCN9PF,FALSE,Pilocytic astrocytoma
+BS_8B1YF57H,FALSE,Other low-grade glioma
+BS_8BD8WD38,FALSE,Medulloblastoma
+BS_8BM1WTGR,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_8BS10XE2,FALSE,Choroid plexus papilloma
+BS_8D52JK1Q,TRUE,Melanocytic tumor
+BS_8EB1S8MK,FALSE,Pilocytic astrocytoma
+BS_8FSJDG2T,FALSE,Other high-grade glioma
+BS_8H2XX24V,FALSE,Medulloblastoma
+BS_8JFMP1T1,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_8Q8CAY84,FALSE,NA
+BS_8SETK1J4,TRUE,Ependymoma
+BS_8SYN7GXG,TRUE,Other high-grade glioma
+BS_8TFBNHT0,FALSE,Pilocytic astrocytoma
+BS_8W0FNBWF,FALSE,Pilocytic astrocytoma
+BS_8WJR4AA3,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_8YQGSMDK,FALSE,Medulloblastoma
+BS_922YMFYK,FALSE,Neurofibroma Plexiform
+BS_928HWFFM,TRUE,Other high-grade glioma
+BS_93B38HPS,FALSE,Ganglioglioma
+BS_947CK40E,FALSE,NA
+BS_94AP61Q5,FALSE,Ganglioglioma
+BS_95RRF4NE,FALSE,Other low-grade glioma
+BS_969K7ZM1,FALSE,Craniopharyngioma
+BS_96S0VQBN,FALSE,Other high-grade glioma
+BS_99PPRCW4,FALSE,Ependymoma
+BS_9BF58P80,FALSE,Medulloblastoma
+BS_9BGCH82S,TRUE,Glial-neuronal tumor NOS
+BS_9CMJ3QF6,FALSE,Medulloblastoma
+BS_9D39MFHT,FALSE,Medulloblastoma
+BS_9E632VPJ,TRUE,Ependymoma
+BS_9E6Q11G2,FALSE,Other low-grade glioma
+BS_9F2J6VS1,FALSE,Craniopharyngioma
+BS_9G7ETYHR,FALSE,Medulloblastoma
+BS_9GJHMA3J,FALSE,Ependymoma
+BS_9GSWPZ44,FALSE,Pilocytic astrocytoma
+BS_9HDPJT21,FALSE,Pilocytic astrocytoma
+BS_9HEMB7RK,FALSE,Ganglioglioma
+BS_9JVGXA2W,FALSE,Ependymoma
+BS_9KDA3HG6,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_9M49SGAQ,FALSE,Ganglioglioma
+BS_9NF39QAW,FALSE,Other low-grade glioma
+BS_9PQPZPGM,FALSE,Ependymoma
+BS_9QMVZ4C0,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_9R82A3VT,FALSE,NA
+BS_9W6FK6X4,FALSE,Ganglioglioma
+BS_9X9E86DY,FALSE,Glial-neuronal tumor NOS
+BS_9YPJANGX,FALSE,Medulloblastoma
+BS_9ZFXXJPK,FALSE,Ependymoma
+BS_A3EV6FXK,FALSE,Ependymoma
+BS_A4KYP5H0,FALSE,Medulloblastoma
+BS_A70G7S2W,FALSE,Metastatic secondary tumors
+BS_ABENB1H2,FALSE,Pilocytic astrocytoma
+BS_ABZ3BK38,FALSE,Other high-grade glioma
+BS_ACE6QKVF,FALSE,Craniopharyngioma
+BS_ACTR13BQ,FALSE,Craniopharyngioma
+BS_AEMRNSQX,FALSE,Pilocytic astrocytoma
+BS_AG0BZN6F,FALSE,Medulloblastoma
+BS_AGAW7M7W,FALSE,Meningioma
+BS_AGD2ATY1,FALSE,Ependymoma
+BS_AGGH3QGS,FALSE,Pilocytic astrocytoma
+BS_AJ0T7DJ7,FALSE,Pilocytic astrocytoma
+BS_AJFG2QDD,FALSE,Craniopharyngioma
+BS_APAQ2X2S,FALSE,Pilocytic astrocytoma
+BS_AQECMDPP,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_AQQY8HMR,FALSE,Craniopharyngioma
+BS_AR2BH0Z4,FALSE,Ganglioglioma
+BS_ARE4EM81,FALSE,Other low-grade glioma
+BS_ASXY97FK,FALSE,Medulloblastoma
+BS_AVS4DSZW,FALSE,Ependymoma
+BS_AWDQEKK1,FALSE,Sarcoma
+BS_AXM96K20,FALSE,Other low-grade glioma
+BS_AXW0XBH8,FALSE,Ganglioglioma
+BS_AYPBAHJ6,FALSE,Diffuse midline glioma
+BS_B1X2SB4P,FALSE,Subependymal Giant Cell Astrocytoma
+BS_B3RH9V17,FALSE,Medulloblastoma
+BS_B4DY7ET3,FALSE,Ependymoma
+BS_B4P1NP87,FALSE,Ependymoma
+BS_B558FJXC,FALSE,Ganglioglioma
+BS_B6K0N6HS,TRUE,Pleomorphic xanthoastrocytoma
+BS_B6KCJF2B,FALSE,Ganglioglioma
+BS_B73JK7T1,TRUE,Other embryonal tumor
+BS_B91XGSA5,FALSE,Pineoblastoma
+BS_B94G701Q,FALSE,Ganglioglioma
+BS_B9QP40ER,FALSE,Diffuse midline glioma
+BS_BA0M71QZ,TRUE,Meningioma
+BS_BAVWP5JG,FALSE,Meningioma
+BS_BBCM52QE,FALSE,Ependymoma
+BS_BBHFKBE7,FALSE,Ependymoma
+BS_BD4RQ1G0,FALSE,Schwannoma
+BS_BFDEZK1C,FALSE,Diffuse midline glioma
+BS_BM95DGCQ,FALSE,NA
+BS_BMHYK93N,FALSE,Neurocytoma
+BS_BNFCXVYZ,FALSE,Pilocytic astrocytoma
+BS_BR1X3R68,FALSE,Adenoma
+BS_BS5X4H0Y,FALSE,NA
+BS_BSM3ZHW4,FALSE,Ependymoma
+BS_BVD7PWP5,FALSE,Choroid plexus cyst
+BS_BWZTMWTM,TRUE,Chordoma
+BS_BX8AR74E,FALSE,Medulloblastoma
+BS_BYJDRXMK,FALSE,Teratoma
+BS_BZ4GKDP4,FALSE,Craniopharyngioma
+BS_BZWM455T,FALSE,Ganglioglioma
+BS_C0YDDQKB,FALSE,NA
+BS_C19DFVR5,TRUE,Diffuse midline glioma
+BS_C1RRDNF5,TRUE,Pleomorphic xanthoastrocytoma
+BS_C3KDA5ZC,FALSE,NA
+BS_C3X4AEK5,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_C5RDMCCS,FALSE,Ganglioglioma
+BS_C6GBYR17,FALSE,Pilocytic astrocytoma
+BS_CDKC1E2B,FALSE,Neurofibroma Plexiform
+BS_CFEWVDG1,FALSE,NA
+BS_CFPWSZB5,FALSE,Ependymoma
+BS_CGCNC41M,FALSE,Pilocytic astrocytoma
+BS_CGXTFM67,FALSE,Diffuse midline glioma
+BS_CHAFNK64,FALSE,Craniopharyngioma
+BS_CK7CPM73,FALSE,Other embryonal tumor
+BS_CKY2TTXG,TRUE,Atypical Teratoid Rhabdoid Tumor
+BS_CN7PB0DN,FALSE,Craniopharyngioma
+BS_CP435MAC,FALSE,Pilocytic astrocytoma
+BS_CPYV7AHD,FALSE,Pleomorphic xanthoastrocytoma
+BS_CPZZR2R7,FALSE,Atypical choroid plexus papilloma
+BS_CQ8C6X4X,FALSE,Pilocytic astrocytoma
+BS_CRKBDAYZ,FALSE,Schwannoma
+BS_CSY11X7E,FALSE,Medulloblastoma
+BS_CWQ35N2K,FALSE,NA
+BS_CXCKHP3Z,FALSE,Choroid plexus papilloma
+BS_CXDKK6KS,FALSE,Craniopharyngioma
+BS_CXN0498B,FALSE,NA
+BS_D09VWF8H,FALSE,Other low-grade glioma
+BS_D2BZ25FW,FALSE,Pilocytic astrocytoma
+BS_D3ZV6MMY,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_D59VEERR,FALSE,Ganglioglioma
+BS_D6XHKZDZ,FALSE,Other high-grade glioma
+BS_DAEM3WRX,FALSE,Schwannoma
+BS_DC7XYYG8,FALSE,Subependymal Giant Cell Astrocytoma
+BS_DGG7YE8R,FALSE,Medulloblastoma
+BS_DH86PF5A,FALSE,Diffuse midline glioma
+BS_DJEVCH34,FALSE,Medulloblastoma
+BS_DMBNB0EP,FALSE,Craniopharyngioma
+BS_DT92H1MJ,FALSE,Other low-grade glioma
+BS_DVQYQSVW,FALSE,Medulloblastoma
+BS_E0AAK0V0,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_E0S2Y0TS,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_E2RXQ3JW,FALSE,Pilocytic astrocytoma
+BS_E42SSQGJ,FALSE,Other high-grade glioma
+BS_E5B2YZJH,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_E5H6CFYT,FALSE,Ganglioglioma
+BS_E7HEQZ1K,FALSE,Other low-grade glioma
+BS_E8MC6R2K,FALSE,Neurofibroma Plexiform
+BS_E8SJ36A6,FALSE,Meningioma
+BS_E9ATGWME,FALSE,Pilocytic astrocytoma
+BS_EDZCAHR2,TRUE,Meningioma
+BS_EFBBP9H3,FALSE,Ependymoma
+BS_EHBH0NYX,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_EJ1H9PZY,FALSE,Ependymoma
+BS_EJV0N3BX,TRUE,Other high-grade glioma
+BS_EKR4NSNW,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_EP25TTAG,TRUE,Other high-grade glioma
+BS_EPM623G4,FALSE,Other high-grade glioma
+BS_EQE19CB0,FALSE,Pilocytic astrocytoma
+BS_ETTZM63Y,FALSE,Ganglioglioma
+BS_EXTEGB51,FALSE,Neurofibroma Plexiform
+BS_F064HMTP,FALSE,Other high-grade glioma
+BS_F0GNWEJJ,TRUE,Other embryonal tumor
+BS_F1B71HTZ,FALSE,Pilocytic astrocytoma
+BS_F48RA7QF,FALSE,Other low-grade glioma
+BS_F4D169Q7,FALSE,Pilocytic astrocytoma
+BS_F5641KTR,FALSE,Meningioma
+BS_F5KRHGKC,FALSE,Germinoma
+BS_F5V8CWXT,FALSE,Ependymoma
+BS_F7KYPE79,FALSE,Craniopharyngioma
+BS_F8K4VQMF,FALSE,Other high-grade glioma
+BS_F8KR1QWE,TRUE,Medulloblastoma
+BS_F969DNHD,FALSE,Pilocytic astrocytoma
+BS_F9ZTZ4YS,FALSE,Subependymal Giant Cell Astrocytoma
+BS_FBJ516WW,FALSE,Chordoma
+BS_FBP5NZNR,FALSE,Schwannoma
+BS_FCXEAPJ1,FALSE,Schwannoma
+BS_FFD25TTK,FALSE,Pilocytic astrocytoma
+BS_FG649AWK,FALSE,NA
+BS_FHE6Z73G,FALSE,Ganglioglioma
+BS_FHFVCQ41,FALSE,Pilocytic astrocytoma
+BS_FK3B5SDH,FALSE,Diffuse midline glioma
+BS_FKQ7F6D1,TRUE,Diffuse midline glioma
+BS_FNF1TCSW,FALSE,Ganglioglioma
+BS_FNM4BB83,FALSE,Ewing sarcoma
+BS_FQ2ZBMPA,FALSE,Pilocytic astrocytoma
+BS_FT95T4YP,FALSE,Medulloblastoma
+BS_FVYBGMG1,FALSE,Medulloblastoma
+BS_FWCKP4X1,FALSE,Craniopharyngioma
+BS_FXDY881S,TRUE,Germinoma
+BS_FYJMNRGK,FALSE,Teratoma
+BS_G12HNXYX,FALSE,Medulloblastoma
+BS_G16NM5WJ,FALSE,Ependymoma
+BS_G2016BE5,FALSE,Pilocytic astrocytoma
+BS_G4EX0H98,FALSE,Medulloblastoma
+BS_G61CN2V0,FALSE,Ganglioglioma
+BS_G9MQM1KK,TRUE,Other high-grade glioma
+BS_GAA327FP,FALSE,Pilocytic astrocytoma
+BS_GCQEB05M,FALSE,Pilocytic astrocytoma
+BS_GDPZN3SD,FALSE,Pilocytic astrocytoma
+BS_GFS9JEE6,FALSE,Pilocytic astrocytoma
+BS_GKN0B47F,FALSE,Pilocytic astrocytoma
+BS_GKPVZXYP,TRUE,Diffuse midline glioma
+BS_GMQZNQH8,FALSE,Ependymoma
+BS_GRECE8Q9,FALSE,Choroid plexus papilloma
+BS_GRS3T427,FALSE,Other low-grade glioma
+BS_GS9JCK55,FALSE,Ganglioglioma
+BS_GTAJFTTR,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_GWPJKM7G,FALSE,Rhabdomyosarcoma
+BS_GXACEYKB,FALSE,Ganglioglioma
+BS_H0638GZT,FALSE,Diffuse midline glioma
+BS_H1K33JVK,FALSE,Medulloblastoma
+BS_H1MNXNHB,FALSE,Pineoblastoma
+BS_H2K7XX4X,FALSE,Medulloblastoma
+BS_H50HR85Y,FALSE,Other low-grade glioma
+BS_H83DTMT2,FALSE,NA
+BS_H8E4K1DT,TRUE,Ependymoma
+BS_H8MAKDRB,FALSE,Ependymoma
+BS_H8NWA41N,FALSE,Diffuse midline glioma
+BS_HBAKYKQM,FALSE,Ependymoma
+BS_HC4T1EEP,FALSE,Choroid plexus papilloma
+BS_HGP0PV0D,FALSE,Meningioma
+BS_HJ95JNFN,FALSE,Other high-grade glioma
+BS_HM5N78GV,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_HN8DE43A,FALSE,Choroid plexus carcinoma
+BS_HNE6BPMH,FALSE,Mixed germ cell tumor
+BS_HPMX6CT4,FALSE,Medulloblastoma
+BS_HQFNQHVW,FALSE,Ependymoma
+BS_HSYF7G2D,FALSE,Medulloblastoma
+BS_HTGDSPQA,FALSE,Ganglioglioma
+BS_HW4J7JM8,FALSE,Other low-grade glioma
+BS_HYGK88B0,FALSE,Craniopharyngioma
+BS_HZHEF797,FALSE,Medulloblastoma
+BS_HZNKSQ17,FALSE,Medulloblastoma
+BS_HZV4WDTB,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_J037K4BM,FALSE,Pilocytic astrocytoma
+BS_J33YVP27,FALSE,Ependymoma
+BS_J4E9SW51,FALSE,Pleomorphic xanthoastrocytoma
+BS_J5J0EA7Y,FALSE,Other low-grade glioma
+BS_J6VRW67C,FALSE,Pilocytic astrocytoma
+BS_JB3J82ZK,TRUE,Other high-grade glioma
+BS_JBHQ6G3J,FALSE,Ganglioglioma
+BS_JBY9S5D4,FALSE,Glial-neuronal tumor NOS
+BS_JC2187NA,FALSE,Ependymoma
+BS_JDMM2XG4,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_JDS0SYST,FALSE,Medulloblastoma
+BS_JHGFJR3D,FALSE,Pleomorphic xanthoastrocytoma
+BS_JJNSP29S,FALSE,Pilocytic astrocytoma
+BS_JJWC13GG,FALSE,Other low-grade glioma
+BS_JJZPY3BG,FALSE,Pilocytic astrocytoma
+BS_JK5GTHVG,TRUE,Medulloblastoma
+BS_JM979K1M,FALSE,Germinoma
+BS_JNS7Q60A,FALSE,Meningioma
+BS_JQNF0FQP,FALSE,Ganglioglioma
+BS_JRFVST47,TRUE,Diffuse midline glioma
+BS_JSMAT49K,FALSE,Other low-grade glioma
+BS_JSNJZERZ,FALSE,Medulloblastoma
+BS_JTBM5TSE,FALSE,Chordoma
+BS_JVTQD8HH,FALSE,Schwannoma
+BS_JX1PK0VW,FALSE,Ewing sarcoma
+BS_K049HVGR,FALSE,Other low-grade glioma
+BS_K07KNTFY,FALSE,Other embryonal tumor
+BS_K3PPH522,FALSE,Schwannoma
+BS_K3Y06EKR,FALSE,Medulloblastoma
+BS_K3YT05M7,FALSE,Pilocytic astrocytoma
+BS_K6A9Z04J,TRUE,Ependymoma
+BS_K6BMXTW5,FALSE,Pilocytic astrocytoma
+BS_K89V7JNJ,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_KAD49R68,FALSE,Diffuse midline glioma
+BS_KAZENYZE,FALSE,Medulloblastoma
+BS_KB9GJDCS,FALSE,Ependymoma
+BS_KBPBCWA0,FALSE,Other embryonal tumor
+BS_KCN7NG92,FALSE,Other low-grade glioma
+BS_KFRBXXV7,FALSE,Choroid plexus papilloma
+BS_KG1YMTA4,FALSE,Pilocytic astrocytoma
+BS_KH0NFCWF,FALSE,Pilocytic astrocytoma
+BS_KHSYAB3J,TRUE,Diffuse midline glioma
+BS_KJQXZ8GK,FALSE,Other embryonal tumor
+BS_KKWQW01N,FALSE,Pilocytic astrocytoma
+BS_KM878Y43,FALSE,Other low-grade glioma
+BS_KP0YNTAK,TRUE,Other embryonal tumor
+BS_KPWRDRFP,FALSE,Ewing sarcoma
+BS_KRYYDC2X,FALSE,Medulloblastoma
+BS_KSHETTQC,FALSE,Other high-grade glioma
+BS_KSRYKCDE,FALSE,Neurofibroma Plexiform
+BS_KT9H4B1N,FALSE,Other low-grade glioma
+BS_KV3XF9WV,FALSE,Neurofibroma Plexiform
+BS_KVV3G6NP,FALSE,Pilocytic astrocytoma
+BS_KVYCH9PB,FALSE,Ganglioglioma
+BS_KXGJ1HMG,TRUE,Other high-grade glioma
+BS_KYG3H6C6,FALSE,Other low-grade glioma
+BS_KYPMZZSY,FALSE,Diffuse midline glioma
+BS_KYPZRS4S,FALSE,Other low-grade glioma
+BS_M0B42FPR,FALSE,Other high-grade glioma
+BS_M16CDR44,FALSE,Pineoblastoma
+BS_M18CDDGK,FALSE,Meningioma
+BS_M1TDS9CT,FALSE,Choroid plexus papilloma
+BS_M1YHV93N,FALSE,NA
+BS_M2MSWKBC,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_M4E4H6NG,TRUE,Other high-grade glioma
+BS_M9YZK3SP,FALSE,NA
+BS_MAVSJH2Y,FALSE,Ependymoma
+BS_MDVMT75X,FALSE,Schwannoma
+BS_MEPW36WF,FALSE,Medulloblastoma
+BS_MFTAVQ5C,FALSE,Ependymoma
+BS_MGBEMNYR,FALSE,Ependymoma
+BS_MGY2V5N4,FALSE,Glial-neuronal tumor NOS
+BS_MHT5C2AP,FALSE,Langerhans Cell histiocytosis
+BS_MJJZJMTK,FALSE,Other low-grade glioma
+BS_MRX1SPFB,FALSE,Teratoma
+BS_MS87PMR7,FALSE,NA
+BS_MSB1RDAJ,FALSE,Other high-grade glioma
+BS_MSGYZ69T,FALSE,Craniopharyngioma
+BS_MT5ZSRG4,FALSE,Other low-grade glioma
+BS_MVC1NCZX,TRUE,Ependymoma
+BS_MW63FCZC,FALSE,Other high-grade glioma
+BS_MW6YMRBJ,FALSE,Pilocytic astrocytoma
+BS_MW74GF38,FALSE,Meningioma
+BS_MWKJF6XH,FALSE,Other low-grade glioma
+BS_MWXDJFWW,FALSE,Craniopharyngioma
+BS_MWZCP1XW,FALSE,Ewing sarcoma
+BS_MZJJRDZF,FALSE,Pilocytic astrocytoma
+BS_N0Z6V2YG,FALSE,Other low-grade glioma
+BS_N2JD3VX6,FALSE,Ganglioglioma
+BS_N4B3WB8W,FALSE,Medulloblastoma
+BS_N5VYY66W,FALSE,NA
+BS_N8D9FH6M,FALSE,Pilocytic astrocytoma
+BS_N8WXTFN4,FALSE,Ganglioglioma
+BS_N9N1X78X,FALSE,Other low-grade glioma
+BS_NASADC3P,FALSE,Schwannoma
+BS_NB509KST,FALSE,Ganglioglioma
+BS_NDSWS9TS,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_NEX92KQH,FALSE,Pilocytic astrocytoma
+BS_NFT9VHMJ,FALSE,Medulloblastoma
+BS_NG0CR0EP,FALSE,Ganglioglioma
+BS_NHMPQ8Q1,FALSE,Other embryonal tumor
+BS_NHRNZRQV,FALSE,Pilocytic astrocytoma
+BS_NJFK43N3,FALSE,Other high-grade glioma
+BS_NJV6A585,FALSE,Neurofibroma Plexiform
+BS_NMJPX8VQ,FALSE,Craniopharyngioma
+BS_NNFDFAFM,TRUE,Diffuse midline glioma
+BS_NS8G0465,FALSE,Schwannoma
+BS_NTXHP7QR,FALSE,Craniopharyngioma
+BS_NWYBD9CA,TRUE,Ependymoma
+BS_NXZSD2KK,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_NZRJE7QA,FALSE,Pilocytic astrocytoma
+BS_P0KQFXNC,FALSE,Pilocytic astrocytoma
+BS_P36C0ABE,FALSE,Pilocytic astrocytoma
+BS_P3EVK3C2,FALSE,Other low-grade glioma
+BS_P3KD5EQG,FALSE,Pilocytic astrocytoma
+BS_P3P96WCD,FALSE,Medulloblastoma
+BS_P3PF53V8,TRUE,Other high-grade glioma
+BS_P4K6WK9Y,TRUE,Diffuse midline glioma
+BS_P6NWC51S,FALSE,Choroid plexus papilloma
+BS_P7CY04E7,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_P8WN8XEQ,TRUE,Other high-grade glioma
+BS_P99S85CY,FALSE,Medulloblastoma
+BS_PC2YQ4F6,FALSE,Other low-grade glioma
+BS_PDRNE606,FALSE,Neurofibroma Plexiform
+BS_PEDGRK8S,FALSE,Other low-grade glioma
+BS_PEFRDKDZ,FALSE,Pilocytic astrocytoma
+BS_PFXDWV9R,TRUE,Medulloblastoma
+BS_PJ08ZW9A,FALSE,Medulloblastoma
+BS_PMFR8NPN,FALSE,Craniopharyngioma
+BS_PMSZKZP7,FALSE,Other low-grade glioma
+BS_PNXDHDF3,TRUE,Meningioma
+BS_PP4WJBNR,FALSE,Pilocytic astrocytoma
+BS_PPY0EWPG,TRUE,Diffuse midline glioma
+BS_PV130A29,FALSE,Pilocytic astrocytoma
+BS_PVYMDM18,FALSE,Medulloblastoma
+BS_PVZJCXS1,FALSE,Medulloblastoma
+BS_PYVPKH11,FALSE,Medulloblastoma
+BS_PZDTK87A,FALSE,NA
+BS_Q0XBZP88,FALSE,Pilocytic astrocytoma
+BS_Q50P97Y0,FALSE,Pilocytic astrocytoma
+BS_Q5XKTB1V,FALSE,Pilocytic astrocytoma
+BS_Q6GVRAWK,FALSE,Diffuse midline glioma
+BS_Q807ENGY,FALSE,NA
+BS_Q88059DJ,TRUE,Meningioma
+BS_Q9NHTR7G,FALSE,Ewing sarcoma
+BS_QA0W86WP,FALSE,Other low-grade glioma
+BS_QBZDQX7A,FALSE,Ependymoma
+BS_QC5FNXGH,FALSE,Other low-grade glioma
+BS_QD22MJJ5,FALSE,Pilocytic astrocytoma
+BS_QDGHHS4S,FALSE,Other low-grade glioma
+BS_QE5B0T7R,FALSE,Pilocytic astrocytoma
+BS_QE7WAAKC,FALSE,Other high-grade glioma
+BS_QG6V29H7,FALSE,Diffuse midline glioma
+BS_QGX93WPF,FALSE,Medulloblastoma
+BS_QHTDJG77,FALSE,Medulloblastoma
+BS_QK61ST4T,FALSE,Other low-grade glioma
+BS_QM1Z8R38,FALSE,Pilocytic astrocytoma
+BS_QMG7XNEW,FALSE,Pleomorphic xanthoastrocytoma
+BS_QMHND3QK,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_QRH793AV,FALSE,Meningioma
+BS_QSDKJM8T,FALSE,Craniopharyngioma
+BS_QSMFVHSB,FALSE,Ependymoma
+BS_QWS88QXE,FALSE,Other high-grade glioma
+BS_QX754ADQ,FALSE,Craniopharyngioma
+BS_QXZTRMWM,FALSE,Other low-grade glioma
+BS_QYWGB52C,FALSE,Pilocytic astrocytoma
+BS_QZT3SPY7,TRUE,Medulloblastoma
+BS_QZTPJ8YW,FALSE,Pilocytic astrocytoma
+BS_R1CV479M,FALSE,Medulloblastoma
+BS_R1G6SG0K,TRUE,Other high-grade glioma
+BS_R1RMKH1B,FALSE,Ganglioneuroma
+BS_R1ZBTEAG,FALSE,Schwannoma
+BS_R5G3QP11,TRUE,Atypical Teratoid Rhabdoid Tumor
+BS_R6CKWZW6,TRUE,Diffuse midline glioma
+BS_R726FKHP,FALSE,Pilocytic astrocytoma
+BS_R7YMKNJN,TRUE,Ependymoma
+BS_R82MYPKB,FALSE,Ependymoma
+BS_R8ZKDFWH,FALSE,Ependymoma
+BS_R913E3VB,FALSE,Pilocytic astrocytoma
+BS_R922P3XJ,FALSE,NA
+BS_R9V82BC1,FALSE,Pilocytic astrocytoma
+BS_RB8VSEVG,FALSE,Pilocytic astrocytoma
+BS_RCAZ62J7,FALSE,Teratoma
+BS_RG6JK7ZN,TRUE,Other high-grade glioma
+BS_RGSJMSRE,FALSE,Pilocytic astrocytoma
+BS_RH9PMH3G,FALSE,Langerhans Cell histiocytosis
+BS_RHEBGZF8,FALSE,Medulloblastoma
+BS_RQ5Z7KNW,FALSE,Medulloblastoma
+BS_RR3DKGKY,FALSE,Craniopharyngioma
+BS_RXSBJ929,TRUE,Other high-grade glioma
+BS_RZNNEX1Y,FALSE,Other low-grade glioma
+BS_S0T3CQ97,TRUE,Other high-grade glioma
+BS_S34SCYW4,FALSE,Medulloblastoma
+BS_S88G7BXH,FALSE,Other low-grade glioma
+BS_SCQNN2A2,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_SD28E0SC,TRUE,Pleomorphic xanthoastrocytoma
+BS_SDT1J3A7,FALSE,Ganglioglioma
+BS_SE82EQF8,FALSE,Other low-grade glioma
+BS_SFH8TGKT,FALSE,Medulloblastoma
+BS_SFZ3A07S,FALSE,Craniopharyngioma
+BS_SK4H5MJQ,FALSE,Other high-grade glioma
+BS_SK949N33,FALSE,Pilocytic astrocytoma
+BS_SKRY0BJ4,TRUE,Other high-grade glioma
+BS_SMCPASF0,FALSE,Pilocytic astrocytoma
+BS_SNC5WMVN,FALSE,Neurocytoma
+BS_SQSH5G7A,TRUE,Sarcoma
+BS_SSYNTXDC,FALSE,Ewing sarcoma
+BS_ST3Z2B9B,TRUE,Ependymoma
+BS_STNH7YSX,TRUE,Other high-grade glioma
+BS_SYWRCE3Z,FALSE,Schwannoma
+BS_T1SNKF50,TRUE,Ependymoma
+BS_T54TAE3R,FALSE,Other high-grade glioma
+BS_T5HPW4Z0,FALSE,Medulloblastoma
+BS_T7WMJ08W,FALSE,Diffuse midline glioma
+BS_T8C13KNH,FALSE,Craniopharyngioma
+BS_T8TCEBB1,FALSE,Medulloblastoma
+BS_T97EP8H0,FALSE,Pilocytic astrocytoma
+BS_T99M7842,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_T9T3R2J0,FALSE,Medulloblastoma
+BS_TE8QFF7T,FALSE,Other embryonal tumor
+BS_TF6H437Q,FALSE,Other embryonal tumor
+BS_THH0CE5A,FALSE,Other low-grade glioma
+BS_TNQKJZCP,TRUE,Medulloblastoma
+BS_TPX7YY57,FALSE,Epilepsy
+BS_TQ0J7WJQ,FALSE,Diffuse midline glioma
+BS_TRGECFNP,FALSE,Diffuse midline glioma
+BS_TX2WGF8K,FALSE,Neurofibroma Plexiform
+BS_TZPJHKQR,FALSE,Other low-grade glioma
+BS_V2MDX7HG,FALSE,NA
+BS_V3SC6NWH,FALSE,Cavernoma
+BS_V3ZNXRHK,FALSE,Ganglioglioma
+BS_V6HKXX1Z,FALSE,Medulloblastoma
+BS_V79WFJ6N,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_V8G6BZRR,FALSE,Glial-neuronal tumor NOS
+BS_VA07453Z,FALSE,Pilocytic astrocytoma
+BS_VDSR4X6N,FALSE,Ganglioglioma
+BS_VF099E8S,TRUE,Sarcoma
+BS_VHD4ARSG,FALSE,NA
+BS_VK46N40F,FALSE,Ependymoma
+BS_VKH9KYDB,FALSE,Medulloblastoma
+BS_VPJ9CARN,FALSE,Pilocytic astrocytoma
+BS_VQC2PE2B,FALSE,Pilocytic astrocytoma
+BS_VQEPFE1P,FALSE,NA
+BS_VTTTQYQA,TRUE,Medulloblastoma
+BS_VVD8TJNE,FALSE,Choroid plexus papilloma
+BS_VW4XN9Y7,FALSE,Other high-grade glioma
+BS_VW96PFKQ,FALSE,Pilocytic astrocytoma
+BS_VXNT1TDB,FALSE,Other low-grade glioma
+BS_W23ERYW3,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_W2QCHQ7E,TRUE,Other high-grade glioma
+BS_W3R2DQ86,FALSE,Medulloblastoma
+BS_W50WEJE7,FALSE,NA
+BS_W5P7SPDH,FALSE,Ependymoma
+BS_W6B48DD5,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_W74D279Q,FALSE,Ependymoma
+BS_W8DA9AXT,FALSE,Craniopharyngioma
+BS_W9P0PFDH,FALSE,Subependymal Giant Cell Astrocytoma
+BS_WB8P21ED,FALSE,Other low-grade glioma
+BS_WCNPE0AC,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_WD37M8SD,FALSE,Cavernoma
+BS_WD7AQV83,FALSE,Subependymal Giant Cell Astrocytoma
+BS_WEGGXVYA,FALSE,Subependymal Giant Cell Astrocytoma
+BS_WJ7GMQTF,FALSE,Ganglioglioma
+BS_WJB33V17,FALSE,Other high-grade glioma
+BS_WJF6ZXWN,FALSE,Diffuse midline glioma
+BS_WMEYJGDC,FALSE,Craniopharyngioma
+BS_WP2D11SK,FALSE,Medulloblastoma
+BS_WP9J88EB,TRUE,Medulloblastoma
+BS_WPCBK1EG,FALSE,Diffuse midline glioma
+BS_WQ19Z6MD,FALSE,Pilocytic astrocytoma
+BS_WRJNMEX2,FALSE,Pilocytic astrocytoma
+BS_WSFB4SA2,FALSE,Pleomorphic xanthoastrocytoma
+BS_WXKCR17Q,FALSE,Pilocytic astrocytoma
+BS_WY5KYSHJ,FALSE,Medulloblastoma
+BS_WYF8NGSD,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_X1R0N8QS,FALSE,Medulloblastoma
+BS_X6361T19,FALSE,Meningioma
+BS_X7QJCVJB,FALSE,Medulloblastoma
+BS_X9PJ715R,FALSE,Pilocytic astrocytoma
+BS_XBBBE8V2,FALSE,Pilocytic astrocytoma
+BS_XBE002WV,FALSE,Ependymoma
+BS_XCFNEZ8E,FALSE,NA
+BS_XCNGQ25H,FALSE,Craniopharyngioma
+BS_XDY9BYRK,FALSE,Craniopharyngioma
+BS_XEVMEYFS,FALSE,Choroid plexus carcinoma
+BS_XGMXJKFX,TRUE,Medulloblastoma
+BS_XGVSX8BX,FALSE,Other high-grade glioma
+BS_XH5JP8DB,FALSE,Desmoplastic infantile astrocytoma and ganglioglioma
+BS_XHAQXDR0,FALSE,Pilocytic astrocytoma
+BS_XJZQA3AP,FALSE,Pineoblastoma
+BS_XKE77TR4,FALSE,Ganglioglioma
+BS_XKM2EAT4,FALSE,Ewing sarcoma
+BS_XKP747AS,FALSE,Other low-grade glioma
+BS_XKXDH0YJ,FALSE,NA
+BS_XM302FF4,FALSE,Ganglioglioma
+BS_XMNBSBGN,FALSE,Ependymoma
+BS_XNTQBZAJ,TRUE,Medulloblastoma
+BS_XPSD2NRJ,TRUE,Meningioma
+BS_XVBX7ZK1,FALSE,Other low-grade glioma
+BS_XVNNWN2Z,FALSE,Neurofibroma Plexiform
+BS_XVYRXN8J,FALSE,Other low-grade glioma
+BS_XW26N96W,FALSE,Ganglioglioma
+BS_XWQTX5HH,FALSE,Hemangioblastoma
+BS_Y2C78JC4,FALSE,Pilocytic astrocytoma
+BS_Y3472DYJ,FALSE,Ependymoma
+BS_Y3ETG5AE,FALSE,Pilocytic astrocytoma
+BS_Y43VC4VG,FALSE,Pilocytic astrocytoma
+BS_Y4ZX0YX7,FALSE,Pilocytic astrocytoma
+BS_Y5DA59M3,FALSE,Medulloblastoma
+BS_Y7CA8B5R,FALSE,Medulloblastoma
+BS_Y9GHDZKS,FALSE,Choroid plexus papilloma
+BS_YB99Q6TN,FALSE,Diffuse midline glioma
+BS_YBCQBCQC,FALSE,Craniopharyngioma
+BS_YETTZ1NC,TRUE,Metastatic secondary tumors
+BS_YEWX69X4,FALSE,Other low-grade glioma
+BS_YGQS4660,FALSE,Other low-grade glioma
+BS_YH4DYNQ2,FALSE,Other low-grade glioma
+BS_YH60H2FS,FALSE,Medulloblastoma
+BS_YKQP4SBX,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_YMDPFK0V,FALSE,Pilocytic astrocytoma
+BS_YPCTK927,FALSE,Craniopharyngioma
+BS_YVFFHJ1Q,FALSE,Schwannoma
+BS_YXCVR90M,FALSE,Pilocytic astrocytoma
+BS_YYAPSA5P,FALSE,Medulloblastoma
+BS_YZ0P5E8H,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_YZ2YNEJJ,FALSE,Other low-grade glioma
+BS_Z14Z2JMW,FALSE,Neurofibroma Plexiform
+BS_Z1BBZ01F,FALSE,Malignant peripheral nerve sheath tumor
+BS_Z34PQDYT,FALSE,Choroid plexus papilloma
+BS_Z4Q8RH5M,FALSE,Pilocytic astrocytoma
+BS_Z4S81HG1,FALSE,Myofibroblastoma
+BS_Z5VJCFNP,FALSE,Germinoma
+BS_Z7R92XX6,FALSE,Pilocytic astrocytoma
+BS_Z9NCH2XA,FALSE,Other embryonal tumor
+BS_Z9PKZ4RT,FALSE,Pleomorphic xanthoastrocytoma
+BS_ZAH4FHV2,FALSE,Pilocytic astrocytoma
+BS_ZAT0XJE5,FALSE,Atypical Teratoid Rhabdoid Tumor
+BS_ZBWQG7VR,TRUE,Ependymoma
+BS_ZCY4ECNV,FALSE,Diffuse midline glioma
+BS_ZECKZTFC,FALSE,Ewing sarcoma
+BS_ZH6PC8KM,FALSE,Dysembryoplastic neuroepithelial tumor
+BS_ZHJFX6C9,FALSE,Neurofibroma Plexiform
+BS_ZJSMC22A,FALSE,Teratoma
+BS_ZJT1REVB,FALSE,Craniopharyngioma
+BS_ZKFEMJZ8,FALSE,Ganglioglioma
+BS_ZKZACPVV,FALSE,Pilocytic astrocytoma
+BS_ZP89F1JY,FALSE,Pilocytic astrocytoma
+BS_ZPF89720,TRUE,Sarcoma
+BS_ZSH09N84,TRUE,Diffuse midline glioma
+BS_ZV21J6YW,TRUE,Medulloblastoma
+BS_ZZJF26C4,FALSE,Ependymoma
