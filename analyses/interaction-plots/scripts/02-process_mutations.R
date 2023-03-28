@@ -22,6 +22,8 @@
 #       (uses the most mutated n genes)
 # --out: Output file location
 # --disease_table: Location for disease table output
+# --write_zenodo_csv: Whether to write out figure data used in the manuscript 
+#        targeted for Zenodo upload 
 #
 #
 # Command line example:
@@ -35,8 +37,8 @@
 #### Initial Set Up
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-script_root <-
-  file.path(root_dir, "analyses", "interaction-plots", "scripts")
+analysis_dir <- file.path(root_dir, "analyses", "interaction-plots")
+script_root <- file.path(analysis_dir, "scripts")
 
 # Load libraries:
 library(optparse)
@@ -158,6 +160,12 @@ option_list <- list(
     default = 0,
     help = "Minimum sequencing depth for called mutations",
     metavar = "numeric"
+  ),
+  make_option(
+    opt_str = "--write_zenodo_csv",
+    action = "store_true",
+    default = FALSE,
+    help = "When this flag is used, output tabular data associated with manuscript figures targeted for Zenodo upload to file."
   )
 )
 
@@ -195,9 +203,6 @@ if (exists("specimen_file")) {
 if (exists("exclude_file")) {
   exclude_df <- data.table::fread(exclude_file, data.table = FALSE)
 }
-
-
-
 
 ### Reduce MAF to a smaller set of relevant columns
 
@@ -303,6 +308,7 @@ maf_filtered <- maf_df %>%
   )
 
 # count mutations by gene/sample pair
+# this df has columns: gene, sample, and mutations
 gene_sample_counts <- maf_filtered %>%
   dplyr::filter(Entrez_Gene_Id > 0, # remove unknowns
                 Hugo_Symbol %in% genes) %>% # include only desired genes
@@ -355,3 +361,15 @@ gene_disease_counts <- gene_sample_counts %>%
 
 readr::write_tsv(gene_disease_counts, disease_file)
 
+
+# Prepare and export CSV for Zenodo upload, if specified
+if (opts$write_zenodo_csv) {
+  # define filename
+  fig3b_csv <- file.path(analysis_dir, "results", "figure-3b-data.csv")
+  
+  # process and write data
+  gene_sample_counts %>%
+    dplyr::select(Kids_First_Biospecimen_ID = sample, gene, mutations) %>%
+    dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+    readr::write_csv(fig3b_csv)
+}
