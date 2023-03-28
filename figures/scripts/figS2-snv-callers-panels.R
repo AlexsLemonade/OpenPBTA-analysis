@@ -111,7 +111,7 @@ for (dataset in c("tcga", "pbta")) {
     # Export
     all_caller_df %>%
       # keep everything except `index`
-      dplyr::select(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode, everything(), -index)
+      dplyr::select(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode, everything(), -index) %>%
       dplyr::arrange(Kids_First_Biospecimen_ID) %>%
       readr::write_csv(figS2abc_csv)
 
@@ -122,7 +122,9 @@ for (dataset in c("tcga", "pbta")) {
                        suffix = c("_strelka", "_mutect")) %>%
       dplyr::full_join(as.data.frame(lancet),
                        by = join_cols) %>%
-      dplyr::rename(VAF_lancet = VAF)
+      dplyr::rename(VAF_lancet = VAF) %>%
+      # We'll use this to keep track of the original rows/mutations
+      tibble::rowid_to_column("index")
 
     # Export
     all_caller_df %>%
