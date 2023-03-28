@@ -684,10 +684,12 @@ plot_df %>%
 
 # Panel 4F: TP53 and telomerase forest plot
 survival_result$data %>%
-  # order columns and only keep columns that are in the model:
-  # "OS_years ~ tp53_score+telomerase_score+extent_of_tumor_resection+lgg_group+hgg_group"
+  # order columns and only keep columns that are in the model: 
+  # OS_status and OS_years
+  # tp53_score+telomerase_score+extent_of_tumor_resection+lgg_group+hgg_group"
   dplyr::select(Kids_First_Biospecimen_ID, 
                 OS_years, 
+                OS_status,
                 tp53_score, 
                 telomerase_score, 
                 extent_of_tumor_resection,
