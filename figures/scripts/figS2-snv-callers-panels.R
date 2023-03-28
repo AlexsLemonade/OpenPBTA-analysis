@@ -39,6 +39,14 @@ tcga_vaf_distribution_plot_pdf <- file.path(output_dir, "tcga_vaf_distribution_p
 lancet_wxs_wgs_plot_pdf <- file.path(output_dir, "lancet_wxs_wgs_plot.pdf")
 
 
+# Output files for Zenodo upload
+# Input data _at a level where it is fully informative_ is the same for correlation, VAF, and upsetR plots.
+# We'll therefore export a single PBTA and TCGA file for these plots, with compression
+zenodo_upload_dir <- file.path(root_dir, "tables", "zenodo-upload")
+figS2abc_csv <- file.path(zenodo_upload_dir, "figure-S2a-S2b-S2c-data.csv.gz") # PBTA data
+figS2def_csv <- file.path(zenodo_upload_dir, "figure-S2d-S2e-S2f-data.csv.gz") # TCGA data
+figS2g_csv <- file.path(zenodo_upload_dir, "figure-S2g-data.csv") # lancet violin plot
+
 ## Read in data and load items --------------------------------------------------------------
 
 # Read in clinical data
@@ -62,7 +70,7 @@ join_cols <- c("Chromosome",
 # Loop over the two datasets
 for (dataset in c("tcga", "pbta")) {
   print(paste0("===================",dataset,"===================="))
-  # Set up DB connection ------------------------------------------------
+  # Set up DB connection  -----------------------------------
   db_file <- "snv_db.sqlite"
   if (dataset == "tcga") {
     db_file <- paste0("tcga_", db_file)
@@ -83,6 +91,9 @@ for (dataset in c("tcga", "pbta")) {
   mutect <- tbl(con, "mutect") %>%
     select(join_cols, "VAF")
 
+  # The `if` block below will ultimately create `all_caller_df` for either tcga/pbta.
+  # This data frame `all_caller_df` contains all input for correlation, VAF, and upset plots
+  # So in this `if` block, we'll also export this data frame for Zenodo upload
   if (dataset == "pbta") {
 
     # only PBTA has vardict
@@ -93,13 +104,19 @@ for (dataset in c("tcga", "pbta")) {
     print("Joining database tables")
     source(file.path(snv_callers_dir, "util", "full_join_callers.R"))
 
-    # data frame and add column to keep track of the original rows/mutations
-    all_caller_df <- all_caller %>%
-      as.data.frame() %>%
-      rowid_to_column("index")
+    # data frame
+    all_caller_df <- as.data.frame(all_caller) %>%
+      tibble::rowid_to_column("index")
+
+    # Export
+    all_caller_df %>%
+      # keep everything except `index`
+      dplyr::select(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode, everything(), -index) %>%
+      dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+      readr::write_csv(figS2abc_csv)
 
   } else if (dataset == "tcga") {
-    # Need to `as.data.frame()` the TCGA ones since they are small enough to work with directly
+    # Can `as.data.frame()` the TCGA ones since they are small enough to work with directly
     all_caller_df <- as.data.frame(strelka) %>%
       dplyr::full_join(as.data.frame(mutect), by = join_cols,
                        suffix = c("_strelka", "_mutect")) %>%
@@ -109,36 +126,40 @@ for (dataset in c("tcga", "pbta")) {
       # We'll use this to keep track of the original rows/mutations
       tibble::rowid_to_column("index")
 
+    # Export
+    all_caller_df %>%
+      # keep everything except `index`
+      dplyr::select(Tumor_Sample_Barcode, everything(), -index) %>%
+      dplyr::arrange(Tumor_Sample_Barcode) %>%
+      readr::write_csv(figS2def_csv)
   }
-
 
   ## Upset plots -------------------------------------------------------
   print("Preparing data for upset plot")
-  detect_mat <- all_caller_df %>%
-    # Bring over VAF columns and the index
+  vaf_mat <- all_caller_df %>%
+    # Bring over VAF columns
     select(starts_with("VAF_")) %>%
     as.matrix()
 
   # Store the indices as dimnames
-  dimnames(detect_mat)[[1]] <- all_caller_df$index
+  dimnames(vaf_mat)[[1]] <- all_caller_df$index
 
-  # Turn into detected or not
-  detect_mat <- !is.na(detect_mat)
+  # Turn into logical matrix of detected or not (NA means the mutation was not detected)
+  detect_mat_logical <- !is.na(vaf_mat)
 
-
-  # Plot from `detect_mat`
+  # Plot from `detect_mat_logical`
   print("Making upset plot")
   # Set up a list how UpSetR wants it
-  detect_list <- list(
-    lancet = which(detect_mat[, "VAF_lancet"]),
-    mutect = which(detect_mat[, "VAF_mutect"]),
-    strelka = which(detect_mat[, "VAF_strelka"])
+  upsetr_list <- list(
+    lancet = which(detect_mat_logical[, "VAF_lancet"]),
+    mutect = which(detect_mat_logical[, "VAF_mutect"]),
+    strelka = which(detect_mat_logical[, "VAF_strelka"])
   )
 
   # add vardict if pbta, and define a shared plot_file
   if (dataset == "pbta") {
     # include vardict
-    detect_list[["vardict"]] <- which(detect_mat[, "VAF_vardict"])
+    upsetr_list[["vardict"]] <- which(detect_mat_logical[, "VAF_vardict"])
     plot_file <- pbta_upset_pdf
   } else if (dataset == "tcga") {
     plot_file <- tcga_upset_pdf
@@ -148,15 +169,13 @@ for (dataset in c("tcga", "pbta")) {
   # don't use the print() statement from original notebook - this adds a blank page in the DPF
   pdf(plot_file, width = 10, height = 5)
   UpSetR::upset(
-    UpSetR::fromList(detect_list),
+    UpSetR::fromList(upsetr_list),
     order.by = "freq",
     text.scale = 1.2,
     point.size = 4,
     mainbar.y.label = ""
   )
   dev.off()
-
-
 
   ## VAF distribution plots ------------------------------------------
   print("Making VAF distribution plot")
@@ -185,17 +204,19 @@ for (dataset in c("tcga", "pbta")) {
 
   ## VAF correlation plots --------------------------------------------
   print("Making VAF correlation plot")
-  # Correlate VAFs across callers pbta
-  cor_vaf <- all_caller_df %>%
-    select(starts_with("VAF_")) %>%
-    # 1:n() column for spread/gather bookkeeping which we do to remove `VAF_` from strips in this plot
-    mutate(n = 1:n()) %>%
-    # we want to remove
-    gather(caller, vaf, -n) %>%
-    mutate(caller = str_replace_all(caller, "VAF_", "")) %>%
-    spread(caller, vaf) %>%
-    select(-n) %>%
-    GGally::ggpairs(aes(alpha = 0.05)) +
+  # Correlate VAFs across callers
+  vaf_mat_df <- as.data.frame(vaf_mat) %>%
+    # reorder columns; everything() will cover vardict which is only in PBTA
+    select(VAF_lancet, VAF_mutect, VAF_strelka, everything())
+
+  # rename to remove VAF
+  names(vaf_mat_df) <- stringr::str_replace_all(
+    names(vaf_mat_df),
+    "VAF_",
+    ""
+  )
+
+  cor_vaf <- GGally::ggpairs(vaf_mat_df, aes(alpha = 0.05)) +
     ggpubr::theme_pubr() +
     cowplot::panel_border() +
     # slightly smaller text to avoid label overlap
@@ -275,6 +296,14 @@ for (dataset in c("tcga", "pbta")) {
     ggsave(lancet_wxs_wgs_plot_pdf,
            vaf_plot,
            width = 5, height = 6)
+
+    # Export data csv
+    lancet %>%
+      dplyr::select(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode,
+                    Kids_First_Participant_ID,
+                    experimental_strategy,
+                    VAF) %>%
+      readr::write_csv(figS2g_csv)
   }
 
 
