@@ -682,7 +682,7 @@ plot_df %>%
   readr::write_csv(fig4d_csv)
 
 
-# Panel 4F: HGG forest plot
+# Panel 4F: TP53 and telomerase forest plot
 survival_result$data %>%
   # order columns and only keep columns that are in the model:
   # "OS_years ~ tp53_score+telomerase_score+extent_of_tumor_resection+lgg_group+hgg_group"
