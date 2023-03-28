@@ -147,7 +147,7 @@ for (dataset in c("tcga", "pbta")) {
   # Turn into logical matrix of detected or not (NA means the mutation was not detected)
   detect_mat_logical <- !is.na(vaf_mat)
 
-  # Plot from `vaf_mat_logical`
+  # Plot from `detect_mat_logical`
   print("Making upset plot")
   # Set up a list how UpSetR wants it
   upsetr_list <- list(
