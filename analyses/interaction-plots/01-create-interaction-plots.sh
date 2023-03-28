@@ -65,6 +65,7 @@ mkdir -p $plot_dir
 # run scripts
 
 # all samples first
+# these analyses are used in the manuscript, including Figure 3A-B
 echo "All"
 Rscript ${script_dir}/01-disease-specimen-lists.R \
   --metadata ${metadata} \
@@ -82,7 +83,8 @@ Rscript ${script_dir}/02-process_mutations.R \
   --min_mutated 5 \
   --max_genes 50 \
   --out ${cooccur}.ALL.tsv \
-  --disease_table ${gene_disease}.tsv
+  --disease_table ${gene_disease}.tsv \
+  --write_zenodo_csv
 
 Rscript ${script_dir}/03-plot_interactions.R \
   --infile ${cooccur}.ALL.tsv \
@@ -90,7 +92,8 @@ Rscript ${script_dir}/03-plot_interactions.R \
   --disease_table ${gene_disease}.tsv \
   --disease_plot ${disease_plot}.pdf \
   --combined_plot ${combined_plot}.pdf \
-  --plotsize 50
+  --plotsize 50 \
+  --write_zenodo_csv
 
 # now individual diseases
 for disease_id in "${!disease[@]}"; do
