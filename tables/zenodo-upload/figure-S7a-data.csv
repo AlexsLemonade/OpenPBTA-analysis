@@ -1,26 +1,980 @@
-cancer_group_display,RNA_library,n
-Atypical Teratoid Rhabdoid Tumor,stranded,30
-Choroid plexus papilloma,stranded,14
-Craniopharyngioma,stranded,36
-Diffuse intrinsic pontine glioma,stranded,10
-Diffuse midline glioma,poly-A,34
-Diffuse midline glioma,stranded,25
-Dysembryoplastic neuroepithelial tumor,stranded,24
-Ependymoma,stranded,93
-Ewing sarcoma,stranded,11
-Ganglioglioma,stranded,47
-Medulloblastoma,poly-A,1
-Medulloblastoma,stranded,119
-Meningioma,stranded,29
-Neurofibroma Plexiform,stranded,21
-Other,stranded,77
-Other embryonal tumor,poly-A,3
-Other embryonal tumor,stranded,27
-Other high-grade glioma,poly-A,14
-Other high-grade glioma,stranded,85
-Other low-grade glioma,stranded,97
-Pilocytic astrocytoma,stranded,131
-Pleomorphic xanthoastrocytoma,stranded,12
-Schwannoma,stranded,18
-Subependymal Giant Cell Astrocytoma,stranded,13
-Teratoma,stranded,8
+Kids_First_Biospecimen_ID,cancer_group_display,RNA_library
+BS_014EVM2D,Other low-grade glioma,stranded
+BS_02NZT8CE,Other low-grade glioma,stranded
+BS_03FT4S8B,Craniopharyngioma,stranded
+BS_0448A413,Ewing sarcoma,stranded
+BS_044XZ8ST,Pilocytic astrocytoma,stranded
+BS_052PZFMK,Other high-grade glioma,stranded
+BS_063ERW0R,Pilocytic astrocytoma,stranded
+BS_06AMMCXR,Other low-grade glioma,stranded
+BS_07ANYSYQ,Ependymoma,stranded
+BS_09R7GDA7,Other embryonal tumor,stranded
+BS_09Z7TC35,Medulloblastoma,stranded
+BS_0BXY0F9N,Ependymoma,stranded
+BS_0C7VZC0A,Other high-grade glioma,stranded
+BS_0GDJQANN,Choroid plexus papilloma,stranded
+BS_0HW7W7SD,Other embryonal tumor,stranded
+BS_0J9SHHSC,Other low-grade glioma,stranded
+BS_0QYS36NR,Ependymoma,stranded
+BS_0RF0EZTV,Neurofibroma Plexiform,stranded
+BS_0RQ4P069,Other high-grade glioma,stranded
+BS_0SCXXM6N,Other low-grade glioma,stranded
+BS_0SPCTBZY,Other,stranded
+BS_0T17SY47,Other low-grade glioma,stranded
+BS_0VRSD9V3,Other,stranded
+BS_0VXZCRJS,Diffuse midline glioma,poly-A
+BS_0WQJP6ZG,Ependymoma,stranded
+BS_0WVJYM9R,Pilocytic astrocytoma,stranded
+BS_0X9EGHY2,Other low-grade glioma,stranded
+BS_0XEG6SNV,Ependymoma,stranded
+BS_0Y66ZBWE,Other low-grade glioma,stranded
+BS_0ZA67BBC,Diffuse midline glioma,poly-A
+BS_1021ZGQT,Ewing sarcoma,stranded
+BS_10APZRVT,Meningioma,stranded
+BS_11WY983P,Other,stranded
+BS_13CGKADW,Pilocytic astrocytoma,stranded
+BS_15ETQ0E4,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_1607397Q,Other,stranded
+BS_17WYVEEC,Pilocytic astrocytoma,stranded
+BS_196BBNEJ,Ependymoma,stranded
+BS_1A6MQ9ZA,Diffuse midline glioma,stranded
+BS_1AYRM596,Medulloblastoma,stranded
+BS_1BWP5MCT,Medulloblastoma,stranded
+BS_1D6PZNKN,Diffuse intrinsic pontine glioma,stranded
+BS_1EBQ3T20,Other high-grade glioma,stranded
+BS_1EN5V3XW,Other high-grade glioma,stranded
+BS_1G3WYEN3,Other low-grade glioma,stranded
+BS_1HFK0SXV,Craniopharyngioma,stranded
+BS_1HQ76V6D,Other embryonal tumor,stranded
+BS_1J2WQ08M,Ependymoma,stranded
+BS_1JDG6JV5,Pilocytic astrocytoma,stranded
+BS_1KYGSMA7,Other,stranded
+BS_1N7MQZGR,Diffuse midline glioma,poly-A
+BS_1N9XZXGE,Ewing sarcoma,stranded
+BS_1NPD7PVG,Ganglioglioma,stranded
+BS_1QNTEZPS,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_1QXEC43H,Medulloblastoma,stranded
+BS_1RT76ANT,Other embryonal tumor,stranded
+BS_1RXZ3BP7,Other low-grade glioma,stranded
+BS_1SVVER1H,Schwannoma,stranded
+BS_1T19NFJ8,Other,stranded
+BS_1TPWFSK6,Subependymal Giant Cell Astrocytoma,stranded
+BS_1TWCV047,Medulloblastoma,stranded
+BS_1XJ73KBQ,Other,stranded
+BS_1ZVXF5FE,Pilocytic astrocytoma,stranded
+BS_21ET39G7,Diffuse midline glioma,poly-A
+BS_21RE8W46,Pilocytic astrocytoma,stranded
+BS_23M72ABG,Meningioma,stranded
+BS_23QW0BBA,Other high-grade glioma,stranded
+BS_23W9EPFE,Ganglioglioma,stranded
+BS_24AHZ9ZW,Other low-grade glioma,stranded
+BS_258RRGDM,Other low-grade glioma,stranded
+BS_25T139TX,Other low-grade glioma,stranded
+BS_264RCK7G,Dysembryoplastic neuroepithelial tumor,stranded
+BS_273HKCT4,Dysembryoplastic neuroepithelial tumor,stranded
+BS_27QE6BV7,Ganglioglioma,stranded
+BS_28CDASF7,Schwannoma,stranded
+BS_29006KEX,Teratoma,stranded
+BS_29CPJ040,Subependymal Giant Cell Astrocytoma,stranded
+BS_29X4ZX6Q,Other high-grade glioma,stranded
+BS_2A162JH9,Diffuse midline glioma,stranded
+BS_2A5R9MEJ,Diffuse midline glioma,stranded
+BS_2ADZNNV4,Pilocytic astrocytoma,stranded
+BS_2AR3AP0N,Ganglioglioma,stranded
+BS_2EMW8ZG3,Other low-grade glioma,stranded
+BS_2EN3X6HB,Other high-grade glioma,stranded
+BS_2HN96129,Schwannoma,stranded
+BS_2JP7RBMB,Diffuse midline glioma,poly-A
+BS_2KJ2YAZR,Other low-grade glioma,stranded
+BS_2R9TCR03,Other low-grade glioma,stranded
+BS_2SFTWNVE,Medulloblastoma,stranded
+BS_2SHWPB5P,Other embryonal tumor,stranded
+BS_2W3NC4K1,Neurofibroma Plexiform,stranded
+BS_2WPQ8YCW,Pilocytic astrocytoma,stranded
+BS_2YCJV2VV,Other low-grade glioma,stranded
+BS_2Z1MKS84,Medulloblastoma,stranded
+BS_30VC3R2Q,Diffuse intrinsic pontine glioma,stranded
+BS_31TF0P1N,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_34201DKZ,Ependymoma,stranded
+BS_37GTVG4N,Other embryonal tumor,stranded
+BS_398KYV92,Meningioma,stranded
+BS_399RPKC9,Other high-grade glioma,stranded
+BS_3AC3SRWH,Other high-grade glioma,poly-A
+BS_3BDAG9YN,Medulloblastoma,stranded
+BS_3BVVWHP5,Subependymal Giant Cell Astrocytoma,stranded
+BS_3DCBDJAT,Meningioma,stranded
+BS_3EVSN5QD,Subependymal Giant Cell Astrocytoma,stranded
+BS_3F4FQJMR,Ependymoma,stranded
+BS_3F5PR9GS,Medulloblastoma,stranded
+BS_3G3KWY18,Other low-grade glioma,stranded
+BS_3H71BH6Q,Ganglioglioma,stranded
+BS_3J85TTZM,Other,stranded
+BS_3KASVCSQ,Teratoma,stranded
+BS_3KHXMAJF,Teratoma,stranded
+BS_3MS8WVNR,Other high-grade glioma,stranded
+BS_3MYEMXPQ,Medulloblastoma,stranded
+BS_3NNQ6PSB,Other,stranded
+BS_3NWQXPQV,Medulloblastoma,stranded
+BS_3P20Q2C3,Other low-grade glioma,stranded
+BS_3PYESPHA,Ganglioglioma,stranded
+BS_3Q0GTSYH,Pilocytic astrocytoma,stranded
+BS_3T6X4BPC,Dysembryoplastic neuroepithelial tumor,stranded
+BS_3TQSE8HF,Subependymal Giant Cell Astrocytoma,stranded
+BS_3V3KE3VT,Medulloblastoma,stranded
+BS_3W07B2TG,Subependymal Giant Cell Astrocytoma,stranded
+BS_3X9WMZGJ,Ependymoma,stranded
+BS_3XY76V8T,Ganglioglioma,stranded
+BS_3Y0QXZQB,Neurofibroma Plexiform,stranded
+BS_401R3KV0,Pilocytic astrocytoma,stranded
+BS_42DY6WS7,Pilocytic astrocytoma,stranded
+BS_42Y3YANN,Pilocytic astrocytoma,stranded
+BS_44A3ES23,Medulloblastoma,stranded
+BS_45J79YTF,Other high-grade glioma,stranded
+BS_46BZ2NNN,Teratoma,stranded
+BS_470DYRJQ,Pilocytic astrocytoma,stranded
+BS_478TN841,Ganglioglioma,stranded
+BS_479S95Q6,Schwannoma,stranded
+BS_47SJZ3PH,Other low-grade glioma,stranded
+BS_49852ZBH,Pilocytic astrocytoma,stranded
+BS_49BQS7Z6,Other high-grade glioma,stranded
+BS_49CJNZ06,Diffuse midline glioma,poly-A
+BS_49F4RAA4,Other,stranded
+BS_49FQXT2E,Other high-grade glioma,stranded
+BS_49VCQD19,Neurofibroma Plexiform,stranded
+BS_4A45GGSW,Pilocytic astrocytoma,stranded
+BS_4B0BAVTX,Diffuse midline glioma,stranded
+BS_4BWB0FA0,Pilocytic astrocytoma,stranded
+BS_4C4MZ4NT,Pilocytic astrocytoma,stranded
+BS_4CP4T22V,Medulloblastoma,stranded
+BS_4D9DD103,Medulloblastoma,stranded
+BS_4E1G7E3G,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_4EN8D8Y4,Pilocytic astrocytoma,stranded
+BS_4FZS7TX4,Ependymoma,stranded
+BS_4GTESTSE,Ganglioglioma,stranded
+BS_4HQ3T2NC,Pilocytic astrocytoma,stranded
+BS_4JWBB28H,Other,stranded
+BS_4NF35AF6,Other low-grade glioma,stranded
+BS_4NWHYH53,Ependymoma,stranded
+BS_4PH1MBGR,Medulloblastoma,stranded
+BS_4PPHAQXF,Other high-grade glioma,poly-A
+BS_4PWDGEB0,Other high-grade glioma,poly-A
+BS_4QW2S1Q8,Diffuse midline glioma,stranded
+BS_4SCWT0FX,Ependymoma,stranded
+BS_4T0HPZDC,Ependymoma,stranded
+BS_4W68NV3M,Medulloblastoma,stranded
+BS_4Y6BCYK5,Pilocytic astrocytoma,stranded
+BS_4Z2F4P9N,Pilocytic astrocytoma,stranded
+BS_51RA1PGE,Diffuse midline glioma,stranded
+BS_52426AMF,Other low-grade glioma,stranded
+BS_52C576HH,Other high-grade glioma,stranded
+BS_52DAPP1Y,Other low-grade glioma,stranded
+BS_52MPKTJH,Other high-grade glioma,stranded
+BS_53CTGDQG,Meningioma,stranded
+BS_53GQKVEX,Other low-grade glioma,stranded
+BS_53M8PP88,Ependymoma,stranded
+BS_55JW3HFM,Ganglioglioma,stranded
+BS_55P8HPYD,Pilocytic astrocytoma,stranded
+BS_58YXHGAJ,Other high-grade glioma,poly-A
+BS_593HEWBF,Ganglioglioma,stranded
+BS_5965SFPZ,Diffuse midline glioma,stranded
+BS_59ZJWJTF,Other high-grade glioma,stranded
+BS_5AF6ZNJF,Meningioma,stranded
+BS_5CMGN56B,Other low-grade glioma,stranded
+BS_5CTVXVRX,Other high-grade glioma,stranded
+BS_5JM573JC,Ganglioglioma,stranded
+BS_5K3R0F5D,Ganglioglioma,stranded
+BS_5NWDARXG,Pilocytic astrocytoma,stranded
+BS_5P1TN10Z,Other high-grade glioma,stranded
+BS_5P3CZQV8,Neurofibroma Plexiform,stranded
+BS_5PEFNDCY,Other,stranded
+BS_5PJCHF6V,Medulloblastoma,stranded
+BS_5PV5N4HQ,Pilocytic astrocytoma,stranded
+BS_5VPM0F36,Diffuse midline glioma,poly-A
+BS_5VQP0E6K,Medulloblastoma,stranded
+BS_5YJEPPTP,Pilocytic astrocytoma,stranded
+BS_61E80SD6,Medulloblastoma,stranded
+BS_64HCD9K3,Other,stranded
+BS_66ABA973,Pilocytic astrocytoma,stranded
+BS_66HQ3E4Z,Pilocytic astrocytoma,stranded
+BS_67PX06P3,Other,stranded
+BS_67Z63A2K,Ependymoma,stranded
+BS_680K119G,Ganglioglioma,stranded
+BS_685DACMS,Other embryonal tumor,poly-A
+BS_68BW2163,Pilocytic astrocytoma,stranded
+BS_68KX6A42,Diffuse midline glioma,poly-A
+BS_699TN5RN,Ganglioglioma,stranded
+BS_69V8P8A0,Neurofibroma Plexiform,stranded
+BS_6DCSD5Y6,Diffuse intrinsic pontine glioma,stranded
+BS_6G6C7VPX,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_6H1C1ME9,Ependymoma,stranded
+BS_6HTK4YJP,Other,stranded
+BS_6JHXXVR7,Other,stranded
+BS_6M2053M0,Diffuse midline glioma,poly-A
+BS_6MY8W3H0,Dysembryoplastic neuroepithelial tumor,stranded
+BS_6MZ7FRZH,Ependymoma,stranded
+BS_6N3AFF66,Pilocytic astrocytoma,stranded
+BS_6NRTJSYK,Other embryonal tumor,stranded
+BS_6NTXGQAC,Ganglioglioma,stranded
+BS_6P50QTPP,Other low-grade glioma,stranded
+BS_6R7SFVV2,Other,stranded
+BS_6T4JGBGY,Other embryonal tumor,stranded
+BS_6VF6VPCG,Other low-grade glioma,stranded
+BS_6VPKXXMR,Other high-grade glioma,stranded
+BS_6WP1FHTE,Diffuse midline glioma,stranded
+BS_6YMJ621P,Meningioma,stranded
+BS_70FFPA51,Meningioma,stranded
+BS_7327SDAQ,Other high-grade glioma,stranded
+BS_742RHK1M,Other,stranded
+BS_74FS6GMW,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_74G5K7JF,Ependymoma,stranded
+BS_769BDPDB,Pilocytic astrocytoma,stranded
+BS_77317DY4,Medulloblastoma,stranded
+BS_775HDFNY,Pilocytic astrocytoma,stranded
+BS_77CDMEY4,Ganglioglioma,stranded
+BS_78QX3XDF,Craniopharyngioma,stranded
+BS_7B89YR6K,Ependymoma,stranded
+BS_7BTZQKYY,Ependymoma,stranded
+BS_7BW0YRPY,Other embryonal tumor,stranded
+BS_7C40TRCY,Medulloblastoma,stranded
+BS_7FWZ518S,Medulloblastoma,stranded
+BS_7G42J2SK,Ependymoma,stranded
+BS_7GJT4A6A,Diffuse intrinsic pontine glioma,stranded
+BS_7H4RFCW9,Other low-grade glioma,stranded
+BS_7N0B2CY1,Ganglioglioma,stranded
+BS_7P83Z28P,Pilocytic astrocytoma,stranded
+BS_7S6GNG04,Meningioma,stranded
+BS_7T1J3KET,Craniopharyngioma,stranded
+BS_7WM3MNZ0,Diffuse midline glioma,poly-A
+BS_7WNSZNE3,Dysembryoplastic neuroepithelial tumor,stranded
+BS_7XQRH69M,Medulloblastoma,stranded
+BS_7XRN3CFX,Other low-grade glioma,stranded
+BS_7Z93ZYMS,Pilocytic astrocytoma,stranded
+BS_7ZV3DPGT,Other,stranded
+BS_81SP2HX4,Medulloblastoma,stranded
+BS_84XCR9GG,Other high-grade glioma,stranded
+BS_850BAHH9,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_86Q14TZG,Craniopharyngioma,stranded
+BS_893A91ZM,Neurofibroma Plexiform,stranded
+BS_8D0NYM46,Craniopharyngioma,stranded
+BS_8F9BDWY4,Other,stranded
+BS_8GW1TMV2,Medulloblastoma,stranded
+BS_8J09S6MZ,Schwannoma,stranded
+BS_8J3B6ZB6,Pilocytic astrocytoma,stranded
+BS_8MA5B8Y9,Other high-grade glioma,stranded
+BS_8NY9J9NQ,Meningioma,stranded
+BS_8PNA0V6R,Other high-grade glioma,stranded
+BS_8Q77HZ4R,Choroid plexus papilloma,stranded
+BS_8QB4S4VA,Other embryonal tumor,stranded
+BS_8RCR7Y4B,Pilocytic astrocytoma,stranded
+BS_8RHPJ740,Ependymoma,stranded
+BS_8S86CM61,Ewing sarcoma,stranded
+BS_8SKZ7BRN,Other low-grade glioma,stranded
+BS_8T7DZV2F,Medulloblastoma,stranded
+BS_8VAZSJEN,Pilocytic astrocytoma,stranded
+BS_8WPNFT03,Other,stranded
+BS_8Z3SCKB5,Subependymal Giant Cell Astrocytoma,stranded
+BS_8ZP3CBQA,Ependymoma,stranded
+BS_8ZS9F31R,Other high-grade glioma,stranded
+BS_8ZY4GST0,Diffuse midline glioma,poly-A
+BS_90B22NGP,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_912NX4Y0,Ganglioglioma,stranded
+BS_91VYM11A,Other high-grade glioma,stranded
+BS_92MT680S,Other,stranded
+BS_92VDQ0NE,Ganglioglioma,stranded
+BS_94MT16N2,Pilocytic astrocytoma,stranded
+BS_9755PSCS,Other low-grade glioma,stranded
+BS_97M1E2DW,Diffuse midline glioma,stranded
+BS_983Z6CA6,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_996ZS2A4,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_99B1XRZQ,Ependymoma,stranded
+BS_9BJARSX3,Pleomorphic xanthoastrocytoma,stranded
+BS_9CA93S6D,Diffuse intrinsic pontine glioma,stranded
+BS_9DFBHHB5,Other low-grade glioma,stranded
+BS_9DZ253JY,Pilocytic astrocytoma,stranded
+BS_9E7YVFJM,Other,stranded
+BS_9F09XV62,Other low-grade glioma,stranded
+BS_9FHSNVS0,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_9GJ23RHH,Other,stranded
+BS_9HA238XS,Neurofibroma Plexiform,stranded
+BS_9HSGV9TJ,Pleomorphic xanthoastrocytoma,stranded
+BS_9M5XJ10G,Medulloblastoma,stranded
+BS_9NJHQE9F,Medulloblastoma,stranded
+BS_9NZ2D6AD,Medulloblastoma,stranded
+BS_9P9MB8X8,Other low-grade glioma,stranded
+BS_9PB3XH5D,Medulloblastoma,stranded
+BS_9Q6Z6VJC,Pilocytic astrocytoma,stranded
+BS_9RT63JD9,Other low-grade glioma,stranded
+BS_9SJWWYQ4,Pilocytic astrocytoma,stranded
+BS_9V633J1X,Medulloblastoma,stranded
+BS_9XVACXP0,Other high-grade glioma,stranded
+BS_A0DYVX9J,Other high-grade glioma,stranded
+BS_A13BMEF5,Pilocytic astrocytoma,stranded
+BS_A14Z8BBK,Medulloblastoma,stranded
+BS_A1VEGWTR,Pilocytic astrocytoma,stranded
+BS_A3QZB9Y2,Meningioma,stranded
+BS_A46RDWGM,Other low-grade glioma,stranded
+BS_A7MC2KR2,Craniopharyngioma,stranded
+BS_A7Q8G0Y1,Diffuse midline glioma,stranded
+BS_A87NPZAP,Medulloblastoma,stranded
+BS_A89VAPVV,Teratoma,stranded
+BS_ABYF92Z9,Craniopharyngioma,stranded
+BS_AD4JPN9Q,Ganglioglioma,stranded
+BS_AG3D3435,Subependymal Giant Cell Astrocytoma,stranded
+BS_AGS1HHGF,Choroid plexus papilloma,stranded
+BS_AGTPCRR4,Ependymoma,stranded
+BS_AHEFXG7W,Medulloblastoma,stranded
+BS_AJ6X83G5,Dysembryoplastic neuroepithelial tumor,stranded
+BS_AKRHBPNZ,Ganglioglioma,stranded
+BS_AM70R8RG,Medulloblastoma,stranded
+BS_AMZ70B6F,Medulloblastoma,stranded
+BS_AP0SZ364,Other low-grade glioma,stranded
+BS_ARBQDTT5,Pilocytic astrocytoma,stranded
+BS_ARFQ1WG3,Other,stranded
+BS_AVYNZHSB,Subependymal Giant Cell Astrocytoma,stranded
+BS_AWH9757B,Other high-grade glioma,stranded
+BS_AZN38B7V,Other,stranded
+BS_B0SVFK4P,Pleomorphic xanthoastrocytoma,stranded
+BS_B1C6GZ84,Diffuse intrinsic pontine glioma,stranded
+BS_B1HVNV0T,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_B3M5SGPA,Other low-grade glioma,stranded
+BS_B53Z0T1Q,Craniopharyngioma,stranded
+BS_B61168DE,Other,stranded
+BS_B6M763JS,Subependymal Giant Cell Astrocytoma,stranded
+BS_B741RZY9,Choroid plexus papilloma,stranded
+BS_B7GEH89C,Pilocytic astrocytoma,stranded
+BS_B7QS4DHK,Schwannoma,stranded
+BS_B7X8VXQ3,Ganglioglioma,stranded
+BS_B8T7M0WV,Other,stranded
+BS_B9V8RGTA,Ewing sarcoma,stranded
+BS_BA6AZWB3,Medulloblastoma,stranded
+BS_BB0YW800,Other,stranded
+BS_BC936YNZ,Pilocytic astrocytoma,stranded
+BS_BHR08WGW,Craniopharyngioma,stranded
+BS_BJDNWMJH,Ependymoma,stranded
+BS_BKQZ550R,Pilocytic astrocytoma,stranded
+BS_BKR4E30C,Other high-grade glioma,stranded
+BS_BKR4E30C,Other low-grade glioma,stranded
+BS_BMMY0H73,Diffuse midline glioma,poly-A
+BS_BN986DF6,Pilocytic astrocytoma,stranded
+BS_BPSTSCBJ,Pilocytic astrocytoma,stranded
+BS_BPWEFR89,Medulloblastoma,stranded
+BS_BSV07M7Z,Medulloblastoma,stranded
+BS_BVSW4GTG,Medulloblastoma,stranded
+BS_BXXJ9P8C,Schwannoma,stranded
+BS_C05FKR8X,Ependymoma,stranded
+BS_C0XFDP38,Craniopharyngioma,stranded
+BS_C3P5BC92,Craniopharyngioma,stranded
+BS_C41DJZ1F,Other high-grade glioma,stranded
+BS_C51RB0YR,Pleomorphic xanthoastrocytoma,stranded
+BS_C6SKJG3N,Pilocytic astrocytoma,stranded
+BS_C6ZZ3FY5,Other high-grade glioma,stranded
+BS_C7A2TYAC,Other low-grade glioma,stranded
+BS_C7N3J4NW,Other high-grade glioma,stranded
+BS_C7N3J4NW,Other low-grade glioma,stranded
+BS_C80S5N37,Ependymoma,stranded
+BS_C83TK159,Diffuse midline glioma,poly-A
+BS_CB6VK7PB,Pilocytic astrocytoma,stranded
+BS_CGB2WS2A,Pilocytic astrocytoma,stranded
+BS_CHDGRYHJ,Medulloblastoma,stranded
+BS_CQEETJ66,Schwannoma,stranded
+BS_CQSAJ7BF,Dysembryoplastic neuroepithelial tumor,stranded
+BS_CREQ97QC,Dysembryoplastic neuroepithelial tumor,stranded
+BS_CS170P7T,Pilocytic astrocytoma,stranded
+BS_CS66RYDA,Schwannoma,stranded
+BS_CTR5X93B,Pilocytic astrocytoma,stranded
+BS_CVGFNCBJ,Pleomorphic xanthoastrocytoma,stranded
+BS_CW9QV8AG,Other,stranded
+BS_CXVGG342,Other high-grade glioma,stranded
+BS_CXVJK2FY,Ependymoma,stranded
+BS_CYEY58NY,Other,stranded
+BS_CZ3ER8DY,Ependymoma,stranded
+BS_CZ3NA7KV,Ependymoma,stranded
+BS_CZ82ANWP,Dysembryoplastic neuroepithelial tumor,stranded
+BS_D0BGESQF,Other,stranded
+BS_D0RDN4K5,Other embryonal tumor,stranded
+BS_D144EJRQ,Medulloblastoma,stranded
+BS_D2K9C7XR,Craniopharyngioma,stranded
+BS_D3YBV7KB,Other low-grade glioma,stranded
+BS_D4PJYHZ2,Neurofibroma Plexiform,stranded
+BS_D5NQV7N5,Craniopharyngioma,stranded
+BS_D5P6EZ1M,Schwannoma,stranded
+BS_D8N31T39,Other,stranded
+BS_D9GEXXHX,Meningioma,stranded
+BS_DBDXCXT5,Other,stranded
+BS_DBEX7AG2,Ewing sarcoma,stranded
+BS_DEHJF4C7,Pleomorphic xanthoastrocytoma,stranded
+BS_DFGS950G,Other high-grade glioma,stranded
+BS_DFWFBYSN,Medulloblastoma,stranded
+BS_DGTPWJ59,Other,stranded
+BS_DHA5FMVW,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_DMZP9G1H,Ganglioglioma,stranded
+BS_DPF1CX0G,Pilocytic astrocytoma,stranded
+BS_DRD9QXR5,Craniopharyngioma,stranded
+BS_DS438CXE,Other high-grade glioma,stranded
+BS_DSS3S5XD,Other low-grade glioma,stranded
+BS_DV86M0Y7,Pilocytic astrocytoma,stranded
+BS_DY88N5ZT,Other embryonal tumor,stranded
+BS_DY9NTFQR,Other,stranded
+BS_E054DFJN,Craniopharyngioma,stranded
+BS_E0N3PTPN,Pleomorphic xanthoastrocytoma,stranded
+BS_E1CGF3KV,Other low-grade glioma,stranded
+BS_E2Z940S4,Meningioma,stranded
+BS_E3BAT4C1,Medulloblastoma,stranded
+BS_E3EJHXQV,Other low-grade glioma,stranded
+BS_E4F1D721,Ependymoma,stranded
+BS_E4GC9EXR,Ganglioglioma,stranded
+BS_E4QK839R,Other low-grade glioma,stranded
+BS_E94QRJDW,Other,stranded
+BS_EBMCTR80,Other low-grade glioma,stranded
+BS_EF775B3K,Other,stranded
+BS_EFE4YEK3,Medulloblastoma,stranded
+BS_EFEZB0ZH,Pilocytic astrocytoma,stranded
+BS_EHVYJAVA,Pilocytic astrocytoma,stranded
+BS_EJ9JKM1C,Other,stranded
+BS_EK5PCKY0,Ependymoma,stranded
+BS_EMMF4PZX,Craniopharyngioma,stranded
+BS_EMYET8F4,Ependymoma,stranded
+BS_EN2VK7NY,Other low-grade glioma,stranded
+BS_ENKG5GF3,Neurofibroma Plexiform,stranded
+BS_ERJAJ0KA,Ganglioglioma,stranded
+BS_ERWT0ZWE,Medulloblastoma,stranded
+BS_ET8CJXSF,Pilocytic astrocytoma,stranded
+BS_EVCAC3NH,Ependymoma,stranded
+BS_EXGBH3TD,Other,stranded
+BS_EXYHZ6D4,Pilocytic astrocytoma,stranded
+BS_EYSS0ZDS,Other low-grade glioma,stranded
+BS_EYYMKWB7,Subependymal Giant Cell Astrocytoma,stranded
+BS_EZ3147MX,Diffuse midline glioma,poly-A
+BS_F0JB4EAK,Other high-grade glioma,poly-A
+BS_F4E8R9VY,Ganglioglioma,stranded
+BS_F6V1Y4QS,Other,stranded
+BS_F6Z5HFWH,Choroid plexus papilloma,stranded
+BS_F8N6CFQE,Other low-grade glioma,stranded
+BS_F9WKPDFG,Other,stranded
+BS_FAQQ0GCQ,Ganglioglioma,stranded
+BS_FAVRBEW7,Choroid plexus papilloma,stranded
+BS_FBJ5Q54N,Other embryonal tumor,stranded
+BS_FCAKKZ20,Medulloblastoma,stranded
+BS_FCDAH728,Diffuse midline glioma,poly-A
+BS_FEPRNEXX,Other embryonal tumor,stranded
+BS_FEV5A0HN,Other high-grade glioma,stranded
+BS_FEYMKEK8,Choroid plexus papilloma,stranded
+BS_FJWZ3M7V,Pilocytic astrocytoma,stranded
+BS_FJZPQZ2C,Pleomorphic xanthoastrocytoma,stranded
+BS_FKDQJJB5,Medulloblastoma,stranded
+BS_FN07P04C,Other high-grade glioma,stranded
+BS_FQX1PRAJ,Neurofibroma Plexiform,stranded
+BS_FRM9TG02,Neurofibroma Plexiform,stranded
+BS_FRZ76GEG,Craniopharyngioma,stranded
+BS_FTKPQ5FZ,Ependymoma,stranded
+BS_FW5ECXXK,Ependymoma,stranded
+BS_FWMJPKCV,Dysembryoplastic neuroepithelial tumor,stranded
+BS_FX2P2WEG,Other high-grade glioma,stranded
+BS_FXJY0MNH,Diffuse intrinsic pontine glioma,stranded
+BS_FYRDYBMZ,Other high-grade glioma,stranded
+BS_G00FHF3Q,Medulloblastoma,stranded
+BS_G1Y281HX,Other embryonal tumor,stranded
+BS_G23JJAZY,Ependymoma,stranded
+BS_G3NN392N,Diffuse midline glioma,poly-A
+BS_G3RJTBZD,Other high-grade glioma,stranded
+BS_G5QBBHDV,Other low-grade glioma,stranded
+BS_G63HYD6N,Ependymoma,stranded
+BS_G7AGNB5G,Other low-grade glioma,stranded
+BS_G9XE3N9T,Pilocytic astrocytoma,stranded
+BS_GAGRGSSX,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_GC3CH9TY,Craniopharyngioma,stranded
+BS_GCA4GET3,Pilocytic astrocytoma,stranded
+BS_GCQFGDTX,Medulloblastoma,stranded
+BS_GDHH6T5A,Neurofibroma Plexiform,stranded
+BS_GE2RVZE6,Medulloblastoma,stranded
+BS_GFM6EA61,Other,stranded
+BS_GG9W3J9Y,Other high-grade glioma,stranded
+BS_GHNJ4CYC,Other low-grade glioma,stranded
+BS_GJNCYABP,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_GM9Y3AZ5,Meningioma,stranded
+BS_GMDQK06Q,Craniopharyngioma,stranded
+BS_GMJBGBWB,Craniopharyngioma,stranded
+BS_GNV89A5P,Medulloblastoma,stranded
+BS_GPEGRCCT,Pilocytic astrocytoma,stranded
+BS_GR46VD0Q,Other low-grade glioma,stranded
+BS_GS1KR5PK,Medulloblastoma,stranded
+BS_GSVCN2XC,Other,stranded
+BS_GTZCFGRZ,Ganglioglioma,stranded
+BS_GV3NZ9QD,Ependymoma,stranded
+BS_GW0GKWMS,Diffuse midline glioma,stranded
+BS_GWCRMKE6,Pilocytic astrocytoma,stranded
+BS_GWSJ4Z9H,Diffuse midline glioma,poly-A
+BS_GYA4V1RD,Pilocytic astrocytoma,stranded
+BS_GYXSDZ56,Pilocytic astrocytoma,stranded
+BS_H0QWRJE2,Other high-grade glioma,stranded
+BS_H1XPVS9A,Pleomorphic xanthoastrocytoma,stranded
+BS_H1ZS5FMZ,Other high-grade glioma,stranded
+BS_H3FE3TH9,Pilocytic astrocytoma,stranded
+BS_H3Y8FWHV,Schwannoma,stranded
+BS_H4B5Y6S0,Medulloblastoma,stranded
+BS_H4NXBD2D,Ependymoma,stranded
+BS_H8A9PSYA,Pilocytic astrocytoma,stranded
+BS_H97S5SQN,Diffuse midline glioma,poly-A
+BS_HA20Y4XY,Other low-grade glioma,stranded
+BS_HB03GSHF,Medulloblastoma,stranded
+BS_HBJZR69P,Schwannoma,stranded
+BS_HC44ZA0V,Ependymoma,stranded
+BS_HC5M8JTC,Other low-grade glioma,stranded
+BS_HD4EJYE3,Medulloblastoma,stranded
+BS_HE0WJRW6,Other high-grade glioma,stranded
+BS_HE57E1RP,Medulloblastoma,stranded
+BS_HF3RNN2T,Medulloblastoma,stranded
+BS_HHPA8NJ2,Medulloblastoma,stranded
+BS_HJRTC9JQ,Other high-grade glioma,stranded
+BS_HKZENFDA,Medulloblastoma,stranded
+BS_HQ5BJ6MW,Pilocytic astrocytoma,stranded
+BS_HSHN8PBB,Other low-grade glioma,stranded
+BS_HTEPAKCM,Medulloblastoma,stranded
+BS_HV8PFRBR,Pilocytic astrocytoma,stranded
+BS_HX0S30NE,Pilocytic astrocytoma,stranded
+BS_HZ707C55,Ependymoma,stranded
+BS_HZE3KYZ1,Medulloblastoma,stranded
+BS_HZRM07TW,Medulloblastoma,stranded
+BS_J1AB8PMA,Medulloblastoma,stranded
+BS_J483EMFP,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_J4GQPZS0,Schwannoma,stranded
+BS_J60G8DMK,Meningioma,stranded
+BS_J6VKB1VE,Other low-grade glioma,stranded
+BS_J70GK8SM,Ependymoma,stranded
+BS_J71N7D09,Medulloblastoma,stranded
+BS_J8G4SH4Z,Medulloblastoma,stranded
+BS_J8VX4D17,Ependymoma,stranded
+BS_JAEM78XS,Meningioma,stranded
+BS_JB43XBCQ,Diffuse midline glioma,poly-A
+BS_JBGZ7HHZ,Other embryonal tumor,stranded
+BS_JCPKYHKY,Craniopharyngioma,stranded
+BS_JFB984RG,Medulloblastoma,stranded
+BS_JFEZA9KE,Ewing sarcoma,stranded
+BS_JFR750KD,Other low-grade glioma,stranded
+BS_JG9JZTA9,Subependymal Giant Cell Astrocytoma,stranded
+BS_JGPR9SR2,Meningioma,stranded
+BS_JH29M4KG,Pilocytic astrocytoma,stranded
+BS_JHGW42S6,Ependymoma,stranded
+BS_JK0VPG1T,Schwannoma,stranded
+BS_JKXA3FQC,Other low-grade glioma,stranded
+BS_JMHG7GCN,Pilocytic astrocytoma,stranded
+BS_JQVAWTTM,Diffuse midline glioma,poly-A
+BS_JR5ATB7G,Medulloblastoma,stranded
+BS_JRYJGYC4,Other high-grade glioma,stranded
+BS_JS95PE0J,Other high-grade glioma,stranded
+BS_JT82QGXF,Medulloblastoma,stranded
+BS_JTMXAMB7,Medulloblastoma,stranded
+BS_JVA2NQFF,Pilocytic astrocytoma,stranded
+BS_JVW2JJ39,Other high-grade glioma,stranded
+BS_JWCX8R17,Other,stranded
+BS_JWSR581E,Other low-grade glioma,stranded
+BS_JX449BF5,Choroid plexus papilloma,stranded
+BS_JX7S9MY7,Craniopharyngioma,stranded
+BS_JXNZYGCR,Dysembryoplastic neuroepithelial tumor,stranded
+BS_JZRM1S3T,Medulloblastoma,stranded
+BS_K17VQECG,Other high-grade glioma,stranded
+BS_K25F4J3V,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_K2FHZGTK,Meningioma,stranded
+BS_K2VYFVKZ,Other low-grade glioma,stranded
+BS_K3ER45RV,Medulloblastoma,stranded
+BS_K5802F84,Pilocytic astrocytoma,stranded
+BS_K74PZET7,Medulloblastoma,stranded
+BS_K7MVS0Z7,Pilocytic astrocytoma,stranded
+BS_K81DR8XG,Medulloblastoma,stranded
+BS_KBEX4RT2,Other high-grade glioma,poly-A
+BS_KBT7MQ6H,Ependymoma,stranded
+BS_KDSTG5YY,Ependymoma,stranded
+BS_KE56MMY0,Neurofibroma Plexiform,stranded
+BS_KEA474HN,Pilocytic astrocytoma,stranded
+BS_KF0ZXDER,Meningioma,stranded
+BS_KK0JWATQ,Other,stranded
+BS_KK5C8VCK,Choroid plexus papilloma,stranded
+BS_KM2EX0K6,Dysembryoplastic neuroepithelial tumor,stranded
+BS_KN92S7YQ,Medulloblastoma,stranded
+BS_KND4B5CW,Craniopharyngioma,stranded
+BS_KP735TJ6,Other high-grade glioma,stranded
+BS_KPT2WPHW,Ganglioglioma,stranded
+BS_KQ6ZW085,Dysembryoplastic neuroepithelial tumor,stranded
+BS_KR4MP5ET,Meningioma,stranded
+BS_KSKZ9J7J,Other embryonal tumor,stranded
+BS_KVAJYZ6F,Other,stranded
+BS_KVNGNETA,Medulloblastoma,stranded
+BS_KVV7001W,Ganglioglioma,stranded
+BS_KX6J8TRK,Pilocytic astrocytoma,stranded
+BS_KXCY5BN5,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_KXH37MPN,Dysembryoplastic neuroepithelial tumor,stranded
+BS_KXMYBQ6N,Ependymoma,stranded
+BS_KYF0Q0E7,Medulloblastoma,stranded
+BS_KZPR01BD,Dysembryoplastic neuroepithelial tumor,stranded
+BS_M026T44Q,Meningioma,stranded
+BS_M0QYNVK8,Other high-grade glioma,stranded
+BS_M15PW2N0,Medulloblastoma,stranded
+BS_M1PVEHCM,Other high-grade glioma,stranded
+BS_M1T1K5WV,Ependymoma,stranded
+BS_M4923M40,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_M4NVX721,Ganglioglioma,stranded
+BS_M4TTKPNR,Pilocytic astrocytoma,stranded
+BS_M7HCF7DW,Other high-grade glioma,stranded
+BS_M84H3KXA,Medulloblastoma,stranded
+BS_M86ECPHK,Medulloblastoma,stranded
+BS_M8M56Z4Y,Pilocytic astrocytoma,stranded
+BS_M8WP5T16,Other low-grade glioma,stranded
+BS_M9C4RY4P,Schwannoma,stranded
+BS_MA2T7ET1,Ependymoma,stranded
+BS_MB7WN0ZB,Diffuse midline glioma,stranded
+BS_MBSTWZA6,Pilocytic astrocytoma,stranded
+BS_MD3DT41J,Other,stranded
+BS_MDBT7S5Z,Diffuse midline glioma,stranded
+BS_ME3HKN2C,Other low-grade glioma,stranded
+BS_MF47B9ZW,Ganglioglioma,stranded
+BS_MF9X3PKH,Pilocytic astrocytoma,stranded
+BS_MGAMKKBD,Other,stranded
+BS_MKM0EEN1,Diffuse intrinsic pontine glioma,stranded
+BS_MKP2Y41Z,Ependymoma,stranded
+BS_MM20BVW9,Meningioma,stranded
+BS_MMNRZ1EQ,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_MN5XVP5A,Other high-grade glioma,stranded
+BS_MQCKXD60,Other,stranded
+BS_MT15SGJN,Ependymoma,stranded
+BS_MV6ASWV9,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_MVW01FPB,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_MWWZBQ60,Diffuse midline glioma,stranded
+BS_MY9D8XZ1,Pilocytic astrocytoma,stranded
+BS_N0877CX1,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_N1E0H8YQ,Other low-grade glioma,stranded
+BS_N210XMKR,Other low-grade glioma,stranded
+BS_N4B1SZZH,Medulloblastoma,stranded
+BS_N5B2CZMH,Pilocytic astrocytoma,stranded
+BS_N5DVEJXT,Ependymoma,stranded
+BS_N6N147BY,Other embryonal tumor,stranded
+BS_N6NE6B3W,Pilocytic astrocytoma,stranded
+BS_N8J1DP02,Ependymoma,stranded
+BS_NB42PWZN,Ependymoma,stranded
+BS_NB5XWMJT,Other low-grade glioma,stranded
+BS_NB9XXBW6,Diffuse midline glioma,poly-A
+BS_NDC69214,Neurofibroma Plexiform,stranded
+BS_NDFDQBCZ,Other,stranded
+BS_NDN62H0S,Other,stranded
+BS_NDRDM2A9,Neurofibroma Plexiform,stranded
+BS_NEVYM2FP,Diffuse midline glioma,poly-A
+BS_NFRXNAFE,Other embryonal tumor,stranded
+BS_NGHK9RZP,Ependymoma,stranded
+BS_NGSG2KB6,Diffuse midline glioma,poly-A
+BS_NGY0TE6S,Craniopharyngioma,stranded
+BS_NH7K4CD9,Ependymoma,stranded
+BS_NJ4WPQVK,Other,stranded
+BS_NKEAAFMW,Medulloblastoma,stranded
+BS_NKRYMHEP,Medulloblastoma,stranded
+BS_NNPEC7W1,Other high-grade glioma,stranded
+BS_NPA6CZQF,Other high-grade glioma,poly-A
+BS_NPQJ20KX,Pilocytic astrocytoma,stranded
+BS_NQB91P48,Pilocytic astrocytoma,stranded
+BS_NQFH3GZH,Choroid plexus papilloma,stranded
+BS_NR3P3GN2,Diffuse midline glioma,stranded
+BS_NR9FRY5T,Schwannoma,stranded
+BS_NRFQEQKP,Pilocytic astrocytoma,stranded
+BS_NRPG5K4K,Other low-grade glioma,stranded
+BS_NS7GSHB9,Pilocytic astrocytoma,stranded
+BS_NT9NZYFD,Ganglioglioma,stranded
+BS_NYS8TRCB,Other low-grade glioma,stranded
+BS_NZ71XCG3,Medulloblastoma,stranded
+BS_P0QF87WC,Other high-grade glioma,stranded
+BS_P0W5VJH4,Teratoma,stranded
+BS_P277RYX5,Ganglioglioma,stranded
+BS_P39SQPTS,Other embryonal tumor,stranded
+BS_P4D8Y3S8,Other,stranded
+BS_P4NX9MPA,Dysembryoplastic neuroepithelial tumor,stranded
+BS_P78SMRBS,Ependymoma,stranded
+BS_P7EY9DXG,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_PEP9NZXN,Other low-grade glioma,stranded
+BS_PGHK1JRW,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_PJPGVD62,Ependymoma,stranded
+BS_PK18H7E7,Other low-grade glioma,stranded
+BS_PKK3BZRG,Choroid plexus papilloma,stranded
+BS_PKW05VZV,Other high-grade glioma,stranded
+BS_PN2CE34A,Other low-grade glioma,stranded
+BS_PQ6QEVE8,Ganglioglioma,stranded
+BS_PQ7CQFYR,Ganglioglioma,stranded
+BS_PQVTB6BB,Other high-grade glioma,stranded
+BS_PRAEF32W,Ependymoma,stranded
+BS_PRR8K9GE,Craniopharyngioma,stranded
+BS_PS0P3QJ3,Other high-grade glioma,poly-A
+BS_PSNBFWQV,Ewing sarcoma,stranded
+BS_PSW27ZTE,Ependymoma,stranded
+BS_PXCPK5XS,Other high-grade glioma,poly-A
+BS_PZVHMSYN,Diffuse intrinsic pontine glioma,stranded
+BS_Q13FQ8FV,Diffuse midline glioma,stranded
+BS_Q2T9ZRM0,Meningioma,stranded
+BS_Q3TBCK4V,Other low-grade glioma,stranded
+BS_Q5WZYWCT,Ependymoma,stranded
+BS_Q79NP5YY,Pilocytic astrocytoma,stranded
+BS_Q9V7A95C,Other,stranded
+BS_QAG1RDXN,Other,stranded
+BS_QB7YGKN1,Other,stranded
+BS_QB84TBA3,Other high-grade glioma,stranded
+BS_QBR4WCQ2,Other,stranded
+BS_QC3XCE6X,Other low-grade glioma,stranded
+BS_QEYPFYHD,Medulloblastoma,stranded
+BS_QF5VVZX5,Ganglioglioma,stranded
+BS_QH82PBMB,Pilocytic astrocytoma,stranded
+BS_QHS3V0GP,Other embryonal tumor,stranded
+BS_QNAQGAV6,Other,stranded
+BS_QNNX91SM,Diffuse midline glioma,poly-A
+BS_QP6MSKRE,Ependymoma,stranded
+BS_QPPPGYP4,Medulloblastoma,stranded
+BS_QRDT19KS,Medulloblastoma,stranded
+BS_QRNSKFMS,Pilocytic astrocytoma,stranded
+BS_QSTAVWGE,Ependymoma,stranded
+BS_QT3NZ2YZ,Other embryonal tumor,stranded
+BS_QTSXW7DA,Pilocytic astrocytoma,stranded
+BS_QV51J756,Ganglioglioma,stranded
+BS_QW60M0FE,Meningioma,stranded
+BS_QWNBZ9RJ,Other embryonal tumor,stranded
+BS_QWTE1CWR,Other high-grade glioma,stranded
+BS_QX12J6W1,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_QXKRN6CR,Ependymoma,stranded
+BS_R13X6TMW,Pilocytic astrocytoma,stranded
+BS_R244Z0WX,Pilocytic astrocytoma,stranded
+BS_R439VVPK,Medulloblastoma,stranded
+BS_R4Y180DM,Ewing sarcoma,stranded
+BS_R634WKN7,Subependymal Giant Cell Astrocytoma,stranded
+BS_R6WNEEE4,Medulloblastoma,stranded
+BS_R7HZCZ8B,Craniopharyngioma,stranded
+BS_R7NTZR4C,Other high-grade glioma,poly-A
+BS_R9B92M75,Diffuse midline glioma,poly-A
+BS_RB2S0KDF,Meningioma,stranded
+BS_RCC8BXVE,Medulloblastoma,stranded
+BS_RCCN63K6,Other high-grade glioma,stranded
+BS_RCFQ31XF,Ependymoma,stranded
+BS_RD4D5F9F,Medulloblastoma,stranded
+BS_RFMQ7T0T,Craniopharyngioma,stranded
+BS_RGPSEMHC,Ependymoma,stranded
+BS_RGSMX7QD,Ganglioglioma,stranded
+BS_RHD7XPNP,Ependymoma,stranded
+BS_RQSKD7PN,Other,stranded
+BS_RRAEQZ97,Pilocytic astrocytoma,stranded
+BS_RVSEDNJ4,Ganglioglioma,stranded
+BS_RWJZFTP9,Pilocytic astrocytoma,stranded
+BS_RX1YTZ7F,Diffuse midline glioma,poly-A
+BS_RXN5T5YT,Diffuse midline glioma,stranded
+BS_S0175QKX,Ependymoma,stranded
+BS_S1KK7XRH,Other low-grade glioma,stranded
+BS_S1M423AB,Medulloblastoma,stranded
+BS_S2TA8R29,Other high-grade glioma,stranded
+BS_S458NMKH,Other low-grade glioma,stranded
+BS_S4V9E1XJ,Pilocytic astrocytoma,stranded
+BS_S50KQEXV,Other low-grade glioma,stranded
+BS_S5P8VTN5,Diffuse midline glioma,stranded
+BS_S69QZAJR,Medulloblastoma,stranded
+BS_S6NJRR5W,Craniopharyngioma,stranded
+BS_S6Q7NKA3,Medulloblastoma,poly-A
+BS_S6S7SK3P,Other high-grade glioma,stranded
+BS_S71RJ8DH,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_S7CZY2CH,Other low-grade glioma,stranded
+BS_S9929Z8B,Ganglioglioma,stranded
+BS_SAA624A4,Ependymoma,stranded
+BS_SD8YBRBR,Other high-grade glioma,stranded
+BS_SDA4RMMG,Pilocytic astrocytoma,stranded
+BS_SDCNP7MW,Ependymoma,stranded
+BS_SDZY6RZ3,Pilocytic astrocytoma,stranded
+BS_SES41DAX,Choroid plexus papilloma,stranded
+BS_SFKZSJN1,Other low-grade glioma,stranded
+BS_SFRQXM76,Other,stranded
+BS_SHJA4MR0,Other high-grade glioma,stranded
+BS_SHMC4902,Pilocytic astrocytoma,stranded
+BS_SKGJ5SY9,Medulloblastoma,stranded
+BS_SM8VQFPD,Dysembryoplastic neuroepithelial tumor,stranded
+BS_SNVM7CZT,Other high-grade glioma,poly-A
+BS_SQX5E15Z,Pilocytic astrocytoma,stranded
+BS_SXCZ3CXN,Other embryonal tumor,stranded
+BS_SXRS2P6T,Pilocytic astrocytoma,stranded
+BS_T0RKFEKR,Pilocytic astrocytoma,stranded
+BS_T1DVKKJB,Ependymoma,stranded
+BS_T1QMEH1N,Craniopharyngioma,stranded
+BS_T1W4JA94,Pilocytic astrocytoma,stranded
+BS_T1YHK6B7,Other high-grade glioma,stranded
+BS_T2QPMZCM,Other low-grade glioma,stranded
+BS_T3DGY9J9,Diffuse midline glioma,poly-A
+BS_T3H5AY8A,Other low-grade glioma,stranded
+BS_T4JFN54G,Other low-grade glioma,stranded
+BS_T4P3J13C,Ependymoma,stranded
+BS_T55Y4Z0Y,Other low-grade glioma,stranded
+BS_TA9WP4TH,Medulloblastoma,stranded
+BS_TAHV8N04,Neurofibroma Plexiform,stranded
+BS_TBWYAFSM,Ependymoma,stranded
+BS_TCGEZJ5F,Ependymoma,stranded
+BS_TD1ZEQ7R,Other embryonal tumor,stranded
+BS_TDEFAPNH,Dysembryoplastic neuroepithelial tumor,stranded
+BS_TE0GVDNG,Medulloblastoma,stranded
+BS_TG93XC55,Ganglioglioma,stranded
+BS_TGS109T3,Other high-grade glioma,stranded
+BS_TGW6HC4X,Other,stranded
+BS_THSPSG2Z,Meningioma,stranded
+BS_TJTEF70D,Other high-grade glioma,stranded
+BS_TK84K675,Other high-grade glioma,stranded
+BS_TM9MH0RP,Diffuse midline glioma,stranded
+BS_TMTV769C,Other low-grade glioma,stranded
+BS_TNRHHYNC,Ependymoma,stranded
+BS_TQ5QHR17,Neurofibroma Plexiform,stranded
+BS_TRKH2SPE,Diffuse midline glioma,stranded
+BS_TW8DQH8J,Medulloblastoma,stranded
+BS_TXY8QYWA,Ependymoma,stranded
+BS_TXZ7KHTQ,Other high-grade glioma,stranded
+BS_TYAYZ9ZW,Medulloblastoma,stranded
+BS_TYKJ8G2G,Schwannoma,stranded
+BS_TZ5D0A7R,Ependymoma,stranded
+BS_TZVFR600,Medulloblastoma,stranded
+BS_V0Q1G94N,Other low-grade glioma,stranded
+BS_V3REENH9,Pilocytic astrocytoma,stranded
+BS_V3Z3DB4N,Other high-grade glioma,stranded
+BS_V4W81SFC,Ependymoma,stranded
+BS_V72GX2AZ,Other low-grade glioma,stranded
+BS_V72H4RQS,Medulloblastoma,stranded
+BS_V7BJM89K,Other low-grade glioma,stranded
+BS_V89HGTET,Pilocytic astrocytoma,stranded
+BS_V96WVE3Z,Medulloblastoma,stranded
+BS_V9HVBBDW,Medulloblastoma,stranded
+BS_VA5T4KAA,Medulloblastoma,stranded
+BS_VAAHBH60,Ependymoma,stranded
+BS_VARR255N,Pilocytic astrocytoma,stranded
+BS_VF5XWFXD,Diffuse midline glioma,stranded
+BS_VJ2S5DVS,Ependymoma,stranded
+BS_VJAC9H58,Schwannoma,stranded
+BS_VJVDJABP,Medulloblastoma,stranded
+BS_VMEX27TN,Medulloblastoma,stranded
+BS_VMMJYN8Z,Ganglioglioma,stranded
+BS_VMQMGSJY,Diffuse midline glioma,stranded
+BS_VNK9XYV9,Craniopharyngioma,stranded
+BS_VNWKNRY4,Other embryonal tumor,stranded
+BS_VP3C8WZT,Pilocytic astrocytoma,stranded
+BS_VP5Y45Z7,Pilocytic astrocytoma,stranded
+BS_VPBMDMQX,Medulloblastoma,stranded
+BS_VPMKHW9X,Craniopharyngioma,stranded
+BS_VPNXJE2S,Other,stranded
+BS_VR7FR1NE,Pilocytic astrocytoma,stranded
+BS_VT6C6N6K,Medulloblastoma,stranded
+BS_VTJ9ESSV,Dysembryoplastic neuroepithelial tumor,stranded
+BS_VVFBW0YH,Medulloblastoma,stranded
+BS_VVTHDRBD,Other high-grade glioma,stranded
+BS_VW85Q4XJ,Other low-grade glioma,stranded
+BS_VXEFKW5P,Neurofibroma Plexiform,stranded
+BS_VXHWZJDC,Other,stranded
+BS_W1385R8Y,Other high-grade glioma,poly-A
+BS_W311713R,Medulloblastoma,stranded
+BS_W36RZSFA,Other,stranded
+BS_W3R88RFP,Pilocytic astrocytoma,stranded
+BS_W41S7B55,Other,stranded
+BS_W4DB5RP1,Diffuse intrinsic pontine glioma,stranded
+BS_W4HGV6E7,Other low-grade glioma,stranded
+BS_W60RQAKK,Other high-grade glioma,stranded
+BS_W644VEVE,Medulloblastoma,stranded
+BS_W72364MN,Meningioma,stranded
+BS_W7FP2G3F,Dysembryoplastic neuroepithelial tumor,stranded
+BS_W7MFJZ5A,Other high-grade glioma,poly-A
+BS_W80TJC27,Ependymoma,stranded
+BS_W97QQYKQ,Ganglioglioma,stranded
+BS_W9AT0MR7,Medulloblastoma,stranded
+BS_W9N9844Q,Other high-grade glioma,stranded
+BS_WAXJY4XQ,Other high-grade glioma,stranded
+BS_WCRKYV0T,Other high-grade glioma,stranded
+BS_WCRKYV0T,Other low-grade glioma,stranded
+BS_WE3Q8A73,Other,stranded
+BS_WFD0GE5X,Ependymoma,stranded
+BS_WG203ECV,Pilocytic astrocytoma,stranded
+BS_WGK8ZMVA,Ependymoma,stranded
+BS_WH5HDE0A,Medulloblastoma,stranded
+BS_WH8G4VFB,Diffuse midline glioma,stranded
+BS_WJ9H4NZZ,Other high-grade glioma,stranded
+BS_WJGFDRWK,Ewing sarcoma,stranded
+BS_WKESC3XN,Other high-grade glioma,stranded
+BS_WMEHNDSK,Other,stranded
+BS_WRHDP7WF,Ependymoma,stranded
+BS_WRQHPSXQ,Ganglioglioma,stranded
+BS_WSQMAA33,Other,stranded
+BS_WV0S8N4M,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_WVS02TZK,Other,stranded
+BS_WVW3W6ZB,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_WWKNJSJ5,Atypical Teratoid Rhabdoid Tumor,stranded
+BS_WYERXS4G,Ependymoma,stranded
+BS_WYG77VVP,Teratoma,stranded
+BS_X0F9AYEC,Pilocytic astrocytoma,stranded
+BS_X16PENSA,Pilocytic astrocytoma,stranded
+BS_X23724NJ,Other high-grade glioma,stranded
+BS_X2QTK3QD,Meningioma,stranded
+BS_X4DD4KSZ,Diffuse midline glioma,poly-A
+BS_X4X1SFSE,Other high-grade glioma,stranded
+BS_X59HSFGG,Other low-grade glioma,stranded
+BS_X67GTEM6,Ependymoma,stranded
+BS_X91K8KMG,Pilocytic astrocytoma,stranded
+BS_X9EGD530,Other,stranded
+BS_XBQZYS8G,Other,stranded
+BS_XF0ZX2B3,Ependymoma,stranded
+BS_XG0DBWVT,Diffuse midline glioma,stranded
+BS_XGDPK33A,Diffuse midline glioma,poly-A
+BS_XGSA3GQE,Pilocytic astrocytoma,stranded
+BS_XHCYEE2S,Craniopharyngioma,stranded
+BS_XKKB4MZV,Pilocytic astrocytoma,stranded
+BS_XM1AHBDJ,Diffuse midline glioma,poly-A
+BS_XQ5SFW35,Other high-grade glioma,stranded
+BS_XQYHPBFS,Ependymoma,stranded
+BS_XZM79E42,Diffuse midline glioma,poly-A
+BS_XZTV0J8W,Ewing sarcoma,stranded
+BS_Y08D5P8N,Teratoma,stranded
+BS_Y0PCBNJV,Pilocytic astrocytoma,stranded
+BS_Y3G1X98S,Meningioma,stranded
+BS_Y7F9E2E9,Other low-grade glioma,stranded
+BS_Y8D1F5WW,Medulloblastoma,stranded
+BS_YA8RBGD8,Other low-grade glioma,stranded
+BS_YB07VF1X,Other,stranded
+BS_YB2RXRHT,Pilocytic astrocytoma,stranded
+BS_YBJBSRHV,Other embryonal tumor,stranded
+BS_YCREDZTJ,Pleomorphic xanthoastrocytoma,stranded
+BS_YDEVMD24,Diffuse midline glioma,poly-A
+BS_YE1MAQYJ,Ependymoma,stranded
+BS_YEB88D32,Medulloblastoma,stranded
+BS_YEQVW4ND,Pleomorphic xanthoastrocytoma,stranded
+BS_YETBN0RQ,Medulloblastoma,stranded
+BS_YEW22W35,Other high-grade glioma,stranded
+BS_YG0A13JH,Pilocytic astrocytoma,stranded
+BS_YH05F9DB,Craniopharyngioma,stranded
+BS_YK6VQ9SJ,Dysembryoplastic neuroepithelial tumor,stranded
+BS_YMAJC22S,Other low-grade glioma,stranded
+BS_YNEQJ6AH,Dysembryoplastic neuroepithelial tumor,stranded
+BS_YVMEEBKC,Pilocytic astrocytoma,stranded
+BS_YY5B2XDD,Pilocytic astrocytoma,stranded
+BS_YZ2Z1Q6Y,Pilocytic astrocytoma,stranded
+BS_Z0AVVB1V,Pilocytic astrocytoma,stranded
+BS_Z1A875MW,Other,stranded
+BS_Z28VKGNS,Neurofibroma Plexiform,stranded
+BS_Z3RCA1T9,Diffuse midline glioma,poly-A
+BS_Z45HD492,Medulloblastoma,stranded
+BS_Z6BWR941,Other low-grade glioma,stranded
+BS_Z7890YNR,Ependymoma,stranded
+BS_Z7Y2466H,Pilocytic astrocytoma,stranded
+BS_Z85M2R3N,Choroid plexus papilloma,stranded
+BS_Z8F3GM85,Other high-grade glioma,stranded
+BS_Z8YZ6QGS,Other high-grade glioma,stranded
+BS_Z9ZS6ZS2,Other,stranded
+BS_ZA9XT151,Other,stranded
+BS_ZD5HN296,Other high-grade glioma,poly-A
+BS_ZF34SJGN,Craniopharyngioma,stranded
+BS_ZF6BSFNF,Diffuse midline glioma,poly-A
+BS_ZHHAM3AN,Other,stranded
+BS_ZJZXDPTP,Neurofibroma Plexiform,stranded
+BS_ZN8136D9,Choroid plexus papilloma,stranded
+BS_ZQ76ZBEX,Other embryonal tumor,poly-A
+BS_ZQKGJD70,Other embryonal tumor,poly-A
+BS_ZR96A4FH,Dysembryoplastic neuroepithelial tumor,stranded
+BS_ZRM0W01M,Other low-grade glioma,stranded
+BS_ZTWGFWTX,Pilocytic astrocytoma,stranded
+BS_ZV1P6W9C,Other high-grade glioma,stranded
+BS_ZV68CES9,Medulloblastoma,stranded
+BS_ZV9Z3SY6,Pilocytic astrocytoma,stranded
+BS_ZVWE73JZ,Diffuse midline glioma,stranded
+BS_ZVX2GRD6,Other low-grade glioma,stranded
+BS_ZVZDDW2G,Pleomorphic xanthoastrocytoma,stranded
+BS_ZWR9W4FX,Craniopharyngioma,stranded
+BS_ZXYDSBM9,Medulloblastoma,stranded
+BS_ZZMYDZJW,Pilocytic astrocytoma,stranded
+BS_ZZPBANDD,Dysembryoplastic neuroepithelial tumor,stranded
+BS_ZZWMD6FA,Ganglioglioma,stranded

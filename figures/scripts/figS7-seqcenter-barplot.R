@@ -39,7 +39,7 @@ library_cancer_group_df <- metadata_df %>%
   mutate(dup_participant = duplicated(sample_id)) %>%
   filter(!dup_participant) %>%
   # Keep RNA_library and cancer group for each
-  select(RNA_library, cancer_group) %>%
+  select(Kids_First_Biospecimen_ID, RNA_library, cancer_group) %>%
   # Cancer group display
   inner_join(
     select(palette_df,
@@ -92,9 +92,8 @@ ggsave(
 library_cancer_group_df %>%
   # remove \n
   dplyr::mutate(cancer_group_display = stringr::str_replace(cancer_group_display, "\n", " ")) %>%
-  # Might as well count for them and arrange on the cancer group
-  dplyr::count(cancer_group_display, RNA_library) %>%
-  dplyr::arrange(cancer_group_display) %>% 
+  dplyr::select(Kids_First_Biospecimen_ID, cancer_group_display, RNA_library) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
   readr::write_csv(figS7a_csv)
 
 
