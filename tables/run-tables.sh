@@ -22,7 +22,12 @@ if [ ${OPENPBTA_TESTING} -eq 1 ]; then
     Rscript -e "rmarkdown::render('write-manuscript-tables.Rmd', params = list(release = 'testing'), clean = TRUE)"
 else
     Rscript -e "rmarkdown::render('write-manuscript-tables.Rmd', clean = TRUE)"
+    
+    # Copy CSV files for Zenodo upload from individual analysis directories
     bash copy-zenodo-tables.sh
+    
+    # Create `molecular-alterations.csv` for Zenodo upload
+    Rscript --vanilla tabulate-molecular-alterations.R
 fi
 
 
