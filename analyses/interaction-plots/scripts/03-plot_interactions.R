@@ -15,6 +15,10 @@
 # --plotsize The number of rows and columns in the expected plot, for scaling.
 #   Larger numbers will create smaller boxes for the heatmap tiles.
 #
+# --write_zenodo_csv: Whether to write out figure data used in the manuscript 
+#   targeted for Zenodo upload 
+
+#
 # Command line example:
 #
 # Rscript analyses/interaction-plots/03-plot_interactions.R \
@@ -72,6 +76,12 @@ option_list <- list(
     default = NA,
     help = "File path where gene X disease plot should be placed (required if --disease_table specified)",
     metavar = "character"
+  ),
+  make_option(
+    opt_str = "--write_zenodo_csv",
+    action = "store_true",
+    default = FALSE,
+    help = "When this flag is used, output tabular data associated with manuscript figures targeted for Zenodo upload to file."
   )
 )
 
@@ -89,16 +99,6 @@ plot_file <- opts$outfile
 
 # get root directory
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-
-# Define output paths for figure data CSV files
-# See: https://github.com/AlexsLemonade/OpenPBTA-analysis/issues/1692
-result_dir <- file.path(root_dir,
-                        "analyses",
-                        "interaction-plots",
-                        "results")
-fig3a_csv <- file.path(result_dir, "figure-3a-data.csv")
-fig3b_csv <- file.path(result_dir, "figure-3b-data.csv")
-
 
 cooccur_df <-
   readr::read_tsv(cooccur_file, col_types = readr::cols()) %>%
@@ -410,13 +410,17 @@ ggsave(combined_plot,
        width = 8,
        height = 14)
 
-## Export figure data CSV files --------
 
-# First the `cooccur_df` for 3A.
-cooccur_df %>%
-  readr::write_csv(fig3a_csv)
+# Export `cooccur_df`- CSV file with data for figure 3A in manuscript, if specified
+if (opts$write_zenodo_csv) {
+  readr::write_csv(
+    cooccur_df,
+    file.path(root_dir,
+              "analyses",
+              "interaction-plots",
+              "results",
+              "figure-3a-data.csv")
+  )
+}
 
-# Second, the `disease_df_fct` for 3B.
-disease_df_fct %>%
-  dplyr::filter(mutant_samples >= 1) %>%
-  readr::write_csv(fig3b_csv)
+
