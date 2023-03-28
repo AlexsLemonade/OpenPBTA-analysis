@@ -152,6 +152,11 @@ ggsave(file.path(output_dir, "chromothripsis_prop_cancer_group.pdf"),
        height = 7,
        width = 9)
 
-# Write CSV file for Zenodo upload
-# Note that this plot is summarized without sample information to arrange on
-readr::write_csv(chromoth_cancer_group_df, fig3d_csv)
+# Write CSV file for Zenodo upload, using the non-summarized data version
+chromo_per_sample_df %>%
+  dplyr::select(Kids_First_Biospecimen_ID, 
+                # give this column an informative name
+                chromothripsis_event_detected = any_regions_logical, 
+                cancer_group_display) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_csv(fig3d_csv)
