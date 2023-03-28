@@ -212,5 +212,11 @@ survival_result$data %>%
                 extent_of_tumor_resection,
                 CD274,
                 B_cell:last_col()) %>%
+  # recode OS_status back to LIVING/DECEASED
+  dplyr::mutate(OS_status = ifelse(
+    OS_status == 1, 
+    "LIVING", 
+    "DECEASED")
+  ) %>%
   dplyr::arrange(Kids_First_Biospecimen_ID) %>%
   readr::write_csv(fig5d_csv)
