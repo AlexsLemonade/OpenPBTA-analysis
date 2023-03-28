@@ -105,11 +105,13 @@ for (dataset in c("tcga", "pbta")) {
     source(file.path(snv_callers_dir, "util", "full_join_callers.R"))
 
     # data frame
-    all_caller_df <- as.data.frame(all_caller)
+    all_caller_df <- as.data.frame(all_caller) %>%
+      tibble::rowid_to_column("index")
 
     # Export
     all_caller_df %>%
-      dplyr::select(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode, everything()) %>%
+      # keep everything except `index`
+      dplyr::select(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode, everything(), -index)
       dplyr::arrange(Kids_First_Biospecimen_ID) %>%
       readr::write_csv(figS2abc_csv)
 
@@ -124,34 +126,38 @@ for (dataset in c("tcga", "pbta")) {
 
     # Export
     all_caller_df %>%
-      dplyr::select(Tumor_Sample_Barcode, everything()) %>%
+      # keep everything except `index`
+      dplyr::select(Tumor_Sample_Barcode, everything(), -index) %>%
       dplyr::arrange(Tumor_Sample_Barcode) %>%
       readr::write_csv(figS2def_csv)
   }
 
   ## Upset plots -------------------------------------------------------
   print("Preparing data for upset plot")
-  vaf_mat <- all_caller_df %>%
+  detect_mat <- all_caller_df %>%
     # Bring over VAF columns
     select(starts_with("VAF_")) %>%
     as.matrix()
 
+  # Store the indices as dimnames
+  dimnames(detect_mat)[[1]] <- all_caller_df$index
+
   # Turn into logical matrix
-  vaf_mat_logical <- !is.na(vaf_mat)
+  detect_mat_logical <- !is.na(detect_mat)
 
   # Plot from `vaf_mat_logical`
   print("Making upset plot")
   # Set up a list how UpSetR wants it
   upsetr_list <- list(
-    lancet = which(vaf_mat_logical[, "VAF_lancet"]),
-    mutect = which(vaf_mat_logical[, "VAF_mutect"]),
-    strelka = which(vaf_mat_logical[, "VAF_strelka"])
+    lancet = which(detect_mat_logical[, "VAF_lancet"]),
+    mutect = which(detect_mat_logical[, "VAF_mutect"]),
+    strelka = which(detect_mat_logical[, "VAF_strelka"])
   )
 
   # add vardict if pbta, and define a shared plot_file
   if (dataset == "pbta") {
     # include vardict
-    upsetr_list[["vardict"]] <- which(vaf_mat_logical[, "VAF_vardict"])
+    upsetr_list[["vardict"]] <- which(detect_mat_logical[, "VAF_vardict"])
     plot_file <- pbta_upset_pdf
   } else if (dataset == "tcga") {
     plot_file <- tcga_upset_pdf
@@ -197,7 +203,7 @@ for (dataset in c("tcga", "pbta")) {
   ## VAF correlation plots --------------------------------------------
   print("Making VAF correlation plot")
   # Correlate VAFs across callers
-  vaf_mat_df <- as.data.frame(vaf_mat) %>%
+  vaf_mat_df <- as.data.frame(detect_mat) %>%
     # reorder columns; everything() will cover vardict which is only in PBTA
     select(VAF_lancet, VAF_mutect, VAF_strelka, everything())
 
