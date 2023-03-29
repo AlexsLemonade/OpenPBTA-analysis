@@ -40,19 +40,6 @@ zenodo_csv_file <- file.path(root_dir,
 
 
 
-prepare_maf <- function(maf_df, tumor_sample_ids_df) {
-  maf_df %>%
-    dplyr::inner_join(
-      tumor_sample_ids_df,
-      by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")
-    ) %>%
-    # now let's remove this `Tumor_Sample_Barcode` column with biospecimen IDs in
-    # preparation for our next step -- renaming `sample_id`
-    dplyr::select(-Tumor_Sample_Barcode) %>%
-    dplyr::rename(Tumor_Sample_Barcode = sample_id)
-}
-
-
 
 prepare_fusion <- function(fusion_df, tumor_sample_ids_df) {
   
@@ -191,7 +178,7 @@ gene_list <- c("ACVR1", "APC", "ATM", "ATRX", "BCOR", "BRAF",
                "TACC1", "TCF4", "TERT", "TP53", "YAP1", "ZIC1")
 
 # Only keep maf columns relevant for this export
-keep_cols <-c("Tumor_Sample_Barcode",
+maf_keep_cols <-c("Tumor_Sample_Barcode",
               "Hugo_Symbol", 
               "Variant_Classification",
               "Variant_Type",
@@ -199,28 +186,29 @@ keep_cols <-c("Tumor_Sample_Barcode",
               "HGVSc")
 
 
+# Read and ensmallen 
 maf_df <- readr::read_tsv(maf_file) %>%
   dplyr::select(keep_cols) %>%
   dplyr::filter(Hugo_Symbol %in% gene_list)
-
-# Process maf_df
-maf_df %>%
+  
+hotspots_maf_df <- readr::read_tsv(hotspots_maf_file) %>%
+  dplyr::select(keep_cols) %>%
+  dplyr::filter(Hugo_Symbol %in% gene_list)
+  
+# merge hotspots maf to input maf, while assigning a final alteration
+maf_df <- maf_df %>%
+  dplyr::bind_rows(hotspots_maf_df) %>%
+  dplyr::distinct() %>%
   dplyr::mutate(
-    # assign the final alteration in order of which 
-    #  piece of information is known
+    # assign the final alteration based on which piece 
+    # of information is known, in this order of priority 
     final_alteration = dplyr::case_when(
       HGVSp != "." ~ HGVSp, 
       HGVSc != "." ~ HGVSc, 
       TRUE ~ Variant_Type
-    )) 
-
-hotspots_maf_df <- readr::read_tsv(hotspots_maf_file) %>%
-  dplyr::select(keep_cols)
-  
-# merge hotspots maf to input maf
-maf_df <- maf_df %>%
-  dplyr::bind_rows(hotspots_maf_df) %>%
-  dplyr::distinct()
+    )) %>%
+  # rename column for later data merging
+  dplyr::rename(Tumor_Sample_Barcode = sample_id) 
 
 
 # read fusion data
