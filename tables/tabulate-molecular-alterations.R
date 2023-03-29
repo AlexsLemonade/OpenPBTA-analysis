@@ -33,11 +33,142 @@ cnv_autosomes_file <- file.path(data_dir, "consensus_seg_annotated_cn_autosomes.
 cnv_xy_file        <- file.path(data_dir, "consensus_seg_annotated_cn_x_and_y.tsv.gz")
 fusion_file        <- file.path(data_dir, "pbta-fusion-putative-oncogenic.tsv")
 
+# Output CSV file
+zenodo_csv_file <- file.path(root_dir, 
+                             "tables", 
+                             "zenodo-upload",
+                             "openpbta-molecular-alterations.tsv")
+
+### Helper functions ----------------------------
+# This section holds functions for preparing maf, cnv, and fusion data so they can be
+#  combined into a single data frame containing all alterations in the given tumors.
+# These functions are **NOT TO BE USED** outside of this script/context.
+# This code is heavily/entirely inspired by:
+# https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/627ec427ad0a8d9d913e614c9db50546c56d8283/analyses/oncoprint-landscape/01-map-to-sample_id.R
+
+
+
+prepare_maf <- function(maf_df, tumor_sample_ids_df) {
+  maf_df %>%
+    dplyr::inner_join(
+      tumor_sample_ids_df,
+      by = c("Tumor_Sample_Barcode" = "Kids_First_Biospecimen_ID")
+    ) %>%
+    # now let's remove this `Tumor_Sample_Barcode` column with biospecimen IDs in
+    # preparation for our next step -- renaming `sample_id`
+    dplyr::select(-Tumor_Sample_Barcode) %>%
+    dplyr::rename(Tumor_Sample_Barcode = sample_id)
+}
+
+
+
+prepare_fusion <- function(fusion_df, tumor_sample_ids_df) {
   
-# Source util functions for data processing:
-source(
-  file.path(root_dir, "tables", "util", "functions-molecular-alterations.R")
-)
+  # We'll handle fusions where reciprocal fusions exist (e.g., 
+  # reciprocal_exists == TRUE) separately from other fusions
+  fusion_reciprocal_df <- fusion_df %>%
+    # Reciprocal fusions only
+    dplyr::filter(reciprocal_exists) %>%
+    # BSID + Gene1--Gene2
+    dplyr::select(Sample, FusionName) %>%
+    # Because we're only looking at presence or absence here, we can filter to 
+    # distinct identifier-fusion pairs
+    dplyr::distinct() %>%
+    dplyr::group_by(Sample, FusionName) %>%
+    # Put genes in the fusions in alphabetical order to collapse
+    dplyr::mutate(SortedFusionName = stringr::str_c(
+      sort( stringr::str_split(FusionName, "--", simplify = TRUE) ), 
+      collapse = "--")
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(Sample,
+                  FusionName = SortedFusionName) %>%
+    # When fusions are in alphabetical order, this ensures each reciprocal
+    # fusion is only counted once
+    dplyr::distinct()
+  
+  # No need to put fusions where no reciprocal exists in alphabetical order,
+  # so we handle these separately
+  fusion_no_reciprocal_df <- fusion_df %>%
+    dplyr::filter(!reciprocal_exists) %>%
+    dplyr::select(Sample, FusionName) %>%
+    # But we can remove duplicates to avoid them being counted as multihit
+    dplyr::distinct()
+  
+  # Bind reciprocal and no reciprocal together
+  fusion_filtered_df <- dplyr::bind_rows(fusion_reciprocal_df, fusion_no_reciprocal_df)
+  rm(fusion_reciprocal_df, fusion_no_reciprocal_df)
+  
+  # Separate fusion gene partners
+  fus_sep <- fusion_filtered_df %>%
+    # Separate the 5' and 3' genes
+    tidyr::separate(FusionName, c("Gene1", "Gene2"), sep = "--") %>%
+    # Use row numbers to mark unique fusions - this will help us when
+    # we melt and remove selfie fusions below
+    tibble::rowid_to_column("Fusion_ID") %>%
+    dplyr::select(Fusion_ID, Sample, Gene1, Gene2) %>%
+    reshape2::melt(id.vars = c("Fusion_ID", "Sample"),
+                   variable.name = "Partner",
+                   value.name = "Hugo_Symbol") %>%
+    dplyr::arrange(Fusion_ID)
+  
+  multihit_fusions <- fus_sep %>%
+    # For looking at multi-hit fusions, we want to remove selfie fusions
+    # If we drop the 5', 3' information in Partner, we can use distinct
+    # to remove the selfie fusions because Fusion_ID marks what fusion
+    # it came from
+    dplyr::select(-Partner) %>%
+    dplyr::distinct() %>%
+    # Now we want to count how many times a gene is fused within a sample
+    # Anything with more than one count is considered multi-hit
+    dplyr::count(Sample, Hugo_Symbol) %>%
+    dplyr::filter(n > 1) %>%
+    dplyr::select(-n) %>%
+    dplyr::mutate(Variant_Classification = "Multi_Hit_Fusion")
+  
+  # Filter out multi-hit fusions from the other fusions that we will
+  # label based on whether they are the 5' or 3' gene
+  single_fusion <- fus_sep %>%
+    dplyr::anti_join(multihit_fusions,
+                     by = c("Sample", "Hugo_Symbol")) %>%
+    dplyr::select(Sample, Hugo_Symbol) %>%
+    dplyr::distinct() %>%
+    dplyr::mutate(Variant_Classification = "Fusion")
+  
+  # Combine multi-hit and single fusions into one data frame
+  # And add the other identifiers!
+  reformat_fusion_df <- multihit_fusions %>%
+    dplyr::bind_rows(single_fusion) %>%
+    dplyr::mutate(Variant_Type = "OTHER") %>%
+    dplyr::inner_join(tumor_sample_ids_df,
+                      by = c("Sample" = "Kids_First_Biospecimen_ID")) %>%
+    dplyr::rename(Tumor_Sample_Barcode = sample_id,
+                  Kids_First_Biospecimen_ID = Sample)
+  
+  # return reformatted
+  reformat_fusion_df
+}
+
+
+
+prepare_cnv <- function(cnv_df, tumor_sample_ids_df) {
+  
+  cnv_df %>%
+    dplyr::inner_join(
+      tumor_sample_ids_df,
+      by = c("biospecimen_id"="Kids_First_Biospecimen_ID")) %>%
+    dplyr::mutate(Tumor_Sample_Barcode =  sample_id) %>%
+    dplyr::rename(Variant_Classification = status,
+                  Hugo_Symbol = gene_symbol) %>%
+    dplyr::select(Hugo_Symbol, Tumor_Sample_Barcode, Variant_Classification) %>%
+    # mutate loss and amplification to Del and Amp to fit Maftools format
+    dplyr::mutate(Variant_Classification = dplyr::case_when(Variant_Classification == "deep deletion" ~ "Del",
+                                                            Variant_Classification == "amplification" ~ "Amp",
+                                                            TRUE ~ as.character(Variant_Classification))) %>%
+    # only keep Del and Amp calls
+    dplyr::filter(Variant_Classification %in% c("Del", "Amp"))
+  
+}
 
 
 #### Read in data ------------------------------------
@@ -159,11 +290,11 @@ final_bs_ids <- length(unique(
 
 
 
-#### Prepare maf, cnv, fusion data ------------------
+#### Prepare maf, cnv, fusion data to be combined ------------------
 
-maf_df <- prepare_maf(maf_df)
-fusion_df <- prepare_fusion(fusion_df)
-cnv_df <- prepare_cnv(cnv_df)
+maf_df <- prepare_maf(maf_df, tumor_sample_ids_df)
+fusion_df <- prepare_fusion(fusion_df, tumor_sample_ids_df)
+cnv_df <- prepare_cnv(cnv_df, tumor_sample_ids_df)
 
 
 ### Combine alterations and filter to GOI ---------------------
@@ -226,23 +357,64 @@ alterations_presence_df <- alterations_df %>%
 
 ## Combine alterations_presence_df with biospecimen sample ids ----------------------
   
-## First the fully non-ambiguous samples:
-export_identifiable_ids <- tumor_sample_ids_df %>%
+# First, let's "combine" the ambiguous ids: 
+# For multiple DNA or RNA for a given sample_id, convert to a semi-colon separated single value
+# For example, two DNA ids on separate rows named BS_1 and BS_2 would be collapsed into `BS_1; BS2`
+merged_ambiguous_ids <- tumor_sample_ids_df %>%
+  # get only samples of interest
+  dplyr::filter(ambiguous | multiple_exp_strategy) %>%
+  # for each sample_id, combine biospecimen ids by modality to have 
+  # at most one "value" (semi-colon separated list) for each modality 
+  dplyr::group_by(sample_id, modality) %>%
+  dplyr::summarize(Kids_First_Biospecimen_ID = paste(Kids_First_Biospecimen_ID, collapse="; ")) %>%
+  dplyr::ungroup() %>%
+  # bring back the other variables from `tumr_sample_ids_df`
+  dplyr::inner_join(
+    dplyr::select(
+      tumor_sample_ids_df, 
+      sample_id, 
+      broad_histology_display,
+      cancer_group_display,
+      germline_sex_estimate
+    )
+  ) %>%
+  dplyr::distinct() %>%
+  # add indicator that these are ambiguous mappings
+  dplyr::mutate(ambiguous_biospecimen_mapping = TRUE)
+
+
+# Now, subset to just the identifiable ids and bind_rows with `merged_ambiguous_ids` for final processing
+prepared_ids_df <- tumor_sample_ids_df %>%
   # only ids of interest
   dplyr::filter(!(ambiguous), 
                 !(multiple_exp_strategy)) %>%
-  # spread ids to get separate RNA and DNA biospecimen columns:
+  dplyr::select(-ambiguous, -multiple_exp_strategy) %>%
+  # add indicator that these are NOT ambiguous mappings
+  dplyr::mutate(ambiguous_biospecimen_mapping = FALSE) %>%
+  # combine with prepared ambiguous samples
+  dplyr::bind_rows(merged_ambiguous_ids) %>%
+  dplyr::distinct()
+
+# Again, check that we've got everything: there should be `openpbta_n_tumors` 
+#  unique sample_id values
+if (!(length(unique(tumor_sample_ids_df$sample_id))) == openpbta_n_tumors) {
+  stop("An error occurred while dealing with ambiguous vs. identifiable biospecimen ids.")
+} 
+
+## Finally, process the full data for export:
+zenodo_df <- prepared_ids_df %>%
   tidyr::spread(modality, Kids_First_Biospecimen_ID) %>%
   # join with alterations themselves
   dplyr::inner_join(
     alterations_presence_df,
     by = "sample_id"
   ) %>%
-  # update columns
+  # update columns and their order
   dplyr::select(
     sample_id, 
     Kids_First_Biospecimen_ID_DNA = DNA,
     Kids_First_Biospecimen_ID_RNA = RNA,
+    ambiguous_biospecimen_mapping,
     broad_histology_display,
     cancer_group_display,
     germline_sex_estimate,
@@ -253,12 +425,9 @@ export_identifiable_ids <- tumor_sample_ids_df %>%
   # finally, enwiden:
   tidyr::spread(Variant_Classification, present)
 
-
-# Next, the ambiguous ids:
-#........
-
-
   
+# Export to CSV file :tada:
+readr::write_csv(zenodo_df, zenodo_csv_file)
   
   
   
