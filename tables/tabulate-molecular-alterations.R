@@ -174,20 +174,45 @@ histologies_df <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
 # Helper variable to check later steps. There are this many unique tumors + cell lines 
 openpbta_total_samples <- length(unique(histologies_df$sample_id))
 
-# Only keep required maf columns 
-keep_cols <-c("Hugo_Symbol", 
-              "Chromosome",
-              "Start_Position",
-              "End_Position",
-              "Reference_Allele",
-              "Tumor_Seq_Allele2",
+
+# We specifically are interested in showing the Figure 2 (and S3B which has same genes as 2D) alterations but for all tumors.
+# The gene_list below contains the top GOIs identified in `scripts/figures/fig2_figS3-oncoprint-landscape.R`, sorted and de-duplicated
+# For further reference, see Figure 2:
+# https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/aa929753fca0019294571ec813e6ae7224b1d8b8/figures/pngs/figure2.png
+gene_list <- c("ACVR1", "APC", "ATM", "ATRX", "BCOR", "BRAF", 
+               "C11orf95", "CDK6", "CTDNEP1", "CTNNB1", "DDX3X", 
+               "EGFR", "ERBB4", "EWSR1", "FGFR1", "FGFR2", "FOXO3", 
+               "H3F3A", "IGF1R", "KDM6A", "KIAA1549", "KIT", 
+               "KMT2C", "KMT2D", "KRAS", "KSR2", "MAML2", "MAMLD1", 
+               "MET", "MIR512-2", "MYB", "MYCN", "NF1", "NF2", 
+               "NTRK2", "NTRK3", "PDGFRA", "PIK3CA", "PIK3R1", 
+               "PPM1D", "PRKAR1A", "PTCH1", "PTEN", "PTPN11", 
+               "QKI", "RAF1", "RELA", "ROS1", "SETD2", "SMARCA4", 
+               "TACC1", "TCF4", "TERT", "TP53", "YAP1", "ZIC1")
+
+# Only keep maf columns relevant for this export
+keep_cols <-c("Tumor_Sample_Barcode",
+              "Hugo_Symbol", 
               "Variant_Classification",
               "Variant_Type",
-              "Tumor_Sample_Barcode",
-              "HGVSp_Short")
+              "HGVSp", 
+              "HGVSc")
+
 
 maf_df <- readr::read_tsv(maf_file) %>%
-  dplyr::select(keep_cols)
+  dplyr::select(keep_cols) %>%
+  dplyr::filter(Hugo_Symbol %in% gene_list)
+
+# Process maf_df
+maf_df %>%
+  dplyr::mutate(
+    # assign the final alteration in order of which 
+    #  piece of information is known
+    final_alteration = dplyr::case_when(
+      HGVSp != "." ~ HGVSp, 
+      HGVSc != "." ~ HGVSc, 
+      TRUE ~ Variant_Type
+    )) 
 
 hotspots_maf_df <- readr::read_tsv(hotspots_maf_file) %>%
   dplyr::select(keep_cols)
@@ -218,15 +243,16 @@ cnv_df <- dplyr::bind_rows(
 )
 
 
-## Filter to relevant tumors --------------------------------------
+## Filter to relevant tumors and metadata --------------------------------------
 
-# The final output should only tabuluate alterations for N=1074 tumors 
-# We'll need to identify those samples, including their sample_id and biospecimen.
-
-# In addition, we'll note if a sample_id is ambiguous. Ambiguous sample_id's will 
+# Now we'll create `tumor_sample_ids_df`, which stores relevant tumor sample and 
+# histology information moving forward. In this case we are interested in _all_
+# rows currently in `histologies_df`, since we want tumors and cell lines.
+# As part of this, we'll note if a sample_id is ambiguous. Ambiguous sample_id's will 
 # have more than 2 rows associated with it in the histologies file when looking at 
 # tumor samples -- that means we won't necessarily be able to determine **when an 
-# WGS/WXS assay maps to an RNA-seq assay** for the purpose of tabulating molecular alterations
+# WGS/WXS assay maps to an RNA-seq assay** for the purpose of tabulating molecular alterations.
+# Alternatively, ambiguous sample_id's will have multiple biospecimens of the same experimental strategy.
 
 tumor_sample_ids_df <- histologies_df %>%
   # keep these columns of interest moving forward:
@@ -291,20 +317,6 @@ cnv_df <- prepare_cnv(cnv_df, tumor_sample_ids_df)
 
 ### Combine alterations and filter to GOI ---------------------
 
-# We specifically are interested in showing the Figure 2 (and S3B which has same genes as 2D) alterations but for all tumors.
-# The gene_list below contains the top GOIs identified in `scripts/figures/fig2_figS3-oncoprint-landscape.R`, sorted and de-duplicated
-# For further reference, see Figure 2:
-# https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/aa929753fca0019294571ec813e6ae7224b1d8b8/figures/pngs/figure2.png
-gene_list <- c("ACVR1", "APC", "ATM", "ATRX", "BCOR", "BRAF", 
-               "C11orf95", "CDK6", "CTDNEP1", "CTNNB1", "DDX3X", 
-               "EGFR", "ERBB4", "EWSR1", "FGFR1", "FGFR2", "FOXO3", 
-               "H3F3A", "IGF1R", "KDM6A", "KIAA1549", "KIT", 
-               "KMT2C", "KMT2D", "KRAS", "KSR2", "MAML2", "MAMLD1", 
-               "MET", "MIR512-2", "MYB", "MYCN", "NF1", "NF2", 
-               "NTRK2", "NTRK3", "PDGFRA", "PIK3CA", "PIK3R1", 
-               "PPM1D", "PRKAR1A", "PTCH1", "PTEN", "PTPN11", 
-               "QKI", "RAF1", "RELA", "ROS1", "SETD2", "SMARCA4", 
-               "TACC1", "TCF4", "TERT", "TP53", "YAP1", "ZIC1")
 
 select_cols <- c("Tumor_Sample_Barcode", "Hugo_Symbol", "Variant_Classification")
 
