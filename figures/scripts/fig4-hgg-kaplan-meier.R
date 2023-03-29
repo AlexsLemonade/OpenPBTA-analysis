@@ -80,9 +80,18 @@ km_final <- km_plot_graph/km_plot_table +
 # Save
 ggsave(km_output_pdf, km_final, width = 12, height = 6)
 
-# Export CSV for Zenodo upload
-# no samples so nothing to arrange
-readr::write_csv(km_result$table, fig4h_csv)
+# Export CSV for Zenodo upload, from the `$original_data` field already 
+#  in the model object
+km_result$original_data %>%
+  # ensure OS_status is living/deceased, not 1/2:
+  # https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/aa929753fca0019294571ec813e6ae7224b1d8b8/analyses/survival-analysis/util/survival_models.R#L97
+  dplyr::mutate(OS_status = ifelse(
+    OS_status == 1, 
+    "LIVING", 
+    "DECEASED"
+  )) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_csv(fig4h_csv)
 
 
 
