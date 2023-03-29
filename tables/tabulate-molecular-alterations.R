@@ -15,6 +15,9 @@
 # Define pipe
 `%>%` <- dplyr::`%>%`
 
+# helper variable for later - there should be 1074 tumors
+openpbta_n_tumors <- 1074
+
 # Set up paths ------------
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
@@ -127,6 +130,12 @@ tumor_sample_ids_df <- histologies_df %>%
   )) %>%
   # remove experimental_strategy to enable later joining
   dplyr::select(-experimental_strategy)
+
+
+# Check that this is equal to `openpbta_n_tumors`
+if (!(length(unique(tumor_sample_ids_df$sample_id))) == openpbta_n_tumors) {
+  stop("Bad sample_id parsing.")
+} 
 
 # Pull out biospecimen id column for convenience 
 bs_ids <- tumor_sample_ids_df %>%
