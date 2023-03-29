@@ -366,9 +366,14 @@ merged_ambiguous_ids <- tumor_sample_ids_df %>%
   # for each sample_id, combine biospecimen ids by modality to have 
   # at most one "value" (semi-colon separated list) for each modality 
   dplyr::group_by(sample_id, modality) %>%
-  dplyr::summarize(Kids_First_Biospecimen_ID = paste(Kids_First_Biospecimen_ID, collapse="; ")) %>%
+    dplyr::summarize(
+    Kids_First_Biospecimen_ID = paste(
+      sort(unique(Kids_First_Biospecimen_ID)),
+      collapse=";"),
+    ambiguous_biospecimen_mapping = dplyr::n()>1
+  ) %>%
   dplyr::ungroup() %>%
-  # bring back the other variables from `tumr_sample_ids_df`
+  # bring back the other variables from `tumor_sample_ids_df`
   dplyr::inner_join(
     dplyr::select(
       tumor_sample_ids_df, 
@@ -397,7 +402,7 @@ prepared_ids_df <- tumor_sample_ids_df %>%
 
 # Again, check that we've got everything: there should be `openpbta_n_tumors` 
 #  unique sample_id values
-if (!(length(unique(tumor_sample_ids_df$sample_id))) == openpbta_n_tumors) {
+if (length(unique(tumor_sample_ids_df$sample_id)) != openpbta_n_tumors) {
   stop("An error occurred while dealing with ambiguous vs. identifiable biospecimen ids.")
 } 
 
