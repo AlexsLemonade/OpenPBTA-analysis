@@ -389,7 +389,9 @@ ggsave(
   cancer_group_umap_pdf,
   cancer_group_umap,
   width = 6.75, 
-  height = 5
+  height = 5, 
+  # need for figure compilation
+  useDingbats = FALSE
 )
 ```
 
