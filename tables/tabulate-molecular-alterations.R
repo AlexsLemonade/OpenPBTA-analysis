@@ -203,18 +203,18 @@ alterations_df <- list(maf_df, fusion_df, cnv_df) %>%
   tibble::as_tibble()
 
 # Ensure we still have all the genes at least _somewhere_ in the data frame
-if (!(length(unique(alterations_df$Hugo_Symbol)) == length(gene_list))) {
+if (length(unique(alterations_df$Hugo_Symbol)) != length(gene_list)) {
   stop("Some genes are missing from the alteration df.")
 }
 
 # Convert to presence/absence of _all combinations_ of genes and variants for each sample_id
 alterations_presence_df <- alterations_df %>%
   # If the row is here already, then the alteration is present
-  dplyr::mutate(present = "Y") %>% 
+  dplyr::mutate(present = TRUE) %>% 
   # Fill in all combinatins of gene/variant for each sample, 
-  #  filling in "N" (no) for present for any new rows 
+  #  filling in FALSE for present for any new rows 
   tidyr::complete(sample_id, Hugo_Symbol, Variant_Classification, 
-                  fill = list(present = "N")) %>%
+                  fill = list(present = FALSE)) %>%
   dplyr::distinct()
 
   
