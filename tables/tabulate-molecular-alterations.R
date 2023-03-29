@@ -5,18 +5,10 @@
 # This script is heavily inspired by:
 # https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/627ec427ad0a8d9d913e614c9db50546c56d8283/analyses/oncoprint-landscape/01-map-to-sample_id.R
 # 
-# Output file structure:
-#  sample_id    DNA BS     RNA BS     mapping_type       <------ alterations ------>
-#  XXXX-YYYY    BS_###     BS_###    <1:1 or 1:many>            Y/N values
-#
-# Note that the oncoprint module is assumed to have been run before this script, 
-#  such that `scratch/oncoprint-plots/` is populated.
 
 # Define pipe
 `%>%` <- dplyr::`%>%`
 
-# helper variable for later - there should be 1074 tumors
-openpbta_n_tumors <- 1074
 
 # Set up paths ------------
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
@@ -173,10 +165,14 @@ prepare_cnv <- function(cnv_df, tumor_sample_ids_df) {
 
 #### Read in data ------------------------------------
 histologies_df <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
+  # this incidentally also filters out "Normal" tissue from the histologies file!
   dplyr::inner_join(
     readr::read_tsv(pal_file) %>%
       dplyr::select(cancer_group, cancer_group_display, broad_histology, broad_histology_display)
   )
+
+# Helper variable to check later steps. There are this many unique tumors + cell lines 
+openpbta_total_samples <- length(unique(histologies_df$sample_id))
 
 # Only keep required maf columns 
 keep_cols <-c("Hugo_Symbol", 
@@ -233,25 +229,29 @@ cnv_df <- dplyr::bind_rows(
 # WGS/WXS assay maps to an RNA-seq assay** for the purpose of tabulating molecular alterations
 
 tumor_sample_ids_df <- histologies_df %>%
-  dplyr::filter(sample_type == "Tumor",
-                composition == "Solid Tissue") %>%
   # keep these columns of interest moving forward:
   dplyr::select(sample_id, 
                 Kids_First_Biospecimen_ID, 
                 cancer_group_display, 
                 broad_histology_display, 
-                experimental_strategy, 
-                germline_sex_estimate) %>%
+                experimental_strategy) %>%
   dplyr::distinct() %>%
-  # annotate if it is ambiguous or: any rows with >2 sample_ids
-  # Associated with 2 sample_ids that have the same experimental strategy
-  dplyr::add_count(sample_id) %>%
-  dplyr::mutate(ambiguous = n > 2) %>% 
-  # now, annotate if it has multiple rows of SAME experimental_strategy (needed for later wrangling)
-  dplyr::add_count(sample_id, experimental_strategy) %>%
-  dplyr::mutate(multiple_exp_strategy = n >= 2) %>% 
-  # remove temporary counting column
-  dplyr::select(-n) %>%
+  # Next, we'll annotate ambiguous samples as those with either:
+  #  - There are >2 overall sample ids
+  #  - There is >1 of the same experimental stategy
+  # First tabulate those counts
+  dplyr::add_count(sample_id, experimental_strategy, name = "ambiguous_count1") %>%
+  dplyr::add_count(sample_id, name = "ambiguous_count2") %>%
+  # Then assign `ambiguous` accordingly
+  dplyr::mutate(
+    ambiguous = dplyr::case_when(
+      ambiguous_count1 > 1 ~ TRUE, 
+      ambiguous_count2 > 2 ~ TRUE,
+      TRUE ~ FALSE
+    )
+  ) %>%
+  # remove temporary counting columns
+  dplyr::select(-ambiguous_count1, -ambiguous_count2) %>%
   # add a modality column for later bookkeeping
   dplyr::mutate(modality = dplyr::case_when(
     experimental_strategy == "RNA-Seq" ~ "RNA",
@@ -263,8 +263,8 @@ tumor_sample_ids_df <- histologies_df %>%
   dplyr::select(-experimental_strategy)
 
 
-# Check that this is equal to `openpbta_n_tumors`
-if (!(length(unique(tumor_sample_ids_df$sample_id))) == openpbta_n_tumors) {
+# Check that this is equal to `openpbta_total_samples`
+if (!(length(unique(tumor_sample_ids_df$sample_id))) == openpbta_total_samples) {
   stop("Bad sample_id parsing.")
 } 
 
@@ -279,14 +279,6 @@ maf_df         <-  dplyr::filter(maf_df, Tumor_Sample_Barcode %in% bs_ids)
 fusion_df      <-  dplyr::filter(fusion_df, Sample %in% bs_ids) 
 cnv_df         <-  dplyr::filter(cnv_df, biospecimen_id %in% bs_ids) 
 
-# What are all the bs ids that end up being considered? 
-# This variable can be used when joining things back up
-final_bs_ids <- length(unique(
-  c(
-    maf_df$Tumor_Sample_Barcode,
-    fusion_df$Sample,
-    cnv_df$biospecimen_id
-)))
 
 
 
@@ -356,13 +348,15 @@ alterations_presence_df <- alterations_df %>%
 #   where there are multiple same-modality experiments (since we are working with all samples, not `primary-only`)
 
 ## Combine alterations_presence_df with biospecimen sample ids ----------------------
-  
+
+
+
 # First, let's "combine" the ambiguous ids: 
 # For multiple DNA or RNA for a given sample_id, convert to a semi-colon separated single value
 # For example, two DNA ids on separate rows named BS_1 and BS_2 would be collapsed into `BS_1; BS2`
 merged_ambiguous_ids <- tumor_sample_ids_df %>%
   # get only samples of interest
-  dplyr::filter(ambiguous | multiple_exp_strategy) %>%
+  dplyr::filter(ambiguous) %>%
   # for each sample_id, combine biospecimen ids by modality to have 
   # at most one "value" (semi-colon separated list) for each modality 
   dplyr::group_by(sample_id, modality) %>%
@@ -383,9 +377,9 @@ merged_ambiguous_ids <- tumor_sample_ids_df %>%
       germline_sex_estimate
     )
   ) %>%
-  dplyr::distinct() %>%
+  dplyr::distinct()# %>%
   # add indicator that these are ambiguous mappings
-  dplyr::mutate(ambiguous_biospecimen_mapping = TRUE)
+ # dplyr::mutate(ambiguous_biospecimen_mapping = TRUE)
 
 
 # Now, subset to just the identifiable ids and bind_rows with `merged_ambiguous_ids` for final processing
@@ -400,9 +394,9 @@ prepared_ids_df <- tumor_sample_ids_df %>%
   dplyr::bind_rows(merged_ambiguous_ids) %>%
   dplyr::distinct()
 
-# Again, check that we've got everything: there should be `openpbta_n_tumors` 
+# Again, check that we've got everything: there should be `openpbta_total_samples` 
 #  unique sample_id values
-if (length(unique(tumor_sample_ids_df$sample_id)) != openpbta_n_tumors) {
+if (length(unique(tumor_sample_ids_df$sample_id)) != openpbta_total_samples) {
   stop("An error occurred while dealing with ambiguous vs. identifiable biospecimen ids.")
 } 
 
