@@ -26,6 +26,7 @@ input_dir <- file.path(root_dir, "analyses", "survival-analysis", "results", "su
 
 
 ## Input and output files -------------------------------------
+# here, $model has the model and $data has the associated data
 survival_result <- read_rds(
   file.path(
     input_dir,
@@ -53,11 +54,11 @@ term_labels <- rev(c("HGG - H3 wildtype",
 
 
 # Get n and event info from glance output
-survival_n <- broom::glance(survival_result) %>%
+survival_n <- broom::glance(survival_result$model) %>%
   select(n, nevent)
 
 # Convert survival model result to data frame, and exponentiate estimates/CIs to get HRs
-survival_df <- broom::tidy(survival_result) %>%
+survival_df <- broom::tidy(survival_result$model) %>%
   # Add DMG, H3 K28 as reference
   add_row(term = ref_term, 
           estimate = 0) %>% 
@@ -183,7 +184,14 @@ ggsave(forest_pdf, forest_panels, width = 10, height = 3)
 
 
 # Export CSV for Zenodo upload
-# no samples so nothing to arrange
-readr::write_csv(survival_df, fig4g_csv)
-
+survival_result$data %>%
+  # order columns and only keep columns that are in the model:
+  # OS_status and OS_years
+  # ~ molecular_subtype
+  dplyr::select(Kids_First_Biospecimen_ID, 
+                OS_years, 
+                OS_status,
+                molecular_subtype) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_csv(fig4g_csv)
 

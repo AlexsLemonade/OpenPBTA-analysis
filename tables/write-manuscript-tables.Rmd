@@ -527,15 +527,16 @@ cox_epn <- readRDS(cox_epn_tp53_file)
 cox_mb_quantiseq <- readRDS(cox_mb_quantiseq_file)
 
 # Make function to tidy files
-process_survival <- function(df){
-  broom::tidy(df) %>%
-  mutate(HR = exp(estimate),
-         conf.low = exp(conf.low),
-         conf.high = exp(conf.high)
-  ) %>%
-  # make this character so it prints in excel
-  mutate(conf.high = ifelse(is.infinite(conf.high), "Inf", conf.high)) %>%
-  select(-estimate)
+process_survival <- function(model){
+  model$model %>%
+    broom::tidy() %>%
+    mutate(HR = exp(estimate),
+          conf.low = exp(conf.low),
+          conf.high = exp(conf.high)
+    ) %>%
+    # make this character so it prints in excel
+    mutate(conf.high = ifelse(is.infinite(conf.high), "Inf", conf.high)) %>%
+    select(-estimate)
 }
 
 # Tidy files
