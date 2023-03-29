@@ -26,6 +26,7 @@ input_dir <- file.path(root_dir, "analyses", "survival-analysis", "results", "im
 
 
 ## Input and output files -------------------------------------
+# note that $model contains the model, and $data is the data that went into the model
 survival_result <- read_rds(
   file.path(
     input_dir,
@@ -74,11 +75,11 @@ term_labels <- rev(c("CD274 expression (FPKM)",
 
 
 # Get n and event info from glance outpout
-survival_n <- broom::glance(survival_result) %>%
+survival_n <- broom::glance(survival_result$model) %>%
   select(n, nevent)
 
 # Convert survival model result to data frame, and exponentiate estimates/CIs to get HRs
-survival_df <- broom::tidy(survival_result) %>%
+survival_df <- broom::tidy(survival_result$model) %>%
   # add reference
   add_row(term = ref_term, estimate = 0) %>%
   # remove the unbounded Macrophage_M1:
@@ -201,8 +202,21 @@ ggsave(forest_pdf, forest_panels, width = 15, height = 4.5)
 
 
 # Export CSV for Zenodo upload
-# no samples so nothing to arrange
-readr::write_csv(survival_df, fig5d_csv)
-
-
-
+survival_result$data %>%
+  # order columns and only keep columns that are in the model:
+  # OS_status and OS_years
+  # ~ <quantiseq terms>+CD274+extent_of_tumor_resection"
+  dplyr::select(Kids_First_Biospecimen_ID, 
+                OS_years, 
+                OS_status,
+                extent_of_tumor_resection,
+                CD274,
+                B_cell:last_col()) %>%
+  # recode OS_status back to LIVING/DECEASED
+  dplyr::mutate(OS_status = ifelse(
+    OS_status == 1, 
+    "LIVING", 
+    "DECEASED")
+  ) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_csv(fig5d_csv)

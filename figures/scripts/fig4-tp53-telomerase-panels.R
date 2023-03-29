@@ -59,7 +59,10 @@ extend_scores <- read_tsv(file.path(telomerase_dir, "results", "TelomeraseScores
 # Read in TMB for highlighting points in boxplots
 tmb_coding_df <- read_tsv(file.path(data_dir, "pbta-snv-consensus-mutation-tmb-coding.tsv"))
 
-# Read in survival model results for forest plot
+# Read in survival model results for forest plot. 
+#  Note that this object is a list:
+#   The model itself is in `$model`
+#   The data that went into the model is in `$data` 
 survival_result <- readRDS(file.path(
   survival_dir,
   "cox_additive_terms_tp53_telomerase_resect_glioma_group.RDS"
@@ -506,11 +509,11 @@ term_labels <- rev(c("TP53 score",
 
 
 # Get n and event info from glance outpout
-survival_n <- broom::glance(survival_result) %>%
+survival_n <- broom::glance(survival_result$model) %>%
   select(n, nevent)
 
 # Convert survival model result to data frame, and exponentiate estimates/CIs to get HRs
-survival_df <- broom::tidy(survival_result) %>%
+survival_df <- broom::tidy(survival_result$model) %>%
   # add references
   add_row(term = resect_ref, estimate = 0) %>%
   add_row(term = lgg_ref, estimate = 0) %>%
@@ -679,6 +682,24 @@ plot_df %>%
   readr::write_csv(fig4d_csv)
 
 
-# Panel 4F: HGG forest plot
-# no sample information so no arranging is needed
-readr::write_csv(survival_df, fig4f_csv)
+# Panel 4F: TP53 and telomerase forest plot
+survival_result$data %>%
+  # order columns and only keep columns that are in the model: 
+  # OS_status and OS_years
+  # tp53_score+telomerase_score+extent_of_tumor_resection+lgg_group+hgg_group"
+  dplyr::select(Kids_First_Biospecimen_ID, 
+                OS_years, 
+                OS_status,
+                tp53_score, 
+                telomerase_score, 
+                extent_of_tumor_resection,
+                lgg_group,
+                hgg_group) %>%
+  # recode OS_status back to LIVING/DECEASED
+  dplyr::mutate(OS_status = ifelse(
+    OS_status == 1, 
+    "LIVING", 
+    "DECEASED")
+  ) %>%
+  dplyr::arrange(Kids_First_Biospecimen_ID) %>%
+  readr::write_csv(fig4f_csv)
