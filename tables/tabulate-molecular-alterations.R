@@ -55,7 +55,7 @@ histologies_df <- readr::read_tsv(metadata_file, guess_max = 10000)
 pal_df         <- readr::read_tsv(pal_file) 
 
 # maf and hotspots data
-maf_df     <- readr::read_tsv(maf_file) %>%
+maf_df     <- readr::read_tsv(maf_file)
 hotspot_df <- readr::read_tsv(hotspots_maf_file) 
 
 # dusion data
