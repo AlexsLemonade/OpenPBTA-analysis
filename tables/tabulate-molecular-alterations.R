@@ -55,10 +55,8 @@ histologies_df <- readr::read_tsv(metadata_file, guess_max = 10000)
 pal_df         <- readr::read_tsv(pal_file) 
 
 # maf and hotspots data
-maf_df  <- readr::read_tsv(maf_file, guess_max = 10000) %>%
-  dplyr::bind_rows(
-    readr::read_tsv(hotspots_maf_file, guess_max = 10000) 
-  )
+maf_df     <- readr::read_tsv(maf_file) %>%
+hotspot_df <- readr::read_tsv(hotspots_maf_file) 
 
 # dusion data
 fusion_df <- readr::read_tsv(fusion_file)
@@ -105,8 +103,15 @@ maf_keep_cols <-c("Tumor_Sample_Barcode",
                   "HGVSp", 
                   "HGVSc")
 
+# subset columns first to enable combining dfs; they have some different 
+#  data types in other columns we're getting rid of
+hotspots_df <- hotspots_df %>%
+  dplyr::select(maf_keep_cols)
+
 maf_df <- maf_df %>%
   dplyr::select(maf_keep_cols) %>%
+  # combine
+  dplyr::bind_rows(hotspots_df) %>%
   # filter to only relevant genes and ids
   dplyr::filter(Hugo_Symbol %in% gene_list,
                 Tumor_Sample_Barcode %in% bs_ids) %>%
