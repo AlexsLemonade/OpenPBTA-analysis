@@ -1,10 +1,10 @@
 # S. Spielman 2023 for CCDL
 # 
-# This script tabulates, for _all samples_ in OpenPBTA cohort, the presence/absence of 
-#  alterations depicted in the manuscript's oncoprint plots.
-# This script is heavily inspired by:
+# This script tabulates, for _all samples_ in OpenPBTA cohort, the specific alterations present in 
+# each sample for genes that are present in the manuscript's oncoprint plots.
+# Aspects of this script are inspired by:
 # https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/627ec427ad0a8d9d913e614c9db50546c56d8283/analyses/oncoprint-landscape/01-map-to-sample_id.R
-# 
+
 
 # Define pipe
 `%>%` <- dplyr::`%>%`
@@ -27,7 +27,7 @@ gene_list <- c("ACVR1", "APC", "ATM", "ATRX", "BCOR", "BRAF",
 
 
 
-# Set up paths -----------------------------------------
+## Set up paths -----------------------------------------
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
 oncoprint_dir <- file.path(root_dir,
@@ -48,27 +48,22 @@ zenodo_csv_file <- file.path(root_dir,
                              "zenodo-upload",
                              "openpbta-molecular-alterations.tsv")
 
-#### Read in data ------------------------------------
+## Read in data ------------------------------------
 
-histologies_df <- readr::read_tsv(metadata_file, guess_max = 10000) %>%
-  # this incidentally also filters out "Normal" tissue from the histologies file!
-  dplyr::inner_join(
-    readr::read_tsv(pal_file) %>%
-      dplyr::select(cancer_group, cancer_group_display, broad_histology, broad_histology_display)
+# metadata
+histologies_df <- readr::read_tsv(metadata_file, guess_max = 10000)
+pal_df         <- readr::read_tsv(pal_file) 
+
+# maf and hotspots data
+maf_df  <- readr::read_tsv(maf_file, guess_max = 10000) %>%
+  dplyr::bind_rows(
+    readr::read_tsv(hotspots_maf_file, guess_max = 10000) 
   )
 
-# Helper variable to check later steps. There are this many unique tumors + cell lines 
-openpbta_total_samples <- length(unique(histologies_df$sample_id))
-
-
-# Read maf and hotspots data
-maf_df <- readr::read_tsv(maf_file) 
-hotspots_maf_df <- readr::read_tsv(hotspots_maf_file) 
-
-# Read fusion data
+# dusion data
 fusion_df <- readr::read_tsv(fusion_file)
 
-# Read CNV data
+# CNV data: autosomes and XY
 cnv_df <- readr::read_tsv(cnv_autosomes_file) %>%
   dplyr::bind_rows(
     readr::read_tsv(cnv_xy_file)
@@ -76,16 +71,13 @@ cnv_df <- readr::read_tsv(cnv_autosomes_file) %>%
 
 ## Filter to relevant tumors and metadata -----------------------------------------
 
-
-# TODO: UPDATE COMMENT IN THE END
-# To begin, we'll update `histologies_df` to store only relevant metadata.
-# As part of this, we'll note if a sample_id is ambiguous. Ambiguous sample_id's will 
-# have more than 2 rows associated with it in the histologies file when looking at 
-# tumor samples -- that means we won't necessarily be able to determine **when an 
-# WGS/WXS assay maps to an RNA-seq assay** for the purpose of tabulating molecular alterations.
-# Alternatively, ambiguous sample_id's will have multiple biospecimens of the same experimental strategy.
-
+# To begin, we'll update `histologies_df` to store only relevant tumors metadata.
 histologies_df <- histologies_df %>%
+  # this inner join will remove "Normal" samples, since they do not have display variables
+  dplyr::inner_join(
+    dplyr::select(pal_df, 
+                  cancer_group, cancer_group_display, broad_histology, broad_histology_display)
+  )
   # keep these columns of interest moving forward:
   dplyr::select(sample_id, 
                 Kids_First_Biospecimen_ID, 
@@ -94,15 +86,11 @@ histologies_df <- histologies_df %>%
                 experimental_strategy,
                 germline_sex_estimate) %>%
   dplyr::distinct() 
-  # ambiguity tracking may no longer be needed
 
+# Helper variable to check later that we've gotten all the samples.
+openpbta_total_samples <- length(unique(histologies_df$sample_id))
 
-# Check that this is equal to `openpbta_total_samples`
-if (!(length(unique(histologies_df$sample_id))) == openpbta_total_samples) {
-  stop("Bad sample_id parsing.")
-} 
-
-# Pull out biospecimen id column for convenience 
+# Pull out biospecimen id column for conveniently processing maf, fusion, cnv data 
 bs_ids <- histologies_df %>%
   dplyr::pull(Kids_First_Biospecimen_ID) %>%
   unique() 
@@ -117,14 +105,8 @@ maf_keep_cols <-c("Tumor_Sample_Barcode",
                   "HGVSp", 
                   "HGVSc")
 
-# Subset columns before combining dfs
 maf_df <- maf_df %>%
-  dplyr::select(maf_keep_cols) 
-  
-maf_df <- hotspots_maf_df %>%
   dplyr::select(maf_keep_cols) %>%
-  # combine maf and hotspots
-  dplyr::bind_rows(maf_df) %>%
   # filter to only relevant genes and ids
   dplyr::filter(Hugo_Symbol %in% gene_list,
                 Tumor_Sample_Barcode %in% bs_ids) %>%
@@ -222,24 +204,28 @@ cnv_df <- cnv_df %>%
 
 ## Combine alterations into single data frame and export -------------------------------
 
-# At this point, the three data frames have the same three columns:
+# At this point, the three data frames contain only relevant genes and samples.
+# They also have the same three columns:
 # biospecimen_ID, Hugo_Symbol, final_alteration
 
 alteration_df <- dplyr::bind_rows(
   maf_df, 
   fusion_df, 
   cnv_df) %>%
-  # ensure we have rows for all combinations of samples and genes
-  tidyr::complete(biospecimen_id, Hugo_Symbol) 
-
-
-# Now, we need handle situations with >1 alteration for a given gene. 
-# We'll group as semi-colon separated list
-alteration_df %>%
+  # Ensure we have rows for _all_ combinations of samples and genes, 
+  # including for sample/gene combinations that do not have alterations.
+  # Those samples will have `NA` alteration values
+  tidyr::complete(biospecimen_id, Hugo_Symbol) %>%
+  # Next, collapse where >1 alteration for a given sample/gene by grouping
+  # alterations as semi-colon separated string
   dplyr::group_by(biospecimen_id, Hugo_Symbol) %>%
   # define the final.final alteration for this sample at this gene
   dplyr::summarize(final_final_alteration = paste(final_alteration, collapse = "; ")) %>%
-  dplyr::ungroup() %>%
+  dplyr::ungroup() 
+
+
+# Wrangle into widen shape and prepare up for final export:
+zenodo_df <- alteration_df %>%
   # spread: Genes should be columns, and alterations should be values with `NA` for nothing detected
   # first, group on biospecimen_id so we have _one row_ per biospecimen_id
   dplyr::group_by(biospecimen_id) %>%
@@ -272,6 +258,12 @@ if (length(unique(zenodo_df$sample_id)) != openpbta_total_samples) {
 
 # Export to CSV file :tada:
 readr::write_csv(zenodo_df, zenodo_csv_file)
+
   
   
   
+
+
+
+
+
