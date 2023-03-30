@@ -225,34 +225,44 @@ cnv_df <- cnv_df %>%
 # At this point, the three data frames have the same three columns:
 # biospecimen_ID, Hugo_Symbol, final_alteration
 
-zenodo_df <- dplyr::bind_rows(
+alteration_df <- dplyr::bind_rows(
   maf_df, 
   fusion_df, 
   cnv_df) %>%
   # ensure we have rows for all combinations of samples and genes
-  tidyr::complete(biospecimen_id, Hugo_Symbol) %>%
+  tidyr::complete(biospecimen_id, Hugo_Symbol) 
+
+
+# Now, we need handle situations with >1 alteration for a given gene. 
+# We'll group as semi-colon separated list
+alteration_df %>%
+  dplyr::group_by(biospecimen_id, Hugo_Symbol) %>%
+  # define the final.final alteration for this sample at this gene
+  dplyr::summarize(final_final_alteration = paste(final_alteration, collapse = "; ")) %>%
+  dplyr::ungroup() %>%
   # spread: Genes should be columns, and alterations should be values with `NA` for nothing detected
-  # first we'll need a unique id per row
-  tibble::rowid_to_column() %>%
-  tidyr::spread(Hugo_Symbol, final_alteration) %>%
-  # rename for joining
+  # first, group on biospecimen_id so we have _one row_ per biospecimen_id
+  dplyr::group_by(biospecimen_id) %>%
+  tidyr::spread(Hugo_Symbol, final_final_alteration) %>%
+  dplyr::ungroup() %>%
+  # rename for joining with metadata
   dplyr::rename(Kids_First_Biospecimen_ID = biospecimen_id) %>%
-  # bring in some metadata
-  # use `full_join` to ensure all ids make it in the end
+  # bring in some metadata, using `full_join` to ensure all ids make it in the end
   dplyr::full_join(histologies_df) %>%
-  # rearrange a bit
+  # just in case, though there do not appear to be any duplicate rows!
+  dplyr::distinct() %>%
+  # rearrange columns a bit
   dplyr::select(
     sample_id, 
     Kids_First_Biospecimen_ID, 
     experimental_strategy, 
     germline_sex_estimate,
     dplyr::contains("display"),
-    dplyr::everything(), 
-    # but remove the counter column
-    -rowid
+    dplyr::everything()
   ) %>%
-  dplyr::arrange(sample_id) %>%
-  dplyr::distinct()
+  # Finally, arrange on sample_id
+  dplyr::arrange(sample_id) 
+
 
 # Check final.final count:
 if (length(unique(zenodo_df$sample_id)) != openpbta_total_samples) {
