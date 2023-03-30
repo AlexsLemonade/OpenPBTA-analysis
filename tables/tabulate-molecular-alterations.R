@@ -75,7 +75,7 @@ histologies_df <- histologies_df %>%
   dplyr::inner_join(
     dplyr::select(pal_df, 
                   cancer_group, cancer_group_display, broad_histology, broad_histology_display)
-  )
+  ) %>%
   # keep these columns of interest moving forward:
   dplyr::select(sample_id, 
                 Kids_First_Biospecimen_ID, 
@@ -83,7 +83,30 @@ histologies_df <- histologies_df %>%
                 broad_histology_display, 
                 experimental_strategy,
                 germline_sex_estimate) %>%
-  dplyr::distinct() 
+  dplyr::distinct() %>%
+  # Next, we'll annotate ambiguous samples as those with either:
+  #  - There are >2 overall sample ids
+  #  - There is >1 of the same experimental stategy
+  # First tabulate those counts
+  dplyr::add_count(sample_id, experimental_strategy, name = "ambiguous_count1") %>%
+  dplyr::add_count(sample_id, name = "ambiguous_count2") %>%
+  # Then assign `ambiguous` accordingly
+  dplyr::mutate(
+    ambiguous = dplyr::case_when(
+      ambiguous_count1 > 1 ~ TRUE, 
+      ambiguous_count2 > 2 ~ TRUE,
+      TRUE ~ FALSE
+    )
+  ) %>%
+  # remove temporary counting columns
+  dplyr::select(-ambiguous_count1, -ambiguous_count2) %>%
+  # Next, create a modality column to track if a given sample is DNA or RNA
+  dplyr::mutate(modality = dplyr::case_when(
+    experimental_strategy == "RNA-Seq" ~ "RNA",
+    experimental_strategy == "WGS"     ~ "DNA",
+    experimental_strategy == "WXS"     ~ "DNA",
+    experimental_strategy == "Targeted Sequencing" ~ "DNA"
+  )) 
 
 # Helper variable to check later that we've gotten all the samples.
 openpbta_total_samples <- length(unique(histologies_df$sample_id))
@@ -105,13 +128,13 @@ maf_keep_cols <-c("Tumor_Sample_Barcode",
 
 # subset columns first to enable combining dfs; they have some different 
 #  data types in other columns we're getting rid of
-hotspots_df <- hotspots_df %>%
+hotspot_df <- hotspot_df %>%
   dplyr::select(maf_keep_cols)
 
 maf_df <- maf_df %>%
   dplyr::select(maf_keep_cols) %>%
   # combine
-  dplyr::bind_rows(hotspots_df) %>%
+  dplyr::bind_rows(hotspot_df) %>%
   # filter to only relevant genes and ids
   dplyr::filter(Hugo_Symbol %in% gene_list,
                 Tumor_Sample_Barcode %in% bs_ids) %>%
@@ -217,52 +240,62 @@ alteration_df <- dplyr::bind_rows(
   maf_df, 
   fusion_df, 
   cnv_df) %>%
-  # Ensure we have rows for _all_ combinations of samples and genes, 
-  # including for sample/gene combinations that do not have alterations.
-  # Those samples will have `NA` alteration values
-  tidyr::complete(biospecimen_id, Hugo_Symbol) %>%
-  # Next, collapse where >1 alteration for a given sample/gene by grouping
-  # alterations as semi-colon separated string
-  dplyr::group_by(biospecimen_id, Hugo_Symbol) %>%
-  # define the final.final alteration for this sample at this gene
-  dplyr::summarize(final_final_alteration = paste(final_alteration, collapse = "; ")) %>%
-  dplyr::ungroup() 
-
-
-# Wrangle into widen shape and prepare up for final export:
-zenodo_df <- alteration_df %>%
-  # spread: Genes should be columns, and alterations should be values with `NA` for nothing detected
-  # first, group on biospecimen_id so we have _one row_ per biospecimen_id
-  dplyr::group_by(biospecimen_id) %>%
-  tidyr::spread(Hugo_Symbol, final_final_alteration) %>%
-  dplyr::ungroup() %>%
   # rename for joining with metadata
   dplyr::rename(Kids_First_Biospecimen_ID = biospecimen_id) %>%
-  # bring in some metadata, using `full_join` to ensure all ids make it in the end
-  dplyr::full_join(histologies_df) %>%
-  # just in case, though there do not appear to be any duplicate rows!
-  dplyr::distinct() %>%
-  # rearrange columns a bit
-  dplyr::select(
-    sample_id, 
-    Kids_First_Biospecimen_ID, 
-    experimental_strategy, 
-    germline_sex_estimate,
-    dplyr::contains("display"),
-    dplyr::everything()
+  dplyr::right_join(
+    # bring in the sample_id only, for now
+    dplyr::select(histologies_df, sample_id, Kids_First_Biospecimen_ID)
   ) %>%
-  # Finally, arrange on sample_id
-  dplyr::arrange(sample_id) 
+  # just in case, though there do not appear to be any duplicate rows!
+  dplyr::distinct() 
 
+
+# Get data frame of just ambiguous ids:
+identifiable_ids_df <- histologies_df %>%
+  dplyr::filter(!ambiguous) %>%
+  dplyr::select(sample_id, Kids_First_Biospecimen_ID, modality) %>%
+  tidyr::spread(modality, Kids_First_Biospecimen_ID) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID_DNA = DNA,
+                Kids_First_Biospecimen_ID_RNA = RNA) 
+
+# First, we'll handle the non-ambiguous samples:
+ identifiable_df <- alteration_df %>%
+   # Remove their biospecimen column, and join with matched biospecimens using sample_ids
+   dplyr::select(-Kids_First_Biospecimen_ID) %>%
+   dplyr::inner_join(identifiable_ids_df, by = "sample_id") %>% 
+   # not sure why hugo symbols are there
+   tidyr::drop_na(Hugo_Symbol) %>%
+   # Next, collapse where >1 alteration for a given sample/gene by grouping
+   # alterations as semi-colon separated string
+   dplyr::group_by(sample_id, Hugo_Symbol) %>%
+   # define the final.final alteration for this sample at this gene
+   dplyr::summarize(final_final_alteration = paste(final_alteration, collapse = "; ")) %>%
+   dplyr::ungroup() %>% 
+   # Fill in all combinations
+   tidyr::complete(sample_id, Hugo_Symbol) %>%
+  # Now, we can spread: Genes should be columns, and alterations should be 
+   #  values with `NA` for nothing detected
+   # First, group on sample_id so we have _one row_ per sample_id
+   dplyr::group_by(sample_id) %>%
+   tidyr::spread(Hugo_Symbol, final_final_alteration) %>%
+   dplyr::ungroup()
+ 
+# Ugh these aren't equal. probably the order up tehre.
+#  length(unique(identifiable_df$sample_id))  and  length(unique(histologies_df$sample_id[!(histologies_df$ambiguous)] ))
+
+
+  
+# TODO: We also need to indicate if each sample is in the manuscript or not. This comes into play for ambiguous samples
+# Will have to read in the independent specimens data to get this information
 
 # Check final.final count:
-if (length(unique(zenodo_df$sample_id)) != openpbta_total_samples) {
-  stop("An error occurred in final steps.")
-} 
+#if (length(unique(zenodo_df$sample_id)) != openpbta_total_samples) {
+#  stop("An error occurred in final steps.")
+#} 
 
 
 # Export to CSV file :tada:
-readr::write_csv(zenodo_df, zenodo_csv_file)
+#readr::write_csv(zenodo_df, zenodo_csv_file)
 
   
   
