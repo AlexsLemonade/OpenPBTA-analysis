@@ -52,7 +52,7 @@ fusion_file <- file.path(data_dir,
 zenodo_csv_file <- file.path(root_dir, 
                              "tables", 
                              "zenodo-upload",
-                             "openpbta-molecular-alterations.tsv")
+                             "openpbta-molecular-alterations.csv")
 
 ## Read in data ----------------------------------------------------------------
 
