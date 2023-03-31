@@ -1,4 +1,4 @@
-# S. Spielman 2023 for CCDL
+# S. Spielman and J. Taroni 2023 for CCDL
 # 
 # This script tabulates, for _all samples_ in OpenPBTA cohort, the specific alterations present in 
 # each sample for genes that are present in the manuscript's oncoprint plots.
@@ -8,7 +8,6 @@
 
 # Define pipe
 `%>%` <- dplyr::`%>%`
-
 
 # We specifically are interested in showing the Figure 2 (and S3B which has same genes as 2D) alterations but for all tumors.
 # The gene_list below contains the top GOIs identified in `scripts/figures/fig2_figS3-oncoprint-landscape.R`, sorted and de-duplicated
@@ -25,22 +24,29 @@ gene_list <- c("ACVR1", "APC", "ATM", "ATRX", "BCOR", "BRAF",
                "QKI", "RAF1", "RELA", "ROS1", "SETD2", "SMARCA4", 
                "TACC1", "TCF4", "TERT", "TP53", "YAP1", "ZIC1")
 
+# Later we'll need to use a list to fill in NAs with tidyr::replace_na()
+gene_fill_list <- list()
+for (gene in gene_list) gene_fill_list[[gene]] <-  "None"
 
+## Set up paths ----------------------------------------------------------------
 
-## Set up paths -----------------------------------------
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
-oncoprint_dir <- file.path(root_dir,
-                           "analyses", 
-                           "oncoprint-landscape")
-
-pal_file           <- file.path(root_dir, "figures", "palettes", "broad_histology_cancer_group_palette.tsv")
-metadata_file      <- file.path(data_dir, "pbta-histologies.tsv")
-maf_file           <- file.path(data_dir, "pbta-snv-consensus-mutation.maf.tsv.gz")
-hotspots_maf_file  <- file.path(data_dir, "pbta-snv-scavenged-hotspots.maf.tsv.gz")
-cnv_autosomes_file <- file.path(data_dir, "consensus_seg_annotated_cn_autosomes.tsv.gz")
-cnv_xy_file        <- file.path(data_dir, "consensus_seg_annotated_cn_x_and_y.tsv.gz")
-fusion_file        <- file.path(data_dir, "pbta-fusion-putative-oncogenic.tsv")
+palette_file <- file.path(root_dir, 
+                          "figures", 
+                          "palettes", 
+                          "broad_histology_cancer_group_palette.tsv")
+metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
+maf_file <- file.path(data_dir, 
+                      "pbta-snv-consensus-mutation.maf.tsv.gz")
+hotspots_maf_file <- file.path(data_dir, 
+                               "pbta-snv-scavenged-hotspots.maf.tsv.gz")
+cnv_autosomes_file <- file.path(data_dir, 
+                                "consensus_seg_annotated_cn_autosomes.tsv.gz")
+cnv_xy_file <- file.path(data_dir, 
+                         "consensus_seg_annotated_cn_x_and_y.tsv.gz")
+fusion_file <- file.path(data_dir, 
+                         "pbta-fusion-putative-oncogenic.tsv")
 
 # Output CSV file
 zenodo_csv_file <- file.path(root_dir, 
@@ -48,17 +54,17 @@ zenodo_csv_file <- file.path(root_dir,
                              "zenodo-upload",
                              "openpbta-molecular-alterations.tsv")
 
-## Read in data ------------------------------------
+## Read in data ----------------------------------------------------------------
 
 # metadata
 histologies_df <- readr::read_tsv(metadata_file, guess_max = 10000)
-pal_df         <- readr::read_tsv(pal_file) 
+palette_df <- readr::read_tsv(palette_file) 
 
 # maf and hotspots data
-maf_df     <- readr::read_tsv(maf_file)
+maf_df <- readr::read_tsv(maf_file)
 hotspot_df <- readr::read_tsv(hotspots_maf_file) 
 
-# dusion data
+# fusion data
 fusion_df <- readr::read_tsv(fusion_file)
 
 # CNV data: autosomes and XY
@@ -67,57 +73,7 @@ cnv_df <- readr::read_tsv(cnv_autosomes_file) %>%
     readr::read_tsv(cnv_xy_file)
   )
 
-## Filter to relevant tumors and metadata -----------------------------------------
-
-# To begin, we'll update `histologies_df` to store only relevant tumors metadata.
-histologies_df <- histologies_df %>%
-  # this inner join will remove "Normal" samples, since they do not have display variables
-  dplyr::inner_join(
-    dplyr::select(pal_df, 
-                  cancer_group, cancer_group_display, broad_histology, broad_histology_display)
-  ) %>%
-  # keep these columns of interest moving forward:
-  dplyr::select(sample_id, 
-                Kids_First_Biospecimen_ID, 
-                cancer_group_display, 
-                broad_histology_display, 
-                experimental_strategy,
-                germline_sex_estimate) %>%
-  dplyr::distinct() %>%
-  # Next, we'll annotate ambiguous samples as those with either:
-  #  - There are >2 overall sample ids
-  #  - There is >1 of the same experimental stategy
-  # First tabulate those counts
-  dplyr::add_count(sample_id, experimental_strategy, name = "ambiguous_count1") %>%
-  dplyr::add_count(sample_id, name = "ambiguous_count2") %>%
-  # Then assign `ambiguous` accordingly
-  dplyr::mutate(
-    ambiguous = dplyr::case_when(
-      ambiguous_count1 > 1 ~ TRUE, 
-      ambiguous_count2 > 2 ~ TRUE,
-      TRUE ~ FALSE
-    )
-  ) %>%
-  # remove temporary counting columns
-  dplyr::select(-ambiguous_count1, -ambiguous_count2) %>%
-  # Next, create a modality column to track if a given sample is DNA or RNA
-  dplyr::mutate(modality = dplyr::case_when(
-    experimental_strategy == "RNA-Seq" ~ "RNA",
-    experimental_strategy == "WGS"     ~ "DNA",
-    experimental_strategy == "WXS"     ~ "DNA",
-    experimental_strategy == "Targeted Sequencing" ~ "DNA"
-  )) 
-
-# Helper variable to check later that we've gotten all the samples.
-openpbta_total_samples <- length(unique(histologies_df$sample_id))
-
-# Pull out biospecimen id column for conveniently processing maf, fusion, cnv data 
-bs_ids <- histologies_df %>%
-  dplyr::pull(Kids_First_Biospecimen_ID) %>%
-  unique() 
-
-
-## Prepare the maf data -------------------------------------
+## Prepare the maf data --------------------------------------------------------
 
 # Only keep maf columns relevant for annotating specific alterations
 maf_keep_cols <-c("Tumor_Sample_Barcode",
@@ -136,8 +92,7 @@ maf_df <- maf_df %>%
   # combine
   dplyr::bind_rows(hotspot_df) %>%
   # filter to only relevant genes and ids
-  dplyr::filter(Hugo_Symbol %in% gene_list,
-                Tumor_Sample_Barcode %in% bs_ids) %>%
+  dplyr::filter(Hugo_Symbol %in% gene_list) %>%
   dplyr::distinct() %>%
   dplyr::mutate(
     # assign the final alteration based on which piece 
@@ -150,12 +105,19 @@ maf_df <- maf_df %>%
   # remove original alteration columns
   dplyr::select(-HGVSp, -HGVSc, -Variant_Type) %>%
   # rename `Tumor_Sample_Barcode` -> `biospecimen_id` to enable later data joins
-  dplyr::rename(biospecimen_id = Tumor_Sample_Barcode)
+  dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode)
+
+# Add sample IDs and assay type
+maf_df <- histologies_df %>%
+  dplyr::select(sample_id,
+                Kids_First_Biospecimen_ID,
+                experimental_strategy) %>% 
+  dplyr::right_join(maf_df, 
+                    by = "Kids_First_Biospecimen_ID") %>%
+  dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID)
 
 
-
-
-## Prepare the fusion data ----------------------------------
+## Prepare the fusion data -----------------------------------------------------
 
 # We'll handle fusions where reciprocal fusions exist (e.g., 
 # reciprocal_exists == TRUE) separately from other fusions
@@ -176,7 +138,6 @@ fusion_reciprocal_df <- fusion_df %>%
   dplyr::select(Sample,
                 FusionName = SortedFusionName) %>%
   dplyr::distinct()
-
 
 # Combine non-reciprocal with reciprocal, and reshape into:
 # Fusion_ID, Sample, Partner, Hugo_Symol
@@ -199,109 +160,176 @@ fusion_df <- fusion_df %>%
   # remove the `Partner` and `Fusion_ID` columns that we won't need anymore:
   dplyr::select(-Partner, -Fusion_ID) %>%
   # filter to only relevant genes and ids
-  dplyr::filter(Hugo_Symbol %in% gene_list,
-                Sample %in% bs_ids) %>%
+  dplyr::filter(Hugo_Symbol %in% gene_list) %>%
   # rename `Sample` -> `biospecimen_id` and `FusionName` -> `final_alteration`
   #  to enable later data joins
-  dplyr::rename(biospecimen_id = Sample, 
+  dplyr::rename(Kids_First_Biospecimen_ID = Sample, 
                 final_alteration = FusionName) 
-
-
 
 # now can remove the reciprocal: 
 rm(fusion_reciprocal_df)
 
-## Prepare the CNV data --------------------------------------
+# Add sample id and assay type
+fusion_df <- histologies_df %>%
+  dplyr::select(sample_id,
+                Kids_First_Biospecimen_ID,
+                experimental_strategy) %>% 
+  dplyr::right_join(fusion_df, 
+                    by = "Kids_First_Biospecimen_ID") %>%
+  dplyr::rename(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID)
+
+## Prepare the CNV data --------------------------------------------------------
 
 cnv_df <- cnv_df %>%
   # filter to only relevant genes and ids
-  dplyr::filter(gene_symbol %in% gene_list,
-                biospecimen_id %in% bs_ids) %>%
+  dplyr::filter(gene_symbol %in% gene_list) %>%
   # create a single variable indicating the type of CNV we have
   dplyr::mutate(
     final_alteration = glue::glue("{cytoband}-{status}-{copy_number}")
   ) %>%
   # select only relevant columns moving forward
   dplyr::select(
-    biospecimen_id, 
+    Kids_First_Biospecimen_ID = biospecimen_id, 
     Hugo_Symbol = gene_symbol, 
     final_alteration
   )
 
+# Add sample id and assay type
+cnv_df <- histologies_df %>%
+  dplyr::select(sample_id,
+                Kids_First_Biospecimen_ID,
+                experimental_strategy) %>% 
+  dplyr::right_join(cnv_df, 
+                    by = "Kids_First_Biospecimen_ID") %>%
+  dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID)
 
 
-## Combine alterations into single data frame and export -------------------------------
+## DNA alterations -------------------------------------------------------------
 
-# At this point, the three data frames contain only relevant genes and samples.
-# They also have the same three columns:
-# biospecimen_ID, Hugo_Symbol, final_alteration
+dna_alterations_df <- maf_df %>%
+  dplyr::bind_rows(cnv_df) %>%
+  dplyr::group_by(sample_id, 
+                  Hugo_Symbol) %>%
+  dplyr::summarize(final_alteration = paste(sort(unique(final_alteration)),  
+                                            collapse = "; ")) %>%
+  dplyr::ungroup()
 
-alteration_df <- dplyr::bind_rows(
-  maf_df, 
-  fusion_df, 
-  cnv_df) %>%
-  # rename for joining with metadata
-  dplyr::rename(Kids_First_Biospecimen_ID = biospecimen_id) %>%
-  dplyr::right_join(
-    # bring in the sample_id only, for now
-    dplyr::select(histologies_df, sample_id, Kids_First_Biospecimen_ID)
+## RNA alterations -------------------------------------------------------------
+
+# Just fusions in this case!
+rna_alterations_df <- fusion_df %>%
+  dplyr::select(-experimental_strategy) %>%
+  dplyr::group_by(sample_id, 
+                  Hugo_Symbol) %>%
+  dplyr::summarize(final_alteration = paste(sort(unique(final_alteration)),  
+                                            collapse = "; ")) %>%
+  dplyr::ungroup()
+
+
+## Alterations -----------------------------------------------------------------
+
+alterations_df <- dna_alterations_df %>%
+  dplyr::full_join(rna_alterations_df,
+                   by = c("sample_id",
+                          "Hugo_Symbol"),
+                   suffix = c("_DNA", "_RNA")) %>%
+  dplyr::select(sample_id,
+                Hugo_Symbol,
+                final_alteration_DNA,
+                final_alteration_RNA) %>%
+  dplyr::mutate(final_alteration = dplyr::case_when(
+    !is.na(final_alteration_DNA) & 
+      !is.na(final_alteration_RNA) ~ paste(final_alteration_DNA,
+                                           final_alteration_RNA,
+                                           sep = "; "),
+    is.na(final_alteration_DNA) ~ final_alteration_RNA,
+    is.na(final_alteration_RNA) ~ final_alteration_DNA
+  )) %>%
+  dplyr::select(sample_id,
+                Hugo_Symbol,
+                final_alteration) %>%
+  dplyr::distinct()
+
+alterations_wide_df <- alterations_df %>%
+  dplyr::group_by(sample_id) %>%
+  tidyr::spread(Hugo_Symbol,
+                final_alteration,
+                fill = "None")
+
+## Clean up --------------------------------------------------------------------
+
+rm(hotspot_df, 
+   cnv_df,
+   maf_df,
+   fusion_df,
+   dna_alterations_df,
+   rna_alterations_df)
+
+## Deal with identifiers -------------------------------------------------------
+
+identifiers_df <- histologies_df %>%
+  dplyr::filter(sample_type != "Normal") %>%
+  dplyr::select(sample_id,
+                Kids_First_Biospecimen_ID,
+                experimental_strategy) %>%
+  dplyr::mutate(assay_type = dplyr::case_when(
+    experimental_strategy == "RNA-Seq" ~ "RNA",
+    experimental_strategy == "WGS" ~ "DNA",
+    experimental_strategy == "WXS" ~ "DNA",
+    experimental_strategy == "Targeted Sequencing" ~ "DNA"
+  )) %>%
+  dplyr::select(-experimental_strategy)
+
+multimapped_sample_ids <- identifiers_df %>%
+  dplyr::group_by(sample_id) %>%
+  dplyr::tally() %>%
+  dplyr::filter(n > 2) %>%
+  dplyr::pull(sample_id)
+
+identifiers_df <- identifiers_df %>%
+  dplyr::group_by(sample_id, assay_type) %>%
+  dplyr::summarize(biospecimen_ids = paste(sort(unique(Kids_First_Biospecimen_ID)),  
+                                           collapse = "; ")) %>%
+  tidyr::spread(assay_type, biospecimen_ids) %>%
+  dplyr::rename(Kids_First_Biospecimen_ID_DNA = DNA, 
+                Kids_First_Biospecimen_ID_RNA = RNA) %>%
+  dplyr::mutate(multimapped = dplyr::if_else(
+    sample_id %in% multimapped_sample_ids,
+    true = TRUE,
+    false = FALSE
+  ))
+
+
+metadata_df <- histologies_df %>%
+  dplyr::filter(sample_type != "Normal") %>%
+  dplyr::select(
+    sample_id,
+    sample_type,
+    composition,
+    germline_sex_estimate,
+    broad_histology,
+    cancer_group
   ) %>%
-  # just in case, though there do not appear to be any duplicate rows!
-  dplyr::distinct() 
+  dplyr::distinct() %>%
+  dplyr::left_join(identifiers_df,
+                    by = "sample_id") %>%
+  dplyr::select(sample_id,
+                Kids_First_Biospecimen_ID_DNA,
+                Kids_First_Biospecimen_ID_RNA,
+                multimapped,
+                sample_type,
+                composition,
+                germline_sex_estimate,
+                broad_histology,
+                cancer_group,
+                dplyr::everything())
+
+final_alterations_df <- metadata_df %>%
+  dplyr::left_join(alterations_wide_df,
+                   by = "sample_id") %>%
+  tidyr::replace_na(replace = gene_fill_list) %>%
+  dplyr::arrange(sample_id)
 
 
-# Get data frame of just ambiguous ids:
-identifiable_ids_df <- histologies_df %>%
-  dplyr::filter(!ambiguous) %>%
-  dplyr::select(sample_id, Kids_First_Biospecimen_ID, modality) %>%
-  tidyr::spread(modality, Kids_First_Biospecimen_ID) %>%
-  dplyr::rename(Kids_First_Biospecimen_ID_DNA = DNA,
-                Kids_First_Biospecimen_ID_RNA = RNA) 
-
-# First, we'll handle the non-ambiguous samples:
- identifiable_df <- alteration_df %>%
-   # Remove their biospecimen column, and join with matched biospecimens using sample_ids
-   dplyr::select(-Kids_First_Biospecimen_ID) %>%
-   dplyr::inner_join(identifiable_ids_df, by = "sample_id") %>% 
-   # not sure why hugo symbols are there
-   tidyr::drop_na(Hugo_Symbol) %>%
-   # Next, collapse where >1 alteration for a given sample/gene by grouping
-   # alterations as semi-colon separated string
-   dplyr::group_by(sample_id, Hugo_Symbol) %>%
-   # define the final.final alteration for this sample at this gene
-   dplyr::summarize(final_final_alteration = paste(final_alteration, collapse = "; ")) %>%
-   dplyr::ungroup() %>% 
-   # Fill in all combinations
-   tidyr::complete(sample_id, Hugo_Symbol) %>%
-  # Now, we can spread: Genes should be columns, and alterations should be 
-   #  values with `NA` for nothing detected
-   # First, group on sample_id so we have _one row_ per sample_id
-   dplyr::group_by(sample_id) %>%
-   tidyr::spread(Hugo_Symbol, final_final_alteration) %>%
-   dplyr::ungroup()
- 
-# Ugh these aren't equal. probably the order up tehre.
-#  length(unique(identifiable_df$sample_id))  and  length(unique(histologies_df$sample_id[!(histologies_df$ambiguous)] ))
-
-
-  
-# TODO: We also need to indicate if each sample is in the manuscript or not. This comes into play for ambiguous samples
-# Will have to read in the independent specimens data to get this information
-
-# Check final.final count:
-#if (length(unique(zenodo_df$sample_id)) != openpbta_total_samples) {
-#  stop("An error occurred in final steps.")
-#} 
-
-
-# Export to CSV file :tada:
-#readr::write_csv(zenodo_df, zenodo_csv_file)
-
-  
-  
-  
-
-
-
-
+readr::write_csv(final_alterations_df, zenodo_csv_file)
 
