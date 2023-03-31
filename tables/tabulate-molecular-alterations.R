@@ -87,9 +87,10 @@ maf_keep_cols <-c("Tumor_Sample_Barcode",
 hotspot_df <- hotspot_df %>%
   dplyr::select(maf_keep_cols)
 
+# Final MAF alterations
 maf_df <- maf_df %>%
   dplyr::select(maf_keep_cols) %>%
-  # combine
+  # combine consensus MAF and hotspot MAF
   dplyr::bind_rows(hotspot_df) %>%
   # filter to only relevant genes and ids
   dplyr::filter(Hugo_Symbol %in% gene_list) %>%
@@ -107,11 +108,11 @@ maf_df <- maf_df %>%
   # rename `Tumor_Sample_Barcode` -> `biospecimen_id` to enable later data joins
   dplyr::rename(Kids_First_Biospecimen_ID = Tumor_Sample_Barcode)
 
-# Add sample IDs and assay type
+# Add sample IDs
 maf_df <- histologies_df %>%
   dplyr::select(sample_id,
                 Kids_First_Biospecimen_ID,
-                experimental_strategy) %>% 
+                composition) %>% 
   dplyr::right_join(maf_df, 
                     by = "Kids_First_Biospecimen_ID") %>%
   dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID)
@@ -169,11 +170,11 @@ fusion_df <- fusion_df %>%
 # now can remove the reciprocal: 
 rm(fusion_reciprocal_df)
 
-# Add sample id and assay type
+# Add sample IDs
 fusion_df <- histologies_df %>%
   dplyr::select(sample_id,
                 Kids_First_Biospecimen_ID,
-                experimental_strategy) %>% 
+                composition) %>% 
   dplyr::right_join(fusion_df, 
                     by = "Kids_First_Biospecimen_ID") %>%
   dplyr::rename(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID)
@@ -194,11 +195,11 @@ cnv_df <- cnv_df %>%
     final_alteration
   )
 
-# Add sample id and assay type
+# Add sample IDs and assay type
 cnv_df <- histologies_df %>%
   dplyr::select(sample_id,
                 Kids_First_Biospecimen_ID,
-                experimental_strategy) %>% 
+                composition) %>% 
   dplyr::right_join(cnv_df, 
                     by = "Kids_First_Biospecimen_ID") %>%
   dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID)
@@ -206,37 +207,43 @@ cnv_df <- histologies_df %>%
 
 ## DNA alterations -------------------------------------------------------------
 
+# Collapse by gene -- if more than one alteration is in a gene as detected via
+# DNA assay, separate them with ;
+# These will be alterations detected in *any* (at least 1) DNA assay associated 
+# with this sample_id
 dna_alterations_df <- maf_df %>%
   dplyr::bind_rows(cnv_df) %>%
   dplyr::group_by(sample_id, 
-                  Hugo_Symbol) %>%
+                  Hugo_Symbol,
+                  composition) %>%
   dplyr::summarize(final_alteration = paste(sort(unique(final_alteration)),  
                                             collapse = "; ")) %>%
   dplyr::ungroup()
 
 ## RNA alterations -------------------------------------------------------------
 
-# Just fusions in this case!
+# Collapse by gene -- if more than one fusion is the same gene, 
+# separate them with ;
+# These will be alterations detected in *any* RNA assay associated with this 
+# sample_id
 rna_alterations_df <- fusion_df %>%
-  dplyr::select(-experimental_strategy) %>%
   dplyr::group_by(sample_id, 
-                  Hugo_Symbol) %>%
+                  Hugo_Symbol,
+                  composition) %>%
   dplyr::summarize(final_alteration = paste(sort(unique(final_alteration)),  
                                             collapse = "; ")) %>%
   dplyr::ungroup()
 
-
-## Alterations -----------------------------------------------------------------
+## Alterations from DNA and RNA ------------------------------------------------
 
 alterations_df <- dna_alterations_df %>%
+  # Full join of DNA and RNA alterations by sample ID and gene symbol
   dplyr::full_join(rna_alterations_df,
                    by = c("sample_id",
-                          "Hugo_Symbol"),
+                          "Hugo_Symbol",
+                          "composition"),
                    suffix = c("_DNA", "_RNA")) %>%
-  dplyr::select(sample_id,
-                Hugo_Symbol,
-                final_alteration_DNA,
-                final_alteration_RNA) %>%
+  # Combine DNA and RNA alterations into one column where applicable
   dplyr::mutate(final_alteration = dplyr::case_when(
     !is.na(final_alteration_DNA) & 
       !is.na(final_alteration_RNA) ~ paste(final_alteration_DNA,
@@ -245,19 +252,25 @@ alterations_df <- dna_alterations_df %>%
     is.na(final_alteration_DNA) ~ final_alteration_RNA,
     is.na(final_alteration_RNA) ~ final_alteration_DNA
   )) %>%
+  # Remove the separate DNA and RNA alterations columns
   dplyr::select(sample_id,
                 Hugo_Symbol,
+                composition,
                 final_alteration) %>%
   dplyr::distinct()
 
+# Now spread this to get a wide version -- gene symbols become columns, and 
+# genes that are not altered in that sample are filled with "None"
 alterations_wide_df <- alterations_df %>%
-  dplyr::group_by(sample_id) %>%
+  dplyr::group_by(sample_id, 
+                  composition) %>%
   tidyr::spread(Hugo_Symbol,
                 final_alteration,
                 fill = "None")
 
 ## Clean up --------------------------------------------------------------------
 
+# Remove large-ish data frames we no longer need
 rm(hotspot_df, 
    cnv_df,
    maf_df,
@@ -267,41 +280,64 @@ rm(hotspot_df,
 
 ## Deal with identifiers -------------------------------------------------------
 
+# Create a data frame that tracks sample_ids, all DNA biospecimen IDs, all 
+# RNA biospecimen IDs, and whether or not there is "ambiguous" mapping between
+# DNA and RNA assays for a given sample_id
 identifiers_df <- histologies_df %>%
+  # Remove normal samples
   dplyr::filter(sample_type != "Normal") %>%
+  # Get only the relevant identifiers and the experimental strategy (to be 
+  # recoded)
   dplyr::select(sample_id,
                 Kids_First_Biospecimen_ID,
+                composition,
                 experimental_strategy) %>%
+  # Code experimental strategy to more general assay type
   dplyr::mutate(assay_type = dplyr::case_when(
     experimental_strategy == "RNA-Seq" ~ "RNA",
     experimental_strategy == "WGS" ~ "DNA",
     experimental_strategy == "WXS" ~ "DNA",
     experimental_strategy == "Targeted Sequencing" ~ "DNA"
-  )) %>%
-  dplyr::select(-experimental_strategy)
+  ))
 
-multimapped_sample_ids <- identifiers_df %>%
-  dplyr::group_by(sample_id) %>%
+# What samples have more than one DNA or RNA assay?
+multiassay_sample_ids <- identifiers_df %>%
+  dplyr::group_by(sample_id, 
+                  experimental_strategy,
+                  composition) %>%
   dplyr::tally() %>%
-  dplyr::filter(n > 2) %>%
+  dplyr::filter(n > 1) %>%
   dplyr::pull(sample_id)
 
+# Create a data frame where each sample_id is a row and samples with multiple
+# DNA or RNA assays have the biospecimen IDs separated by ;
 identifiers_df <- identifiers_df %>%
-  dplyr::group_by(sample_id, assay_type) %>%
+  dplyr::select(-experimental_strategy) %>%
+  # Create Kids_First_Biospecimen_ID_DNA and Kids_First_Biospecimen_ID_RNA 
+  # columns where multiple specimens are separated by ;
+  dplyr::group_by(sample_id,
+                  composition,
+                  assay_type) %>%
   dplyr::summarize(biospecimen_ids = paste(sort(unique(Kids_First_Biospecimen_ID)),  
                                            collapse = "; ")) %>%
   tidyr::spread(assay_type, biospecimen_ids) %>%
   dplyr::rename(Kids_First_Biospecimen_ID_DNA = DNA, 
                 Kids_First_Biospecimen_ID_RNA = RNA) %>%
-  dplyr::mutate(multimapped = dplyr::if_else(
-    sample_id %in% multimapped_sample_ids,
+  # Add indicator of when there are multiple DNA or RNA assays per sample
+  dplyr::mutate(multiple_assays_within_type = dplyr::if_else(
+    sample_id %in% multiassay_sample_ids,
     true = TRUE,
     false = FALSE
   ))
 
 
+## Histologies metadata to include ---------------------------------------------
+
 metadata_df <- histologies_df %>%
+  # Remove normal samples
   dplyr::filter(sample_type != "Normal") %>%
+  # Include sample type, composition, germline sex estimate, broad_histology,
+  # cancer group
   dplyr::select(
     sample_id,
     sample_type,
@@ -311,12 +347,14 @@ metadata_df <- histologies_df %>%
     cancer_group
   ) %>%
   dplyr::distinct() %>%
+  # Add the information about biospecimen ID
   dplyr::left_join(identifiers_df,
-                    by = "sample_id") %>%
+                    by = c("sample_id",
+                           "composition")) %>%
   dplyr::select(sample_id,
                 Kids_First_Biospecimen_ID_DNA,
                 Kids_First_Biospecimen_ID_RNA,
-                multimapped,
+                multiple_assays_within_type,
                 sample_type,
                 composition,
                 germline_sex_estimate,
@@ -324,12 +362,31 @@ metadata_df <- histologies_df %>%
                 cancer_group,
                 dplyr::everything())
 
+# Edge cases where multiple RNA assays mean that duplicate row without germline
+# sex estimate exist
+retain_rows <- dplyr::if_else(
+  !is.na(metadata_df$Kids_First_Biospecimen_ID_DNA) & 
+    is.na(metadata_df$germline_sex_estimate), 
+  FALSE, 
+  TRUE)
+
+# Remove the edge case rows
+metadata_df <- metadata_df %>%
+  dplyr::filter(retain_rows)
+
+
+## Create and save final table -------------------------------------------------
+
+# Add the metadata to the wide version of the alterations table
 final_alterations_df <- metadata_df %>%
   dplyr::left_join(alterations_wide_df,
-                   by = "sample_id") %>%
+                   by = c("sample_id",
+                          "composition")) %>%
+  # If something is NA, set it to "None" with the gene fill list
   tidyr::replace_na(replace = gene_fill_list) %>%
+  # Order by sample_id
   dplyr::arrange(sample_id)
 
-
+# Write to file
 readr::write_csv(final_alterations_df, zenodo_csv_file)
 
