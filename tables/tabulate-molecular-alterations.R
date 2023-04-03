@@ -308,12 +308,14 @@ multiassay_sample_ids <- identifiers_df %>%
                   composition) %>%
   dplyr::tally() %>%
   dplyr::filter(n > 1) %>%
-  dplyr::pull(sample_id)
+  dplyr::ungroup() %>%
+  dplyr::select(sample_id,
+                composition) %>%
+  dplyr::mutate(multiple_assays_within_type = TRUE)
 
 # Create a data frame where each sample_id is a row and samples with multiple
 # DNA or RNA assays have the biospecimen IDs separated by ;
 identifiers_df <- identifiers_df %>%
-  dplyr::select(-experimental_strategy) %>%
   # Create Kids_First_Biospecimen_ID_DNA and Kids_First_Biospecimen_ID_RNA
   # columns where multiple specimens are separated by ;
   dplyr::group_by(sample_id,
@@ -324,12 +326,9 @@ identifiers_df <- identifiers_df %>%
   tidyr::spread(assay_type, biospecimen_ids) %>%
   dplyr::rename(Kids_First_Biospecimen_ID_DNA = DNA,
                 Kids_First_Biospecimen_ID_RNA = RNA) %>%
-  # Add indicator of when there are multiple DNA or RNA assays per sample
-  dplyr::mutate(multiple_assays_within_type = dplyr::if_else(
-    sample_id %in% multiassay_sample_ids,
-    true = TRUE,
-    false = FALSE
-  ))
+  dplyr::left_join(multiassay_sample_ids,
+                   by = c("sample_id", "composition")) %>%
+  tidyr::replace_na(list(multiple_assays_within_type = FALSE))
 
 
 ## Histologies metadata to include ---------------------------------------------
