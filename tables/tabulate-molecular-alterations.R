@@ -1,6 +1,6 @@
 # S. Spielman and J. Taroni 2023 for CCDL
-# 
-# This script tabulates, for _all samples_ in OpenPBTA cohort, the specific alterations present in 
+#
+# This script tabulates, for _all samples_ in OpenPBTA cohort, the specific alterations present in
 # each sample for genes that are present in the manuscript's oncoprint plots.
 # Aspects of this script are inspired by:
 # https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/627ec427ad0a8d9d913e614c9db50546c56d8283/analyses/oncoprint-landscape/01-map-to-sample_id.R
@@ -13,15 +13,15 @@
 # The gene_list below contains the top GOIs identified in `scripts/figures/fig2_figS3-oncoprint-landscape.R`, sorted and de-duplicated
 # For further reference, see Figure 2:
 # https://github.com/AlexsLemonade/OpenPBTA-analysis/blob/aa929753fca0019294571ec813e6ae7224b1d8b8/figures/pngs/figure2.png
-gene_list <- c("ACVR1", "APC", "ATM", "ATRX", "BCOR", "BRAF", 
-               "C11orf95", "CDK6", "CTDNEP1", "CTNNB1", "DDX3X", 
-               "EGFR", "ERBB4", "EWSR1", "FGFR1", "FGFR2", "FOXO3", 
-               "H3F3A", "IGF1R", "KDM6A", "KIAA1549", "KIT", 
-               "KMT2C", "KMT2D", "KRAS", "KSR2", "MAML2", "MAMLD1", 
-               "MET", "MIR512-2", "MYB", "MYCN", "NF1", "NF2", 
-               "NTRK2", "NTRK3", "PDGFRA", "PIK3CA", "PIK3R1", 
-               "PPM1D", "PRKAR1A", "PTCH1", "PTEN", "PTPN11", 
-               "QKI", "RAF1", "RELA", "ROS1", "SETD2", "SMARCA4", 
+gene_list <- c("ACVR1", "APC", "ATM", "ATRX", "BCOR", "BRAF",
+               "C11orf95", "CDK6", "CTDNEP1", "CTNNB1", "DDX3X",
+               "EGFR", "ERBB4", "EWSR1", "FGFR1", "FGFR2", "FOXO3",
+               "H3F3A", "IGF1R", "KDM6A", "KIAA1549", "KIT",
+               "KMT2C", "KMT2D", "KRAS", "KSR2", "MAML2", "MAMLD1",
+               "MET", "MIR512-2", "MYB", "MYCN", "NF1", "NF2",
+               "NTRK2", "NTRK3", "PDGFRA", "PIK3CA", "PIK3R1",
+               "PPM1D", "PRKAR1A", "PTCH1", "PTEN", "PTPN11",
+               "QKI", "RAF1", "RELA", "ROS1", "SETD2", "SMARCA4",
                "TACC1", "TCF4", "TERT", "TP53", "YAP1", "ZIC1")
 
 # Later we'll need to use a list to fill in NAs with tidyr::replace_na()
@@ -32,25 +32,25 @@ for (gene in gene_list) gene_fill_list[[gene]] <-  "None"
 
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 data_dir <- file.path(root_dir, "data")
-palette_file <- file.path(root_dir, 
-                          "figures", 
-                          "palettes", 
+palette_file <- file.path(root_dir,
+                          "figures",
+                          "palettes",
                           "broad_histology_cancer_group_palette.tsv")
 metadata_file <- file.path(data_dir, "pbta-histologies.tsv")
-maf_file <- file.path(data_dir, 
+maf_file <- file.path(data_dir,
                       "pbta-snv-consensus-mutation.maf.tsv.gz")
-hotspots_maf_file <- file.path(data_dir, 
+hotspots_maf_file <- file.path(data_dir,
                                "pbta-snv-scavenged-hotspots.maf.tsv.gz")
-cnv_autosomes_file <- file.path(data_dir, 
+cnv_autosomes_file <- file.path(data_dir,
                                 "consensus_seg_annotated_cn_autosomes.tsv.gz")
-cnv_xy_file <- file.path(data_dir, 
+cnv_xy_file <- file.path(data_dir,
                          "consensus_seg_annotated_cn_x_and_y.tsv.gz")
-fusion_file <- file.path(data_dir, 
+fusion_file <- file.path(data_dir,
                          "pbta-fusion-putative-oncogenic.tsv")
 
 # Output CSV file
-zenodo_csv_file <- file.path(root_dir, 
-                             "tables", 
+zenodo_csv_file <- file.path(root_dir,
+                             "tables",
                              "zenodo-upload",
                              "openpbta-molecular-alterations.csv")
 
@@ -58,11 +58,11 @@ zenodo_csv_file <- file.path(root_dir,
 
 # metadata
 histologies_df <- readr::read_tsv(metadata_file, guess_max = 10000)
-palette_df <- readr::read_tsv(palette_file) 
+palette_df <- readr::read_tsv(palette_file)
 
 # maf and hotspots data
 maf_df <- readr::read_tsv(maf_file)
-hotspot_df <- readr::read_tsv(hotspots_maf_file) 
+hotspot_df <- readr::read_tsv(hotspots_maf_file)
 
 # fusion data
 fusion_df <- readr::read_tsv(fusion_file)
@@ -77,12 +77,12 @@ cnv_df <- readr::read_tsv(cnv_autosomes_file) %>%
 
 # Only keep maf columns relevant for annotating specific alterations
 maf_keep_cols <-c("Tumor_Sample_Barcode",
-                  "Hugo_Symbol", 
+                  "Hugo_Symbol",
                   "Variant_Type",
-                  "HGVSp", 
+                  "HGVSp",
                   "HGVSc")
 
-# subset columns first to enable combining dfs; they have some different 
+# subset columns first to enable combining dfs; they have some different
 #  data types in other columns we're getting rid of
 hotspot_df <- hotspot_df %>%
   dplyr::select(maf_keep_cols)
@@ -96,11 +96,11 @@ maf_df <- maf_df %>%
   dplyr::filter(Hugo_Symbol %in% gene_list) %>%
   dplyr::distinct() %>%
   dplyr::mutate(
-    # assign the final alteration based on which piece 
-    # of information is known, in this order of priority 
+    # assign the final alteration based on which piece
+    # of information is known, in this order of priority
     final_alteration = dplyr::case_when(
-      HGVSp != "." ~ HGVSp, 
-      HGVSc != "." ~ HGVSc, 
+      HGVSp != "." ~ HGVSp,
+      HGVSc != "." ~ HGVSc,
       TRUE ~ Variant_Type
     )) %>%
   # remove original alteration columns
@@ -112,15 +112,15 @@ maf_df <- maf_df %>%
 maf_df <- histologies_df %>%
   dplyr::select(sample_id,
                 Kids_First_Biospecimen_ID,
-                composition) %>% 
-  dplyr::right_join(maf_df, 
+                composition) %>%
+  dplyr::right_join(maf_df,
                     by = "Kids_First_Biospecimen_ID") %>%
   dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID)
 
 
 ## Prepare the fusion data -----------------------------------------------------
 
-# We'll handle fusions where reciprocal fusions exist (e.g., 
+# We'll handle fusions where reciprocal fusions exist (e.g.,
 # reciprocal_exists == TRUE) separately from other fusions
 fusion_reciprocal_df <- fusion_df %>%
   # Reciprocal fusions only
@@ -132,7 +132,7 @@ fusion_reciprocal_df <- fusion_df %>%
   dplyr::group_by(Sample, FusionName) %>%
   # Put genes in the fusions in alphabetical order to collapse
   dplyr::mutate(SortedFusionName = stringr::str_c(
-    sort( stringr::str_split(FusionName, "--", simplify = TRUE) ), 
+    sort( stringr::str_split(FusionName, "--", simplify = TRUE) ),
     collapse = "--")
   ) %>%
   dplyr::ungroup() %>%
@@ -151,10 +151,10 @@ fusion_df <- fusion_df %>%
   # combine with reciprocal rows
   dplyr::bind_rows(fusion_reciprocal_df) %>%
   # Separate the 5' and 3' genes
-  tidyr::separate(FusionName, c("Gene1", "Gene2"), sep = "--", 
+  tidyr::separate(FusionName, c("Gene1", "Gene2"), sep = "--",
                   # don't remove the alteration itself
                   remove = FALSE) %>%
-  # Use row numbers to mark unique fusions 
+  # Use row numbers to mark unique fusions
   tibble::rowid_to_column("Fusion_ID") %>%
   dplyr::select(Fusion_ID, FusionName, Sample, Gene1, Gene2) %>%
   tidyr::gather("Partner", "Hugo_Symbol", c("Gene1", "Gene2")) %>%
@@ -164,18 +164,18 @@ fusion_df <- fusion_df %>%
   dplyr::filter(Hugo_Symbol %in% gene_list) %>%
   # rename `Sample` -> `biospecimen_id` and `FusionName` -> `final_alteration`
   #  to enable later data joins
-  dplyr::rename(Kids_First_Biospecimen_ID = Sample, 
-                final_alteration = FusionName) 
+  dplyr::rename(Kids_First_Biospecimen_ID = Sample,
+                final_alteration = FusionName)
 
-# now can remove the reciprocal: 
+# now can remove the reciprocal:
 rm(fusion_reciprocal_df)
 
 # Add sample IDs
 fusion_df <- histologies_df %>%
   dplyr::select(sample_id,
                 Kids_First_Biospecimen_ID,
-                composition) %>% 
-  dplyr::right_join(fusion_df, 
+                composition) %>%
+  dplyr::right_join(fusion_df,
                     by = "Kids_First_Biospecimen_ID") %>%
   dplyr::rename(Kids_First_Biospecimen_ID_RNA = Kids_First_Biospecimen_ID)
 
@@ -190,8 +190,8 @@ cnv_df <- cnv_df %>%
   ) %>%
   # select only relevant columns moving forward
   dplyr::select(
-    Kids_First_Biospecimen_ID = biospecimen_id, 
-    Hugo_Symbol = gene_symbol, 
+    Kids_First_Biospecimen_ID = biospecimen_id,
+    Hugo_Symbol = gene_symbol,
     final_alteration
   )
 
@@ -199,8 +199,8 @@ cnv_df <- cnv_df %>%
 cnv_df <- histologies_df %>%
   dplyr::select(sample_id,
                 Kids_First_Biospecimen_ID,
-                composition) %>% 
-  dplyr::right_join(cnv_df, 
+                composition) %>%
+  dplyr::right_join(cnv_df,
                     by = "Kids_First_Biospecimen_ID") %>%
   dplyr::rename(Kids_First_Biospecimen_ID_DNA = Kids_First_Biospecimen_ID)
 
@@ -209,28 +209,28 @@ cnv_df <- histologies_df %>%
 
 # Collapse by gene -- if more than one alteration is in a gene as detected via
 # DNA assay, separate them with ;
-# These will be alterations detected in *any* (at least 1) DNA assay associated 
+# These will be alterations detected in *any* (at least 1) DNA assay associated
 # with this sample_id
 dna_alterations_df <- maf_df %>%
   dplyr::bind_rows(cnv_df) %>%
-  dplyr::group_by(sample_id, 
+  dplyr::group_by(sample_id,
                   Hugo_Symbol,
                   composition) %>%
-  dplyr::summarize(final_alteration = paste(sort(unique(final_alteration)),  
+  dplyr::summarize(final_alteration = paste(sort(unique(final_alteration)),
                                             collapse = "; ")) %>%
   dplyr::ungroup()
 
 ## RNA alterations -------------------------------------------------------------
 
-# Collapse by gene -- if more than one fusion is the same gene, 
+# Collapse by gene -- if more than one fusion is the same gene,
 # separate them with ;
-# These will be alterations detected in *any* RNA assay associated with this 
-# sample_id
+# These will be alterations detected in *any* (at least 1) RNA assay associated with
+# this sample_id
 rna_alterations_df <- fusion_df %>%
-  dplyr::group_by(sample_id, 
+  dplyr::group_by(sample_id,
                   Hugo_Symbol,
                   composition) %>%
-  dplyr::summarize(final_alteration = paste(sort(unique(final_alteration)),  
+  dplyr::summarize(final_alteration = paste(sort(unique(final_alteration)),
                                             collapse = "; ")) %>%
   dplyr::ungroup()
 
@@ -245,7 +245,7 @@ alterations_df <- dna_alterations_df %>%
                    suffix = c("_DNA", "_RNA")) %>%
   # Combine DNA and RNA alterations into one column where applicable
   dplyr::mutate(final_alteration = dplyr::case_when(
-    !is.na(final_alteration_DNA) & 
+    !is.na(final_alteration_DNA) &
       !is.na(final_alteration_RNA) ~ paste(final_alteration_DNA,
                                            final_alteration_RNA,
                                            sep = "; "),
@@ -302,7 +302,7 @@ identifiers_df <- histologies_df %>%
 
 # What samples have more than one DNA or RNA assay?
 multiassay_sample_ids <- identifiers_df %>%
-  dplyr::group_by(sample_id, 
+  dplyr::group_by(sample_id,
                   experimental_strategy,
                   composition) %>%
   dplyr::tally() %>%
@@ -313,15 +313,15 @@ multiassay_sample_ids <- identifiers_df %>%
 # DNA or RNA assays have the biospecimen IDs separated by ;
 identifiers_df <- identifiers_df %>%
   dplyr::select(-experimental_strategy) %>%
-  # Create Kids_First_Biospecimen_ID_DNA and Kids_First_Biospecimen_ID_RNA 
+  # Create Kids_First_Biospecimen_ID_DNA and Kids_First_Biospecimen_ID_RNA
   # columns where multiple specimens are separated by ;
   dplyr::group_by(sample_id,
                   composition,
                   assay_type) %>%
-  dplyr::summarize(biospecimen_ids = paste(sort(unique(Kids_First_Biospecimen_ID)),  
+  dplyr::summarize(biospecimen_ids = paste(sort(unique(Kids_First_Biospecimen_ID)),
                                            collapse = "; ")) %>%
   tidyr::spread(assay_type, biospecimen_ids) %>%
-  dplyr::rename(Kids_First_Biospecimen_ID_DNA = DNA, 
+  dplyr::rename(Kids_First_Biospecimen_ID_DNA = DNA,
                 Kids_First_Biospecimen_ID_RNA = RNA) %>%
   # Add indicator of when there are multiple DNA or RNA assays per sample
   dplyr::mutate(multiple_assays_within_type = dplyr::if_else(
@@ -342,6 +342,7 @@ metadata_df <- histologies_df %>%
     sample_id,
     sample_type,
     composition,
+    experimental_strategy,
     germline_sex_estimate,
     broad_histology,
     cancer_group
@@ -357,6 +358,7 @@ metadata_df <- histologies_df %>%
                 multiple_assays_within_type,
                 sample_type,
                 composition,
+                experimental_strategy,
                 germline_sex_estimate,
                 broad_histology,
                 cancer_group,
@@ -364,15 +366,17 @@ metadata_df <- histologies_df %>%
 
 # Edge cases where multiple RNA assays mean that duplicate row without germline
 # sex estimate exist
-retain_rows <- dplyr::if_else(
-  !is.na(metadata_df$Kids_First_Biospecimen_ID_DNA) & 
-    is.na(metadata_df$germline_sex_estimate), 
-  FALSE, 
-  TRUE)
+retain_rows <- dplyr::case_when(
+  !is.na(metadata_df$Kids_First_Biospecimen_ID_DNA) & is.na(metadata_df$germline_sex_estimate) & (metadata_df$experimental_strategy != "WXS") ~ FALSE,
+  TRUE ~ TRUE
+)
 
-# Remove the edge case rows
+# Remove the edge case rows, drop experimental strategy, and filter to unique
+# rows
 metadata_df <- metadata_df %>%
-  dplyr::filter(retain_rows)
+  dplyr::filter(retain_rows) %>%
+  dplyr::select(-experimental_strategy) %>%
+  dplyr::distinct()
 
 
 ## Create and save final table -------------------------------------------------
