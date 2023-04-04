@@ -4,7 +4,7 @@
 This directory contains CSV files that represent data inputted to plots shown in the OpenPBTA manuscript.
 It is intended to facilitate inspection of the underlying data easier for readers and to explicitly capture the samples included in figures (where applicable).
 To **reproduce the figures**, we recommend using the code in the analysis repository: <https://github.com/AlexsLemonade/OpenPBTA-analysis>.
-Please see [`figures/` directory documentation](../../figures/README.md), as well as the [documentation for figure generation scripts](../../figures/scripts/README.md).
+Please see `figures/` directory documentation in the repository, as well as the documentation for figure generation scripts (`figures/scripts/README.md`).
 
 
 ## Figure Data
