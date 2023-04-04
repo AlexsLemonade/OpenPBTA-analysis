@@ -7,24 +7,11 @@ To **reproduce the figures**, we recommend using the code in the analysis reposi
 Please see `figures/` directory documentation in the repository, as well as the documentation for figure generation scripts (`figures/scripts/README.md`).
 
 
-## Figure Data
-
-Data for the figures below are included as part of this download.
-The table for each figure contains the following:
-
-| Column | Purpose |
-|--------|---------|
-| Figure Panel | Number and letter of the panel(s) |
-| Filename | Name of the file that contains the relevant panel's data |
-| Brief Description | An overview of what the panel includes; please see the manuscript [figure legends](https://alexslemonade.github.io/OpenPBTA-manuscript/#figure-titles-and-legends) and [supplemental figures](https://alexslemonade.github.io/OpenPBTA-manuscript/#supplemental-information-titles-and-legends) for more information |
-| Notes on Tabular Data | Any notes to aid downloaders in interpreting the table; may be left blank |
-
-All tables are ordered by `sample_id`, where applicable.
-
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
+- [Figure Data](#figure-data)
   - [Main Figure Data](#main-figure-data)
     - [Figure 1](#figure-1)
     - [Figure 2](#figure-2)
@@ -45,6 +32,19 @@ All tables are ordered by `sample_id`, where applicable.
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
+## Figure Data
+
+Data for the figures below are included as part of this download.
+The table for each figure contains the following:
+
+| Column | Purpose |
+|--------|---------|
+| Figure Panel | Number and letter of the panel(s) |
+| Filename | Name of the file that contains the relevant panel's data |
+| Brief Description | An overview of what the panel includes; please see the manuscript [figure legends](https://alexslemonade.github.io/OpenPBTA-manuscript/#figure-titles-and-legends) and [supplemental figures](https://alexslemonade.github.io/OpenPBTA-manuscript/#supplemental-information-titles-and-legends) for more information |
+| Notes on Tabular Data | Any notes to aid downloaders in interpreting the table; may be left blank |
+
+All tables are ordered by `sample_id`, where applicable.
 
 
 ### Main Figure Data
