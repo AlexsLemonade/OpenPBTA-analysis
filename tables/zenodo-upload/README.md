@@ -1,8 +1,8 @@
 
 # Data underlying OpenPBTA Manuscript Figures and Molecular Alterations
 
-This directory contains CSV files that represent data inputted to plots shown in the OpenPBTA manuscript.
-It is intended to facilitate inspection of the underlying data easier for readers and to explicitly capture the samples included in figures (where applicable).
+This directory contains CSV files that represent data contained in plots shown in the OpenPBTA manuscript.
+It is intended to facilitate inspection of the underlying data shown in each figure and to explicitly capture which samples are included in figures (where applicable).
 To **reproduce the figures**, we recommend using the code in the analysis repository: <https://github.com/AlexsLemonade/OpenPBTA-analysis>.
 Please see `figures/` directory documentation in the repository, as well as the documentation for figure generation scripts (`figures/scripts/README.md`).
 
@@ -44,7 +44,7 @@ The table for each figure contains the following:
 | Brief Description | An overview of what the panel includes; please see the manuscript [figure legends](https://alexslemonade.github.io/OpenPBTA-manuscript/#figure-titles-and-legends) and [supplemental figures](https://alexslemonade.github.io/OpenPBTA-manuscript/#supplemental-information-titles-and-legends) for more information |
 | Notes on Tabular Data | Any notes to aid downloaders in interpreting the table; may be left blank |
 
-All tables are ordered by `sample_id`, where applicable.
+All tables are ordered by either `sample_id` or `Kids_First_Biospecimen_ID`, where applicable.
 
 
 ### Main Figure Data
@@ -59,10 +59,10 @@ All tables are ordered by `sample_id`, where applicable.
 
 | Figure Panel | Filename | Brief Description | Notes on Tabular Data | 
 |--------|-------------|--------------------|-------------------------|
-|   2A     |   | Oncoprint summarizing low-grade glioma alterations across samples for top 20 mutated genes          |
-|   2B     |    | Oncoprint summarizing embryonal tumor alterations across samples for top 20 mutated genes         |
-|   2C     |    | Oncoprint summarizing high-grade glioma alterations across samples for top 20 mutated genes         |
-|   2D     |   |  Oncoprint summarizing other CNS tumor alterations across samples for top 20 mutated genes         |
+|   2A     |   | Oncoprint summarizing low-grade glioma alterations across samples for top mutated genes           |
+|   2B     |    | Oncoprint summarizing embryonal tumor alterations across samples for top mutated genes         |
+|   2C     |    | Oncoprint summarizing high-grade glioma alterations across samples for top mutated genes         |
+|   2D     |   |  Oncoprint summarizing other CNS tumor alterations across samples for top mutated genes         |
 #### Figure 3
 
 | Figure Panel | Filename | Brief Description | Notes on Tabular Data | 
@@ -76,11 +76,11 @@ All tables are ordered by `sample_id`, where applicable.
 
 | Figure Panel | Filename | Brief Description | Notes on Tabular Data | 
 |--------|-------------|--------------------|-------------------------|
-|   4A     | | ROC curve for TP53 classifier         |
+|   4A     | | ROC curve for TP53 classifier run on stranded RNA-Seq data     |
 |   4B     | | Violin/strip plots of TP53 scores across TP53 alteration status           |
 |   4C     | |  Violin/strip plots of TP53 expression [log(FPKM)] across TP53 alteration status            |
 |   4D     | | Box/strip plots of TP53 scores and telomerase scores across cancer groups          |
-|   4E    |  |  Heatmap of RegSg signatures in patients with a hypermutator phenotype       |
+|   4E    |  |  Heatmap of RefSig signatures in patients with a hypermutator phenotype       |
 |   4F     |  | Forest plot from survival analysis exploring TP53 and telomerase score effects          |
 |   4G     |  | Forest plot from survival analysis exploring HGG molecular subtype effects          |
 |   4H     |  | Kaplan-Meier cure of HGG tumors by molecular subtype           |
@@ -173,13 +173,12 @@ Please see the `tables/tabulate-molecular-alterations.R` script in the `OpenPBTA
 
 ### File Description
 
-`openpbta-molecular-alterations.csv` contains information about the alterations (SNV, CNV, and fusions) a sample has in any gene included in the oncoprints in the manuscript (i.e., Figure 2). 
+`openpbta-molecular-alterations.csv` contains information about the alterations (SNV, CNV, and fusions) a sample has in any gene included in the oncoprints in the manuscript (i.e., Figure 2 and Figure S3B). 
 
 In the case of multiple alterations affecting the same gene, individual alterations are separated by semi-colons.
 We use the value `None` when no gene alterations are detected in the consensus data.
 
-Each row corresponds to a `sample_id`-`composition` pair in the OpenPBTA data.
-A `sample_id` can map to a solid tissue sample and a derived cell line.
+Each row corresponds to a `sample_id`-`composition` pair in the OpenPBTA data, where a given `sample_id` can be associated with multiple `composition` values (here, solid tissue or derived cell line).
 
 We include `Kids_First_Biospecimen_DNA` and `Kids_First_Biospecimen_RNA` columns with the biospecimen IDs for DNA (WGS, WXS, Targeted) and RNA (RNA-seq) assays, respectively.
 
@@ -187,8 +186,9 @@ We include `Kids_First_Biospecimen_DNA` and `Kids_First_Biospecimen_RNA` columns
 
 * For SNV data, we prioritize values from the consensus MAF file (`pbta-snv-consensus-mutation.maf.tsv.gz`) for inclusion in the following order: `HGVSp_Short`, `HGVSc`, and `Variant_Type`.
 When no change in the protein is noted in the `HGVSp_Short` value, we use the nucleotide change.
-* CNV alterations use the following notation from the `consensus_seg_annotated_*` files included in the data download: `<cytoband>-<status>-<copy_number>`
-* We report the `FusionName` field from `pbta-fusion-putative-oncogenic.tsv` for fusions. When reciprocal fusions are detected, we only report one – whichever comes first when partner genes are sorted alphabetically.
+* CNV alterations use the following notation from the `consensus_seg_annotated_*` files included in the data download: `<cytoband>-<status>-<copy_number>`.
+* We report the `FusionName` field from `pbta-fusion-putative-oncogenic.tsv` for fusions. 
+When reciprocal fusions are detected, we only report one – whichever comes first when partner genes are sorted alphabetically.
 
 ### Caveats
 
