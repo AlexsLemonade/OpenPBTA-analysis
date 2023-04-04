@@ -167,8 +167,30 @@ The table for each figure contains the following:
 
 ## Molecular Alterations
 
-### File
+Please see the `tables/tabulate-molecular-alterations.R` script in the `OpenPBTA-analysis` repository for more information about how this table was generated.
 
+### File Description
+
+`openpbta-molecular-alterations.csv` contains information about the alterations (SNV, CNV, and fusions) a sample has in any gene included in the oncoprints in the manuscript (i.e., Figure 2). 
+In the case of multiple alterations affecting the same gene, individual alterations are separated by semi-colons.
+We use the value `None` when no gene alterations are detected in the consensus data.
+Each row corresponds to a `sample_id`-`composition` pair in the OpenPBTA data.
+A `sample_id` can map to a solid tissue sample and a derived cell line.
+We include `Kids_First_Biospecimen_DNA` and `Kids_First_Biospecimen_RNA` columns with the biospecimen IDs for DNA (WGS, WXS, Targeted) and RNA (RNA-seq) assays, respectively.
+
+### Alteration Notation
+
+* For SNV data, we prioritize values from the consensus MAF file (`pbta-snv-consensus-mutation.maf.tsv.gz`) for inclusion in the following order: `HGVSp_Short`, `HGVSc`, and `Variant_Type`.
+When no change in the protein is noted in the `HGVSp_Short` value, we use the nucleotide change.
+* CNV alterations use the following notation from the `consensus_seg_annotated_*` files included in the data download: `<cytoband>-<status>-<copy_number>`
+* We report the `FusionName` field from `pbta-fusion-putative-oncogenic.tsv` for fusions. When reciprocal fusions are detected, we only report one – whichever comes first when partner genes are sorted alphabetically.
 
 ### Caveats
 
+* Some `sample_id`-`composition` pairs map to multiple biospecimens of the same type (i.e., DNA and RNA).
+When this occurs, the individual biospecimen identifiers are separated with semi-colons in the relevant column, and `multiple_assays_within_type` is marked as `TRUE`. 
+The alterations for a gene are the union of alterations detected in biospecimens (i.e., they are detected in at least one biospecimen).
+* If multiple `cancer_type` or `broad_histology` values are associated with the same `sample_id`-`composition` pair, these values are semi-colon separated.
+* `germline_sex_estimate` is only available for `sample_id`-`composition` pairs that were assayed with WGS.
+* We encountered an edge case when multiple RNA biospecimens map to the sample `sample_id`-`composition` pair where only one RNA biospecimen was assigned the `germline_sex_estimate` derived from the WGS data.
+We only included the non-missing value in these cases.
