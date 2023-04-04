@@ -4,7 +4,7 @@
 This directory contains CSV files that represent data contained in plots shown in the OpenPBTA manuscript.
 It is intended to facilitate inspection of the underlying data shown in each figure and to explicitly capture which samples are included in figures (where applicable).
 To **reproduce the figures**, we recommend using the code in the analysis repository: <https://github.com/AlexsLemonade/OpenPBTA-analysis>.
-Please see `figures/` directory documentation in the repository, as well as the documentation for figure generation scripts (`figures/scripts/README.md`).
+Please see the `figures/` directory documentation in the repository and the documentation for figure generation scripts (`figures/scripts/README.md`).
 
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -44,7 +44,7 @@ The table for each figure contains the following:
 | Brief Description | An overview of what the panel includes; please see the manuscript [figure legends](https://alexslemonade.github.io/OpenPBTA-manuscript/#figure-titles-and-legends) and [supplemental figures](https://alexslemonade.github.io/OpenPBTA-manuscript/#supplemental-information-titles-and-legends) for more information |
 | Notes on Tabular Data | Any notes to aid downloaders in interpreting the table; may be left blank |
 
-All tables are ordered by either `sample_id` or `Kids_First_Biospecimen_ID`, where applicable.
+Where applicable, all tables are ordered by either `sample_id` or `Kids_First_Biospecimen_ID`.
 
 
 ### Main Figure Data
