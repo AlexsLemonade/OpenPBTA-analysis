@@ -197,5 +197,6 @@ When this occurs, the individual biospecimen identifiers are separated with semi
 The alterations for a gene are the union of alterations detected in biospecimens (i.e., they are detected in at least one biospecimen).
 * If multiple `cancer_type` or `broad_histology` values are associated with the same `sample_id`-`composition` pair, these values are semi-colon separated.
 * `germline_sex_estimate` is only available for `sample_id`-`composition` pairs that were assayed with WGS.
-* We encountered an edge case when multiple RNA biospecimens map to the sample `sample_id`-`composition` pair where only one RNA biospecimen was assigned the `germline_sex_estimate` derived from the WGS data.
-We only included the non-missing value in these cases.
+* In two instances, multiple RNA biospecimens map to the sample `sample_id`-`composition` pair, and only one RNA biospecimen was assigned the `germline_sex_estimate` derived from the WGS data.
+We only included the non-missing values in these rows.
+The `sample_id` impacted are `7316-161` and `7316-85`.
