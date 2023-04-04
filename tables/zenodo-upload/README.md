@@ -19,27 +19,29 @@ The table for each figure contains the following:
 | Brief Description | An overview of what the panel includes; please see the manuscript [figure legends](https://alexslemonade.github.io/OpenPBTA-manuscript/#figure-titles-and-legends) and [supplemental figures](https://alexslemonade.github.io/OpenPBTA-manuscript/#supplemental-information-titles-and-legends) for more information |
 | Notes on Tabular Data | Any notes to aid downloaders in interpreting the table; may be left blank |
 
+All tables are ordered by `sample_id`, where applicable.
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Figure Data](#figure-data)
-	- [Main Figure Data](#main-figure-data)
-	  - [Figure 1](#figure-1)
-	  - [Figure 2](#figure-2)
-	  - [Figure 3](#figure-3)
-	  - [Figure 4](#figure-4)
-	  - [Figure 5](#figure-5)
-	- [Supplemental Figure Data](#supplemental-figure-data)
-	  - [Figure S2](#figure-s2)
-	  - [Figure S3](#figure-s3)
-	  - [Figure S4](#figure-s4)
-	  - [Figure S5](#figure-s5)
-	  - [Figure S6](#figure-s6)
-	  - [Figure S7](#figure-s7)
+  - [Main Figure Data](#main-figure-data)
+    - [Figure 1](#figure-1)
+    - [Figure 2](#figure-2)
+    - [Figure 3](#figure-3)
+    - [Figure 4](#figure-4)
+    - [Figure 5](#figure-5)
+  - [Supplemental Figure Data](#supplemental-figure-data)
+    - [Figure S2](#figure-s2)
+    - [Figure S3](#figure-s3)
+    - [Figure S4](#figure-s4)
+    - [Figure S5](#figure-s5)
+    - [Figure S6](#figure-s6)
+    - [Figure S7](#figure-s7)
 - [Molecular Alterations](#molecular-alterations)
-	- [File](#file)
-	- [Caveats](#caveats)
+  - [File Description](#file-description)
+  - [Alteration Notation](#alteration-notation)
+  - [Caveats](#caveats)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
