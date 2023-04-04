@@ -174,10 +174,13 @@ Please see the `tables/tabulate-molecular-alterations.R` script in the `OpenPBTA
 ### File Description
 
 `openpbta-molecular-alterations.csv` contains information about the alterations (SNV, CNV, and fusions) a sample has in any gene included in the oncoprints in the manuscript (i.e., Figure 2). 
+
 In the case of multiple alterations affecting the same gene, individual alterations are separated by semi-colons.
 We use the value `None` when no gene alterations are detected in the consensus data.
+
 Each row corresponds to a `sample_id`-`composition` pair in the OpenPBTA data.
 A `sample_id` can map to a solid tissue sample and a derived cell line.
+
 We include `Kids_First_Biospecimen_DNA` and `Kids_First_Biospecimen_RNA` columns with the biospecimen IDs for DNA (WGS, WXS, Targeted) and RNA (RNA-seq) assays, respectively.
 
 ### Alteration Notation
