@@ -101,42 +101,42 @@ Where applicable, all tables are ordered by either `sample_id` or `Kids_First_Bi
 
 | Figure Panel | Filename | Brief Description | Notes on Tabular Data |
 |--------|-------------|--------------------|-------------------------|
-|   S2A     |  `figure-S2a-S2b-S2c-data.csv`   |             |
-|   S2B     |  `figure-S2a-S2b-S2c-data.csv`           |             |
-|   S2C     |  `figure-S2a-S2b-S2c-data.csv`           |             |
-|   S3D     |   `figure-S2d-S2e-S2f-data.csv`          |             |
-|   S2E     |   `figure-S2d-S2e-S2f-data.csv`          |             |
-|   S2F     |   `figure-S2d-S2e-S2f-data.csv`            |             |
-|   S2G     |   `figure-S2g-data.csv`          |             |
-|   S2H     |   `figure-S2h-data.csv`         |             |
-|   S2I     |   `figure-S2i-data.csv`         |             |
+|   S2A     |  `figure-S2a-S2b-S2c-data.csv`   | Correlations of mutation VAFs from variant callers for PBTA data   | This compressed file contains data for all three panels S2A, S2B, and S2C. Caution: Uncompressed, this file is ~3.9 GB.|
+|   S2B     |  `figure-S2a-S2b-S2c-data.csv`  | Distributions of mutation VAFs from variant callers for PBTA data  | This compressed file contains data for all three panels S2A, S2B, and S2C. Caution: Uncompressed, this file is ~3.9 GB.   |
+|   S2C     |  `figure-S2a-S2b-S2c-data.csv`  | Upset plot of overlap among variant callers for PBTA data  | This compressed file contains data for all three panels S2A, S2B, and S2C. Caution: Uncompressed, this file is ~3.9 GB.  |
+|   S3D     |   `figure-S2d-S2e-S2f-data.csv`    |  Correlations of mutation VAFs from variant callers for TCGA data       | This compressed file contains data for all three panels S2D, S2E, and S2F. Uncompressed, this file is 13MB.            |
+|   S2E     |   `figure-S2d-S2e-S2f-data.csv`  |  Distributions of mutation VAFs from variant callers for PBTA data         |   This compressed file contains data for all three panels S2D, S2E, and S2F. Uncompressed, this file is 13MB.           |
+|   S2F     |   `figure-S2d-S2e-S2f-data.csv`  | Upset plot of overlap among variant callers for TCGA data    |  This compressed file contains data for all three panels S2D, S2E, and S2F. Uncompressed, this file is 13MB.            |
+|   S2G     |   `figure-S2g-data.csv`          |  Distributions of VAFs from Lancet calls on PBTA data for tumors with WGS and WXS   |
+|   S2H     |   `figure-S2h-data.csv`         |  Cumulative distribution TMB plots for PBTA cancer groups          |
+|   S2I     |   `figure-S2i-data.csv`         |  Cumulative distribution PBTA plots for TCGA histologies          |
 
 #### Figure S3
 
 | Figure Panel | Filename | Brief Description | Notes on Tabular Data |
 |--------|-------------|--------------------|-------------------------|
-|   S3A     |    `figure-S3a-data.csv`         |             |
-|   S3B     |    `figure-S3b-data.csv`          |             |
-|   S3C     |    `figure-S3c-data.csv.gz`          |             |
-|   S3D     |    `figure-S3d-data.csv`          |             |
-|   S3E     |    `figure-S3e-data.csv`          |             |
+|   S3A     |    `figure-S3a-data.csv`         |   Violin plots of tumor purity by cancer group          |
+|   S3B     |    `figure-S3b-data.csv`          |  Oncoprint summarizing rare CNS tumor alterations across samples for top mutated genes    |
+|   S3C     |    `figure-S3c-data.csv.gz`       | Genome-wide plot of CNV alterations for each sample, grouped by broad histology  |   This file is compressed; uncompressed, this file is ~15 MB.      |
+|   S3D     |    `figure-S3d-data.csv`          | Box plots of SNV breaks across number of chromothripsis regions            |
+|   S3E     |    `figure-S3e-data.csv`          | Box plots of CNV breaks across number of chromothripsis regions            |
 
 
 #### Figure S4
 
 | Figure Panel | Filename | Brief Description | Notes on Tabular Data |
 |--------|-------------|--------------------|-------------------------|
-|   S4A     |   `figure-S4a-data.csv`           |             |
-|   S4B     |   `figure-S4b-data.csv`           |             |
+|   S4A     |   `figure-S4a-data.csv`           |  Sample-specific signature weights for 8 adult CNS-specific RefSig mutational signatures           |
+|   S4B     |   `figure-S4b-data.csv`           |   RefSig Signature 1 weights across cancer groups by phrase of therapy          |
 
 
 #### Figure S5
 
 | Figure Panel | Filename | Brief Description | Notes on Tabular Data |
 |--------|-------------|--------------------|-------------------------|
-|   S5A     |  `figure-S5a-data.csv`            |             |
-|   S5B     |  `figure-S5b-data.csv`            |             |
-|   S5C     |  `figure-S5c-data.csv`            |             |
+|   S5A     |  `figure-S5a-data.csv`            |  ROC curve for _TP53_ classifier run on poly-A RNA-Seq samples           |
+|   S5B     |  `figure-S5b-data.csv`            |  Correlation of _TP53_ classifier score with _TERT_ expression (FPKM)           |
+|   S5C     |  `figure-S5c-data.csv`            |  Correlation of _TP53_ classifier score with _TERC_ expression (FPKM)           |           |
 
 
 
@@ -144,27 +144,27 @@ Where applicable, all tables are ordered by either `sample_id` or `Kids_First_Bi
 
 | Figure Panel | Filename | Brief Description | Notes on Tabular Data |
 |--------|-------------|--------------------|-------------------------|
-|   S6A     |   `figure-S6a-data.csv`          |             |
-|   S6B     |   `figure-S6b-data.csv`          |             |
-|   S6C     |   `figure-S6c-data.csv`          |             |
-|   S6D     |   `figure-S6d-data.csv`          |             |
-|   S6E     |   `figure-S6e-data.csv`          |             |
-|   S6F     |   `figure-S6f-data.csv`          |             |
+|   S6A     |   `figure-S6a-data.csv`          |  UMAP of stranded RNA-Seq samples, with medulloblastoma molecular subtypes emphasized           |
+|   S6B     |   `figure-S6b-data.csv`          |  UMAP of stranded RNA-Seq samples, with ependymoma molecular subtypes emphasized           |
+|   S6C     |   `figure-S6c-data.csv`          |   UMAP of stranded RNA-Seq samples, with low-grade glioma molecular subtypes emphasized          |
+|   S6D     |   `figure-S6d-data.csv`          |  UMAP of stranded RNA-Seq samples, with high-grade glioma molecular subtypes emphasized            |
+|   S6E     |   `figure-S6e-data.csv`          |   quanTIseq-estimated immune cell fractions in histologies with >=3 molecular subtypes         |
+|   S6F     |   `figure-S6f-data.csv`          |  Ratio of CD8+/CD4+ T-cell fractions in histologies with >=3 molecular subtypes             |
 
 
 #### Figure S7
 
 | Figure Panel | Filename | Brief Description | Notes on Tabular Data |
 |--------|-------------|--------------------|-------------------------|
-|   S7A     |   `figure-7a-data.csv`          |             |
-|   S7B     |   `figure-7b-data.csv`            |             |
-|   S7C     |   `figure-7c-data.csv`           |             |
-|   S7D     |   `figure-7d-data.csv`           |             |
-|   S7E     |   `figure-7e-data.csv`           |             |
-|   S7F     |   `figure-7f-data.csv`           |             |
-|   S7G     |   `figure-7g-data.csv`           |             |
-|   S7H     |   `figure-7h-data.csv`           |             |
-|   S7I     |   `figure-7i-data.csv`           |             |
+|   S7A     |   `figure-7a-data.csv`           |  Counts of RNA-Seq samples across cancer groups colored by library preparation method           |
+|   S7B     |   `figure-7b-data.csv`           |   UMAP of all RNA-Seq samples, colored by cancer group, with shapes indicating library preparation method           |
+|   S7C     |   `figure-7c-data.csv`           |  UMAP of stranded RNA-Seq samples, colored by cancer group, with shapes indicating sequencing center            |
+|   S7D     |   `figure-7d-data.csv`           |   ROC curve for TP53 classifier run on stranded RNA-Seq data, considering only tumors with high tumor purity     | High tumor purity is defined as having a tumor purity >= median of the tumor's respective cancer group. <br> This figure corresponds to 4A in the manuscript.      |
+|   S7E     |   `figure-7e-data.csv`           |  Violin/strip plots of TP53 scores across TP53 alteration status, considering only tumors with high tumor purity            | High tumor purity is defined as having a tumor purity >= median of the tumor's respective cancer group. <br> This figure corresponds to 4B in the manuscript.           |
+|   S7F     |   `figure-7f-data.csv`           | Violin/strip plots of TP53 expression [log(FPKM)] across TP53 alteration status, considering only tumors with high tumor purity             |   High tumor purity is defined as having a tumor purity >= median of the tumor's respective cancer group. <br> This figure corresponds to 4C in the manuscript.         |
+|   S7G     |   `figure-7g-data.csv`           |  UMAP of tumors colored by broad histology, considering only tumors with high tumor purity            |  High tumor purity is defined as having a tumor purity >= median of the tumor's respective cancer group. <br> This figure corresponds to 5A in the manuscript.          |
+|   S7H     |   `figure-7h-data.csv`           |  Box/strip plots of quanTIseq scores across cancer groups, considering only tumors with high tumor purity           |  High tumor purity is defined as having a tumor purity >= median of the tumor's respective cancer group. <br> This figure corresponds to 5C in the manuscript.           |
+|   S7I     |   `figure-7i-data.csv`           |  Box/strip plots of TP53 scores and telomerase scores across cancer groups, considering only tumors with high tumor purity       | High tumor purity is defined as having a tumor purity >= median of the tumor's respective cancer group. <br> This figure corresponds to 4D in the manuscript.          |
 
 
 ## Molecular Alterations
@@ -199,4 +199,4 @@ The alterations for a gene are the union of alterations detected in biospecimens
 * `germline_sex_estimate` is only available for `sample_id`-`composition` pairs that were assayed with WGS.
 * In two instances, multiple RNA biospecimens map to the sample `sample_id`-`composition` pair, and only one RNA biospecimen was assigned the `germline_sex_estimate` derived from the WGS data.
 We only included the non-missing values in these rows.
-The `sample_id` impacted are `7316-161` and `7316-85`.
+The `sample_id`s impacted are `7316-161` and `7316-85`.
