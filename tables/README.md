@@ -16,6 +16,7 @@ This will execute, in order,
 Note that this consumes `input/` files to create certain tables.
 - `util/BS_F0GNWEJJ_genomic_investigation.Rmd` which performs an investigation into a particular hypermutator sample of interest present in Table 2.
 - `copy-zenodo-tables.sh`, which will copy any figure data tables exported within `analysis/` modules into `zenodo-upload/`.
+- `tabulate-molecular-alterations.R`, which creates the table `zenodo-upload/openpbta-molecular-alterations.csv`.
 
 ## Manuscript tables
 
@@ -74,3 +75,4 @@ Table S5: Key Resources
 
 Files in this directory are named as: `figure-<figure number><figure panel>-data.csv` (or `.csv.gz` if compressed.)
 For example, `figure-3a-data.csv` contains data for Figure 3A.
+Please refer to the documentation in `zenodo-upload/README.md` for more details about specific files included and their generation.
