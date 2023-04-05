@@ -99,7 +99,7 @@ Where applicable, all tables are ordered by either `sample_id` or `Kids_First_Bi
 
 #### Figure S2
 
-| Figure Panel | Filename | Brief Description | Notes on Tabular Data |
+| Figure Panel(s) | Filename | Brief Description | Notes on Tabular Data |
 |--------|-------------|--------------------|-------------------------|
 |   S2A-C    |  `figure-S2a-S2b-S2c-data.csv`   | Correlations, distributions, and UpSet plot of mutation VAFs from variant callers for PBTA data, respectively   | This compressed file contains data for all three panels S2A, S2B, and S2C. Caution: Uncompressed, this file is ~3.9 GB.|
 |   S3D-F     |   `figure-S2d-S2e-S2f-data.csv`    |  Correlations, distributions, and UpSet of mutation VAFs from variant callers for TCGA data, respectively       | This compressed file contains data for all three panels S2D, S2E, and S2F. Uncompressed, this file is 13MB.            |
@@ -195,4 +195,4 @@ The alterations for a gene are the union of alterations detected in biospecimens
 * `germline_sex_estimate` is only available for `sample_id`-`composition` pairs that were assayed with WGS.
 * In two instances, multiple RNA biospecimens map to the sample `sample_id`-`composition` pair, and only one RNA biospecimen was assigned the `germline_sex_estimate` derived from the WGS data.
 We only included the non-missing values in these rows.
-The `sample_id`s impacted are `7316-161` and `7316-85`.
+The two `sample_id` instances impacted are `7316-161` and `7316-85`.
