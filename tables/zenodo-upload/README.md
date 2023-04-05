@@ -195,4 +195,4 @@ The alterations for a gene are the union of alterations detected in biospecimens
 * `germline_sex_estimate` is only available for `sample_id`-`composition` pairs that were assayed with WGS.
 * In two instances, multiple RNA biospecimens map to the sample `sample_id`-`composition` pair, and only one RNA biospecimen was assigned the `germline_sex_estimate` derived from the WGS data.
 We only included the non-missing values in these rows.
-The two `sample_id` instances impacted are `7316-161` and `7316-85`.
+The `sample_id` impacted are `7316-161` and `7316-85`.
