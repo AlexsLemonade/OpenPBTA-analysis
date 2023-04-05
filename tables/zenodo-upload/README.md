@@ -51,120 +51,120 @@ Where applicable, all tables are ordered by either `sample_id` or `Kids_First_Bi
 
 #### Figure 1
 
-| Figure Panel | Filename | Brief Description | Notes on Tabular Data | 
+| Figure Panel | Filename | Brief Description | Notes on Tabular Data |
 |--------|-------------|--------------------|-------------------------|
-|   1B     |  | Barplot showing the number of biospecimens per phase of therapy | |
+|   1B     | `figure-1b-data.csv`  | Barplot showing the number of biospecimens per phase of therapy | |
 
 #### Figure 2
 
-| Figure Panel | Filename | Brief Description | Notes on Tabular Data | 
+| Figure Panel | Filename | Brief Description | Notes on Tabular Data |
 |--------|-------------|--------------------|-------------------------|
-|   2A     |   | Oncoprint summarizing low-grade glioma alterations across samples for top mutated genes           |
-|   2B     |    | Oncoprint summarizing embryonal tumor alterations across samples for top mutated genes         |
-|   2C     |    | Oncoprint summarizing high-grade glioma alterations across samples for top mutated genes         |
-|   2D     |   |  Oncoprint summarizing other CNS tumor alterations across samples for top mutated genes         |
+|   2A     | `figure-2a-data.csv`   | Oncoprint summarizing low-grade glioma alterations across samples for top mutated genes           |
+|   2B     | `figure-2b-data.csv`   | Oncoprint summarizing embryonal tumor alterations across samples for top mutated genes         |
+|   2C     | `figure-2c-data.csv`   | Oncoprint summarizing high-grade glioma alterations across samples for top mutated genes         |
+|   2D     | `figure-2d-data.csv`   |  Oncoprint summarizing other CNS tumor alterations across samples for top mutated genes         |
 #### Figure 3
 
-| Figure Panel | Filename | Brief Description | Notes on Tabular Data | 
+| Figure Panel | Filename | Brief Description | Notes on Tabular Data |
 |--------|-------------|--------------------|-------------------------|
-|   3A     |   | Barplot of occurrence and co-occurrence of nonsynonymous mutations for the 50 most commonly mutated genes across all tumor types         |
-|   3B     |  | Heatmap of co-occurrence and mutual exclusivity of nonsynonymous mutations between genes           |
-|   3C     |  | Scatterplot showing correlation of SV and CNV breaks            |
-|   3D     |  | Barplot showing chromothripsis frequency for all cancer groups with N >= 3 tumors           |
-|   3E     |  | Sina plots of RefSig signature weights across cancer groups         |
+|   3A     | `figure-3a-data.csv`  | Barplot of occurrence and co-occurrence of nonsynonymous mutations for the 50 most commonly mutated genes across all tumor types         |
+|   3B     | `figure-3b-data.csv`  | Heatmap of co-occurrence and mutual exclusivity of nonsynonymous mutations between genes           |
+|   3C     | `figure-3c-data.csv`  | Scatterplot showing correlation of SV and CNV breaks            |
+|   3D     | `figure-3d-data.csv`  | Barplot showing chromothripsis frequency for all cancer groups with N >= 3 tumors           |
+|   3E     | `figure-3e-data.csv`  | Sina plots of RefSig signature weights across cancer groups         |
 #### Figure 4
 
-| Figure Panel | Filename | Brief Description | Notes on Tabular Data | 
+| Figure Panel | Filename | Brief Description | Notes on Tabular Data |
 |--------|-------------|--------------------|-------------------------|
-|   4A     | | ROC curve for TP53 classifier run on stranded RNA-Seq data     |
-|   4B     | | Violin/strip plots of TP53 scores across TP53 alteration status           |
-|   4C     | |  Violin/strip plots of TP53 expression [log(FPKM)] across TP53 alteration status            |
-|   4D     | | Box/strip plots of TP53 scores and telomerase scores across cancer groups          |
-|   4E    |  |  Heatmap of RefSig signatures in patients with a hypermutator phenotype       |
-|   4F     |  | Forest plot from survival analysis exploring TP53 and telomerase score effects          |
-|   4G     |  | Forest plot from survival analysis exploring HGG molecular subtype effects          |
-|   4H     |  | Kaplan-Meier cure of HGG tumors by molecular subtype           |
+|   4A     | `figure-4a-data.csv` | ROC curve for TP53 classifier run on stranded RNA-Seq data     |
+|   4B     | `figure-4b-data.csv` | Violin/strip plots of TP53 scores across TP53 alteration status           |
+|   4C     | `figure-4c-data.csv` |  Violin/strip plots of TP53 expression [log(FPKM)] across TP53 alteration status            |
+|   4D     | `figure-4d-data.csv` | Box/strip plots of TP53 scores and telomerase scores across cancer groups          |
+|   4E     | `figure-4e-data.csv` |  Heatmap of RefSig signatures in patients with a hypermutator phenotype       |
+|   4F     | `figure-4f-data.csv`  | Forest plot from survival analysis exploring TP53 and telomerase score effects          |
+|   4G     | `figure-4g-data.csv`  | Forest plot from survival analysis exploring HGG molecular subtype effects          |
+|   4H     | `figure-4h-data.csv` | Kaplan-Meier cure of HGG tumors by molecular subtype           |
 
 #### Figure 5
 
-| Figure Panel | Filename | Brief Description | Notes on Tabular Data | 
+| Figure Panel | Filename | Brief Description | Notes on Tabular Data |
 |--------|-------------|--------------------|-------------------------|
-|   5A     |  | UMAP of tumors colored by broad histology           |
-|   5B     |  | Heatmap of GSVA scores across cancer groups           |
-|   5C     |  | Box/strip plots of quanTIseq scores across cancer groups           |
-|   5D     |  | Forest plot from survival analysis exploring CD274 expression and immune cell proportion effects           |
+|   5A     | `figure-5a-data.csv`  | UMAP of tumors colored by broad histology           |
+|   5B     | `figure-5b-data.csv`  | Heatmap of GSVA scores across cancer groups           |
+|   5C     | `figure-5c-data.csv`  | Box/strip plots of quanTIseq scores across cancer groups           |
+|   5D     | `figure-5d-data.csv`  | Forest plot from survival analysis exploring CD274 expression and immune cell proportion effects           |
 
 
 ### Supplemental Figure Data
 
 #### Figure S2
 
-| Figure Panel | Filename | Brief Description | Notes on Tabular Data | 
+| Figure Panel | Filename | Brief Description | Notes on Tabular Data |
 |--------|-------------|--------------------|-------------------------|
-|   S2A     |             |             |
-|   S2B     |             |             |
-|   S2C     |             |             |
-|   S3D     |             |             |
-|   S2E     |             |             |
-|   S2F     |             |             |
-|   S2G     |             |             |
-|   S2H     |             |             |
-|   S2I     |             |             |
+|   S2A     |  `figure-S2a-S2b-S2c-data.csv`   |             |
+|   S2B     |  `figure-S2a-S2b-S2c-data.csv`           |             |
+|   S2C     |  `figure-S2a-S2b-S2c-data.csv`           |             |
+|   S3D     |   `figure-S2d-S2e-S2f-data.csv`          |             |
+|   S2E     |   `figure-S2d-S2e-S2f-data.csv`          |             |
+|   S2F     |   `figure-S2d-S2e-S2f-data.csv`            |             |
+|   S2G     |   `figure-S2g-data.csv`          |             |
+|   S2H     |   `figure-S2h-data.csv`         |             |
+|   S2I     |   `figure-S2i-data.csv`         |             |
 
 #### Figure S3
 
-| Figure Panel | Filename | Brief Description | Notes on Tabular Data | 
+| Figure Panel | Filename | Brief Description | Notes on Tabular Data |
 |--------|-------------|--------------------|-------------------------|
-|   S3A     |             |             |
-|   S3B     |             |             |
-|   S3C     |             |             |
-|   S3D     |             |             |
-|   S3E     |             |             |
+|   S3A     |    `figure-S3a-data.csv`         |             |
+|   S3B     |    `figure-S3b-data.csv`          |             |
+|   S3C     |    `figure-S3c-data.csv.gz`          |             |
+|   S3D     |    `figure-S3d-data.csv`          |             |
+|   S3E     |    `figure-S3e-data.csv`          |             |
 
 
 #### Figure S4
 
-| Figure Panel | Filename | Brief Description | Notes on Tabular Data | 
+| Figure Panel | Filename | Brief Description | Notes on Tabular Data |
 |--------|-------------|--------------------|-------------------------|
-|   S4A     |             |             |
-|   S4B     |             |             |
+|   S4A     |   `figure-S4a-data.csv`           |             |
+|   S4B     |   `figure-S4b-data.csv`           |             |
 
 
 #### Figure S5
 
-| Figure Panel | Filename | Brief Description | Notes on Tabular Data | 
+| Figure Panel | Filename | Brief Description | Notes on Tabular Data |
 |--------|-------------|--------------------|-------------------------|
-|   S5A     |             |             |
-|   S5B     |             |             |
-|   S5C     |             |             |
+|   S5A     |  `figure-S5a-data.csv`            |             |
+|   S5B     |  `figure-S5b-data.csv`            |             |
+|   S5C     |  `figure-S5c-data.csv`            |             |
 
 
 
 #### Figure S6
 
-| Figure Panel | Filename | Brief Description | Notes on Tabular Data | 
+| Figure Panel | Filename | Brief Description | Notes on Tabular Data |
 |--------|-------------|--------------------|-------------------------|
-|   S6A     |             |             |
-|   S6B     |             |             |
-|   S6C     |             |             |
-|   S6D     |             |             |
-|   S6E     |             |             |
-|   S6F     |             |             |
+|   S6A     |   `figure-S6a-data.csv`          |             |
+|   S6B     |   `figure-S6b-data.csv`          |             |
+|   S6C     |   `figure-S6c-data.csv`          |             |
+|   S6D     |   `figure-S6d-data.csv`          |             |
+|   S6E     |   `figure-S6e-data.csv`          |             |
+|   S6F     |   `figure-S6f-data.csv`          |             |
 
 
 #### Figure S7
 
-| Figure Panel | Filename | Brief Description | Notes on Tabular Data | 
+| Figure Panel | Filename | Brief Description | Notes on Tabular Data |
 |--------|-------------|--------------------|-------------------------|
-|   S7A     |             |             |
-|   S7B     |             |             |
-|   S7C     |             |             |
-|   S7D     |             |             |
-|   S7E     |             |             |
-|   S7F     |             |             |
-|   S7G     |             |             |
-|   S7H     |             |             |
-|   S7I     |             |             |
+|   S7A     |   `figure-7a-data.csv`          |             |
+|   S7B     |   `figure-7b-data.csv`            |             |
+|   S7C     |   `figure-7c-data.csv`           |             |
+|   S7D     |   `figure-7d-data.csv`           |             |
+|   S7E     |   `figure-7e-data.csv`           |             |
+|   S7F     |   `figure-7f-data.csv`           |             |
+|   S7G     |   `figure-7g-data.csv`           |             |
+|   S7H     |   `figure-7h-data.csv`           |             |
+|   S7I     |   `figure-7i-data.csv`           |             |
 
 
 ## Molecular Alterations
@@ -173,7 +173,7 @@ Please see the `tables/tabulate-molecular-alterations.R` script in the `OpenPBTA
 
 ### File Description
 
-`openpbta-molecular-alterations.csv` contains information about the alterations (SNV, CNV, and fusions) a sample has in any gene included in the oncoprints in the manuscript (i.e., Figure 2 and Figure S3B). 
+`openpbta-molecular-alterations.csv` contains information about the alterations (SNV, CNV, and fusions) a sample has in any gene included in the oncoprints in the manuscript (i.e., Figure 2 and Figure S3B).
 
 In the case of multiple alterations affecting the same gene, individual alterations are separated by semi-colons.
 We use the value `None` when no gene alterations are detected in the consensus data.
@@ -187,13 +187,13 @@ We include `Kids_First_Biospecimen_DNA` and `Kids_First_Biospecimen_RNA` columns
 * For SNV data, we prioritize values from the consensus MAF file (`pbta-snv-consensus-mutation.maf.tsv.gz`) for inclusion in the following order: `HGVSp_Short`, `HGVSc`, and `Variant_Type`.
 When no change in the protein is noted in the `HGVSp_Short` value, we use the nucleotide change.
 * CNV alterations use the following notation from the `consensus_seg_annotated_*` files included in the data download: `<cytoband>-<status>-<copy_number>`.
-* We report the `FusionName` field from `pbta-fusion-putative-oncogenic.tsv` for fusions. 
+* We report the `FusionName` field from `pbta-fusion-putative-oncogenic.tsv` for fusions.
 When reciprocal fusions are detected, we only report one – whichever comes first when partner genes are sorted alphabetically.
 
 ### Caveats
 
 * Some `sample_id`-`composition` pairs map to multiple biospecimens of the same type (i.e., DNA and RNA).
-When this occurs, the individual biospecimen identifiers are separated with semi-colons in the relevant column, and `multiple_assays_within_type` is marked as `TRUE`. 
+When this occurs, the individual biospecimen identifiers are separated with semi-colons in the relevant column, and `multiple_assays_within_type` is marked as `TRUE`.
 The alterations for a gene are the union of alterations detected in biospecimens (i.e., they are detected in at least one biospecimen).
 * If multiple `cancer_type` or `broad_histology` values are associated with the same `sample_id`-`composition` pair, these values are semi-colon separated.
 * `germline_sex_estimate` is only available for `sample_id`-`composition` pairs that were assayed with WGS.
