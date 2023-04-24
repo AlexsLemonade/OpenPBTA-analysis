@@ -223,6 +223,8 @@ ggsave(filename = file.path(main_output_dir,
 
 # Export figure data for zenodo upload
 data_descriptor_plot %>%
+  # remove columns with \n and other unneeded columns
+  dplyr::select(-bh_strip, -abbr, -broad_histology, -broad_histology_hex, -broad_histology_order) %>%
   dplyr::arrange(sample_id) %>%
   readr::write_csv(fig1b_csv)
 
