@@ -373,8 +373,8 @@ for (type_iter in seq_along(data_input_list)) {
 
     pdf(
       file.path(main_output_dir, output_pdf),
-      width = 13.75,
-      height = 7.9
+      width = 9,
+      height = 5.17
     )
 
     oncoplot(
@@ -394,7 +394,8 @@ for (type_iter in seq_along(data_input_list)) {
       bgCol = "#F5F5F5",
       drawRowBar = FALSE,
       titleText = histology,
-      titleFontSize = 1.3,
+      # largest size before title is outside of margins
+      titleFontSize = 1.5, 
       gene_mar = 10
     )
 
