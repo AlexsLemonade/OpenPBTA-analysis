@@ -113,14 +113,17 @@ roc_plot <- ggplot(roc_df) +
     x = "False Positive Rate",
     y = "True Positive Rate") +
   ggpubr::theme_pubr() +
+  guides(color = guide_legend(title.position = "top",
+                              nrow = 2)) +
   theme(axis.text = element_text(size = rel(0.5)),
         axis.title = element_text(size = rel(0.5)),
         legend.text = element_text(size = rel(0.36)),
         legend.title = element_text(size = rel(0.4)),
         legend.key.size = unit(5, "points"),
-        axis.line = element_line(size = rel(0.4))
+        axis.line = element_line(size = rel(0.4)),
+        axis.ticks = element_line(size = rel(0.4))
   )
-ggsave(tp53_roc_pdf, roc_plot, width = 2.5, height = 2.5,
+ggsave(tp53_roc_pdf, roc_plot, width = 2, height = 2.5,
        # add for figure compilation
        useDingbats = FALSE)
 
@@ -264,8 +267,8 @@ tp53_expression_plot <- tp53_expression_plot_data$plot +
 
 
 # Export figures, with `useDingbats = FALSE` needed for compiling panels in Illustrator
-ggsave(tp53_scores_altered_pdf, tp53_scores_plot, width = 3.75, height = 2.5, useDingbats = FALSE)
-ggsave(tp53_expression_altered_pdf, tp53_expression_plot, width = 3.75, height = 2.5, useDingbats = FALSE)
+ggsave(tp53_scores_altered_pdf, tp53_scores_plot, width = 3, height = 2.25, useDingbats = FALSE)
+ggsave(tp53_expression_altered_pdf, tp53_expression_plot, width = 3, height = 2.25, useDingbats = FALSE)
 
 
 
@@ -413,11 +416,11 @@ tp53_telo_tmb_boxplot <- ggplot(plot_df) +
   facet_wrap(~score_type, nrow = 2) +
   ggpubr::theme_pubr() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust=1, size = rel(0.5)),
+    axis.text.x = element_text(angle = 45, hjust=1, size = rel(0.6)),
     # Sizing for compilation - small figure export
-    axis.text.y = element_text(size = rel(0.5)),
-    axis.title = element_text(size = rel(0.5)),
-    strip.text = element_text(size = rel(0.5)),
+    axis.text.y = element_text(size = rel(0.6)),
+    axis.title = element_text(size = rel(0.65)),
+    strip.text = element_text(size = rel(0.75)),
     axis.line = element_line(size = rel(0.5)),
     axis.ticks = element_line(size = rel(0.5))
   )
@@ -476,7 +479,7 @@ tp53_plot_for_legend <- ggplot(tp53_plot_legend_df) +
 legend <- cowplot::get_legend(tp53_plot_for_legend)
 
 # Export legend
-pdf(tp53_telomerase_scores_boxplot_legend_pdf, width = 1.3, height = 0.8, useDingbats = FALSE)
+pdf(tp53_telomerase_scores_boxplot_legend_pdf, width = 1, height = 0.6, useDingbats = FALSE)
 cowplot::ggdraw(legend)
 dev.off()
 
@@ -578,7 +581,7 @@ forest_plot <- ggplot(survival_df) +
   ) +
   ggpubr::theme_pubr() +
   theme(
-    plot.subtitle = element_text(face = "bold")
+    plot.subtitle = element_text(face = "bold", size = rel(1.2))
   ) +
   # grid makes it easier to follow lines
   cowplot::background_grid()
@@ -610,11 +613,11 @@ survival_df_spread <- survival_df %>%
 
 labels_panel <- ggplot(survival_df_spread) +
   aes(x = name, y = term, label = value) +
-  geom_text(hjust = 0) +
+  geom_text(hjust = 0, size = 4.5) +
   labs(
     # hack!
-    subtitle = paste0("                      ",
-                      "HR (95% CI)                   P-value")
+    subtitle = paste0("                   ",
+                      "HR (95% CI)            P-value")
   ) +
   ggpubr::theme_pubr() +
   # remove axes.
@@ -627,9 +630,9 @@ labels_panel <- ggplot(survival_df_spread) +
     axis.text.y = element_blank(),
     axis.ticks.y = element_blank(),
     axis.line.y = element_blank(),
-    # -26 is as low as we can go before plot starts to get coverd
-    plot.margin = margin(6, 0, 36, -25, unit = "pt"),
-    plot.subtitle = element_text(face = "bold")
+    # -26 is as low as we can go before plot starts to get covered
+    plot.margin = margin(6, 0, 36, -26, unit = "pt"),
+    plot.subtitle = element_text(face = "bold", size = rel(1.2))
   )
 
 forest_panels <- cowplot::plot_grid(forest_plot, labels_panel, nrow = 1, rel_widths = c(1,0.5))

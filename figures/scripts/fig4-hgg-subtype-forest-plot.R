@@ -119,7 +119,7 @@ forest_plot <- ggplot(survival_df) +
   scale_x_log10() +
   ggpubr::theme_pubr() + 
   theme(
-    plot.subtitle = element_text(face = "bold")
+    plot.subtitle = element_text(face = "bold", size = rel(1.2))
   ) +
   # grid makes it easier to follow lines
   cowplot::background_grid()
@@ -153,11 +153,11 @@ survival_df_spread <- survival_df %>%
 
 labels_panel <- ggplot(survival_df_spread) +
   aes(x = name, y = term, label = value) + 
-  geom_text(hjust = 0) +
+  geom_text(hjust = 0, size = 5) +
   labs(
     # hack!
-    subtitle = paste0("                    ",
-                      "HR (95% CI)             P-value")
+    subtitle = paste0("                ",
+                      "HR (95% CI)         P-value")
   ) +
   ggpubr::theme_pubr() + 
   # remove axes.
@@ -172,7 +172,7 @@ labels_panel <- ggplot(survival_df_spread) +
     axis.line.y = element_blank(),
     # -26 is as low as we can go before plot starts to get coverd
     plot.margin = margin(6, 0, 36, -25, unit = "pt"),
-    plot.subtitle = element_text(face = "bold")
+    plot.subtitle = element_text(face = "bold", size = rel(1.2))
   ) 
 
 forest_panels <- cowplot::plot_grid(forest_plot, labels_panel, nrow = 1, rel_widths = c(1,0.5), scale = 0.95)
