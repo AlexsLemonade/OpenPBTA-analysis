@@ -479,7 +479,7 @@ legend <- cowplot::get_legend(tp53_plot_for_legend)
 
 # Export legend
 pdf(tp53_telomerase_scores_boxplot_legend_pdf, width = 4, height = 0.5, useDingbats = FALSE)
-cowplot::ggdraw(legend)
+print(cowplot::ggdraw(legend)) # add print() to ensure formatting
 dev.off()
 
 
