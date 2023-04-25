@@ -177,7 +177,7 @@ if (!(all(abbr_check == "Other"))) stop("Wrangling bug setting cancer group abbr
 data_descriptor_plot <- data_descriptor_plot %>%
   mutate(
     cancer_group_abbreviation = if_else(is.na(cancer_group_abbreviation), "Other", cancer_group_abbreviation),
-    bh_strip = stringr::str_wrap(broad_histology_display, 25),
+    bh_strip = stringr::str_wrap(broad_histology_display, 18),
     bh_strip = forcats::fct_reorder(bh_strip, broad_histology_order),
     abbr = forcats::fct_relevel(cancer_group_abbreviation, "Other", after=Inf)
   )
@@ -185,7 +185,7 @@ data_descriptor_plot <- data_descriptor_plot %>%
 descriptor_plot <- ggplot(data_descriptor_plot) +
   aes(x = abbr,
       fill = tumor_descriptor) +
-  geom_bar(color = "black", size = 0.25) +
+  geom_bar(color = "black", size = 0.2) +
   scale_fill_manual(values = tumor_descriptor_palette) +
   facet_wrap(~bh_strip,
              scales = "free",
@@ -196,26 +196,31 @@ descriptor_plot <- ggplot(data_descriptor_plot) +
     fill = "Tumor descriptor"
   ) +
   ggpubr::theme_pubr() +
-  theme(axis.text.x = element_text(size = 6,
+  guides(fill = guide_legend(nrow = 3)) +
+  theme(axis.text.x = element_text(size = 7.5,
                                    angle = 45,
                                    hjust = 0.8,
                                    vjust = 0.9),
-        axis.text.y = element_text(size = 6),
-        axis.title = element_text(size = 7),
+        axis.text.y = element_text(size = 8),
+        axis.title = element_text(size = 10),
         axis.line = element_line(size = 0.3),
         axis.ticks = element_line(size = 0.3),
-        strip.text = element_text(size = 5.25),
-        legend.title = element_text(size = 5.5),
-        legend.text = element_text(size = 4.5),
-        legend.key.size = unit(0.2, "cm"),
-        legend.box.margin = margin(0, 0, 0, -20))
+        # Single size since ggplot will not accept a per-panel vector here
+        strip.text = element_text(size = 8),
+        strip.background = element_rect(size = 0.4),
+        legend.title = element_text(size = 8.5),
+        legend.text = element_text(size = 7.5),
+        legend.key.size = unit(0.5, "cm"),
+        legend.margin = margin(0.01, 0.01, 0.0, 0.01, unit = "cm"),
+        panel.spacing = unit(0.02, "cm"), 
+        plot.margin = margin(0.01, 0.1, 0.01, 0.05, unit = "cm"))
 
 #Save!
 ggsave(filename = file.path(main_output_dir,
                             "tumor_descriptor_proportion_panel.pdf"),
        plot = descriptor_plot,
-       width = 4.6,
-       height = 5.5)
+       width = 5.75,
+       height = 6)
 
 # Export figure data for zenodo upload
 data_descriptor_plot %>%
