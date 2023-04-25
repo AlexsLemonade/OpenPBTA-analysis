@@ -6,6 +6,9 @@ COPY scripts/install_bioc.r .
 
 ### Install apt-getable packages to start
 #########################################
+
+# stretch is EOL, so we need to use the archive
+RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils dialog
 
 # Add curl, bzip2 and some dev libs
