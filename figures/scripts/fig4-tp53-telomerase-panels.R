@@ -174,10 +174,10 @@ plot_tp53 <- function(df, pvalue_y) {
   df_counts_plot <- ggplot(df_counts) +
     aes(x = tp53_altered,
         y = tp53) +
-    geom_violin(size = 0.35) +
+    geom_violin(size = 0.25) +
     geom_jitter(alpha = 0.25, # very light alpha to accomodate `other` category
                 width = 0.1,
-                size = 0.6) +
+                size = 0.45) +
     # Add median +/- IQR pointrange
     geom_pointrange(data = stats_df,
                     aes(
@@ -186,21 +186,24 @@ plot_tp53 <- function(df, pvalue_y) {
                       ymin = ymin,
                       ymax = ymax
                     ),
-                    color = "firebrick", size = rel(0.4)
+                    color = "firebrick", size = rel(0.2)
     ) +
     # Add p-value annotation with ggpubr
     ggpubr::stat_pvalue_manual(
       wilcox_df,
       label = "Wilcoxon P-value = {p.adj}",
-      size = 2.25
+      # as needed, further adjust text size during compilation 
+      # since larger than this ends up outside plot margins
+      size = 1.75, 
+      bracket.size = 0.2
     ) +
     ggpubr::theme_pubr()  +
     # Sizing for compilation - small figure export
     theme(
       axis.text = element_text(size = rel(0.7)),
       axis.title = element_text(size = rel(0.7)),
-      axis.line = element_line(size = rel(0.5)),
-      axis.ticks = element_line(size = rel(0.5))
+      axis.line = element_line(size = rel(0.4)),
+      axis.ticks = element_line(size = rel(0.4))
     )
 
   return(
@@ -266,10 +269,8 @@ tp53_expression_plot <- tp53_expression_plot_data$plot +
 
 
 # Export figures, with `useDingbats = FALSE` needed for compiling panels in Illustrator
-ggsave(tp53_scores_altered_pdf, tp53_scores_plot, width = 3, height = 2.35, useDingbats = FALSE)
-ggsave(tp53_expression_altered_pdf, tp53_expression_plot, width = 3, height = 2.25, useDingbats = FALSE)
-
-
+ggsave(tp53_scores_altered_pdf, tp53_scores_plot, width = 3, height = 2, useDingbats = FALSE)
+ggsave(tp53_expression_altered_pdf, tp53_expression_plot, width = 3, height = 2, useDingbats = FALSE)
 
 
 ## TP53 and telomerase scores boxplots across cancer groups with mutators emphasized -------------------------------------------
