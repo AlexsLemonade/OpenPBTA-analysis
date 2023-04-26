@@ -122,7 +122,8 @@ rm(cancer_group_color_df)
 #### UMAP plot -----------------------------------------------------------------
 
 rsem_umap_file <- file.path(
-  dim_red_dir,
+  analyses_dir,
+  "transcriptomic-dimension-reduction",
   "results",
   "rsem_stranded_log_umap_scores_aligned.tsv"
 )
