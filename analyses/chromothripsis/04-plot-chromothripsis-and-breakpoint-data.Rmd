@@ -132,7 +132,7 @@ p <- merge %>%
     axis.line = element_line(size = rel(0.4)),
   )
 p
-ggsave(file.path(plots_dir, "count_chromothripsis_cnv_and_sv_breaks_scatterplot.png"), p)
+ggsave(file.path(plots_dir, "count_chromothripsis_cnv_and_sv_breaks_scatterplot.png"), p, height = 2.25, width = 2.5)
 # Also save a PDF version, to be used as a single panel in a multipanel figure
 ggsave(file.path(plots_dir, "count_chromothripsis_cnv_and_sv_breaks_scatterplot.pdf"), p, 
        useDingbats=FALSE, height = 2.25, width = 2.5)
