@@ -129,7 +129,7 @@ quantiseq_cg <- quantiseq_cg %>%
   ) %>%
   select(cancer_group_display, n, cancer_group_hex) %>%
   # Create wrapped with (n=X) factor column for cancer groups
-  mutate(cancer_group_display_n = stringr::str_wrap(glue::glue("{cancer_group_display} (N={n})"), 30),
+  mutate(cancer_group_display_n = stringr::str_wrap(glue::glue("{cancer_group_display} (N={n})"), 20),
                 cancer_group_display_n = forcats::fct_reorder(cancer_group_display_n, n, .desc=T)) %>%
   inner_join(quantiseq_cg)
 
@@ -155,10 +155,11 @@ cancer_group_plot <- ggplot(quantiseq_cg) +
   cowplot::panel_border() +
   theme(
     # Sizing for compilation
-    axis.text.x = element_text(size = 4, angle = 45, hjust = 1),
-    axis.text.y = element_text(size = 5.5),
-    axis.title = element_text(size = 7),
-    strip.text = element_text(size = rel(0.374)), # there is a HUGE jump 0.374 --> 0.375!
+    axis.text.x = element_text(size = 6, angle = 45, hjust = 1),
+    axis.text.y = element_text(size = 8),
+    axis.title = element_text(size = 10),
+    strip.text = element_text(size = rel(0.5),
+                              margin = margin(0.2, 0.25, 0.2, 0.25)), 
     strip.background = element_rect(size = 0.4),
     axis.line = element_line(size = rel(0.4)),
     axis.ticks = element_line(size = rel(0.4)),
@@ -168,7 +169,7 @@ cancer_group_plot <- ggplot(quantiseq_cg) +
 # Sized for compilation
 ggsave(quantiseq_cancer_group_pdf,
        cancer_group_plot,
-       width = 8, height = 2.65, useDingbats=FALSE)
+       width = 9, height = 3, useDingbats=FALSE)
 
 
 ## Plot 5E ------------------------------------
@@ -411,7 +412,8 @@ ggsave(cd8_cd4_ratio_pdf,
 # Panel 5C
 quantiseq_cg %>%
   # reorder columns so the ID is first
-  dplyr::select(Kids_First_Biospecimen_ID = sample, everything()) %>%
+  # and remove column with \n!
+  dplyr::select(Kids_First_Biospecimen_ID = sample, everything(), -cancer_group_display_n) %>%
   # arrange on sample
   dplyr::arrange(Kids_First_Biospecimen_ID) %>% 
   # export
