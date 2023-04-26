@@ -145,7 +145,7 @@ umap_plot <- ggplot(umap_plot_df) +
   labs(x = "UMAP1", y = "UMAP2") +
   ggpubr::theme_pubr() +
   theme(
-    text = element_text(size = 18),
+    text = element_text(size = 16),
     legend.position = "none"
   )
 
@@ -260,7 +260,7 @@ gsva_heatmap <- Heatmap(
   show_column_names = FALSE,
   cluster_columns = FALSE,
   row_names_gp = grid::gpar(fontsize = 5.8),
-  bottom_annotation = column_heatmap_annotation,
+  top_annotation = column_heatmap_annotation,
   heatmap_legend_param = list(direction = "vertical")
 )
 
