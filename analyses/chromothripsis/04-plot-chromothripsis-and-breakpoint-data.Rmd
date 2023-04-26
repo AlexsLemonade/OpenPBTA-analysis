@@ -96,27 +96,46 @@ merge <- merge %>%
 result <- cor.test(merge$sv_breaks_count, merge$cnv_breaks_count)
 corr <- result$estimate
 pval <-  result$p.value
-label <- paste0("Linear Regression of SV breaks on CNV breaks:\n",
+plot_label <- paste0("Linear Regression:\n",
                    "Adjusted R = ", signif(corr, 3),
                      ", P = ", signif(pval, 3))
-label_grob <- grobTree(textGrob(label, x=0.99, y=0.95, hjust=1))
 
 # Create scatterplot
 p <- merge %>%
   arrange(count_regions_any_conf) %>%
     # Sort by number of chromothripsis calls so that the samples with chromothripsis are more visible
-  ggplot(aes(x = cnv_breaks_count, y = sv_breaks_count, fill = as.factor(count_regions_any_conf))) +
-  geom_point(shape=21, size=2, color="black", stroke = 0.25) + 
+  ggplot(aes(x = cnv_breaks_count, y = sv_breaks_count)) +
+  geom_point(shape=21, 
+             size=1, 
+             color="black", 
+             stroke = 0.25,
+             aes(fill = as.factor(count_regions_any_conf))) + 
   scale_fill_manual(values=colors, name="# Chromothripsis\nRegions") +
-  stat_smooth(aes(fill=NULL), method = "lm", col = "red", show.legend = FALSE) + 
-  annotation_custom(label_grob) +
+  stat_smooth(method = "lm", 
+              col = "red", 
+              show.legend = FALSE, 
+              size = 0.75) + 
+  annotate("text", 
+            x=400, y=2600, hjust = 1,
+           label = plot_label, 
+           size = 2.25) +
   xlab("# CNV Breaks") + 
-  ylab("# SV Breaks") 
+  ylab("# SV Breaks")  + 
+  guides(fill = guide_legend(override.aes = list(size = 1.5))) +
+  theme(
+    axis.text = element_text(size = rel(0.65)),
+    axis.title = element_text(size = rel(0.65)),
+    legend.text = element_text(size = rel(0.6)),
+    legend.title = element_text(size = rel(0.6)),
+    legend.key.size = unit(0.2, "cm"),
+    axis.ticks = element_line(size = rel(0.4)),
+    axis.line = element_line(size = rel(0.4)),
+  )
 p
 ggsave(file.path(plots_dir, "count_chromothripsis_cnv_and_sv_breaks_scatterplot.png"), p)
 # Also save a PDF version, to be used as a single panel in a multipanel figure
 ggsave(file.path(plots_dir, "count_chromothripsis_cnv_and_sv_breaks_scatterplot.pdf"), p, 
-       useDingbats=FALSE, height = 5.25, width = 7.75)
+       useDingbats=FALSE, height = 2.25, width = 2.5)
 ```
 
 ```{r}
