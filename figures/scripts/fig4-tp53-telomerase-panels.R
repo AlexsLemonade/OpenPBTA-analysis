@@ -77,7 +77,6 @@ tp53_telomerase_scores_boxplot_legend_pdf <- file.path(output_dir, "tp53_telomer
 survival_plot_pdf                     <- file.path(output_dir, "forest_survival_tp53_telomerase_panel.pdf")
 
 
-
 ### ROC curve ---------------------------------------------------------------------------------
 
 # Create data frame that will plot ROC
@@ -113,14 +112,17 @@ roc_plot <- ggplot(roc_df) +
     x = "False Positive Rate",
     y = "True Positive Rate") +
   ggpubr::theme_pubr() +
+  guides(color = guide_legend(title.position = "top",
+                              nrow = 2)) +
   theme(axis.text = element_text(size = rel(0.5)),
         axis.title = element_text(size = rel(0.5)),
-        legend.text = element_text(size = rel(0.36)),
-        legend.title = element_text(size = rel(0.4)),
-        legend.key.size = unit(5, "points"),
-        axis.line = element_line(size = rel(0.4))
+        legend.text = element_text(size = rel(0.48)),
+        legend.title = element_text(size = rel(0.525)),
+        legend.key.size = unit(8, "points"),
+        axis.line = element_line(size = rel(0.4)),
+        axis.ticks = element_line(size = rel(0.4))
   )
-ggsave(tp53_roc_pdf, roc_plot, width = 2.5, height = 2.5,
+ggsave(tp53_roc_pdf, roc_plot, width = 1.75, height = 2,
        # add for figure compilation
        useDingbats = FALSE)
 
@@ -172,10 +174,10 @@ plot_tp53 <- function(df, pvalue_y) {
   df_counts_plot <- ggplot(df_counts) +
     aes(x = tp53_altered,
         y = tp53) +
-    geom_violin(size = 0.35) +
+    geom_violin(size = 0.25) +
     geom_jitter(alpha = 0.25, # very light alpha to accomodate `other` category
                 width = 0.1,
-                size = 0.6) +
+                size = 0.45) +
     # Add median +/- IQR pointrange
     geom_pointrange(data = stats_df,
                     aes(
@@ -184,21 +186,24 @@ plot_tp53 <- function(df, pvalue_y) {
                       ymin = ymin,
                       ymax = ymax
                     ),
-                    color = "firebrick", size = rel(0.4)
+                    color = "firebrick", size = rel(0.2)
     ) +
     # Add p-value annotation with ggpubr
     ggpubr::stat_pvalue_manual(
       wilcox_df,
       label = "Wilcoxon P-value = {p.adj}",
-      size = 2.25
+      # as needed, further adjust text size during compilation 
+      # since larger than this ends up outside plot margins
+      size = 1.75, 
+      bracket.size = 0.2
     ) +
     ggpubr::theme_pubr()  +
     # Sizing for compilation - small figure export
     theme(
       axis.text = element_text(size = rel(0.7)),
       axis.title = element_text(size = rel(0.7)),
-      axis.line = element_line(size = rel(0.5)),
-      axis.ticks = element_line(size = rel(0.5))
+      axis.line = element_line(size = rel(0.4)),
+      axis.ticks = element_line(size = rel(0.4))
     )
 
   return(
@@ -264,10 +269,8 @@ tp53_expression_plot <- tp53_expression_plot_data$plot +
 
 
 # Export figures, with `useDingbats = FALSE` needed for compiling panels in Illustrator
-ggsave(tp53_scores_altered_pdf, tp53_scores_plot, width = 3.75, height = 2.5, useDingbats = FALSE)
-ggsave(tp53_expression_altered_pdf, tp53_expression_plot, width = 3.75, height = 2.5, useDingbats = FALSE)
-
-
+ggsave(tp53_scores_altered_pdf, tp53_scores_plot, width = 3, height = 2, useDingbats = FALSE)
+ggsave(tp53_expression_altered_pdf, tp53_expression_plot, width = 3, height = 2, useDingbats = FALSE)
 
 
 ## TP53 and telomerase scores boxplots across cancer groups with mutators emphasized -------------------------------------------
@@ -413,11 +416,11 @@ tp53_telo_tmb_boxplot <- ggplot(plot_df) +
   facet_wrap(~score_type, nrow = 2) +
   ggpubr::theme_pubr() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust=1, size = rel(0.5)),
+    axis.text.x = element_text(angle = 45, hjust=1, size = rel(0.6)),
     # Sizing for compilation - small figure export
-    axis.text.y = element_text(size = rel(0.5)),
-    axis.title = element_text(size = rel(0.5)),
-    strip.text = element_text(size = rel(0.5)),
+    axis.text.y = element_text(size = rel(0.6)),
+    axis.title = element_text(size = rel(0.65)),
+    strip.text = element_text(size = rel(0.75)),
     axis.line = element_line(size = rel(0.5)),
     axis.ticks = element_line(size = rel(0.5))
   )
@@ -466,18 +469,18 @@ tp53_plot_for_legend <- ggplot(tp53_plot_legend_df) +
   # theme to remove gray background. this strategy works
   theme_classic() +
   theme(
-  # Sizing for compilation - small figure export
-    legend.text = element_text(size = rel(0.45)),
-    legend.title = element_text(size = rel(0.6)),
-    legend.key.size = unit(10, "points")
-)
+    legend.text = element_text(size = 5),
+    legend.title = element_text(size = 6),
+    legend.key.size = unit(15, "points"), 
+    legend.position = "bottom"
+  ) 
 
 
 legend <- cowplot::get_legend(tp53_plot_for_legend)
 
 # Export legend
-pdf(tp53_telomerase_scores_boxplot_legend_pdf, width = 1.3, height = 0.8, useDingbats = FALSE)
-cowplot::ggdraw(legend)
+pdf(tp53_telomerase_scores_boxplot_legend_pdf, width = 4, height = 0.5, useDingbats = FALSE)
+print(cowplot::ggdraw(legend)) # add print() to ensure formatting
 dev.off()
 
 
@@ -548,10 +551,10 @@ forest_plot <- ggplot(survival_df) +
       xmax = conf.high,
     ),
     height = 0.15,
-    size = 0.65
+    size = 0.25
   ) +
   geom_point(
-    size = 3.5,
+    size = 4.5,
     shape = 23
   ) +
   # Point fill based on sigificance
@@ -564,7 +567,8 @@ forest_plot <- ggplot(survival_df) +
   # Vertical guiding line at 1
   geom_vline(
     xintercept = 1,
-    linetype = 3
+    linetype = 3, 
+    size = 0.25
   ) +
   labs(
     x = "Hazard Ratio ± 95% CI",
@@ -578,7 +582,10 @@ forest_plot <- ggplot(survival_df) +
   ) +
   ggpubr::theme_pubr() +
   theme(
-    plot.subtitle = element_text(face = "bold")
+    plot.subtitle = element_text(face = "bold"), 
+    # thinner axes, ticks for compilation
+    axis.line = element_line(size = rel(0.25)),
+    axis.ticks = element_line(size = rel(0.25))
   ) +
   # grid makes it easier to follow lines
   cowplot::background_grid()
@@ -627,7 +634,7 @@ labels_panel <- ggplot(survival_df_spread) +
     axis.text.y = element_blank(),
     axis.ticks.y = element_blank(),
     axis.line.y = element_blank(),
-    # -26 is as low as we can go before plot starts to get coverd
+    # -26 is as low as we can go before plot starts to get covered
     plot.margin = margin(6, 0, 36, -25, unit = "pt"),
     plot.subtitle = element_text(face = "bold")
   )
@@ -637,7 +644,6 @@ forest_panels <- cowplot::plot_grid(forest_plot, labels_panel, nrow = 1, rel_wid
 
 # Export plot
 ggsave(survival_plot_pdf, forest_panels, width = 11, height = 3.5)
-
 
 ## Export CSVs for Zenodo upload ------------------------------
 

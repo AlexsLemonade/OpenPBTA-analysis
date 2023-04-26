@@ -65,10 +65,15 @@ km_plot <- survminer::ggsurvplot(fit = km_result$model,
                                        "HGG, H3 wildtype",
                                        "HGG, H3 wildtype, TP53 lost"),
                        risk.table.y.text.col = TRUE,
-                       risk.table.y.text = FALSE
+                       risk.table.y.text = FALSE,
+                       # table font size
+                       fontsize = 3.75
 ) 
 # add grid to plot separately; this allows us to use theme_pubr() above and still have a grid
-km_plot_graph <- km_plot$plot + cowplot::background_grid()
+km_plot_graph <- km_plot$plot + 
+  cowplot::background_grid() + 
+  # slightly larger legend text
+  theme(legend.text = element_text(size = rel(1)))
 km_plot_table <- km_plot$table
 
 # Re-combine plot and table
@@ -78,7 +83,7 @@ km_final <- km_plot_graph/km_plot_table +
 
 
 # Save
-ggsave(km_output_pdf, km_final, width = 12, height = 6)
+ggsave(km_output_pdf, km_final, width = 8, height = 4)
 
 # Export CSV for Zenodo upload, from the `$original_data` field already 
 #  in the model object
