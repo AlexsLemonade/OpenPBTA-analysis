@@ -92,10 +92,10 @@ forest_plot <- ggplot(survival_df) +
       xmax = conf.high,
     ),
     height = 0.15,
-    size = 0.65
+    size = 0.25
   ) + 
   geom_point(
-    size = 3.5,
+    size = 4.5,
     shape = 23
   ) +
   # Point fill based on sigificance
@@ -108,7 +108,8 @@ forest_plot <- ggplot(survival_df) +
   # Vertical guiding line at 1
   geom_vline(
     xintercept = 1, 
-    linetype = 3
+    linetype = 3, 
+    size = 0.25
   ) +
   labs(
     x = "Hazard Ratio ± 95% CI",
@@ -119,7 +120,10 @@ forest_plot <- ggplot(survival_df) +
   scale_x_log10() +
   ggpubr::theme_pubr() + 
   theme(
-    plot.subtitle = element_text(face = "bold")
+    plot.subtitle = element_text(face = "bold"), 
+    # thinner axes, ticks for compilation
+    axis.line = element_line(size = rel(0.25)),
+    axis.ticks = element_line(size = rel(0.25))
   ) +
   # grid makes it easier to follow lines
   cowplot::background_grid()
@@ -156,8 +160,8 @@ labels_panel <- ggplot(survival_df_spread) +
   geom_text(hjust = 0) +
   labs(
     # hack!
-    subtitle = paste0("                    ",
-                      "HR (95% CI)             P-value")
+    subtitle = paste0("                ",
+                      "HR (95% CI)         P-value")
   ) +
   ggpubr::theme_pubr() + 
   # remove axes.
