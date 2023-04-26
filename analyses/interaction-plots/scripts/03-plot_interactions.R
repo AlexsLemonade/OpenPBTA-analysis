@@ -212,7 +212,7 @@ cooccur_plot <- ggplot(
     axis.line = element_blank(),
     axis.ticks = element_blank(),
     legend.justification = c(1, 0),
-    legend.position = c(1, 0),
+    legend.position = c(0.9, 0.1),
     legend.key.size = unit(2, "char")
   )
 
@@ -347,7 +347,7 @@ disease_plot <- ggplot(
     legend.position = c(1,1),
     legend.justification = c(1,1),
     legend.key.size = unit(1, "char"),
-    legend.text = element_text(size = rel(0.85))
+    legend.text = element_text(size = rel(1))
   )
 
 
@@ -379,6 +379,9 @@ cooccur_plot2 <- cooccur_plot +
     labels = ylabels
   ) +
   theme(
+    axis.text.y = element_text(size = 9),
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 14),
     plot.margin = unit(c(-3.5,0,0,0), "char") # negative top margin to move plots together
   )
 
@@ -386,24 +389,26 @@ cooccur_plot2 <- cooccur_plot +
 disease_plot2 <- disease_plot +
   theme(
     axis.text.x = element_text(
+      size = 9,
       angle = -90,
       hjust = 1,
       vjust = 0.5
     ),
+    axis.text.y = element_text(size = 12),
     axis.title.y = element_text(
+      size = 14,
       vjust = -10 # keep the label close when combined
-    )
+    ),
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 14),
+    legend.position = c(0.98, 0.98)
   )
 
 # Combine plots with <patchwork>
 # Layout of the two plots will be one over the other (1 column),
 # with the upper plot 3/4 the height of the lower plot
 combined_plot <- disease_plot2 + cooccur_plot2 +
-  plot_layout(ncol = 1, heights = c(3, 4)) +
-  theme( # add uniform labels
-    axis.text.x = element_text(size = 9),
-    axis.text.y = element_text(size = 9)
-  )
+  plot_layout(ncol = 1, heights = c(3, 4)) 
 
 ggsave(combined_plot,
        filename = opts$combined_plot,
