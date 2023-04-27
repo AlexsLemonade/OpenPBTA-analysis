@@ -286,7 +286,7 @@ display_group_legend_plot <- tibble::as_tibble(annotation_colors_bh,
                             levels = names(annotation_colors_bh))) %>%
   ggplot() + 
   aes(x = annotation_colors_bh, y = annotation_colors_bh, color = histology) + 
-  geom_point(size = 3.75) + 
+  geom_point(size = 3) + 
   scale_color_manual(values = annotation_colors_bh, 
                      labels = function(x) str_wrap(x, 20)) + 
   ggpubr::theme_pubr() +
@@ -301,7 +301,7 @@ display_group_legend <- cowplot::get_legend(display_group_legend_plot)
 cowplot::save_plot(
   umap_legend_pdf, 
   cowplot::ggdraw(display_group_legend), 
-  base_width = 4.75, base_height = 1.25
+  base_width = 4.75, base_height = 1
 )
 
 
