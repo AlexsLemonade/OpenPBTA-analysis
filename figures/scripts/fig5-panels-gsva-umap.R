@@ -121,15 +121,9 @@ rm(cancer_group_color_df)
 
 #### UMAP plot -----------------------------------------------------------------
 
-dim_red_dir <- file.path(
-  analyses_dir,
-  "transcriptomic-dimension-reduction"
-)
-
-source(file.path(dim_red_dir, "util", "dimension-reduction-functions.R"))
-
 rsem_umap_file <- file.path(
-  dim_red_dir,
+  analyses_dir,
+  "transcriptomic-dimension-reduction",
   "results",
   "rsem_stranded_log_umap_scores_aligned.tsv"
 )
@@ -141,15 +135,21 @@ umap_plot_df <- read_tsv(rsem_umap_file) %>%
   dplyr::inner_join(palette_mapping_df,
                     by = "Kids_First_Biospecimen_ID") 
 
-umap_plot <- plot_dimension_reduction(umap_plot_df,
-                         point_color = "broad_histology_display",
-                         x_label = "UMAP1",
-                         y_label = "UMAP2",
-                         alpha_value = 0.5,
-                         color_palette = annotation_colors_bh) +
+
+# Plot directly (without plot_dimension_reduction) to be able to specify a 
+# non-mapped custom point size
+umap_plot <- ggplot(umap_plot_df) + 
+  aes(x = X1, y = X2, color = broad_histology_hex) + 
+  geom_point(size = 2, alpha = 0.5) + 
+  scale_color_identity() + 
+  labs(x = "UMAP1", y = "UMAP2") +
   ggpubr::theme_pubr() +
-  theme(text = element_text(size = 10),
-        legend.position = "none")
+  theme(
+    text = element_text(size = 16),
+    axis.ticks = element_blank(),
+    axis.text = element_blank(),
+    legend.position = "none"
+  )
 
 # Save PDF
 ggsave(umap_pdf, plot = umap_plot, width = 4, height = 4)
@@ -242,16 +242,17 @@ gsva_annotation_df <- gsva_annotation_df[gsva_ordered_bsids, ] %>%
          # Rename for display purposes
          cancer_group = cancer_group_display)
 
+
+
 # Annotation bar intended for the top of the heatmap
 column_heatmap_annotation <- HeatmapAnnotation(
   df = as.data.frame(gsva_annotation_df),
   name = "Cancer Group",
   col = list("cancer_group" = annotation_colors_cg),
   na_col = na_color$hex_codes,
-  annotation_name_side = "left",
-  show_legend = FALSE
+  show_legend = FALSE,
+  show_annotation_name =TRUE
 )
-
 ## Heatmap itself!
 gsva_heatmap <- Heatmap(
   gsva_scores_mat,
@@ -260,13 +261,13 @@ gsva_heatmap <- Heatmap(
   na_col = na_color$hex_codes,
   show_column_names = FALSE,
   cluster_columns = FALSE,
-  row_names_gp = grid::gpar(fontsize = 5),
+  row_names_gp = grid::gpar(fontsize = 5.8),
   top_annotation = column_heatmap_annotation,
-  heatmap_legend_param = list(direction = "horizontal")
+  heatmap_legend_param = list(direction = "vertical")
 )
 
-pdf(gsva_pdf, width = 5.75, height = 5)
-draw(gsva_heatmap, heatmap_legend_side = "bottom")
+pdf(gsva_pdf, width = 7, height = 4)
+draw(gsva_heatmap, heatmap_legend_side = "right")
 dev.off()
 
 
@@ -274,14 +275,35 @@ dev.off()
 #### broad_histology legend ----------------------------------------------------
 
 # UMAP legend
-display_group_legend <- Legend(
-  labels = names(annotation_colors_bh),
-  legend_gp = gpar(fill = annotation_colors_bh)
+# note that legend text cannot be resized in `Legend()`, only the title text
+# Legend() is not great at text wrapping so we're using a hack
+
+histology_order <- names(annotation_colors_bh)
+
+display_group_legend_plot <- tibble::as_tibble(annotation_colors_bh, 
+                  rownames = "histology") %>%
+  mutate(histology = factor(histology, 
+                            levels = names(annotation_colors_bh))) %>%
+  ggplot() + 
+  aes(x = annotation_colors_bh, y = annotation_colors_bh, color = histology) + 
+  geom_point(size = 3) + 
+  scale_color_manual(values = annotation_colors_bh, 
+                     labels = function(x) str_wrap(x, 20)) + 
+  ggpubr::theme_pubr() +
+  guides(color = guide_legend(ncol = 3)) +
+  theme(
+    legend.title = element_blank(),
+    legend.text = element_text(size = 8.5), 
+)
+  
+display_group_legend <- cowplot::get_legend(display_group_legend_plot)
+
+cowplot::save_plot(
+  umap_legend_pdf, 
+  cowplot::ggdraw(display_group_legend), 
+  base_width = 4.75, base_height = 1
 )
 
-pdf(umap_legend_pdf, width = 3, height = 6)
-draw(display_group_legend)
-dev.off()
 
 
 
@@ -294,10 +316,13 @@ names(annotation_colors_cg_legend) <- unique(palette_mapping_df_ordered$cancer_g
 # GSVA legend
 display_group_legend <- Legend(
   labels = names(annotation_colors_cg_legend),
-  legend_gp = gpar(fill = annotation_colors_cg_legend)
+  legend_gp = gpar(fill = annotation_colors_cg_legend), 
+  ncol = 3,
+  # reduce space between legend columns
+  gap = unit(0.2, "mm")
 )
 
-pdf(gsva_legend_pdf, width = 3, height = 6)
+pdf(gsva_legend_pdf, width = 7, height = 1.125)
 draw(display_group_legend)
 dev.off()
 

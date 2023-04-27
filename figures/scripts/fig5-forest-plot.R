@@ -6,6 +6,7 @@
 
 library(survival) # needed to parse model output
 library(tidyverse)
+library(patchwork) # for this forest plot export, patchwork is better than cowplot for lining up p-values
 
 # Establish base dir
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
@@ -113,10 +114,11 @@ forest_plot <- ggplot(survival_df) +
       xmax = conf.high,
     ),
     height = 0.15,
-    size = 0.65
+    size = 0.25
   ) + 
   geom_point(
-    size = 3.5,
+    size = 4.5,
+    stroke = 0.25,
     shape = 23
   ) +
   # Point fill based on sigificance
@@ -129,7 +131,8 @@ forest_plot <- ggplot(survival_df) +
   # Vertical guiding line at 1
   geom_vline(
     xintercept = 1, 
-    linetype = 3
+    linetype = 3, 
+    size = 0.25
   ) +
   labs(
     x = "Hazard Ratio ± 95% CI",
@@ -140,7 +143,11 @@ forest_plot <- ggplot(survival_df) +
   scale_x_log10() +
   ggpubr::theme_pubr() + 
   theme(
-    plot.subtitle = element_text(face = "bold")
+    plot.subtitle = element_text(face = "bold", size = rel(1.1)),
+    # thinner axes, ticks for compilation
+    axis.line = element_line(size = rel(0.25)),
+    axis.ticks = element_line(size = rel(0.25)),
+    plot.margin = margin(0,0,0,0)
   ) +
   # grid makes it easier to follow lines
   cowplot::background_grid()
@@ -171,10 +178,10 @@ survival_df_spread <- survival_df %>%
 
 labels_panel <- ggplot(survival_df_spread) +
   aes(x = name, y = term, label = value) + 
-  geom_text(hjust = 0) +
+  geom_text(hjust = 0, size = 4) +
   labs(
     # hack!
-    subtitle = paste0("                             ",
+    subtitle = paste0("                            ",
                       "HR (95% CI)                             P-value")
   ) +
   ggpubr::theme_pubr() + 
@@ -188,17 +195,16 @@ labels_panel <- ggplot(survival_df_spread) +
     axis.text.y = element_blank(),
     axis.ticks.y = element_blank(),
     axis.line.y = element_blank(),
-    # -26 is as low as we can go before plot starts to get coverd
-    plot.margin = margin(6, 0, 36, -25, unit = "pt"),
-    plot.subtitle = element_text(face = "bold")
+    # -26 is as low as we can go before plot starts to get covered
+    plot.margin = margin(6, 0, 36, -26, unit = "pt"),
+    plot.subtitle = element_text(face = "bold", size = rel(1.1))
   ) 
 
-forest_panels <- cowplot::plot_grid(forest_plot, labels_panel, nrow = 1, rel_widths = c(1,0.5), scale = 0.95)
 
-
+forest_panels <- forest_plot + labels_panel + plot_layout(widths = c(1, 1.2))
 
 # Export plot
-ggsave(forest_pdf, forest_panels, width = 15, height = 4.5)
+ggsave(forest_pdf, forest_panels, width = 12, height = 4)
 
 
 # Export CSV for Zenodo upload
