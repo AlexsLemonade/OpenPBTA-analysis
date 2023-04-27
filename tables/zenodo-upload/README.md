@@ -101,8 +101,8 @@ Where applicable, all tables are ordered by either `sample_id` or `Kids_First_Bi
 
 | Figure Panel(s) | Filename | Brief Description | Notes on Tabular Data |
 |--------|-------------|--------------------|-------------------------|
-|   S2A-C    |  `figure-S2a-S2b-S2c-data.csv`   | Correlations, distributions, and UpSet plot of mutation VAFs from variant callers for PBTA data, respectively   | This compressed file contains data for all three panels S2A, S2B, and S2C. Caution: Uncompressed, this file is ~3.9 GB.|
-|   S3D-F     |   `figure-S2d-S2e-S2f-data.csv`    |  Correlations, distributions, and UpSet of mutation VAFs from variant callers for TCGA data, respectively       | This compressed file contains data for all three panels S2D, S2E, and S2F. Uncompressed, this file is 13MB.            |
+|   S2A-C    |  `figure-S2a-S2b-S2c-data.csv`   | Correlations, distributions, and UpSet plot of mutation VAFs from variant callers for PBTA data, respectively   | This compressed file contains data for all three panels S2A, S2B, and S2C. Caution: Uncompressed, this file is ~3.9 GB. <br> Note that this file is only available in Zenodo, not in the OpenPBTA GitHub repository, due to size.|
+|   S3D-F     |   `figure-S2d-S2e-S2f-data.csv`    |  Correlations, distributions, and UpSet of mutation VAFs from variant callers for TCGA data, respectively       | This compressed file contains data for all three panels S2D, S2E, and S2F. Uncompressed, this file is 13MB.  <br> Note that this file is only available in Zenodo, not in the OpenPBTA GitHub repository, due to size.|          |
 |   S2G     |   `figure-S2g-data.csv`          |  Distributions of VAFs from Lancet calls on PBTA data for tumors with WGS and WXS   |
 |   S2H     |   `figure-S2h-data.csv`         |  Cumulative distribution TMB plots for PBTA cancer groups          |
 |   S2I     |   `figure-S2i-data.csv`         |  Cumulative distribution PBTA plots for TCGA histologies          |
@@ -113,7 +113,7 @@ Where applicable, all tables are ordered by either `sample_id` or `Kids_First_Bi
 |--------|-------------|--------------------|-------------------------|
 |   S3A     |    `figure-S3a-data.csv`         |   Violin plots of tumor purity by cancer group          |
 |   S3B     |    `figure-S3b-data.csv`          |  Oncoprint summarizing rare CNS tumor alterations across samples for top mutated genes    |
-|   S3C     |    `figure-S3c-data.csv.gz`       | Genome-wide plot of CNV alterations for each sample, grouped by broad histology  |   This file is compressed; uncompressed, this file is ~15 MB.      |
+|   S3C     |    `figure-S3c-data.csv.gz`       | Genome-wide plot of CNV alterations for each sample, grouped by broad histology  |   This file is compressed; uncompressed, this file is ~15 MB. <br> Note that this file is only available in Zenodo, not in the OpenPBTA GitHub repository, due to size. |     |
 |   S3D     |    `figure-S3d-data.csv`          | Box plots of SNV breaks across number of chromothripsis regions            |
 |   S3E     |    `figure-S3e-data.csv`          | Box plots of CNV breaks across number of chromothripsis regions            |
 
