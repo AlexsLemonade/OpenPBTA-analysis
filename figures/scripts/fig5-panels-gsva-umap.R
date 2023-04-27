@@ -146,6 +146,8 @@ umap_plot <- ggplot(umap_plot_df) +
   ggpubr::theme_pubr() +
   theme(
     text = element_text(size = 16),
+    axis.ticks = element_blank(),
+    axis.text = element_blank(),
     legend.position = "none"
   )
 
@@ -274,17 +276,34 @@ dev.off()
 
 # UMAP legend
 # note that legend text cannot be resized in `Legend()`, only the title text
-display_group_legend <- Legend(
-  labels = names(annotation_colors_bh),
-  legend_gp = gpar(fill = annotation_colors_bh), 
-  ncol = 2,
-  # reduce space between legend columns
-  gap = unit(0.2, "mm")
+# Legend() is not great at text wrapping so we're using a hack
+
+histology_order <- names(annotation_colors_bh)
+
+display_group_legend_plot <- tibble::as_tibble(annotation_colors_bh, 
+                  rownames = "histology") %>%
+  mutate(histology = factor(histology, 
+                            levels = names(annotation_colors_bh))) %>%
+  ggplot() + 
+  aes(x = annotation_colors_bh, y = annotation_colors_bh, color = histology) + 
+  geom_point(size = 3.75) + 
+  scale_color_manual(values = annotation_colors_bh, 
+                     labels = function(x) str_wrap(x, 20)) + 
+  ggpubr::theme_pubr() +
+  guides(color = guide_legend(ncol = 3)) +
+  theme(
+    legend.title = element_blank(),
+    legend.text = element_text(size = 8.5), 
+)
+  
+display_group_legend <- cowplot::get_legend(display_group_legend_plot)
+
+cowplot::save_plot(
+  umap_legend_pdf, 
+  cowplot::ggdraw(display_group_legend), 
+  base_width = 4.75, base_height = 1.25
 )
 
-pdf(umap_legend_pdf, width = 5.5, height = 2)
-draw(display_group_legend)
-dev.off()
 
 
 
