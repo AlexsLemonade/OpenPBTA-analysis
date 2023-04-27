@@ -30,8 +30,8 @@ palette_dir <- file.path(root_dir, "figures", "palettes")
 # Zenodo CSV output directory and file paths
 zenodo_tables_dir <- file.path(root_dir, "tables", "zenodo-upload")
 fig4a_csv <- file.path(zenodo_tables_dir, "figure-4a-data.csv")
-fig4b_csv <- file.path(zenodo_tables_dir, "figure-4b-data.csv")
-fig4c_csv <- file.path(zenodo_tables_dir, "figure-4c-data.csv")
+fig4b_csv <- file.path(zenodo_tables_dir, "figure-4b-data.csv") # TP53 scores
+fig4c_csv <- file.path(zenodo_tables_dir, "figure-4c-data.csv") # TP53 expression
 fig4d_csv <- file.path(zenodo_tables_dir, "figure-4d-data.csv")
 fig4f_csv <- file.path(zenodo_tables_dir, "figure-4f-data.csv")
 
@@ -654,7 +654,10 @@ readr::write_csv(roc_df, fig4a_csv)
 # Panel 4B: TP53 scores violin plots
 tp53_scores_data %>%
   # reorder columns so sample id first, and rename it to match what the metadata will have
-  dplyr::select(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA, everything()) %>%
+  dplyr::select(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA, 
+                -tp53_expression, 
+                tp53_score = tp53, 
+                everything()) %>%
   # arrange on sample
   dplyr::arrange(Kids_First_Biospecimen_ID) %>%
   # remove \n and N=## from tp53_altered so that CSV is properly formatted
@@ -666,8 +669,10 @@ tp53_scores_data %>%
 # Panel 4C: TP53 expression plots
 tp53_expression_data %>%
   # reorder columns so sample id first, and rename it to match what the metadata will have
-  dplyr::select(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA, everything()) %>%
-  # arrange on sample
+  dplyr::select(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA, 
+                -tp53_score, 
+                tp53_expression = tp53, 
+                everything()) %>%  # arrange on sample
   dplyr::arrange(Kids_First_Biospecimen_ID) %>%
   # remove \n and N=## from tp53_altered so that CSV is properly formatted
   dplyr::mutate(tp53_altered = stringr::str_replace(tp53_altered, "\n.+", "")) %>%
