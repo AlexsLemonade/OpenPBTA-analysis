@@ -233,14 +233,14 @@ cd274_expression_mb_plot <- ggplot(CD274_cd8_mb) +
                color = "grey20",
                size = 0.2) +
   geom_jitter(width = 0.15,
-              size = 0.55,
+              size = 0.75,
               alpha = 0.5,
               # Helpful shape for compiling
               shape = 16) +
   ggpubr::stat_pvalue_manual(wilcox_df,
                              label = "p = {p.adj}",
-                             label.size = 1.5,
-                             bracket.size = 0.125) +
+                             label.size = 2,
+                             bracket.size = 0.25) +
   scale_color_identity() +
   labs(x = "Molecular subtype of tumor",
        y = "CD274 log2(FPKM+1)") +
@@ -248,16 +248,16 @@ cd274_expression_mb_plot <- ggplot(CD274_cd8_mb) +
   # Set sizing for compilation
   theme(
     axis.text.x = element_text(hjust = 0.55,
-                               size = 4),
-    axis.text.y = element_text(size = 5),
-    axis.title = element_text(size = 5.5),
+                               size = 6.5),
+    axis.text.y = element_text(size = 6.5),
+    axis.title = element_text(size = 7),
     axis.line  = element_line(size = 0.2),
     axis.ticks = element_line(size = 0.2)
     )
 
 # Panel sized for compilation
 ggsave(cd274_expression_mb_pdf,
-       cd274_expression_mb_plot, width = 2, height = 2,
+       cd274_expression_mb_plot, width = 3, height = 2.25,
        useDingbats=FALSE)
 
 
