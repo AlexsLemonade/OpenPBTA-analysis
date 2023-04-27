@@ -193,7 +193,7 @@ if (!(params$is_ci == 1)) {
   sigs <- exposures %>%
     filter(signature != "Other") %>%
     tidyr::spread(signature, exposure) %>%
-    select(-broad_histology, -cancer_group_display_n, -n, -cancer_group_display, -cancer_group_hex, -tumor_descriptor) %>%
+    select(-broad_histology, -n, -cancer_group_display, -cancer_group_hex, -tumor_descriptor) %>%
     filter(Kids_First_Biospecimen_ID %in% soi_df$Kids_First_Biospecimen_ID) %>%
     as.data.frame() %>%
     arrange(Kids_First_Biospecimen_ID) %>%

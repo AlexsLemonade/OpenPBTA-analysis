@@ -131,10 +131,7 @@ theme_set(theme_pubr())
 
 # Save ggplot2 options
 plot_options <- list(
-  ylim(c(0, 1)),
-  xlab(NULL),
-  ylab("Proportion of Tumors with Chromothripsis Events"),
-  theme(axis.text.x = element_text(hjust = 0.95))
+  
 )
 
 bar_plot <- ggplot(chromoth_cancer_group_df ,
@@ -142,15 +139,29 @@ bar_plot <- ggplot(chromoth_cancer_group_df ,
                        y = prop,
                        fill = cancer_group_display)) +
   geom_bar(stat = "identity", show.legend = FALSE) +
-  geom_text(aes(label = labels), hjust = -0.2, size = 3.25) +
+  geom_text(aes(label = labels), hjust = -0.2, size = 1.75) +
   scale_fill_manual(values = cancer_group_palette) +
   coord_flip() +
-  plot_options
+  # flipped, so thiss will apply to x:
+  scale_y_continuous(limits = c(0, 1),
+                     expand = c(0, 0.01)) +
+  labs(
+    x = "",
+    y = "Proportion of Tumors with\nChromothripsis Events"
+  ) + 
+  theme(
+    axis.text.y = element_text(size = rel(0.5)), 
+    axis.text.x = element_text(size = rel(0.475)), 
+    axis.title = element_text(size = rel(0.5)),
+    axis.line = element_line(size = rel(0.35)),
+    axis.ticks = element_line(size = rel(0.35)), 
+    plot.margin = margin(0,5,0,0)
+  )
 
 ggsave(file.path(output_dir, "chromothripsis_prop_cancer_group.pdf"),
        plot = bar_plot,
-       height = 7,
-       width = 9)
+       height = 3,
+       width = 3)
 
 # Write CSV file for Zenodo upload, using the non-summarized data version
 chromo_per_sample_df %>%
