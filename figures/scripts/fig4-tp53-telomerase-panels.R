@@ -655,9 +655,9 @@ readr::write_csv(roc_df, fig4a_csv)
 tp53_scores_data %>%
   # reorder columns so sample id first, and rename it to match what the metadata will have
   dplyr::select(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA, 
-                -tp53_expression, 
                 tp53_score = tp53, 
-                everything()) %>%
+                tp53_altered, 
+                altered_counts) %>% 
   # arrange on sample
   dplyr::arrange(Kids_First_Biospecimen_ID) %>%
   # remove \n and N=## from tp53_altered so that CSV is properly formatted
@@ -670,9 +670,10 @@ tp53_scores_data %>%
 tp53_expression_data %>%
   # reorder columns so sample id first, and rename it to match what the metadata will have
   dplyr::select(Kids_First_Biospecimen_ID = Kids_First_Biospecimen_ID_RNA, 
-                -tp53_score, 
                 tp53_expression = tp53, 
-                everything()) %>%  # arrange on sample
+                tp53_altered, 
+                altered_counts) %>% 
+  # arrange on sample
   dplyr::arrange(Kids_First_Biospecimen_ID) %>%
   # remove \n and N=## from tp53_altered so that CSV is properly formatted
   dplyr::mutate(tp53_altered = stringr::str_replace(tp53_altered, "\n.+", "")) %>%
