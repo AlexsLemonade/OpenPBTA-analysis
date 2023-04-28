@@ -183,7 +183,7 @@ umap_panel
 # Export
 ggsave(umap_pdf, 
        umap_panel, 
-       width = 4, 
+       width = 6, 
        height = 4)
 ```
 
