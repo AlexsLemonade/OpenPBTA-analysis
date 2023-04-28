@@ -27,7 +27,7 @@ palette_dir <- file.path(root_dir, "figures", "palettes")
 
 # Zenodo CSV output directory and file path
 zenodo_tables_dir <- file.path(root_dir, "tables", "zenodo-upload")
-figS7g_csv <- file.path(zenodo_tables_dir, "figure-S7g-data.csv")
+figS7i_csv <- file.path(zenodo_tables_dir, "figure-S7i-data.csv")
 
 # Output PDF filenames
 output_pdf <- file.path(output_dir, "tp53_telomerase_boxplots_tumor-purity-threshold.pdf")
@@ -257,6 +257,6 @@ plot_df %>%
   # arrange on RNA ID column, but bring both to front
   dplyr::select(Kids_First_Biospecimen_ID, Kids_First_Biospecimen_ID_DNA, everything()) %>%
   dplyr::arrange(Kids_First_Biospecimen_ID) %>%
-  readr::write_csv(figS7g_csv)
+  readr::write_csv(figS7i_csv)
 
 

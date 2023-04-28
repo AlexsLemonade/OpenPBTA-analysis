@@ -62,7 +62,7 @@ umap_threshold_file <- file.path(
 umap_pdf <- file.path("plots", "umap_tumor-purity-threshold.pdf")
 
 # output plot data CSV file for Zenodo upload
-figS7h_csv <- file.path(dim_red_dir, "results", "figure-S7h-data.csv")
+figS7g_csv <- file.path(dim_red_dir, "results", "figure-S7g-data.csv")
 ```
 
 And read in and prepare the files:
@@ -199,7 +199,7 @@ umap_thresholded %>%
   # arrange
   dplyr::arrange(Kids_First_Biospecimen_ID) %>%
   # export
-  readr::write_csv(figS7h_csv)
+  readr::write_csv(figS7g_csv)
 ```
 
 

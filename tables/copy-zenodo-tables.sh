@@ -37,8 +37,8 @@ cp "${ANALYSIS_DIR}/tp53_nf1_score/results/tumor-purity-threshold/figure-S7d-dat
 cp "${ANALYSIS_DIR}/tp53_nf1_score/results/tumor-purity-threshold/figure-S7e-data.csv" "${OUTDIR}/figure-S7e-data.csv"
 cp "${ANALYSIS_DIR}/tp53_nf1_score/results/tumor-purity-threshold/figure-S7f-data.csv" "${OUTDIR}/figure-S7f-data.csv"
 
-# Figure S7H: Tumor purity thresholded UMAP
-cp "${ANALYSIS_DIR}/transcriptomic-dimension-reduction/results/figure-S7h-data.csv" "${OUTDIR}/figure-S7h-data.csv"
+# Figure S7G: Tumor purity thresholded UMAP
+cp "${ANALYSIS_DIR}/transcriptomic-dimension-reduction/results/figure-S7g-data.csv" "${OUTDIR}/figure-S7g-data.csv"
 
-# Figure S7I: Tumor purity thresholded quanTIseq results
-cp "${ANALYSIS_DIR}/immune-deconv/results/figure-S7i-data.csv" "${OUTDIR}/figure-S7i-data.csv"
+# Figure S7H: Tumor purity thresholded quanTIseq results
+cp "${ANALYSIS_DIR}/immune-deconv/results/figure-S7h-data.csv" "${OUTDIR}/figure-S7h-data.csv"
